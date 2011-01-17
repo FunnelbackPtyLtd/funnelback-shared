@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="publicui" basedir="." default="build">
+
+	<import file="../build/build-common.xml" />
+
+	<property name="web.dir" value="web" />
+	<property name="war.name" value="funnelback-${ant.project.name}.war" />
+
+	<fileset id="additional.bin.files" dir="${src.dir}">
+		<include name="**/*.xml" />
+		<include name="**/*.properties" />
+		<include name="**/*.groovy" />
+	</fileset>
+	
+	<path id="classpath">
+		<fileset dir="${web.dir}/WEB-INF/lib/" />
+		<pathelement location="../common/funnelback-common.jar" />
+
+		<fileset dir="funnelback_lib_java/common/" includes="junit-4.7.jar" />
+		<pathelement location="build-lib/servlet-api-2.5-20081211.jar" />
+	</path>
+
+	<target name="dist" depends="clean, compile, test">
+		<tstamp />
+
+		<copy file="../common/funnelback-common.jar" todir="${web.dir}/WEB-INF/lib/" />
+		<war destfile="${war.name}" webxml="${web.dir}/WEB-INF/web.xml" duplicate="fail">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+			<fileset dir="${web.dir}">
+				<include name="WEB-INF/*.xml" />
+				<include name="WEB-INF/freemarker/" />
+				<exclude name="WEB-INF/web.xml" />
+			</fileset>
+			<classes dir="${bin.dir}" />
+			<lib dir="${web.dir}/WEB-INF/lib" />
+		</war>
+	</target>
+
+	<target name="clean" description="Deletes output files">
+		<delete dir="${bin.dir}" />
+		<delete dir="${test.bin.dir}" />
+		<delete dir="${test.output}" />
+		<delete file="${war.name}" />
+		<delete file="${web.dir}/WEB-INF/lib/funnelback-common.jar" />
+		<delete file="${web.dir}/WEB-INF/lib/funnelback-reporting.jar" />
+	</target>
+
+	<target name="install" description="Installs in a local $SEARCH_HOME path">
+		<property environment="env" />
+		<copy file="${war.name}" todir="${env.SEARCH_HOME}/web/webapps" overwrite="true" />
+	</target>
+
+</project>
