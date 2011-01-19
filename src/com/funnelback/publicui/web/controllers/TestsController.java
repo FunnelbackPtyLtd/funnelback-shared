@@ -44,6 +44,20 @@ public class TestsController implements ServletContextAware {
 		public LUID_ OriginatingLogonSession;
 	}
 	
+	public static class LUID_AND_ATTRIBUTES extends Structure {
+		public LUID_ Luid;
+		public DWORD Attributes;
+	}
+	
+	public static class TOKEN_PRIVILEGES extends Structure {
+		public DWORD PrivilegeCount;
+		public LUID_AND_ATTRIBUTES[] Privileges;
+		public TOKEN_PRIVILEGES(int size) {
+			PrivilegeCount.setValue(size);
+			Privileges = new LUID_AND_ATTRIBUTES[size];
+		}
+	}
+	
 	@RequestMapping("fileaccess")
 	public void testFileAccess(HttpServletResponse response) throws IOException {
 		response.setContentType("text/plain");
@@ -107,7 +121,17 @@ public class TestsController implements ServletContextAware {
 			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 		}
 		response.getWriter().write("\t + Token origin : " + to + "\n");
-		
+
+		TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES(256);
+		if (! Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(),
+				WinNT.TOKEN_INFORMATION_CLASS.TokenPrivileges,
+				tp, tp.size(), returnLength)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		response.getWriter().write("\t + Token privileges (" + tp.PrivilegeCount + ")\n");
+		for (int i=0; i<tp.PrivilegeCount.intValue(); i++) {
+			response.getWriter().write("\t\t " + tp.Privileges[i].Luid + "\n");
+		}		
 		
 		HANDLE h = Kernel32.INSTANCE.CreateFile(
 				"\\\\internalfilesha\\DLS Share\\Shakespeare\\romeo_juliet\\index.html",
