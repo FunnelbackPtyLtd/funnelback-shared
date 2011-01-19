@@ -51,102 +51,110 @@ public class WindowsNativePadreForker implements PadreForker {
 			log.debug("Native user name is '" + Advapi32Util.getUserName() + "'");
 		}
 		
-		// Opening current thread token
-		HANDLEByReference hToken = new HANDLEByReference();
-
-		if (! Advapi32.INSTANCE.OpenThreadToken(
-				Kernel32.INSTANCE.GetCurrentThread(),
-				WinNT.TOKEN_ALL_ACCESS,
-				true,
-				hToken)) {
-			throw new PadreForkingException("Call to OpenThreadToken() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-		}
-		
-		// Duplicate token in order to obtain a primary token
-		// required to create a new process
-		WinBase.SECURITY_ATTRIBUTES sa = new WinBase.SECURITY_ATTRIBUTES();
-		HANDLEByReference primaryToken = new HANDLEByReference();
-		if ( ! Advapi32.INSTANCE.DuplicateTokenEx(
-				hToken.getValue(),
-				WinNT.GENERIC_ALL,
-				sa,
-				WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityIdentification,
-				WinNT.TOKEN_TYPE.TokenPrimary,
-				primaryToken)) {
-			throw new PadreForkingException("Call to DuplicateTokenEx() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-		}
-
-		// Create Pipes for STDOUT/IN/ERR
-		WinBase.SECURITY_ATTRIBUTES saPipes = new WinBase.SECURITY_ATTRIBUTES();
-		saPipes.bInheritHandle = true;
-		saPipes.lpSecurityDescriptor = null;
-	
-		HANDLEByReference hChildOutRead = new HANDLEByReference();
-		HANDLEByReference hChildOutWrite = new HANDLEByReference();
-//		HANDLEByReference hChildInRead = new HANDLEByReference();
-//		HANDLEByReference hChildInWrite = new HANDLEByReference();
-		if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, saPipes, 0) ) {
-			throw new PadreForkingException("Unable to create child stdout pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-		}
-		if (! Kernel32.INSTANCE.SetHandleInformation(hChildOutRead.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
-			throw new PadreForkingException("Unable to set child stdout pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-		}
-//		if ( ! Kernel32.INSTANCE.CreatePipe(hChildInRead, hChildInWrite, saPipes, 0)) {
-//			throw new PadreForkingException("Unable to create child stdin pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-//		}
-//		if (! Kernel32.INSTANCE.SetHandleInformation(hChildInWrite.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
-//			throw new PadreForkingException("Unable to set child stdin pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-//		}
-		
-		WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
-		final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
-		si.hStdError = hChildOutWrite.getValue();
-		si.hStdOutput = hChildOutWrite.getValue();
-//		si.hStdInput = hChildInRead.getValue();
-		si.dwFlags = WinBase.STARTF_USESTDHANDLES;
-		
-		if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
-				primaryToken.getValue(),
-				null,
-				commandLine,
-				null,
-				null,
-				true,
-				WinBase.CREATE_UNICODE_ENVIRONMENT | WinBase.CREATE_NO_WINDOW,
-				Advapi32Util.getEnvironmentBlock(environmnent),
-				null,
-				si,
-				pi)) {
-			throw new PadreForkingException("Call to CreateProcessAsUser() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-		}
-
-		// Read PADRE stdout
-		String result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
-		
-		// Wait for PADRE to finish
-		final IntByReference rc = new IntByReference();
+		String result = null;
+		HANDLEByReference hToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
+		HANDLEByReference primaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		try {
-			new Wait() {
-				@Override
-				public boolean until() {
-					if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
-						throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+			// Opening current thread token
+			if (! Advapi32.INSTANCE.OpenThreadToken(
+					Kernel32.INSTANCE.GetCurrentThread(),
+					WinNT.TOKEN_ALL_ACCESS,
+					true,
+					hToken)) {
+				throw new PadreForkingException("Call to OpenThreadToken() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+			
+			// Duplicate token in order to obtain a primary token
+			// required to create a new process
+			
+			if ( ! Advapi32.INSTANCE.DuplicateTokenEx(
+					hToken.getValue(),
+					WinNT.GENERIC_ALL,
+					null,
+					WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation,
+					WinNT.TOKEN_TYPE.TokenPrimary,
+					primaryToken)) {
+				throw new PadreForkingException("Call to DuplicateTokenEx() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+	
+			// Create Pipes for STDOUT/IN/ERR
+			WinBase.SECURITY_ATTRIBUTES saPipes = new WinBase.SECURITY_ATTRIBUTES();
+			saPipes.bInheritHandle = true;
+			saPipes.lpSecurityDescriptor = null;
+		
+			HANDLEByReference hChildOutRead = new HANDLEByReference();
+			HANDLEByReference hChildOutWrite = new HANDLEByReference();
+	//		HANDLEByReference hChildInRead = new HANDLEByReference();
+	//		HANDLEByReference hChildInWrite = new HANDLEByReference();
+			if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, saPipes, 0) ) {
+				throw new PadreForkingException("Unable to create child stdout pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+			if (! Kernel32.INSTANCE.SetHandleInformation(hChildOutRead.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
+				throw new PadreForkingException("Unable to set child stdout pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+	//		if ( ! Kernel32.INSTANCE.CreatePipe(hChildInRead, hChildInWrite, saPipes, 0)) {
+	//			throw new PadreForkingException("Unable to create child stdin pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+	//		}
+	//		if (! Kernel32.INSTANCE.SetHandleInformation(hChildInWrite.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
+	//			throw new PadreForkingException("Unable to set child stdin pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+	//		}
+			
+			WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
+			final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
+			si.hStdError = hChildOutWrite.getValue();
+			si.hStdOutput = hChildOutWrite.getValue();
+	//		si.hStdInput = hChildInRead.getValue();
+			si.dwFlags = WinBase.STARTF_USESTDHANDLES;
+			
+			if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
+					primaryToken.getValue(),
+					null,
+					commandLine,
+					null,
+					null,
+					true,
+					WinBase.CREATE_UNICODE_ENVIRONMENT | WinBase.CREATE_NO_WINDOW,
+					Advapi32Util.getEnvironmentBlock(environmnent),
+					null,
+					si,
+					pi)) {
+				throw new PadreForkingException("Call to CreateProcessAsUser() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+	
+			// Read PADRE stdout
+			result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
+			
+			// Wait for PADRE to finish
+			final IntByReference rc = new IntByReference();
+			try {
+				new Wait() {
+					@Override
+					public boolean until() {
+						if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
+							throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+						}
+						return rc.getValue() != WinBase.STILL_ACTIVE;
 					}
-					return rc.getValue() != WinBase.STILL_ACTIVE;
+				}.wait(waitTimeout, DEFAULT_WAIT_INTERVAL , "PADRE to finish");
+			} catch (Exception e) {
+				log.warn("Waiting for PADRE to finish failed. Trying to terminate the process cleanly.", e);
+				// Something went wrong, either we timeouted or were unable to retrieve
+				// the exit code. Try to terminate the process cleanly
+				Kernel32.INSTANCE.TerminateProcess(pi.hProcess, -1);
+
+				if (rc.getValue() != PadreForking.RC_SUCCESS) {
+					log.debug("PADRE return code: " + rc.getValue());
+					throw new PadreForkingException(rc.getValue(), result);
 				}
-			}.wait(waitTimeout, DEFAULT_WAIT_INTERVAL , "PADRE to finish");
-		} catch (Exception e) {
-			log.warn("Waiting for PADRE to finish failed. Trying to terminate the process cleanly.", e);
-			// Something went wrong, either we timeouted or were unable to retrieve
-			// the exit code. Try to terminate the process cleanly
-			Kernel32.INSTANCE.TerminateProcess(pi.hProcess, -1);
+			}
+		} finally {
+			if(! hToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
+				Kernel32.INSTANCE.CloseHandle(hToken.getValue());
+			}
+			if(! primaryToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
+				Kernel32.INSTANCE.CloseHandle(primaryToken.getValue());
+			}
 		}
-		
-		if (rc.getValue() != PadreForking.RC_SUCCESS) {
-			log.debug("PADRE return code: " + rc.getValue());
-			throw new PadreForkingException(rc.getValue(), result);
-		}
-		
 		return result;
 	}
 

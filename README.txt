@@ -16,6 +16,10 @@ TODO:
 
 * Check license implications of re-using a Waffle ServletFilter
 
+* Waffle:
+  * Impersonation using Basic method won't allow network access until the logon type is changed from LOGON_TYPE_NETWORK to LOGON_TYPE_NETWORK_CLEARTEXT
+  * Impersonation using Negotiate doesn't work
+
 * Use $SEARCH_HOME/conf/log4j.configuration.default instead of shipping one with the app.
 
 * Look at Funnelback::SearchInterface::pre_search() to replement logic as an Interceptor ?

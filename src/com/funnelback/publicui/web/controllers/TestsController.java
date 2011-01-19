@@ -11,13 +11,137 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ServletContextAware;
 
+import com.sun.jna.Structure;
+import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Win32Exception;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinDef.DWORD;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import com.sun.jna.platform.win32.WinNT.SECURITY_IMPERSONATION_LEVEL;
+import com.sun.jna.platform.win32.WinNT.TOKEN_TYPE;
+import com.sun.jna.ptr.IntByReference;
 
 @Controller
 @lombok.extern.apachecommons.Log
+@RequestMapping({"/test", "/_/test"})
 public class TestsController implements ServletContextAware {
 
-	@RequestMapping("/test/auth")
+	public class SingleDWORDStruct extends Structure {
+		public DWORD value;
+	}
+	
+	public static class LUID_ extends Structure {
+		public int LowPart;
+		public int HighPart;
+	}
+
+	
+	public static class TOKEN_ORIGIN extends Structure {
+		public LUID_ OriginatingLogonSession;
+	}
+	
+	@RequestMapping("fileaccess")
+	public void testFileAccess(HttpServletResponse response) throws IOException {
+		response.setContentType("text/plain");
+		response.getWriter().write("You're currently impersonating: " + Advapi32Util.getUserName() + "\n");
+
+		
+		HANDLE hThread = Kernel32.INSTANCE.GetCurrentThread();
+		if (hThread.equals(WinBase.INVALID_HANDLE_VALUE)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		
+		HANDLEByReference hToken = new HANDLEByReference();
+		if (! Advapi32.INSTANCE.OpenThreadToken(hThread, WinNT.GENERIC_ALL, false, hToken)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		
+		SingleDWORDStruct tts = new SingleDWORDStruct();
+		IntByReference returnLength = new IntByReference();
+		if (! Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(),
+				WinNT.TOKEN_INFORMATION_CLASS.TokenType,
+				tts, tts.size(), returnLength)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		
+		response.getWriter().write("--- Token information :\n");
+		
+		String tokenType = "Unkown (" + tts.value + ")";
+		if (tts.value.intValue() == TOKEN_TYPE.TokenPrimary) {
+			tokenType = "TokenPrimary";
+		} else if (tts.value.intValue() == TOKEN_TYPE.TokenImpersonation) {
+			tokenType = "TokenImpersonation";
+		}
+		response.getWriter().write("\t + Token type: " + tokenType + "\n");
+
+		if (! Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(),
+				WinNT.TOKEN_INFORMATION_CLASS.TokenImpersonationLevel,
+				tts, tts.size(), returnLength)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		String tokenImpersonationLevel = "Unknown (" + tts.value + ")";
+		switch (tts.value.intValue()) {
+		case SECURITY_IMPERSONATION_LEVEL.SecurityAnonymous:
+			tokenImpersonationLevel = "SecurityAnonymous";
+			break;
+		case SECURITY_IMPERSONATION_LEVEL.SecurityDelegation:
+			tokenImpersonationLevel = "SecurityDelegation";
+			break;
+		case SECURITY_IMPERSONATION_LEVEL.SecurityIdentification:
+			tokenImpersonationLevel = "SecurityIdentification";
+			break;
+		case SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation:
+			tokenImpersonationLevel = "SecurityImpersonation";
+			break;
+		}
+		response.getWriter().write("\t + Token impersonation level : " + tokenImpersonationLevel + "\n");
+		
+		TOKEN_ORIGIN to = new TOKEN_ORIGIN();
+		if (! Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(),
+				WinNT.TOKEN_INFORMATION_CLASS.TokenOrigin,
+				to, to.size(), returnLength)) {
+			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+		}
+		response.getWriter().write("\t + Token origin : " + to + "\n");
+		
+		
+		HANDLE h = Kernel32.INSTANCE.CreateFile(
+				"\\\\internalfilesha\\DLS Share\\Shakespeare\\romeo_juliet\\index.html",
+				WinNT.GENERIC_READ,
+				0,
+				null,
+				WinNT.OPEN_EXISTING,
+				WinNT.FILE_ATTRIBUTE_NORMAL,
+				null);
+		if (h == WinBase.INVALID_HANDLE_VALUE) {
+			response.getWriter().write("Opening romeo_juliet failed, error: " + Kernel32.INSTANCE.GetLastError() + "\n");
+		} else {
+			response.getWriter().write("Opening romeo_juliet succeded\n");
+			Kernel32.INSTANCE.CloseHandle(h);
+		}
+		
+		h = Kernel32.INSTANCE.CreateFile(
+				"\\\\internalfilesha\\DLS Share\\Shakespeare\\cleopatra\\index.html",
+				WinNT.GENERIC_READ,
+				0,
+				null,
+				WinNT.OPEN_EXISTING,
+				WinNT.FILE_ATTRIBUTE_NORMAL,
+				null);
+		if (h == WinBase.INVALID_HANDLE_VALUE) {
+			response.getWriter().write("Opening cleopatra failed, error: " + Kernel32.INSTANCE.GetLastError() + "\n");
+		} else {
+			response.getWriter().write("Opening cleopatra succeded\n");
+			Kernel32.INSTANCE.CloseHandle(h);
+		}
+
+	}
+	
+	@RequestMapping("auth")
 	public void testAuth(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		log.debug(request.getUserPrincipal());
 
