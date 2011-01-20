@@ -13,9 +13,11 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import com.sun.jna.platform.win32.WinNT.LUID;
 import com.sun.jna.ptr.IntByReference;
 
 /**
@@ -24,6 +26,12 @@ import com.sun.jna.ptr.IntByReference;
 @Log
 public class WindowsNativePadreForker implements PadreForker {
 
+	/**
+	 * Name of the environment variable containing the system root
+	 * under windows.
+	 */
+	private static final String SYSTEMROOT_ENV = "SystemRoot";
+	
 	/**
 	 * Size of the buffer used to read PADRE stdout
 	 */
@@ -69,12 +77,59 @@ public class WindowsNativePadreForker implements PadreForker {
 			
 			if ( ! Advapi32.INSTANCE.DuplicateTokenEx(
 					hToken.getValue(),
-					WinNT.GENERIC_ALL,
+					WinNT.TOKEN_ALL_ACCESS,
 					null,
 					WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation,
 					WinNT.TOKEN_TYPE.TokenPrimary,
 					primaryToken)) {
 				throw new PadreForkingException("Call to DuplicateTokenEx() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			}
+			
+			String[] privileges = {WinNT.SE_CREATE_TOKEN_NAME, 
+					WinNT.SE_ASSIGNPRIMARYTOKEN_NAME, 
+					WinNT.SE_LOCK_MEMORY_NAME, 
+					WinNT.SE_INCREASE_QUOTA_NAME, 
+					// WinNT.SE_UNSOLICITED_INPUT_NAME, 
+					WinNT.SE_MACHINE_ACCOUNT_NAME, 
+					WinNT.SE_TCB_NAME, 
+					WinNT.SE_SECURITY_NAME, 
+					WinNT.SE_TAKE_OWNERSHIP_NAME, 
+					WinNT.SE_LOAD_DRIVER_NAME, 
+					WinNT.SE_SYSTEM_PROFILE_NAME, 
+					WinNT.SE_SYSTEMTIME_NAME, 
+					WinNT.SE_PROF_SINGLE_PROCESS_NAME, 
+					WinNT.SE_INC_BASE_PRIORITY_NAME, 
+					WinNT.SE_CREATE_PAGEFILE_NAME, 
+					WinNT.SE_CREATE_PERMANENT_NAME, 
+					WinNT.SE_BACKUP_NAME, 
+					WinNT.SE_RESTORE_NAME, 
+					WinNT.SE_SHUTDOWN_NAME, 
+					WinNT.SE_DEBUG_NAME, 
+					WinNT.SE_AUDIT_NAME, 
+					WinNT.SE_SYSTEM_ENVIRONMENT_NAME, 
+					WinNT.SE_CHANGE_NOTIFY_NAME, 
+					WinNT.SE_REMOTE_SHUTDOWN_NAME, 
+					WinNT.SE_UNDOCK_NAME, 
+					WinNT.SE_SYNC_AGENT_NAME, 
+					WinNT.SE_ENABLE_DELEGATION_NAME, 
+					WinNT.SE_MANAGE_VOLUME_NAME, 
+					WinNT.SE_IMPERSONATE_NAME, 
+					WinNT.SE_CREATE_GLOBAL_NAME};
+			
+			WinNT.TOKEN_PRIVILEGES tp = new WinNT.TOKEN_PRIVILEGES(privileges.length);
+			int i=0;
+			for (String privilege : privileges) {
+				// Lookup privilege
+				LUID luid = new LUID();
+				if ( ! Advapi32.INSTANCE.LookupPrivilegeValue(null, privilege, luid)) {
+					throw new PadreForkingException("Call to LookupPrivilegeValue() failed for privilege '" + privilege + "'", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				}
+				
+				tp.Privileges[i++] = new WinNT.LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
+			}
+			
+			if (! Advapi32.INSTANCE.AdjustTokenPrivileges(primaryToken.getValue(), false, tp, 0, null, null)) {
+				throw new PadreForkingException("Call to AdjustTokenPrivileges() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 	
 			// Create Pipes for STDOUT/IN/ERR
@@ -106,6 +161,11 @@ public class WindowsNativePadreForker implements PadreForker {
 	//		si.hStdInput = hChildInRead.getValue();
 			si.dwFlags = WinBase.STARTF_USESTDHANDLES;
 			
+			// SystemRoot environment variable is MANDATORY for TRIM DLS checks
+			// The TRIM SDK uses WinSock to connect to the remote server, and 
+			// WinSock needs SystemRoot to initialize itself.
+			environmnent.put(SYSTEMROOT_ENV, System.getenv(SYSTEMROOT_ENV));
+			
 			if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
 					primaryToken.getValue(),
 					null,
@@ -125,6 +185,7 @@ public class WindowsNativePadreForker implements PadreForker {
 			result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
 			
 			// Wait for PADRE to finish
+			// TODO use Kernel32.INSTANCE.WaitForSingleObject(hHandle, dwMilliseconds);
 			final IntByReference rc = new IntByReference();
 			try {
 				new Wait() {

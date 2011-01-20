@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.Log;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -24,7 +22,6 @@ import com.funnelback.publicui.web.binding.CollectionEditor;
  * Deal with cached copies
  */
 @Controller
-@Log
 public class CacheController {
 
 	@Autowired

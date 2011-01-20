@@ -72,7 +72,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 						Matcher cachedUrlMatcher = TRIM_CACHE_URL_PATTERN.matcher(result.getCacheUrl());
 						
 						if (liveUrlMatcher.find() && cachedUrlMatcher.find()) {
-							String docUri = liveUrlMatcher.group(2);
+							String docUri = liveUrlMatcher.group(1);
 							String cachedUri = cachedUrlMatcher.group(1);
 							transformedLiveUrl = TRIM_PREFIX + trimDefaultLiveLinks
 								+ ".cgi?"+RequestParameters.COLLECTION+"=" + searchTransaction.getQuestion().getCollection().getId()

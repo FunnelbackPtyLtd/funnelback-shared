@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ServletContextAware;
 
+import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -23,7 +24,9 @@ import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.platform.win32.WinNT.SECURITY_IMPERSONATION_LEVEL;
 import com.sun.jna.platform.win32.WinNT.TOKEN_TYPE;
+import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.W32APIOptions;
 
 @Controller
 @lombok.extern.apachecommons.Log
@@ -34,27 +37,32 @@ public class TestsController implements ServletContextAware {
 		public DWORD value;
 	}
 	
-	public static class LUID_ extends Structure {
-		public int LowPart;
-		public int HighPart;
-	}
-
-	
 	public static class TOKEN_ORIGIN extends Structure {
-		public LUID_ OriginatingLogonSession;
+		public WinNT.LUID OriginatingLogonSession;
 	}
 	
-	public static class LUID_AND_ATTRIBUTES extends Structure {
-		public LUID_ Luid;
-		public DWORD Attributes;
-	}
-	
-	public static class TOKEN_PRIVILEGES extends Structure {
-		public DWORD PrivilegeCount;
-		public LUID_AND_ATTRIBUTES[] Privileges;
-		public TOKEN_PRIVILEGES(int size) {
-			PrivilegeCount.setValue(size);
-			Privileges = new LUID_AND_ATTRIBUTES[size];
+	@RequestMapping("registry")
+	public void testRegistry(HttpServletResponse response) throws IOException {
+		try {
+			response.getWriter().write("HKCU TRIM keys:\n");
+			String[] subKeys = Advapi32Util.registryGetKeys(WinReg.HKEY_CURRENT_USER,
+					"Software\\Hewlett-Packard\\HP TRIM");
+			for (String key : subKeys) {
+				response.getWriter().write("  " + key + "\n");
+			}
+		} catch (Win32Exception we) {
+			response.getWriter().write("Error accessing HKCU: " + we);
+		}
+
+		try {
+			response.getWriter().write("HKLM TRIM keys:\n");
+			String[] subKeys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE,
+					"Software\\Hewlett-Packard\\HP TRIM");
+			for (String key : subKeys) {
+				response.getWriter().write("  " + key + "\n");
+			}
+		} catch (Win32Exception we) {
+			response.getWriter().write("Error accessing HKCU: " + we);
 		}
 	}
 	
@@ -122,15 +130,24 @@ public class TestsController implements ServletContextAware {
 		}
 		response.getWriter().write("\t + Token origin : " + to + "\n");
 
-		TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES(256);
+		WinNT.TOKEN_PRIVILEGES tp = new WinNT.TOKEN_PRIVILEGES(256);
 		if (! Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(),
 				WinNT.TOKEN_INFORMATION_CLASS.TokenPrivileges,
 				tp, tp.size(), returnLength)) {
 			throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 		}
 		response.getWriter().write("\t + Token privileges (" + tp.PrivilegeCount + ")\n");
+		response.getWriter().write("\t (attributes: SE_PRIVILEGE_ENABLED=" + WinNT.SE_PRIVILEGE_ENABLED
+				+ ", SE_PRIVILEGE_ENABLED_BY_DEFAULT=" + WinNT.SE_PRIVILEGE_ENABLED_BY_DEFAULT
+				+ ", SE_PRIVILEGE_REMOVED=" + WinNT.SE_PRIVILEGE_REMOVED
+				+ ")\n\n");
 		for (int i=0; i<tp.PrivilegeCount.intValue(); i++) {
-			response.getWriter().write("\t\t " + tp.Privileges[i].Luid + "\n");
+			char[] name = new char[256];
+			IntByReference cchName = new IntByReference(name.length);
+			if (! Advapi32.INSTANCE.LookupPrivilegeName(null, tp.Privileges[i].Luid, name, cchName)) {
+				throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+			}
+			response.getWriter().write("\t\t " + Native.toString(name) + ", attributes: " + tp.Privileges[i].Attributes + "\n");
 		}		
 		
 		HANDLE h = Kernel32.INSTANCE.CreateFile(
@@ -180,7 +197,10 @@ public class TestsController implements ServletContextAware {
 
 	@Override
 	public void setServletContext(ServletContext servletContext) {
-		
-		
+	}
+	
+	public interface TRIMSdk {
+
+	    TRIMSdk INSTANCE = (TRIMSdk) Native.loadLibrary("trimdsk", TRIMSdk.class, W32APIOptions.UNICODE_OPTIONS);
 	}
 }

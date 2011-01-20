@@ -16,6 +16,11 @@ TODO:
 
 * Check license implications of re-using a Waffle ServletFilter
 
+* Padre native fork:
+  * Remove code to elevate privileges
+  * Use proper method to wait for padre to return
+  * PADRE needs some env vars like REMOTE_USER, .... Check how to pass along those
+
 * Waffle:
   * Impersonation using Basic method won't allow network access until the logon type is changed from LOGON_TYPE_NETWORK to LOGON_TYPE_NETWORK_CLEARTEXT
   * Impersonation using Negotiate doesn't work
