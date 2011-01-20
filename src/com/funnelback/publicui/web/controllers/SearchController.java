@@ -82,7 +82,7 @@ public class SearchController {
 	 * @return
 	 */
 	@RequestMapping(params="!"+RequestParameters.QUERY)
-	public Map<String, Object> noQuery(@RequestParam("collection") Collection collection) {
+	public ModelAndView noQuery(@RequestParam("collection") Collection collection) {
 		SearchQuestion question = new SearchQuestion();
 		question.setCollection(collection);
 		
@@ -90,7 +90,7 @@ public class SearchController {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
-		return model;		
+		return new ModelAndView("search", model);		
 	}
 	
 	/**
