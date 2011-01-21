@@ -48,3 +48,4 @@ TODO:
 * Data binding: Find out how to use a custom DataBinder, to move some code to the data binding stage:
   * PassThroughParametersInputProcessor
   * Set SearchQuestion.authenticated depending of the request UserPrincipal
+  * Set query to NULL when it's an empty String

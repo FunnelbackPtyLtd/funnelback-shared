@@ -13,12 +13,14 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParsingException;
+import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
+import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
 import com.funnelback.publicui.search.model.padre.factories.ErrorFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultFactory;
@@ -61,6 +63,8 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
 						RMC rmc = parseRmc(xmlStreamReader);
 						packet.getRmcs().put(rmc.item, rmc.count);
+					} else if (ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
+						packet.setContextualNavigation(ContextualNavigationFactory.fromXmlStreamReader(xmlStreamReader));
 					}
 					break;
 				}

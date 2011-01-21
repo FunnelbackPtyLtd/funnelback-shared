@@ -24,6 +24,8 @@ public class ResultPacket {
 	
 	@Getter @Setter private Integer padreElapsedTime;
 	
+	@Getter @Setter private ContextualNavigation contextualNavigation;
+	
 	/**
 	 * Metadata counts (Faceting)
 	 */
@@ -31,16 +33,13 @@ public class ResultPacket {
 	
 	public boolean hasResults() { return results != null; }
 	
-	// TODO : Tier bars
-	// private ContextualNavigation contextualNavigation;
-	// ...
-	
 	/* TODO:
+	 * Tier bars
 	 * Phluster elapsed time
 	 * Include scope
 	 * Exclude Scope
 	 * Query Processor Codes
-	 * 
+	 * ...
 	 */
 	
 	/**

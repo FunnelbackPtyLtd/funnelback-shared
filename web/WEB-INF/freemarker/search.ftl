@@ -110,6 +110,27 @@
 			
 			</div>
 			</#if>
+			
+			<#if SearchTransaction.response.resultPacket.contextualNavigation?exists && (SearchTransaction.response.resultPacket.contextualNavigation?size > 0)>
+				<div id="fb-contextual-navigation">
+					<h2>Have you tried?</h2>
+					<#list SearchTransaction.response.resultPacket.contextualNavigation.categories as category>
+						<div id="fb-contextual-navigation-type">
+                        	<span class="fb-fade"></span>
+                        		<h3>
+                        			<#if category.name == 'type'>Types of <strong>${SearchTransaction.response.resultPacket.contextualNavigation.searchTerm}</strong></#if>
+                        			<#if category.name == 'topic'>Topics on <strong>${SearchTransaction.response.resultPacket.contextualNavigation.searchTerm}</strong></#if>
+                        			<#if category.name == 'site'><em>${SearchTransaction.response.resultPacket.contextualNavigation.searchTerm}</em> by site</#if>
+                        		</h3>
+                        		<ul>
+                        			<#list category.clusters as cluster>
+                        				<li><a href="${cluster.href}">${cluster.label}</a></li>
+                        			</#list>                     
+                        		</ul>
+                    	</div>
+					</#list>
+				</div>
+			</#if>
 		</div>
 		
 	

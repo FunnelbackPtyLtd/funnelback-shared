@@ -81,7 +81,7 @@ public class SearchController {
 	 * @param collection
 	 * @return
 	 */
-	@RequestMapping(params="!"+RequestParameters.QUERY)
+	@RequestMapping(params={"!"+RequestParameters.QUERY})
 	public ModelAndView noQuery(@RequestParam("collection") Collection collection) {
 		SearchQuestion question = new SearchQuestion();
 		question.setCollection(collection);
@@ -103,6 +103,13 @@ public class SearchController {
 	public ModelAndView search(
 			HttpServletRequest request,
 			@ModelAttribute SearchQuestion question) {
+		
+		// Special case when the 'query' parameter is present, but empty
+		// FIXME Tried to map that to the noQuery() method using @RequestMapping but didn't
+		// manage to find how to define an existing but empty parameter
+		if ("".equals(question.getQuery())) {
+			return noQuery(question.getCollection());
+		}
 		
 		SearchTransaction transaction = null;
 		
