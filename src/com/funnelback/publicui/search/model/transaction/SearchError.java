@@ -17,6 +17,7 @@ public class SearchError {
 	public enum Reason {
 		InvalidCollection,
 		MissingParameter,
+		InputProcessorError,
 		DataFetchError,
 		Unknown;
 	}

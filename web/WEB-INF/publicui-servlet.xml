@@ -54,11 +54,12 @@
 
 	<!-- List of InputProcessors to run -->
 	<util:list id="inputFlow">
+		<!--  ref bean="dummyInputProcessor" / -->
 		<!-- passThroughParametersInputProcessor should be first as it populates 
 			required values for following processors -->
 		<ref bean="passThroughParametersInputProcessor" />
 		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
-		<ref bean="dummyInputProcessor" />
+		<ref bean="userKeysInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="groovySampleInputProcessor" />

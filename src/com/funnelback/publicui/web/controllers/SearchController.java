@@ -21,6 +21,7 @@ import waffle.servlet.WindowsPrincipal;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.model.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchError;
@@ -131,6 +132,9 @@ public class SearchController {
 					processor.process(transaction);
 				}
 
+			} catch (InputProcessorException ipe) {
+				log.error(ipe);
+				transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
 			} catch (DataFetchException dfe) {
 				log.error(dfe);
 				transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));

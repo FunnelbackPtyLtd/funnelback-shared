@@ -47,6 +47,11 @@ public class SearchQuestion {
 	@Getter final private List<String> dynamicQueryProcessorOptions = new ArrayList<String>();
 
 	/**
+	 * User keys for early binding DLS
+	 */
+	@Getter final private List<String> userKeys = new ArrayList<String>();
+	
+	/**
 	 * Whether the request is impersonated
 	 */
 	@Getter @Setter private boolean impersonated;

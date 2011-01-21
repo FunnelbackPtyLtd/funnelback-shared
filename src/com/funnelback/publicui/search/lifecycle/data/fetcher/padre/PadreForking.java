@@ -38,6 +38,8 @@ public class PadreForking implements DataFetcher {
 		SEARCH_HOME, QUERY_STRING, SystemRoot;
 	}
 	
+	private static final String OPT_USER_KEYS = "-userkeys";
+	
 	/** PADRE return code for success */
 	public static final int RC_SUCCESS = 0;
 	
@@ -58,6 +60,11 @@ public class PadreForking implements DataFetcher {
 				+ File.separator
 				+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
 				+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+		
+		if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
+			commandLine += " " + OPT_USER_KEYS + "=\""
+			+ StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0])) + "\"";
+		}
 
 		Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
 		env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());

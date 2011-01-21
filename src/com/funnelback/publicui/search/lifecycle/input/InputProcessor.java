@@ -9,6 +9,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface InputProcessor {
 
-	public void process(final SearchTransaction searchTransaction, final HttpServletRequest request);
-	
+	public void process(final SearchTransaction searchTransaction, final HttpServletRequest request)
+			throws InputProcessorException;
+
 }
