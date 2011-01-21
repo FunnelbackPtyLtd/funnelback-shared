@@ -13,13 +13,17 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParsingException;
+import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
+import com.funnelback.publicui.search.model.padre.Spell;
+import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
 import com.funnelback.publicui.search.model.padre.factories.ErrorFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultsSummaryFactory;
+import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 
 @Component("padreXmlParser")
 public class StaxStreamParser implements PadreXmlParser {
@@ -38,7 +42,9 @@ public class StaxStreamParser implements PadreXmlParser {
 				switch(type){
 				case XMLStreamReader.START_ELEMENT:
 					
-					if (ResultPacket.Schema.QUERY.equals(xmlStreamReader.getLocalName())) {
+					if (Details.Schema.DETAILS.equals(xmlStreamReader.getLocalName())) {
+						packet.setDetails(DetailsFactory.fromXmlStreamReader(xmlStreamReader));
+					} else if (ResultPacket.Schema.QUERY.equals(xmlStreamReader.getLocalName())) {
 						packet.setQuery(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.QUERY_AS_PROCESSED.equals(xmlStreamReader.getLocalName())) {
 						packet.setQueryAsProcessed(xmlStreamReader.getElementText());
@@ -46,6 +52,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.setPadreElapsedTime(Integer.parseInt(xmlStreamReader.getElementText()));
 					} else if (ResultsSummary.Schema.RESULTS_SUMMARY.equals(xmlStreamReader.getLocalName())) {
 						packet.setResultsSummary(ResultsSummaryFactory.fromXmlStreamReader(xmlStreamReader));
+					} else if (Spell.Schema.SPELL.equals(xmlStreamReader.getLocalName())) {
+						packet.setSpell(SpellFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RESULTS.equals(xmlStreamReader.getLocalName())) {
 						packet.setResults(parseResults(xmlStreamReader));
 					} else if (Error.Schema.ERROR.equals(xmlStreamReader.getLocalName())) {

@@ -12,11 +12,12 @@ import lombok.Setter;
  */
 public class ResultPacket {
 
-	// private Details details;
+	@Getter @Setter private Details details;
 	@Getter @Setter private String query;
 	@Getter @Setter private String queryAsProcessed;
 	
 	@Getter @Setter private ResultsSummary resultsSummary;
+	@Getter @Setter private Spell spell;
 	@Getter @Setter private List<Result> results;
 	
 	@Getter @Setter private Error error;

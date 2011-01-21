@@ -21,6 +21,7 @@ public class SearchQuestion {
 	
 	@Getter @Setter private String query;
 	@Getter @Setter private Collection collection;
+	@Getter @Setter private String profile;
 	
 	/**
 	 * meta_* / query_* parameters, transformed as query expressions.

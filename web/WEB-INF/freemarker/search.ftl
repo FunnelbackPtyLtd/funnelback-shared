@@ -2,78 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+	<meta name="robots" content="nofollow" />
+	<link rel="stylesheet" media="screen" href="/search/search.css" type="text/css" />
 	
-	<style type="text/css">
-		body {
-			font-family: Verdana;
-		}
-		
-		div.error {
-			background-color: #ffcccc;
-		}
-		
-		h1 {
-			font-size: large;
-		}
-		
-		div#padre-info {
-			background-color: #dedeff;
-		}
-		
-		div#results {
-			float:right;
-			width: 80%;
-			border: solid 1px grey;
-		}
-		
-		ul#search-results {
-			list-style-type: none;
-			margin:0;
-			padding: 0;
-		}
-		
-		ul#search-results li {
-			margin-top: 15px;
-			margin-bottom: 15px;
-			background-color: #deffde;
-		}
-		
-		ul#search-results li p {
-			margin: 3px;
-		}
-		
-		p.url {
-			font-family: monospace;
-			font-size: small;
-			padding-left: 10px;
-		}
-		
-		p.url a {
-			text-decoration: none;
-		}
-		
-		p.url a:hover {
-			background-color: cyan;
-		}
-		
-		p.summary {
-			padding: 5px;
-			background-color: #cdeecd;
-		}
-		
-		div#faceted-navigation {
-			width: 20%;
-			border: solid 1px grey;
-			background-color: #eeeeee;
-		}
-		
-	</style>
-	
-	<#if (SearchTransaction.question?exists && SearchTransaction.question.collection?exists)>
-		<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
-	<#else>
-		<title>Funnelback Search</title>
-	</#if>
+	<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
 </head>
 
 <body>
@@ -86,75 +18,101 @@
 	</div>
 <#else>
 
-	<p>Searching on collection <strong>${SearchTransaction.question.collection.id}</strong></p>
+	<#if ! SearchTransaction.question.query?exists>
+		<div id="fb-initial">
+			<a href="http://funnelback.com/"><img src="/search/funnelback.png" alt="Funnelback logo"></a>
+		</div>	
+	</#if>
 
-	<form>
-		<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}" />
-		<input type="text" name="query" value="${SearchTransaction.question.query!""}"/>
-		<input type="submit" value="Search" />
-	</form>
+	<div><a id="fb-logo" <#if ! SearchTransaction.question.query?exists>class="fb-initial"</#if> href="http://funnelback.com/"><img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
 
-	<#if SearchTransaction.response?exists>
-		<div id="results">
-		
-			<div id="padre-info">
-				Query: <tt>${SearchTransaction.response.resultPacket.query}</tt><br />
-				Query as processed: <tt>${SearchTransaction.response.resultPacket.queryAsProcessed}</tt><br />
+	<!-- QUERY FORM -->
+    <div id="fb-queryform" <#if ! SearchTransaction.question.query?exists>class="fb-initial"</#if>>
+        <form method="GET">
+            <div>
+            	<label for="query" style="text-indent: -9999em;">Search</label>
+            	<input name="query" id="query" type="text" value="${SearchTransaction.question.query!""}" accesskey="q">
+            	<input type="submit" value="Search">
+            	<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}">
+            	<#if SearchTransaction.question.profile?exists>
+            		<input type="hidden" name="profile" value="${SearchTransaction.question.profile}">
+            	</#if>
+            	<#if SearchTransaction.question.scope?exists>
+            		<input type="hidden" name="scope" value="${SearchTransaction.question.scope}">
+            	</#if>
+				<!--           	
+          			<s:FacetScope>Within selected categories only</s:FacetScope>
+                	<s:IfDefCGI from-advanced><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="<s:env>SCRIPT_NAME</s:env>?fb-advanced=true&amp;<s:env>QUERY_STRING</s:env>" id="fb-advanced-view">view advanced search</a>]</span></s:IfDefCGI>
+				-->
 			</div>
-		
-			<h1>Results</h1>
-	
-			<p id="summary">
-				${SearchTransaction.response.resultPacket.resultsSummary.currStart}
-				to
-				${SearchTransaction.response.resultPacket.resultsSummary.currEnd}
-				of
-				${SearchTransaction.response.resultPacket.resultsSummary.totalMatching}
-			</p>
-		
-			<ul id="search-results">
-				<#list SearchTransaction.response.resultPacket.results as result>
-					<li>${result.rank}. ${result.title?html}
-						<p class="url">Title link: <a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl}</a>
-						<p class="url">Display URL: <a href="${result.displayUrl?url}">${result.displayUrl}</a>
-						<p class="url">Live URL: <a href="${result.liveUrl?url}">${result.liveUrl}</a></p>
-						<p class="url">Cached URL: <a href="${result.cacheUrl}">${result.cacheUrl}</a></p>
-						<p class="summary">${result.summary}</p>
-					</li>
-				</#list>
-			</ul>
-		
-			<#if (SearchTransaction.response.resultPacket.resultsSummary.currStart - SearchTransaction.response.resultPacket.resultsSummary.numRanks >= 0)>
-				<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart - SearchTransaction.response.resultPacket.resultsSummary.numRanks}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}">Prev</a>
-			</#if>
-			
-			<#if (SearchTransaction.response.resultPacket.resultsSummary.currStart + SearchTransaction.response.resultPacket.resultsSummary.numRanks <= SearchTransaction.response.resultPacket.resultsSummary.totalMatching)>
-				<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart + SearchTransaction.response.resultPacket.resultsSummary.numRanks}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}">Next</a>		
-			</#if>
-		
-		</div>
-		<#if SearchTransaction.response.facets?exists && (SearchTransaction.response.facets?size > 0)>
-			<div id="faceted-navigation">
-				<h1>Facets</h1>
+         </form>
+    </div> 
+
+	<#if SearchTransaction.question.query?exists>
+		<p id="fb-matching" <#if SearchTransaction.response.facets?exists>class="fb-with-faceting"</#if>>
+			<span id="fb-utils">
+				<a href="#" id="fb-advanced-toggle">Advanced search</a>
+	            <span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
+	        </span>
 				
-				<ul id="facets">
-					<#list SearchTransaction.response.facets as facet>
-					<li class="facet">${facet.name}</li>
-					<li>
-						<ul class="categories">
-						<#list facet.categories as category>
-							<li>
-								<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart + SearchTransaction.response.resultPacket.resultsSummary.numRanks}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&meta_${facet.name}_phrase_sand=$++ ${category.title} $++">${category.title}</a>
-								<span class="count">(${category.count})</span>
-							</li>
-						</#list>
-						</ul>
-					</li>
-					</#list>
-				</ul>
-			</div>
-		</#if>
+			<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
+				<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.question.query}</strong>
+			<#else>
+				<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
+		        <span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
+		        <span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching}</span>
+	            search results for <strong>${SearchTransaction.question.query}</strong>	
+			</#if>
+		</p>
 		
+		<div id="fb-wrapper" <#if SearchTransaction.response.facets?exists>class="fb-with-faceting"</#if>>
+			<div id="fb-summary">
+				<#if SearchTransaction.response.resultPacket.spell?exists>
+					<span id="fb-spelling">Did you mean <a href="?${SearchTransaction.response.resultPacket.spell.url}">${SearchTransaction.response.resultPacket.spell.text}</a>?</span>
+				</#if>
+			</div>
+			
+				<ol id="fb-results">
+					<#list SearchTransaction.response.resultPacket.results as result>
+						<li>
+							<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
+							
+							<p>
+								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
+								<span class="fb-summary">${result.summary}</span>
+							</p>
+							
+							<p>
+                				<cite>${result.displayUrl}</cite>
+                                - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
+ 			               </p>
+							
+							
+						</li>
+					</#list>
+				</ol>
+			
+			
+			<#if SearchTransaction.response.facets?exists && (SearchTransaction.response.facets?size > 0)>
+			<div id="fb-facets">
+			
+				<#list SearchTransaction.response.facets as facet>
+					<div class="facet">
+						<h3><div class="facetLabel">${facet.name}</div></h3>
+						<#list facet.categories as category>
+							<div class="category">
+								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&meta_${facet.name}_phrase_sand=$%2B%2B ${category.title} $%2B%2B">${category.title}</a></span>
+								&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)</span>
+							</div>
+						</#list>
+					</div>
+				</#list>
+			
+			</div>
+			</#if>
+		</div>
+		
+	
 	</#if>
 </#if>
 
