@@ -35,7 +35,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class PadreForking implements DataFetcher {
 
 	private enum EnvironmentKeys {
-		SEARCH_HOME, QUERY_STRING;
+		SEARCH_HOME, QUERY_STRING, SystemRoot;
 	}
 	
 	/** PADRE return code for success */
@@ -59,9 +59,14 @@ public class PadreForking implements DataFetcher {
 				+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
 				+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
 
-		Map<String, String> env = new HashMap<String, String>();
+		Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
 		env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
 		env.put(EnvironmentKeys.QUERY_STRING.toString(), PadreQueryStringBuilder.buildQueryString(searchTransaction));
+		// SystemRoot environment variable is MANDATORY for TRIM DLS checks
+		// The TRIM SDK uses WinSock to connect to the remote server, and 
+		// WinSock needs SystemRoot to initialise itself.
+		env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
+
 
 		String padreOutput = null;
 		try {

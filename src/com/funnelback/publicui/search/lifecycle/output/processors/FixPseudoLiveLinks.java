@@ -95,7 +95,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 						break;
 					}
 					
-					log.debug("Live URL tranformed from '"+result.getLiveUrl()+"' to '"+transformedLiveUrl+"'");
+					log.debug("Live URL transformed from '"+result.getLiveUrl()+"' to '"+transformedLiveUrl+"'");
 					result.setLiveUrl(transformedLiveUrl);
 				}
 			

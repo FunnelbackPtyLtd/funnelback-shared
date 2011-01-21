@@ -30,7 +30,12 @@ public class SearchQuestion {
 	/**
 	 * Parameter names, from the query string, to repass as-is to PADRE
 	 */
-	@Getter final private Map<String, String[]> passThroughParameters = new HashMap<String, String[]>(); 
+	@Getter final private Map<String, String[]> passThroughParameters = new HashMap<String, String[]>();
+	
+	/**
+	 * List of environment variables to repass to PADRE
+	 */
+	@Getter final private Map<String, String> environmentVariables = new HashMap<String, String>();
 
 	/**
 	 * Dynamic QP options for PADRE, in addition to the one set in

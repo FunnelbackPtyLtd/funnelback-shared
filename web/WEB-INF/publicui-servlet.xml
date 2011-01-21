@@ -53,26 +53,27 @@
 
 
 	<!-- List of InputProcessors to run -->
-	<util:set id="inputFlow">
+	<util:list id="inputFlow">
 		<!-- passThroughParametersInputProcessor should be first as it populates 
 			required values for following processors -->
 		<ref bean="passThroughParametersInputProcessor" />
+		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
 		<ref bean="dummyInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="groovySampleInputProcessor" />
-	</util:set>
+	</util:list>
 
-	<util:set id="dataFetchers">
-		<ref bean="dummyDataFetcher" />
+	<util:list id="dataFetchers">
+		<!--  ref bean="dummyDataFetcher" / -->
 		<ref bean="padreForking" />
-	</util:set>
+	</util:list>
 
-	<util:set id="outputFlow">
-		<ref bean="dummyOutputProcessor" />
+	<util:list id="outputFlow">
+		<!--  ref bean="dummyOutputProcessor" / -->
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
-	</util:set>
+	</util:list>
 
 	<bean id="freemarkerConfig"
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">

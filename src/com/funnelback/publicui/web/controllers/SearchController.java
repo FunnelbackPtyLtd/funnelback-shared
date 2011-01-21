@@ -1,8 +1,8 @@
 package com.funnelback.publicui.web.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,13 +44,13 @@ public class SearchController {
 	// implementations of InputProcessor, DataFetcher, OutputProcessor
 	// ----
 	@Resource(name="inputFlow")
-	private Set<InputProcessor> inputFlow;
+	private List<InputProcessor> inputFlow;
 	
 	@Resource(name="dataFetchers")
-	private Set<DataFetcher> dataFetchers;
+	private List<DataFetcher> dataFetchers;
 
 	@Resource(name="outputFlow")
-	private Set<OutputProcessor> outputFlow;
+	private List<OutputProcessor> outputFlow;
 	// ----
 
 	@Autowired

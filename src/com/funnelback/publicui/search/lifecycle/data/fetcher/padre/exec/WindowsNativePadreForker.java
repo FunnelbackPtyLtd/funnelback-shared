@@ -5,19 +5,18 @@ import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 
-import com.funnelback.common.utils.Wait;
 import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.PadreForking;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Secur32;
+import com.sun.jna.platform.win32.Secur32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
-import com.sun.jna.platform.win32.WinNT.LUID;
 import com.sun.jna.ptr.IntByReference;
 
 /**
@@ -27,21 +26,9 @@ import com.sun.jna.ptr.IntByReference;
 public class WindowsNativePadreForker implements PadreForker {
 
 	/**
-	 * Name of the environment variable containing the system root
-	 * under windows.
-	 */
-	private static final String SYSTEMROOT_ENV = "SystemRoot";
-	
-	/**
 	 * Size of the buffer used to read PADRE stdout
 	 */
 	private static final int STDOUT_BUFFER_SIZE = 4096;
-	
-	/**
-	 * Default interval, in ms, used call the GetExitCodeProcess() when
-	 * waiting for PADRE to finish
-	 */
-	private static final int DEFAULT_WAIT_INTERVAL = 50;
 	
 	/**
 	 * How long to wait, in ms, for PADRE to finish
@@ -56,7 +43,7 @@ public class WindowsNativePadreForker implements PadreForker {
 	public String execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
 
 		if (log.isDebugEnabled()) {
-			log.debug("Native user name is '" + Advapi32Util.getUserName() + "'");
+			log.debug("Native user name is '" + Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameSamCompatible) + "'");
 		}
 		
 		String result = null;
@@ -74,7 +61,6 @@ public class WindowsNativePadreForker implements PadreForker {
 			
 			// Duplicate token in order to obtain a primary token
 			// required to create a new process
-			
 			if ( ! Advapi32.INSTANCE.DuplicateTokenEx(
 					hToken.getValue(),
 					WinNT.TOKEN_ALL_ACCESS,
@@ -84,88 +70,29 @@ public class WindowsNativePadreForker implements PadreForker {
 					primaryToken)) {
 				throw new PadreForkingException("Call to DuplicateTokenEx() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
-			
-			String[] privileges = {WinNT.SE_CREATE_TOKEN_NAME, 
-					WinNT.SE_ASSIGNPRIMARYTOKEN_NAME, 
-					WinNT.SE_LOCK_MEMORY_NAME, 
-					WinNT.SE_INCREASE_QUOTA_NAME, 
-					// WinNT.SE_UNSOLICITED_INPUT_NAME, 
-					WinNT.SE_MACHINE_ACCOUNT_NAME, 
-					WinNT.SE_TCB_NAME, 
-					WinNT.SE_SECURITY_NAME, 
-					WinNT.SE_TAKE_OWNERSHIP_NAME, 
-					WinNT.SE_LOAD_DRIVER_NAME, 
-					WinNT.SE_SYSTEM_PROFILE_NAME, 
-					WinNT.SE_SYSTEMTIME_NAME, 
-					WinNT.SE_PROF_SINGLE_PROCESS_NAME, 
-					WinNT.SE_INC_BASE_PRIORITY_NAME, 
-					WinNT.SE_CREATE_PAGEFILE_NAME, 
-					WinNT.SE_CREATE_PERMANENT_NAME, 
-					WinNT.SE_BACKUP_NAME, 
-					WinNT.SE_RESTORE_NAME, 
-					WinNT.SE_SHUTDOWN_NAME, 
-					WinNT.SE_DEBUG_NAME, 
-					WinNT.SE_AUDIT_NAME, 
-					WinNT.SE_SYSTEM_ENVIRONMENT_NAME, 
-					WinNT.SE_CHANGE_NOTIFY_NAME, 
-					WinNT.SE_REMOTE_SHUTDOWN_NAME, 
-					WinNT.SE_UNDOCK_NAME, 
-					WinNT.SE_SYNC_AGENT_NAME, 
-					WinNT.SE_ENABLE_DELEGATION_NAME, 
-					WinNT.SE_MANAGE_VOLUME_NAME, 
-					WinNT.SE_IMPERSONATE_NAME, 
-					WinNT.SE_CREATE_GLOBAL_NAME};
-			
-			WinNT.TOKEN_PRIVILEGES tp = new WinNT.TOKEN_PRIVILEGES(privileges.length);
-			int i=0;
-			for (String privilege : privileges) {
-				// Lookup privilege
-				LUID luid = new LUID();
-				if ( ! Advapi32.INSTANCE.LookupPrivilegeValue(null, privilege, luid)) {
-					throw new PadreForkingException("Call to LookupPrivilegeValue() failed for privilege '" + privilege + "'", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-				}
-				
-				tp.Privileges[i++] = new WinNT.LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
-			}
-			
-			if (! Advapi32.INSTANCE.AdjustTokenPrivileges(primaryToken.getValue(), false, tp, 0, null, null)) {
-				throw new PadreForkingException("Call to AdjustTokenPrivileges() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-			}
 	
-			// Create Pipes for STDOUT/IN/ERR
+			// Create Pipes for STDOUT
 			WinBase.SECURITY_ATTRIBUTES saPipes = new WinBase.SECURITY_ATTRIBUTES();
 			saPipes.bInheritHandle = true;
 			saPipes.lpSecurityDescriptor = null;
 		
 			HANDLEByReference hChildOutRead = new HANDLEByReference();
 			HANDLEByReference hChildOutWrite = new HANDLEByReference();
-	//		HANDLEByReference hChildInRead = new HANDLEByReference();
-	//		HANDLEByReference hChildInWrite = new HANDLEByReference();
 			if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, saPipes, 0) ) {
 				throw new PadreForkingException("Unable to create child stdout pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			if (! Kernel32.INSTANCE.SetHandleInformation(hChildOutRead.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
 				throw new PadreForkingException("Unable to set child stdout pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
-	//		if ( ! Kernel32.INSTANCE.CreatePipe(hChildInRead, hChildInWrite, saPipes, 0)) {
-	//			throw new PadreForkingException("Unable to create child stdin pipe", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-	//		}
-	//		if (! Kernel32.INSTANCE.SetHandleInformation(hChildInWrite.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
-	//			throw new PadreForkingException("Unable to set child stdin pipe info", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-	//		}
 			
 			WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
 			final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
 			si.hStdError = hChildOutWrite.getValue();
 			si.hStdOutput = hChildOutWrite.getValue();
-	//		si.hStdInput = hChildInRead.getValue();
 			si.dwFlags = WinBase.STARTF_USESTDHANDLES;
-			
-			// SystemRoot environment variable is MANDATORY for TRIM DLS checks
-			// The TRIM SDK uses WinSock to connect to the remote server, and 
-			// WinSock needs SystemRoot to initialize itself.
-			environmnent.put(SYSTEMROOT_ENV, System.getenv(SYSTEMROOT_ENV));
-			
+						
+			// Actually fork
+			log.debug("Calling CreateProcessAsUser() for command line '" + commandLine + "' with environment '" + environmnent + "'");
 			if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
 					primaryToken.getValue(),
 					null,
@@ -180,34 +107,28 @@ public class WindowsNativePadreForker implements PadreForker {
 					pi)) {
 				throw new PadreForkingException("Call to CreateProcessAsUser() failed", new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
-	
+			log.debug("Created process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
+			
 			// Read PADRE stdout
 			result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
 			
-			// Wait for PADRE to finish
-			// TODO use Kernel32.INSTANCE.WaitForSingleObject(hHandle, dwMilliseconds);
-			final IntByReference rc = new IntByReference();
-			try {
-				new Wait() {
-					@Override
-					public boolean until() {
-						if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
-							throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-						}
-						return rc.getValue() != WinBase.STILL_ACTIVE;
-					}
-				}.wait(waitTimeout, DEFAULT_WAIT_INTERVAL , "PADRE to finish");
-			} catch (Exception e) {
-				log.warn("Waiting for PADRE to finish failed. Trying to terminate the process cleanly.", e);
-				// Something went wrong, either we timeouted or were unable to retrieve
-				// the exit code. Try to terminate the process cleanly
+			int state = Kernel32.INSTANCE.WaitForSingleObject(pi.hProcess, waitTimeout);
+			if (state != WinBase.WAIT_OBJECT_0) {
+				log.warn("PADRE did not return in '" + waitTimeout + "ms. "
+						+ "WaitForSingleObject() returned " + state + ", LastError is " + Kernel32.INSTANCE.GetLastError() + ". "
+						+ "The process will be terminated");
 				Kernel32.INSTANCE.TerminateProcess(pi.hProcess, -1);
-
-				if (rc.getValue() != PadreForking.RC_SUCCESS) {
-					log.debug("PADRE return code: " + rc.getValue());
-					throw new PadreForkingException(rc.getValue(), result);
-				}
 			}
+
+			IntByReference rc = new IntByReference();
+			if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
+				throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
+			}
+			if (rc.getValue() != PadreForking.RC_SUCCESS) {
+				log.error("PADRE didn't exit successfully. Return code was: " + rc.getValue());
+				throw new PadreForkingException(rc.getValue(), result);
+			}
+			log.debug("PADRE exited successfuly");
 		} finally {
 			if(! hToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
 				Kernel32.INSTANCE.CloseHandle(hToken.getValue());
@@ -215,6 +136,10 @@ public class WindowsNativePadreForker implements PadreForker {
 			if(! primaryToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
 				Kernel32.INSTANCE.CloseHandle(primaryToken.getValue());
 			}
+		}
+		
+		if (log.isTraceEnabled()) {
+			log.trace("PADRE output is: '" + result + "'");
 		}
 		return result;
 	}

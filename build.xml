@@ -52,5 +52,9 @@
 		<property environment="env" />
 		<copy file="${war.name}" todir="${env.SEARCH_HOME}/web/webapps" overwrite="true" />
 	</target>
+	
+	<target name="install-test" description="Installs on a remote autotest VM">
+		<copy file="${war.name}" todir="\\auto-win2003\C$\funnelback\web\webapps" />
+	</target>
 
 </project>
