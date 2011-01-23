@@ -62,8 +62,10 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 					case database:
 					case connector:
 						// Simply strip off "local://"
-						// TODO use a proper regexp ?
-						transformedLiveUrl = result.getLiveUrl().substring(LOCAL_SCHEME.length());
+						if (result.getLiveUrl().startsWith(LOCAL_SCHEME)) {
+							// TODO use a proper regexp ?
+							transformedLiveUrl = result.getLiveUrl().substring(LOCAL_SCHEME.length());
+						}
 						break;
 					
 					case trim:
