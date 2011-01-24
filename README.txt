@@ -49,3 +49,7 @@ TODO:
   * PassThroughParametersInputProcessor
   * Set SearchQuestion.authenticated depending of the request UserPrincipal
   * Set query to NULL when it's an empty String
+
+* Early binding DLS:
+  * Check what plugins could we reimplement in Java?
+  * Have a way to have per-collection specific plugins (Groovy ?)
