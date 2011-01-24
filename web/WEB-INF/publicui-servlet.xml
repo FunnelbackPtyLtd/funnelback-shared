@@ -26,9 +26,13 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
-			<bean class="com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor" />
+			<bean
+				class="com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
+
+	<mvc:resources mapping="/dashboard-resources/**" location="/dashboard/" />
+	<mvc:annotation-driven />
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -58,7 +62,7 @@
 
 	<!-- List of InputProcessors to run -->
 	<util:list id="inputFlow">
-		<!--  ref bean="dummyInputProcessor" / -->
+		<!-- ref bean="dummyInputProcessor" / -->
 		<!-- passThroughParametersInputProcessor should be first as it populates 
 			required values for following processors -->
 		<ref bean="passThroughParametersInputProcessor" />
@@ -70,12 +74,12 @@
 	</util:list>
 
 	<util:list id="dataFetchers">
-		<!--  ref bean="dummyDataFetcher" / -->
+		<!-- ref bean="dummyDataFetcher" / -->
 		<ref bean="padreForking" />
 	</util:list>
 
 	<util:list id="outputFlow">
-		<!--  ref bean="dummyOutputProcessor" / -->
+		<!-- ref bean="dummyOutputProcessor" / -->
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
 	</util:list>
