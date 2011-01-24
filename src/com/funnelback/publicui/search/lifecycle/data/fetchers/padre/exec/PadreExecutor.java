@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec;
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;

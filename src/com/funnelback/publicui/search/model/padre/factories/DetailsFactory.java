@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.apachecommons.Log;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.XmlStreamUtils;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.XmlStreamUtils;
 import com.funnelback.publicui.search.model.padre.Details;
 
 @Log

@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.XmlStreamUtils;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.XmlStreamUtils;
 import com.funnelback.publicui.search.model.padre.Result;
 
 /**

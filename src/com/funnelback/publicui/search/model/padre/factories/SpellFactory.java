@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.XmlStreamUtils;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.XmlStreamUtils;
 import com.funnelback.publicui.search.model.padre.Spell;
 
 public class SpellFactory {

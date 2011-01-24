@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.impl;
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl;
 
 import java.io.StringReader;
 import java.security.InvalidParameterException;
@@ -11,8 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParser;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParsingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;

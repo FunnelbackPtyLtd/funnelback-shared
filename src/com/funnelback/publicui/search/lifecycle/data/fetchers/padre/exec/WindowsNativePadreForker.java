@@ -1,11 +1,11 @@
-package com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec;
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.PadreForking;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;

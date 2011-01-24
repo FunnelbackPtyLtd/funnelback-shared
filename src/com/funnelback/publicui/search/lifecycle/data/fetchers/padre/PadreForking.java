@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetcher.padre;
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec.JavaPadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec.PadreForkingException;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec.PadreQueryStringBuilder;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec.WindowsNativePadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParser;
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.xml.PadreXmlParsingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchError.Reason;

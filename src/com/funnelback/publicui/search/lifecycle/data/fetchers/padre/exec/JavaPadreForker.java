@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetcher.padre.exec;
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import lombok.extern.apachecommons.Log;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.PumpStreamHandler;
 
-import com.funnelback.publicui.search.lifecycle.data.fetcher.padre.PadreForking;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking;
 
 /**
  * Forks PADRE using Java API (Apache Commons Exec)
