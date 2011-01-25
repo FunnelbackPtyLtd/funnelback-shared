@@ -15,5 +15,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="funnelback_lib_java/common/junit-4.7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
