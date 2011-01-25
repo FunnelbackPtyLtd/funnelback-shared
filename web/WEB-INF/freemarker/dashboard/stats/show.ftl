@@ -13,7 +13,7 @@
     // CSV or path to a CSV file.
     "Number,Time(ms)\n" +
     <#list statistics as value>
-   	 	"${value_index},${value}\n" +
+   	 	"${value_index},${value?string("#")}\n" +
     </#list>
     ""
   );

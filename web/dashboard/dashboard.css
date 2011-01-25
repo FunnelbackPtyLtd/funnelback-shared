@@ -19,8 +19,8 @@ h1 {
 }
 
 nav#main {
-	font-size: small;
 	margin: 0;
+	padding: .5em;
 	text-align: right;
 	border-bottom: inset 1px;
 	margin-bottom: 1em;
@@ -35,10 +35,18 @@ nav#main ul {
 nav#main ul li {
 	display: inline;
 	margin: 0;
-	padding: 0;
-	margin-left: .5em;
-	margin-right: .5em;
+	margin-left: .15em;
+	margin-right: .15em;
 }
+
+nav#main ul li a {
+	background-color: lightgrey;
+	padding: .25em;
+}
+
+nav#main ul li a:hover {
+	background-color: #FC9804;
+} 
 
 table {
 	width: 90%;

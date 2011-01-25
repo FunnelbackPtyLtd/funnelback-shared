@@ -12,34 +12,34 @@
 <#assign keys = statistics?keys>
 
 <#list keys as key>
-<tr>
-	<td>${key}</td>
-	<td>
-		<#assign avg=0>
-		<span class="sparklines">
-			<#assign max=10>
-			<#assign sze=statistics[key]?size-1>
-			<#if sze < max>
-				<#assign max = sze>
-			</#if>
-			<#list max..1 as i>
-				
-				<#assign value = statistics[key][sze-i]>
-				<#assign avg=avg+value>
-				${value}
-				<#if i&gt; 1>,</#if>
-			</#list>
-		</span>
-	</td>
-	<td>
-		${(avg/statistics[key]?size)?string("0.##")}ms
-	</td>
-	<td>
-		${statistics[key][sze]!"Unknown (?) "}ms
-	</td>
-	<td><a href="/publicui/dashboard/stats/${key}/show">show</a></td>
-	
-</tr>	
+	<#assign stats = statistics[key]>
+	<tr>
+		<td>${key}</td>
+		<td>
+			<#assign avg=0>
+			<span class="sparklines">
+				<#assign max=10>
+				<#assign sze=stats?size>
+				<#if sze < max>
+					<#assign max = sze>
+				</#if>
+				<#list max..1 as i>
+					<#assign value = stats[sze-i]!0>
+					<#assign avg=avg+value>
+					${value}
+					<#if i&gt; 1>,</#if>
+				</#list>
+			</span>
+		</td>
+		<td>
+			${(avg/stats?size)?string("0.##")}ms
+		</td>
+		<td>
+			${stats?last!"Unknown (?) "}ms
+		</td>
+		<td><a href="/publicui/dashboard/stats/${key}/show">show</a></td>
+		
+	</tr>	
 </#list>
 </table>
 

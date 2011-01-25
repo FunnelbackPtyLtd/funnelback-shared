@@ -63,6 +63,7 @@ public class ProfiledAspect {
 			methodStats.addLast(sw.getTotalTimeMillis());
 			if (methodStats.size() > historySize) {
 				methodStats.removeFirst();
+				log.debug(key + " resized to " + methodStats.size());
 			}
 		}
 	}
