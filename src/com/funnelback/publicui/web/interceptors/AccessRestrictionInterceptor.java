@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.search.model.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -50,6 +51,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 			throws Exception { }
 
 	@Override
+	@Profiled
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		if (request.getParameter(RequestParameters.COLLECTION) != null) {
 			Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));

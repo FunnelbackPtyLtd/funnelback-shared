@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
@@ -53,6 +54,7 @@ public class PadreForking implements DataFetcher {
 	private int padreWaitTimeout;
 	
 	@Override
+	@Profiled
 	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
 
 		String commandLine = new File(searchHome,

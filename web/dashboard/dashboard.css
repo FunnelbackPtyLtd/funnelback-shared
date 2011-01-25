@@ -14,6 +14,10 @@ a:hover {
 	background-color: #FC9804;
 }
 
+h1 {
+	font-size: large;
+}
+
 nav#main {
 	font-size: small;
 	margin: 0;
@@ -50,4 +54,19 @@ table, th, td {
 th {
 	font-weight: normal;
 	background-color: lightgrey;
+}
+
+span.sparkline {
+	font-size: 1px;
+}
+
+div#graphdiv {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2em;
+}
+
+span.method {
+	font-family: Courier New;
+	color: #888888;
 }

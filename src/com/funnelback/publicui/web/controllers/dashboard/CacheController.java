@@ -22,7 +22,7 @@ public class CacheController {
 	private CacheManager appCacheManager;
 	
 	@RequestMapping("list")
-	public ModelAndView showCaches() {
+	public ModelAndView list() {
 		
 		List<Statistics> cacheStatistics = new ArrayList<Statistics>();
 		

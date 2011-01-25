@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class UserKeys implements InputProcessor {
 
 	@Override
+	@Profiled
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
 		String securityPlugin = searchTransaction.getQuestion().getCollection().getConfiguration().value(
 				Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
