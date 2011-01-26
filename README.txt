@@ -46,3 +46,15 @@ TODO:
 * Early binding DLS:
   * Check what plugins could we reimplement in Java?
   * Have a way to have per-collection specific plugins (Groovy ?)
+
+  
+* JS templates engines:
+  * json-template: http://code.google.com/p/json-template/
+  * jQuery templates: http://api.jquery.com/category/plugins/templates/
+  * TrimPath: http://code.google.com/p/trimpath/
+  * Pure: http://beebole.com/pure/
+  * Mustache
+  * Tenjin: http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html
+  * Closure templates ? http://code.google.com/closure/templates/ -> requires compilation step
+  * Embedded JS: http://embeddedjs.com/
+  * YAJET: http://www.yajet.net/yajet/doc/yajet.html
