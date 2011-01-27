@@ -55,42 +55,46 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		if (request.getParameter(RequestParameters.COLLECTION) != null) {
 			Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-			if (c != null && c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
-				String accessRestriction = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
-				log.debug(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
-				if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
-					log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
-					return true;
-				} else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
-					log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + ". Denying access");
-					denyAccess(request, response, c);
-					return false;
-				} else {
-					String ip = request.getRemoteAddr();
-					String hostName = request.getRemoteHost();
-					
-					String[] authorized = StringUtils.split(accessRestriction, ",");
-					for (String range : authorized) {
-						if (HOSTNAME_IP_PATTERN.matcher(range).matches()) {
-							// It's an IP range
-							if (ip.matches("^" + range + "(.*)$")) {
-								log.debug("'" + ip + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-								return true;
-							}
-						} else {
-							// It's a hostname
-							if (hostName.matches("^.*" + range + "$")) {
-								log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-								return true;
+			if (c != null) {
+				if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
+					String accessRestriction = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
+					log.debug(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
+					if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
+						log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
+						return true;
+					} else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
+						log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + ". Denying access");
+						denyAccess(request, response, c);
+						return false;
+					} else {
+						String ip = request.getRemoteAddr();
+						String hostName = request.getRemoteHost();
+						
+						String[] authorized = StringUtils.split(accessRestriction, ",");
+						for (String range : authorized) {
+							if (HOSTNAME_IP_PATTERN.matcher(range).matches()) {
+								// It's an IP range
+								if (ip.matches("^" + range + "(.*)$")) {
+									log.debug("'" + ip + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
+									return true;
+								}
+							} else {
+								// It's a hostname
+								if (hostName.matches("^.*" + range + "$")) {
+									log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
+									return true;
+								}
 							}
 						}
+						log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
+						denyAccess(request, response, c);
+						return false;
 					}
-					log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
-					denyAccess(request, response, c);
-					return false;
+				} else {
+					log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for collection '" + c.getId() + "'");
 				}
 			} else {
-				log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for collection '" + c.getId() + "'");
+				log.debug("Invalid collection id '" + request.getParameter(RequestParameters.COLLECTION) + "'");
 			}
 		}
 		return true;

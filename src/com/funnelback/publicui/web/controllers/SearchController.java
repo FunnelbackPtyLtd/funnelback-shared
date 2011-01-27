@@ -171,7 +171,7 @@ public class SearchController {
 	 * @param request
 	 * @return true if the request is impersonated, false otherwise
 	 */
-	private boolean isRequestImpersonated(HttpServletRequest request) {
+	public boolean isRequestImpersonated(HttpServletRequest request) {
 		return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
 	}
 	

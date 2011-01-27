@@ -14,6 +14,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.web.servlet.ModelAndView;
 
+import waffle.jaas.UserPrincipal;
+import waffle.servlet.WindowsPrincipal;
+import waffle.windows.auth.IWindowsAccount;
+import waffle.windows.auth.IWindowsIdentity;
+import waffle.windows.auth.IWindowsImpersonationContext;
+
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
@@ -21,6 +27,7 @@ import com.funnelback.publicui.search.model.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
 import com.funnelback.publicui.test.mock.MockInputProcessor;
 import com.funnelback.publicui.test.mock.MockOutputProcessor;
@@ -30,6 +37,9 @@ import com.funnelback.publicui.web.controllers.SearchController;
 @ContextConfiguration("file:test_data/spring/applicationContext.xml")
 public class SearchControllerTests {
 
+	@Autowired
+	private MockConfigRepository configRepository;
+	
 	@Autowired
 	private SearchController searchController;
 
@@ -45,13 +55,17 @@ public class SearchControllerTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testNoCollectionShouldReturnAllCollections() {
+		configRepository.removeAllCollections();
+		configRepository.addCollection(new Collection("test1", null));
+		configRepository.addCollection(new Collection("test2", null));
+		
 		ModelAndView mav = searchController.noCollection(); 
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.MODEL_KEY_COLLECTION_LIST);
 		
 		List<Collection> collections = (List<Collection>) mav.getModelMap().get(SearchController.MODEL_KEY_COLLECTION_LIST);
 		Assert.assertEquals(2, collections.size());
-		Assert.assertEquals("collection1", collections.get(0).getId());
-		Assert.assertEquals("collection2", collections.get(1).getId());
+		Assert.assertEquals("test1", collections.get(0).getId());
+		Assert.assertEquals("test2", collections.get(1).getId());
 	}
 	
 	@Test
@@ -64,6 +78,35 @@ public class SearchControllerTests {
 		Assert.assertNotNull(st.getQuestion().getCollection());
 		Assert.assertEquals(col, st.getQuestion().getCollection());
 		Assert.assertNull(st.getResponse());
+	}
+	
+	@Test
+	public void testEmptyQueryShouldReturnSearchTransaction() {
+		Collection col = new Collection("test-collection", null);
+		SearchQuestion sq = new SearchQuestion();
+		sq.setCollection(col);
+		sq.setQuery("");
+		
+		ModelAndView mav = searchController.search(new MockHttpServletRequest(), sq);
+		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+
+		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+		Assert.assertNotNull(st.getQuestion().getCollection());
+		Assert.assertEquals(col, st.getQuestion().getCollection());
+		Assert.assertNull(st.getResponse());
+	}
+
+	@Test
+	public void testInvalidCollectionShouldGenerateSearchError() {
+		SearchQuestion sq = new SearchQuestion();
+		sq.setQuery("test");
+		
+		ModelAndView mav = searchController.search(new MockHttpServletRequest(), sq);
+		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+		Assert.assertNull(st.getQuestion());
+		Assert.assertNull(st.getResponse());
+		Assert.assertNotNull(st.getError());
+		Assert.assertEquals(SearchError.Reason.InvalidCollection, st.getError().getReason());
 	}
 	
 	@Test
@@ -151,5 +194,53 @@ public class SearchControllerTests {
 		Assert.assertEquals(SearchError.Reason.OutputProcessorError, st.getError().getReason());
 	}
 
+	@Test
+	public void testIsRequestImpersonated() {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		Assert.assertFalse(searchController.isRequestImpersonated(request));
+		
+		request.setUserPrincipal(new UserPrincipal("test"));
+		Assert.assertFalse(searchController.isRequestImpersonated(request));
+		
+		request.setUserPrincipal(new WindowsPrincipal(new MockWindowsIdentity()));
+		Assert.assertTrue(searchController.isRequestImpersonated(request));
+	}
+	
+	private class MockWindowsIdentity implements IWindowsIdentity {
+
+		@Override
+		public String getSidString() {
+			return "";
+		}
+
+		@Override
+		public byte[] getSid() {
+			return new byte[0];
+		}
+
+		@Override
+		public String getFqn() {
+			return "";
+		}
+
+		@Override
+		public IWindowsAccount[] getGroups() {
+			return new IWindowsAccount[0];
+		}
+
+		@Override
+		public IWindowsImpersonationContext impersonate() {
+			return null;
+		}
+
+		@Override
+		public void dispose() {	}
+
+		@Override
+		public boolean isGuest() {
+			return false;
+		}
+		
+	}
 	
 }

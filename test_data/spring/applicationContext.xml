@@ -29,11 +29,9 @@
 		<bean class="com.funnelback.publicui.test.mock.MockOutputProcessor" />
 	</util:list>
 	
-	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository">
-		<constructor-arg value="test_data/dummy-search_home"></constructor-arg>
-	</bean>
-	
+	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />	
 	<bean id="searchController" class="com.funnelback.publicui.web.controllers.SearchController" />
+	<bean class="com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor" />
 	
 	<util:map id="profilingStats" key-type="java.lang.String" value-type="java.util.LinkedList" />
 
