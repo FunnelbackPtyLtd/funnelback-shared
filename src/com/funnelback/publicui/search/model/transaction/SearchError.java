@@ -19,6 +19,7 @@ public class SearchError {
 		MissingParameter,
 		InputProcessorError,
 		DataFetchError,
+		OutputProcessorError,
 		Unknown;
 	}
 

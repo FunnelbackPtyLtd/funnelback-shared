@@ -18,9 +18,16 @@
 	<!-- context:component-scan base-package="com.funnelback.publicui" / -->
 	<!-- aop:aspectj-autoproxy / -->
 	
-	<util:list id="inputFlow" />
-	<util:list id="dataFetchers" />
-	<util:list id="outputFlow" />
+	<util:list id="inputFlow">
+		<bean class="com.funnelback.publicui.test.mock.MockInputProcessor" />
+	</util:list>
+	<util:list id="dataFetchers">
+		<bean class="com.funnelback.publicui.test.mock.MockDataFetcher" />
+	</util:list>
+	
+	<util:list id="outputFlow">
+		<bean class="com.funnelback.publicui.test.mock.MockOutputProcessor" />
+	</util:list>
 	
 	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository">
 		<constructor-arg value="test_data/dummy-search_home"></constructor-arg>

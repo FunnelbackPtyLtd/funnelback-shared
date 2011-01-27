@@ -23,6 +23,7 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -138,6 +139,9 @@ public class SearchController {
 			} catch (DataFetchException dfe) {
 				log.error(dfe);
 				transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
+			} catch (OutputProcessorException ope) {
+				log.error(ope);
+				transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
 			}
 
 		} else {

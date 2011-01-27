@@ -7,6 +7,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface OutputProcessor {
 
-	public void process(final SearchTransaction searchTransaction);
+	public void process(final SearchTransaction searchTransaction) throws OutputProcessorException;
 	
 }
