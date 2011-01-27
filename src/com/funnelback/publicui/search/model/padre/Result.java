@@ -39,7 +39,7 @@ public class Result {
 	@Getter private Integer fileSize;
 	@Getter private String fileType;
 	@Getter private Integer tier;
-	@Getter private Integer documentNumber;
+	@Getter private Integer docNum;
 	@Getter private Map<String, String> metaData;
 	
 	/** By default filled with liveUrl, but will be updated at a later stage */

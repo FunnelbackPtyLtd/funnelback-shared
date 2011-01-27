@@ -58,3 +58,8 @@ TODO:
   * Closure templates ? http://code.google.com/closure/templates/ -> requires compilation step
   * Embedded JS: http://embeddedjs.com/
   * YAJET: http://www.yajet.net/yajet/doc/yajet.html
+ 
+ * Missing PADRE parsing:
+   * Metadata on results (<md f="x">...</md>)
+   * Contextual Nav: More links
+  
