@@ -31,7 +31,10 @@
 	
 	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />	
 	<bean id="searchController" class="com.funnelback.publicui.web.controllers.SearchController" />
+	
 	<bean class="com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor" />
+	
+	<bean class="com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks" />
 	
 	<util:map id="profilingStats" key-type="java.lang.String" value-type="java.util.LinkedList" />
 

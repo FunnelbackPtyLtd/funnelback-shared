@@ -66,6 +66,7 @@ public class Result {
 		public static final String FILETYPE = "filetype";
 		public static final String TIER = "tier";
 		public static final String DOCNUM = "docnum";
-		public static final String METADATA = "md";				
+		public static final String METADATA = "md";
+		public static final String ATTR_METADATA_F = "f";
 	}
 }

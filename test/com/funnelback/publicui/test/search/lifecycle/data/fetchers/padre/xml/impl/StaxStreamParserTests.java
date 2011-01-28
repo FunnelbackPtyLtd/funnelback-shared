@@ -113,15 +113,12 @@ public class StaxStreamParserTests {
 		assertEquals(1, first.getTier().intValue());
 		assertEquals(2681, first.getDocNum().intValue());
 		
-		// FIXME Implement metadata parsing
-		/*
 		Map<String, String> md = first.getMetaData();
 		assertEquals(7, md.size());
 		// Pick some metadata
 		assertEquals("Department of Immigration and Citizenship", md.get("a"));
 		assertEquals("2010-01-14T162745", md.get("M"));
-		assertEquals("Topics;topics;Immigration;immigration;Visiting Australia;visiting-australia|Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas|People;people;Tourists;tourists;Visas;visas|Topics;topics;Tourism and Travel;tourism-and-travel;Passport and <b>Visa</b> Information;passport-and-<b>visa</b>-information|Politics;Politics;Visas;visasp", md.get("R"));
-		*/
+		assertEquals("Topics;topics;Immigration;immigration;Visiting Australia;visiting-australia|Topics;topics;Immigration;immigration;Passports and Visas;passports-and-visas|People;people;Tourists;tourists;Visas;visas|Topics;topics;Tourism and Travel;tourism-and-travel;Passport and <b>Visa</b> Information;passport-and-<b>visa</b>-information|Politics;Politics;Visas;visas", md.get("R"));
 		
 		Calendar c = Calendar.getInstance();
 		c.set(2011, 0, 24, 0, 0);
@@ -145,15 +142,12 @@ public class StaxStreamParserTests {
 		assertEquals(1, last.getTier().intValue());
 		assertEquals(3068, last.getDocNum().intValue());
 
-		// FIXME Implement metadata parsing
-		/*
 		md = last.getMetaData();
 		assertEquals(6, md.size());
 		// Pick some metadata
 		assertEquals("Department of Foreign Affairs and Trade", md.get("a"));
 		assertEquals("2009-11-09T162611", md.get("M"));
 		assertEquals("Politics;Politics;Embassies;embassies", md.get("R"));
-		*/
 
 	}
 	

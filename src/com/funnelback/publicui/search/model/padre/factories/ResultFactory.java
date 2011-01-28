@@ -4,12 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.XMLEvent;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.XmlStreamUtils;
 import com.funnelback.publicui.search.model.padre.Result;
 
 /**
@@ -23,6 +20,8 @@ public class ResultFactory {
 	 * 
 	 * @param data
 	 *            The map containing the values
+	 * @param metadata
+	 *            A map containing the metadata values (<md f="x">value</md>)
 	 * @return A result with populated values
 	 */
 	public static Result fromMap(Map<String, String> data) {
@@ -51,62 +50,12 @@ public class ResultFactory {
 		HashMap<String, String> metadataMap = new HashMap<String, String>();
 		for (String key : data.keySet()) {
 			if (key.startsWith(Result.METADATA_PREFIX)) {
-				metadataMap.put(key, data.get(key));
+				metadataMap.put(key.substring(Result.METADATA_PREFIX.length()), data.get(key));
 			}
 		}
 
-		return new Result(
-				rank,
-				score,
-				title,
-				collection,
-				component,
-				liveUrl,
-				summary,
-				cacheUrl,
-				date,
-				fileSize,
-				fileType,
-				tier,
-				documentNumber,
-				metadataMap,
-				liveUrl);
-	}
-
-	/**
-	 * Builds a {@link Result} from an {@link XMLEventReader}. Doesn't supports
-	 * MetaData reading.
-	 * 
-	 * @param xmlEventReader
-	 *            The {@link XMLEventReader} to read from
-	 * @return A Result with populated values
-	 * @throws XMLStreamException
-	 */
-	public static Result fromXmlEventReader(XMLEventReader xmlEventReader) throws XMLStreamException {
-		XMLEvent outerEvent;
-		while (xmlEventReader.hasNext()) {
-			outerEvent = xmlEventReader.nextEvent();
-			if (outerEvent.isStartElement()
-					&& outerEvent.asStartElement().getName().getLocalPart().endsWith(Result.Schema.RESULT)) {
-				// We found our result - read out each bit until the end
-
-				Map<String, String> data = new HashMap<String, String>();
-				XMLEvent innerEvent;
-				while ((innerEvent = xmlEventReader.nextEvent()) != null) {
-					if (innerEvent.isStartElement()) {
-						String key = innerEvent.asStartElement().getName().getLocalPart();
-						String value = xmlEventReader.getElementText();
-
-						data.put(key, value);
-					} else if (innerEvent.isEndElement()) {
-						return fromMap(data);
-					}
-				}
-			}
-		}
-
-		// No result found
-		return null;
+		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
+				fileType, tier, documentNumber, metadataMap, liveUrl);
 	}
 
 	/**
@@ -120,6 +69,27 @@ public class ResultFactory {
 	 * @throws XMLStreamException
 	 */
 	public static Result fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws XMLStreamException {
-		return fromMap(XmlStreamUtils.tagsToMap(Result.Schema.RESULT, xmlStreamReader));
+		if (!Result.Schema.RESULT.equals(xmlStreamReader.getLocalName())) {
+			throw new IllegalArgumentException();
+		}
+
+		Map<String, String> data = new HashMap<String, String>();
+
+		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+			if (xmlStreamReader.isStartElement()) {
+				if (Result.Schema.METADATA.equals(xmlStreamReader.getLocalName().toString())) {
+					// Specific case for metadtata <md f="x">value</md>
+					String mdClass = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_F);
+					String value = xmlStreamReader.getElementText();
+					data.put(Result.METADATA_PREFIX + mdClass, value);
+				} else {
+					String name = xmlStreamReader.getName().toString();
+					String value = xmlStreamReader.getElementText();
+					data.put(name, value);
+				}
+			}
+		}
+
+		return fromMap(data);
 	}
 }
