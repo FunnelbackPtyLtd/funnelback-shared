@@ -34,12 +34,14 @@ public class PassThroughParameters implements InputProcessor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		searchTransaction.getQuestion().getPassThroughParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
+		if (searchTransaction != null
+				&& searchTransaction.getQuestion() != null
+				&& request != null) {
+			searchTransaction.getQuestion().getPassThroughParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
 		
-		for (String ignored: IGNORED) {
-			searchTransaction.getQuestion().getPassThroughParameters().remove(ignored);
+			for (String ignored: IGNORED) {
+				searchTransaction.getQuestion().getPassThroughParameters().remove(ignored);
+			}
 		}
-
 	}
-
 }

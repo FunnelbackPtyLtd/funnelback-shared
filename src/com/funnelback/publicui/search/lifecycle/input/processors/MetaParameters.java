@@ -64,53 +64,57 @@ public class MetaParameters implements InputProcessor {
 	
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		Enumeration<String> names = request.getParameterNames();
-		while (names.hasMoreElements()) {
-			String name = names.nextElement();
-			if (request.getParameterValues(name) != null && (name.startsWith(META_PREFIX) || name.startsWith(QUERY_PREFIX))) {				
-
-				// Gather all parameter values
-				//     &meta_x=first value&meta_x=second value
-				//  => { "first", "value", "second", "value" }
-				String[] values = StringUtils.join(request.getParameterValues(name), " ").split("\\s");
-				log.debug("Processing parameter '" + name + "=" + Arrays.toString(values) + "'");
-				
-				String operator = null;	// operation (orsand, trunc, phrase ...)
-				String md = null;		// metadata class (a, t, x,...). null for "query_*" operators
-
-				if (name.startsWith(META_PREFIX)) {
+		if (searchTransaction != null && searchTransaction.getQuestion() != null && request != null) {
+			@SuppressWarnings("unchecked")
+			Enumeration<String> names = request.getParameterNames();
+			while (names.hasMoreElements()) {
+				String name = names.nextElement();
+				if (request.getParameterValues(name) != null && (name.startsWith(META_PREFIX) || name.startsWith(QUERY_PREFIX))) {				
+	
+					// Gather all parameter values
+					//     &meta_x=first value&meta_x=second value
+					//  => { "first", "value", "second", "value" }
+					String[] values = StringUtils.join(request.getParameterValues(name), " ").split("\\s");
+					log.debug("Processing parameter '" + name + "=" + Arrays.toString(values) + "'");
 					
-					// Find the metadata class
-					Matcher m = META_ID_PATTERN.matcher(name);
-					if (m.find()) {
-						md = m.group(1);
-						operator = m.group(2);
-					} else {
-						// Possibly a simple "meta_x=value"
-						md = name.substring(name.indexOf("_")+1);
-						operator = INTERNAL_OPERATOR_ADDMETA;						
-					}
-				} else if (name.startsWith(QUERY_PREFIX)) {
-					operator = name.substring(name.indexOf("_")+1);
-				}
-				
-				if (operator != null && operator.length() > 0 && Operators.isValid(operator)) {
-					try {
-						// Find operator method by reflection
-						Method operationMethod = this.getClass().getMethod(operator, new Class[] {String.class, String[].class});
-						String newValue = (String) operationMethod.invoke(this, new Object[] {md, values});
-						log.debug("Applied operation '" + operator + "' to value '"+Arrays.toString(values)+"'. New value is '" + newValue + "'");
-						searchTransaction.getQuestion().getMetaParameters().put(name, newValue);
+					String operator = null;	// operation (orsand, trunc, phrase ...)
+					String md = null;		// metadata class (a, t, x,...). null for "query_*" operators
+	
+					if (name.startsWith(META_PREFIX)) {
 						
-						// Remove the parameter from the list that will be passed to PADRE if
-						// we succesfully processed it
-						searchTransaction.getQuestion().getPassThroughParameters().remove(name);
-					} catch (Exception ex) {
-						log.warn("Error while invoking operation '" + operator + "' from parameter '" + name + "'", ex);
+						// Find the metadata class
+						Matcher m = META_ID_PATTERN.matcher(name);
+						if (m.find()) {
+							md = m.group(1);
+							operator = m.group(2);
+						} else {
+							// Possibly a simple "meta_x=value"
+							md = name.substring(name.indexOf("_")+1);
+							if (!"".equals(md)) {	// In case it's a "meta_=abc"
+								operator = INTERNAL_OPERATOR_ADDMETA;
+							}
+						}
+					} else if (name.startsWith(QUERY_PREFIX) && name.length() > QUERY_PREFIX.length()) {
+						operator = name.substring(name.indexOf("_")+1);
 					}
-				} else {
-					log.warn("Invalid operator '"+operator+"' for parameter '" + name + "'"); 
+					
+					if (operator != null && operator.length() > 0 && Operators.isValid(operator)) {
+						try {
+							// Find operator method by reflection
+							Method operationMethod = this.getClass().getMethod(operator, new Class[] {String.class, String[].class});
+							String newValue = (String) operationMethod.invoke(this, new Object[] {md, values});
+							log.debug("Applied operation '" + operator + "' to value '"+Arrays.toString(values)+"'. New value is '" + newValue + "'");
+							searchTransaction.getQuestion().getMetaParameters().put(name, newValue);
+							
+							// Remove the parameter from the list that will be passed to PADRE if
+							// we succesfully processed it
+							searchTransaction.getQuestion().getPassThroughParameters().remove(name);
+						} catch (Exception ex) {
+							log.warn("Error while invoking operation '" + operator + "' from parameter '" + name + "'", ex);
+						}
+					} else {
+						log.warn("Invalid operator '"+operator+"' for parameter '" + name + "'"); 
+					}
 				}
 			}
 		}
@@ -203,8 +207,11 @@ public class MetaParameters implements InputProcessor {
 	public String addmeta(final String md, final String values[]) {
 		if (md != null) {
 			StringBuffer out = new StringBuffer();
-			for(String value: values) {
-				out.append(md+":"+value);
+			for(int i=0; i<values.length; i++) {
+				out.append(md+":"+values[i]);
+				if (i+1<values.length) {
+					out.append(" ");
+				}
 			}
 			return out.toString();
 		} else {

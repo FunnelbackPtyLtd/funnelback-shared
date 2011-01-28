@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,25 +24,31 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
 	// SITE_SEARCH_ROOT: Used for Matrix OEM
 	
+	public enum Keys {
+		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER;
+	}
+	
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		
-		HashMap<String, String> out = new HashMap<String, String>();
-		
-		out.put("REMOTE_ADDR", request.getRemoteAddr());
-		out.put("REQUEST_URI", request.getRequestURI());
-		if (request.getAuthType() != null) {
-			out.put("AUTH_TYPE", request.getAuthType());
+		if (searchTransaction != null
+				&& searchTransaction.getQuestion() != null
+				&& request != null) {
+			HashMap<String, String> out = new HashMap<String, String>();
+			
+			setIfNotNull(out, Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
+			setIfNotNull(out, Keys.REQUEST_URI.toString(), request.getRequestURI());
+			setIfNotNull(out, Keys.AUTH_TYPE.toString(), request.getAuthType());
+			setIfNotNull(out, Keys.HTTP_HOST.toString(), request.getHeader("host"));
+			setIfNotNull(out, Keys.REMOTE_USER.toString(), request.getRemoteUser());
+			
+			log.debug("Adding environment variables: " + out);
+			searchTransaction.getQuestion().getEnvironmentVariables().putAll(out);
+		}		
+	}
+	
+	private void setIfNotNull(Map<String, String> out, String key, String data) {
+		if (data != null) {
+			out.put(key, data);
 		}
-		if (request.getHeader("host") != null) {
-			out.put("HTTP_HOST", request.getHeader("host"));
-		}
-		if (request.getRemoteUser() != null) {
-			out.put("REMOTE_USER", request.getRemoteUser());
-		}
-		
-		log.debug("Adding environment variables: " + out);
-		searchTransaction.getQuestion().getEnvironmentVariables().putAll(out);
-		
 	}
 }
