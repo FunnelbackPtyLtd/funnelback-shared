@@ -20,10 +20,14 @@ public class FacetedNavigation implements InputProcessor {
 
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		FacetedNavigationConfig config = searchTransaction.getQuestion().getCollection().getFacetedNavigationConfig();
-		if (config != null) {
-			searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
-			log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
+		if (searchTransaction != null
+				&& searchTransaction.getQuestion() != null
+				&& searchTransaction.getQuestion().getCollection() != null) {
+			FacetedNavigationConfig config = searchTransaction.getQuestion().getCollection().getFacetedNavigationConfig();
+			if (config != null) {
+				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
+				log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
+			}
 		}
 
 	}

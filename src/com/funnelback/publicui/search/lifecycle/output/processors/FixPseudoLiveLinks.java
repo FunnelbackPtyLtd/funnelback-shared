@@ -54,7 +54,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	@Override
 	public void process(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
-		if (searchTransaction.hasResponse()
+		if (searchTransaction != null && searchTransaction.hasResponse()
 			&& searchTransaction.getResponse().hasResultPacket()
 			&& searchTransaction.getResponse().getResultPacket().hasResults()) {
 			

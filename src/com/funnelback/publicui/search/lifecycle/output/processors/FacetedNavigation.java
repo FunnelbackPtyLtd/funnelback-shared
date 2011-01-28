@@ -21,7 +21,7 @@ public class FacetedNavigation implements OutputProcessor {
 
 	@Override
 	public void process(SearchTransaction searchTransaction) {
-		if (searchTransaction.hasResponse()
+		if (searchTransaction != null && searchTransaction.hasResponse()
 				&& searchTransaction.getResponse().hasResultPacket()
 				&& searchTransaction.getResponse().getResultPacket().getRmcs().size() > 0) {
 			

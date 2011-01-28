@@ -77,7 +77,10 @@ public class FixPseudoLiveLinksTests {
 	}
 	
 	@Test
-	public void testErrorCases() {
+	public void testMissingData() {
+		// No transaction
+		processor.process(null);
+		
 		// No response
 		processor.process(new SearchTransaction(null, null));
 		
