@@ -6,6 +6,43 @@
 	<link rel="stylesheet" media="screen" href="/search/search.css" type="text/css" />
 	
 	<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
+	
+	<script type="text/javascript">
+		function prevPage(offset) {
+			var out = '';
+			
+			var qs = window.location.search.substring(1);
+			var kvs = qs.split('&');
+			for (i=0; i<kvs.length;i++) {
+				var kv = kvs[i].split('=');
+				out += '&';
+				if (kv[0] == 'start_rank') {
+					out += 'start_rank=' + offset;
+				} else {
+					out += kvs[i];
+				}
+			}
+			window.location.search = '?' + out;
+		}
+		
+		function nextPage(offset) {
+			var out = '';
+			
+			var qs = window.location.search.substring(1);
+			var kvs = qs.split('&');
+			for (i=0; i<kvs.length;i++) {
+				var kv = kvs[i].split('=');
+				
+				if (kv[0] == 'start_rank') {
+					out += 'start_rank=' + offset;
+				} else {
+					out += kvs[i];
+				}
+				out += '&';
+			}
+			window.location.search = '?' + out;
+		}
+	</script>
 </head>
 
 <body>
@@ -72,26 +109,41 @@
 				</#if>
 			</div>
 			
-				<ol id="fb-results">
-					<#list SearchTransaction.response.resultPacket.results as result>
-						<li>
-							<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
-							
-							<p>
-								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
-								<span class="fb-summary">${result.summary}</span>
-							</p>
-							
-							<p>
-                				<cite>${result.displayUrl}</cite>
-                                - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
- 			               </p>
-							
-							
-						</li>
-					</#list>
-				</ol>
+			<ol id="fb-results">
+				<#list SearchTransaction.response.resultPacket.results as result>
+					<li>
+						<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
+						
+						<p>
+							<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
+							<span class="fb-summary">${result.summary}</span>
+						</p>
+						
+						<p>
+            				<cite>${result.displayUrl}</cite>
+                            - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
+		               </p>
+						
+						
+					</li>
+				</#list>
+			</ol>
 			
+			
+			<p class="fb-page-nav">
+				<#if SearchTransaction.response.resultPacket.resultsSummary.prevStart?exists>
+					<a href="javascript:prevPage(${SearchTransaction.response.resultPacket.resultsSummary.prevStart});" class="fb-previous-result-page fb-page-nav">Prev ${SearchTransaction.response.resultPacket.resultsSummary.numRanks}</a>
+				</#if>
+
+				<#assign currentPage = 1>				
+				<#if SearchTransaction.response.resultPacket.resultsSummary.currStart?exists && SearchTransaction.response.resultPacket.resultsSummary.numRanks?exists>
+					<#assign currentPage = SearchTransaction.response.resultPacket.resultsSummary.currStart + (SearchTransaction.response.resultPacket.resultsSummary.numRanks-1) / SearchTransaction.response.resultPacket.resultsSummary.numRanks> 
+				</#if>
+
+				<#if SearchTransaction.response.resultPacket.resultsSummary.nextStart?exists>
+					<a href="javascript:nextPage(${SearchTransaction.response.resultPacket.resultsSummary.nextStart});" class="fb-next-result-page fb-page-nav">Next ${SearchTransaction.response.resultPacket.resultsSummary.numRanks}</a>
+				</#if>
+			</p>
 			
 			<#if SearchTransaction.response.facets?exists && (SearchTransaction.response.facets?size > 0)>
 			<div id="fb-facets">

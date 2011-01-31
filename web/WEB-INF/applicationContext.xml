@@ -29,7 +29,8 @@
 
 	<bean id="searchHome" class="java.io.File">
 		<!-- constructor-arg index="0" type="java.lang.String" value="C:\\Data\\dev\\funnelback" / -->
-		<constructor-arg index="0" type="java.lang.String" value="#{ T(java.lang.System).getenv('SEARCH_HOME') }" />
+		<!-- constructor-arg index="0" type="java.lang.String" value="#{ T(java.lang.System).getenv('SEARCH_HOME') }" / -->
+		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
 	<util:properties id="appProperties" location="classpath:publicui.properties" />
