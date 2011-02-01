@@ -6,6 +6,14 @@ Reminders:
 
 * Lookup for config files in both collection config directory and default profile
   * default profile takes precedence if both exists
+
+Benchmark:
+----------
+
+ab -c <x> -n 1000 http:// ....
+
+* Extract response time:  grep "(mean)" *.txt | grep Time | cut -d '-' -f 2 |sort -n | cut -d ':' -f 3 | cut -d "[" -f 1
+* Extract processing time: grep "(mean," *.txt | cut -d '-' -f 2 |sort -n | cut -d ':' -f 3 | cut -d "[" -f 1
   
 TODO:
 -----
@@ -62,3 +70,5 @@ TODO:
  * Missing PADRE parsing:
    * Contextual Nav: More links
   
+  
+ 

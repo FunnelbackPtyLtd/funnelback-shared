@@ -30,9 +30,10 @@
 				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 			<fileset dir="${web.dir}">
-				<include name="WEB-INF/*.xml" />
-				<include name="WEB-INF/freemarker/" />
+				<include name="**/*" />
 				<exclude name="WEB-INF/web.xml" />
+				<exclude name="META-INF/**" />
+				<exclude name="lib/**" />
 			</fileset>
 			<classes dir="${bin.dir}" />
 			<lib dir="${web.dir}/WEB-INF/lib" />

@@ -38,7 +38,9 @@
 				} else {
 					out += kvs[i];
 				}
-				out += '&';
+				if (i+1 < kvs.length) {
+					out += '&';
+				}
 			}
 			window.location.search = '?' + out;
 		}

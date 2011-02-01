@@ -13,7 +13,11 @@
     // CSV or path to a CSV file.
     "Number,Time(ms)\n" +
     <#list statistics as value>
-   	 	"${value_index},${value?string("#")}\n" +
+		<#if value?exists>
+			"${value_index},${value?string("#")!"0"}\n" +
+		<#else>
+			"${value_index},0\n" +
+		</#if>
     </#list>
     ""
   );

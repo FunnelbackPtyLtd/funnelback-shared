@@ -23,8 +23,17 @@ public class FacetedNavigation implements InputProcessor {
 		if (searchTransaction != null
 				&& searchTransaction.getQuestion() != null
 				&& searchTransaction.getQuestion().getCollection() != null) {
+			
 			FacetedNavigationConfig config = searchTransaction.getQuestion().getCollection().getFacetedNavigationConfig();
 			if (config != null) {
+				// Query Processor options are embedded in the faceted_navigation.cfg file:
+				//
+				// <Facets qpoptions=" -rmcfdt">
+				//  <Data></Data>
+				//  <Facet>
+				//  ...
+				//  </Facet>
+				// </Facets>
 				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
 				log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
 			}
