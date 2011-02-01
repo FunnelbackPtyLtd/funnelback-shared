@@ -15,6 +15,25 @@ ab -c <x> -n 1000 http:// ....
 * Extract response time:  grep "(mean)" *.txt | grep Time | cut -d '-' -f 2 |sort -n | cut -d ':' -f 3 | cut -d "[" -f 1
 * Extract processing time: grep "(mean," *.txt | cut -d '-' -f 2 |sort -n | cut -d ':' -f 3 | cut -d "[" -f 1
   
+Apache conf:
+
+      # NG: 1 Feb 2001: Public UI tests
+    <Proxy balancher://mycluster>
+        BalancerMember http://localhost:8585
+        BalancerMember http://localhost:8586
+        BalancerMember http://localhost:8587
+        BalancerMember http://localhost:8588
+    </Proxy>
+    ProxyPass /publicui/ balancher://mycluster/publicui/ nocanon
+
+    <Location /balancer-manager>
+        SetHandler balancer-manager
+        Order Deny,Allow
+        Deny from all
+        Allow from 121.127.216.199
+    </Location>
+  
+  
 TODO:
 -----
 

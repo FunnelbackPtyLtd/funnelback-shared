@@ -32,8 +32,8 @@
 			<fileset dir="${web.dir}">
 				<include name="**/*" />
 				<exclude name="WEB-INF/web.xml" />
-				<exclude name="META-INF/**" />
-				<exclude name="lib/**" />
+				<exclude name="META-INF/" />
+				<exclude name="WEB-INF/lib/" />
 			</fileset>
 			<classes dir="${bin.dir}" />
 			<lib dir="${web.dir}/WEB-INF/lib" />
