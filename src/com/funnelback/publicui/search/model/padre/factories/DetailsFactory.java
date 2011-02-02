@@ -21,11 +21,14 @@ public class DetailsFactory {
 	
 	public static Details fromMap(Map<String, String> data) {
 		Date updated = new Date();
-		try {
-			updated = getDateFormatter().parse(data.get(Details.Schema.COLLECTION_UPDATED).trim());
-		} catch (Exception e) {
-			log.warn("Unable to parse " + Details.Schema.COLLECTION_UPDATED + " date '"
-					+ data.get(Details.Schema.COLLECTION_UPDATED).trim() + "'. Will use current date", e);
+		String str = data.get(Details.Schema.COLLECTION_UPDATED);
+		if (str != null && ! "".equals(str)) {
+			try {
+				updated = getDateFormatter().parse(str.trim());
+			} catch (Exception e) {
+				log.debug("Unable to parse " + Details.Schema.COLLECTION_UPDATED + " date '"
+						+ str + "'. Will use current date", e);
+			}
 		}
 		
 		return new Details(data.get(Details.Schema.PADRE_VERSION),

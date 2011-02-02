@@ -38,11 +38,12 @@ public class ResultFactory {
 		String cacheUrl = data.get(Result.Schema.CACHE_URL);
 
 		String dateString = data.get(Result.Schema.DATE);
-		Date date;
-		try {
-			date = getDateFormatter().parse(dateString);
-		} catch (Exception e) {
-			date = null;
+		Date date = null;
+		if (dateString != null && !"".equals(dateString)) {
+			try {
+				date = getDateFormatter().parse(dateString);
+			} catch (Exception e) {
+			}
 		}
 
 		Integer fileSize = Integer.valueOf(data.get(Result.Schema.FILESIZE));
