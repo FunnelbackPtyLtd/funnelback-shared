@@ -60,7 +60,7 @@ public class LocalConfigRepository implements ConfigRepository {
 		}
 	}
 	
-	private Collection loadCollection(String collectionId) {
+	protected Collection loadCollection(String collectionId) {
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
 		try {
 			Collection c = new Collection(collectionId, new NoOptionsConfig(searchHome, collectionId));

@@ -6,6 +6,7 @@
 	<th>Values</th>
 	<th>Average</th>
 	<th>Last</th>
+	<th>Peak</th>
 	<th>Actions</th>
 </tr>
 
@@ -29,12 +30,9 @@
 				</#list>
 			</span>
 		</td>
-		<td>
-			${(avg/stats.count)?string("0.##")}ms
-		</td>
-		<td>
-			${stats.values[stats.count-1]}ms
-		</td>
+		<td>${(avg/stats.count)?string("0.##")}ms</td>
+		<td>${stats.values[stats.count-1]}ms</td>
+		<td>${stats.peakValue}ms</td>
 		<td><a href="/publicui/dashboard/stats/${key}/show">show</a></td>
 		
 	</tr>	

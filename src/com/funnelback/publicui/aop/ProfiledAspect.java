@@ -89,7 +89,17 @@ public class ProfiledAspect {
 			dates[count] = when;
 			values[count] = value;
 			count++;
+		}
+		
+		public long getPeakValue() {
+			long peak = 0;
+			for(long value: values) {
+				if (value > peak) {
+					peak = value;
+				}
+			}
 			
+			return peak;
 		}
 	}
 
