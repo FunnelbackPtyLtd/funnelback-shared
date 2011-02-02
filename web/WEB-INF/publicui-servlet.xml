@@ -67,7 +67,7 @@
 
 
 	<!-- ***** List of processors to run ***** -->
-	
+
 	<util:list id="inputFlow">
 		<!-- passThroughParametersInputProcessor should be first as it populates 
 			required values for following processors -->
@@ -77,7 +77,6 @@
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="groovySampleInputProcessor" />
-		<ref bean="exploreInputProcessor" />
 	</util:list>
 
 	<util:list id="dataFetchers">
@@ -88,12 +87,28 @@
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
 	</util:list>
-	
+
 	<!-- ***** -->
 
 
 
-	<util:map id="profilingStats" key-type="java.lang.String"
+
+	<bean id="profilingStats"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass">
+			<value>java.util.Collections</value>
+		</property>
+		<property name="targetMethod">
+			<value>synchronizedMap</value>
+		</property>
+		<property name="arguments">
+			<ref bean="profilingStatsNotSynchronized" />
+		</property>
+	</bean>
+
+	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.DataPoint[]" />
+
+	<util:map id="profilingStatsOld" key-type="java.lang.String"
 		value-type="java.util.LinkedList" />
 
 	<bean id="freemarkerConfig"

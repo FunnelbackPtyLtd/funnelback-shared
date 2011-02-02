@@ -12,12 +12,9 @@
 
     // CSV or path to a CSV file.
     "Number,Time(ms)\n" +
-    <#list statistics as value>
-		<#if value?exists>
-			"${value_index},${value?string("#")!"0"}\n" +
-		<#else>
-			"${value_index},0\n" +
-		</#if>
+    // ${statistics.count} stats
+    <#list 0..statistics.count-1 as i>
+		"${statistics.dates[i]?datetime?string("yyyy/MM/dd HH:mm:ss.SSS")},${statistics.values[i]?string("#")}\n" +
     </#list>
     ""
   );

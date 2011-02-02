@@ -22,14 +22,20 @@ nav#main {
 	margin: 0;
 	padding: .5em;
 	text-align: right;
-	border-bottom: inset 1px;
 	margin-bottom: 1em;
+
+	background: #eee; /* for non-css3 browsers */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eee', endColorstr='#bbb'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#bbb)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #eee,  #bbb); /* for firefox 3.6+ */
+	border-bottom: outset 1px;
 }
 
 nav#main ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
+	font-size: large;
 }
 
 nav#main ul li {
@@ -40,7 +46,6 @@ nav#main ul li {
 }
 
 nav#main ul li a {
-	background-color: lightgrey;
 	padding: .25em;
 }
 

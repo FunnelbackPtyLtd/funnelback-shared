@@ -19,23 +19,21 @@
 			<#assign avg=0>
 			<span class="sparklines">
 				<#assign max=10>
-				<#assign sze=stats?size>
-				<#if sze < max>
-					<#assign max = sze>
+				<#if stats.count < 10>
+					<#assign max=stats.count>
 				</#if>
 				<#list max..1 as i>
-					<#assign value = stats[sze-i]!0>
-					<#assign avg=avg+value>
-					${value}
-					<#if i&gt; 1>,</#if>
+					${stats.values[stats.count-i]}
+					<#if i_has_next>,</#if>
+					<#assign avg=avg+stats.values[stats.count-i]>
 				</#list>
 			</span>
 		</td>
 		<td>
-			${(avg/stats?size)?string("0.##")}ms
+			${(avg/stats.count)?string("0.##")}ms
 		</td>
 		<td>
-			${stats?last!"Unknown (?) "}ms
+			${stats.count!"Unknown (?) "}ms
 		</td>
 		<td><a href="/publicui/dashboard/stats/${key}/show">show</a></td>
 		

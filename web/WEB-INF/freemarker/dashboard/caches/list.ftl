@@ -15,12 +15,14 @@
 		<tr>
 			<th>Name</th>
 			<th>Creation time</th>
+			<th>Size</th>
 			<th>Actions</th>
 		</tr>		
 		<#list stats.associatedCache.keys as key>
 			<tr>
 				<th>${key}</th>
 				<td>${stats.associatedCache.get(key).creationTime}</td>
+				<td>${stats.associatedCache.get(key).serializedSize}</td>
 				<td><a href="/publicui/dashboard/caches/${stats.associatedCache.name}/remove/${key}/">Remove</a></td>
 			</tr>
 		</#list>

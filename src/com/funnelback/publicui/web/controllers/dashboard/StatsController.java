@@ -1,7 +1,6 @@
 package com.funnelback.publicui.web.controllers.dashboard;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -11,17 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.funnelback.publicui.aop.ProfiledAspect.MethodStats;
+
 @Controller
 @RequestMapping("/dashboard/stats/")
 public class StatsController {
 
-	@Resource(name="profilingStats")
-	private Map<String, LinkedList<Long>> stats;
+	@Resource(name="profilingStatsNotSynchronized")
+	private Map<String, MethodStats> stats;
 
 	@RequestMapping("list")
 	public ModelAndView list() {
-		
-		Map<String, Map<String, LinkedList<Long>>> model = new HashMap<String, Map<String, LinkedList<Long>>>();
+		Map<String, Map<String, MethodStats>> model = new HashMap<String, Map<String, MethodStats>>();
 		model.put("statistics", stats);
 		return new ModelAndView("/dashboard/stats/list", model);
 	}

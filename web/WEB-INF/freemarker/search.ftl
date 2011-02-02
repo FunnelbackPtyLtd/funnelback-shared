@@ -22,6 +22,7 @@
 					out += kvs[i];
 				}
 			}
+
 			window.location.search = '?' + out;
 		}
 		
@@ -41,6 +42,9 @@
 				if (i+1 < kvs.length) {
 					out += '&';
 				}
+			}
+			if (out.indexOf('start_rank') < 0) {
+				out += '&start_rank=' + offset;
 			}
 			window.location.search = '?' + out;
 		}
