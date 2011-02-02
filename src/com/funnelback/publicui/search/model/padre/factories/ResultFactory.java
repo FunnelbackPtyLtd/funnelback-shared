@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,8 @@ import com.funnelback.publicui.search.model.padre.Result;
  */
 public class ResultFactory {
 
+	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
+	
 	/**
 	 * Builds a {@link Result} from a Map containing the values
 	 * 
@@ -37,7 +40,7 @@ public class ResultFactory {
 		String dateString = data.get(Result.Schema.DATE);
 		Date date;
 		try {
-			date = Result.DATE_FORMAT.parse(dateString);
+			date = getDateFormatter().parse(dateString);
 		} catch (Exception e) {
 			date = null;
 		}
@@ -91,5 +94,14 @@ public class ResultFactory {
 		}
 
 		return fromMap(data);
+	}
+	
+	private static SimpleDateFormat getDateFormatter() {
+		SimpleDateFormat df = dateFormatters.get(Thread.currentThread().getId());
+		if (df == null) {
+			df = new SimpleDateFormat(Result.DATE_PATTERN);
+			dateFormatters.put(Thread.currentThread().getId(), df);
+		}
+		return df;
 	}
 }

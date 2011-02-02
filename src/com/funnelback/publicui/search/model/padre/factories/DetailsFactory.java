@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.padre.factories;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -14,16 +15,17 @@ import com.funnelback.publicui.search.model.padre.Details;
 
 @Log
 public class DetailsFactory {
-
-	private static final SimpleDateFormat UPDATED_DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+																					
+	private static final String UPDATED_DATE_PATTERN = "EEE MMM dd HH:mm:ss yyyy";
+	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
 	
 	public static Details fromMap(Map<String, String> data) {
 		Date updated = new Date();
 		try {
-			updated = UPDATED_DATE_FORMAT.parse(data.get(Details.Schema.COLLECTION_UPDATED).trim());
+			updated = getDateFormatter().parse(data.get(Details.Schema.COLLECTION_UPDATED).trim());
 		} catch (Exception e) {
 			log.warn("Unable to parse " + Details.Schema.COLLECTION_UPDATED + " date '"
-					+ data.get(Details.Schema.COLLECTION_UPDATED) + "'. Will use current date");
+					+ data.get(Details.Schema.COLLECTION_UPDATED).trim() + "'. Will use current date", e);
 		}
 		
 		return new Details(data.get(Details.Schema.PADRE_VERSION),
@@ -32,5 +34,14 @@ public class DetailsFactory {
 	
 	public static Details fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
 		return fromMap(XmlStreamUtils.tagsToMap(Details.Schema.DETAILS, xmlStreamReader));
+	}
+	
+	private static SimpleDateFormat getDateFormatter() {
+		SimpleDateFormat df = dateFormatters.get(Thread.currentThread().getId());
+		if (df == null) {
+			df = new SimpleDateFormat(UPDATED_DATE_PATTERN);
+			dateFormatters.put(Thread.currentThread().getId(), df);
+		}
+		return df;
 	}
 }

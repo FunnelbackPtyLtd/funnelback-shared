@@ -33,7 +33,7 @@
 			${(avg/stats.count)?string("0.##")}ms
 		</td>
 		<td>
-			${stats.count!"Unknown (?) "}ms
+			${stats.values[stats.count-1]}ms
 		</td>
 		<td><a href="/publicui/dashboard/stats/${key}/show">show</a></td>
 		

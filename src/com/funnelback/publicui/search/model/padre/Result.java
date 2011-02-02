@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,7 +18,7 @@ public class Result {
 	/**
 	 * Date format used in padre results
 	 */
-	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+	public static final String DATE_PATTERN = "d MMM yyyy";
 
 	/**
 	 * Prefix for Metadata fields in the MetaData Map.
