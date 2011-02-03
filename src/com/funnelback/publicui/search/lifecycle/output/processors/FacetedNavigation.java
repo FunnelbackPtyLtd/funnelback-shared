@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Transforms result metadata counts into proper facet hierarchy
@@ -21,7 +22,7 @@ public class FacetedNavigation implements OutputProcessor {
 
 	@Override
 	public void process(SearchTransaction searchTransaction) {
-		if (searchTransaction != null && searchTransaction.hasResponse()
+		if (SearchTransactionUtils.hasResponse(searchTransaction)
 				&& searchTransaction.getResponse().hasResultPacket()
 				&& searchTransaction.getResponse().getResultPacket().getRmcs().size() > 0) {
 			

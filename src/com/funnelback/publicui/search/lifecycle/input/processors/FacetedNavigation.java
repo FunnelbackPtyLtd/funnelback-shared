@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Sets the "rmcf" query processor option on the fly if faceted navigation
@@ -20,9 +21,7 @@ public class FacetedNavigation implements InputProcessor {
 
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		if (searchTransaction != null
-				&& searchTransaction.getQuestion() != null
-				&& searchTransaction.getQuestion().getCollection() != null) {
+		if (SearchTransactionUtils.hasCollection(searchTransaction)) {
 			
 			FacetedNavigationConfig config = searchTransaction.getQuestion().getCollection().getFacetedNavigationConfig();
 			if (config != null) {

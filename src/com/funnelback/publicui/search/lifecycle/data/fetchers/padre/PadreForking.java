@@ -24,6 +24,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.Windows
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Forks PADRE and communicate with it using stdin/out/err
@@ -59,52 +60,53 @@ public class PadreForking implements DataFetcher {
 	@Override
 	@Profiled
 	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
-
-		String commandLine = new File(searchHome,
-				DefaultValues.FOLDER_BIN 				
-				+ File.separator
-				+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
-				+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
-		
-		if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
-			commandLine += " " + OPT_USER_KEYS + "=\""
-			+ StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0])) + "\"";
-		}
-
-		Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
-		env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
-		env.put(EnvironmentKeys.QUERY_STRING.toString(), PadreQueryStringBuilder.buildQueryString(searchTransaction));
-
-		// SystemRoot environment variable is MANDATORY for TRIM DLS checks
-		// The TRIM SDK uses WinSock to connect to the remote server, and 
-		// WinSock needs SystemRoot to initialise itself.
-		if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
-			env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
-		}
-
-		PadreExecutionReturn padreOutput = null;
-		try {
-			if (searchTransaction.getQuestion().isImpersonated()) {
-				padreOutput = new WindowsNativePadreForker(padreWaitTimeout).execute(commandLine, env);
-			} else {
-				padreOutput = new JavaPadreForker().execute(commandLine, env);
-			}
+		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
 			
-			searchTransaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
-			searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
-			searchTransaction.getResponse().setReturnCode(padreOutput.getReturnCode());
-		} catch (PadreForkingException pfe) {
-			log.error("PADRE forking failed", pfe);
-			throw new DataFetchException("PADRE forking failed", pfe);				
-
-		} catch (PadreXmlParsingException pxpe) {
-			log.error("Unable to parse PADRE output", pxpe);
-			if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
-				log.error("PADRE output was: \n" + padreOutput);
+			String commandLine = new File(searchHome,
+					DefaultValues.FOLDER_BIN 				
+					+ File.separator
+					+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
+					+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+			
+			if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
+				commandLine += " " + OPT_USER_KEYS + "=\""
+				+ StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0])) + "\"";
 			}
-			throw new DataFetchException("Unable to parse PADRE output", pxpe);
+	
+			Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
+			env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
+			env.put(EnvironmentKeys.QUERY_STRING.toString(), PadreQueryStringBuilder.buildQueryString(searchTransaction));
+	
+			// SystemRoot environment variable is MANDATORY for TRIM DLS checks
+			// The TRIM SDK uses WinSock to connect to the remote server, and 
+			// WinSock needs SystemRoot to initialise itself.
+			if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
+				env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
+			}
+	
+			PadreExecutionReturn padreOutput = null;
+			try {
+				if (searchTransaction.getQuestion().isImpersonated()) {
+					padreOutput = new WindowsNativePadreForker(padreWaitTimeout).execute(commandLine, env);
+				} else {
+					padreOutput = new JavaPadreForker().execute(commandLine, env);
+				}
+				
+				searchTransaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
+				searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
+				searchTransaction.getResponse().setReturnCode(padreOutput.getReturnCode());
+			} catch (PadreForkingException pfe) {
+				log.error("PADRE forking failed", pfe);
+				throw new DataFetchException("PADRE forking failed", pfe);				
+	
+			} catch (PadreXmlParsingException pxpe) {
+				log.error("Unable to parse PADRE output", pxpe);
+				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
+					log.error("PADRE output was: \n" + padreOutput);
+				}
+				throw new DataFetchException("Unable to parse PADRE output", pxpe);
+			}
 		}
-
 	}
 	
 }

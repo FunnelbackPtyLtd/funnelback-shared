@@ -13,6 +13,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Fetches user keys for early binding DLS
@@ -24,9 +25,7 @@ public class UserKeys implements InputProcessor {
 	@Override
 	@Profiled
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
-		if (searchTransaction != null
-				&& searchTransaction.getQuestion() != null
-				&& searchTransaction.getQuestion().getCollection() != null) {
+		if (SearchTransactionUtils.hasCollection(searchTransaction)) {
 			String securityPlugin = searchTransaction.getQuestion().getCollection().getConfiguration().value(
 					Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
 			if (securityPlugin != null && ! "".equals(securityPlugin)) {

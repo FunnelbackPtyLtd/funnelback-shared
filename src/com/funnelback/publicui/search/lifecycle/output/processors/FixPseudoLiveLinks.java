@@ -18,6 +18,7 @@ import com.funnelback.publicui.search.model.Collection.Type;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 /**
@@ -54,9 +55,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	@Override
 	public void process(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
-		if (searchTransaction != null && searchTransaction.hasResponse()
-			&& searchTransaction.getResponse().hasResultPacket()
-			&& searchTransaction.getResponse().getResultPacket().hasResults()) {
+		if (SearchTransactionUtils.hasResults(searchTransaction)) {
 			
 			// 	Iterate over the results
 			for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {

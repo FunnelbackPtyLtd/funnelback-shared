@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.padre;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class ResultPacket {
 	
 	@Getter @Setter private ResultsSummary resultsSummary;
 	@Getter @Setter private Spell spell;
-	@Getter @Setter private List<Result> results;
+	@Getter @Setter private List<Result> results = new ArrayList<Result>();
 	
 	@Getter @Setter private Error error;
 	
@@ -31,7 +32,7 @@ public class ResultPacket {
 	 */
 	@Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
 	
-	public boolean hasResults() { return results != null; }
+	public boolean hasResults() { return results != null && results.size() > 0; }
 	
 	/* TODO:
 	 * Tier bars

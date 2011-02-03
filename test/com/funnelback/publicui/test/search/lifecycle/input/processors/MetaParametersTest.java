@@ -27,6 +27,36 @@ public class MetaParametersTest {
 	}
 	
 	@Test
+	public void testNoMetaParameters() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+		
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		MetaParameters processor = new MetaParameters();
+		processor.process(st, request);
+		
+		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
+	}
+	
+	@Test
+	public void testNoParameterValue() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+		
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("meta_a", (String) null);
+		request.addParameter("meta_c_or", "");
+		request.addParameter("meta_X_and", (String[]) null);
+		request.addParameter("query_phrase", (String) null);
+		request.addParameter("query_and", "");
+		request.addParameter("query_or", (String[]) null);
+		request.addParameter("unrelated", (String) null);
+		
+		MetaParameters processor = new MetaParameters();
+		processor.process(st, request);
+		
+		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
+	}
+	
+	@Test
 	public void testMetaMultipleWords() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
@@ -170,5 +200,5 @@ public class MetaParametersTest {
 		
 		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 	}
-
+	
 }

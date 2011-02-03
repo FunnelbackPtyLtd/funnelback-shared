@@ -57,7 +57,7 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (Spell.Schema.SPELL.equals(xmlStreamReader.getLocalName())) {
 						packet.setSpell(SpellFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RESULTS.equals(xmlStreamReader.getLocalName())) {
-						packet.setResults(parseResults(xmlStreamReader));
+						packet.getResults().addAll(parseResults(xmlStreamReader));
 					} else if (Error.Schema.ERROR.equals(xmlStreamReader.getLocalName())) {
 						packet.setError(ErrorFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
@@ -68,7 +68,6 @@ public class StaxStreamParser implements PadreXmlParser {
 					}
 					break;
 				}
-				
 			}
 
 			xmlStreamReader.close();

@@ -69,12 +69,18 @@ public class MetaParameters implements InputProcessor {
 			Enumeration<String> names = request.getParameterNames();
 			while (names.hasMoreElements()) {
 				String name = names.nextElement();
-				if (request.getParameterValues(name) != null && (name.startsWith(META_PREFIX) || name.startsWith(QUERY_PREFIX))) {				
-	
+				if (request.getParameterValues(name) != null
+						&& (name.startsWith(META_PREFIX) || name.startsWith(QUERY_PREFIX))) {				
+					
 					// Gather all parameter values
 					//     &meta_x=first value&meta_x=second value
 					//  => { "first", "value", "second", "value" }
-					String[] values = StringUtils.join(request.getParameterValues(name), " ").split("\\s");
+					String stringValues = StringUtils.join(request.getParameterValues(name), " ");
+					if ("".equals(stringValues)) {
+						// No value for this parameter
+						continue;
+					}
+					String[] values = stringValues.split("\\s");
 					log.debug("Processing parameter '" + name + "=" + Arrays.toString(values) + "'");
 					
 					String operator = null;	// operation (orsand, trunc, phrase ...)

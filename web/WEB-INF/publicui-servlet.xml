@@ -77,6 +77,7 @@
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="groovySampleInputProcessor" />
+		<ref bean="metadataAliasesInputProcessor" />
 	</util:list>
 
 	<util:list id="dataFetchers">
