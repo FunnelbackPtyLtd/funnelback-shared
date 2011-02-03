@@ -5,7 +5,6 @@ import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -40,13 +39,15 @@ public class WindowsNativePadreForker implements PadreForker {
 	}
 	
 	@Override
-	public String execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
+	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Native user name is '" + Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameSamCompatible) + "'");
 		}
 		
 		String result = null;
+		int returnCode = -1;
+		
 		HANDLEByReference hToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		HANDLEByReference primaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		try {
@@ -124,16 +125,14 @@ public class WindowsNativePadreForker implements PadreForker {
 			if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
 				throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 			}
-			if (rc.getValue() != PadreForking.RC_SUCCESS) {
-				log.error("PADRE didn't exit successfully. Return code was: " + rc.getValue());
-				throw new PadreForkingException(rc.getValue(), result);
-			}
+			
+			returnCode = rc.getValue();
 			log.debug("PADRE exited successfuly");
 		} finally {
-			if(! hToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
+			if(! WinBase.INVALID_HANDLE_VALUE.equals(hToken.getValue())) {
 				Kernel32.INSTANCE.CloseHandle(hToken.getValue());
 			}
-			if(! primaryToken.getValue().equals(WinBase.INVALID_HANDLE_VALUE)) {
+			if(! WinBase.INVALID_HANDLE_VALUE.equals(primaryToken.getValue())) {
 				Kernel32.INSTANCE.CloseHandle(primaryToken.getValue());
 			}
 		}
@@ -141,7 +140,7 @@ public class WindowsNativePadreForker implements PadreForker {
 		if (log.isTraceEnabled()) {
 			log.trace("PADRE output is: '" + result + "'");
 		}
-		return result;
+		return new PadreExecutionReturn(returnCode, result);
 	}
 
 	/**

@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Setter;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +17,12 @@ import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.SearchError;
-import com.funnelback.publicui.search.model.transaction.SearchError.Reason;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -45,12 +45,15 @@ public class PadreForking implements DataFetcher {
 	public static final int RC_SUCCESS = 0;
 	
 	@Autowired
+	@Setter
 	private File searchHome;
 	
 	@Autowired
+	@Setter
 	private PadreXmlParser padreXmlParser;
 	
 	@Value("#{appProperties['padre.fork.native.timeout']}")
+	@Setter
 	private int padreWaitTimeout;
 	
 	@Override
@@ -79,7 +82,7 @@ public class PadreForking implements DataFetcher {
 			env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
 		}
 
-		String padreOutput = null;
+		PadreExecutionReturn padreOutput = null;
 		try {
 			if (searchTransaction.getQuestion().isImpersonated()) {
 				padreOutput = new WindowsNativePadreForker(padreWaitTimeout).execute(commandLine, env);
@@ -87,26 +90,16 @@ public class PadreForking implements DataFetcher {
 				padreOutput = new JavaPadreForker().execute(commandLine, env);
 			}
 			
-			searchTransaction.getResponse().setRawPacket(padreOutput.toString());
-			searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.toString()));
+			searchTransaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
+			searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
+			searchTransaction.getResponse().setReturnCode(padreOutput.getReturnCode());
 		} catch (PadreForkingException pfe) {
 			log.error("PADRE forking failed", pfe);
-			SearchError se = new SearchError(Reason.DataFetchError, pfe);
-
-			// Try to parse the XML packet
-			if (pfe.getOutput() != null) {
-				try {			
-					ResultPacket packet = padreXmlParser.parse(pfe.getOutput());					
-					se.setAdditionalData(packet.getError());
-				} catch (PadreXmlParsingException pxpe) {
-					log.debug("Unable to parse erroneous XML packet", pxpe);
-				}
-			}
-			searchTransaction.setError(se);				
+			throw new DataFetchException("PADRE forking failed", pfe);				
 
 		} catch (PadreXmlParsingException pxpe) {
 			log.error("Unable to parse PADRE output", pxpe);
-			if (padreOutput != null && padreOutput.length() > 0) {
+			if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
 				log.error("PADRE output was: \n" + padreOutput);
 			}
 			throw new DataFetchException("Unable to parse PADRE output", pxpe);

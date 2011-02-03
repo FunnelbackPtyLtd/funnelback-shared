@@ -18,6 +18,9 @@ public class SearchResponse {
 	/** Useful for debugging. We should remove it for production */
 	@Getter @Setter private String rawPacket;
 	
+	/** PADRE return code (0 = SUCESS) */
+	@Getter @Setter private int returnCode;
+	
 	@Getter @Setter private List<Facet> facets;
 	
 	public boolean hasResultPacket() { return resultPacket != null; }

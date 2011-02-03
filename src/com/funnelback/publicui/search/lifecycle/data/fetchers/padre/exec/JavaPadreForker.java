@@ -9,8 +9,6 @@ import lombok.extern.apachecommons.Log;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.PumpStreamHandler;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking;
-
 /**
  * Forks PADRE using Java API (Apache Commons Exec)
  */
@@ -18,7 +16,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking
 public class JavaPadreForker implements PadreForker {
 
 	@Override
-	public String execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
+	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
 		
 		CommandLine padreCmdLine = CommandLine.parse(commandLine);
 		
@@ -32,11 +30,7 @@ public class JavaPadreForker implements PadreForker {
 		
 		try {
 			int rc = executor.execute(padreCmdLine, environmnent);
-			if (rc != PadreForking.RC_SUCCESS) {
-				throw new PadreForkingException(rc, padreOutput.toString());
-			} else {
-				return padreOutput.toString();
-			}
+			return new PadreExecutionReturn(rc, padreOutput.toString());
 		} catch (IOException ioe) {
 			throw new PadreForkingException("Failed to run PADRE with command line '"+padreCmdLine+"'", ioe);
 		}
