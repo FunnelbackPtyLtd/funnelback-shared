@@ -43,6 +43,7 @@
 	<target name="clean" description="Deletes output files">
 		<delete dir="${bin.dir}" />
 		<delete dir="${test.bin.dir}" />
+		<delete dir="${test.instrumented.dir}" />
 		<delete dir="${test.output}" />
 		<delete file="${war.name}" />
 		<delete file="${web.dir}/WEB-INF/lib/funnelback-common.jar" />
