@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.docbook.org/xml/4.5/docbookx.dtd">
+<book>
+	<bookinfo>
+		<title>Reference Documentation</title>
+
+		<productname>Funnelback Public UI</productname>
+
+		<releaseinfo>2011</releaseinfo>
+
+		<mediaobject>
+			<imageobject role="fo">
+				<imagedata align="center" fileref="images/logo-pdf.png"
+					format="PNG" width="240" />
+			</imageobject>
+		</mediaobject>
+
+		<authorgroup>
+			<author>
+				<firstname>Nicolas</firstname>
+				<surname>Guillaumin</surname>
+				<email>nguillaumin@funnelback.com</email>
+			</author>
+		</authorgroup>
+
+		<copyright>
+			<year>2011</year>
+			<holder>Funnelback</holder>
+		</copyright>
+
+	</bookinfo>
+
+	<toc></toc>
+	
+	<chapter id="introduction">
+		<title>Introduction</title>
+		
+		<para>
+			This documentation intends to be the missing link between the product documentation (for users) and the code.
+			Most of what's written here is coming from reverse-engineering the Perl code to write the Java Public UI.
+			Since sometimes code comments weren't enough, this doco has been created to explain why and how some features
+			has been developed.
+		</para>
+	</chapter>
+	
+	<chapter id="meta-dates">
+		<title>Date parameters (<literal>meta_(d|d1|d2|d3|d4|w1|w2|x|y|z)</literal>)</title>
+
+		<para>The Public UI allows passing date contraints to the query, expressed as <literal>meta_*</literal> parameters.</para>
+		<para><literal>d, d1, d2, d3, d4</literal> are documented in the product doco, but <literal>w1, w2, x, y, z</literal> aren't.</para>
+		
+		<section>
+			<title>Date constraints (<literal>d, d1, d2, d3, d4</literal>)</title>
+			<para>(Check the product doco for details about these parameters).</para>
+			
+			<para>
+			Each date constraint can be passed either as a specific date, such as <literal>meta_d3=01Jan2010</literal>, or as three separate
+			components: <literal>meta_d3day=1, meta_d3month=1, meta_d3year=2010</literal>. Each component is optional, meaning that it's possible
+			to have a date like &quot;201001&quot; for January 2010.
+			</para>
+			
+			<para>
+				Dates are passed as-is to PADRE, except for <literal>d3</literal> and <literal>d4</literal> parameters: Those one means
+				&quot;greater than or equal&quot; and &quot;lesser than or equal&quot;. PADRE doesn't interpret them directly so the Public UI
+				has to remove or add a day to the provided date to simulate this.
+				
+				<note>
+					<para>
+						There is no specific constraint on date formats, so we try to parse using various patterns. If the parsing fails the
+						constraint is simply ignored.
+					</para>
+				</note>
+			</para>
+		</section>
+		
+		<section>
+			<title>Text-based date constraints (<literal>x, y, z</literal>)</title>
+			<para>
+				As seen on the Perl code there is some processing related to text-based date constraint and <literal>x, y, z</literal> metadata classes:
+				<programlisting language="perl">
+<![CDATA[for ( "d", "d1", "d2", "d3", "d4", "w1", "w2", "x", "y", "z" ) {
+    my $year_param  = "meta_" . $_ . "year";
+    my $month_param = "meta_" . $_ . "month";
+    my $day_param   = "meta_" . $_ . "day";
+    my $year        = Funnelback::CGIExtras::get_cgi_param_from_hash( $year_param, Funnelback::CGIExtras::TYPE_NUMERIC, $params_hash );
+    my $month       = Funnelback::CGIExtras::get_cgi_param_from_hash( $month_param, Funnelback::CGIExtras::TYPE_ALPHA, $params_hash );
+    my $day         = Funnelback::CGIExtras::get_cgi_param_from_hash( $day_param, Funnelback::CGIExtras::TYPE_NUMERIC, $params_hash );
+    if ( $year and $month and $day ) {
+    	$params_hash->{"meta_$_"} = "$day$month$year";
+    }
+    elsif ( $year and $month ) {
+    	$params_hash->{"meta_$_"} = "$month$year";
+    }
+    elsif ($year) {
+    	$params_hash->{"meta_$_"} = "$year";
+    }
+
+    # Process the text date fields
+    if ( ( $year or $month or $day ) and $_ =~ /[xyz]/ ) {
+        my $value = Funnelback::CGIExtras::get_cgi_param_from_hash("meta_$_", Funnelback::CGIExtras::TYPE_UNKNOWN, $params_hash);
+        if ( $day and $value ) {
+            push @padrequery, "$_:" . $value;
+        }
+        else {
+            push @padrequery, "$_:*" . $value;
+        }
+    }
+}]]>
+				</programlisting>
+			</para>
+			
+			<para>
+				Unfortunately nobody was able to figure out what that was supposed to do (Check <ulink url="https://jira.funnelback.com/browse/FUN-65">FUN-65</ulink>)
+				so it has NOT been re-implemented.
+			</para>
+		</section>
+		
+		<section>
+			<title>Event search (<literal>w1, w2</literal>)</title>
+			<para>(Check the PADRE doco for details about this feature.)</para>
+			
+			<para>The idea is to process any existing <literal>meta_w1</literal> or <literal>meta_w2</literal> parameter into an event search query.</para>
+			<para>
+				If any of those parameters exist, they must be transformed in <literal>% w&gt;[value of w1]&lt;[value of w2]</literal>.
+				The <literal>%</literal> is a flag that switch PADRE to event search mode, and the following expression gives the event search range.
+			</para>
+			
+			<para>The value of the <literal>w1, w2</literal> is supposed to be a correct date that is passed as-is to PADRE (no parsing).</para>
+		</section>
+		
+
+	</chapter>
+
+</book>

@@ -5,22 +5,27 @@
 
 	<property name="web.dir" value="web" />
 	<property name="war.name" value="funnelback-${ant.project.name}.war" />
+	<property name="build.libs" value="build-lib" />
 
 	<fileset id="additional.bin.files" dir="${src.dir}">
 		<include name="**/*.xml" />
 		<include name="**/*.properties" />
 		<include name="**/*.groovy" />
 	</fileset>
-	
+
 	<path id="classpath">
 		<fileset dir="${web.dir}/WEB-INF/lib/" />
 		<pathelement location="../common/funnelback-common.jar" />
 
 		<fileset dir="funnelback_lib_java/common/" includes="junit-4.7.jar" />
-		<pathelement location="build-lib/servlet-api-2.5-20081211.jar" />
+		<pathelement location="${build.libs}/servlet-api-2.5-20081211.jar" />
+	</path>
+	
+	<path id="classpath.xalan">
+		<fileset dir="${build.libs}" includes="**/*.jar" />
 	</path>
 
-	<target name="dist" depends="clean, compile, test">
+	<target name="dist" depends="clean, compile, test, doc">
 		<tstamp />
 
 		<copy file="../common/funnelback-common.jar" todir="${web.dir}/WEB-INF/lib/" />
@@ -54,9 +59,27 @@
 		<property environment="env" />
 		<copy file="${war.name}" todir="${env.SEARCH_HOME}/web/webapps" overwrite="true" />
 	</target>
-	
+
 	<target name="install-test" description="Installs on a remote autotest VM">
 		<copy file="${war.name}" todir="\\auto-win2003\C$\funnelback\web\webapps" />
 	</target>
+
+	<target name="doc" description="Generate reference documentation">
+		<xslt style="doc/docbook-xsl-1.76.1/html/docbook.xsl" extension=".html" basedir="doc/content" destdir="doc/output">
+			<include name="**/*.xml" />
+			<param name="html.stylesheet" expression="style.css" />
+			<param name="hightlight.source" expression="1" />
+			<param name="xslthl.config" expression="${build.libs}/xslthl-2.0.2/highlighters/xslthl-config.xml" />
+			<classpath refid="classpath.xalan" />
+		</xslt>
+		
+		<!-- Copy the stylesheet to the same directory as the HTML files -->
+		<copy todir="doc/output">
+			<fileset dir="doc/content">
+				<include name="style.css" />
+			</fileset>
+		</copy>
+	</target>
+
 
 </project>

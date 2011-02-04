@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.web.utils.RequestParametersFilter;
 
 /**
  * Transforms meta_* parameters into query expression.
@@ -52,6 +52,9 @@ public class MetaParameters implements InputProcessor {
 	/** Prefix for query_* parameters */
 	private static final String QUERY_PREFIX = "query_";
 	
+	private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").+");
+	
+	
 	/**
 	 * Internal operation name to use when the parameter is a simple
 	 * meta_x=<value>, in order to use the same logic as meta_x_<operation>=value.
@@ -65,12 +68,11 @@ public class MetaParameters implements InputProcessor {
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
 		if (searchTransaction != null && searchTransaction.getQuestion() != null && request != null) {
-			@SuppressWarnings("unchecked")
-			Enumeration<String> names = request.getParameterNames();
-			while (names.hasMoreElements()) {
-				String name = names.nextElement();
-				if (request.getParameterValues(name) != null
-						&& (name.startsWith(META_PREFIX) || name.startsWith(QUERY_PREFIX))) {				
+			RequestParametersFilter filter = new RequestParametersFilter(request);
+			String[] parameterNames = filter.filter(META_QUERY_PATTERN);
+
+			for (String name: parameterNames) {
+				if (request.getParameterValues(name) != null) {				
 					
 					// Gather all parameter values
 					//     &meta_x=first value&meta_x=second value
@@ -94,13 +96,14 @@ public class MetaParameters implements InputProcessor {
 							md = m.group(1);
 							operator = m.group(2);
 						} else {
-							// Possibly a simple "meta_x=value"
+							// A simple "meta_x=value"
 							md = name.substring(name.indexOf("_")+1);
-							if (!"".equals(md)) {	// In case it's a "meta_=abc"
+							// Ensure metadata class is present an only 1 char
+							if (!"".equals(md) && md.length() == 1) {
 								operator = INTERNAL_OPERATOR_ADDMETA;
 							}
 						}
-					} else if (name.startsWith(QUERY_PREFIX) && name.length() > QUERY_PREFIX.length()) {
+					} else if (name.startsWith(QUERY_PREFIX)) {
 						operator = name.substring(name.indexOf("_")+1);
 					}
 					
@@ -113,7 +116,7 @@ public class MetaParameters implements InputProcessor {
 							searchTransaction.getQuestion().getMetaParameters().put(name, newValue);
 							
 							// Remove the parameter from the list that will be passed to PADRE if
-							// we succesfully processed it
+							// we successfully processed it
 							searchTransaction.getQuestion().getPassThroughParameters().remove(name);
 						} catch (Exception ex) {
 							log.warn("Error while invoking operation '" + operator + "' from parameter '" + name + "'", ex);

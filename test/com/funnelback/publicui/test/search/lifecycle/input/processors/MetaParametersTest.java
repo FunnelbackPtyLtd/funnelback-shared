@@ -194,6 +194,8 @@ public class MetaParametersTest {
 		request.addParameter("meta_x_", "incomplete too");
 		request.addParameter("query_invalid", "first bad");
 		request.addParameter("query_", "incomplete");
+		request.addParameter("meta_invalid", "abc");
+		request.addParameter("meta_inv_or", "def");
 		
 		MetaParameters processor = new MetaParameters();
 		processor.process(st, request);

@@ -78,6 +78,7 @@
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="groovySampleInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
+		<ref bean="metaDatesInputProcessor" />
 	</util:list>
 
 	<util:list id="dataFetchers">
