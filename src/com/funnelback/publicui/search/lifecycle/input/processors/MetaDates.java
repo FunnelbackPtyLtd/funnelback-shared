@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +19,6 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.web.utils.RequestParametersFilter;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseException;
 
 /**
  * Processes meta_* parameters related to date:
@@ -182,7 +182,7 @@ public class MetaDates implements InputProcessor {
 			} catch (Throwable t) { }
 		}
 		
-		throw new ParseException("None of the date patterns matched for '" + date + "'");
+		throw new ParseException("None of the date patterns matched for '" + date + "'", 0);
 	}
 	
 	/**

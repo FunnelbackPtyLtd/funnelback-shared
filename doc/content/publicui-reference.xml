@@ -127,8 +127,103 @@
 			
 			<para>The value of the <literal>w1, w2</literal> is supposed to be a correct date that is passed as-is to PADRE (no parsing).</para>
 		</section>
+	</chapter>
+	
+	<chapter id="meta-parameters-operators">
+		<title>Meta parameters operators (<literal>or, sand, and, ...</literal>)</title>
 		
+		<para>
+			Two possible syntaxes: <literal>meta_&lt;md&gt;_&lt;operator&gt;</literal> or <literal>query_&lt;operator&gt;</literal>.
+			These parameters are transformed in query expressions using the PADRE query language.
+		</para>
+		
+		<para>
+			Each operator has been implemented as a Java function:
+			<programlisting language="java">
+<![CDATA[...
 
+public String orsand(final String md, final String values[]) {
+	String[] data = values;
+	if (md != null) {
+		data = prefixStrings(values, md+":");
+	}	
+	return "|[" + StringUtils.join(data, " ") + "]";
+}
+
+public String or(final String md, final String values[]) {
+	String[] data = values;
+	if (md != null) {
+		data = prefixStrings(values, md+":");
+	}	
+	return "[" + StringUtils.join(data, " ") + "]";
+}
+
+...]]>
+			</programlisting>
+			
+			The operator to use is parsed from the parameter name (Eg. <literal>meta_b_orsand</literal> => <literal>orsand</literal>) and the
+			corresponding Java method is called by reflection.
+			This way, adding new operators is easy: Just code the new corresponding function and add the operator name to the list of valid operators.
+		</para>
+	</chapter>
+	
+	<chapter id="environment-variables">
+		<title>Environment variables</title>
+		
+		<para>
+			PADRE uses some environment variables which were previously provided by the CGI stack (<literal>REMOTE_USER, HTTP_HOST, ...)</literal>).
+			An <literal>InputProcessor</literal> has been developed to fetch the correct values from the <literal>HttpServletRequest</literal> object
+			and repass them to PADRE.
+		</para>
+	</chapter>
+	
+	<chapter id="passthrough-parameters">
+		<title>Pass-through parameters</title>
+		
+		<para>
+			A lot of query string parameters are used by PADRE, but never used by the Public UI layer (Examples: <literal>num_rank, start_rank</literal>, any
+			query processor option, etc.).
+			An <literal>InputProcessor</literal> has been developed to just repass along any parameters not used directly by the Public UI (Such as 
+			<literal>collection, query</literal>, etc.).
+		</para>
+	</chapter>
+	
+	<chapter id="meta-aliases">
+		<title>Meta classes aliases (<literal>site:, allinurl:, link:, filetype:</literal>)</title>
+		
+		<para>
+			This operators as just aliases for some metadata classes:
+			
+			<table>
+				<title>Mapping</title>
+				<tgroup cols="2" align="center">
+					<thead>
+						<row>
+							<entry>Operator</entry>
+							<entry>Metadata class</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>link:</entry>
+							<entry>h</entry>
+						</row>
+						<row>
+							<entry>site:</entry>
+							<entry>u</entry>
+						</row>
+						<row>
+							<entry>filetype:</entry>
+							<entry>f</entry>
+						</row>
+						<row>
+							<entry>allinurl:</entry>
+							<entry>v</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</para>
 	</chapter>
 
 </book>
