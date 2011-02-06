@@ -40,17 +40,17 @@ public class PassThroughParametersTests {
 		PassThroughParameters processor = new PassThroughParameters();
 		processor.process(st, request);
 		
-		Assert.assertEquals(2, st.getQuestion().getPassThroughParameters().size());
+		Assert.assertEquals(2, st.getQuestion().getAdditionalParameters().size());
 		for (String ignored: PassThroughParameters.IGNORED) {
-			Assert.assertFalse(st.getQuestion().getPassThroughParameters().containsKey(ignored));
+			Assert.assertFalse(st.getQuestion().getAdditionalParameters().containsKey(ignored));
 		}
 		
-		Assert.assertEquals(1, st.getQuestion().getPassThroughParameters().get("param1").length);
-		Assert.assertEquals("value1", st.getQuestion().getPassThroughParameters().get("param1")[0]);
+		Assert.assertEquals(1, st.getQuestion().getAdditionalParameters().get("param1").length);
+		Assert.assertEquals("value1", st.getQuestion().getAdditionalParameters().get("param1")[0]);
 		
-		Assert.assertEquals(2, st.getQuestion().getPassThroughParameters().get("param2").length);
-		Assert.assertEquals("value2a", st.getQuestion().getPassThroughParameters().get("param2")[0]);
-		Assert.assertEquals("value2b", st.getQuestion().getPassThroughParameters().get("param2")[1]);
+		Assert.assertEquals(2, st.getQuestion().getAdditionalParameters().get("param2").length);
+		Assert.assertEquals("value2a", st.getQuestion().getAdditionalParameters().get("param2")[0]);
+		Assert.assertEquals("value2b", st.getQuestion().getAdditionalParameters().get("param2")[1]);
 
 	}
 

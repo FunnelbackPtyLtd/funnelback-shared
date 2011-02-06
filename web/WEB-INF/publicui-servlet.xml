@@ -79,6 +79,7 @@
 		<ref bean="groovySampleInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
 		<ref bean="metaDatesInputProcessor" />
+		<ref bean="cliveMappingInputProcessor" />
 	</util:list>
 
 	<util:list id="dataFetchers">

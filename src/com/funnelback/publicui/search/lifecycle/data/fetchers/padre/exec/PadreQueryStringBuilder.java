@@ -32,7 +32,7 @@ public class PadreQueryStringBuilder {
 		qs.put(Parameters.query.toString(), new String[] {query.toString()});
 		
 		// Add any other parameter
-		qs.putAll(transaction.getQuestion().getPassThroughParameters());
+		qs.putAll(transaction.getQuestion().getAdditionalParameters());
 		
 		return toQueryString(qs);
 		

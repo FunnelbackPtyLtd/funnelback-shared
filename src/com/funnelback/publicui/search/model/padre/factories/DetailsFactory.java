@@ -22,7 +22,7 @@ public class DetailsFactory {
 	public static Details fromMap(Map<String, String> data) {
 		Date updated = new Date();
 		String str = data.get(Details.Schema.COLLECTION_UPDATED);
-		if (str != null && ! "".equals(str)) {
+		if (str != null && ! "".equals(str.trim())) {
 			try {
 				updated = getDateFormatter().parse(str.trim());
 			} catch (Exception e) {

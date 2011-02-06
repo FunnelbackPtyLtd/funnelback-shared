@@ -22,6 +22,7 @@ public class SearchQuestion {
 	@Getter @Setter private String query;
 	@Getter @Setter private Collection collection;
 	@Getter @Setter private String profile;
+	@Getter @Setter private String[] clive;
 	
 	/**
 	 * meta_* / query_* parameters, transformed as query expressions.
@@ -29,9 +30,9 @@ public class SearchQuestion {
 	@Getter final private Map<String, String> metaParameters = new HashMap<String, String>();
 	
 	/**
-	 * Parameter names, from the query string, to repass as-is to PADRE
+	 * Additional parameters to pass as-is to PADRE
 	 */
-	@Getter final private Map<String, String[]> passThroughParameters = new HashMap<String, String[]>();
+	@Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
 	
 	/**
 	 * List of environment variables to repass to PADRE
@@ -59,6 +60,7 @@ public class SearchQuestion {
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
+		public static final String CLIVE = "clive";
 		
 		public static class Cache {
 			/**

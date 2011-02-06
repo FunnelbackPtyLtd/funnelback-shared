@@ -117,7 +117,7 @@ public class MetaParameters implements InputProcessor {
 							
 							// Remove the parameter from the list that will be passed to PADRE if
 							// we successfully processed it
-							searchTransaction.getQuestion().getPassThroughParameters().remove(name);
+							searchTransaction.getQuestion().getAdditionalParameters().remove(name);
 						} catch (Exception ex) {
 							log.warn("Error while invoking operation '" + operator + "' from parameter '" + name + "'", ex);
 						}

@@ -15,6 +15,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,6 +38,9 @@ public class LocalConfigRepository implements ConfigRepository {
 	}
 	
 	private static final Pattern FACETED_NAVIGATION_QPOPTIONS_PATTERN = Pattern.compile("qpoptions=\"([\\w -]*)\"");
+	
+	/** A comment line in a config file starts with a hash */
+	private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*#.*");
 	
 	@Autowired
 	private CacheManager appCacheManager;
@@ -65,6 +70,7 @@ public class LocalConfigRepository implements ConfigRepository {
 		try {
 			Collection c = new Collection(collectionId, new NoOptionsConfig(searchHome, collectionId));
 			c.setFacetedNavigationConfig(loadFacetedNavigationConfig(c));
+			c.setMetaComponents(loadMetaComponents(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -79,6 +85,11 @@ public class LocalConfigRepository implements ConfigRepository {
 		}
 	}
 	
+	/**
+	 * Loads faceted_navigation.cfg
+	 * @param c
+	 * @return
+	 */
 	private FacetedNavigationConfig loadFacetedNavigationConfig(Collection c) {
 		File fnConfig = new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
 		if (fnConfig.canRead()) {
@@ -96,11 +107,41 @@ public class LocalConfigRepository implements ConfigRepository {
 				log.warn("Faceted navigation configuration for collection '" + c.getId() + "' doesn't contain 'qpoptions':\n" + config);
 				return null;
 			} catch (IOException ioe) {
-				log.error("Unable to read faceted navigation configuration from " + fnConfig.getAbsolutePath(), ioe);
+				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
 				return null;
 			}
 		} else {
 			return null;
+		}
+	}
+	
+	/**
+	 * Loads meta.cfg
+	 * @param c
+	 * @return
+	 */
+	public String[] loadMetaComponents(Collection c) {
+		File metaConfig = new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME);
+		if (metaConfig.canRead()) {
+			try {
+				List<String> lines = FileUtils.readLines(metaConfig);
+				
+				// Remove comments
+				org.apache.commons.collections.CollectionUtils.filter(lines, new Predicate() {
+					@Override
+					public boolean evaluate(Object o) {
+						String line = (String) o;
+						return ! COMMENT_PATTERN.matcher(line).matches();
+					}
+				});
+				
+				return lines.toArray(new String[0]);
+			} catch (IOException ioe) {
+				log.error("Unable to read meta components configuration from '" + metaConfig.getAbsolutePath() + "'", ioe);
+				return new String[0];
+			}
+		} else {
+			return new String[0];
 		}
 	}
 	

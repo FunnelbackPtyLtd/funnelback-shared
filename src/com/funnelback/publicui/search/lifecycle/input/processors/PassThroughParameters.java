@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * Will collect all the parameters of the {@link HttpServletRequest} parameters and
- * populate the "passThroughParameters" Set of the {@link SearchQuestion}. These
+ * populate the "additionalParameters" field of the {@link SearchQuestion}. These
  * parameters will be passed to PADRE.
  * 
  * Should be executed first since other {@link InputProcessor} are likely
@@ -29,7 +29,7 @@ public class PassThroughParameters implements InputProcessor {
 	/**
 	 * Some parameters are ignored as we deal with them specifically
 	 */
-	public static final String[] IGNORED = {RequestParameters.QUERY, RequestParameters.COLLECTION};
+	public static final String[] IGNORED = {RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.CLIVE};
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -37,10 +37,10 @@ public class PassThroughParameters implements InputProcessor {
 		if (searchTransaction != null
 				&& searchTransaction.getQuestion() != null
 				&& request != null) {
-			searchTransaction.getQuestion().getPassThroughParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
+			searchTransaction.getQuestion().getAdditionalParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
 		
 			for (String ignored: IGNORED) {
-				searchTransaction.getQuestion().getPassThroughParameters().remove(ignored);
+				searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);
 			}
 		}
 	}

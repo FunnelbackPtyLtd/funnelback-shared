@@ -65,11 +65,11 @@
 	</target>
 
 	<target name="doc" description="Generate reference documentation">
-		<xslt style="doc/docbook-xsl-1.76.1/html/docbook.xsl" extension=".html" basedir="doc/content" destdir="doc/output">
+		<xslt style="doc/publicui.xsl" extension=".html" basedir="doc/content" destdir="doc/output">
 			<include name="**/*.xml" />
 			<param name="html.stylesheet" expression="style.css" />
-			<param name="hightlight.source" expression="1" />
-			<param name="xslthl.config" expression="${build.libs}/xslthl-2.0.2/highlighters/xslthl-config.xml" />
+			<param name="highlight.source" expression="1" />
+			<param name="xslthl.config" expression="doc/docbook-xsl-1.76.1/highlighting/xslthl-config.xml" />
 			<classpath refid="classpath.xalan" />
 		</xslt>
 		

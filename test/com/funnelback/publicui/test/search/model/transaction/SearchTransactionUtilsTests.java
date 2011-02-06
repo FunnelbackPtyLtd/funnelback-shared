@@ -76,4 +76,13 @@ public class SearchTransactionUtilsTests {
 		Assert.assertTrue(SearchTransactionUtils.hasResults(new SearchTransaction(null, sr)));
 	}
 	
+	@Test
+	public void testHasQuestion() {
+		Assert.assertFalse(SearchTransactionUtils.hasQuestion(null));
+		Assert.assertFalse(SearchTransactionUtils.hasQuestion(new SearchTransaction(null, null)));
+		Assert.assertFalse(SearchTransactionUtils.hasQuestion(new SearchTransaction(null, new SearchResponse())));
+		Assert.assertTrue(SearchTransactionUtils.hasQuestion(new SearchTransaction(new SearchQuestion(), null)));
+		
+	}
+	
 }

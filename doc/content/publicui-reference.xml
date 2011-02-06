@@ -225,5 +225,38 @@ public String or(final String md, final String values[]) {
 			</table>
 		</para>
 	</chapter>
+	
+	<chapter id="clive-parameters">
+		<title><literal>clive</literal> parameters</title>
+		
+		<para>The <literal>clive</literal> parameter is used to contraint search to specific components of a meta collection.</para>
+		
+		<para>
+			The Public UI uses &quot;human readable&quot; <literal>clive</literal> parameters (collection names) but PADRE only understand the internal
+			&quot;technical&quot; version: An integer corresponding to a line index in the <literal>meta.cfg</literal> file.
+		</para>
+		
+		<para>
+			Consider the following <literal>meta.cfg</literal> file:
+			
+			<programlisting>
+<![CDATA[#
+# Filename: C:\funnelback\conf\test-meta\meta.cfg
+# Last Update: Wed Dec 15 16:26:17 2010
+#
+intranet
+trim
+fileshare]]>		
+			</programlisting>
+			
+			A valid <literal>clive</literal> parameter in the Public UI could be: <literal>clive=intranet,trim</literal>, however PADRE will only understand
+			<literal>clive=0,1</literal>. For this reason an <literal>InputProcessor</literal> has been developed to do the conversion.
+		</para>
+		
+		<para>
+			As opposite to the Perl UI there is no need to convert &quot;back&quot; from the integer version to the human-friendly version since both
+			versions are stored and available from the data model (<literal>SearchQuestion</literal>)
+		</para>
+	</chapter>
 
 </book>
