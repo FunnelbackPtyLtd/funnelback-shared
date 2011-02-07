@@ -141,8 +141,13 @@ public class FixPseudoLiveLinksTests {
 		Assert.assertEquals(
 				"TRIM result without trim:// prefix should be left unchanged",
 				"http://trim-ws.company.com/show-record?uri=356",
-				rp.getResults().get(9).getLiveUrl());		
+				rp.getResults().get(9).getLiveUrl());	
 		
+		Assert.assertEquals(
+				"TRIM result without cache link shouldn't have a doc parameter",
+				"serve-trim-document.cgi?collection=collection-trim&uri=1234",
+				rp.getResults().get(10).getLiveUrl());		
+
 	}
 	
 }

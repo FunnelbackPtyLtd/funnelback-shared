@@ -70,7 +70,7 @@ public class PadreForkingTests {
 			ext = ".bat";
 		}
 		
-		String qp = "mock-padre"+ext+" test_data/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml";
+		String qp = "mock-padre"+ext+" test_data/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));

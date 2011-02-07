@@ -267,5 +267,55 @@ fileshare]]>
 			Please check <ulink url="" type="issue">FUN-3368</ulink> for the details.
 		</para>
 	</chapter>
+	
+	<chapter id="pseudo-live-links">
+		<title>Pseudo live links</title>
+		
+		<para>
+			Some collection types provides &quot;fake&quot; live URLs for their results. It's for example the case for database collection, or TRIM collections because
+			there is no URL associated to these kind of data.
+			However we must provide a &quot;display&quot; link on the Public UI for each result, to give the user access to the information. Depending of the collection
+			type this display link will for example display an HTML representation of a DB record (database collections), or open the TRIM client software (TRIM collections).
+		</para>
+		
+		<para>
+			An <literal>InputProcessor</literal> has been developed for this purpose. You'll note that fixing the live links doesn't depend of the <emphasis>type of the collection</emphasis>
+			being requested, but depends on the <emphasis>type of collection for each result</emphasis>. This is due to meta collections: A meta collection can have multiple components
+			of various types (trim, database, web, filecopy ...) so fixing the live links should be done differently for each result, depending of which collection the result belongs to.
+		</para>
+	</chapter>
+	
+	<chapter id="contextual-navigation">
+		<title>Contextual Navigation</title>
+		
+		<para>
+			The Java UI doesn't have much things to do for contextual navigation as most of the work is done by PADRE.
+			The only note concerns the way PADRE output is parsed: Some things in PADRE XML output seems completely unused. For example:
+			
+			<programlisting language="xml">
+<![CDATA[<contextual_navigation>
+	<search_terms>king</search_terms>
+	<cluster_nav level="0" url="profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king">king</cluster_nav>
+	<category name="topic" more="0">
+		<cluster href="?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=%60King%20Henry%60" count="33">...Henry</cluster>
+		[...]
+		<more_link label="topic">/search/padre-sw.cgi?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king&amp;topic.max_clusters=40</more_link>
+	</category>
+	[...]
+</contextual_navigation>
+]]>		
+			</programlisting>
+			
+			In this example PADRE output, I couldn't see any use for the <literal>more="0"</literal> attribute (In fact it seems to be hardcoded to zero in the PADRE source.). It's
+			still parsed by the PADRE output parser, but is not used anywhere.
+			In the same fashion the <literal>label="topic"</literal> attribute in the <literal>&lt;more_link&gt;</literal> tag seems a repetition since it's in a &lt;category&lt; tag
+			which already have a <literal>name="topic"</literal> attribute. It seemed unused in the Perl UI so it's not parsed by the Java UI (only the tag contents, the link URL, is).
+		</para>
+		
+		<para>
+			Moreover, a simple URL transformation is performed on the output for the <literal>&lt;more_link&gt;</literal> tags. The URL starts with a hardcoded path such as
+			<literal>/search/padre-sw.cgi</literal>. This is simply removed.
+		</para>
+	</chapter>
 
 </book>

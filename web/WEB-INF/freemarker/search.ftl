@@ -183,7 +183,10 @@
                         		<ul>
                         			<#list category.clusters as cluster>
                         				<li><a href="${cluster.href}">${cluster.label}</a></li>
-                        			</#list>                     
+                        			</#list>
+                        			<#if category.moreLink?exists>
+                        				<li class="fb-contextual-navigation-more"><a href="${category.moreLink}">more...</a></li>
+                        			</#if>                     
                         		</ul>
                     	</div>
 					</#list>

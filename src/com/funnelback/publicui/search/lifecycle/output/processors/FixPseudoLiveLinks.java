@@ -87,15 +87,18 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 					Matcher liveUrlMatcher = TRIM_URL_PATTERN.matcher(result.getLiveUrl());
 					Matcher cachedUrlMatcher = TRIM_CACHE_URL_PATTERN.matcher(result.getCacheUrl());
 					
-					if (liveUrlMatcher.find() && cachedUrlMatcher.find()) {
+					if (liveUrlMatcher.find()) {
 						String trimDefaultLiveLinks = resultCollection.getConfiguration().value(Keys.Trim.DEFAULT_LIVE_LINKS);
 						
 						String docUri = liveUrlMatcher.group(1);
-						String cachedUri = cachedUrlMatcher.group(1);
+						
 						transformedLiveUrl = TRIM_PREFIX + trimDefaultLiveLinks
 							+ ".cgi?"+RequestParameters.COLLECTION+"=" + resultCollection.getId()
-							+ "&"+RequestParameters.Serve.URI+"=" + docUri
-							+ "&"+RequestParameters.Serve.DOC+"=" + cachedUri;
+							+ "&"+RequestParameters.Serve.URI+"=" + docUri;
+							
+						if (cachedUrlMatcher.find()) {
+							transformedLiveUrl += "&"+RequestParameters.Serve.DOC+"=" + cachedUrlMatcher.group(1);
+						}
 					
 					} else {
 						log.warn("Unable to parse TRIM URLs (live='"

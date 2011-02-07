@@ -22,9 +22,12 @@ public class CategoryFactory {
 			
 			switch(type){
 			case XMLStreamReader.START_ELEMENT:
-				
 				if (Cluster.Schema.CLUSTER.equals(xmlStreamReader.getLocalName())) {
 					c.getClusters().add(ClusterFactory.fromXmlStreamReader(xmlStreamReader));
+				} else if (Category.Schema.MORE_LINK.equals(xmlStreamReader.getLocalName())) {
+					c.setMoreLink(xmlStreamReader.getElementText());
+				} else if (Category.Schema.FEWER_LINK.equals(xmlStreamReader.getLocalName())) {
+					c.setFewerLink(xmlStreamReader.getElementText());
 				}
 				break;
 			case XMLStreamReader.END_ELEMENT:

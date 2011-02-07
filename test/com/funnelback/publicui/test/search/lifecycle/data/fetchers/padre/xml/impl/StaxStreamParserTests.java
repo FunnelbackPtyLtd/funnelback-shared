@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.im
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -181,6 +182,7 @@ public class StaxStreamParserTests {
 		Category type = cn.getCategories().get(0);
 		assertEquals(0, type.getMore().intValue());
 		assertEquals("type", type.getName());
+		assertNull(type.getMoreLink());
 		
 		assertEquals(8, type.getClusters().size());
 		Cluster cluster = type.getClusters().get(0);
@@ -193,6 +195,22 @@ public class StaxStreamParserTests {
 				+ "extra_aus-gov-services_add_queryterm=%7CC%3Aservice&display_featured_pages=false&"
 				+ "daat=off&extra_aus-gov-forms_num_ranks=5&fmo=on&extra_aus-gov-services_fmo=on&"
 				+ "docpath=%2Fsearch.cgi&clive=2&query=%60Student%20Visa%60", cluster.getHref());
+		
+		Category topic = cn.getCategories().get(1);
+		assertEquals(0, topic.getMore().intValue());
+		assertEquals("topic", topic.getName());
+		assertEquals("/search/padre-sw.cgi?profile=info&coverage=info&extra_aus-gov-forms_add_queryterm=%7CC%3Aform"
+				+ "&form=simple&collection=gov_combined&cool5=20&extra_aus-gov-faqs_add_queryterm=%7CC%3Afaq&xml=1"
+				+ "&advancedSearch=false&extra_aus-gov-faqs_fmo=on&extra_aus-gov-services_num_ranks=5&extra_aus-gov-faqs_num_ranks=5"
+				+ "&extra_aus-gov-forms_fmo=on&rmcf=AuJaCs&extra_aus-gov-services_add_queryterm=%7CC%3Aservice"
+				+ "&display_featured_pages=false&daat=off&extra_aus-gov-forms_num_ranks=5&fmo=on&extra_aus-gov-services_fmo=on"
+				+ "&docpath=%2Fsearch.cgi&clive=2&query=visa&topic.max_clusters=40", topic.getMoreLink());
+		assertEquals("/search/padre-sw.cgi?profile=info&coverage=info&extra_aus-gov-forms_add_queryterm=%7CC%3Aform"
+				+ "&form=simple&collection=gov_combined&cool5=20&extra_aus-gov-faqs_add_queryterm=%7CC%3Afaq&xml=1"
+				+ "&advancedSearch=false&extra_aus-gov-faqs_fmo=on&extra_aus-gov-services_num_ranks=5&extra_aus-gov-faqs_num_ranks=5"
+				+ "&extra_aus-gov-forms_fmo=on&rmcf=AuJaCs&extra_aus-gov-services_add_queryterm=%7CC%3Aservice"
+				+ "&display_featured_pages=false&daat=off&extra_aus-gov-forms_num_ranks=5&fmo=on&extra_aus-gov-services_fmo=on"
+				+ "&docpath=%2Fsearch.cgi&clive=2&query=visa&topic.max_clusters=10", topic.getFewerLink());
 	}
 	
 	@Test

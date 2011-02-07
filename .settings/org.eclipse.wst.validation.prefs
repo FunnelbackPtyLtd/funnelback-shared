@@ -1,4 +1,4 @@
-#Mon Feb 07 09:15:41 EST 2011
+#Mon Feb 07 14:53:44 EST 2011
 DELEGATES_PREFERENCE=delegateValidatorList
 USER_BUILD_PREFERENCE=enabledBuildValidatorListorg.eclipse.jst.j2ee.internal.classpathdep.ClasspathDependencyValidator;
 USER_MANUAL_PREFERENCE=enabledManualValidatorListorg.eclipse.jst.j2ee.internal.classpathdep.ClasspathDependencyValidator;
@@ -6,6 +6,8 @@ USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2
 eclipse.preferences.version=1
 override=true
 suspend=false
-vals/org.eclipse.wst.xml.core.xml/groups=0107include05111contentType128org.eclipse.core.runtime.xmlT111contentType134org.eclipse.wst.xml.core.xmlsourceT111contentType134org.eclipse.wst.xml.core.xslsourceT111contentType134org.eclipse.jst.jsp.core.tldsourceT07fileext03xmlF0107exclude06113projectNature134org.eclipse.jst.j2ee.ejb.EJBNature113projectNature130org.eclipse.jst.j2ee.EARNature04file08.projectT0104file110.classpathT0104file110.settings/T0204file119doc/docbook-xml-4.5F02
+vals/org.eclipse.wst.dtd.core.dtdDTDValidator/global=FF01
+vals/org.eclipse.wst.xml.core.xml/groups=0107include05111contentType128org.eclipse.core.runtime.xmlT111contentType134org.eclipse.wst.xml.core.xmlsourceT111contentType134org.eclipse.wst.xml.core.xslsourceT111contentType134org.eclipse.jst.jsp.core.tldsourceT07fileext03xmlF0107exclude07113projectNature134org.eclipse.jst.j2ee.ejb.EJBNature113projectNature130org.eclipse.jst.j2ee.EARNature04file08.projectT0104file110.classpathT0104file110.settings/T0204file119doc/docbook-xml-4.5F0204file122doc/docbook-xsl-1.76.1F02
+vals/org.eclipse.wst.xsd.core.xsd/groups=0107include0107fileext03xsdF0107exclude0204file119doc/docbook-xml-4.5F0204file122doc/docbook-xsl-1.76.1F02
 vals/org.eclipse.wst.xsl.core.xsl/groups=0107include0207fileext03xslF111contentType134org.eclipse.wst.xml.core.xslsourceT0107exclude0104file122doc/docbook-xsl-1.76.1F02
 vf.version=3
