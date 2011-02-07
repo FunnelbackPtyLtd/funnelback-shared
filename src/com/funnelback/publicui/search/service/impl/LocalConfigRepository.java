@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -26,6 +28,7 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.Collection;
 import com.funnelback.publicui.search.model.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.Synonym;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 @Repository("configRepository")
@@ -41,6 +44,9 @@ public class LocalConfigRepository implements ConfigRepository {
 	
 	/** A comment line in a config file starts with a hash */
 	private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*#.*");
+	
+	/** Header line of the synonyms.cfg */
+	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
 	
 	@Autowired
 	private CacheManager appCacheManager;
@@ -120,14 +126,14 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	public String[] loadMetaComponents(Collection c) {
+	private String[] loadMetaComponents(Collection c) {
 		File metaConfig = new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME);
 		if (metaConfig.canRead()) {
 			try {
 				List<String> lines = FileUtils.readLines(metaConfig);
 				
 				// Remove comments
-				org.apache.commons.collections.CollectionUtils.filter(lines, new Predicate() {
+				CollectionUtils.filter(lines, new Predicate() {
 					@Override
 					public boolean evaluate(Object o) {
 						String line = (String) o;
@@ -143,6 +149,46 @@ public class LocalConfigRepository implements ConfigRepository {
 		} else {
 			return new String[0];
 		}
+	}
+	
+	/**
+	 * Loads synonyms.cfg
+	 * @param c
+	 * @return
+	 * @deprecated Synonyms will be done by PADRE, see FUN-3368.
+	 */
+	@Deprecated
+	private Synonym[] loadSynonyms(Collection c) {
+
+		File[] synonymsConfigs = new File[] {
+				new File(c.getConfiguration().getConfigDirectory(), Files.SYNONYMS_CONFIG_FILENAME),
+				new File(c.getConfiguration().getConfigDirectory() + File.separator + DefaultValues.DEFAULT_PROFILE, Files.SYNONYMS_CONFIG_FILENAME)
+		};
+		
+		for (File config: synonymsConfigs) {
+			if (config.canRead()) {
+				try {
+					List<String> lines = FileUtils.readLines(config);
+					if (SYNONYMS_HEADER.equals(lines.get(0))) {
+						ArrayList<Synonym> synonyms = new ArrayList<Synonym>();
+						for (int i=1; i<lines.size(); i++) {
+							try {
+								synonyms.add(Synonym.fromConfigLine(lines.get(i)));
+							} catch (ParseException pe) {
+								log.warn("Error while parsing synonym line '" + lines.get(i) + "'", pe);
+							}
+						}
+						return synonyms.toArray(new Synonym[0]);
+					} else {
+						log.warn("Invalid Synonyms configuration. Unkown header '" + lines.get(0) + "'");
+					}
+				} catch (IOException ioe) {
+					log.error("Unable to read synonyms configuration from '" + config.getAbsolutePath() + "'", ioe);
+				}
+			}
+		}
+		
+		return new Synonym[0];		
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.Collection;
 
@@ -18,10 +19,10 @@ import com.funnelback.publicui.search.model.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchQuestion {
-	
+		
 	@Getter @Setter private String query;
 	@Getter @Setter private Collection collection;
-	@Getter @Setter private String profile;
+	@Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 	@Getter @Setter private String[] clive;
 	
 	/**

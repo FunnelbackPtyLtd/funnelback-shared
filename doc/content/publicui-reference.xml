@@ -110,7 +110,7 @@
 			</para>
 			
 			<para>
-				Unfortunately nobody was able to figure out what that was supposed to do (Check <ulink url="https://jira.funnelback.com/browse/FUN-65">FUN-65</ulink>)
+				Unfortunately nobody was able to figure out what that was supposed to do (Check <ulink url="" type="issue">FUN-65</ulink>)
 				so it has NOT been re-implemented.
 			</para>
 		</section>
@@ -171,7 +171,7 @@ public String or(final String md, final String values[]) {
 		<title>Environment variables</title>
 		
 		<para>
-			PADRE uses some environment variables which were previously provided by the CGI stack (<literal>REMOTE_USER, HTTP_HOST, ...)</literal>).
+			PADRE uses some environment variables which were previously provided by the CGI stack (<envar>REMOTE_USER</envar>, <envar>HTTP_HOST</envar>, ...).
 			An <literal>InputProcessor</literal> has been developed to fetch the correct values from the <literal>HttpServletRequest</literal> object
 			and repass them to PADRE.
 		</para>
@@ -256,6 +256,15 @@ fileshare]]>
 		<para>
 			As opposite to the Perl UI there is no need to convert &quot;back&quot; from the integer version to the human-friendly version since both
 			versions are stored and available from the data model (<literal>SearchQuestion</literal>)
+		</para>
+	</chapter>
+	
+	<chapter id="synonyms">
+		<title>Synonyms</title>
+		
+		<para>
+			It has been decided that the synonyms feature will be implemented in PADRE, instead of re-implemting it in the Java UI.
+			Please check <ulink url="" type="issue">FUN-3368</ulink> for the details.
 		</para>
 	</chapter>
 
