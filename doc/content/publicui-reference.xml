@@ -317,5 +317,27 @@ fileshare]]>
 			<literal>/search/padre-sw.cgi</literal>. This is simply removed.
 		</para>
 	</chapter>
+	
+	<chapter id="cgi-transforms">
+		<title>CGI Transforms</title>
+		
+		<para>
+			CGI Transforms in the Perl UI allowed users to add/change/remove request parameters depending of a configuration file (See the product doco for more details).
+			Re-implementing this behavior should be done at the top-level entry point in order to be transparent to the rest of the system. Ideally it should take place in a
+			<literal>ServletFilter</literal> or a Spring interceptor (but keeping in mind that it should be configurable per-collection).
+			Unfortunately the <literal>HttpServletRequest</literal> object from J2EE is immutable, meaning that we can't re-implement that simply by manipulating the request parameters.
+		</para>
+		
+		<para>
+			Using <ulink url="http://code.google.com/p/urlrewritefilter">URLRewriteFilter</ulink> has been investigated but it doesn't deal properly with query string parameters
+			(See <ulink url="https://groups.google.com/d/topic/urlrewrite/oHcnjCVF_ss/discussion">here</ulink> and
+			<ulink url="https://groups.google.com/d/topic/urlrewrite/6jWgBh452P0/discussion">here</ulink>) probably because of the aforementioned difficulty.
+		</para>
+		
+		<para>
+			The chosen approach is to write a <literal><ulink url="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</ulink></literal>
+			that will override the methods related to getting request parameters to add/change/remove the parameters depending of the config file.
+		</para>
+	</chapter>
 
 </book>
