@@ -2,7 +2,12 @@ package com.funnelback.publicui.search.model.collection.paramtransform.criteria;
 
 import java.util.Map;
 
+/**
+ * A {@link Criteria} that checks that a parameter is present,
+ * regardless of its value.
+ */
 public class ParameterPresentCriteria implements Criteria {
+	
 	private String parameterName;
 
 	public ParameterPresentCriteria(String parameterName) {

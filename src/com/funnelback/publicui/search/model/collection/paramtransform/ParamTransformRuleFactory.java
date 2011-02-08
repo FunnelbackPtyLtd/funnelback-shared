@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.model.collection;
+package com.funnelback.publicui.search.model.collection.paramtransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
+import lombok.extern.apachecommons.Log;
+
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.Criteria;
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.ParameterMatchesValueCriteria;
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.ParameterPresentCriteria;
@@ -17,10 +18,13 @@ import com.funnelback.publicui.search.model.collection.paramtransform.operation.
 import com.funnelback.publicui.web.utils.QueryStringUtils;
 
 /**
- * Builds a list of parameters transformation {@link Rule} by
+ * Builds a list of parameters transformation rules by
  * parsing a list of text rules (extracted from cgi_transform.cfg.
+ * 
+ * @see TransformRule
  */
-public class ParameterTransformationRulesBuilder {
+@Log
+public class ParamTransformRuleFactory {
 
 	/**
 	 * Tranform rule syntax is:
@@ -34,8 +38,13 @@ public class ParameterTransformationRulesBuilder {
 	private static final Pattern FROM_PATTERN = Pattern.compile("^\\s*([^=]+)(\\s*=\\s*(.*))?\\s*");
 	private static final Pattern TO_PATTERN = Pattern.compile("^\\s*(\\-)?(.+)?\\s*");
 	
-	public static List<Rule> buildRules(String[] rules) {
-		ArrayList<Rule> transformRules = new ArrayList<Rule>();
+	/**
+	 * Builds a list of {@link TransformRule} by parsing textual rules.
+	 * @param rules Textual rules, as in cgi_transform.cfg
+	 * @return Parsed {@link TransformRule}s
+	 */
+	public static List<TransformRule> buildRules(String[] rules) {
+		ArrayList<TransformRule> transformRules = new ArrayList<TransformRule>();
 		
 		if (rules != null) {
 			
@@ -52,18 +61,20 @@ public class ParameterTransformationRulesBuilder {
 					if (fromMatcher.matches() && toMatcher.matches()) {
 						// Rule is valid
 
-						// Find criteria
+						// Find criteria (left end operator)
 						String fromParamName = fromMatcher.group(1);
 						String fromParamValue = fromMatcher.group(3);
 						Criteria c = buildCriteria(fromParamName, fromParamValue);
 
-						// Find operation(s)
+						// Find operation(s) (right end operator)
 						boolean remove = toMatcher.group(1) != null;
 						String toParams = toMatcher.group(2);
 						List<Operation> operations = buildOperations(remove, toParams);
 						
 						// Build rule
-						transformRules.add(new Rule(c, operations));
+						TransformRule r = new TransformRule(c, operations);
+						transformRules.add(r);
+						log.debug("Built following rule from '" + rule + "' : " + r);
 					}
 				}
 			}

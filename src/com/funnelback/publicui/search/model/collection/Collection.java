@@ -10,7 +10,7 @@ import lombok.ToString;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
+import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 
 /**
  * A search collection.
@@ -42,7 +42,7 @@ public class Collection {
 	 * List of parameters transformation (previously known as CGI Transforms).
 	 * Is read from cgi_transform.cfg
 	 */
-	@Getter @Setter private List<Rule> parametersTransforms = new ArrayList<Rule>();
+	@Getter @Setter private List<TransformRule> parametersTransforms = new ArrayList<TransformRule>();
 	
 	/** Collection type */
 	public Type getType() {

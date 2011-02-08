@@ -4,7 +4,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 
+/**
+ * {@link Criteria} that checks that a specific parameter
+ * is present and possess the desired value.
+ */
 public class ParameterMatchesValueCriteria implements Criteria {
+	
 	private String parameterName;
 	private String parameterValue;
 

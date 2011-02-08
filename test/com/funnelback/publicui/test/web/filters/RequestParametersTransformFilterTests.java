@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.ParameterTransformationRulesBuilder;
+import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.web.filters.RequestParametersTransformFilter;
 import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
@@ -41,7 +41,7 @@ public class RequestParametersTransformFilterTests {
 		
 		Collection c = new Collection("cgi-transform", new NoOptionsConfig("cgi-transform"));
 		c.setParametersTransforms(
-				ParameterTransformationRulesBuilder.buildRules(new String[] {
+				ParamTransformRuleFactory.buildRules(new String[] {
 						"coverage=abcnews => -scope",
 						"coverage=abcnews => profile=news&clive=abc&clive=news&scope=/news"	
 				}));

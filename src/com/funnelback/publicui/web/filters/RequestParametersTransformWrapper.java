@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
+import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.collection.paramtransform.operation.Operation;
 
 /**
@@ -26,17 +26,17 @@ import com.funnelback.publicui.search.model.collection.paramtransform.operation.
 public class RequestParametersTransformWrapper extends HttpServletRequestWrapper {
 	
 	/** Modified parameters Map */
-	private HashMap<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
+	private Map<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
 	
-	public RequestParametersTransformWrapper(HttpServletRequest request, List<Rule> rules) {
+	public RequestParametersTransformWrapper(HttpServletRequest request, List<TransformRule> rules) {
 		super(request);
 		modifiedParameterMap.putAll(request.getParameterMap());
 		
 		if (rules != null) {
-			for (Rule rule: rules) {
-				if (rule.getCriteria().matches(modifiedParameterMap)) {
+			for (TransformRule rule: rules) {
+				if (rule.getCriteria().matches(request.getParameterMap())) {
 					for (Operation o: rule.getOperations()) {
-						o.apply(modifiedParameterMap);
+						modifiedParameterMap = o.apply(Collections.unmodifiableMap(modifiedParameterMap));
 					}
 				}
 			}

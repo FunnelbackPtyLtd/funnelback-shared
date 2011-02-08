@@ -1,12 +1,18 @@
 package com.funnelback.publicui.search.model.collection.paramtransform.operation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * An {@link Operation} that removes specific values of a parameter from the
+ * map.
+ */
 public class RemoveSpecificValuesOperation implements Operation {
+
 	private String parameterName;
 	private List<String> parameterValues;
 
@@ -16,17 +22,19 @@ public class RemoveSpecificValuesOperation implements Operation {
 	}
 
 	@Override
-	public void apply(Map<String, String[]> parameters) {
-		if (parameters.containsKey(parameterName)) {
-			String values[] = parameters.get(parameterName);
+	public Map<String, String[]> apply(Map<String, String[]> parameters) {
+		HashMap<String, String[]> out = new HashMap<String, String[]>(parameters);
+		if (out.containsKey(parameterName)) {
+			String values[] = out.get(parameterName);
 			ArrayList<String> newValues = new ArrayList<String>();
 			for (String value : values) {
 				if (!parameterValues.contains(value)) {
 					newValues.add(value);
 				}
 			}
-			parameters.put(parameterName, newValues.toArray(new String[0]));
+			out.put(parameterName, newValues.toArray(new String[0]));
 		}
+		return out;
 	}
 
 	@Override
