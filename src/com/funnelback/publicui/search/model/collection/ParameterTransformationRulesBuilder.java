@@ -1,0 +1,115 @@
+package com.funnelback.publicui.search.model.collection;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
+import com.funnelback.publicui.search.model.collection.paramtransform.criteria.Criteria;
+import com.funnelback.publicui.search.model.collection.paramtransform.criteria.ParameterMatchesValueCriteria;
+import com.funnelback.publicui.search.model.collection.paramtransform.criteria.ParameterPresentCriteria;
+import com.funnelback.publicui.search.model.collection.paramtransform.operation.AddParameterOperation;
+import com.funnelback.publicui.search.model.collection.paramtransform.operation.Operation;
+import com.funnelback.publicui.search.model.collection.paramtransform.operation.RemoveAllValuesOperation;
+import com.funnelback.publicui.search.model.collection.paramtransform.operation.RemoveSpecificValuesOperation;
+import com.funnelback.publicui.web.utils.QueryStringUtils;
+
+/**
+ * Builds a list of parameters transformation {@link Rule} by
+ * parsing a list of text rules (extracted from cgi_transform.cfg.
+ */
+public class ParameterTransformationRulesBuilder {
+
+	/**
+	 * Tranform rule syntax is:
+	 * replaced_param=value => insert_param1=value&insert_param2=value
+	 * param=value => -remove_param1
+	 * ...
+	 * 
+	 * @see Original Perl code
+	 */
+	private static final Pattern RULE_PATTERN = Pattern.compile("^\\s*([^\\s]+?)\\s*=>\\s*([^\\s]+?)\\s*$");
+	private static final Pattern FROM_PATTERN = Pattern.compile("^\\s*([^=]+)(\\s*=\\s*(.*))?\\s*");
+	private static final Pattern TO_PATTERN = Pattern.compile("^\\s*(\\-)?(.+)?\\s*");
+	
+	public static List<Rule> buildRules(String[] rules) {
+		ArrayList<Rule> transformRules = new ArrayList<Rule>();
+		
+		if (rules != null) {
+			
+			for (String rule : rules) {
+				
+				Matcher m = RULE_PATTERN.matcher(rule);
+				if (m.find()) {
+					String from = m.group(1);
+					String to = m.group(2);
+
+					Matcher fromMatcher = FROM_PATTERN.matcher(from);
+					Matcher toMatcher = TO_PATTERN.matcher(to);
+					
+					if (fromMatcher.matches() && toMatcher.matches()) {
+						// Rule is valid
+
+						// Find criteria
+						String fromParamName = fromMatcher.group(1);
+						String fromParamValue = fromMatcher.group(3);
+						Criteria c = buildCriteria(fromParamName, fromParamValue);
+
+						// Find operation(s)
+						boolean remove = toMatcher.group(1) != null;
+						String toParams = toMatcher.group(2);
+						List<Operation> operations = buildOperations(remove, toParams);
+						
+						// Build rule
+						transformRules.add(new Rule(c, operations));
+					}
+				}
+			}
+		}
+		return transformRules;
+	}
+
+	/**
+	 * Builds a criteria.
+	 * @param fromParamName
+	 * @param fromParamValue
+	 * @return
+	 */
+	private static Criteria buildCriteria(String fromParamName, String fromParamValue) {
+		if (fromParamValue != null && ! "".equals(fromParamValue)) {
+			return new ParameterMatchesValueCriteria(fromParamName, fromParamValue);
+		} else {
+			return new ParameterPresentCriteria(fromParamName);
+		}
+	}
+	
+	/**
+	 * Builds a list of operations
+	 * @param remove
+	 * @param paramString
+	 * @return
+	 */
+	private static List<Operation> buildOperations(boolean remove, String paramString) {
+		ArrayList<Operation> operations = new ArrayList<Operation>();
+		
+		if (remove) {
+			Map<String, List<String>> params = QueryStringUtils.toMap(paramString, false);
+			for (String name : params.keySet()) {
+				if (params.get(name) != null && params.get(name).size() > 0) {
+					operations.add(new RemoveSpecificValuesOperation(name, params.get(name)));
+				} else {
+					operations.add(new RemoveAllValuesOperation(name));
+				}
+			}
+		} else {
+			Map<String, List<String>> params = QueryStringUtils.toMap(paramString, false);
+			for (String name : params.keySet()) {
+				operations.add(new AddParameterOperation(name, params.get(name)));
+			}
+		}
+		return operations;
+	}
+	
+}

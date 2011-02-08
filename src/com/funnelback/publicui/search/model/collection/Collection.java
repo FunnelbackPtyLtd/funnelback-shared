@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.model.collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -7,6 +10,7 @@ import lombok.ToString;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
 
 /**
  * A search collection.
@@ -38,7 +42,7 @@ public class Collection {
 	 * List of parameters transformation (previously known as CGI Transforms).
 	 * Is read from cgi_transform.cfg
 	 */
-	@Getter @Setter private String[] parametersTransforms = new String[0];
+	@Getter @Setter private List<Rule> parametersTransforms = new ArrayList<Rule>();
 	
 	/** Collection type */
 	public Type getType() {

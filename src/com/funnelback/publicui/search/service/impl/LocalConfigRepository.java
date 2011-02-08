@@ -28,7 +28,9 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.ParameterTransformationRulesBuilder;
 import com.funnelback.publicui.search.model.collection.Synonym;
+import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 @Repository("configRepository")
@@ -136,8 +138,9 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	private static String[] loadParametersTransforms(Collection c) {
-		return readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME));
+	private static List<Rule> loadParametersTransforms(Collection c) {
+		String[] rules = readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME));
+		return ParameterTransformationRulesBuilder.buildRules(rules);
 	}
 	
 	/**

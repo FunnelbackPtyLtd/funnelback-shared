@@ -45,7 +45,7 @@ public class RequestParametersTransformFilter implements Filter {
 		ServletRequest target = request;
 		if (collection != null) {
 			Collection c = configRepository.getCollection(collection);
-			if (c != null && c.getParametersTransforms() != null && c.getParametersTransforms().length > 0) {
+			if (c != null && c.getParametersTransforms() != null && c.getParametersTransforms().size() > 0) {
 				log.debug("Using parameter transforms for collection '" + c.getId() + "'");
 				target = new RequestParametersTransformWrapper((HttpServletRequest) request, c.getParametersTransforms());
 			}

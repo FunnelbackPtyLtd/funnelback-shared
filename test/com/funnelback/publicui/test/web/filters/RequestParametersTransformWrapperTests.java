@@ -1,9 +1,13 @@
 package com.funnelback.publicui.test.web.filters;
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.funnelback.publicui.search.model.collection.ParameterTransformationRulesBuilder;
+import com.funnelback.publicui.search.model.collection.paramtransform.Rule;
 import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
 
 public class RequestParametersTransformWrapperTests {
@@ -23,7 +27,7 @@ public class RequestParametersTransformWrapperTests {
 		Assert.assertEquals(1, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 
-		wrapper = new RequestParametersTransformWrapper(req, new String[0]);
+		wrapper = new RequestParametersTransformWrapper(req, new ArrayList<Rule>());
 		Assert.assertEquals(1, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 	}
@@ -42,7 +46,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("param1", "value1");
 		req.addParameter("extra", "identical");
 		
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(2, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("identical", wrapper.getParameter("extra"));
@@ -60,7 +64,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("param1", "value1");
 		req.addParameter("extra", "identical");
 		
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(5, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("valueA", wrapper.getParameter("inserted_paramA"));
@@ -79,7 +83,7 @@ public class RequestParametersTransformWrapperTests {
 			req.addParameter("param1", "value1");
 			req.addParameter("extra", "identical");
 			
-			RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+			RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 			Assert.assertEquals(2, wrapper.getParameterMap().size());
 			Assert.assertArrayEquals(new String[] {"value1", "newValue1"}, wrapper.getParameterValues("param1"));
 			Assert.assertEquals("identical", wrapper.getParameter("extra"));
@@ -99,7 +103,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("extra", "identical");
 		req.addParameter("profile", new String[] {"default", "test", "plop"});
 
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(3, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("identical", wrapper.getParameter("extra"));
@@ -107,7 +111,7 @@ public class RequestParametersTransformWrapperTests {
 		
 		req.addParameter("param2", "value2");
 
-		wrapper = new RequestParametersTransformWrapper(req, rules);
+		wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(4, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("identical", wrapper.getParameter("extra"));
@@ -126,7 +130,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("coverage", "abcnews");
 		req.addParameter("scope", "/");
 
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(5, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
 		Assert.assertArrayEquals(new String[] {"abcnews"}, wrapper.getParameterValues("coverage"));
@@ -154,7 +158,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("param2", "");
 		req.addParameter("param3", "anything");
 		
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules));
 		Assert.assertEquals(6, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
 		Assert.assertArrayEquals(new String[] {"business-gov"}, wrapper.getParameterValues("collection"));
@@ -176,7 +180,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("query", "sharks");
 		req.addParameter("collection", "business-gov");
 
-		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules1);
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules1));
 		Assert.assertEquals(3, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
 		Assert.assertArrayEquals(new String[] {"business-gov", "business-gov"}, wrapper.getParameterValues("collection"));
@@ -190,7 +194,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("location", "anything");
 		req.addParameter("extra_local-council_disable", "on");
 		
-		wrapper = new RequestParametersTransformWrapper(req, rules2);
+		wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules2));
 		Assert.assertEquals(3, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
 		Assert.assertArrayEquals(new String[] {"business-gov"}, wrapper.getParameterValues("collection"));
@@ -205,7 +209,7 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("location", "0832");
 		req.addParameter("extra_local-council_disable", "on");
 		
-		wrapper = new RequestParametersTransformWrapper(req, rules3);
+		wrapper = new RequestParametersTransformWrapper(req, ParameterTransformationRulesBuilder.buildRules(rules3));
 		Assert.assertEquals(7, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
 		Assert.assertArrayEquals(new String[] {"business-gov"}, wrapper.getParameterValues("collection"));
