@@ -1,7 +1,8 @@
-package com.funnelback.publicui.web.interceptors;
+package com.funnelback.publicui.web.filters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +18,15 @@ import org.apache.commons.lang.ArrayUtils;
 import com.funnelback.publicui.web.utils.QueryStringUtils;
 
 /**
- * Wraps an {@link HttpServletRequest} in order to achieve parameter transformation
- * (previously called CGI Transforms).
- *
+ * Wraps an {@link HttpServletRequest} in order to allow parameter manipulation.
+ * 
+ * Since {@link HttpServletRequest} objects are immutable, this is the recommended way
+ * to manipulate query string parameters.
+ * 
+ * This wrapper is used in conjunction with {@link RequestParametersTransformFilter} to
+ * achieve CGI Transforms.
+ * 
+ * @see HttpServletRequestWrapper *
  */
 public class RequestParametersTransformWrapper extends HttpServletRequestWrapper {
 
@@ -28,11 +35,14 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 	 * replaced_param=value => insert_param1=value&insert_param2=value
 	 * param=value => -remove_param1
 	 * ...
+	 * 
+	 * @see Original Perl code
 	 */
 	private static final Pattern RULE_PATTERN = Pattern.compile("^\\s*([^\\s]+?)\\s*=>\\s*([^\\s]+?)\\s*$");
 	private static final Pattern FROM_PATTERN = Pattern.compile("^\\s*([^=]+)(\\s*=\\s*(.*))?\\s*");
 	private static final Pattern TO_PATTERN = Pattern.compile("^\\s*(\\-)?(.+)?\\s*");
 	
+	/** Modified parameters Map */
 	private HashMap<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
 	
 	@SuppressWarnings("unchecked")
@@ -121,8 +131,8 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 	}
 	
 	@Override
-	public Enumeration getParameterNames() {
-		throw new UnsupportedOperationException();
+	public Enumeration<String> getParameterNames() {
+		return Collections.enumeration(modifiedParameterMap.keySet());
 	}
 	
 }

@@ -44,11 +44,22 @@
 			<param-value>true</param-value>
 		</init-param> 
 	</filter>
-		<filter-mapping> <filter-name>SecurityFilter</filter-name>
-		<!-- Change mapping to /* to activate -->
-		<url-pattern>/_/*</url-pattern> 
+		<filter-mapping>
+			<filter-name>SecurityFilter</filter-name>
+			<!-- Change mapping to /* to activate -->
+			<url-pattern>/_/*</url-pattern> 
 	</filter-mapping>
 	<!--  ========================================== -->
+
+	 <filter>
+	   <filter-name>RequestParametersTransformFilter</filter-name>
+	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+	   <filter-name>RequestParametersTransformFilter</filter-name>
+	   <servlet-name>publicui</servlet-name>
+	</filter-mapping>
 
 	<session-config>
 		<session-timeout>1</session-timeout>

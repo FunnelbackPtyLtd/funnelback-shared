@@ -102,7 +102,7 @@ public class PadreForking implements DataFetcher {
 			} catch (PadreXmlParsingException pxpe) {
 				log.error("Unable to parse PADRE output", pxpe);
 				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
-					log.error("PADRE output was: \n" + padreOutput);
+					log.error("PADRE output was: \n" + padreOutput.getOutput());
 				}
 				throw new DataFetchException("Unable to parse PADRE output", pxpe);
 			}

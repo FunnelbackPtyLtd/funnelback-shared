@@ -34,6 +34,12 @@ public class Collection {
 	 */
 	@Getter @Setter private String[] metaComponents = new String[0];
 	
+	/**
+	 * List of parameters transformation (previously known as CGI Transforms).
+	 * Is read from cgi_transform.cfg
+	 */
+	@Getter @Setter private String[] parametersTransforms = new String[0];
+	
 	/** Collection type */
 	public Type getType() {
 		Type out = Type.unknown;

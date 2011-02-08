@@ -322,10 +322,11 @@ fileshare]]>
 		<title>CGI Transforms</title>
 		
 		<para>
-			CGI Transforms in the Perl UI allowed users to add/change/remove request parameters depending of a configuration file (See the product doco for more details).
+			CGI Transforms in the Perl UI allowed users to add/change/remove query string parameters/values depending of a configuration file (See the product doco for more details).
 			Re-implementing this behavior should be done at the top-level entry point in order to be transparent to the rest of the system. Ideally it should take place in a
 			<literal>ServletFilter</literal> or a Spring interceptor (but keeping in mind that it should be configurable per-collection).
-			Unfortunately the <literal>HttpServletRequest</literal> object from J2EE is immutable, meaning that we can't re-implement that simply by manipulating the request parameters.
+			Unfortunately the <literal>HttpServletRequest</literal> object from J2EE is immutable, meaning that we can't just add/change/remove Parameters by manipulating the request
+			(There is no <literal>setParameter()</literal> or <literal>removeParameter()</literal> in the <literal>HttpServletRequest</literal> class).
 		</para>
 		
 		<para>
@@ -336,8 +337,11 @@ fileshare]]>
 		
 		<para>
 			The chosen approach is to write a <literal><ulink url="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</ulink></literal>
-			that will override the methods related to getting request parameters to add/change/remove the parameters depending of the config file.
+			that will override the methods related to getting request parameters to &quot;simulate&quot; the fact that some parameters have been altered. This seems to be the recommended way
+			of manipulating a request object.
 		</para>
+		
+		<para>This wrapper is used with a servlet Filter that wraps the original request in it if the target collection uses CGI Transforms.</para>
 	</chapter>
 
 </book>

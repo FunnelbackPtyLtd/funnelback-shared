@@ -18,6 +18,8 @@
 	<!-- context:component-scan base-package="com.funnelback.publicui" / -->
 	<!-- aop:aspectj-autoproxy / -->
 
+	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
+
 	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg index="0" type="java.net.URL"
 			value="classpath:ehcache.xml" />

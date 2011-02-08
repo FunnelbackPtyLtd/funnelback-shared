@@ -77,6 +77,7 @@ public class LocalConfigRepository implements ConfigRepository {
 			Collection c = new Collection(collectionId, new NoOptionsConfig(searchHome, collectionId));
 			c.setFacetedNavigationConfig(loadFacetedNavigationConfig(c));
 			c.setMetaComponents(loadMetaComponents(c));
+			c.setParametersTransforms(loadParametersTransforms(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -96,7 +97,7 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	private FacetedNavigationConfig loadFacetedNavigationConfig(Collection c) {
+	private static FacetedNavigationConfig loadFacetedNavigationConfig(Collection c) {
 		File fnConfig = new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
 		if (fnConfig.canRead()) {
 			try {
@@ -126,24 +127,33 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	private String[] loadMetaComponents(Collection c) {
-		File metaConfig = new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME);
-		if (metaConfig.canRead()) {
+	private static String[] loadMetaComponents(Collection c) {
+		return readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME));
+	}
+	
+	/**
+	 * Loads cgi_transform.cfg
+	 * @param c
+	 * @return
+	 */
+	private static String[] loadParametersTransforms(Collection c) {
+		return readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME));
+	}
+	
+	/**
+	 * Reads a config file and return its content.
+	 * @param c Target collection
+	 * @param configFile Config file to read
+	 * @return Content of the file, or a zero-sized array in case of file not found or error.
+	 */
+	private static String[] readConfig(Collection c, File configFile) {
+		if (configFile.canRead()) {
 			try {
-				List<String> lines = FileUtils.readLines(metaConfig);
-				
-				// Remove comments
-				CollectionUtils.filter(lines, new Predicate() {
-					@Override
-					public boolean evaluate(Object o) {
-						String line = (String) o;
-						return ! COMMENT_PATTERN.matcher(line).matches();
-					}
-				});
-				
+				List<String> lines = FileUtils.readLines(configFile);				
+				CollectionUtils.filter(lines, new RemoveCommentsPredicate());
 				return lines.toArray(new String[0]);
 			} catch (IOException ioe) {
-				log.error("Unable to read meta components configuration from '" + metaConfig.getAbsolutePath() + "'", ioe);
+				log.error("Unable to read configuration from '" + configFile.getAbsolutePath() + "'", ioe);
 				return new String[0];
 			}
 		} else {
@@ -231,5 +241,16 @@ public class LocalConfigRepository implements ConfigRepository {
 			return (List<String>) elt.getObjectValue();
 		}
 	}
-
+	
+	/**
+	 * Remove comments from config files
+	 */
+	private static class RemoveCommentsPredicate implements Predicate {
+		@Override
+		public boolean evaluate(Object o) {
+			String line = (String) o;
+			return ! COMMENT_PATTERN.matcher(line).matches();
+		}
+	};
+	
 }

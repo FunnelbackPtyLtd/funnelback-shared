@@ -4,12 +4,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 				http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
-				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd">
+
+	<context:component-scan base-package="com.funnelback.publicui.aop,com.funnelback.publicui.log,com.funnelback.publicui.search" />
+	<aop:aspectj-autoproxy />
 
 	<bean id="log4jInitialization"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -34,5 +40,55 @@
 	</bean>
 
 	<util:properties id="appProperties" location="classpath:publicui.properties" />
+	
+	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
+	
+	
+	<lang:groovy id="groovySampleInputProcessor"
+		refresh-check-delay="5000"
+		script-source="classpath:com/funnelback/publicui/search/lifecycle/input/processors/GroovySample.groovy" />
+	
+	<!-- ***** List of processors to run ***** -->
+
+	<util:list id="inputFlow">
+		<!-- passThroughParametersInputProcessor should be first as it populates 
+			required values for following processors -->
+		<ref bean="passThroughParametersInputProcessor" />
+		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
+		<ref bean="userKeysInputProcessor" />
+		<ref bean="facetedNavigationInputProcessor" />
+		<ref bean="metaParametersInputProcessor" />
+		<ref bean="groovySampleInputProcessor" />
+		<ref bean="metadataAliasesInputProcessor" />
+		<ref bean="metaDatesInputProcessor" />
+		<ref bean="cliveMappingInputProcessor" />
+	</util:list>
+
+	<util:list id="dataFetchers">
+		<ref bean="padreForking" />
+	</util:list>
+
+	<util:list id="outputFlow">
+		<ref bean="facetedNavigationOutputProcessor" />
+		<ref bean="contextualNavigationOutputProcessor" />
+		<ref bean="fixPseudoLiveLinksOutputProcessor" />		
+	</util:list>
+
+	<!-- ***** -->
+
+	<bean id="profilingStats"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass">
+			<value>java.util.Collections</value>
+		</property>
+		<property name="targetMethod">
+			<value>synchronizedMap</value>
+		</property>
+		<property name="arguments">
+			<ref bean="profilingStatsNotSynchronized" />
+		</property>
+	</bean>
+
+	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.DataPoint[]" />
 
 </beans>

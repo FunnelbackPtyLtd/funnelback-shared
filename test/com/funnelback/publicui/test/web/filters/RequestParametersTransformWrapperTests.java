@@ -1,10 +1,10 @@
-package com.funnelback.publicui.test.web.interceptors;
+package com.funnelback.publicui.test.web.filters;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.funnelback.publicui.web.interceptors.RequestParametersTransformWrapper;
+import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
 
 public class RequestParametersTransformWrapperTests {
 
@@ -52,7 +52,7 @@ public class RequestParametersTransformWrapperTests {
 	@Test
 	public void testInsert() {
 		String[] rules = {
-			"param1=value1 => inserted_paramA=valueA&inserted_paramB=valueB&inserted_paramB=valueC",
+			"param1=value1 => inserted_paramA=valueA&inserted_paramB=valueB&inserted_paramB=valueC&novalue=",
 			"param1=value2 => shouldnt_be=inserted"
 		};
 			
@@ -61,10 +61,11 @@ public class RequestParametersTransformWrapperTests {
 		req.addParameter("extra", "identical");
 		
 		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
-		Assert.assertEquals(4, wrapper.getParameterMap().size());
+		Assert.assertEquals(5, wrapper.getParameterMap().size());
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("valueA", wrapper.getParameter("inserted_paramA"));
 		Assert.assertArrayEquals(new String[] {"valueB", "valueC"}, wrapper.getParameterValues("inserted_paramB"));
+		Assert.assertArrayEquals(new String[] {""}, wrapper.getParameterValues("novalue"));
 		Assert.assertEquals("identical", wrapper.getParameter("extra"));
 	}
 	
