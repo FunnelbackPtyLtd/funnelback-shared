@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
 
 @Component

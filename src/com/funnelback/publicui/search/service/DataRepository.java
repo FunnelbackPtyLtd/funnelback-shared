@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 /**
  * Interface to access collection data, such as files in

@@ -7,7 +7,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
-import com.funnelback.publicui.search.model.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 

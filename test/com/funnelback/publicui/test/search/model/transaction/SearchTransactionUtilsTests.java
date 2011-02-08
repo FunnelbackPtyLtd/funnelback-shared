@@ -3,7 +3,7 @@ package com.funnelback.publicui.test.search.model.transaction;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;

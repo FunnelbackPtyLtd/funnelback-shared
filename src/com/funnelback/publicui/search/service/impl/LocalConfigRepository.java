@@ -26,9 +26,9 @@ import org.springframework.stereotype.Repository;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.model.Collection;
-import com.funnelback.publicui.search.model.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.Synonym;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Synonym;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 @Repository("configRepository")

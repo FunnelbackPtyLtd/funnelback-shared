@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 @ToString
 @RequiredArgsConstructor

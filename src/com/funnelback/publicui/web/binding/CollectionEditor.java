@@ -2,7 +2,7 @@ package com.funnelback.publicui.web.binding;
 
 import java.beans.PropertyEditorSupport;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 public class CollectionEditor extends PropertyEditorSupport {

@@ -13,7 +13,7 @@ import lombok.ToString;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 @ToString
 @AllArgsConstructor

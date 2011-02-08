@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.model;
+package com.funnelback.publicui.search.model.collection;
 
 import java.text.ParseException;
 import java.util.regex.Pattern;

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.model;
+package com.funnelback.publicui.search.model.collection;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

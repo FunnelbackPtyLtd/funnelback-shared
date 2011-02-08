@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.model.transaction;
 
 import com.funnelback.common.padre.ResultPacket;
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 public class SearchTransactionUtils {
 

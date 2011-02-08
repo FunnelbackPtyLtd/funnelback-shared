@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.impl;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 public class LocalUncachedConfigRepository extends LocalConfigRepository {
 

@@ -65,12 +65,12 @@ public class RequestParametersTransformWrapperTests {
 		Assert.assertEquals("value1", wrapper.getParameter("param1"));
 		Assert.assertEquals("valueA", wrapper.getParameter("inserted_paramA"));
 		Assert.assertArrayEquals(new String[] {"valueB", "valueC"}, wrapper.getParameterValues("inserted_paramB"));
-		Assert.assertArrayEquals(new String[] {""}, wrapper.getParameterValues("novalue"));
+		Assert.assertArrayEquals(new String[0], wrapper.getParameterValues("novalue"));
 		Assert.assertEquals("identical", wrapper.getParameter("extra"));
 	}
 	
 	@Test
-	public void testReplace() {
+	public void testAddExisting() {
 		String[] rules = {
 				"param1=value1 => param1=newValue1",
 			};
@@ -81,7 +81,7 @@ public class RequestParametersTransformWrapperTests {
 			
 			RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules);
 			Assert.assertEquals(2, wrapper.getParameterMap().size());
-			Assert.assertEquals("newValue1", wrapper.getParameter("param1"));
+			Assert.assertArrayEquals(new String[] {"value1", "newValue1"}, wrapper.getParameterValues("param1"));
 			Assert.assertEquals("identical", wrapper.getParameter("extra"));
 	}
 	
@@ -179,7 +179,7 @@ public class RequestParametersTransformWrapperTests {
 		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, rules1);
 		Assert.assertEquals(3, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
-		Assert.assertArrayEquals(new String[] {"business-gov"}, wrapper.getParameterValues("collection"));
+		Assert.assertArrayEquals(new String[] {"business-gov", "business-gov"}, wrapper.getParameterValues("collection"));
 		Assert.assertArrayEquals(new String[] {"9,10,11,12,13,14,15,16"}, wrapper.getParameterValues("extra_state-gov_gscope1"));
 		
 		// Rules #2

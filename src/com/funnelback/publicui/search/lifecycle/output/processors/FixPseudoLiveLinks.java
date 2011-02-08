@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
-import com.funnelback.publicui.search.model.Collection;
-import com.funnelback.publicui.search.model.Collection.Type;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Type;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;

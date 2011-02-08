@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.service;
 
 import java.util.List;
 
-import com.funnelback.publicui.search.model.Collection;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 /**
  * Interface to access collection / search service configuration

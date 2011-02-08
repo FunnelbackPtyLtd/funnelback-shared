@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.funnelback.publicui.search.model.collection.ParameterTransformation;
 import com.funnelback.publicui.web.utils.QueryStringUtils;
 
 /**
@@ -45,9 +46,18 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 	/** Modified parameters Map */
 	private HashMap<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
 	
-	@SuppressWarnings("unchecked")
 	public RequestParametersTransformWrapper(HttpServletRequest request, String[] rules) {
 		super(request);
+		modifiedParameterMap.putAll(request.getParameterMap());
+		
+		ParameterTransformation pt = new ParameterTransformation();
+		pt.initRules(rules);
+		pt.apply(modifiedParameterMap);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void  __OLD__RequestParametersTransformWrapper(HttpServletRequest request, String[] rules) {
+		// super(request);
 		modifiedParameterMap.putAll(request.getParameterMap());
 		
 		if (rules != null) {
@@ -107,7 +117,6 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 				}
 			}
 		}
-		
 	}
 	
 	@Override
