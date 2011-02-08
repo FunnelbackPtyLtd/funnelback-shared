@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="migrating-from-perl" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<title>Migrating from the Perl UI</title>
+	
+	<section>This section will list some points of interest when migrating from the Perl UI.</section>
+	
+	<chapter id="cgi-transforms">
+		<title>CGI Transforms</title>
+		
+		<para>
+			CGI Transforms have been re-implemented but sometimes the behaviour on some limit cases (Such as parameters with no values on the
+			left end or right end of the rule) was difficult to figure out from the Perl code.
+		</para>
+		
+		<para>You'll probably need to check that your existing CGI Transforms works as expected with the new Public UI</para>
+	</chapter>	
+
+</part>
