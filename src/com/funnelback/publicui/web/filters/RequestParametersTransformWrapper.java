@@ -28,6 +28,7 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 	/** Modified parameters Map */
 	private Map<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
 	
+	@SuppressWarnings("unchecked")
 	public RequestParametersTransformWrapper(HttpServletRequest request, List<TransformRule> rules) {
 		super(request);
 		modifiedParameterMap.putAll(request.getParameterMap());

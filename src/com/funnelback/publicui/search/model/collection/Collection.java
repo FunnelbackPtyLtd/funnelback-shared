@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,9 @@ public class Collection {
 	
 	/** Collection configuration */
 	@Getter final private Config configuration;
+	
+	/** Quick Links configuration (quicklinks.cfg) */
+	@Getter @Setter private Map<String, String> quickLinksConfiguration;
 	
 	/** Faceted navigation configuration (faceted_navigation.cfg) */
 	@Getter @Setter private FacetedNavigationConfig facetedNavigationConfig;

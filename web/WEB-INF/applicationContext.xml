@@ -62,6 +62,7 @@
 		<ref bean="metadataAliasesInputProcessor" />
 		<ref bean="metaDatesInputProcessor" />
 		<ref bean="cliveMappingInputProcessor" />
+		<ref bean="quickLinksInputProcessor" />
 	</util:list>
 
 	<util:list id="dataFetchers">

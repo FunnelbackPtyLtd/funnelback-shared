@@ -32,7 +32,7 @@ public class StaxStreamParserTests {
 	@Before
 	public void before() throws PadreXmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
-		rp = parser.parse(FileUtils.readFileToString(new File("test_data/padre-xml/complex.xml")));
+		rp = parser.parse(FileUtils.readFileToString(new File("test_data/padre-xml/complex.xml"), "UTF-8"));
 		assertNotNull(rp);
 	}
 	
@@ -114,6 +114,14 @@ public class StaxStreamParserTests {
 		assertEquals(1, first.getTier().intValue());
 		assertEquals(2681, first.getDocNum().intValue());
 		
+		// Quick links
+		assertNotNull(first.getQuickLinks());
+		assertEquals("www.immi.gov.au/e_visa/", first.getQuickLinks().getDomain());
+		assertEquals("Request a Visa", first.getQuickLinks().getQuickLinks().get(0).getText());
+		assertEquals("www.immi.gov.au/e_visa/request.html", first.getQuickLinks().getQuickLinks().get(0).getUrl());
+		assertEquals("Check your application status", first.getQuickLinks().getQuickLinks().get(1).getText());
+		assertEquals("www.immi.gov.au/e_visa/application-status/", first.getQuickLinks().getQuickLinks().get(1).getUrl());
+		
 		Map<String, String> md = first.getMetaData();
 		assertEquals(7, md.size());
 		// Pick some metadata
@@ -149,6 +157,8 @@ public class StaxStreamParserTests {
 		assertEquals("Department of Foreign Affairs and Trade", md.get("a"));
 		assertEquals("2009-11-09T162611", md.get("M"));
 		assertEquals("Politics;Politics;Embassies;embassies", md.get("R"));
+		
+		assertNull(last.getQuickLinks());
 
 	}
 	

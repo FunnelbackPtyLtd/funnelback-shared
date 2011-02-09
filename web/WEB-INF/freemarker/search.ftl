@@ -129,6 +129,14 @@
             				<cite>${result.displayUrl}</cite>
                             - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
 		               </p>
+		               
+		               <#if result.quickLinks?exists>
+							<ul class="fb-quicklinks">
+							<#list result.quickLinks.quickLinks as ql> 
+								<li><a href="http://${ql.url}" title="${ql.text}">${ql.text}</a></li>
+							</#list> 
+							</ul> 
+		               </#if>
 						
 						
 					</li>

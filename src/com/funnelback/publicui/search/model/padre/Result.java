@@ -39,6 +39,7 @@ public class Result {
 	@Getter private Integer tier;
 	@Getter private Integer docNum;
 	@Getter private Map<String, String> metaData;
+	@Getter private QuickLinks quickLinks;
 	
 	/** By default filled with liveUrl, but will be updated at a later stage */
 	@Getter private String displayUrl;

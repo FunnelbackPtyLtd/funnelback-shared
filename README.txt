@@ -74,6 +74,9 @@ TODO:
   * Check what plugins could we reimplement in Java?
   * Have a way to have per-collection specific plugins (Groovy ?)
 
+* Dynamic query processor options
+  * Are currently set on top of collection.cfg's option
+  * They should probably be merged, with one taking precedence on the other ?
   
 * JS templates engines:
   * json-template: http://code.google.com/p/json-template/

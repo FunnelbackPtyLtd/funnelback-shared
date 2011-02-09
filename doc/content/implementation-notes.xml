@@ -331,5 +331,14 @@ fileshare]]>
 			</para>
 		</section>
 	</chapter>
+	
+	<chapter id="quicklinks">
+		<title>Quick Links</title>
+		
+		<para>
+			Nothing to fancy here: There is just an <literal>InputProcessor</literal> that reads the quick links configuration file and set the relevant query processor
+			options depending on the configuration. On the output side there is nothing to do (except having the quicklinks tags correctly parsed).
+		</para>
+	</chapter>
 
 </part>

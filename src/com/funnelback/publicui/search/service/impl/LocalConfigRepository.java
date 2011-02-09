@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
@@ -80,6 +83,7 @@ public class LocalConfigRepository implements ConfigRepository {
 			c.setFacetedNavigationConfig(loadFacetedNavigationConfig(c));
 			c.setMetaComponents(loadMetaComponents(c));
 			c.setParametersTransforms(loadParametersTransforms(c));
+			c.setQuickLinksConfiguration(loadQuickLinksConfiguration(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -129,7 +133,7 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	private static String[] loadMetaComponents(Collection c) {
+	private String[] loadMetaComponents(Collection c) {
 		return readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME));
 	}
 	
@@ -138,7 +142,7 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param c
 	 * @return
 	 */
-	private static List<TransformRule> loadParametersTransforms(Collection c) {
+	private List<TransformRule> loadParametersTransforms(Collection c) {
 		String[] rules = readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME));
 		return ParamTransformRuleFactory.buildRules(rules);
 	}
@@ -149,7 +153,7 @@ public class LocalConfigRepository implements ConfigRepository {
 	 * @param configFile Config file to read
 	 * @return Content of the file, or a zero-sized array in case of file not found or error.
 	 */
-	private static String[] readConfig(Collection c, File configFile) {
+	private String[] readConfig(Collection c, File configFile) {
 		if (configFile.canRead()) {
 			try {
 				List<String> lines = FileUtils.readLines(configFile);				
@@ -161,6 +165,20 @@ public class LocalConfigRepository implements ConfigRepository {
 			}
 		} else {
 			return new String[0];
+		}
+	}
+	
+	/**
+	 * Loads quicklinks.cfg
+	 * @param c
+	 * @return
+	 */
+	private Map<String, String> loadQuickLinksConfiguration(Collection c) {
+		File qlConfig = new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME);
+		try {
+			return Config.readConfig(qlConfig.getAbsolutePath(), searchHome.getAbsolutePath(), c.getId());
+		} catch (FileNotFoundException fnfe) {
+			return new HashMap<String, String>(0);
 		}
 	}
 	

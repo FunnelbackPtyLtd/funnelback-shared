@@ -186,6 +186,7 @@ public class TestsController implements ServletContextAware {
 	public void testAuth(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		log.debug(request.getUserPrincipal());
 
+		@SuppressWarnings("unchecked")
 		Enumeration<String> names = request.getSession().getAttributeNames();
 		while (names.hasMoreElements()) {
 			String name = names.nextElement();

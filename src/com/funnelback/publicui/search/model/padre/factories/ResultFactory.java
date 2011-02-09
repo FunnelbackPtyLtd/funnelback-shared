@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 
 /**
@@ -27,7 +28,7 @@ public class ResultFactory {
 	 *            A map containing the metadata values (<md f="x">value</md>)
 	 * @return A result with populated values
 	 */
-	public static Result fromMap(Map<String, String> data) {
+	public static Result fromMap(Map<String, String> data, QuickLinks ql) {
 		Integer rank = Integer.valueOf(data.get(Result.Schema.RANK));
 		Integer score = Integer.valueOf(data.get(Result.Schema.SCORE));
 		String title = data.get(Result.Schema.TITLE);
@@ -59,7 +60,7 @@ public class ResultFactory {
 		}
 
 		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
-				fileType, tier, documentNumber, metadataMap, liveUrl);
+				fileType, tier, documentNumber, metadataMap, ql, liveUrl);
 	}
 
 	/**
@@ -78,6 +79,7 @@ public class ResultFactory {
 		}
 
 		Map<String, String> data = new HashMap<String, String>();
+		QuickLinks ql = null;
 
 		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			if (xmlStreamReader.isStartElement()) {
@@ -86,6 +88,8 @@ public class ResultFactory {
 					String mdClass = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_F);
 					String value = xmlStreamReader.getElementText();
 					data.put(Result.METADATA_PREFIX + mdClass, value);
+				} else if (QuickLinks.Schema.QUICKLINKS.equals(xmlStreamReader.getLocalName().toString())) {
+					ql = QuickLinksFactory.fromXmlStreamReader(xmlStreamReader);
 				} else {
 					String name = xmlStreamReader.getName().toString();
 					String value = xmlStreamReader.getElementText();
@@ -94,7 +98,7 @@ public class ResultFactory {
 			}
 		}
 
-		return fromMap(data);
+		return fromMap(data, ql);
 	}
 	
 	private static SimpleDateFormat getDateFormatter() {
