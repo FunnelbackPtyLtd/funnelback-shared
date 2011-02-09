@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.apachecommons.Log;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Statistics;
 
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller("dashboardCacheController")
 @RequestMapping("/dashboard/caches/")
+@Log
 public class CacheController {
 
 	@Autowired
@@ -46,5 +50,20 @@ public class CacheController {
 		appCacheManager.getCache(cacheName).remove(key);
 		return "redirect:/dashboard/caches/list";
 	}
+	
+	@RequestMapping("{cacheName}/disable.ajax")
+	public void disable(@PathVariable String cacheName, HttpServletResponse response) {
+		log.debug("Disabling cache '" + cacheName + "'");
+		appCacheManager.getCache(cacheName).setDisabled(true);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	@RequestMapping("{cacheName}/enable.ajax")
+	public void enable(@PathVariable String cacheName, HttpServletResponse response) {
+		log.debug("Enabling cache '" + cacheName + "'");
+		appCacheManager.getCache(cacheName).setDisabled(false);
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+
 	
 }

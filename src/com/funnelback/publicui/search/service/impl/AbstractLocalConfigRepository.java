@@ -1,29 +1,22 @@
 package com.funnelback.publicui.search.service.impl;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -36,15 +29,17 @@ import com.funnelback.publicui.search.model.collection.paramtransform.ParamTrans
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
-@Repository("configRepository")
+/**
+ * Convenience super class for local config repositories
+ * (reading the configuration from the local disk).
+ * 
+ * Provides methods to load various config file, but the concrete
+ * implementation of "getting" the collection is abstract, allowing
+ * sub classes to cache the data for example.
+ */
 @lombok.extern.apachecommons.Log
-public class LocalConfigRepository implements ConfigRepository {
-	
-	private static final String CACHE = "localConfigRepository";
-	private enum CacheKeys {
-		_CACHE_allCollectionIds;
-	}
-	
+public abstract class AbstractLocalConfigRepository implements ConfigRepository {
+		
 	private static final Pattern FACETED_NAVIGATION_QPOPTIONS_PATTERN = Pattern.compile("qpoptions=\"([\\w -]*)\"");
 	
 	/** A comment line in a config file starts with a hash */
@@ -54,27 +49,13 @@ public class LocalConfigRepository implements ConfigRepository {
 	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
 	
 	@Autowired
-	private CacheManager appCacheManager;
-	
-	@Autowired
-	private File searchHome;
+	protected File searchHome;
 	
 	@Override
-	public Collection getCollection(String collectionId) {
-		// Cache will never be null
-		Cache cache = appCacheManager.getCache(CACHE);
-
-		Element elt = cache.get(collectionId);
-		if (elt == null) {
-			Collection collection = loadCollection(collectionId);
-			if (collection != null) {
-				cache.put(new Element(collectionId, collection));
-			}
-			return collection;
-		} else {
-			return (Collection) elt.getObjectValue();
-		}
-	}
+	public abstract Collection getCollection(String collectionId);
+	
+	@Override
+	public abstract List<String> getAllCollectionIds();
 	
 	protected Collection loadCollection(String collectionId) {
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
@@ -233,36 +214,7 @@ public class LocalConfigRepository implements ConfigRepository {
 		}
 		return collections;
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> getAllCollectionIds() {
-		Cache cache = appCacheManager.getCache(CACHE);
 		
-		Element elt = cache.get(CacheKeys._CACHE_allCollectionIds);
-		if (elt == null) {
-			File configDirectory = new File(searchHome, DefaultValues.FOLDER_CONF);
-			File[] collectionDirs = configDirectory.listFiles(new FileFilter() {
-				@Override
-				public boolean accept(File pathname) {
-					// Only directories that doesn't starts with a dot (.svn ...)
-					return pathname.isDirectory() && !pathname.getName().startsWith(".");
-				}
-			});
-			
-			List<String> collectionIds = new ArrayList<String>();
-			for (File collectionDir : collectionDirs) {
-				collectionIds.add(collectionDir.getName());
-			}
-			Collections.sort(collectionIds);
-			cache.put(new Element(CacheKeys._CACHE_allCollectionIds, collectionIds));
-			
-			return collectionIds;			
-		} else {
-			return (List<String>) elt.getObjectValue();
-		}
-	}
-	
 	/**
 	 * Remove comments from config files
 	 */

@@ -51,7 +51,29 @@ nav#main ul li a {
 
 nav#main ul li a:hover {
 	background-color: #FC9804;
-} 
+}
+
+div#ajax-messages {
+	margin-bottom: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	height: 2.5em;
+	width: 50%;
+}
+
+div#ajax-messages>p {
+	display: none;
+	padding: 1em;
+}
+
+div#ajax-messages>p.error {
+	background-color: #ffdddd;
+}
+
+div#ajax-messages>p.success {
+	background-color: #ddffdd;
+}
 
 table {
 	width: 90%;

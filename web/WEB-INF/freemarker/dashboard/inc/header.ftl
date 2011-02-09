@@ -17,3 +17,5 @@
 	</ul>
 </nav>
 
+<div id="ajax-messages"><p class="error"></p><p class="success"></p></div>
+

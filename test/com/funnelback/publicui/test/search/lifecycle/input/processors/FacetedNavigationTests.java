@@ -12,14 +12,14 @@ import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigati
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.impl.LocalConfigRepository;
+import com.funnelback.publicui.search.service.impl.AbstractLocalConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:test_data/spring/applicationContext.xml")
 public class FacetedNavigationTests {
 
 	@Resource(name="localConfigRepository")
-	private LocalConfigRepository configRepository;
+	private AbstractLocalConfigRepository configRepository;
 	
 	@Test
 	public void testMissingData() {
