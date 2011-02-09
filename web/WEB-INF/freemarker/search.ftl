@@ -115,6 +115,16 @@
 				</#if>
 			</div>
 			
+			<#if SearchTransaction.response.resultPacket.bestBets?size &gt; 0>
+				<#list SearchTransaction.response.resultPacket.bestBets as bb>
+					<div class="fb-best-bet">
+						<h3><a href="${bb.link}">${bb.title}</a></h3>
+						<p>${bb.description}</p>
+						<p><cite>${bb.link}</cite></p>
+					</div>
+				</#list>
+			</#if>
+			
 			<ol id="fb-results">
 				<#list SearchTransaction.response.resultPacket.results as result>
 					<li>

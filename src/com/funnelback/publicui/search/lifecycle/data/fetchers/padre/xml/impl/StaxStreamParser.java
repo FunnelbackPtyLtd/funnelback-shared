@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
+import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
 import com.funnelback.publicui.search.model.padre.factories.ErrorFactory;
@@ -56,6 +57,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.setResultsSummary(ResultsSummaryFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (Spell.Schema.SPELL.equals(xmlStreamReader.getLocalName())) {
 						packet.setSpell(SpellFactory.fromXmlStreamReader(xmlStreamReader));
+					} else if (ResultPacket.Schema.BEST_BETS.equals(xmlStreamReader.getLocalName())) {
+						packet.getBestBets().addAll(BestBetFactory.listFromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RESULTS.equals(xmlStreamReader.getLocalName())) {
 						packet.getResults().addAll(parseResults(xmlStreamReader));
 					} else if (Error.Schema.ERROR.equals(xmlStreamReader.getLocalName())) {

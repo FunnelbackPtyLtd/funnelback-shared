@@ -19,6 +19,7 @@ public class ResultPacket {
 	
 	@Getter @Setter private ResultsSummary resultsSummary;
 	@Getter @Setter private Spell spell;
+	@Getter @Setter private List<BestBet> bestBets = new ArrayList<BestBet>();
 	@Getter @Setter private List<Result> results = new ArrayList<Result>();
 	
 	@Getter @Setter private Error error;
@@ -49,6 +50,7 @@ public class ResultPacket {
 	 */
 	public static final class Schema {
 		
+		public static final String BEST_BETS = "best_bets";
 		public static final String RESULTS = "results";
 		
 		public static final String QUERY = "query";

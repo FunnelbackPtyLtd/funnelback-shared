@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Category;
 import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
@@ -68,7 +69,19 @@ public class StaxStreamParserTests {
 	
 	@Test
 	public void testBestBets() {
-		//FIXME Implement parsing
+		Assert.assertEquals(2, rp.getBestBets().size());
+		
+		BestBet bb = rp.getBestBets().get(0);
+		Assert.assertEquals("([^\\w\\-]|^)visa", bb.getTrigger());
+		Assert.assertEquals("http://www.immi.gov.au/e_visa/", bb.getLink());
+		Assert.assertEquals("Online Applications, including eVisas, ETAs, RRVs", bb.getTitle());
+		Assert.assertEquals("List of services provided on the Internet by the Australian Department of Immigration and Citizenship.", bb.getDescription());
+
+		bb = rp.getBestBets().get(1);
+		Assert.assertEquals("(([^\\w\\-]|^)visa)|(([^\\w\\-]|^)touris)", bb.getTrigger());
+		Assert.assertEquals("http://www.immi.gov.au/visitors/", bb.getLink());
+		Assert.assertEquals("Visitors - Visas and Immigration information", bb.getTitle());
+		Assert.assertEquals("Official information about visiting Australia for tourism, working visits, business trips or medical visits.", bb.getDescription());
 	}
 	
 	@Test
