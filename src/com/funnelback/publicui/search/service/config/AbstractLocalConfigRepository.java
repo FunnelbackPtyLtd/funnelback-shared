@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.service.config;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.Config;
@@ -24,10 +22,13 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.Synonym;
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.config.FacetedNavigationConfigParser.Facets;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
  * Convenience super class for local config repositories
@@ -40,8 +41,6 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @lombok.extern.apachecommons.Log
 public abstract class AbstractLocalConfigRepository implements ConfigRepository {
 		
-	private static final Pattern FACETED_NAVIGATION_QPOPTIONS_PATTERN = Pattern.compile("qpoptions=\"([\\w -]*)\"");
-	
 	/** A comment line in a config file starts with a hash */
 	private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*#.*");
 	
@@ -50,6 +49,9 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	
 	@Autowired
 	protected File searchHome;
+	
+	@Autowired
+	private FacetedNavigationConfigParser fnConfigParser;
 	
 	@Override
 	public abstract Collection getCollection(String collectionId);
@@ -61,10 +63,11 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
 		try {
 			Collection c = new Collection(collectionId, new NoOptionsConfig(searchHome, collectionId));
-			c.setFacetedNavigationConfig(loadFacetedNavigationConfig(c));
+			loadFacetedNavigationConfig(c);
 			c.setMetaComponents(loadMetaComponents(c));
 			c.setParametersTransforms(loadParametersTransforms(c));
 			c.setQuickLinksConfiguration(loadQuickLinksConfiguration(c));
+			c.getProfiles().putAll(loadProfiles(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -80,28 +83,69 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	}
 	
 	/**
-	 * Loads faceted_navigation.cfg
+	 * Loads faceted_navigation.cfg, for a collection, from multiple locations:
+	 * - Global in conf/faceted_navigation.cfg
+	 * - Live in live/idx/faceted_navigation.xml
 	 * @param c
 	 * @return
 	 */
-	private static FacetedNavigationConfig loadFacetedNavigationConfig(Collection c) {
-		File fnConfig = new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
+	private void loadFacetedNavigationConfig(Collection c) {
+		// Read global config in conf/
+		File fnConfig = new File (c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
+		c.setFacetedNavigationConfConfig(readFacetedNavigationConfig(fnConfig));
+		
+		// Read config in live/idx/
+		try {
+			fnConfig = new File(c.getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE
+					+ File.separator + DefaultValues.FOLDER_IDX,
+					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+			c.setFacetedNavigationLiveConfig(readFacetedNavigationConfig(fnConfig));
+		} catch (FileNotFoundException fnfe) {
+			log.error("Error while loading live faceted navigation configuration", fnfe);
+		}
+	}
+	
+	/**
+	 * Loads faceted_navigation.cfg, for a profile, from multiple locations:
+	 * - Global in conf/<profile>/faceted_navigation.cfg
+	 * - Live in live/idx/<profile>/faceted_navigation.xml
+	 * @param c
+	 * @param p
+	 */
+	private void loadFacetedNavigationConfig(Collection c, Profile p) {
+		// Read global config in conf/<profile>/
+		File fnConfig = new File (c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
+		p.setFacetedNavConfConfig(readFacetedNavigationConfig(fnConfig));
+		
+		// Read config in live/idx/<profile>/
+		try {
+			fnConfig = new File(c.getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE
+					+ File.separator + DefaultValues.FOLDER_IDX
+					+ File.separator + p.getId(),
+					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+			p.setFacetedNavLiveConfig(readFacetedNavigationConfig(fnConfig));
+		} catch (FileNotFoundException fnfe) {
+			log.error("Error while loading live faceted navigation configuration", fnfe);
+		}
+	}
+	
+	/**
+	 * Reads and parse a single faceted_navigation.cfg
+	 * @param fnConfig
+	 * @return
+	 */
+	private FacetedNavigationConfig readFacetedNavigationConfig(File fnConfig) {
 		if (fnConfig.canRead()) {
 			try {
-				// TODO Implement proper XML parsing. For now we're only interested in the
-				// 'qpoptions' attribute
-				String config = IOUtils.toString(new FileInputStream(fnConfig));
-				Matcher m = FACETED_NAVIGATION_QPOPTIONS_PATTERN.matcher(config);
-				if (m.find()) {
-					return new FacetedNavigationConfig(m.group(1).trim());
-				}
-			
-				// We found a faceted navigation config, but no query processor option
-				// That shouldn't occur
-				log.warn("Faceted navigation configuration for collection '" + c.getId() + "' doesn't contain 'qpoptions':\n" + config);
-				return null;
+				Facets f = fnConfigParser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(fnConfig));
+				return new FacetedNavigationConfig(f.qpOptions,f.facets);
 			} catch (IOException ioe) {
 				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
+				return null;
+			} catch (XmlParsingException xpe) {
+				log.error("Erro while parsing faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", xpe);
 				return null;
 			}
 		} else {
@@ -201,6 +245,33 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		}
 		
 		return new Synonym[0];		
+	}
+	
+	/**
+	 * Loads all the profile for a collection
+	 * @param c
+	 * @return
+	 */
+	private Map<String, Profile> loadProfiles(Collection c) {
+		HashMap<String, Profile> out = new HashMap<String, Profile>();
+		
+		File[] profileDirs = c.getConfiguration().getConfigDirectory().listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				// Only directories that doesn't starts with a dot (.svn ...)
+				return pathname.isDirectory() && !pathname.getName().startsWith(".");
+			}
+		});
+		
+		for (File profileDir: profileDirs) {
+			String id = profileDir.getName();
+			Profile p = new Profile(id);
+			loadFacetedNavigationConfig(c, p);
+			out.put(p.getId(), p);
+			log.debug("Loaded profile from '" + profileDir.getAbsolutePath() + "' for collection '" + c.getId() + "'");
+		}
+		
+		return out;		
 	}
 	
 	@Override

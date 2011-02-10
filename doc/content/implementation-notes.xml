@@ -323,10 +323,10 @@ fileshare]]>
 			<para>
 				This approach makes implementing a new type of rule easy. All you'll need to do is:
 				<itemizedlist>
-					<listitem><para>Decide the syntax in the <literal>cgi_transform.cfg</literal></para></listitem>
-					<listitem><para>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</para></listitem>
-					<listitem><para>Code the new <literal>Operation</literal> to apply the parameter transformation</para></listitem>
-					<listitem><para>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</para></listitem>
+					<listitem>Decide the syntax in the <literal>cgi_transform.cfg</literal></listitem>
+					<listitem>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</listitem>
+					<listitem>Code the new <literal>Operation</literal> to apply the parameter transformation</listitem>
+					<listitem>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</listitem>
 				</itemizedlist>
 			</para>
 		</section>
@@ -339,6 +339,53 @@ fileshare]]>
 			Nothing to fancy here: There is just an <literal>InputProcessor</literal> that reads the quick links configuration file and set the relevant query processor
 			options depending on the configuration. On the output side there is nothing to do (except having the quicklinks tags correctly parsed).
 		</para>
+	</chapter>
+	
+	<chapter id="faceted-navigation">
+		<title>Faceted navigation</title>
+		
+		<section>
+			<title>Configuration</title>
+			
+			<section>
+				<title>Configuration file locations</title>
+				<para>
+					A collection can have multiple <literal>faceted_navigation.(cfg|xml)</literal> configuration files:
+					<itemizedlist>
+						<listitem>A global one in <literal>conf/faceted_navigation.cfg</literal></listitem>
+						<listitem>Per-profile ones in <literal>conf/&lt;profile&gt;/faceted_navigation.cfg</literal></listitem>
+						<listitem>A global live one in <literal>data/&lt;collection&gt;live/idx/faceted_navigation.cfg</literal></listitem>
+						<listitem>Per-profile live ones in <literal>data/&lt;collection&gt;live/idx/&lt;profile&gt;/faceted_navigation.cfg</literal></listitem>
+					</itemizedlist>
+					
+					The ones in <literal>conf/</literal> should only be used by the Admin UI. The Public UI should use the ones in <literal>live/</literal> to acquire
+					the faceted navigation settings.
+					However a specific parameter named <literal>faceted_navigation.config.location=(conf|live)</literal> can be set to override the default behavior.
+					That's why the Public UI has to load all these configuration files, and choose the right one at query time depending of the request parameters. 
+				</para>
+			</section>
+			
+			<section>
+				<title>Parsing the configuration file</title>
+				
+				<para>
+					In order to simplify the parsing code and to allow future extensions the <literal>faceted_navigation.cfg</literal> file is parsed using reflection: A Java class
+					has been created for each category type, matching the tag names (<literal>MetadataFieldFill.java, QueryItem.java, ...</literal>). An instance of the correct class
+					is instantiated each time a category time is found.
+				</para>
+				
+				<para>
+					In the same fashion, each &quot;extra&quot; property of some categories are set using reflection. Each category type as a default <literal>&lt;Data&gt;</literal>
+					property, but some category types have extra properties such as &quot;Query&quot; for <literal>QueryItem</literal> types, or &quot;Metafield&quot; for
+					<literal>XPathFill</literal>. When such a tag is encountered, the corresponding property is filled in the target category bean.
+					To avoid multiple <literal>if/else</literal> to find the correct setter to call for the target class, the property is blindly set using a Spring <literal>BeanWrapper</literal>. 
+				</para>
+				
+				<para>
+					With this model, adding a new category type should be simple: Just add the correct Category class with the relevant properties, and it will get parsed automatically.
+				</para>
+			</section>
+		</section>
 	</chapter>
 
 </part>

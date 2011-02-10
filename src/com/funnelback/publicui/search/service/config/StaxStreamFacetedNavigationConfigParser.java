@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.apachecommons.Log;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +28,15 @@ import com.funnelback.publicui.xml.XmlParsingException;
 @Component
 public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigationConfigParser {
 
+	/** Attribute of root tag containing query processor options */
+	private static final String ATTR_QPOPTIONS = "qpoptions";
+	
+	/**
+	 * Extra properties (In addition to "<Data>" for some
+	 * category types
+	 **/
+	private static final String[] CATEGORY_EXTRA_PROPERTIES = { "Metafield", "UserSetGScope", "Query" };
+	
 	@Override
 	public Facets parseFacetedNavigationConfiguration(String configuration) throws XmlParsingException {
 		try {
@@ -41,7 +51,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 					
 					if (FacetedNavigationConfigParser.Facets.FACETS.equals(xmlStreamReader.getLocalName())) {
 						// <Facets qpoptions="-rmcfabcd"> ...
-						String qpOptions = xmlStreamReader.getAttributeValue(null, "qpoptions");
+						String qpOptions = xmlStreamReader.getAttributeValue(null, ATTR_QPOPTIONS);
 						if (qpOptions != null) {
 							facets.qpOptions = qpOptions.trim();
 						}
@@ -123,10 +133,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 			case XMLStreamReader.START_ELEMENT:
 				if (Facet.Schema.DATA.equals(reader.getLocalName())) {
 					c.setData(reader.getElementText());
-				} else if (
-						"Metafield".equals(reader.getLocalName())
-						|| "UserSetGscope".equals(reader.getLocalName())
-						|| "Query".equals(reader.getLocalName())) {
+				} else if ( ArrayUtils.contains(CATEGORY_EXTRA_PROPERTIES, reader.getLocalName()) ) {
 					// This is a property value for our Category bean. Set the value using
 					// the bean wrapper, avoiding multiple IF and casts.
 					// The property has a name identical to the xml tag:

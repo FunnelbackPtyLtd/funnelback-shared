@@ -4,5 +4,5 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class GScopeItem extends Category {
-	@Getter @Setter private int userSetGscope;
+	@Getter @Setter private int userSetGScope;
 }

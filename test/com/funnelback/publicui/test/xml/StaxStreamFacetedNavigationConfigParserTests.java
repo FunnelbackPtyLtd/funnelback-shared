@@ -112,7 +112,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 
 		GScopeItem c2 = (GScopeItem) facet.getCategories().get(2);
 		assertEquals("Fruit picking jobs", c2.getData());
-		assertEquals(3, c2.getUserSetGscope());
+		assertEquals(3, c2.getUserSetGScope());
 		assertEquals(0, c.getSubCategories().size());
 	}
 	

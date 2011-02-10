@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.collection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,14 @@ public class Collection {
 	/** Quick Links configuration (quicklinks.cfg) */
 	@Getter @Setter private Map<String, String> quickLinksConfiguration;
 	
-	/** Faceted navigation configuration (faceted_navigation.cfg) */
-	@Getter @Setter private FacetedNavigationConfig facetedNavigationConfig;
+	/** Search profiles (Key = profile id) */
+	@Getter private final Map<String, Profile> profiles = new HashMap<String, Profile>();
+	
+	/** Faceted navigation configuration in conf/faceted_navigation.cfg */
+	@Getter @Setter private FacetedNavigationConfig facetedNavigationConfConfig;
+	
+	/** Faceted navigation configuration in live/idx/faceted_navigation.xml */
+	@Getter @Setter private FacetedNavigationConfig facetedNavigationLiveConfig;
 	
 	/**
 	 * In case of a meta collection, list of components collection ids.
@@ -57,10 +64,4 @@ public class Collection {
 		return out;
 	}
 	
-	/* TODO
-	private ... cgiTransformConfig;
-	private ... contextualNavigationConfig;
-	private ... synonymsConfig;
-	...
-	*/
 }
