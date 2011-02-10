@@ -16,7 +16,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Category;
@@ -26,13 +25,14 @@ import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamParserTests {
 
 	private ResultPacket rp;
 	
 	@Before
-	public void before() throws PadreXmlParsingException, IOException {
+	public void before() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		rp = parser.parse(FileUtils.readFileToString(new File("test_data/padre-xml/complex.xml"), "UTF-8"));
 		assertNotNull(rp);
@@ -285,7 +285,7 @@ public class StaxStreamParserTests {
 		try {
 			new StaxStreamParser().parse(FileUtils.readFileToString(new File("test_data/padre-xml/invalid.xml.bad")));
 			Assert.fail();
-		} catch (PadreXmlParsingException pxpe) {
+		} catch (XmlParsingException pxpe) {
 			System.out.println(pxpe);
 		}
 	}

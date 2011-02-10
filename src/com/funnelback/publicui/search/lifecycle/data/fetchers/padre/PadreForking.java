@@ -22,9 +22,9 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
  * Forks PADRE and communicate with it using stdin/out/err
@@ -99,7 +99,7 @@ public class PadreForking implements DataFetcher {
 				log.error("PADRE forking failed", pfe);
 				throw new DataFetchException("PADRE forking failed", pfe);				
 	
-			} catch (PadreXmlParsingException pxpe) {
+			} catch (XmlParsingException pxpe) {
 				log.error("Unable to parse PADRE output", pxpe);
 				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
 					log.error("PADRE output was: \n" + padreOutput.getOutput());

@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -27,6 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:test_data/spring/applicationContext.xml")
@@ -41,7 +41,7 @@ public class FixPseudoLiveLinksTests {
 	private SearchTransaction st;
 	
 	@Before
-	public void before() throws PadreXmlParsingException, IOException, EnvironmentVariableException {
+	public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
 		
 		SearchQuestion question = new SearchQuestion();
 		question.setQuery("livelinks");

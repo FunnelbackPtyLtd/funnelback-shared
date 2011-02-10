@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml;
+package com.funnelback.publicui.xml;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,20 @@ public class XmlStreamUtils {
 			}		
 		}
 		
+		return data;
+	}
+	
+	public static Map<String, String> tagsToMap(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		Map<String, String> data = new HashMap<String, String>();
+
+		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+			if (xmlStreamReader.isStartElement()) {
+				// Start tag for an result entry
+				String name = xmlStreamReader.getName().toString();
+				String value = xmlStreamReader.getElementText();
+				data.put(name, value);
+			}		
+		}
 		return data;
 	}
 	

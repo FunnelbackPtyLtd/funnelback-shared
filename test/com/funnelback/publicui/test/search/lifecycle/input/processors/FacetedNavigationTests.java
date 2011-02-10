@@ -12,7 +12,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigati
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.impl.AbstractLocalConfigRepository;
+import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:test_data/spring/applicationContext.xml")

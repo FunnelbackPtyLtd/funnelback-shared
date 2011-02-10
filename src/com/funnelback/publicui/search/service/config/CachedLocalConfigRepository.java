@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service.impl;
+package com.funnelback.publicui.search.service.config;
 
 import java.io.File;
 import java.io.FileFilter;

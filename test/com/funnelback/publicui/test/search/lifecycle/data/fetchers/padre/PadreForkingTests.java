@@ -16,15 +16,13 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.xml.XmlParsingException;
 import com.sun.jna.platform.win32.Advapi32;
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 
 public class PadreForkingTests {
@@ -82,7 +80,7 @@ public class PadreForkingTests {
 			forking.fetchData(ts);
 			Assert.fail();
 		} catch (DataFetchException dfe) {
-			Assert.assertEquals(PadreXmlParsingException.class, dfe.getCause().getClass());
+			Assert.assertEquals(XmlParsingException.class, dfe.getCause().getClass());
 		}
 	}
 	

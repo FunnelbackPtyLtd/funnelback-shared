@@ -14,7 +14,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.service.impl.LocalDataRepository;
+import com.funnelback.publicui.search.service.data.LocalDataRepository;
 
 public class LocalDataRepositoryTest {
 

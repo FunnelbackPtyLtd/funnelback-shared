@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service.impl;
+package com.funnelback.publicui.search.service.config;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -7,11 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.apachecommons.Log;
-
-import org.springframework.stereotype.Repository;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+
+import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;

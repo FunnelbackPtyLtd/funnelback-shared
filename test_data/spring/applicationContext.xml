@@ -42,7 +42,7 @@
 	</util:list>
 
 	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
-	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.impl.AutoRefreshLocalConfigRepository" />
+	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.config.AutoRefreshLocalConfigRepository" />
 	
 	<bean id="searchController"
 		class="com.funnelback.publicui.web.controllers.SearchController" />

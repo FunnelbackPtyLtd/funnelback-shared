@@ -10,7 +10,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParsingException;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
@@ -27,12 +26,13 @@ import com.funnelback.publicui.search.model.padre.factories.ResultFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultsSummaryFactory;
 import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 @Component("padreXmlParser")
 public class StaxStreamParser implements PadreXmlParser {
 
 	@Override
-	public ResultPacket parse(String xml) throws PadreXmlParsingException {
+	public ResultPacket parse(String xml) throws XmlParsingException {
 
 		ResultPacket packet = new ResultPacket();
 		
@@ -76,7 +76,7 @@ public class StaxStreamParser implements PadreXmlParser {
 			xmlStreamReader.close();
 			return packet;
 		} catch (XMLStreamException ioe) {
-			throw new PadreXmlParsingException(ioe);
+			throw new XmlParsingException(ioe);
 		}
 		
 	}

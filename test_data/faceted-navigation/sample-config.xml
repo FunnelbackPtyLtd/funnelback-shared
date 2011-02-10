@@ -1,0 +1,66 @@
+<Facets qpoptions="-rmcfabcd">
+	<Data></Data>
+	<Facet>
+		<Data>Industry</Data>
+		<XPathFill>
+			<Data>/CATEGORY</Data>
+			<Metafield>Z</Metafield>
+			<XPathFill>
+				<Data>/SUBCATEGORY</Data>
+				<Metafield>Y</Metafield>
+			</XPathFill>
+		</XPathFill>
+	</Facet>
+	<Facet>
+		<Data>State</Data>
+		<XPathFill>
+			<Data>/STATE</Data>
+			<Metafield>X</Metafield>
+		</XPathFill>
+	</Facet>
+	<Facet>
+		<Data>Source</Data>
+		<XPathFill>
+			<Data>/COMPANY_NAME</Data>
+			<Metafield>W</Metafield>
+		</XPathFill>
+	</Facet>
+	<Facet>
+		<Data>Date Posted</Data>
+		<XPathFill>
+			<Data>/DATE_STRING</Data>
+			<Metafield>V</Metafield>
+		</XPathFill>
+	</Facet>
+	<Facet>
+		<Data>Pre built categories</Data>
+		<QueryItem>
+			<Data>Writing Jobs</Data>
+			<Query>author writer journalist</Query>
+		</QueryItem>
+		<QueryItem>
+			<Data>Seaside Jobs</Data>
+			<Query>coast sea water</Query>
+		</QueryItem>
+		<GScopeItem>
+			<Data>Fruit picking jobs</Data>
+			<UserSetGscope>3</UserSetGscope>
+		</GScopeItem>
+	</Facet>
+	<Facet>
+		<Data>Jobs by author</Data>
+		<MetadataFieldFill>
+			<Data>a</Data>
+		</MetadataFieldFill>
+		<MetadataTypeFill>
+			<Data>jobs.author</Data>
+			<Metafield>U</Metafield>
+		</MetadataTypeFill>
+	</Facet>
+	<Facet>
+		<Data>New jobs</Data>
+		<URLFill>
+			<Data>http://example.com/jobs/new</Data>
+		</URLFill>
+	</Facet>
+</Facets>
