@@ -126,30 +126,34 @@
 			</#if>
 			
 			<ol id="fb-results">
-				<#list SearchTransaction.response.resultPacket.results as result>
-					<li>
-						<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
-						
-						<p>
-							<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
-							<span class="fb-summary">${result.summary}</span>
-						</p>
-						
-						<p>
-            				<cite>${result.displayUrl}</cite>
-                            - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
-		               </p>
-		               
-		               <#if result.quickLinks?exists>
-							<ul class="fb-quicklinks">
-							<#list result.quickLinks.quickLinks as ql> 
-								<li><a href="http://${ql.url}" title="${ql.text}">${ql.text}</a></li>
-							</#list> 
-							</ul> 
-		               </#if>
-						
-						
-					</li>
+				<#list SearchTransaction.response.resultPacket.resultsWithTierBars as result>
+					<#if result.matched?exists>
+						<h2 class="fb-title">Search results that match ${result.matched} of ${result.outOf} words</h2> 
+					<#else>
+						<li>
+							<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
+							
+							<p>
+								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
+								<span class="fb-summary">${result.summary}</span>
+							</p>
+							
+							<p>
+	            				<cite>${result.displayUrl}</cite>
+	                            - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
+			               </p>
+			               
+			               <#if result.quickLinks?exists>
+								<ul class="fb-quicklinks">
+								<#list result.quickLinks.quickLinks as ql> 
+									<li><a href="http://${ql.url}" title="${ql.text}">${ql.text}</a></li>
+								</#list> 
+								</ul> 
+			               </#if>
+							
+							
+						</li>
+					</#if>
 				</#list>
 			</ol>
 			

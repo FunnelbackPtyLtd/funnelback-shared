@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @ToString
 @AllArgsConstructor
-public class Result {
+public class Result implements ResultType {
 
 	/**
 	 * Date format used in padre results

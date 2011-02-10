@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.Transformer;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +22,9 @@ public class ResultPacket {
 	
 	@Getter @Setter private ResultsSummary resultsSummary;
 	@Getter @Setter private Spell spell;
-	@Getter @Setter private List<BestBet> bestBets = new ArrayList<BestBet>();
-	@Getter @Setter private List<Result> results = new ArrayList<Result>();
+	@Getter final private List<BestBet> bestBets = new ArrayList<BestBet>();
+	@Getter final private List<Result> results = new ArrayList<Result>();
+	@Getter final private List<TierBar> tierBars = new ArrayList<TierBar>();
 	
 	@Getter @Setter private Error error;
 	
@@ -34,6 +38,27 @@ public class ResultPacket {
 	@Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
 	
 	public boolean hasResults() { return results != null && results.size() > 0; }
+	
+	@SuppressWarnings("unchecked")
+	public List<ResultType> getResultsWithTierBars() {
+		if (tierBars.size() > 0) {
+			ArrayList<ResultType> out = new ArrayList<ResultType>();
+			for (TierBar tb: getTierBars()) {
+				out.add(tb);
+				for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
+					out.add(r);
+				}
+			}
+			return out;			
+		} else {
+			return ListUtils.transformedList(getResults(), new Transformer() {
+				@Override
+				public Object transform(Object o) {
+					return (ResultType) o;
+				}
+			});
+		}
+	}
 	
 	/* TODO:
 	 * Tier bars

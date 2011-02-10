@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.padre.TierBar;
 
 public class StaxStreamParserTests {
 
@@ -68,6 +69,13 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
+	public void testSpell() {
+		assertNotNull(rp.getSpell());
+		assertEquals("king", rp.getSpell().getText());
+		assertEquals("query=king&collection=shakespeare-lear&profile=_default_preview", rp.getSpell().getUrl());
+	}
+	
+	@Test
 	public void testBestBets() {
 		Assert.assertEquals(2, rp.getBestBets().size());
 		
@@ -105,6 +113,42 @@ public class StaxStreamParserTests {
 		//FIXME Implement parsing
 	}
 
+	@Test
+	public void testTierBars() {
+		Assert.assertEquals(2, rp.getTierBars().size());
+		
+		TierBar tb = rp.getTierBars().get(0);
+		Assert.assertEquals(0, tb.getFirstRank());
+		Assert.assertEquals(8, tb.getLastRank());
+		Assert.assertEquals(2, tb.getMatched());
+		Assert.assertEquals(2, tb.getOutOf());
+
+		tb = rp.getTierBars().get(1);
+		Assert.assertEquals(8, tb.getFirstRank());
+		Assert.assertEquals(10, tb.getLastRank());
+		Assert.assertEquals(1, tb.getMatched());
+		Assert.assertEquals(2, tb.getOutOf());
+	}
+	
+	@Test
+	public void testGetResultsMethods() {
+		assertEquals(10, rp.getResults().size());
+		assertEquals(12, rp.getResultsWithTierBars().size());
+		
+		for (Result r: rp.getResults()) {
+			assertEquals(Result.class, r.getClass());
+		}
+		
+		assertTrue(rp.getResultsWithTierBars().get(0) instanceof TierBar);
+		for (int i=1; i<9; i++) {
+			assertTrue(rp.getResultsWithTierBars().get(i) instanceof Result);
+		}
+		assertTrue(rp.getResultsWithTierBars().get(9) instanceof TierBar);
+		assertTrue(rp.getResultsWithTierBars().get(10) instanceof Result);
+		assertTrue(rp.getResultsWithTierBars().get(11) instanceof Result);
+
+	}
+	
 	@Test
 	public void testResults() {
 		assertEquals(10, rp.getResults().size());
@@ -161,7 +205,7 @@ public class StaxStreamParserTests {
 		assertEquals(c.getTime(), last.getDate());
 		assertEquals(16917, last.getFileSize().intValue());
 		assertEquals("html", last.getFileType());
-		assertEquals(1, last.getTier().intValue());
+		assertEquals(2, last.getTier().intValue());
 		assertEquals(3068, last.getDocNum().intValue());
 
 		md = last.getMetaData();

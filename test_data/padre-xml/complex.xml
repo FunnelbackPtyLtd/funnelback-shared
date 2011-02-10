@@ -21,6 +21,11 @@
   <nextstart>11</nextstart>
 </results_summary>
 
+<spell>
+  <url>query=king&amp;collection=shakespeare-lear&amp;profile=_default_preview</url>
+  <text>king</text>
+</spell>
+
 <best_bets>
   <bb>
   <bb_trigger>([^\w\-]|^)visa</bb_trigger>
@@ -456,8 +461,8 @@
 <results>
 
   <tier_bar>
-  <matched>1</matched>
-  <outof>1</outof>
+  <matched>2</matched>
+  <outof>2</outof>
   </tier_bar>
 
   <result>
@@ -645,6 +650,11 @@
   <docnum>2783</docnum>
   </result>
 
+  <tier_bar>
+  <matched>1</matched>
+  <outof>2</outof>
+  </tier_bar>
+
   <result>
   <rank>9</rank>
   <score>67</score>
@@ -663,7 +673,7 @@
   <date>24 Jan 2011</date>
   <filesize>8952</filesize>
   <filetype>html</filetype>
-  <tier>1</tier>
+  <tier>2</tier>
   <docnum>2633</docnum>
   </result>
 
@@ -685,7 +695,7 @@
   <date>24 Jan 2011</date>
   <filesize>16917</filesize>
   <filetype>html</filetype>
-  <tier>1</tier>
+  <tier>2</tier>
   <docnum>3068</docnum>
   </result>
 

@@ -2,8 +2,6 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl;
 
 import java.io.StringReader;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,6 +18,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
+import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
@@ -27,6 +26,7 @@ import com.funnelback.publicui.search.model.padre.factories.ErrorFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultsSummaryFactory;
 import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
+import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 
 @Component("padreXmlParser")
 public class StaxStreamParser implements PadreXmlParser {
@@ -60,7 +60,7 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.BEST_BETS.equals(xmlStreamReader.getLocalName())) {
 						packet.getBestBets().addAll(BestBetFactory.listFromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RESULTS.equals(xmlStreamReader.getLocalName())) {
-						packet.getResults().addAll(parseResults(xmlStreamReader));
+						parseResults(xmlStreamReader, packet);
 					} else if (Error.Schema.ERROR.equals(xmlStreamReader.getLocalName())) {
 						packet.setError(ErrorFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
@@ -81,23 +81,40 @@ public class StaxStreamParser implements PadreXmlParser {
 		
 	}
 
-	private List<Result> parseResults(XMLStreamReader xmlStreamReader) throws XMLStreamException {
-		List<Result> results = new ArrayList<Result>();
+	private void parseResults(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+		
 		
 		int type = xmlStreamReader.getEventType();
+		TierBar lastTierBar = null;
+		int tierBarFirstRank = 0;
+		int tierBarLastRank = 0;
 		do {
 			type = xmlStreamReader.next();
 			
 			switch(type) {
 			case XMLStreamReader.START_ELEMENT:
 				if (Result.Schema.RESULT.equals(xmlStreamReader.getLocalName())) {
-					results.add(ResultFactory.fromXmlStreamReader(xmlStreamReader));
+					packet.getResults().add(ResultFactory.fromXmlStreamReader(xmlStreamReader));
+					tierBarLastRank++;
+				} else if (TierBar.Schema.TIER_BAR.equals(xmlStreamReader.getLocalName())) {
+					if ( lastTierBar != null) {
+						// There was a tier bar before
+						lastTierBar.setLastRank(tierBarLastRank);
+						packet.getTierBars().add(lastTierBar);
+						tierBarFirstRank = tierBarLastRank;
+					}
+					lastTierBar = TierBarFactory.fromXmlStreamReader(xmlStreamReader);
+					lastTierBar.setFirstRank(tierBarFirstRank);
 				}
 				break;
 			}
 		} while( type != XMLStreamReader.END_ELEMENT || ( type == XMLStreamReader.END_ELEMENT && !ResultPacket.Schema.RESULTS.equals(xmlStreamReader.getLocalName())) );
 		
-		return results;
+		if ( lastTierBar != null) {
+			// There was a last tier bar before
+			lastTierBar.setLastRank(tierBarLastRank);
+			packet.getTierBars().add(lastTierBar);
+		}
 	}
 	
 	private RMC parseRmc(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
