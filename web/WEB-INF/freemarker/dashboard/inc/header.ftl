@@ -15,6 +15,7 @@
 		<li><a href="/publicui/dashboard/caches/list">caches</a></li>
 		<li><a href="/publicui/dashboard/stats/list">stats</a></li>
 		<li><a href="/publicui/dashboard/settings/list">settings</a></li>
+		<li><a href="/publicui/dashboard/collections/list">collections</a></li>
 	</ul>
 </nav>
 

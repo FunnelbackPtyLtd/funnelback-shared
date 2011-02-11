@@ -18,6 +18,10 @@ h1 {
 	font-size: large;
 }
 
+h1 span {
+	font-size: small;
+}
+
 nav#main {
 	margin: 0;
 	padding: .5em;
@@ -104,4 +108,10 @@ div#graphdiv {
 span.method {
 	font-family: Courier New;
 	color: #888888;
+}
+
+ul.inline li {
+	display: inline;
+	margin-left: 1em;
+	margin-right: 1em;
 }

@@ -2,6 +2,8 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl;
 
 import java.io.StringReader;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -66,6 +68,11 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
 						RMC rmc = parseRmc(xmlStreamReader);
 						packet.getRmcs().put(rmc.item, rmc.count);
+					} else if (ResultPacket.Schema.URLCOUNT.equals(xmlStreamReader.getLocalName())) {
+						URLCount urlCount = parseURLCount(xmlStreamReader);
+						packet.getUrlCounts().put(urlCount.url, urlCount.count);
+					} else if (ResultPacket.Schema.GSCOPE_COUNTS.equals(xmlStreamReader.getLocalName())) {
+						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
 					} else if (ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
 						packet.setContextualNavigation(ContextualNavigationFactory.fromXmlStreamReader(xmlStreamReader));
 					}
@@ -117,6 +124,13 @@ public class StaxStreamParser implements PadreXmlParser {
 		}
 	}
 	
+	/**
+	 * Parses a single <rmc> tag
+	 * @param xmlStreamReader
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws XMLStreamException
+	 */
 	private RMC parseRmc(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
 		if(!ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
 			throw new InvalidParameterException();
@@ -133,8 +147,64 @@ public class StaxStreamParser implements PadreXmlParser {
 		return null;
 	}
 	
+	/**
+	 * Parses a single <urlcount> tag
+	 * @param reader
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws XMLStreamException
+	 */
+	private URLCount parseURLCount(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+		if (!ResultPacket.Schema.URLCOUNT.equals(reader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		if ( reader.getAttributeCount() == 1
+				&& ResultPacket.Schema.URLCOUNT_ITEM.equals(reader.getAttributeLocalName(0))) {
+				URLCount url = new URLCount();
+				url.url = reader.getAttributeValue(0);
+				url.count = Integer.parseInt(reader.getElementText());
+				return url; 
+			}
+			
+			return null;
+	}
+	
+	/**
+	 * Parses <gscope_counts> tag and its childrens
+	 * @param reader
+	 * @return
+	 * @throws XMLStreamException 
+	 * @throws NumberFormatException 
+	 */
+	private Map<Integer, Integer> parseGScopeCounts(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+		if (!ResultPacket.Schema.GSCOPE_COUNTS.equals(reader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		HashMap<Integer, Integer> out = new HashMap<Integer, Integer>();
+
+		while(reader.hasNext()&&
+				! (reader.next() == XMLStreamReader.END_ELEMENT && ResultPacket.Schema.GSCOPE_COUNTS.equals(reader.getLocalName()))) {
+			
+			if (reader.getEventType() == XMLStreamReader.START_ELEMENT
+					&& ResultPacket.Schema.GSCOPE_MATCHING.equals(reader.getLocalName())) {
+				int gScopeValue = Integer.parseInt(reader.getAttributeValue(null, ResultPacket.Schema.GSCOPE_VALUE));
+				int count = Integer.parseInt(reader.getElementText());
+				out.put(gScopeValue, count);
+			}
+		}
+		
+		return out;
+	}
+	
 	private class RMC {
 		public String item;
+		public int count;
+	}
+	
+	private class URLCount {
+		public String url;
 		public int count;
 	}
 	

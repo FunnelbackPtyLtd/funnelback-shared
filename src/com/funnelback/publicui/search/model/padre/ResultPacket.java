@@ -37,6 +37,16 @@ public class ResultPacket {
 	 */
 	@Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
 	
+	/**
+	 * URL counts (Faceting)
+	 */
+	@Getter private final Map<String, Integer> urlCounts = new HashMap<String, Integer>();
+
+	/**
+	 * GScope counts (Faceting)
+	 */
+	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
+	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
 	@SuppressWarnings("unchecked")
@@ -83,6 +93,13 @@ public class ResultPacket {
 		
 		public static final String RMC = "rmc";
 		public static final String RMC_ITEM = "item";
+		
+		public static final String URLCOUNT = "urlcount";
+		public static final String URLCOUNT_ITEM = "item";
+		
+		public static final String GSCOPE_COUNTS = "gscope_counts";
+		public static final String GSCOPE_MATCHING = "gscope_matching";
+		public static final String GSCOPE_VALUE = "value";
 		
 		public static final String PADRE_ELAPSED_TIME = "padre_elapsed_time";
 	}

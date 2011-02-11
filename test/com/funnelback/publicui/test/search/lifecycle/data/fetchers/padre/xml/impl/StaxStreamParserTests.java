@@ -110,9 +110,27 @@ public class StaxStreamParserTests {
 	
 	@Test
 	public void testUrlCount() {
-		//FIXME Implement parsing
+		Map<String, Integer> urls = rp.getUrlCounts();
+		assertEquals(279, urls.size());
+		
+		// Pick some random keys/values
+		assertEquals(1, urls.get("www.portugal.embassy.gov.au/lbon").intValue());
+		assertEquals(1, urls.get("www.brisbane.qld.gov.au/traffic-transport").intValue());
+		assertEquals(2, urls.get("australia.gov.au/directories/australia/ato").intValue());
+		assertEquals(4, urls.get("australia.gov.au/faqs/government-services-faqs").intValue());
+		assertEquals(8, urls.get("australia.gov.au/service").intValue());
+		assertEquals(1, urls.get("www.tonga.embassy.gov.au").intValue());
+		assertEquals(10, urls.get("australia.gov.au/services").intValue());
 	}
 
+	public void testGScopeCount() {
+		Map<Integer, Integer> gscopes = rp.getGScopeCounts();
+		assertEquals(2, gscopes.size());
+		
+		assertEquals(54, gscopes.get(1).intValue());
+		assertEquals(6, gscopes.get(54).intValue());		
+	}
+	
 	@Test
 	public void testTierBars() {
 		Assert.assertEquals(2, rp.getTierBars().size());
