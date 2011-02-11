@@ -13,8 +13,9 @@ public class Facet {
 	@Getter private final List<Category> categories = new ArrayList<Category>();
 	
 	@RequiredArgsConstructor
-	public class Category {
-		@Getter private final String title;
+	public static class Category {
+		@Getter private final String data;
+		@Getter private final String label;
 		@Getter private final int count;
 	}
 	

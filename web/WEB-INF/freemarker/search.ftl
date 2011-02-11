@@ -181,7 +181,7 @@
 						<h3><div class="facetLabel">${facet.name}</div></h3>
 						<#list facet.categories as category>
 							<div class="category">
-								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&meta_${facet.name}_phrase_sand=$%2B%2B ${category.title} $%2B%2B">${category.title}</a></span>
+								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}">${category.label}</a></span>
 								&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)</span>
 							</div>
 						</#list>

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class SearchResponse {
 	/** PADRE return code (0 = SUCESS) */
 	@Getter @Setter private int returnCode;
 	
-	@Getter @Setter private List<Facet> facets;
+	@Getter @Setter private List<Facet> facets = new ArrayList<Facet>();
 	
 	public boolean hasResultPacket() { return resultPacket != null; }
 	

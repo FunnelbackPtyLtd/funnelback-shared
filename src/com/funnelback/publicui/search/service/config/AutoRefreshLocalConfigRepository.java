@@ -4,17 +4,21 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 
 /**
  * Implementation of {@link AbstractLocalConfigRepository} that caches config
@@ -24,6 +28,16 @@ import com.funnelback.publicui.search.model.collection.Collection;
 @Log
 public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepository {
 
+	@Value("#{appProperties['config.repository.autorefresh.interval']}")
+	private int checkingInterval = 0;
+	
+	/**
+	 * Keep track of recent stale checks to avoid checking all
+	 * the files to often
+	 */
+	private Map<String, Long> staleChecks = new HashMap<String, Long>();
+
+	
 	@Override
 	public Collection getCollection(String collectionId) {
 		Cache cache = appCacheManager.getCache(CACHE);
@@ -67,20 +81,33 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	}
 
 	/**
-	 * Checks if any of the source configuration files has changed since the specified timestamp.
+	 * Checks if any of the source configuration files has changed since the element creation time.
 	 * Doesn't detect actual changes but relies on file lastModified().
 	 * @param c
-	 * @param timestamp
+	 * @param creationTime Date of the creation of the element in the cache
 	 * @return true if any of the configuration has been updated, false otherwise.
 	 */
-	private boolean isAnyConfigFileStale(Collection c, long timestamp) {
-		if (c.getConfiguration().isStale(searchHome, timestamp) ) {
+	private boolean isAnyConfigFileStale(Collection c, long creationTime) {
+		
+		Long now = System.currentTimeMillis();
+		Long lastAccessTime = staleChecks.get(c.getId());
+		staleChecks.put(c.getId(), now);
+		// Take an early exit if we've already check recently.
+		if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
+			return false;
+		}
+		
+		if (c.getConfiguration().isStale(searchHome, creationTime) ) {
 			log.debug("'" + c.getId() + "' collection configuration is stale.");
 			return true;
 		}
 		
+		File baseDataDir = new File(searchHome + File.separator + DefaultValues.FOLDER_DATA + File.separator + c.getId());
+		
+		// List of files to check for an update
 		File[] filesToCheck = new File[] {
 				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
+				new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME),
@@ -89,10 +116,26 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		};
 		
 		for(File file: filesToCheck) {
-			if (file.lastModified() > timestamp) {
+			if (file.lastModified() > creationTime) {
 				log.debug("Config file '" + file.getAbsolutePath() + "' has changed.");
 				return true;
 			}
+		}
+		
+		// Check per-profile config files
+		for(Profile p: c.getProfiles().values()) {
+			filesToCheck = new File[] {
+					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
+					new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + p.getId(), Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME)
+			};
+
+			for(File file: filesToCheck) {
+				if (file.lastModified() > creationTime) {
+					log.debug("Config file '" + file.getAbsolutePath() + "' has changed.");
+					return true;
+				}
+			}
+			
 		}
 		
 		return false;

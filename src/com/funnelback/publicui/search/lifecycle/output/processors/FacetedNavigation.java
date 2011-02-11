@@ -1,16 +1,15 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import lombok.AllArgsConstructor;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
@@ -23,36 +22,41 @@ public class FacetedNavigation implements OutputProcessor {
 	@Override
 	public void process(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasResponse(searchTransaction)
-				&& searchTransaction.getResponse().hasResultPacket()
-				&& searchTransaction.getResponse().getResultPacket().getRmcs().size() > 0) {
+				&& searchTransaction.getResponse().hasResultPacket()) {
 			
-			Map<String, Facet> facets = new HashMap<String, Facet>();
+			FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
 			
-			for (Entry<String, Integer> entry: searchTransaction.getResponse().getResultPacket().getRmcs().entrySet()) {
-				String item = entry.getKey();
-				int count = entry.getValue();
-				MetadataAndValue mdv = parseMetadata(item);
-				Facet f = facets.get(mdv.metadata);
-				if (f == null) {
-					f = new Facet(mdv.metadata);
-					facets.put(mdv.metadata, f);
+			if (config != null) {
+				for(com.funnelback.publicui.search.model.collection.facetednavigation.Facet f: config.getFacets()) {
+					Facet facet = new Facet(f.getName());
+					for (com.funnelback.publicui.search.model.collection.facetednavigation.Category c: f.getCategories()) {
+						facet.getCategories().addAll(c.computeValues(searchTransaction.getResponse().getResultPacket()));
+						Collections.sort(facet.getCategories(), new ByCountComparator(true));
+					}
+					searchTransaction.getResponse().getFacets().add(facet);
 				}
-				f.getCategories().add( (f).new Category(mdv.value, count));
+				
 			}
-			
-			searchTransaction.getResponse().setFacets(new ArrayList<Facet>(facets.values()));
 		}
 	}
 	
-	private MetadataAndValue parseMetadata(String item) {
-		int colon = item.indexOf(":");
-		return new MetadataAndValue(item.substring(0, colon), item.substring(colon+1));
-	}
-	
-	@AllArgsConstructor
-	public class MetadataAndValue {
-		public String metadata;
-		public String value;
+	public class ByCountComparator implements Comparator<Facet.Category> {
+		private boolean reverse;
+		
+		public ByCountComparator(boolean reverse) {
+			this.reverse = reverse;
+		}
+		
+		@Override
+		public int compare(Category c1, Category c2) {
+			if (reverse) {
+				return c2.getCount() - c1.getCount();
+			} else {
+				return c1.getCount() - c2.getCount();
+			}
+		}
+
+		
 	}
 	
 }
