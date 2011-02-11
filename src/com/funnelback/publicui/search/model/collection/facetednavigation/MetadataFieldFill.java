@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 
-public class MetadataFieldFill extends Category {
+public class MetadataFieldFill extends CategoryType {
 
 	@Override
 	public List<com.funnelback.publicui.search.model.transaction.Facet.Category> computeValues(final ResultPacket rp) {

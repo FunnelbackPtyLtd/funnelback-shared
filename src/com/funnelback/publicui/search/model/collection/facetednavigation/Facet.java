@@ -11,7 +11,7 @@ import lombok.ToString;
 public class Facet {
 
 	@Getter private final String name;
-	@Getter private final List<Category> categories;
+	@Getter private final List<CategoryType> categoryTypes;
 	
 	public final class Schema {
 		public static final String FACET = "Facet";

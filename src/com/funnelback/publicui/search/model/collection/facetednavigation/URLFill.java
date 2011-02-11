@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 
-public class URLFill extends Category {
+public class URLFill extends CategoryType {
 	
 	@Override
 	public List<com.funnelback.publicui.search.model.transaction.Facet.Category> computeValues(final ResultPacket rp) {

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 
-public class QueryItem extends Category {
+public class QueryItem extends CategoryType {
 	@Getter @Setter private String query;
 	@Getter @Setter private int gscopefield;
 	

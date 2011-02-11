@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 
-public class GScopeItem extends Category {
+public class GScopeItem extends CategoryType {
 	@Getter @Setter private int userSetGScope;
 	
 	@Override

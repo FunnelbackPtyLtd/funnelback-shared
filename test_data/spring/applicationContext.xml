@@ -43,6 +43,8 @@
 
 	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
 	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.config.AutoRefreshLocalConfigRepository" />
+	<util:properties id="appProperties" location="classpath:publicui.properties" />
+	
 	
 	<bean id="searchController"
 		class="com.funnelback.publicui.web.controllers.SearchController" />

@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 
-public class MetadataTypeFill extends Category {
+public class MetadataTypeFill extends CategoryType {
 	@Getter @Setter private String metafield;
 	
 	@Override

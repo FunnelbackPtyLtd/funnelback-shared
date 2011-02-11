@@ -17,7 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.model.collection.facetednavigation.Category;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryType;
 import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
 import com.funnelback.publicui.xml.XmlParsingException;
 
@@ -81,7 +81,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 		}
 		
 		String data = null;
-		List<Category> categories = new ArrayList<Category>();
+		List<CategoryType> categories = new ArrayList<CategoryType>();
 		while(reader.hasNext() && reader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			
 			switch(reader.getEventType()){
@@ -111,13 +111,13 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 	 * @throws BeanInstantiationException
 	 * @throws ClassNotFoundException
 	 */
-	private Category parseCategory(XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
+	private CategoryType parseCategory(XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
 		String name = reader.getLocalName();
 		
 		// The name = the class name of the corresponding Java classes.
 		// Ex: <QueryItem> => com.funnelback.publicui.model.collection.facetednavigation.QueryItem
 		// We instantiate the bean using reflection
-		Category c = (Category) BeanUtils.instantiate(Class.forName(Category.class.getPackage().getName() + "." + name));
+		CategoryType c = (CategoryType) BeanUtils.instantiate(Class.forName(CategoryType.class.getPackage().getName() + "." + name));
 		
 		// Then we'll use a BeanWrapper to set properties on the bean later, without knowing
 		// which is the concrete class behind it.
