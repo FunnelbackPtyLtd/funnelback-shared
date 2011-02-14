@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import javax.annotation.Resource;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.service.config.AbstractLocalConfigReposito
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@Ignore
 public class FacetedNavigationTests {
 
 	@Resource(name="localConfigRepository")
