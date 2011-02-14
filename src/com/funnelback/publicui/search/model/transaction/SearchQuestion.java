@@ -80,6 +80,8 @@ public class SearchQuestion {
 			public static final String URI = "uri";
 			public static final String DOC = "doc";
 		}
+		
+		public static final String FACET_PREFIX = "f.";
 	}
 	
 }

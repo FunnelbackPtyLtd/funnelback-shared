@@ -1,16 +1,21 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
-public class XPathFill extends CategoryType {
+@Log
+public class XPathFill extends CategoryType implements MetadataBasedType {
 	@Getter @Setter private String metafield;
 	
 	@Override
@@ -21,21 +26,30 @@ public class XPathFill extends CategoryType {
 			int count = entry.getValue();
 			MetadataAndValue mdv = parseMetadata(item);
 			if (this.metafield.equals(mdv.metadata)) {
-				categories.add(new com.funnelback.publicui.search.model.transaction.Facet.Category(mdv.value, mdv.value, count));
+				categories.add(new com.funnelback.publicui.search.model.transaction.Facet.Category(mdv.value, mdv.value, count, getUrlParamName() + "=" + mdv.value));
 			}
 		}
 		return categories;
 	}
 
-	private MetadataAndValue parseMetadata(String item) {
-		int colon = item.indexOf(":");
-		return new MetadataAndValue(item.substring(0, colon), item.substring(colon+1));
+	@Override
+	public String getUrlParamName() {
+		return RequestParameters.FACET_PREFIX + facetName + "|" + metafield;
 	}
 	
-	@AllArgsConstructor
-	public class MetadataAndValue {
-		public String metadata;
-		public String value;
+	@Override
+	public boolean matches(String value, String extraParams) {
+		return metafield.equals(extraParams);
+	}
+	
+	@Override
+	public String getMetadataClass() {
+		return metafield;
 	}
 
+	@Override
+	@SneakyThrows(UnsupportedEncodingException.class)
+	public String getQueryConstraint(String value) {
+		return metafield + ":\"" + URLEncoder.encode("$++ " + value + " $++", "UTF-8") + "\"";
+	}
 }

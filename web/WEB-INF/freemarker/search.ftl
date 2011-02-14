@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<meta name="robots" content="nofollow" />
 	<link rel="stylesheet" media="screen" href="/search/search.css" type="text/css" />
+	<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
 	
 	<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
 	
@@ -48,6 +49,29 @@
 			}
 			window.location.search = '?' + out;
 		}
+		
+		jQuery().ready(function() {
+			jQuery('.facet').each( function() {
+				jQuery(this).children('.category:gt(10)').css('display', 'none');
+			});
+			
+			jQuery('.moreOrLessCategories>a').each( function() {
+				var nbCategories = jQuery(this).parent().parent('div.facet').children('div.category').size();
+				if ( nbCategories <= 10 ) {
+					jQuery(this).css('display', 'none');
+				} else if (nbCategories > 10) {
+					jQuery(this).click( function() {
+						if (jQuery(this).text().indexOf('more...') < 0) {
+							jQuery(this).parent().parent('div.facet').children('div.category:gt(10)').css('display', 'none');
+							jQuery(this).text('more...');
+						} else {
+							jQuery(this).parent().parent('div.facet').children('div.category').css('display', 'block');
+							jQuery(this).text('less...');
+						}
+					});
+				}
+			});			
+		});
 	</script>
 </head>
 
@@ -181,10 +205,13 @@
 						<h3><div class="facetLabel">${facet.name}</div></h3>
 						<#list facet.categories as category>
 							<div class="category">
-								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}">${category.label}</a></span>
+								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a></span>
 								&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)</span>
 							</div>
 						</#list>
+						<span class="moreOrLessCategories">
+							<a href="#">more...</a>
+						</span>
 					</div>
 				</#list>
 			

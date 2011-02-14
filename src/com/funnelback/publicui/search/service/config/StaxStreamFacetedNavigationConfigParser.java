@@ -91,7 +91,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 					data = reader.getElementText();
 				} else {
 					try {
-						categories.add(parseCategory(reader));
+						categories.add(parseCategory(data, reader));
 					} catch (Exception e) {
 						log.error("Unable to parse Category", e);
 						throw new XMLStreamException(e);
@@ -111,13 +111,14 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 	 * @throws BeanInstantiationException
 	 * @throws ClassNotFoundException
 	 */
-	private CategoryType parseCategory(XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
+	private CategoryType parseCategory(String facetName, XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
 		String name = reader.getLocalName();
 		
 		// The name = the class name of the corresponding Java classes.
 		// Ex: <QueryItem> => com.funnelback.publicui.model.collection.facetednavigation.QueryItem
 		// We instantiate the bean using reflection
 		CategoryType c = (CategoryType) BeanUtils.instantiate(Class.forName(CategoryType.class.getPackage().getName() + "." + name));
+		c.setFacetName(facetName);
 		
 		// Then we'll use a BeanWrapper to set properties on the bean later, without knowing
 		// which is the concrete class behind it.
@@ -141,7 +142,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 					bw.setPropertyValue(StringUtils.uncapitalize(reader.getLocalName()), reader.getElementText());
 				} else {
 					// If it's not a property, it's a sub category.
-					c.getSubCategories().add(parseCategory(reader));
+					c.getSubCategories().add(parseCategory(facetName, reader));
 				}
 				break;
 			}
