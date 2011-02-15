@@ -26,6 +26,11 @@ public class SearchQuestion {
 	@Getter @Setter private String[] clive;
 	
 	/**
+	 * Query expressions, will be passed to PADRE
+	 */
+	@Getter final private List<String> queryExpressions = new ArrayList<String>();
+	
+	/**
 	 * meta_* / query_* parameters, transformed as query expressions.
 	 */
 	@Getter final private Map<String, String> metaParameters = new HashMap<String, String>();

@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.RequiredArgsConstructor;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -23,6 +25,10 @@ public class PadreQueryStringBuilder {
 
 		// Build query
 		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
+		if (transaction.getQuestion().getQueryExpressions().size() > 0) {
+			// Add additional query expressions
+			query.append(" " + StringUtils.join(transaction.getQuestion().getQueryExpressions(), " "));
+		}
 		if (transaction.getQuestion().getMetaParameters().size() > 0) {
 			// Add meta_* parameters transformed as query expressions
 			for (String value : transaction.getQuestion().getMetaParameters().values()) {

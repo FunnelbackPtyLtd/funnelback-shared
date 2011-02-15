@@ -124,17 +124,15 @@ public class FacetedNavigation implements InputProcessor {
 					existingGScope1Parameters = searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)[0];
 				}
 				
-				String updatedParameters = updateGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
-				log.debug("Updating gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
-				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});	
+				String updatedParameters = getGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
+				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});
+				log.debug("Updated gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
 				
 				
-				updatedParameters = updateQueryConstraints(queryConstraints);
-				
-				log.debug("Updating query constraints from '" + searchTransaction.getQuestion().getQuery()
-						+ "' to '" + searchTransaction.getQuestion().getQuery() + updatedParameters + "'");
-				
-				searchTransaction.getQuestion().setQuery(searchTransaction.getQuestion().getQuery() + updatedParameters);
+				List<String> additionalQueryConstraints = getQueryConstraints(queryConstraints);
+				searchTransaction.getQuestion().getQueryExpressions().addAll(additionalQueryConstraints);
+				log.debug("Added query constraints '" + StringUtils.join(additionalQueryConstraints, ",") + "'");
+
 			}
 		}
 	}
@@ -148,7 +146,7 @@ public class FacetedNavigation implements InputProcessor {
 	 * @param existingGScope1Parameters
 	 * @return
 	 */
-	private String updateGScope1Parameters(Set<Set<String>> gscope1Constraints, String existingGScope1Parameters) {
+	private String getGScope1Parameters(Set<Set<String>> gscope1Constraints, String existingGScope1Parameters) {
 		String updated = "";
 		if (gscope1Constraints.size() > 0) {
 			Stack<String> out = new Stack<String>();
@@ -184,13 +182,13 @@ public class FacetedNavigation implements InputProcessor {
 	 * @param queryConstraints
 	 * @return
 	 */
-	private String updateQueryConstraints(Set<Set<String>> queryConstraints) {
-		StringBuffer out = new StringBuffer();
+	private List<String> getQueryConstraints(Set<Set<String>> queryConstraints) {
+		List<String> out = new ArrayList<String>();
 
 		if (queryConstraints.size() > 0) {
 			
 			for (Set<String> queryConstraint: queryConstraints) {
-				StringBuffer newConstraints = new StringBuffer(" ");
+				StringBuffer newConstraints = new StringBuffer();
 				
 				if (queryConstraint.size() == 1) {
 					newConstraints.append("|" + queryConstraint.iterator().next());
@@ -202,11 +200,11 @@ public class FacetedNavigation implements InputProcessor {
 					newConstraints.append("]");
 				}
 				
-				out.append(newConstraints);
+				out.add(newConstraints.toString());
 			}
 		}
 		
-		return out.toString();
+		return out;
 	}
 
 	/**

@@ -84,8 +84,6 @@ public class MetaDates implements InputProcessor {
 			RequestParametersFilter filter = new RequestParametersFilter(request);
 			if (filter.filter(PARAMETERS_PATTERN).length > 0) {
 				
-				StringBuffer extra = new StringBuffer();
-				
 				for(Dates n: Dates.values()) {
 					
 					String date;
@@ -105,6 +103,7 @@ public class MetaDates implements InputProcessor {
 						continue;
 					}
 
+					StringBuffer extra = new StringBuffer();
 					try {
 						switch(n) {
 						case d3:
@@ -112,31 +111,32 @@ public class MetaDates implements InputProcessor {
 							c.setTime(parseDate(date));
 							c.add(Calendar.DAY_OF_MONTH, -1);
 							date = DATE_FORMATTER.format(c);
-							extra.append(Dates.d.toString()).append(n.getOp()).append(date).append(" ");
+							extra.append(Dates.d.toString()).append(n.getOp()).append(date);
 							break;
 						case d4:
 							c = Calendar.getInstance();
 							c.setTime(parseDate(date));
 							c.add(Calendar.DAY_OF_MONTH, 1);
 							date = DATE_FORMATTER.format(c);
-							extra.append(Dates.d.toString()).append(n.getOp()).append(date).append(" ");
+							extra.append(Dates.d.toString()).append(n.getOp()).append(date);
 							break;
 						default:
-							extra.append(Dates.d.toString()).append(n.getOp()).append(date).append(" ");
+							extra.append(Dates.d.toString()).append(n.getOp()).append(date);
 						}
 					} catch (Exception e) {
 						log.warn("Unparseable date: '" + date + "'");
-					} 
+					}
+					
+					if (extra.length() > 0) {
+						searchTransaction.getQuestion().getQueryExpressions().add(extra.toString());
+						log.debug("Added additional date query '" + extra.toString() + "'");
+					}
 				}
-				extra.append(processEventSearch(request));
-				
-				log.debug("Updating query with '" + extra.toString() + "'");
-				if (searchTransaction.getQuestion().getQuery() == null) {
-					searchTransaction.getQuestion().setQuery(extra.toString().trim());
-				} else {
-					searchTransaction.getQuestion().setQuery(searchTransaction.getQuestion().getQuery() + " " + extra.toString().trim());
+				String eventSearchQueries = processEventSearch(request);
+				if ( eventSearchQueries.length() > 0) {
+					searchTransaction.getQuestion().getQueryExpressions().add(eventSearchQueries);
+					log.debug("Added additional event search query '" + eventSearchQueries + "'");
 				}
-				
 			}
 		}
 

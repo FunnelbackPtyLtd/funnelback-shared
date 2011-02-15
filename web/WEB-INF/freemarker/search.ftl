@@ -127,7 +127,7 @@
 				-->
 				&nbsp;&nbsp;&nbsp;
 				<span class="change-format">
-					( <a href="#">html</a> | <a href="#">xml</a> | <a href="#">json</a> )
+					&middot; <a href="#">html</a> &middot; <a href="#">xml</a> &middot; <a href="#">json</a> &middot;
 				</span>
 			</div>
 			 
