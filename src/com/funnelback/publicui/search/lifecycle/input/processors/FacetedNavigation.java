@@ -1,7 +1,10 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +14,7 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -45,14 +49,7 @@ public class FacetedNavigation implements InputProcessor {
 			FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
 			
 			if (config != null && config.getQpOptions() != null) {
-				// Query Processor options are embedded in the faceted_navigation.cfg file:
-				//
-				// <Facets qpoptions=" -rmcfdt">
-				//  <Data></Data>
-				//  <Facet>
-				//  ...
-				//  </Facet>
-				// </Facets>
+				// Query Processor options are embedded in the faceted_navigation.cfg file
 				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
 				log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
 				
@@ -77,96 +74,156 @@ public class FacetedNavigation implements InputProcessor {
 					Facet f = (Facet) CollectionUtils.find(config.getFacets(), new Predicate() {
 						@Override
 						public boolean evaluate(Object o) {
-							Facet f = (Facet) o;
-							return f.getName().equals(facetName);
+							return ((Facet) o).getName().equals(facetName);
 						}
 					});
 					
-					log.debug("Found facet " + f);
+					if (f != null) {
+						// Set of constraints for this specific facet
+						Set<String> gscope1FacetConstraints = new HashSet<String>();
+						Set<String> queryFacetConstraints = new HashSet<String>();
 					
-					
-					// Set of constraints for this specific facet
-					Set<String> gscope1FacetConstraints = new HashSet<String>();
-					Set<String> queryFacetConstraints = new HashSet<String>();
-					
-					// Find corresponding category type, for each value
-					for(final String value: values) {
-						CategoryType ct = (CategoryType) CollectionUtils.find(f.getCategoryTypes(), new Predicate() {
-							@Override
-							public boolean evaluate(Object o) {
-								CategoryType categoryType = (CategoryType) o;
-								return categoryType.matches(value, extraParam);
-							}
-						});
-						
-						if (ct instanceof GScopeBasedType) {
-							GScopeBasedType type = (GScopeBasedType) ct;
-							gscope1FacetConstraints.add(type.getGScope1Constraint());
+						// Find corresponding category type, for each value
+						for(final String value: values) {
+							CategoryType ct = (CategoryType) CollectionUtils.find(f.getCategoryTypes(), new Predicate() {
+								@Override
+								public boolean evaluate(Object o) {
+									return ((CategoryType) o).matches(value, extraParam);
+								}
+							});
 							
-						} else if (ct instanceof MetadataBasedType) {
-							MetadataBasedType type = (MetadataBasedType) ct;
-							queryFacetConstraints.add(type.getQueryConstraint(value));
+							if (ct != null) {
+								
+								List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
+								if (selectedCategoriesValues == null) {
+									selectedCategoriesValues = new ArrayList<String>();
+								}
+								selectedCategoriesValues.add(value);
+								searchTransaction.getQuestion().getSelectedCategories().put(ct.getUrlParamName(), selectedCategoriesValues);
+								
+								if (ct instanceof GScopeBasedType) {
+									GScopeBasedType type = (GScopeBasedType) ct;
+									gscope1FacetConstraints.add(type.getGScope1Constraint());
+									
+								} else if (ct instanceof MetadataBasedType) {
+									MetadataBasedType type = (MetadataBasedType) ct;
+									queryFacetConstraints.add(type.getQueryConstraint(value));
+								}
+							}
 						}
-					}
-					
-					gscope1Constraints.add(gscope1FacetConstraints);
-					queryConstraints.add(queryFacetConstraints);
-				}
-				
-				/*
-				if (gscope1Constraints.size() > 0) {
-					String[] existingConstraints = searchTransaction.getQuestion().getAdditionalParameters().get("gscope1");
-					StringBuffer newConstraints = new StringBuffer();
-					String additionalOperator = "";
-					if (existingConstraints != null) {
-						// It's assumed that there is only one gscope1 parameter (Doesn't make sense otherwise)
-						newConstraints.append(existingConstraints[0]);
-						if (! (existingConstraints[0].endsWith("+") || existingConstraints[0].endsWith("|") || existingConstraints[0].endsWith("!"))) {
-							newConstraints.append(",");
-						}
-						additionalOperator = "+";
-					}
-					
-					for (Iterator<String> it = gscope1Constraints.iterator(); it.hasNext();) {
-						newConstraints.append(it.next());
-						if (it.hasNext()) {
-							newConstraints.append(",");
-						}
-					}
-					if (gscope1Constraints.size() > 1) {
-						newConstraints.append(StringUtils.repeat("|", gscope1Constraints.size()-1));
-					}
-					newConstraints.append(additionalOperator);
-					
-					log.debug("Updating gscope1 constraints from '"
-							+ ((existingConstraints != null) ? existingConstraints[0] : "")
-							+ "' to '" + newConstraints.toString() + "'");
-					
-					searchTransaction.getQuestion().getAdditionalParameters().put("gscope1", new String[] {newConstraints.toString().replace("+", "%2B")});	
-				}
-				*/
-				
-				// Do a OR between each category of a Facet
-				// then a AND between each Facet
-				if (queryConstraints.size() > 0) {
-					String out = "";
-					for (Set<String> queryConstraint: queryConstraints) {
-						StringBuffer newConstraints = new StringBuffer(" |[");
-						for (String constraint: queryConstraint) {
-							newConstraints.append(" ").append(constraint);
-						}
-						newConstraints.append("]");
 						
-						out += newConstraints;
+						gscope1Constraints.add(gscope1FacetConstraints);
+						queryConstraints.add(queryFacetConstraints);
 					}
 					
-					log.debug("Updating query constraints from '" + searchTransaction.getQuestion().getQuery()
-							+ "' to '" + searchTransaction.getQuestion().getQuery() + out + "'");
-					
-					searchTransaction.getQuestion().setQuery(searchTransaction.getQuestion().getQuery() + out);
 				}
+				
+				String existingGScope1Parameters = "";
+				if (searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
+					// Only one value is relevant
+					existingGScope1Parameters = searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)[0];
+				}
+				
+				String updatedParameters = updateGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
+				log.debug("Updating gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
+				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});	
+				
+				
+				updatedParameters = updateQueryConstraints(queryConstraints);
+				
+				log.debug("Updating query constraints from '" + searchTransaction.getQuestion().getQuery()
+						+ "' to '" + searchTransaction.getQuestion().getQuery() + updatedParameters + "'");
+				
+				searchTransaction.getQuestion().setQuery(searchTransaction.getQuestion().getQuery() + updatedParameters);
 			}
 		}
 	}
 
+	/**
+	 * Get updated gscope1 parameters by taking into account any existing gscop1 parameter
+	 * and a set of constraints from the faceted navigation.
+	 * Each facet constraints will be combined with and AND, and each category constraint will be
+	 * combined with an OR.
+	 * @param gscope1Constraints
+	 * @param existingGScope1Parameters
+	 * @return
+	 */
+	private String updateGScope1Parameters(Set<Set<String>> gscope1Constraints, String existingGScope1Parameters) {
+		String updated = "";
+		if (gscope1Constraints.size() > 0) {
+			Stack<String> out = new Stack<String>();
+			// Add each constraing, followed by corresponding numbers of OR operators
+			for (Set<String> constraints: gscope1Constraints) {
+				out.addAll(constraints);
+				if (constraints.size() > 1) {
+					for(int i=0; i<constraints.size()-1; i++) {
+						out.push("|");
+					}
+				}
+			}
+			
+			// For each facet constraint, add an AND operator
+			for (int i=0; i<gscope1Constraints.size() -1; i++) {
+				out.push("+");
+			}
+			
+			updated = serializeRPN(out);
+
+			// Add existing constraints and an AND operator
+			if (existingGScope1Parameters != null && !"".equals(existingGScope1Parameters)) {
+				updated += existingGScope1Parameters + "+";
+			}
+		}
+		return updated;
+	}
+	
+	/**
+	 * Gets a query expression composed by query constraints coming from faceted navigation.
+	 * Each facet constraints will be combined with and AND, and each category constraint will be
+	 * combined with an OR.
+	 * @param queryConstraints
+	 * @return
+	 */
+	private String updateQueryConstraints(Set<Set<String>> queryConstraints) {
+		StringBuffer out = new StringBuffer();
+
+		if (queryConstraints.size() > 0) {
+			
+			for (Set<String> queryConstraint: queryConstraints) {
+				StringBuffer newConstraints = new StringBuffer(" ");
+				
+				if (queryConstraint.size() == 1) {
+					newConstraints.append("|" + queryConstraint.iterator().next());
+				} else if (queryConstraint.size() > 1) {
+					newConstraints.append("|[");
+					for (String constraint: queryConstraint) {
+						newConstraints.append(" ").append(constraint);
+					}
+					newConstraints.append("]");
+				}
+				
+				out.append(newConstraints);
+			}
+		}
+		
+		return out.toString();
+	}
+
+	/**
+	 * Serializes a stack of RPN gscope operations in a PADRE format.
+	 * @param rpn
+	 * @return
+	 */
+	private String serializeRPN(Stack<String> rpn) {
+		StringBuffer out = new StringBuffer();
+		for (int i=0; i<rpn.size(); i++) {
+			out.append(rpn.get(i));
+			if (i+1 < rpn.size() && StringUtils.isNumeric(rpn.get(i)) && StringUtils.isNumeric(rpn.get(i+1))) {
+				out.append(",");
+			}
+		}
+		log.debug("Serialized '" + StringUtils.join(rpn, ",") + "' to '" + out.toString() + "'");
+		return out.toString();
+	}
+	
 }

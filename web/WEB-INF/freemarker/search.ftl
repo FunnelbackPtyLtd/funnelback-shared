@@ -70,9 +70,23 @@
 						}
 					});
 				}
+			});
+			
+			jQuery('.change-format a').click(function () {
+				var format = jQuery(this).text();
+				if (format == 'html') {
+					format = 'ftl';
+				}
+				document.location.replace(document.URL.replace(/search..../, 'search.' + format));
 			});			
 		});
 	</script>
+	
+	<style type="text/css">
+		span.change-format {
+			font-size: small;
+		}
+	</style>
 </head>
 
 <body>
@@ -111,8 +125,14 @@
           			<s:FacetScope>Within selected categories only</s:FacetScope>
                 	<s:IfDefCGI from-advanced><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="<s:env>SCRIPT_NAME</s:env>?fb-advanced=true&amp;<s:env>QUERY_STRING</s:env>" id="fb-advanced-view">view advanced search</a>]</span></s:IfDefCGI>
 				-->
+				&nbsp;&nbsp;&nbsp;
+				<span class="change-format">
+					( <a href="#">html</a> | <a href="#">xml</a> | <a href="#">json</a> )
+				</span>
 			</div>
+			 
          </form>
+        
     </div> 
 
 	<#if SearchTransaction.question.query?exists>
@@ -199,21 +219,37 @@
 			
 			<#if SearchTransaction.response.facets?exists && (SearchTransaction.response.facets?size > 0)>
 			<div id="fb-facets">
-			
-				<#list SearchTransaction.response.facets as facet>
-					<div class="facet">
-						<h3><div class="facetLabel">${facet.name}</div></h3>
-						<#list facet.categories as category>
-							<div class="category">
-								<span class="categoryName"><a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a></span>
-								&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)</span>
-							</div>
-						</#list>
-						<span class="moreOrLessCategories">
-							<a href="#">more...</a>
-						</span>
-					</div>
-				</#list>
+				<form method="get">
+					<input type="hidden" name="query" value="${SearchTransaction.question.query}" />
+					<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}" />
+
+					<input type="submit" value="Refine" />
+								
+					<#list SearchTransaction.response.facets as facet>
+						<div class="facet">
+							<h3><div class="facetLabel">${facet.name}</div></h3>
+							<#list facet.categories as category>
+								<div class="category">
+									<#assign checked = "" />
+									<#if SearchTransaction.question.selectedCategories[category.urlParams?split("=")[0]]?exists>
+										<#if SearchTransaction.question.selectedCategories[category.urlParams?split("=")[0]]?seq_contains(category.label)>
+											<#assign checked="checked=\"checked\"" />
+										</#if>
+									</#if>
+									<input type="checkbox" name="${category.urlParams?split("=")[0]}" value="${category.urlParams?split("=")[1]}" ${checked} />
+									<span class="categoryName">										
+										<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a></span>
+										&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)
+									</span>
+								</div>
+							</#list>
+							<span class="moreOrLessCategories">
+								<a href="#">more...</a>
+							</span>
+						</div>
+					</#list>
+				
+				</form>
 			
 			</div>
 			</#if>

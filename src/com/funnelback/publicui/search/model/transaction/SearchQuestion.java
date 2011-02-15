@@ -54,6 +54,11 @@ public class SearchQuestion {
 	@Getter final private List<String> userKeys = new ArrayList<String>();
 	
 	/**
+	 * Selected facets categories
+	 */
+	@Getter final private Map<String, List<String>> selectedCategories = new HashMap<String, List<String>>();
+	
+	/**
 	 * Whether the request is impersonated
 	 */
 	@Getter @Setter private boolean impersonated;
@@ -62,6 +67,7 @@ public class SearchQuestion {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
 		public static final String CLIVE = "clive";
+		public static final String GSCOPE1 = "gscope1";
 		
 		public static class Cache {
 			/**
