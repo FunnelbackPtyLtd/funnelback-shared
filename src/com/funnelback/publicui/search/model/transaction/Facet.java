@@ -19,6 +19,7 @@ public class Facet {
 		@Getter private final String label;
 		@Getter private final int count;
 		@Getter private final String urlParams;
+		@Getter private final List<Category> categories = new ArrayList<Category>();
 		
 		@RequiredArgsConstructor
 		public static class ByCountComparator implements Comparator<Facet.Category> {

@@ -52,17 +52,17 @@
 		
 		jQuery().ready(function() {
 			jQuery('.facet').each( function() {
-				jQuery(this).children('.category:gt(10)').css('display', 'none');
+				jQuery(this).children('.category:gt(5)').css('display', 'none');
 			});
 			
 			jQuery('.moreOrLessCategories>a').each( function() {
 				var nbCategories = jQuery(this).parent().parent('div.facet').children('div.category').size();
-				if ( nbCategories <= 10 ) {
+				if ( nbCategories <= 5 ) {
 					jQuery(this).css('display', 'none');
-				} else if (nbCategories > 10) {
+				} else if (nbCategories > 5) {
 					jQuery(this).click( function() {
 						if (jQuery(this).text().indexOf('more...') < 0) {
-							jQuery(this).parent().parent('div.facet').children('div.category:gt(10)').css('display', 'none');
+							jQuery(this).parent().parent('div.facet').children('div.category:gt(5)').css('display', 'none');
 							jQuery(this).text('more...');
 						} else {
 							jQuery(this).parent().parent('div.facet').children('div.category').css('display', 'block');
@@ -85,6 +85,10 @@
 	<style type="text/css">
 		span.change-format {
 			font-size: small;
+		}
+		
+		div.sub-categories {
+			margin-left: 1em;
 		}
 	</style>
 </head>
@@ -238,9 +242,26 @@
 									</#if>
 									<input type="checkbox" name="${category.urlParams?split("=")[0]}" value="${category.urlParams?split("=")[1]}" ${checked} />
 									<span class="categoryName">										
-										<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a></span>
-										&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)
+										<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a>
 									</span>
+									&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)
+									
+									<div class="sub-categories">
+										<#list category.categories as subCategory>
+											<#assign checked = "" />
+											<#if SearchTransaction.question.selectedCategories[subCategory.urlParams?split("=")[0]]?exists>
+												<#if SearchTransaction.question.selectedCategories[subCategory.urlParams?split("=")[0]]?seq_contains(subCategory.label)>
+													<#assign checked="checked=\"checked\"" />
+												</#if>
+											</#if>
+									
+											<input type="checkbox" name="${subCategory.urlParams?split("=")[0]}" value="${subCategory.urlParams?split("=")[1]}" ${checked} />
+											<span class="categoryName">${subCategory.label}</span>
+											&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${subCategory.count}</span>)
+											<br />
+										</#list>
+									</div>
+									
 								</div>
 							</#list>
 							<span class="moreOrLessCategories">

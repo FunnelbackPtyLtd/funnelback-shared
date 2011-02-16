@@ -85,22 +85,19 @@ public class FacetedNavigation implements InputProcessor {
 					
 						// Find corresponding category type, for each value
 						for(final String value: values) {
-							CategoryType ct = (CategoryType) CollectionUtils.find(f.getCategoryTypes(), new Predicate() {
-								@Override
-								public boolean evaluate(Object o) {
-									return ((CategoryType) o).matches(value, extraParam);
-								}
-							});
+							// Find category or subcategory
+							CategoryType ct = findCategoryType(f.getCategoryTypes(), value, extraParam);
 							
 							if (ct != null) {
-								
 								List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
 								if (selectedCategoriesValues == null) {
 									selectedCategoriesValues = new ArrayList<String>();
 								}
+								// Put this category in the list of the selected ones
 								selectedCategoriesValues.add(value);
 								searchTransaction.getQuestion().getSelectedCategories().put(ct.getUrlParamName(), selectedCategoriesValues);
 								
+								// Add constraints for this category
 								if (ct instanceof GScopeBasedType) {
 									GScopeBasedType type = (GScopeBasedType) ct;
 									gscope1FacetConstraints.add(type.getGScope1Constraint());
@@ -207,6 +204,28 @@ public class FacetedNavigation implements InputProcessor {
 		return out;
 	}
 
+	/**
+	 * Recursively find a category type matching the value and extra param.
+	 * @param cts
+	 * @param value
+	 * @param extraParam
+	 * @return
+	 */
+	private CategoryType findCategoryType(List<CategoryType> cts, String value, String extraParam) {
+		for (CategoryType ct: cts) {
+			if (ct.matches(value, extraParam)) {
+				return ct;
+			} else {
+				CategoryType sub = findCategoryType(ct.getSubCategories(), value, extraParam);
+				if (sub != null) {
+					return sub;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Serializes a stack of RPN gscope operations in a PADRE format.
 	 * @param rpn

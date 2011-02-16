@@ -94,7 +94,7 @@ public class Synonym {
 		switch (type) {
 		case TermByTerm:
 			StringBuffer out = new StringBuffer();
-			for(String term: queryTerms.split(" ")) {
+			for(String term: queryTerms.split("\\s")) {
 				if (term.equals(query)) {
 					out.append(query);
 				} else {
