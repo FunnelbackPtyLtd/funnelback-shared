@@ -8,8 +8,8 @@ import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
  */
 public interface LogService {
 
-	public void logClick(ClickLog log);
+	public void logClick(ClickLog cl);
 	
-	public void logContextualNavigation(ContextualNavigationLog log);
+	public void logContextualNavigation(ContextualNavigationLog cnl);
 	
 }

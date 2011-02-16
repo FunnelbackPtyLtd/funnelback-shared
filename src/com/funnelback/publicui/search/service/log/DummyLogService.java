@@ -4,12 +4,10 @@ import lombok.SneakyThrows;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 
-@Service
 @Log
 public class DummyLogService implements LogService {
 
