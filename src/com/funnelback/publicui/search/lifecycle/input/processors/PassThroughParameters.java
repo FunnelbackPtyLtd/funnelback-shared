@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,9 +28,20 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class PassThroughParameters implements InputProcessor {
 
 	/**
-	 * Some parameters are ignored as we deal with them specifically
+	 * Names of the parameters to ignore (Irrelevant to PADRE, or because
+	 * we deal with them specifically)
 	 */
-	public static final String[] IGNORED = {RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.CLIVE};
+	public static final String[] IGNORED_NAMES = {
+		RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.CLIVE,
+		RequestParameters.ContextualNavigation.CN_CLICKED
+		};
+	
+	/**
+	 * Pattern of parameter names to ignore
+	 */
+	public static final Pattern[] IGNORED_PATTERNS = {
+		RequestParameters.ContextualNavigation.CN_PREV_PATTERN
+	};
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -39,8 +51,16 @@ public class PassThroughParameters implements InputProcessor {
 				&& request != null) {
 			searchTransaction.getQuestion().getAdditionalParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
 		
-			for (String ignored: IGNORED) {
+			for (String ignored: IGNORED_NAMES) {
 				searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);
+			}
+			
+			for (Pattern ignored: IGNORED_PATTERNS) {
+				for (String paramName: searchTransaction.getQuestion().getAdditionalParameters().keySet().toArray(new String[0])) {
+					if (ignored.matcher(paramName).matches()) {
+						searchTransaction.getQuestion().getAdditionalParameters().remove(paramName);
+					}
+				}
 			}
 		}
 	}

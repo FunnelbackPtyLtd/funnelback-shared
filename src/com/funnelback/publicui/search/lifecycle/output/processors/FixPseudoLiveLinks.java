@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.SneakyThrows;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -53,6 +54,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	private static final Pattern TRIM_CACHE_URL_PATTERN = Pattern.compile(".*doc=([^&]*).*");
 	
 	@Override
+	@SneakyThrows(UnsupportedEncodingException.class)
 	public void process(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
 		if (SearchTransactionUtils.hasResults(searchTransaction)) {
@@ -109,13 +111,9 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 				
 				case filecopy:
 					// Prefix with serve-filecopy-document.cgi
-					try {
-						transformedLiveUrl = FILECOPY_PREFIX
-							+ "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
-							+ "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
-					} catch (UnsupportedEncodingException uee) {
-						log.warn(uee);
-					}
+					transformedLiveUrl = FILECOPY_PREFIX
+						+ "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
+						+ "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
 					
 					break;
 				}

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.web.controllers;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.web.binding.CollectionEditor;
+import com.funnelback.publicui.web.utils.RequestParametersFilter;
 
 @Controller
 @RequestMapping({"/search", "/_/search"})
@@ -115,7 +117,7 @@ public class SearchController {
 		
 		SearchTransaction transaction = null;
 		
-		question.setImpersonated(isRequestImpersonated(request));
+		additionalDataBinding(question, request);
 		
 		if (question.getCollection() != null) {
 			SearchResponse response = new SearchResponse();
@@ -175,6 +177,31 @@ public class SearchController {
 		return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
 	}
 	
+	/**
+	 * FIXME Workaround the fact that there is no way to do custom databinding with Spring MVC 3
+	 * @param question
+	 * @param request
+	 */
+	public void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
+		// Is request impersonated ?
+		question.setImpersonated(isRequestImpersonated(request));
+		
+		// Last clicked cluster
+		question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
+		
+		// Previously clicked clusters
+		RequestParametersFilter filter = new RequestParametersFilter(request);
+		String[] paramNames = filter.filter(RequestParameters.ContextualNavigation.CN_PREV_PATTERN);
+		Arrays.sort(paramNames);
+		for(String paramName : paramNames) {
+			// We don't really care of the indexes given in parameter names
+			String value = request.getParameter(paramName);
+			if (value != null && !"".equals(value) ) {
+				question.getCnPreviousClusters().add(value);
+			}
+		}
+	}
+	
 	/*
  
 
@@ -203,4 +230,5 @@ public class SearchController {
 	}
 	
 	*/
+
 }

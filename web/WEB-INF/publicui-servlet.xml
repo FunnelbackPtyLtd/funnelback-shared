@@ -31,6 +31,7 @@
 
 	<mvc:resources mapping="/dashboard-resources/**"
 		location="/dashboard/" />
+		
 	<mvc:annotation-driven />
 
 	<bean id="viewResolver"

@@ -2,6 +2,7 @@ package com.funnelback.publicui.web.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,5 +45,20 @@ public class QueryStringUtils {
 		}
 		return params;
 	}
-	
+
+	@SneakyThrows(UnsupportedEncodingException.class)
+	public static String toString(Map<String, List<String>> qs, boolean prependQuestionMark) {
+		StringBuffer out = new StringBuffer();
+		for (Map.Entry<String, List<String>> entry: qs.entrySet()) {
+			for (String value: entry.getValue()) {
+				out.append("&")
+					.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+					.append("=");
+				if(value != null) {
+					out.append(URLEncoder.encode(value, "UTF-8"));
+				}
+			}
+		}
+		return ((prependQuestionMark) ? "?" : "") + out.toString().substring(1);
+	}
 }

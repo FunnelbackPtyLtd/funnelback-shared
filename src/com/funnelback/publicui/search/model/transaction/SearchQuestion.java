@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,16 @@ public class SearchQuestion {
 	@Getter @Setter private Collection collection;
 	@Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 	@Getter @Setter private String[] clive;
+	
+	/**
+	 * Contextual Navigation: last clicked cluster
+	 */
+	@Getter @Setter private String cnClickedCluster;
+	
+	/**
+	 * Contextual Navigation: Previous clicked clusters
+	 */
+	@Getter private final List<String> cnPreviousClusters = new ArrayList<String>();
 	
 	/**
 	 * Query expressions, will be passed to PADRE
@@ -93,6 +104,13 @@ public class SearchQuestion {
 		}
 		
 		public static final String FACET_PREFIX = "f.";
+		
+		public static class ContextualNavigation {
+			public static final String CN_CLICKED = "clicked_fluster";
+			public static final String CN_PREV_PREFIX = "cluster";
+			
+			public static final Pattern CN_PREV_PATTERN = Pattern.compile(CN_PREV_PREFIX + "\\d+");
+		}
 	}
 	
 }

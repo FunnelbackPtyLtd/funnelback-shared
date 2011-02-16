@@ -279,8 +279,9 @@
 				<div id="fb-contextual-navigation">
 					<h2>Have you tried?</h2>
 					<#list SearchTransaction.response.resultPacket.contextualNavigation.categories as category>
-						<div id="fb-contextual-navigation-type">
-                        	<span class="fb-fade"></span>
+						<#if category.name != 'site' || (category.name == 'site' && category.clusters?size > 1)>
+							<div id="fb-contextual-navigation-type">
+	                        	<span class="fb-fade"></span>
                         		<h3>
                         			<#if category.name == 'type'>Types of <strong>${SearchTransaction.response.resultPacket.contextualNavigation.searchTerm}</strong></#if>
                         			<#if category.name == 'topic'>Topics on <strong>${SearchTransaction.response.resultPacket.contextualNavigation.searchTerm}</strong></#if>
@@ -294,7 +295,8 @@
                         				<li class="fb-contextual-navigation-more"><a href="${category.moreLink}">more...</a></li>
                         			</#if>                     
                         		</ul>
-                    	</div>
+	                    	</div>
+	                    </#if>
 					</#list>
 				</div>
 			</#if>
