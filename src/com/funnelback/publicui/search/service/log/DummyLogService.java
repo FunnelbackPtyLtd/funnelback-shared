@@ -1,4 +1,4 @@
-package com.funnelback.publicui.log.service;
+package com.funnelback.publicui.search.service.log;
 
 import lombok.SneakyThrows;
 import lombok.extern.apachecommons.Log;

@@ -9,7 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 
 import com.funnelback.common.config.DefaultValues.UserIdToLog;
-import com.funnelback.publicui.log.LogUtils;
+import com.funnelback.publicui.search.service.log.LogUtils;
 
 public class LogUtilsTests {
 	

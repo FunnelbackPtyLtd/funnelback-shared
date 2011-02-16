@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.log.LogUtils;
-import com.funnelback.publicui.log.service.LogService;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.log.LogService;
+import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.web.binding.CollectionEditor;
 
 /**

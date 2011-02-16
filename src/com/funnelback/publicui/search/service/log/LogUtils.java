@@ -1,4 +1,4 @@
-package com.funnelback.publicui.log;
+package com.funnelback.publicui.search.service.log;
 
 import java.net.InetAddress;
 

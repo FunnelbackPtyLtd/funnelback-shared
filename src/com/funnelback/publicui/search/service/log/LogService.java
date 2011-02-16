@@ -1,4 +1,4 @@
-package com.funnelback.publicui.log.service;
+package com.funnelback.publicui.search.service.log;
 
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
