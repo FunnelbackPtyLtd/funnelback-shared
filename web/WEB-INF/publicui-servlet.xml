@@ -20,7 +20,7 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
-			<bean class="com.funnelback.publicui.web.interceptors.QueryLog" />
+			<bean class="com.funnelback.publicui.web.interceptors.SearchLogInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />

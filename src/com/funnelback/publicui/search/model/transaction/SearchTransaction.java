@@ -17,5 +17,6 @@ public class SearchTransaction {
 	@Getter @Setter private SearchError error;
 	
 	public boolean hasResponse() { return response != null; }
+	public boolean hasQuestion() { return question != null; }
 	
 }

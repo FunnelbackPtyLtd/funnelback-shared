@@ -80,7 +80,7 @@ public class ClickController {
 				}
 			}
 			
-			logService.logClick(new ClickLog(collection, profile, new Date(), userId, referer, rank, indexUrl, type));
+			logService.logClick(new ClickLog(new Date(), collection, collection.getProfiles().get(profile), userId, referer, rank, indexUrl, type));
 			
 			response.sendRedirect(indexUrl.toString());
 		} else {

@@ -7,13 +7,13 @@ import java.io.IOException;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
 
-@Component
+@Repository
 @Log
 public class LocalDataRepository implements DataRepository {
 
