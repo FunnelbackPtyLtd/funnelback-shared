@@ -73,7 +73,6 @@ public class FixPseudoLiveLinksTests {
 				new NoOptionsConfig("collection-web")
 					.setValue(Keys.COLLECTION_TYPE, Collection.Type.web.toString())));
 
-
 	}
 	
 	@Test
@@ -100,19 +99,19 @@ public class FixPseudoLiveLinksTests {
 		ResultPacket rp = st.getResponse().getResultPacket();
 		
 		Assert.assertEquals(
-				"serve-db-document.tcgi?collection=collection-db&record_id=1234/",
+				"/search/serve-db-document.tcgi?collection=collection-db&record_id=1234/",
 				rp.getResults().get(0).getLiveUrl());
 		
 		Assert.assertEquals(
-				"serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
+				"/search/serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
 				rp.getResults().get(1).getLiveUrl());
 
 		Assert.assertEquals(
-				"serve-trim-document.cgi?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+				"/search/serve-trim-document.cgi?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
 				rp.getResults().get(2).getLiveUrl());
 		
 		Assert.assertEquals(
-				"serve-filecopy-document.cgi?collection=collection-filecopy&uri="+URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8"),
+				"/search/serve-filecopy-document.cgi?collection=collection-filecopy&uri="+URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8"),
 				rp.getResults().get(3).getLiveUrl());
 
 		Assert.assertEquals(
@@ -145,7 +144,7 @@ public class FixPseudoLiveLinksTests {
 		
 		Assert.assertEquals(
 				"TRIM result without cache link shouldn't have a doc parameter",
-				"serve-trim-document.cgi?collection=collection-trim&uri=1234",
+				"/search/serve-trim-document.cgi?collection=collection-trim&uri=1234",
 				rp.getResults().get(10).getLiveUrl());		
 
 	}

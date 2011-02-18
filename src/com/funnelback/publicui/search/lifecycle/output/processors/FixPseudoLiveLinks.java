@@ -84,7 +84,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 					// Simply strip off "local://"
 					if (result.getLiveUrl().startsWith(LOCAL_SCHEME)) {
 						// TODO use a proper regexp ?
-						transformedLiveUrl = result.getLiveUrl().substring(LOCAL_SCHEME.length());
+						transformedLiveUrl = searchUrlPrefix + result.getLiveUrl().substring(LOCAL_SCHEME.length());
 					}
 					break;
 				
