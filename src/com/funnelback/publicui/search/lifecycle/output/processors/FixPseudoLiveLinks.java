@@ -10,6 +10,7 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
@@ -33,6 +34,9 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 
 	@Autowired
 	private ConfigRepository configRepository;
+	
+	@Value("#{appProperties['urls.search.prefix']}")
+	private String searchUrlPrefix;
 	
 	public static final Type[] SUPPORTED_TYPES = {
 		Type.trim, Type.connector, Type.filecopy, Type.database
@@ -94,7 +98,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 						
 						String docUri = liveUrlMatcher.group(1);
 						
-						transformedLiveUrl = TRIM_PREFIX + trimDefaultLiveLinks
+						transformedLiveUrl = searchUrlPrefix + TRIM_PREFIX + trimDefaultLiveLinks
 							+ ".cgi?"+RequestParameters.COLLECTION+"=" + resultCollection.getId()
 							+ "&"+RequestParameters.Serve.URI+"=" + docUri;
 							
@@ -111,7 +115,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 				
 				case filecopy:
 					// Prefix with serve-filecopy-document.cgi
-					transformedLiveUrl = FILECOPY_PREFIX
+					transformedLiveUrl = searchUrlPrefix + FILECOPY_PREFIX
 						+ "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
 						+ "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
 					

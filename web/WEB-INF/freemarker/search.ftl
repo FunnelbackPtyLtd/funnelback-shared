@@ -1,3 +1,4 @@
+<#include "facets.ftl" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,20 +53,23 @@
 		
 		jQuery().ready(function() {
 			jQuery('.facet').each( function() {
-				jQuery(this).children('.category:gt(5)').css('display', 'none');
+				jQuery(this).children('.category-type').each( function() {
+					jQuery(this).children('.category:gt(5)').css('display', 'none');
+				});
 			});
 			
 			jQuery('.moreOrLessCategories>a').each( function() {
-				var nbCategories = jQuery(this).parent().parent('div.facet').children('div.category').size();
+				var nbCategories = jQuery(this).parent().parent('.category-type').children('div.category').size();
+				// alert(jQuery(this).parent().parent('.category-type').children('.category:eq(1)').text());
 				if ( nbCategories <= 5 ) {
 					jQuery(this).css('display', 'none');
 				} else if (nbCategories > 5) {
 					jQuery(this).click( function() {
 						if (jQuery(this).text().indexOf('more...') < 0) {
-							jQuery(this).parent().parent('div.facet').children('div.category:gt(5)').css('display', 'none');
+							jQuery(this).parent().parent('.category-type').children('div.category:gt(5)').css('display', 'none');
 							jQuery(this).text('more...');
 						} else {
-							jQuery(this).parent().parent('div.facet').children('div.category').css('display', 'block');
+							jQuery(this).parent().parent('.category-type').children('div.category').css('display', 'block');
 							jQuery(this).text('less...');
 						}
 					});
@@ -77,7 +81,7 @@
 				if (format == 'html') {
 					format = 'ftl';
 				}
-				document.location.replace(document.URL.replace(/search..../, 'search.' + format));
+				document.location.replace(document.URL.replace(/\/search\..../, '/search.' + format));
 			});			
 		});
 	</script>
@@ -89,7 +93,28 @@
 		
 		div.sub-categories {
 			margin-left: 1em;
+			display: none;
 		}
+		
+		div.apart {
+			/* display: none; */
+		}
+		
+		div.facet h4, div.facet h5 {
+			margin: 0;
+			color: grey;
+		}
+		
+		/*
+		#fb-wrapper.fb-with-faceting {
+			padding-left: 300px;
+		}
+		
+		div#fb-facets {
+			width: 280px;
+			overflow: scroll;
+		}
+		*/
 	</style>
 </head>
 
@@ -108,7 +133,7 @@
 			<a href="http://funnelback.com/"><img src="/search/funnelback.png" alt="Funnelback logo"></a>
 		</div>	
 	</#if>
-
+ 
 	<div><a id="fb-logo" <#if ! SearchTransaction.question.query?exists>class="fb-initial"</#if> href="http://funnelback.com/"><img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
 
 	<!-- QUERY FORM -->
@@ -179,7 +204,7 @@
 						<h2 class="fb-title">Search results that match ${result.matched} of ${result.outOf} words</h2> 
 					<#else>
 						<li>
-							<h3><a href="click.cgi?collection=${result.collection}&rank=${result.rank}&index_url=${result.liveUrl?url}">${result.title}</a></h3>
+							<h3><a href="${result.liveUrl}">${result.title}</a></h3>
 							
 							<p>
 								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
@@ -226,48 +251,17 @@
 				<form method="get">
 					<input type="hidden" name="query" value="${SearchTransaction.question.query}" />
 					<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}" />
-
 					<input type="submit" value="Refine" />
 								
 					<#list SearchTransaction.response.facets as facet>
-						<div class="facet">
-							<h3><div class="facetLabel">${facet.name}</div></h3>
-							<#list facet.categories as category>
-								<div class="category">
-									<#assign checked = "" />
-									<#if SearchTransaction.question.selectedCategories[category.urlParams?split("=")[0]]?exists>
-										<#if SearchTransaction.question.selectedCategories[category.urlParams?split("=")[0]]?seq_contains(category.label)>
-											<#assign checked="checked=\"checked\"" />
-										</#if>
-									</#if>
-									<input type="checkbox" name="${category.urlParams?split("=")[0]}" value="${category.urlParams?split("=")[1]}" ${checked} />
-									<span class="categoryName">										
-										<a href="?query=${SearchTransaction.question.query}&amp;collection=${SearchTransaction.question.collection.id}&amp;start_rank=${SearchTransaction.response.resultPacket.resultsSummary.currStart}&num_ranks=${SearchTransaction.response.resultPacket.resultsSummary.numRanks}&${category.urlParams}">${category.label}</a>
-									</span>
-									&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${category.count}</span>)
-									
-									<div class="sub-categories">
-										<#list category.categories as subCategory>
-											<#assign checked = "" />
-											<#if SearchTransaction.question.selectedCategories[subCategory.urlParams?split("=")[0]]?exists>
-												<#if SearchTransaction.question.selectedCategories[subCategory.urlParams?split("=")[0]]?seq_contains(subCategory.label)>
-													<#assign checked="checked=\"checked\"" />
-												</#if>
-											</#if>
-									
-											<input type="checkbox" name="${subCategory.urlParams?split("=")[0]}" value="${subCategory.urlParams?split("=")[1]}" ${checked} />
-											<span class="categoryName">${subCategory.label}</span>
-											&nbsp;<span class="fb-facet-count">(<span class="categoryCount">${subCategory.count}</span>)
-											<br />
-										</#list>
-									</div>
-									
-								</div>
-							</#list>
-							<span class="moreOrLessCategories">
-								<a href="#">more...</a>
-							</span>
-						</div>
+						<#if facet.categoryTypes?size &gt; 0>
+							<div class="facet">
+								<h3><div class="facetLabel">${facet.name}</div></h3>
+								<#list facet.categoryTypes as categoryType>
+									<@facetCategoryType categoryType />
+								</#list>
+							</div>
+						</#if>
 					</#list>
 				
 				</form>

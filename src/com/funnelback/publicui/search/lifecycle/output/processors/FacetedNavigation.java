@@ -37,41 +37,50 @@ public class FacetedNavigation implements OutputProcessor {
 				for(com.funnelback.publicui.search.model.collection.facetednavigation.Facet f: config.getFacets()) {
 					Facet facet = new Facet(f.getName());
 					for (final CategoryType ct: f.getCategoryTypes()) {
-						facet.getCategories().addAll(ct.computeValues(searchTransaction.getResponse().getResultPacket()));
-						Collections.sort(facet.getCategories(), new Category.ByCountComparator(true));
-						
-						
-						if (searchTransaction.getQuestion().getSelectedCategories().containsKey(ct.getUrlParamName())) {
-							String[] paramName = ct.getUrlParamName().split("\\|");
-							final String extraParams;
-							if (paramName.length > 1) {
-								extraParams = paramName[1];
-							} else {
-								extraParams = null;
-							}
-							
-							List<String> selectedValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
-							boolean valueMatches = CollectionUtils.exists(selectedValues, new Predicate() {
-								@Override
-								public boolean evaluate(Object o) {
-									return ct.matches((String) o, extraParams);
-								}
-							});
-							
-							if (valueMatches) {
-								// This category has been selected. Unfold its sub categories
-								for (CategoryType subCategoryType: ct.getSubCategories()) {
-									facet.getCategories().get(0).getCategories().addAll(subCategoryType.computeValues(searchTransaction.getResponse().getResultPacket()));
-									Collections.sort(facet.getCategories().get(0).getCategories(), new Category.ByCountComparator(true));
-								}
-							}
-						}
+						facet.getCategoryTypes().add(fillCategoryType(ct, searchTransaction));
 					}
 					searchTransaction.getResponse().getFacets().add(facet);
 				}
-				
 			}
 		}
+	}
+
+	private Facet.CategoryType fillCategoryType(final CategoryType ct, SearchTransaction searchTransaction) {
+		// Fill the values for this category
+		Facet.CategoryType cType = new Facet.CategoryType(ct.getLabel());
+		cType.getCategories().addAll(ct.computeValues(searchTransaction.getResponse().getResultPacket()));
+		Collections.sort(cType.getCategories(), new Category.ByCountComparator(true));
+	
+		// Find out if this category is currently selected
+		if (searchTransaction.getQuestion().getSelectedCategories().containsKey(ct.getUrlParamName())) {
+			String[] paramName = ct.getUrlParamName().split("\\|");
+			final String extraParams;
+			if (paramName.length > 1) {
+				extraParams = paramName[1];
+			} else {
+				extraParams = null;
+			}
+			
+			List<String> selectedValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
+			boolean valueMatches = CollectionUtils.exists(selectedValues, new Predicate() {
+				@Override
+				public boolean evaluate(Object o) {
+					return ct.matches((String) o, extraParams);
+				}
+			});
+		
+			if (valueMatches) {
+				for (CategoryType subCategoryType: ct.getSubCategories()) {
+					cType.getSubCategoryTypes().add(fillCategoryType(subCategoryType, searchTransaction));
+				}
+			}
+		}
+		
+		return cType;
+		
+		
+
+		
 	}
 	
 }

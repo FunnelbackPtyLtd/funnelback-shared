@@ -35,7 +35,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 	 * Extra properties (In addition to "<Data>" for some
 	 * category types
 	 **/
-	private static final String[] CATEGORY_EXTRA_PROPERTIES = { "Metafield", "UserSetGScope", "Query", "Gscopefield" };
+	private static final String[] CATEGORY_EXTRA_PROPERTIES = { "Metafield", "UserSetGScope", "Query", "Gscopefield", "Label" };
 	
 	@Override
 	public Facets parseFacetedNavigationConfiguration(String configuration) throws XmlParsingException {

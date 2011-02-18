@@ -28,6 +28,8 @@ public abstract class CategoryType {
 	 */
 	@Getter @Setter protected String data;
 	
+	@Getter @Setter protected String label;
+	
 	/** List of sub categories */
 	@Getter private final List<CategoryType> subCategories = new ArrayList<CategoryType>();
 	

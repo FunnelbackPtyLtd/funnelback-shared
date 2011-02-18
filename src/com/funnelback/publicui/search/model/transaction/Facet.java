@@ -11,7 +11,14 @@ import lombok.RequiredArgsConstructor;
 public class Facet {
 
 	@Getter private final String name;
-	@Getter private final List<Category> categories = new ArrayList<Category>();
+	@Getter private final List<CategoryType> categoryTypes = new ArrayList<CategoryType>();
+	
+	@RequiredArgsConstructor
+	public static class CategoryType {
+		@Getter private final String label;
+		@Getter private final List<Category> categories = new ArrayList<Category>();
+		@Getter private final List<CategoryType> subCategoryTypes = new ArrayList<CategoryType>();
+	}
 	
 	@RequiredArgsConstructor
 	public static class Category {
@@ -19,7 +26,6 @@ public class Facet {
 		@Getter private final String label;
 		@Getter private final int count;
 		@Getter private final String urlParams;
-		@Getter private final List<Category> categories = new ArrayList<Category>();
 		
 		@RequiredArgsConstructor
 		public static class ByCountComparator implements Comparator<Facet.Category> {
