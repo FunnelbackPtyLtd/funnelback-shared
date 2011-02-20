@@ -4,28 +4,36 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@RequiredArgsConstructor
 public class Facet {
 
-	@Getter private final String name;
+	@Getter @Setter private String name;
 	@Getter private final List<CategoryType> categoryTypes = new ArrayList<CategoryType>();
 	
-	@RequiredArgsConstructor
-	public static class CategoryType {
-		@Getter private final String label;
-		@Getter private final List<Category> categories = new ArrayList<Category>();
-		@Getter private final List<CategoryType> subCategoryTypes = new ArrayList<CategoryType>();
+	public Facet(String name) {
+		this.name = name;
 	}
 	
-	@RequiredArgsConstructor
+	public static class CategoryType {
+		@Getter @Setter private String label;
+		@Getter private final List<Category> categories = new ArrayList<Category>();
+		@Getter private final List<CategoryType> subCategoryTypes = new ArrayList<CategoryType>();
+		
+		public CategoryType(String label) {
+			this.label = label;
+		}
+	}
+	
+	@AllArgsConstructor
 	public static class Category {
-		@Getter private final String data;
-		@Getter private final String label;
-		@Getter private final int count;
-		@Getter private final String urlParams;
+		@Getter @Setter private String data;
+		@Getter @Setter private String label;
+		@Getter @Setter private int count;
+		@Getter @Setter private String urlParams;
 		
 		@RequiredArgsConstructor
 		public static class ByCountComparator implements Comparator<Facet.Category> {

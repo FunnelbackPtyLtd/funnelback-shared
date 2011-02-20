@@ -71,9 +71,10 @@
 	</util:list>
 
 	<util:list id="outputFlow">
+		<ref bean="fixPseudoLiveLinksOutputProcessor" />
 		<ref bean="facetedNavigationOutputProcessor" />
+		<ref bean="facetedNavigationTransformOutputProcessor" />
 		<ref bean="contextualNavigationOutputProcessor" />
-		<ref bean="fixPseudoLiveLinksOutputProcessor" />		
 	</util:list>
 
 	<!-- ***** -->
@@ -94,5 +95,7 @@
 	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.DataPoint[]" />
 	
 	<task:annotation-driven />
+	
+	<bean class="groovy.lang.GroovyShell" />
 
 </beans>

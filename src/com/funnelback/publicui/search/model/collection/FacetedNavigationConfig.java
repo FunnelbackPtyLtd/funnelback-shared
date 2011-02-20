@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.collection;
 
+import groovy.lang.Script;
+
 import java.util.List;
 
 import lombok.Getter;
@@ -20,4 +22,9 @@ public class FacetedNavigationConfig {
 	/** List of facets */
 	@Getter private final List<Facet> facets;
 	
+	/**
+	 * Groovy transform script
+	 */
+	@Getter private final Script transformScript;
+		
 }

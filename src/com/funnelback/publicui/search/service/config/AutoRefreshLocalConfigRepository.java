@@ -30,7 +30,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 
 	@Value("#{appProperties['config.repository.autorefresh.interval']}")
 	private int checkingInterval = 0;
-	
+		
 	/**
 	 * Keep track of recent stale checks to avoid checking all
 	 * the files to often
@@ -107,6 +107,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		// List of files to check for an update
 		File[] filesToCheck = new File[] {
 				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
+				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 				new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME),
@@ -126,6 +127,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		for(Profile p: c.getProfiles().values()) {
 			filesToCheck = new File[] {
 					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
+					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 					new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + p.getId(), Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME)
 			};
 

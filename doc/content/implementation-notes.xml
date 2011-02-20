@@ -385,6 +385,30 @@ fileshare]]>
 					With this model, adding a new category type should be simple: Just add the correct Category class with the relevant properties, and it will get parsed automatically.
 				</para>
 			</section>
+			
+			<section>
+				<title>Faceted navigation transform</title>
+				
+				<para>
+					This feature originally allows the user to define an arbitrary Perl script to run to transform the results of the faceted navigation. The content of the facets and
+					categories are passed to the script which is allowed to update the data model.
+				</para>
+				
+				<para>
+					This has been re-implemented as a Groovy script. To avoid the complexity of implementing an interface the script is an anonymous script to which a "facets" object is passed.
+					This object is a list of <literal>com.funnelback.publicui.search.model.transaction.Facet</literal>. The Groovy script can update the content and does not have to return anything.
+					An example of faceted navigation transform script could be:
+					<programlisting language="java">
+<![CDATA[import com.funnelback.publicui.search.model.transaction.*
+
+for (Facet f: facets) {
+    f.name = f.name + " (Groovy)"
+}
+]]>					
+					</programlisting>
+				</para>
+			
+			</section>
 		</section>
 	</chapter>
 
