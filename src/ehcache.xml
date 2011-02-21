@@ -1,6 +1,0 @@
-<ehcache>
-	<diskStore path="java.io.tmpdir" />
-	<defaultCache maxElementsInMemory="100" eternal="true" overflowToDisk="false" />
-	
-	<cache name="localConfigRepository" maxElementsInMemory="100" />
-</ehcache>
