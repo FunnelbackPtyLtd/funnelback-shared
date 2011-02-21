@@ -8,7 +8,9 @@
 	<property name="test.output" value="target/test-output/" />
 	<property name="test.resources.dir" value="src/test/resources/" />
 	<property name="test.instrumented.dir" value="target/instrumented-classes/" />
-
+	
+	<property name="doc.src.dir" value="src/main/docbook" />
+	<property name="doc.bin.dir" value="target/doc" />
 
 	<import file="../build/build-common.xml" />
 
@@ -74,16 +76,16 @@
 	</target>
 
 	<target name="doc" description="Generate reference documentation">
-		<delete dir="doc/output" />
-		<xslt style="doc/publicui.xsl" extension=".html" basedir="doc/content" destdir="doc/output">
+		<delete dir="${doc.bin.dir}" />
+		<xslt style="${doc.src.dir}/publicui.xsl" extension=".html" basedir="${doc.src.dir}" destdir="${doc.bin.dir}">
 			<include name="**/*.xml" />
 			<param name="html.stylesheet" expression="style.css" />
 			<classpath refid="classpath.xalan" />
 		</xslt>
 		
 		<!-- Copy the stylesheet to the same directory as the HTML files -->
-		<copy todir="doc/output">
-			<fileset dir="doc/content">
+		<copy todir="${doc.bin.dir}">
+			<fileset dir="${doc.src.dir}">
 				<include name="style.css" />
 			</fileset>
 		</copy>
