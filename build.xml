@@ -33,7 +33,8 @@
 	</path>
 	
 	<path id="classpath.xalan">
-		<fileset dir="${build.libs}" includes="**/*.jar" />
+		<fileset dir="${build.libs}/xalanj-2.7.1/" includes="**/*.jar" />
+		<fileset dir="${build.libs}/xslthl-2.0.2/" includes="**/*.jar" />
 	</path>
 
 	<target name="dist" depends="clean, compile, test, doc">
