@@ -11,7 +11,7 @@
 
 	<import file="../build/build-common.xml" />
 
-	<property name="web.dir" value="web" />
+	<property name="web.dir" value="src/main/webapp" />
 	<property name="war.name" value="funnelback-${ant.project.name}.war" />
 	<property name="build.libs" value="build-lib" />
 
