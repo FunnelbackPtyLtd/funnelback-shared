@@ -25,7 +25,7 @@ import com.funnelback.publicui.web.filters.RequestParametersTransformFilter;
 import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class RequestParametersTransformFilterTests {
 
 	@Autowired

@@ -34,7 +34,7 @@ public class PadreForkingTests {
 		forking = new PadreForking();
 		forking.setPadreWaitTimeout(30);
 		forking.setPadreXmlParser(new StaxStreamParser());
-		forking.setSearchHome(new File("test_data/dummy-search_home"));
+		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
 
 	}
 	
@@ -45,7 +45,7 @@ public class PadreForkingTests {
 			ext = ".bat";
 		}
 		
-		String qp = "mock-padre"+ext+" test_data/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -56,7 +56,7 @@ public class PadreForkingTests {
 		forking.fetchData(ts);
 		
 		Assert.assertNotNull(ts.getResponse());
-		Assert.assertEquals(FileUtils.readFileToString(new File("test_data/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
+		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
 		Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
 		Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
 	}
@@ -68,7 +68,7 @@ public class PadreForkingTests {
 			ext = ".bat";
 		}
 		
-		String qp = "mock-padre"+ext+" test_data/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
+		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -129,7 +129,7 @@ public class PadreForkingTests {
 			ext = ".bat";
 		}
 		
-		String qp = "mock-padre"+ext+" test_data/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -142,7 +142,7 @@ public class PadreForkingTests {
 		Advapi32.INSTANCE.RevertToSelf();
 		
 		Assert.assertNotNull(ts.getResponse());
-		Assert.assertEquals(FileUtils.readFileToString(new File("test_data/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
+		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
 		Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
 		Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
 	}

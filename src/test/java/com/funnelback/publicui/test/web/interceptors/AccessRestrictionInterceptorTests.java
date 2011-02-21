@@ -25,7 +25,7 @@ import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class AccessRestrictionInterceptorTests {
 
 	private static final String COLLECTION_ID = "interceptor";
@@ -44,7 +44,7 @@ public class AccessRestrictionInterceptorTests {
 	@Before
 	public void before() throws FileNotFoundException {
 		configRepository.removeAllCollections();
-		testCollectionConfig = new NoOptionsConfig(new File("test_data/dummy-search_home"), COLLECTION_ID);
+		testCollectionConfig = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), COLLECTION_ID);
 		configRepository.addCollection(new Collection(COLLECTION_ID, testCollectionConfig));
 		
 		request = new MockHttpServletRequest();

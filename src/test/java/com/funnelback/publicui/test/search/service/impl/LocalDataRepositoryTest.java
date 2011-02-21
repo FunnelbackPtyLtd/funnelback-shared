@@ -25,7 +25,7 @@ public class LocalDataRepositoryTest {
 	@Before
 	public void before() throws FileNotFoundException, EnvironmentVariableException {
 		collection = new Collection("data-repository", new NoOptionsConfig("data-repository"));
-		collectionRoot = new File("test_data/dummy-search_home/data/data-repository/");
+		collectionRoot = new File("src/test/resources/dummy-search_home/data/data-repository/");
 		collection.getConfiguration().setValue(Keys.COLLECTION_ROOT, collectionRoot.getAbsolutePath());
 		dataRepository = new LocalDataRepository();
 	}

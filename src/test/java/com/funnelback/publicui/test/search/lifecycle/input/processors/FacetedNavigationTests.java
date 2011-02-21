@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 @Ignore
 public class FacetedNavigationTests {
 

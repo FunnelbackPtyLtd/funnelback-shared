@@ -29,7 +29,7 @@ import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FixPseudoLiveLinksTests {
 
 	@Autowired
@@ -48,7 +48,7 @@ public class FixPseudoLiveLinksTests {
 		question.setCollection(new Collection("meta-livelinks", null));
 		
 		SearchResponse response = new SearchResponse();
-		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("test_data/padre-xml/fix-pseudo-live-links.xml"))));
+		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
 		
 		st = new SearchTransaction(question, response);
 		

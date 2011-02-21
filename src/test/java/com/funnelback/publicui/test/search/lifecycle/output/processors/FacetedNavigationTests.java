@@ -21,7 +21,7 @@ public class FacetedNavigationTests {
 	@Before
 	public void before() throws XmlParsingException, IOException {
 		SearchResponse response = new SearchResponse();
-		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("test_data/padre-xml/complex.xml"))));
+		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"))));
 		
 		st = new SearchTransaction(null, response);
 

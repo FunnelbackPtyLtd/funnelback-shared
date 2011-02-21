@@ -34,7 +34,7 @@ public class StaxStreamParserTests {
 	@Before
 	public void before() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
-		rp = parser.parse(FileUtils.readFileToString(new File("test_data/padre-xml/complex.xml"), "UTF-8"));
+		rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"));
 		assertNotNull(rp);
 	}
 	
@@ -301,7 +301,7 @@ public class StaxStreamParserTests {
 	@Test
 	public void testInvalidXml() throws IOException {
 		try {
-			new StaxStreamParser().parse(FileUtils.readFileToString(new File("test_data/padre-xml/invalid.xml.bad")));
+			new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")));
 			Assert.fail();
 		} catch (XmlParsingException pxpe) {
 			System.out.println(pxpe);

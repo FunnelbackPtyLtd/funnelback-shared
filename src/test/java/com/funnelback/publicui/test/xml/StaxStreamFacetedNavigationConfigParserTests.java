@@ -28,7 +28,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 	@Before
 	public void before() throws IOException, XmlParsingException {
 		StaxStreamFacetedNavigationConfigParser parser = new StaxStreamFacetedNavigationConfigParser();
-		facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(new File("test_data/faceted-navigation/sample-config.xml")));
+		facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(new File("src/test/resources/faceted-navigation/sample-config.xml")));
 		Assert.assertNotNull(facets);
 	}
 	

@@ -34,7 +34,7 @@ import com.funnelback.publicui.test.mock.MockOutputProcessor;
 import com.funnelback.publicui.web.controllers.SearchController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:test_data/spring/applicationContext.xml")
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class SearchControllerTests {
 
 	@Autowired

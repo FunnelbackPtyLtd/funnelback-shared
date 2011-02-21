@@ -29,7 +29,7 @@ public class ContextualNavigationTests {
 	public void before() throws XmlParsingException, IOException {
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File(
-				"test_data/padre-xml/complex.xml"))));
+				"src/test/resources/padre-xml/complex.xml"))));
 
 		st = new SearchTransaction(new SearchQuestion(), response);
 		st.getQuestion().setQuery("CN test");
