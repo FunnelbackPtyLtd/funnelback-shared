@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.service.config;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,8 @@ import lombok.extern.apachecommons.Log;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +22,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.Collection.Hook;
 
 /**
  * Implementation of {@link AbstractLocalConfigRepository} that caches config
@@ -105,16 +109,24 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		File baseDataDir = new File(searchHome + File.separator + DefaultValues.FOLDER_DATA + File.separator + c.getId());
 		
 		// List of files to check for an update
-		File[] filesToCheck = new File[] {
+		File[] files = new File[] {
 				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 				new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME),
+				new File(c.getConfiguration().getConfigDirectory(), Files.QUERY_TRANSFORM_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.SYNONYMS_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory() + File.separator + DefaultValues.DEFAULT_PROFILE, Files.SYNONYMS_CONFIG_FILENAME)
 		};
+
+		// Hook scripts
+		List<File> filesToCheck = new ArrayList<File>(Arrays.asList(files));
+		for (Hook hook: Hook.values()) {
+			filesToCheck.add(new File(c.getConfiguration().getConfigDirectory(), Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX));
+		}
+		
 		
 		for(File file: filesToCheck) {
 			if (file.lastModified() > creationTime) {
@@ -125,13 +137,13 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		
 		// Check per-profile config files
 		for(Profile p: c.getProfiles().values()) {
-			filesToCheck = new File[] {
+			files = new File[] {
 					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
 					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 					new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + p.getId(), Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME)
 			};
 
-			for(File file: filesToCheck) {
+			for(File file: files) {
 				if (file.lastModified() > creationTime) {
 					log.debug("Config file '" + file.getAbsolutePath() + "' has changed.");
 					return true;

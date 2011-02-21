@@ -26,6 +26,6 @@ public class FacetedNavigationConfig {
 	/**
 	 * Groovy transform script
 	 */
-	@Getter @Setter private Script transformScript;
+	@Getter @Setter private Class<Script> transformScriptClass;
 		
 }

@@ -61,6 +61,4 @@
 		value-type="java.util.LinkedList" />
 
 	<bean class="com.funnelback.publicui.search.service.config.StaxStreamFacetedNavigationConfigParser" />
-	
-	<bean class="groovy.lang.GroovyShell" />
 </beans>

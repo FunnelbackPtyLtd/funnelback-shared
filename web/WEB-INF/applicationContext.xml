@@ -45,9 +45,6 @@
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
 	
 	
-	<lang:groovy id="groovySampleInputProcessor"
-		refresh-check-delay="5000"
-		script-source="classpath:com/funnelback/publicui/search/lifecycle/input/processors/GroovySample.groovy" />
 	
 	<!-- ***** List of processors to run ***** -->
 
@@ -59,7 +56,6 @@
 		<ref bean="userKeysInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
-		<ref bean="groovySampleInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
 		<ref bean="metaDatesInputProcessor" />
 		<ref bean="cliveMappingInputProcessor" />
@@ -67,7 +63,17 @@
 	</util:list>
 
 	<util:list id="dataFetchers">
+		<bean id="PreDataFetchHook"
+			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
+		</bean>
 		<ref bean="padreForking" />
+		<bean id="PostDataFetchHook"
+			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
+		</bean>
 	</util:list>
 
 	<util:list id="outputFlow">
@@ -96,6 +102,4 @@
 	
 	<task:annotation-driven />
 	
-	<bean class="groovy.lang.GroovyShell" />
-
 </beans>

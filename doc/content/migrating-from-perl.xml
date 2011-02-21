@@ -5,14 +5,32 @@
 	<section>This section will list some points of interest when migrating from the Perl UI.</section>
 	
 	<chapter id="cgi-transforms">
-		<title>CGI Transforms</title>
+		<title>CGI transforms</title>
 		
 		<para>
-			CGI Transforms have been re-implemented but sometimes the behaviour on some limit cases (Such as parameters with no values on the
+			CGI transforms have been re-implemented but sometimes the behaviour on some limit cases (Such as parameters with no values on the
 			left end or right end of the rule) was difficult to figure out from the Perl code.
 		</para>
 		
 		<para>You'll probably need to check that your existing CGI Transforms works as expected with the new Public UI</para>
+	</chapter>
+	
+	<chapter id="faceted-nav-transforms">
+		<title>Faceted navigation transforms</title>
+		
+		<para>
+			Faceted navigation transforms have been re-implemented in Groovy (Previously in Perl). Any existing
+			<literal>faceted_navigation_transform.cfg</literal> will need to be ported to Groovy into <literal>faceted_navigation_transform.groovy</literal>.
+		</para>
+	</chapter>
+	
+	<chapter id="query-transforms">
+		<title>Query transforms</title>
+		
+		<para>
+			Query transforms have been re-implemented in Groovy (Previously in Perl) and merged with the "custom hook scripts" feature.
+			Any existing <literal>query_transform.cfg</literal> will need to be ported to Groovy, and placed in a relevant hook script.
+		</para>
 	</chapter>	
 
 </part>

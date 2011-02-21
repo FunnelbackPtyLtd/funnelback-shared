@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.collection;
 
+import groovy.lang.Script;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +23,23 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
 @RequiredArgsConstructor
 public class Collection {
 
+	/**
+	 * Collection types.
+	 */
 	public static enum Type {
 		unknown,web,filecopy,local,database,meta,trim,connector;
+	}
+
+	/**
+	 * Hook scripts
+	 */
+	public static enum Hook {
+		pre_datafetch, post_datafetch;
+		
+		/**
+		 * Name of the Groovy variable that will contain the search transaction
+		 */
+		public static final String SEARCH_TRANSACTION_KEY = "transaction";
 	}
 	
 	/** Collection id (technical name) */
@@ -54,6 +71,11 @@ public class Collection {
 	 * Is read from cgi_transform.cfg
 	 */
 	@Getter @Setter private List<TransformRule> parametersTransforms = new ArrayList<TransformRule>();
+	
+	/**
+	 * Custom hook scripts (Groovy)
+	 */
+	@Getter private final Map<Hook, Class<Script>> hookScriptsClasses = new HashMap<Hook, Class<Script>>();
 	
 	/** Collection type */
 	public Type getType() {

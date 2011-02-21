@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.config;
 
-import groovy.lang.GroovyShell;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
 
 import java.io.File;
@@ -24,6 +24,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.Synonym;
@@ -56,9 +57,6 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	@Autowired
 	private FacetedNavigationConfigParser fnConfigParser;
 	
-	@Autowired
-	private GroovyShell groovyShell;
-	
 	@Override
 	public abstract Collection getCollection(String collectionId);
 	
@@ -74,6 +72,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			c.setParametersTransforms(loadParametersTransforms(c));
 			c.setQuickLinksConfiguration(loadQuickLinksConfiguration(c));
 			c.getProfiles().putAll(loadProfiles(c));
+			c.getHookScriptsClasses().putAll(loadHookScriptsClasses(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -148,15 +147,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		if (fnConfig.canRead()) {
 			try {
 				Facets f = fnConfigParser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(fnConfig));
-
-				Script transformScript = null;
-				try {
-					transformScript = groovyShell.parse(fnTransformConfig);
-				} catch (Exception e) {
-					log.error("Unable to parse transform script '" + fnTransformConfig + "'", e);
-				}
-				
-				return new FacetedNavigationConfig(f.qpOptions,f.facets, transformScript);
+				return new FacetedNavigationConfig(f.qpOptions,f.facets, readGroovyScript(fnTransformConfig));
 			} catch (IOException ioe) {
 				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
 				return null;
@@ -186,6 +177,41 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	private List<TransformRule> loadParametersTransforms(Collection c) {
 		String[] rules = readConfig(c, new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME));
 		return ParamTransformRuleFactory.buildRules(rules);
+	}
+	
+	/**
+	 * Loads query_transform.groovy
+	 * @param c
+	 * @return
+	 */
+	private Map<Collection.Hook, Class<Script>> loadHookScriptsClasses(Collection c) {
+		Map<Hook, Class<Script>> out = new HashMap<Hook, Class<Script>>();
+		for (Hook hook: Hook.values()) {
+			File hookScriptFile = new File(c.getConfiguration().getConfigDirectory(), Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
+			Class<Script> hookScriptClass = readGroovyScript(hookScriptFile);
+			if (hookScriptClass != null) {
+				log.debug("Loaded hook script '" + hookScriptFile.getAbsolutePath() + "'");
+				out.put(hook, hookScriptClass);
+			}
+		}
+		return out;
+	}
+	
+	/**
+	 * Tries to parse a Groovy script
+	 * @param scriptFile Path to the file containing the script
+	 * @return a {@link Script} if successfully parsed, false otherwise
+	 */
+	@SuppressWarnings("unchecked")
+	private Class<Script> readGroovyScript(File scriptFile) {
+		if (scriptFile.canRead()) {
+			try {
+				return (Class<Script>) new GroovyClassLoader().parseClass(scriptFile);
+			} catch (Exception e) {
+				log.error("Unable to parse Groovy script '" + scriptFile + "'", e);
+			}
+		}
+		return null;
 	}
 	
 	/**

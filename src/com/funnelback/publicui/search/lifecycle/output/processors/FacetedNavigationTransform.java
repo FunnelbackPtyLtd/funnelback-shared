@@ -31,12 +31,12 @@ public class FacetedNavigationTransform implements OutputProcessor{
 			
 			FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
 			
-			if (config != null && config.getTransformScript() != null) {
-				Script s = config.getTransformScript();
-				Binding binding = new Binding();
-				binding.setVariable(KEY_FACETS, searchTransaction.getResponse().getFacets());
-				s.setBinding(binding);
+			if (config != null && config.getTransformScriptClass() != null) {
 				try {
+					Script s = config.getTransformScriptClass().newInstance();
+					Binding binding = new Binding();
+					binding.setVariable(KEY_FACETS, searchTransaction.getResponse().getFacets());
+					s.setBinding(binding);
 					s.run();
 				} catch (Throwable t) {
 					log.error("Error while executing faceted navigation transform script", t);

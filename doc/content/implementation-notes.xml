@@ -2,14 +2,13 @@
 <part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en" id="implementation-notes">
 	<title>Implementation notes</title>
 	
-	
 	<chapter id="meta-dates">
 		<title>Date parameters (<literal>meta_(d|d1|d2|d3|d4|w1|w2|x|y|z)</literal>)</title>
 
 		<para>The Public UI allows passing date contraints to the query, expressed as <literal>meta_*</literal> parameters.</para>
 		<para><literal>d, d1, d2, d3, d4</literal> are documented in the product doco, but <literal>w1, w2, x, y, z</literal> aren't.</para>
 		
-		<section>
+		<section id="meta-dates-date-constraints">
 			<title>Date constraints (<literal>d, d1, d2, d3, d4</literal>)</title>
 			<para>(Check the product doco for details about these parameters).</para>
 			
@@ -33,7 +32,7 @@
 			</para>
 		</section>
 		
-		<section>
+		<section id="meta-dates-text-based-date-constraints">
 			<title>Text-based date constraints (<literal>x, y, z</literal>)</title>
 			<para>
 				As seen on the Perl code there is some processing related to text-based date constraint and <literal>x, y, z</literal> metadata classes:
@@ -75,7 +74,7 @@
 			</para>
 		</section>
 		
-		<section>
+		<section id="event-search">
 			<title>Event search (<literal>w1, w2</literal>)</title>
 			<para>(Check the PADRE doco for details about this feature.)</para>
 			
@@ -281,7 +280,7 @@ fileshare]]>
 	<chapter id="cgi-transforms">
 		<title>CGI Transforms</title>
 		
-		<section>
+		<section id="cgi-transforms-overview">
 			<title>Overview</title>
 			<para>
 				CGI Transforms in the Perl UI allowed users to add/change/remove query string parameters/values depending of a configuration file (See the product doco for more details).
@@ -306,7 +305,7 @@ fileshare]]>
 			<para>This wrapper is used with a servlet Filter that wraps the original request in it if the target collection uses CGI Transforms.</para>
 		</section>
 		
-		<section>
+		<section id="cgi-transforms-parsing">
 			<title>Parsing the <literal>cgi_transform.cfg</literal> file</title>
 			
 			<para>
@@ -409,6 +408,47 @@ for (Facet f: facets) {
 				</para>
 			
 			</section>
+		</section>
+	</chapter>
+	
+	<chapter id="hook-scripts">
+		<title>Query transforms / hook scripts</title>
+		
+		<para>
+			The Perl UI has the ability to use custom scripts for various purposes:
+			<itemizedlist>
+				<listitem>Query transforms: Update the query expression with an arbitrary Perl script (See the product doco for more details),</listitem>
+				<listitem>
+					Custom hook scripts: Since 10.1, a set of custom hook script can be defined per collection. This hook scripts will be called at various stages of the query lifecycle
+					(See Confluence for more information).
+				</listitem>
+			</itemizedlist>
+			
+			Since these two features are similar I chose to merge them in a single feature: Custom per-collection Groovy hook scripts.
+		</para>
+		
+		<para>
+			Each collection can define a set of hook scripts (For now only "pre data fetch" and "post data fetch"). Depending of the Public UI application configuration of the query
+			lifecycle, these hook scripts will get run.
+		</para>
+		
+		<para>
+			To add new hooks in the future, we'll have to:
+			<itemizedlist>
+				<listitem>Add a value to the <literal>com.funnelback.publicui.search.model.collection.Collection.Hook</literal> enum</listitem>
+				<listitem>Update <literal>com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner</literal> with relevant code for this hook (if needed)</listitem>
+				<listitem>
+					Update the application configuration (<literal>applicationContext.xml</literal>) to instantiate any relevant <literal>GenericHookScriptRunner</literal>
+					on the correct phases.
+				</listitem>
+			</itemizedlist>
+			
+			<literal>GenericHookScriptRunner</literal> is a class that is able to run a given hook script, for a given phase (It implements <literal>InputProcessor</literal>, 
+			<literal>OutputProcessor</literal> and <literal>DataFetcher</literal> so it's possible to use it in any phase)
+		</para>
+		
+		<section>
+		
 		</section>
 	</chapter>
 

@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import groovy.lang.GroovyShell;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
 
 import java.io.FileNotFoundException;
@@ -38,12 +38,9 @@ public class FacetedNavigationTransformTests {
 	@Resource(name="localConfigRepository")
 	private ConfigRepository configRepository;
 	
-	@Autowired
-	private GroovyShell groovyShell;
-	
 	private SearchTransaction st;
 	
-	private Script transformScript;
+	private Class<Script> transformScriptClass;
 	
 	@Before
 	public void before() {
@@ -62,7 +59,7 @@ public class FacetedNavigationTransformTests {
 		st = new SearchTransaction(sq, sr);
 		
 		// Backup transform script
-		transformScript = sq.getCollection().getFacetedNavigationConfConfig().getTransformScript();
+		transformScriptClass = sq.getCollection().getFacetedNavigationConfConfig().getTransformScriptClass();
 	}
 	
 	@Test
@@ -104,7 +101,7 @@ public class FacetedNavigationTransformTests {
 	
 	@Test
 	public void testScript() throws FileNotFoundException, EnvironmentVariableException, OutputProcessorException {
-		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScript(transformScript);
+		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(transformScriptClass);
 		processor.process(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
@@ -114,7 +111,7 @@ public class FacetedNavigationTransformTests {
 
 	@Test
 	public void testNoScript() throws OutputProcessorException {
-		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScript(null);
+		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(null);
 		processor.process(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
@@ -124,8 +121,9 @@ public class FacetedNavigationTransformTests {
 
 	@Test
 	public void testInvalidScript() throws OutputProcessorException {
-		Script s = groovyShell.parse("throw new RuntimeException()");
-		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScript(s);
+		@SuppressWarnings("unchecked")
+		Class<Script> s = new GroovyClassLoader().parseClass("throw new RuntimeException()");
+		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(s);
 		processor.process(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
