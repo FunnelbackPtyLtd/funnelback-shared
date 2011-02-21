@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="publicui" basedir="." default="build">
+	<property name="src.dir" value="src/main/java/" />
+	<property name="bin.dir" value="target/classes/" />
+
+	<property name="test.src.dir" value="src/test/java/" />
+	<property name="test.bin.dir" value="target/test-classes/" />
+	<property name="test.output" value="target/test-output/" />
+	<property name="test.resources.dir" value="src/test/resources/" />
+
 
 	<import file="../build/build-common.xml" />
 
