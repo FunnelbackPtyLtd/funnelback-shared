@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,7 +26,7 @@ import com.funnelback.publicui.web.controllers.SearchController;
 public class SearchLogInterceptor implements HandlerInterceptor {
 	
 	@Autowired
-	private LogService logService;
+	@Setter private LogService logService;
 	
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
@@ -34,38 +36,41 @@ public class SearchLogInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		Object o = modelAndView.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
-		if (o != null && o instanceof SearchTransaction) {
-			SearchTransaction t = (SearchTransaction) o;
-			
-			if (t.hasQuestion() && t.getQuestion().getCnClickedCluster() != null
-					&& t.getQuestion().getCollection() != null) {
+		if (modelAndView != null) {
+			Object o = modelAndView.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+			if (o != null && o instanceof SearchTransaction) {
+				SearchTransaction t = (SearchTransaction) o;
 				
-				String userId = LogUtils.USERID_NOTHING;
-				try {
-					userId = LogUtils.getUserIdentifier(
-						InetAddress.getByName(request.getRemoteAddr()),
-						DefaultValues.UserIdToLog.valueOf(t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG)));
-				} catch (Exception ex) {
-					log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG) + "'", ex);
+				if (t.hasQuestion() && t.getQuestion().getCnClickedCluster() != null
+						&& t.getQuestion().getCollection() != null) {
+					
+					String userId = LogUtils.USERID_NOTHING;
+					try {
+						userId = LogUtils.getUserIdentifier(
+							InetAddress.getByName(request.getRemoteAddr()),
+							DefaultValues.UserIdToLog.valueOf(t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG)));
+					} catch (Exception ex) {
+						log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG) + "'", ex);
+					}
+					
+					ContextualNavigationLog cnl = new ContextualNavigationLog(
+							new Date(),
+							t.getQuestion().getCollection(),
+							t.getQuestion().getCollection().getProfiles().get(t.getQuestion().getProfile()),
+							userId,
+							t.getQuestion().getCnClickedCluster(),
+							t.getQuestion().getCnPreviousClusters());
+					
+					logService.logContextualNavigation(cnl);
 				}
-				
-				ContextualNavigationLog cnl = new ContextualNavigationLog(
-						new Date(),
-						t.getQuestion().getCollection(),
-						t.getQuestion().getCollection().getProfiles().get(t.getQuestion().getProfile()),
-						userId,
-						t.getQuestion().getCnClickedCluster(),
-						t.getQuestion().getCnPreviousClusters());
-				
-				logService.logContextualNavigation(cnl);
 			}
-		}
-		SearchQuestion sq = (SearchQuestion) modelAndView.getModel().get("searchQuery");
-		if (sq != null) { log.debug(sq); }
+
+			SearchQuestion sq = (SearchQuestion) modelAndView.getModel().get("searchQuery");
+			if (sq != null) { log.debug(sq); }
 		
-		SearchResponse srs = (SearchResponse) modelAndView.getModel().get("searchResults");
-		if (srs != null) { log.debug(srs); }
+			SearchResponse srs = (SearchResponse) modelAndView.getModel().get("searchResults");
+			if (srs != null) { log.debug(srs); }
+		}
 		
 	}
 
