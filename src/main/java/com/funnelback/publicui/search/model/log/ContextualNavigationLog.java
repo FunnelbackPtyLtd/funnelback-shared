@@ -12,7 +12,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 
 public class ContextualNavigationLog extends Log {
 
-	private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
+	public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
 	
 	@Getter final private String cluster;
 	@Getter final private List<String> previousClusters;

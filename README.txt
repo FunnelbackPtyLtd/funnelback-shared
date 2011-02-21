@@ -54,6 +54,9 @@ TODO:
 
 * Find a way to externally configure some web.xml features:
   * Auth filter
+  
+* XML logging
+  * Improve fault tolerance of writing an existing XML log (algorithm to search the closing </log> tag)
 
 * Click tracking
   * CGI transform
@@ -89,8 +92,6 @@ TODO:
   * Embedded JS: http://embeddedjs.com/
   * YAJET: http://www.yajet.net/yajet/doc/yajet.html
  
- * Missing PADRE parsing:
-   * Contextual Nav: More links
   
   
  

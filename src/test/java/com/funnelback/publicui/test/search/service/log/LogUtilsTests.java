@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.log;
+package com.funnelback.publicui.test.search.service.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

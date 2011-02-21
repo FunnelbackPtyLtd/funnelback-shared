@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+<cflus><t>{DATE}</t><cluster0>previousClusters</cluster0><coll>log-service</coll><fluster>cluster</fluster><prof>profile</prof><requestip>userId</requestip></cflus>
+</log>
