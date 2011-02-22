@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -77,16 +78,16 @@ public class MetaParametersTest {
 		processor.process(st, request);
 		
 		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
-		Assert.assertEquals("a:simple a:operator", st.getQuestion().getMetaParameters().get("meta_a"));
-		Assert.assertEquals("*b:trunc* *b:operator*", st.getQuestion().getMetaParameters().get("meta_b_trunc"));
-		Assert.assertEquals("+[c:orplus c:operator]", st.getQuestion().getMetaParameters().get("meta_c_orplus"));
-		Assert.assertEquals("|[d:orsand d:operator]", st.getQuestion().getMetaParameters().get("meta_d_orsand"));
-		Assert.assertEquals("[e:or e:operator]", st.getQuestion().getMetaParameters().get("meta_e_or"));
-		Assert.assertEquals("f:\"phrase operator\"", st.getQuestion().getMetaParameters().get("meta_f_phrase"));
-		Assert.assertEquals("g:`prox operator`", st.getQuestion().getMetaParameters().get("meta_g_prox"));
-		Assert.assertEquals("+h:and +h:operator", st.getQuestion().getMetaParameters().get("meta_h_and"));
-		Assert.assertEquals("|i:sand |i:operator", st.getQuestion().getMetaParameters().get("meta_i_sand"));
-		Assert.assertEquals("-j:not -j:operator", st.getQuestion().getMetaParameters().get("meta_j_not"));
+		Assert.assertEquals("a:simple a:operator", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("*b:trunc* *b:operator*", st.getQuestion().getMetaParameters().get(1));
+		Assert.assertEquals("+[c:orplus c:operator]", st.getQuestion().getMetaParameters().get(2));
+		Assert.assertEquals("|[d:orsand d:operator]", st.getQuestion().getMetaParameters().get(3));
+		Assert.assertEquals("[e:or e:operator]", st.getQuestion().getMetaParameters().get(4));
+		Assert.assertEquals("f:\"phrase operator\"", st.getQuestion().getMetaParameters().get(5));
+		Assert.assertEquals("g:`prox operator`", st.getQuestion().getMetaParameters().get(6));
+		Assert.assertEquals("+h:and +h:operator", st.getQuestion().getMetaParameters().get(7));
+		Assert.assertEquals("|i:sand |i:operator", st.getQuestion().getMetaParameters().get(8));
+		Assert.assertEquals("-j:not -j:operator", st.getQuestion().getMetaParameters().get(9));
 	}
 	
 	@Test
@@ -110,16 +111,16 @@ public class MetaParametersTest {
 		processor.process(st, request);
 		
 		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
-		Assert.assertEquals("a:simple", st.getQuestion().getMetaParameters().get("meta_a"));
-		Assert.assertEquals("*b:batman*", st.getQuestion().getMetaParameters().get("meta_b_trunc"));
-		Assert.assertEquals("+[c:spiderman]", st.getQuestion().getMetaParameters().get("meta_c_orplus"));
-		Assert.assertEquals("|[d:ironman]", st.getQuestion().getMetaParameters().get("meta_d_orsand"));
-		Assert.assertEquals("[e:elephantman]", st.getQuestion().getMetaParameters().get("meta_e_or"));
-		Assert.assertEquals("f:\"stallman\"", st.getQuestion().getMetaParameters().get("meta_f_phrase"));
-		Assert.assertEquals("g:`superman`", st.getQuestion().getMetaParameters().get("meta_g_prox"));
-		Assert.assertEquals("+h:hulk", st.getQuestion().getMetaParameters().get("meta_h_and"));
-		Assert.assertEquals("|i:captainamerica", st.getQuestion().getMetaParameters().get("meta_i_sand"));
-		Assert.assertEquals("-j:silversurfer", st.getQuestion().getMetaParameters().get("meta_j_not"));
+		Assert.assertEquals("a:simple", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("*b:batman*", st.getQuestion().getMetaParameters().get(1));
+		Assert.assertEquals("+[c:spiderman]", st.getQuestion().getMetaParameters().get(2));
+		Assert.assertEquals("|[d:ironman]", st.getQuestion().getMetaParameters().get(3));
+		Assert.assertEquals("[e:elephantman]", st.getQuestion().getMetaParameters().get(4));
+		Assert.assertEquals("f:\"stallman\"", st.getQuestion().getMetaParameters().get(5));
+		Assert.assertEquals("g:`superman`", st.getQuestion().getMetaParameters().get(6));
+		Assert.assertEquals("+h:hulk", st.getQuestion().getMetaParameters().get(7));
+		Assert.assertEquals("|i:captainamerica", st.getQuestion().getMetaParameters().get(8));
+		Assert.assertEquals("-j:silversurfer", st.getQuestion().getMetaParameters().get(9));
 	}
 	
 	@Test
@@ -142,15 +143,15 @@ public class MetaParametersTest {
 		processor.process(st, request);
 		
 		Assert.assertEquals(9, st.getQuestion().getMetaParameters().size());
-		Assert.assertEquals("*trunc* *operator*", st.getQuestion().getMetaParameters().get("query_trunc"));
-		Assert.assertEquals("+[orplus operator]", st.getQuestion().getMetaParameters().get("query_orplus"));
-		Assert.assertEquals("|[orsand operator]", st.getQuestion().getMetaParameters().get("query_orsand"));
-		Assert.assertEquals("[or operator]", st.getQuestion().getMetaParameters().get("query_or"));
-		Assert.assertEquals("\"phrase operator\"", st.getQuestion().getMetaParameters().get("query_phrase"));
-		Assert.assertEquals("`prox operator`", st.getQuestion().getMetaParameters().get("query_prox"));
-		Assert.assertEquals("+and +operator", st.getQuestion().getMetaParameters().get("query_and"));
-		Assert.assertEquals("|sand |operator", st.getQuestion().getMetaParameters().get("query_sand"));
-		Assert.assertEquals("-not -operator", st.getQuestion().getMetaParameters().get("query_not"));
+		Assert.assertEquals("*trunc* *operator*", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("+[orplus operator]", st.getQuestion().getMetaParameters().get(1));
+		Assert.assertEquals("|[orsand operator]", st.getQuestion().getMetaParameters().get(2));
+		Assert.assertEquals("[or operator]", st.getQuestion().getMetaParameters().get(3));
+		Assert.assertEquals("\"phrase operator\"", st.getQuestion().getMetaParameters().get(4));
+		Assert.assertEquals("`prox operator`", st.getQuestion().getMetaParameters().get(5));
+		Assert.assertEquals("+and +operator", st.getQuestion().getMetaParameters().get(6));
+		Assert.assertEquals("|sand |operator", st.getQuestion().getMetaParameters().get(7));
+		Assert.assertEquals("-not -operator", st.getQuestion().getMetaParameters().get(8));
 	}
 
 	@Test
@@ -173,15 +174,15 @@ public class MetaParametersTest {
 		processor.process(st, request);
 		
 		Assert.assertEquals(9, st.getQuestion().getMetaParameters().size());
-		Assert.assertEquals("*batman*", st.getQuestion().getMetaParameters().get("query_trunc"));
-		Assert.assertEquals("+[spiderman]", st.getQuestion().getMetaParameters().get("query_orplus"));
-		Assert.assertEquals("|[ironman]", st.getQuestion().getMetaParameters().get("query_orsand"));
-		Assert.assertEquals("[elephantman]", st.getQuestion().getMetaParameters().get("query_or"));
-		Assert.assertEquals("\"stallman\"", st.getQuestion().getMetaParameters().get("query_phrase"));
-		Assert.assertEquals("`superman`", st.getQuestion().getMetaParameters().get("query_prox"));
-		Assert.assertEquals("+hulk", st.getQuestion().getMetaParameters().get("query_and"));
-		Assert.assertEquals("|captainamerica", st.getQuestion().getMetaParameters().get("query_sand"));
-		Assert.assertEquals("-silversurfer", st.getQuestion().getMetaParameters().get("query_not"));
+		Assert.assertEquals("*batman*", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("+[spiderman]", st.getQuestion().getMetaParameters().get(1));
+		Assert.assertEquals("|[ironman]", st.getQuestion().getMetaParameters().get(2));
+		Assert.assertEquals("[elephantman]", st.getQuestion().getMetaParameters().get(3));
+		Assert.assertEquals("\"stallman\"", st.getQuestion().getMetaParameters().get(4));
+		Assert.assertEquals("`superman`", st.getQuestion().getMetaParameters().get(5));
+		Assert.assertEquals("+hulk", st.getQuestion().getMetaParameters().get(6));
+		Assert.assertEquals("|captainamerica", st.getQuestion().getMetaParameters().get(7));
+		Assert.assertEquals("-silversurfer", st.getQuestion().getMetaParameters().get(8));
 	}
 	
 	@Test
@@ -201,6 +202,21 @@ public class MetaParametersTest {
 		processor.process(st, request);
 		
 		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
+	}
+	
+	@Test
+	@Ignore
+	public void testCombination() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("meta_Z_phrase_sand", "incomplete");
+		
+		MetaParameters processor = new MetaParameters();
+		processor.process(st, request);
+		
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("|Z:\"incomplete\"", st.getQuestion().getMetaParameters().get(0));
 	}
 	
 }

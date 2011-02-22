@@ -206,22 +206,22 @@
 						<h2 class="fb-title">Search results that match ${result.matched} of ${result.outOf} words</h2> 
 					<#else>
 						<li>
-							<h3><a href="${result.liveUrl}">${result.title}</a></h3>
+							<h3><a href="${result.liveUrl}">${result.title?html}</a></h3>
 							
 							<p>
 								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
-								<span class="fb-summary">${result.summary}</span>
+								<span class="fb-summary">${result.summary?html}</span>
 							</p>
 							
 							<p>
-	            				<cite>${result.displayUrl}</cite>
-	                            - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
+	            				<cite>${result.displayUrl?html}</cite>
+	                            - <a class="fb-cached" href="${result.cacheUrl?url}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
 			               </p>
 			               
 			               <#if result.quickLinks?exists>
 								<ul class="fb-quicklinks">
 								<#list result.quickLinks.quickLinks as ql> 
-									<li><a href="http://${ql.url}" title="${ql.text}">${ql.text}</a></li>
+									<li><a href="http://${ql.url?url}" title="${ql.text}">${ql.text?html}</a></li>
 								</#list> 
 								</ul> 
 			               </#if>

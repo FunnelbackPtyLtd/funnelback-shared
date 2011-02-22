@@ -113,7 +113,7 @@ public class MetaParameters implements InputProcessor {
 							Method operationMethod = this.getClass().getMethod(operator, new Class[] {String.class, String[].class});
 							String newValue = (String) operationMethod.invoke(this, new Object[] {md, values});
 							log.debug("Applied operation '" + operator + "' to value '"+Arrays.toString(values)+"'. New value is '" + newValue + "'");
-							searchTransaction.getQuestion().getMetaParameters().put(name, newValue);
+							searchTransaction.getQuestion().getMetaParameters().add(newValue);
 							
 							// Remove the parameter from the list that will be passed to PADRE if
 							// we successfully processed it

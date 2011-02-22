@@ -44,7 +44,7 @@ public class SearchQuestion {
 	/**
 	 * meta_* / query_* parameters, transformed as query expressions.
 	 */
-	@Getter final private Map<String, String> metaParameters = new HashMap<String, String>();
+	@Getter final private List<String> metaParameters = new ArrayList<String>();
 	
 	/**
 	 * Additional parameters to pass as-is to PADRE

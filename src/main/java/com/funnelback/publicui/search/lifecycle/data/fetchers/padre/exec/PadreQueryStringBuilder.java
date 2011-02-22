@@ -31,7 +31,7 @@ public class PadreQueryStringBuilder {
 		}
 		if (transaction.getQuestion().getMetaParameters().size() > 0) {
 			// Add meta_* parameters transformed as query expressions
-			for (String value : transaction.getQuestion().getMetaParameters().values()) {
+			for (String value : transaction.getQuestion().getMetaParameters()) {
 				query.append(" " + value);
 			}
 		}
