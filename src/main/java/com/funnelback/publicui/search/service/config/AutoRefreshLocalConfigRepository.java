@@ -23,6 +23,7 @@ import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
+import com.funnelback.publicui.search.service.config.CachedLocalConfigRepository.CacheKeys;
 
 /**
  * Implementation of {@link AbstractLocalConfigRepository} that caches config
@@ -83,6 +84,26 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		
 		return collectionIds;			
 	}
+	
+	@Override
+	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_globalConfig_.toString() + conf.toString();
+		
+		Element elt = cache.get(key);
+		if (elt == null) {
+			return super.getGlobalConfiguration(conf);
+		} else {
+			// File in cache
+			File f = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, conf.getFileName());
+			if(isFileStale(f, elt.getCreationTime())) {
+				log.info("Configuration file '" + f.getAbsolutePath() + "' has changed and will be reloaded.");
+				cache.remove(elt.getKey());
+				return super.getGlobalConfiguration(conf);
+			}
+			return (Map<String, String>) elt.getObjectValue();
+		}
+	}
 
 	/**
 	 * Checks if any of the source configuration files has changed since the element creation time.
@@ -130,7 +151,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		
 		for(File file: filesToCheck) {
 			if (file.lastModified() > creationTime) {
-				log.debug("Config file '" + file.getAbsolutePath() + "' has changed.");
+				log.info("Config file '" + file.getAbsolutePath() + "' has changed.");
 				return true;
 			}
 		}
@@ -145,7 +166,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 
 			for(File file: files) {
 				if (file.lastModified() > creationTime) {
-					log.debug("Config file '" + file.getAbsolutePath() + "' has changed.");
+					log.info("Config file '" + file.getAbsolutePath() + "' has changed.");
 					return true;
 				}
 			}
@@ -153,8 +174,10 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		}
 		
 		return false;
-		
 	}
-	
+
+	private boolean isFileStale(File f, long timestamp) {
+		return f.lastModified() > timestamp;
+	}
 
 }

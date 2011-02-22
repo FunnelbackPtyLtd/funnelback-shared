@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.collection.paramtransform.operation;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,11 @@ public class AddParameterOperation implements Operation {
 	public AddParameterOperation(String parameterName, List<String> parameterValues) {
 		this.parameterName = parameterName;
 		this.parameterValues = parameterValues.toArray(new String[0]);
+	}
+	
+	public AddParameterOperation(String parameterName, String singleValue) {
+		this.parameterName = parameterName;
+		this.parameterValues = new String[] {singleValue};
 	}
 
 	@Override

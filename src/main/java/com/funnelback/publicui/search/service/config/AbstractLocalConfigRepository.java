@@ -63,6 +63,9 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	@Override
 	public abstract List<String> getAllCollectionIds();
 	
+	@Override
+	public abstract Map<String, String> getGlobalConfiguration(GlobalConfiguration conf);
+	
 	protected Collection loadCollection(String collectionId) {
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
 		try {
@@ -326,6 +329,23 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			}			
 		}
 		return collections;
+	}
+
+	/**
+	 * Loads a global configuration file
+	 * @param conf
+	 * @return
+	 */
+	protected Map<String, String> loadGlobalConfiguration(GlobalConfiguration conf) {
+		File globalConfig = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, conf.getFileName());
+		if (globalConfig.canRead()) {
+			try {
+				return Config.readConfig(globalConfig.getAbsolutePath(), searchHome.getAbsolutePath(), "");
+			} catch (IOException ioe) {
+				log.error("Error while reading global configuration '" + globalConfig.getAbsolutePath() + "'", ioe);
+			}
+		}
+		return null;
 	}
 		
 	/**

@@ -51,13 +51,21 @@
 	</filter-mapping>
 	<!--  ========================================== -->
 
-	 <filter>
+	<filter>
 	   <filter-name>RequestParametersTransformFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
-
 	<filter-mapping>
 	   <filter-name>RequestParametersTransformFilter</filter-name>
+	   <servlet-name>publicui</servlet-name>
+	</filter-mapping>
+
+	<filter>
+	   <filter-name>HostnameRestrictionFilter</filter-name>
+	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	   <filter-name>HostnameRestrictionFilter</filter-name>
 	   <servlet-name>publicui</servlet-name>
 	</filter-mapping>
 

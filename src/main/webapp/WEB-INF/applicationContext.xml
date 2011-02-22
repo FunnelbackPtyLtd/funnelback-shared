@@ -43,8 +43,7 @@
 	<util:properties id="appProperties" location="classpath:publicui.properties" />
 	
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
-	
-	
+	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.web.filters.HostnameRestrictionFilter" />	
 	
 	<!-- ***** List of processors to run ***** -->
 

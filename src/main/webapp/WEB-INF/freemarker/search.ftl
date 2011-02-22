@@ -170,14 +170,16 @@
 				<a href="#" id="fb-advanced-toggle">Advanced search</a>
 	            <span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
 	        </span>
-				
-			<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
-				<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.question.query}</strong>
-			<#else>
-				<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
-		        <span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
-		        <span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching}</span>
-	            search results for <strong>${SearchTransaction.question.query}</strong>	
+
+			<#if SearchTransaction.response.resultPacket.resultSummary?exists>				
+				<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
+					<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.question.query}</strong>
+				<#else>
+					<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
+			        <span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
+			        <span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching}</span>
+		            search results for <strong>${SearchTransaction.question.query}</strong>	
+				</#if>
 			</#if>
 		</p>
 		
