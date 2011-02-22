@@ -452,4 +452,29 @@ for (Facet f: facets) {
 		</section>
 	</chapter>
 
+	<chapter id="hostname-restriction">
+		<title>Hostname based access restriction</title>
+		
+		<para>
+			This undocumented feature allows the administrator to restrict access on collections based on the <literal>Host</literal> header of the HTTP request from
+			the client browser. If the requested collection is not authorized for the requested host, a default collection is substituted.
+		</para>
+		
+		<para>
+			This features uses the <literal>dns_aliases.cfg</literal> configuration file. This is a global configuration file residing in <envar>SEARCH_HOME</envar>/conf.
+			It has the following format:
+			<programlisting>
+<![CDATA[# hostname=collection1,collection2,...
+# Ex:
+westpac.com.au=westpac,westpac-broker
+abc.com.au=abc-news,abc-shop]]>
+			</programlisting> 
+		</para>
+		
+		<para>
+			This feature has been re-implemented as a servlet filter. If the access is denied on the specified collection, the <literal>collection</literal> request parameter
+			is changed for a authorized collection (The first one in the list for this specific host name).
+		</para>
+	</chapter>
+
 </part>

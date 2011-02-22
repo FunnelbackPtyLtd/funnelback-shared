@@ -16,7 +16,6 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.Criteria;
@@ -53,15 +52,13 @@ public class HostnameRestrictionFilter implements Filter {
 				if (dnsAliases.get(hostName) != null) {
 					String[] collections = dnsAliases.get(hostName).split(",");
 					log.debug("Authorized collections for hostname '" + hostName + "' : '" + dnsAliases.get(hostName) + "'");
-					if (! ArrayUtils.contains(collections, collectionId)) {
+					if (collections != null && collections.length > 0 && ! "".equals(collections[0]) && ! ArrayUtils.contains(collections, collectionId)) {
 						// This collection is not authorized for this hostname
 						// Try to substitute the first collection of the list
-						if (collections.length > 0) {
-							log.debug("Unauthorized access on collection '" + collectionId + "' for hostname '" + hostName + "'. "
-									+ "Collection '" + collections[0] + "' will be substituted.");
-							TransformRule rule = getTransformRule(collectionId, collections[0]);
-							target = new RequestParametersTransformWrapper((HttpServletRequest) request, Arrays.asList(new TransformRule[] {rule}));
-						}
+						log.debug("Unauthorized access on collection '" + collectionId + "' for hostname '" + hostName + "'. "
+								+ "Collection '" + collections[0] + "' will be substituted.");
+						TransformRule rule = getTransformRule(collectionId, collections[0]);
+						target = new RequestParametersTransformWrapper((HttpServletRequest) request, Arrays.asList(new TransformRule[] {rule}));
 					} else {
 						log.debug("Access granted on collection '" + collectionId + "' for hostname '" + hostName + "'");
 					}

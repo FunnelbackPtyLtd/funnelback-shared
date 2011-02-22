@@ -19,6 +19,7 @@
 	<!-- aop:aspectj-autoproxy / -->
 
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
+	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.web.filters.HostnameRestrictionFilter" />	
 
 	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg index="0" type="java.net.URL"
