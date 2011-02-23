@@ -5,13 +5,14 @@ msgstr ""
 "Project-Id-Version: Funnelback Public UI $Revision$\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-23 17:43+1100\n"
-"PO-Revision-Date: 2011-02-23 16:37+1100\n"
-"Last-Translator: <nguillaumin@funnelback.com>\n"
-"Language-Team: French\n"
+"PO-Revision-Date: 2011-02-24 09:01+1000\n"
+"Last-Translator: Nicolas Guillaumin <nguillaumin@funnelback.com>\n"
+"Language-Team: French <dev@funnelback.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: French\n"
 
 #: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\PadreForking.java:101
 msgid "PADRE forking failed"
@@ -50,3 +51,4 @@ msgstr "Impossible d'écrire dans le fichier de traces de la collection"
 #, java-format
 msgid "Missing ''{0}'' parameter"
 msgstr "Paramètre ''{0}'' manquant"
+

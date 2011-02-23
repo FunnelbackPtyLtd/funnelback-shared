@@ -476,5 +476,64 @@ abc.com.au=abc-news,abc-shop]]>
 			is changed for a authorized collection (The first one in the list for this specific host name).
 		</para>
 	</chapter>
+	
+	<chapter id="i18n">
+		<title>Internationalisation</title>
+		
+		<section id="i18n-overview">
+			<title>Overview</title>
+			<para>
+				The new UI supports localisation using the <ulink url="http://www.gnu.org/software/gettext/">GNU gettext</ulink> library. This solution has been chosen over a pure
+				Java (Spring) solution because:
+				<itemizedlist>
+					<listitem>It's cross language, meaning that we can re-use the same system to add i18n support to other components of Funnelback (PADRE ?)</listitem>
+					<listitem>It's using the default (en) translations as keys for the messages, preventing the use of crypting message keys in the code</listitem>
+				</itemizedlist>
+				
+				It's especially using the <ulink url="http://code.google.com/p/gettext-commons/">gettext-commons</ulink> Java implementation.			
+			</para>
+			
+			<para>
+				Translation files can be found under <literal>src/main/po</literal>. There is a <emphasis>POT</emphasis> master keys file, and a <emphasis>PO</emphasis> file per
+				language.
+			</para>
+		</section>
+		
+		<section id="i18n-gettext">
+			<title>Using gettext</title>
+			
+			<para>
+				Using gettext is a three step process: Call the translation functions in your code, generate a key files from your source code, and generate translation from the
+				language files.
+			</para>
+			
+			<para>
+				The translation functions comes from the <ulink url="http://gettext-commons.googlecode.com/svn/apidocs/org/xnap/commons/i18n/I18n.html">I18n</ulink> class and are
+				pretty self-descriptive.
+			</para>
+			
+			<para>
+				Generating the key files is done automatically by an Ant task. This tasks parses all the Java source files and extract every call to the translation functions to
+				generate a files containing all the keys used in the application. This file has a <emphasis>POT</emphasis> extension and should never be edited by hand.
+				Following this process another Ant task is called to merge any new/updating key with the existing <emphasis>PO</emphasis> files (translated files). 
+			</para>
+			
+			<para>
+				At this point the translation is done by editing the <emphasis>PO</emphasis> files manually, or using a dedicated tool such as
+				<ulink url="http://www.poedit.net/">POEdit</ulink>.
+			</para>
+			
+			<para>
+				On the build step, two other Ant tasks are called:
+				<itemizedlist>
+					<listitem>The first one generate the default translations (en) using directly the keys files (As the keys are the english messages)</listitem>
+					<listitem>
+						The second one builds a set of Java classes, one for each language. This classes are copied to the application classes folder and embedded
+						in the application.
+					</listitem>
+				</itemizedlist>
+			</para>
+		</section>
+	</chapter>
 
 </part>
