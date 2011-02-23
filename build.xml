@@ -47,7 +47,12 @@
 	<target name="i18n.generate.translations" description="Generate translations from .po files">
 		<gettext-generate-default  
 			targetBundle="com.funnelback.publicui.i18n.Messages"
-			outputDirectory="target/classes"
+			outputDirectory="${bin.dir}"
+			potfile="src/main/po/messages.pot" />
+
+		<gettext-generate-default  
+			targetBundle="com.funnelback.publicui.i18n.Messages"
+			outputDirectory="${test.instrumented.dir}"
 			potfile="src/main/po/messages.pot" />
 	
 		<gettext-dist

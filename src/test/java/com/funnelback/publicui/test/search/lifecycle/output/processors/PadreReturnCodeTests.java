@@ -62,7 +62,7 @@ public class PadreReturnCodeTests {
 		st.getResponse().setReturnCode(199);
 		processor.process(st);
 		Assert.assertEquals(1, logService.getPublicUiWarnings().size());
-		Assert.assertTrue(logService.getPublicUiWarnings().get(0).getMessage().contains("Could not log query to collection's query log"));
+		Assert.assertTrue(logService.getPublicUiWarnings().get(0).getMessage().contains("Could not log query to collection''s query log"));
 		Assert.assertEquals("dummy", logService.getPublicUiWarnings().get(0).getCollection().getId());
 	}
 
