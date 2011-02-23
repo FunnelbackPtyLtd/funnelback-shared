@@ -17,6 +17,8 @@
 
 	<context:component-scan base-package="com.funnelback.publicui.web" />
 
+	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
@@ -49,9 +51,11 @@
 					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
 				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
 					<constructor-arg>
-						<bean class="org.springframework.oxm.xstream.XStreamMarshaller" />
+						<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+							<property name="encoding" value="UTF-8" />
+						</bean>
 					</constructor-arg>
-					<property name="contentType" value="text/xml" />
+					<property name="contentType" value="text/xml;charset=UTF-8" />
 					<property name="modelKey"
 						value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
 				</bean>

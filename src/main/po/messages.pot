@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-23 17:43+1100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\PadreForking.java:101
+msgid "PADRE forking failed"
+msgstr ""
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\PadreForking.java:107
+msgid "Unable to parse PADRE output"
+msgstr ""
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\JavaPadreForker.java:37
+#, possible-java-format
+msgid "Failed to run PADRE with command line ''{0}''"
+msgstr ""
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:64
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:76
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:87
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:90
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:113
+#, possible-java-format
+msgid "Call to ''{0}'' function failed"
+msgstr ""
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\input\processors\UserKeys.java:49
+#, possible-java-format
+msgid "Invalid security plugin ''{0}''"
+msgstr ""
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\output\processors\PadreReturnCode.java:47
+msgid "Could not log query to collection''s query log"
+msgstr ""
+
+#. No collection in the initial request, should not happen as we should have been
+#. unable to check ACCESS_RESTRICTION at the first place
+#: src\main\java\com\funnelback\publicui\web\interceptors\AccessRestrictionInterceptor.java:126
+#, possible-java-format
+msgid "Missing ''{0}'' parameter"
+msgstr ""

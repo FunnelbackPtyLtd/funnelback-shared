@@ -59,7 +59,7 @@ public class SearchController {
 	@Resource(name="outputFlow")
 	private List<OutputProcessor> outputFlow;
 	// ----
-
+	
 	@Autowired
 	private ConfigRepository configRepository;
 
@@ -185,7 +185,8 @@ public class SearchController {
 	 * @param question
 	 * @param request
 	 */
-	public void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
+	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
+
 		// Is request impersonated ?
 		question.setImpersonated(isRequestImpersonated(request));
 		

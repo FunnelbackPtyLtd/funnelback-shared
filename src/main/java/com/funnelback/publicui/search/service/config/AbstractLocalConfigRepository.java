@@ -155,7 +155,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
 				return null;
 			} catch (XmlParsingException xpe) {
-				log.error("Erro while parsing faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", xpe);
+				log.error("Error while parsing faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", xpe);
 				return null;
 			}
 		} else {

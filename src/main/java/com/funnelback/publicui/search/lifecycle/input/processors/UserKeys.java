@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.aop.Profiled;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
@@ -21,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("userKeysInputProcessor")
 @Log
 public class UserKeys implements InputProcessor {
-
+	
 	@Override
 	@Profiled
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
@@ -42,7 +43,7 @@ public class UserKeys implements InputProcessor {
 					UserKeysMapper mapper = (UserKeysMapper) BeanUtils.instantiate(clazz);
 					searchTransaction.getQuestion().getUserKeys().addAll(mapper.getUserKeys(searchTransaction, request));
 				} catch (ClassNotFoundException cnfe) {
-					throw new InputProcessorException("Invalid security plugin '" + securityPlugin + "'", cnfe);
+					throw new InputProcessorException(I18n.i18n().tr("Invalid security plugin ''{0}''", securityPlugin), cnfe);
 				}
 			}
 		}

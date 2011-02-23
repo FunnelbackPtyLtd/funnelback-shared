@@ -1,0 +1,52 @@
+# Funnelback Public UI messages
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Funnelback Public UI $Revision$\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-23 17:43+1100\n"
+"PO-Revision-Date: 2011-02-23 16:37+1100\n"
+"Last-Translator: <nguillaumin@funnelback.com>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\PadreForking.java:101
+msgid "PADRE forking failed"
+msgstr "L'éxecution de PADRE à échoué"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\PadreForking.java:107
+msgid "Unable to parse PADRE output"
+msgstr "Erreur de parsing du flux XML PADRE"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\JavaPadreForker.java:37
+#, java-format
+msgid "Failed to run PADRE with command line ''{0}''"
+msgstr "L''éxecution de PADRE à échoué (Ligne de commande ''{0}'')"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:64
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:76
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:87
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:90
+#: src\main\java\com\funnelback\publicui\search\lifecycle\data\fetchers\padre\exec\WindowsNativePadreForker.java:113
+#, java-format
+msgid "Call to ''{0}'' function failed"
+msgstr "L''appel de fonction ''{0}'' à échoué"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\input\processors\UserKeys.java:49
+#, java-format
+msgid "Invalid security plugin ''{0}''"
+msgstr "Greffon de sécurité ''{0}'' invalide"
+
+#: src\main\java\com\funnelback\publicui\search\lifecycle\output\processors\PadreReturnCode.java:47
+msgid "Could not log query to collection''s query log"
+msgstr "Impossible d'écrire dans le fichier de traces de la collection"
+
+#. No collection in the initial request, should not happen as we should have been
+#. unable to check ACCESS_RESTRICTION at the first place
+#: src\main\java\com\funnelback\publicui\web\interceptors\AccessRestrictionInterceptor.java:126
+#, java-format
+msgid "Missing ''{0}'' parameter"
+msgstr "Paramètre ''{0}'' manquant"

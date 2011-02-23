@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.aop.Profiled;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -120,7 +121,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 			} else {
 				// No collection in the initial request, should not happen as we should have been
 				// unable to check ACCESS_RESTRICTION at the first place
-				throw new IllegalStateException("Missing 'collection' parameter.");
+				throw new IllegalStateException(I18n.i18n().tr("Missing ''{0}'' parameter", RequestParameters.COLLECTION));
 			}
 			
 			log.debug("Applying access alternate setting for collection '" + collection.getId() + "'. Redirecting to '" + out.toString() + "'");

@@ -8,6 +8,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
@@ -43,7 +44,7 @@ public class PadreReturnCode implements OutputProcessor {
 								searchTransaction.getQuestion().getCollection(),
 								searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
 								searchTransaction.getQuestion().getUserId(),
-								"Could not log query to collection's query log"));
+								I18n.i18n().tr("Could not log query to collection''s query log")));
 				break;
 			}
 		}

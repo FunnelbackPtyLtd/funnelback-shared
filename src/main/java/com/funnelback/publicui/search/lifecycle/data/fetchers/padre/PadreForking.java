@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.aop.Profiled;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
@@ -94,14 +95,13 @@ public class PadreForking implements DataFetcher {
 				searchTransaction.getResponse().setReturnCode(padreOutput.getReturnCode());
 			} catch (PadreForkingException pfe) {
 				log.error("PADRE forking failed", pfe);
-				throw new DataFetchException("PADRE forking failed", pfe);				
-	
+				throw new DataFetchException(I18n.i18n().tr("PADRE forking failed"), pfe);	
 			} catch (XmlParsingException pxpe) {
 				log.error("Unable to parse PADRE output", pxpe);
 				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
 					log.error("PADRE output was: \n" + padreOutput.getOutput());
 				}
-				throw new DataFetchException("Unable to parse PADRE output", pxpe);
+				throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE output"), pxpe);
 			}
 		}
 	}
