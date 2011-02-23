@@ -15,6 +15,7 @@ import lombok.ToString;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.log.LogUtils;
 
 @ToString
 @AllArgsConstructor
@@ -78,6 +79,12 @@ public class SearchQuestion {
 	 * Whether the request is impersonated
 	 */
 	@Getter @Setter private boolean impersonated;
+	
+	/**
+	 * User identifier for this transaction. Depending of the collection configuration
+	 * it can be an IP address, an md5 hash of the address, nothing ("-") or null. 
+	 */
+	@Getter @Setter private String userId = LogUtils.USERID_NOTHING;
 	
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";

@@ -20,7 +20,5 @@ public abstract class Log {
 	 * User identifier, could be an IP, a hash, or null
 	 */
 	@Getter final protected String userId;
-	
-	public abstract String toXml();
-	
+		
 }

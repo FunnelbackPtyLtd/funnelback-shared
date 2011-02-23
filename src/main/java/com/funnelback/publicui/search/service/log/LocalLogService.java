@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.service.log;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -8,6 +9,7 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 
 /**
  * Writes log files locally in the LIVE folder of each collection
@@ -28,6 +31,9 @@ public class LocalLogService implements LogService {
 	private static final String XML_ROOT_START = "<log>";
 	private static final String XML_ROOT_END = "</log>";
 	
+	@Autowired
+	private File searchHome;
+	
 	@Override
 	public void logClick(ClickLog cl) {
 		log.debug("NOT YET IMPLEMENTED");
@@ -38,6 +44,21 @@ public class LocalLogService implements LogService {
 	public void logContextualNavigation(ContextualNavigationLog cnl) {
 		if (cnl.getCollection() != null) {
 			logLiveXmlData(cnl.getCollection(), Files.Log.CONTEXTUAL_NAVIGATION_LOG_FILENAME, cnl.toXml());
+		}
+	}
+	
+	@Override
+	@Async
+	public synchronized void logPublicUIWarning(PublicUIWarningLog warning) {
+		File target = new File(searchHome + File.separator + DefaultValues.FOLDER_LOG, Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(target, true);
+			fw.append(warning.toString() + "\n");
+		} catch (IOException ioe) {
+			log.warn("Error while writing to '" + target.getAbsolutePath() + "'", ioe);
+		} finally {
+			IOUtils.closeQuietly(fw);
 		}
 	}
 	

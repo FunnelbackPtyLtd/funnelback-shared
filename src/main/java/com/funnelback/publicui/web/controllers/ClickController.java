@@ -1,7 +1,6 @@
 package com.funnelback.publicui.web.controllers;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -62,14 +61,8 @@ public class ClickController {
 		
 		if (collection != null) {
 
-			String userId = LogUtils.USERID_NOTHING;
-			try {
-				userId = LogUtils.getUserIdentifier(
-					InetAddress.getByName(request.getRemoteAddr()),
+			String userId = LogUtils.getUserIdentifier(request,
 					DefaultValues.UserIdToLog.valueOf(collection.getConfiguration().value(Keys.USERID_TO_LOG)));
-			} catch (Exception ex) {
-				log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + collection.getConfiguration().value(Keys.USERID_TO_LOG) + "'", ex);
-			}
 			
 			URL referer = null;
 			if (request.getHeader("referer") != null) {

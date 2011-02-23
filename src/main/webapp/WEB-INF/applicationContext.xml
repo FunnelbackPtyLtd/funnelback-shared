@@ -76,6 +76,7 @@
 	</util:list>
 
 	<util:list id="outputFlow">
+		<ref bean="padreReturnCodeOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="facetedNavigationTransformOutputProcessor" />

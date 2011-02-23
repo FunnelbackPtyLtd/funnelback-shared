@@ -24,7 +24,6 @@ public class ContextualNavigationLog extends Log {
 		this.previousClusters = previousClusters;
 	}
 	
-	@Override
 	public String toXml() {
 		StringBuffer out = new StringBuffer();
 		out.append("<cflus>")

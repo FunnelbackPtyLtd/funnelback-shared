@@ -42,9 +42,6 @@ public class PadreForking implements DataFetcher {
 	
 	private static final String OPT_USER_KEYS = "-userkeys";
 	
-	/** PADRE return code for success */
-	public static final int RC_SUCCESS = 0;
-	
 	@Autowired
 	@Setter
 	private File searchHome;

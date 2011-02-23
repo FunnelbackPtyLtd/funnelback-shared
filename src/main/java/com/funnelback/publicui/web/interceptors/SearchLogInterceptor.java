@@ -1,6 +1,5 @@
 package com.funnelback.publicui.web.interceptors;
 
-import java.net.InetAddress;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,20 +43,11 @@ public class SearchLogInterceptor implements HandlerInterceptor {
 				if (t.hasQuestion() && t.getQuestion().getCnClickedCluster() != null
 						&& t.getQuestion().getCollection() != null) {
 					
-					String userId = LogUtils.USERID_NOTHING;
-					try {
-						userId = LogUtils.getUserIdentifier(
-							InetAddress.getByName(request.getRemoteAddr()),
-							DefaultValues.UserIdToLog.valueOf(t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG)));
-					} catch (Exception ex) {
-						log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + t.getQuestion().getCollection().getConfiguration().value(Keys.USERID_TO_LOG) + "'", ex);
-					}
-					
 					ContextualNavigationLog cnl = new ContextualNavigationLog(
 							new Date(),
 							t.getQuestion().getCollection(),
 							t.getQuestion().getCollection().getProfiles().get(t.getQuestion().getProfile()),
-							userId,
+							t.getQuestion().getUserId(),
 							t.getQuestion().getCnClickedCluster(),
 							t.getQuestion().getCnPreviousClusters());
 					

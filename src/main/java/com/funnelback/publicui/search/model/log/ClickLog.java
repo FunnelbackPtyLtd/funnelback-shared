@@ -29,13 +29,6 @@ public class ClickLog extends Log {
 		this.rank = rank;
 		this.target = target;
 		this.type = type;
-	}
-
-	@Override
-	public String toXml() {
-		throw new RuntimeException("Not Yet Implemented");
-	}
-	
-	
+	}	
 	
 }

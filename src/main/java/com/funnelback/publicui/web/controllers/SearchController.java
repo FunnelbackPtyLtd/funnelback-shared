@@ -19,6 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import waffle.servlet.WindowsPrincipal;
 
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -32,6 +34,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.web.binding.CollectionEditor;
 import com.funnelback.publicui.web.utils.RequestParametersFilter;
 
@@ -185,6 +188,12 @@ public class SearchController {
 	public void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
 		// Is request impersonated ?
 		question.setImpersonated(isRequestImpersonated(request));
+		
+		// User identifier
+		if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
+			question.setUserId(LogUtils.getUserIdentifier(request,
+					DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
+		}
 		
 		// Last clicked cluster
 		question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
