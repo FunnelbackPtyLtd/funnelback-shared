@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.io.FileUtils;
@@ -32,7 +33,7 @@ public class LocalLogService implements LogService {
 	private static final String XML_ROOT_END = "</log>";
 	
 	@Autowired
-	private File searchHome;
+	@Setter private File searchHome;
 	
 	@Override
 	public void logClick(ClickLog cl) {

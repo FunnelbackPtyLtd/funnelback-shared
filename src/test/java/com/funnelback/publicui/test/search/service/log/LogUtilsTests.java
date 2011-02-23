@@ -22,6 +22,12 @@ public class LogUtilsTests {
 			LogUtils.getUserIdentifier(request, null);
 			Assert.fail();
 		} catch (NullPointerException npe) {}
+		
+		Assert.assertEquals(LogUtils.USERID_NOTHING, LogUtils.getUserIdentifier(null, UserIdToLog.ip));
+		
+		// Invalid host
+		request.setRemoteAddr("\n");
+		Assert.assertEquals(LogUtils.USERID_NOTHING, LogUtils.getUserIdentifier(request, UserIdToLog.ip));
 	}
 
 }

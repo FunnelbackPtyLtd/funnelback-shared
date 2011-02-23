@@ -2,6 +2,8 @@ package com.funnelback.publicui.search.model.log;
 
 import java.util.Date;
 
+import lombok.Getter;
+
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -11,7 +13,7 @@ public class PublicUIWarningLog extends Log {
 
 	public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
 	
-	private final String message;
+	@Getter private final String message;
 	
 	public PublicUIWarningLog(Date date, Collection collection, Profile profile, String userId,
 			String message) {

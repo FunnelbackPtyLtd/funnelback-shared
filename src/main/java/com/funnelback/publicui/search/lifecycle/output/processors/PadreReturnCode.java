@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Date;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,11 @@ import com.funnelback.publicui.search.service.log.LogService;
 public class PadreReturnCode implements OutputProcessor {
 
 	@Autowired
-	private LogService logService;
+	@Setter private LogService logService;
 	
 	@Override
 	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction.hasResponse()
+		if (SearchTransactionUtils.hasResponse(searchTransaction)
 				&& searchTransaction.getResponse().getReturnCode() != ReturnCodes.SUCCESS
 				&& SearchTransactionUtils.hasCollection(searchTransaction)) {
 			

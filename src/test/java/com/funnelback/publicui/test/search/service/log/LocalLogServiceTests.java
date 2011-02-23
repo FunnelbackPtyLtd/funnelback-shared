@@ -21,6 +21,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.search.service.log.LocalLogService;
 
 public class LocalLogServiceTests {
@@ -38,6 +39,9 @@ public class LocalLogServiceTests {
 			+ File.separator + DefaultValues.VIEW_LIVE
 			+ File.separator + DefaultValues.FOLDER_LOG,
 			Files.Log.CONTEXTUAL_NAVIGATION_LOG_FILENAME);
+	
+	private File publicUiWarningLogFile = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_LOG,
+			Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
 	
 	private LocalLogService logService;
 	
@@ -86,7 +90,7 @@ public class LocalLogServiceTests {
 	}
 	
 	@Test
-	public void testThreadSafe() throws Exception {
+	public void testLogContextualNavigationThreadSafe() throws Exception {
 		NoOptionsConfig config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
 		final Collection c = new Collection(COLLECTION_NAME, config);
 		final Profile p = new Profile("profile");
@@ -190,6 +194,43 @@ public class LocalLogServiceTests {
 		String expected = FileUtils.readFileToString(new File(TEST_IN_ROOT, "invalid-log.xml")).replace("\r", "");
 		
 		Assert.assertEquals("Invalid log shouldn't have been updated", expected, actual);
+	}
+
+	@Test
+	public void testLogPublicUIWarning() throws Exception {
+		NoOptionsConfig config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
+		Collection c = new Collection(COLLECTION_NAME, config);
+
+		Date now = new Date();
+		PublicUIWarningLog warning = new PublicUIWarningLog(now,
+				c,
+				null,
+				null,
+				"Test message");
+		
+		logService.setSearchHome(TEST_OUT_ROOT);
+		logService.logPublicUIWarning(warning);
+		
+		String actual = FileUtils.readFileToString(publicUiWarningLogFile);
+		String expected = PublicUIWarningLog.DATE_FORMAT.format(now) + " " + c.getId() + " - Test message\n";
+		
+		Assert.assertEquals(expected, actual);
+		
+		// Append another message
+		now = new Date();
+		warning = new PublicUIWarningLog(now,
+				c,
+				null,
+				null,
+				"Second message");
+		
+		logService.logPublicUIWarning(warning);
+		
+		actual = FileUtils.readFileToString(publicUiWarningLogFile);
+		expected += PublicUIWarningLog.DATE_FORMAT.format(now) + " " + c.getId() + " - Second message\n";
+		
+		Assert.assertEquals(expected, actual);
+		
 	}
 	
 }
