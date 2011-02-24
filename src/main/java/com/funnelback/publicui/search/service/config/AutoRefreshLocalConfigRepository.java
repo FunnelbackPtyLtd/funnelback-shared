@@ -13,17 +13,14 @@ import lombok.extern.apachecommons.Log;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
-import com.funnelback.publicui.search.service.config.CachedLocalConfigRepository.CacheKeys;
+import com.funnelback.publicui.search.model.collection.Profile;
 
 /**
  * Implementation of {@link AbstractLocalConfigRepository} that caches config
@@ -150,7 +147,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		
 		
 		for(File file: filesToCheck) {
-			if (file.lastModified() > creationTime) {
+			if (isFileStale(file, creationTime)) {
 				log.info("Config file '" + file.getAbsolutePath() + "' has changed.");
 				return true;
 			}
@@ -165,7 +162,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 			};
 
 			for(File file: files) {
-				if (file.lastModified() > creationTime) {
+				if (isFileStale(file, creationTime)) {
 					log.info("Config file '" + file.getAbsolutePath() + "' has changed.");
 					return true;
 				}

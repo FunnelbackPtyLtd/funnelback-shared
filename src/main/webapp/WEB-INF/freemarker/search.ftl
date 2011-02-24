@@ -141,7 +141,7 @@
         <form method="GET">
             <div>
             	<label for="query" style="text-indent: -9999em;">Search</label>
-            	<input name="query" id="query" type="text" value="${SearchTransaction.question.query!""}" accesskey="q">
+            	<input name="query" id="query" type="text" value="${SearchTransaction.question.originalQuery!""}" accesskey="q">
             	<input type="submit" value="Search">
             	<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}">
             	<#if SearchTransaction.question.profile?exists>
@@ -173,12 +173,12 @@
 
 			<#if SearchTransaction.response.resultPacket.resultsSummary?exists>				
 				<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
-					<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.question.query}</strong>
+					<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.response.resultPacket.queryAsProcessed}</strong>
 				<#else>
 					<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
 			        <span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
 			        <span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching}</span>
-		            search results for <strong>${SearchTransaction.question.query}</strong>	
+		            search results for <strong>${SearchTransaction.response.resultPacket.queryAsProcessed}</strong>	
 				</#if>
 			</#if>
 		</p>
@@ -210,13 +210,14 @@
 							
 							<p>
 								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
-								<span class="fb-summary">${result.summary?html}</span>
+								<span class="fb-summary">${result.summary}</span>
 							</p>
 							
 							<p>
 	            				<cite>${result.displayUrl?html}</cite>
 	                            - <a class="fb-cached" href="${result.cacheUrl?url}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
-			               </p>
+	                            <a class="fb-explore" href="?collection=${SearchTransaction.question.collection.id}&amp;query=explore:${result.liveUrl}">Explore</a>
+							</p>
 			               
 			               <#if result.quickLinks?exists>
 								<ul class="fb-quicklinks">
@@ -251,7 +252,7 @@
 			<#if SearchTransaction.response.facets?size &gt; 0>
 			<div id="fb-facets">
 				<form method="get">
-					<input type="hidden" name="query" value="${SearchTransaction.question.query}" />
+					<input type="hidden" name="query" value="${SearchTransaction.question.originalQuery}" />
 					<input type="hidden" name="collection" value="${SearchTransaction.question.collection.id}" />
 					<input type="submit" value="Refine" />
 								

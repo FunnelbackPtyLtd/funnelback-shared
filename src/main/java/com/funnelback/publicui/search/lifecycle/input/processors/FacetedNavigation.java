@@ -48,10 +48,12 @@ public class FacetedNavigation implements InputProcessor {
 			
 			FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
 			
-			if (config != null && config.getQpOptions() != null) {
-				// Query Processor options are embedded in the faceted_navigation.cfg file
-				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
-				log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
+			if (config != null) {
+				if (config.getQpOptions() != null && ! "".equals(config.getQpOptions())) {
+					// Query Processor options are embedded in the faceted_navigation.cfg file
+					searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
+					log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
+				}
 				
 				// Global set of constraints. A Set per Facet
 				Set<Set<String>> gscope1Constraints = new HashSet<Set<String>>();
@@ -60,76 +62,77 @@ public class FacetedNavigation implements InputProcessor {
 				RequestParametersFilter filter = new RequestParametersFilter(request);
 				String[] selectedFacetsParams = filter.filter(FACET_PARAM_PATTERN);
 				
-				for (final String selectedFacetParam: selectedFacetsParams) {
-					log.debug("Found facet parameter '" + selectedFacetParam + "'");
-					Matcher m = FACET_PARAM_PATTERN.matcher(selectedFacetParam);
-					m.find();
-					
-					final String facetName = m.group(1);
-					final String extraParam = m.group(3);
-					final String values[] = request.getParameterValues(selectedFacetParam);
-					log.debug("Fond facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
-					
-					// Find corresponding facet in config
-					Facet f = (Facet) CollectionUtils.find(config.getFacets(), new Predicate() {
-						@Override
-						public boolean evaluate(Object o) {
-							return ((Facet) o).getName().equals(facetName);
-						}
-					});
-					
-					if (f != null) {
-						// Set of constraints for this specific facet
-						Set<String> gscope1FacetConstraints = new HashSet<String>();
-						Set<String> queryFacetConstraints = new HashSet<String>();
-					
-						// Find corresponding category type, for each value
-						for(final String value: values) {
-							// Find category or subcategory
-							CategoryType ct = findCategoryType(f.getCategoryTypes(), value, extraParam);
-							
-							if (ct != null) {
-								List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
-								if (selectedCategoriesValues == null) {
-									selectedCategoriesValues = new ArrayList<String>();
-								}
-								// Put this category in the list of the selected ones
-								selectedCategoriesValues.add(value);
-								searchTransaction.getQuestion().getSelectedCategories().put(ct.getUrlParamName(), selectedCategoriesValues);
+				if (selectedFacetsParams.length > 0) {
+					for (final String selectedFacetParam: selectedFacetsParams) {
+						log.debug("Found facet parameter '" + selectedFacetParam + "'");
+						Matcher m = FACET_PARAM_PATTERN.matcher(selectedFacetParam);
+						m.find();
+						
+						final String facetName = m.group(1);
+						final String extraParam = m.group(3);
+						final String values[] = request.getParameterValues(selectedFacetParam);
+						log.debug("Fond facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
+						
+						// Find corresponding facet in config
+						Facet f = (Facet) CollectionUtils.find(config.getFacets(), new Predicate() {
+							@Override
+							public boolean evaluate(Object o) {
+								return ((Facet) o).getName().equals(facetName);
+							}
+						});
+						
+						if (f != null) {
+							// Set of constraints for this specific facet
+							Set<String> gscope1FacetConstraints = new HashSet<String>();
+							Set<String> queryFacetConstraints = new HashSet<String>();
+						
+							// Find corresponding category type, for each value
+							for(final String value: values) {
+								// Find category or subcategory
+								CategoryType ct = findCategoryType(f.getCategoryTypes(), value, extraParam);
 								
-								// Add constraints for this category
-								if (ct instanceof GScopeBasedType) {
-									GScopeBasedType type = (GScopeBasedType) ct;
-									gscope1FacetConstraints.add(type.getGScope1Constraint());
+								if (ct != null) {
+									List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
+									if (selectedCategoriesValues == null) {
+										selectedCategoriesValues = new ArrayList<String>();
+									}
+									// Put this category in the list of the selected ones
+									selectedCategoriesValues.add(value);
+									searchTransaction.getQuestion().getSelectedCategories().put(ct.getUrlParamName(), selectedCategoriesValues);
 									
-								} else if (ct instanceof MetadataBasedType) {
-									MetadataBasedType type = (MetadataBasedType) ct;
-									queryFacetConstraints.add(type.getQueryConstraint(value));
+									// Add constraints for this category
+									if (ct instanceof GScopeBasedType) {
+										GScopeBasedType type = (GScopeBasedType) ct;
+										gscope1FacetConstraints.add(type.getGScope1Constraint());
+										
+									} else if (ct instanceof MetadataBasedType) {
+										MetadataBasedType type = (MetadataBasedType) ct;
+										queryFacetConstraints.add(type.getQueryConstraint(value));
+									}
 								}
 							}
+							
+							gscope1Constraints.add(gscope1FacetConstraints);
+							queryConstraints.add(queryFacetConstraints);
 						}
 						
-						gscope1Constraints.add(gscope1FacetConstraints);
-						queryConstraints.add(queryFacetConstraints);
 					}
 					
-				}
-				
-				String existingGScope1Parameters = "";
-				if (searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
-					// Only one value is relevant
-					existingGScope1Parameters = searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)[0];
-				}
-				
-				String updatedParameters = getGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
-				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});
-				log.debug("Updated gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
-				
-				
-				List<String> additionalQueryConstraints = getQueryConstraints(queryConstraints);
-				searchTransaction.getQuestion().getQueryExpressions().addAll(additionalQueryConstraints);
-				log.debug("Added query constraints '" + StringUtils.join(additionalQueryConstraints, ",") + "'");
-
+					String existingGScope1Parameters = "";
+					if (searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
+						// Only one value is relevant
+						existingGScope1Parameters = searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)[0];
+					}
+					
+					String updatedParameters = getGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
+					searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});
+					log.debug("Updated gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
+					
+					
+					List<String> additionalQueryConstraints = getQueryConstraints(queryConstraints);
+					searchTransaction.getQuestion().getQueryExpressions().addAll(additionalQueryConstraints);
+					log.debug("Added query constraints '" + StringUtils.join(additionalQueryConstraints, ",") + "'");
+					}
 			}
 		}
 	}

@@ -187,6 +187,9 @@ public class SearchController {
 	 */
 	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
 
+		// Copy original query
+		question.setOriginalQuery(question.getQuery());
+		
 		// Is request impersonated ?
 		question.setImpersonated(isRequestImpersonated(request));
 		

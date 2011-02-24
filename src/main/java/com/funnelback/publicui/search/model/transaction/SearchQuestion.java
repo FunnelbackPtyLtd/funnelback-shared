@@ -23,6 +23,7 @@ import com.funnelback.publicui.search.service.log.LogUtils;
 public class SearchQuestion {
 		
 	@Getter @Setter private String query;
+	@Getter @Setter private String originalQuery;
 	@Getter @Setter private Collection collection;
 	@Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 	@Getter @Setter private String[] clive;
@@ -91,6 +92,9 @@ public class SearchQuestion {
 		public static final String QUERY = "query";
 		public static final String CLIVE = "clive";
 		public static final String GSCOPE1 = "gscope1";
+		
+		/** Explore: Number of query terms */
+		public static final String EXP = "exp";
 		
 		public static class Cache {
 			/**
