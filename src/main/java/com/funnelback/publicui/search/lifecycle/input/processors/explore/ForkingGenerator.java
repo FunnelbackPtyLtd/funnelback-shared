@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.SneakyThrows;
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.exec.CommandLine;
@@ -23,21 +23,28 @@ import com.funnelback.publicui.search.model.collection.Collection;
 @Log
 public class ForkingGenerator implements ExploreQueryGenerator {
 
-	private static final String PADRE_RF_BINARY = "padre-rf";
-	
-	private static final Pattern PADRE_RF_XML_PATTERN = Pattern.compile(".*<generated_query_string>.*query=(.*?)</generated_query_string>.*", Pattern.DOTALL | Pattern.MULTILINE);
+	/**
+	 * We take advantage of knowing that the XML output has proper newline chars.  
+	 */
+	private static final Pattern PADRE_RF_XML_PATTERN = Pattern.compile("^query=(.*?)$", Pattern.DOTALL | Pattern.MULTILINE);
 	
 	@Autowired
-	private File searchHome;
+	@Setter private File searchHome;
+	
+	@Setter private String padreRfBinary = "padre-rf";
 	
 	@Override
-	@SneakyThrows(FileNotFoundException.class)
 	public String getExploreQuery(Collection c, String url, Integer nbOfTerms) {
-		File padreRfBin = new File(searchHome + File.separator + DefaultValues.FOLDER_BIN, PADRE_RF_BINARY);
-		File idxStem = new File(c.getConfiguration().getCollectionRoot()
-			+ File.separator + DefaultValues.VIEW_LIVE
-			+ File.separator + DefaultValues.FOLDER_IDX
-			+ File.separator + DefaultValues.INDEXFILES_PREFIX);
+		File padreRfBin = new File(searchHome + File.separator + DefaultValues.FOLDER_BIN, padreRfBinary);
+		File idxStem = null;
+		try {
+			idxStem = new File(c.getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE
+					+ File.separator + DefaultValues.FOLDER_IDX
+					+ File.separator + DefaultValues.INDEXFILES_PREFIX);
+		} catch (FileNotFoundException fnfe) {
+			return null;
+		}
 		
 		CommandLine cmdLine = CommandLine.parse(
 				padreRfBin.getAbsolutePath() + " "

@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,11 +30,11 @@ public class ExploreQuery implements InputProcessor {
 	private final String EXPLORE_PREFIX = "explore:";
 	
 	@Autowired
-	private ExploreQueryGenerator generator;
+	@Setter private ExploreQueryGenerator generator;
 	
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
+		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction) && request != null) {
 			
 			Integer nbOfTerms = null;
 			if (request.getParameter(RequestParameters.EXP) != null) {

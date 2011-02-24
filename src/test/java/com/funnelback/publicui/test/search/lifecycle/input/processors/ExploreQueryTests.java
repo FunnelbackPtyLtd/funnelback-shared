@@ -1,0 +1,72 @@
+package com.funnelback.publicui.test.search.lifecycle.input.processors;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.lifecycle.input.processors.ExploreQuery;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.test.mock.MockExploreQueryGenerator;
+
+public class ExploreQueryTests {
+
+	private ExploreQuery processor;
+	
+	@Before
+	public void before() {
+		processor = new ExploreQuery();
+		processor.setGenerator(new MockExploreQueryGenerator());
+	}
+	
+	@Test
+	public void testMissingData() throws InputProcessorException {
+		// No transaction
+		processor.process(null, null);
+		
+		// No question
+		processor.process(new SearchTransaction(null, null), null);
+		
+		// No collection
+		SearchQuestion question = new SearchQuestion();
+		SearchTransaction st = new SearchTransaction(question, null);
+		processor.process(st, new MockHttpServletRequest());
+		Assert.assertNull(st.getQuestion().getQuery());
+		
+		// No query
+		question.setCollection(new Collection("dummy", null));
+		processor.process(new SearchTransaction(question, null), new MockHttpServletRequest());
+		Assert.assertNull(st.getQuestion().getQuery());
+
+		// No explore query
+		question.setQuery("explore abc website");
+		processor.process(new SearchTransaction(question, null), new MockHttpServletRequest());
+		Assert.assertEquals("explore abc website", st.getQuestion().getQuery());
+	}	
+
+	@Test
+	public void test() throws InputProcessorException {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
+		st.getQuestion().setCollection(new Collection("dummy", null));
+		
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		processor.process(st, request);
+		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
+		
+		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
+		request.setParameter("exp", "42");
+		processor.process(st, request);
+		Assert.assertEquals("42 queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
+		
+		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
+		request.setParameter("exp", "bad");
+		processor.process(st, request);
+		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
+	}
+	
+}
