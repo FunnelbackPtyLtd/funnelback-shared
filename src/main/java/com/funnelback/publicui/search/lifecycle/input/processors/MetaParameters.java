@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,19 +29,10 @@ public class MetaParameters implements InputProcessor {
 	 * Valid types of operators in meta_* parameters.
 	 */
 	public static enum Operators {
-		addmeta, trunc, orplus, orsand, phrase, prox, or, and, sand, not;
-		
-		/**
-		 * @param operation
-		 * @return true if the operation is valid (known), false otherwise.
-		 */
-		public static boolean isValid(String operator) {
-			for (Operators op : Operators.values()) {
-				if (op.toString().equals(operator)) {
-					return true;
-				}
-			}
-			return false;
+		trunc, orplus, orsand, phrase, prox, or, and, sand, not;
+			
+		public boolean isPresentIn(String name) {
+			return name.contains("_" + toString());
 		}
 	}
 	
@@ -52,18 +41,27 @@ public class MetaParameters implements InputProcessor {
 	/** Prefix for query_* parameters */
 	private static final String QUERY_PREFIX = "query_";
 	
-	private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").+");
-	
+	private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").*");
+
+	/**
+	 * Pattern used to extract the metadata class
+	 */
+	private static final Pattern META_CLASS_PATTERN = Pattern.compile("^" + META_PREFIX + "(.)($|_)");
 	
 	/**
-	 * Internal operation name to use when the parameter is a simple
-	 * meta_x=<value>, in order to use the same logic as meta_x_<operation>=value.
-	 * 
-	 * In this case we just add a 'x:<value>' expression.
+	 * Pattern used to prefix a value with the metadata class. Taken from the Perl UI:
+	 * # This regex has 3 parts.  The first one turns "qwer qwer"
+	 * # into a:"qwer qwer".  The second one turns `qwer qwer` into
+     * # a:`qwer qwer`.  The third turns qwer into a:qwer
+     * # (i.e. single words).
+     * # Convert "qwer qwer" to a:"qwer qwer"
 	 */
-	private static final String INTERNAL_OPERATOR_ADDMETA = Operators.addmeta.toString();
+	private static final Pattern ADD_META_CLASS_PATTERN = Pattern.compile("(\"[^\"]*\"?|`[^`]+`?|[a-z0-9\\$]\\S*)", Pattern.CASE_INSENSITIVE);
 	
-	private static final Pattern META_ID_PATTERN = Pattern.compile(META_PREFIX + "(\\w)_(.*)");
+	/**
+	 * Used to add non encapsulating type operators (+, |, -)
+	 */
+	private static final Pattern NON_ENCAPSULATING_OPERATORS_PATTERN = Pattern.compile("([a-z0-9]:)?(\"[^\"]+\"|`[^`]+`|[a-z0-9\\$\\*]\\S+)", Pattern.CASE_INSENSITIVE);
 	
 	@Override
 	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
@@ -82,164 +80,70 @@ public class MetaParameters implements InputProcessor {
 						// No value for this parameter
 						continue;
 					}
-					String[] values = stringValues.split("\\s");
-					log.debug("Processing parameter '" + name + "=" + Arrays.toString(values) + "'");
 					
-					String operator = null;	// operation (orsand, trunc, phrase ...)
-					String md = null;		// metadata class (a, t, x,...). null for "query_*" operators
-	
-					if (name.startsWith(META_PREFIX)) {
-						
-						// Find the metadata class
-						Matcher m = META_ID_PATTERN.matcher(name);
-						if (m.find()) {
-							md = m.group(1);
-							operator = m.group(2);
-						} else {
-							// A simple "meta_x=value"
-							md = name.substring(name.indexOf("_")+1);
-							// Ensure metadata class is present an only 1 char
-							if (!"".equals(md) && md.length() == 1) {
-								operator = INTERNAL_OPERATOR_ADDMETA;
-							}
-						}
-					} else if (name.startsWith(QUERY_PREFIX)) {
-						operator = name.substring(name.indexOf("_")+1);
+					// Trunc operator (abc def => *abc* *def*)
+					if (Operators.trunc.isPresentIn(name)) {
+						stringValues = stringValues.replaceAll("(\\S+)", "*$1*");
 					}
 					
-					if (operator != null && operator.length() > 0 && Operators.isValid(operator)) {
-						try {
-							// Find operator method by reflection
-							Method operationMethod = this.getClass().getMethod(operator, new Class[] {String.class, String[].class});
-							String newValue = (String) operationMethod.invoke(this, new Object[] {md, values});
-							log.debug("Applied operation '" + operator + "' to value '"+Arrays.toString(values)+"'. New value is '" + newValue + "'");
-							searchTransaction.getQuestion().getMetaParameters().add(newValue);
-							
-							// Remove the parameter from the list that will be passed to PADRE if
-							// we successfully processed it
-							searchTransaction.getQuestion().getAdditionalParameters().remove(name);
-						} catch (Exception ex) {
-							log.warn("Error while invoking operation '" + operator + "' from parameter '" + name + "'", ex);
-						}
-					} else {
-						log.warn("Invalid operator '"+operator+"' for parameter '" + name + "'"); 
+					// Encapsulating operators (" ", [ ], ` `)
+					if (Operators.orplus.isPresentIn(name)) {
+						stringValues = "+[" + stringValues + "]";
+					} else if (Operators.orsand.isPresentIn(name)) {
+						stringValues = "|[" + stringValues + "]";
+					} else if (Operators.phrase.isPresentIn(name)) {
+						stringValues = stringValues.replace("\"", "");
+						stringValues = "\"" + stringValues + "\"";
+					} else if (Operators.prox.isPresentIn(name)) {
+						stringValues = "`" + stringValues + "`";
+					} else if (Operators.or.isPresentIn(name)) {
+						stringValues = "[" + stringValues + "]";
 					}
+					
+					// Add metadata class
+					Matcher m = META_CLASS_PATTERN.matcher(name);
+					if (m.find()) {
+						String metadataClass = m.group(1);
+						stringValues = ADD_META_CLASS_PATTERN.matcher(stringValues).replaceAll(metadataClass + ":$1");
+					}
+					
+					// Non encapsulating operators (+, |, -)
+					if (Operators.and.isPresentIn(name)) {
+						stringValues = addNonEncapsulatingOperator("+", stringValues);
+					} else if (Operators.sand.isPresentIn(name)) {
+						stringValues = addNonEncapsulatingOperator("|", stringValues);
+					} else if (Operators.not.isPresentIn(name)) {
+						stringValues = addNonEncapsulatingOperator("-", stringValues);
+					}
+					
+					searchTransaction.getQuestion().getMetaParameters().add(stringValues);
+
+					// Remove the parameter from the list that will be passed to PADRE if
+					// we successfully processed it
+					searchTransaction.getQuestion().getAdditionalParameters().remove(name);
+					
+					log.debug("Processed parameter '" + name + "=" + StringUtils.join(request.getParameterValues(name), " ") + "' "
+							+ "Transformed as '" + stringValues + "'");
+					
 				}
 			}
 		}
 	}
-	
-	
-	public String trunc(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}
-		return "*" + StringUtils.join(data, "* *") + "*";
-	}
-	
-	public String orplus(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}
-		return "+[" + StringUtils.join(data, " ") + "]";
-	}
 
-	public String orsand(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}	
-		return "|[" + StringUtils.join(data, " ") + "]";
-	}
-	
-	public String or(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}	
-		return "[" + StringUtils.join(data, " ") + "]";
-	}
-	
-	public String phrase(final String md, final String values[]) {
-		// Remove any double quote before re-quoting
-		String out = "\"" + StringUtils.join(values, " ").replace("\"", "") + "\"";
-		if (md == null) {
-			return out;
-		} else {
-			return md + ":" + out; 
-		}
-	} 
-	
-	public String prox(final String md, final String values[]) {
-		String out = "`" + StringUtils.join(values, " ") + "`";
-		if (md == null) {
-			return out;
-		} else {
-			return md + ":" + out; 
-		}
-	}
-	
-	public String and(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}	
-		return StringUtils.join(prefixStrings(data, "+"), " ");
-	}
-
-	public String sand(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}	
-		return StringUtils.join(prefixStrings(data, "|"), " ");		
-	}
-
-	public String not(final String md, final String values[]) {
-		String[] data = values;
-		if (md != null) {
-			data = prefixStrings(values, md+":");
-		}	
-		return StringUtils.join(prefixStrings(data, "-"), " ");
-	}
-
-	
-
-	/**
-	 * Special internal operation for parameters like meta_x=value. In this case
-	 * we just return the value which has already been transformed as "x:<value>"
-	 * @param value Ex: x:value
-	 * @return the value
-	 */
-	public String addmeta(final String md, final String values[]) {
-		if (md != null) {
-			StringBuffer out = new StringBuffer();
-			for(int i=0; i<values.length; i++) {
-				out.append(md+":"+values[i]);
-				if (i+1<values.length) {
-					out.append(" ");
-				}
+	private String addNonEncapsulatingOperator(String operator, String value) {
+		Matcher m = NON_ENCAPSULATING_OPERATORS_PATTERN.matcher(value);
+		StringBuffer out = new StringBuffer();
+		while (m.find()) {
+			out.append(operator);
+			if (m.group(1) != null) {
+				out.append(m.group(1));
 			}
-			return out.toString();
-		} else {
-			return null;
+			out.append(m.group(2));
+			if (! m.hitEnd()) {
+				out.append(" ");
+			}
 		}
-	}
-	
-	/**
-	 * Prefixes an array of String with a prefix
-	 * @param data Array of String to prefix
-	 * @param prefix The prefix string
-	 * @return An array with each String prefixed
-	 */
-	private String[] prefixStrings(final String[] data, String prefix) {
-		String[] out = new String[data.length];
-		for (int i=0;i<data.length;i++) {
-			out[i] = prefix + data[i]; 
-		}
-		return out;
+		return out.toString().trim();
 	}
 	
 }

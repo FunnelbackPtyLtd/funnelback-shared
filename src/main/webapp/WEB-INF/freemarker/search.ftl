@@ -165,13 +165,13 @@
     </div> 
 
 	<#if SearchTransaction.question.query?exists>
-		<p id="fb-matching" <#if SearchTransaction.response.facets?exists>class="fb-with-faceting"</#if>>
+		<p id="fb-matching" <#if SearchTransaction.response.facets?size &gt; 0>class="fb-with-faceting"</#if>>
 			<span id="fb-utils">
 				<a href="#" id="fb-advanced-toggle">Advanced search</a>
 	            <span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
 	        </span>
 
-			<#if SearchTransaction.response.resultPacket.resultSummary?exists>				
+			<#if SearchTransaction.response.resultPacket.resultsSummary?exists>				
 				<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
 					<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.question.query}</strong>
 				<#else>
@@ -183,7 +183,7 @@
 			</#if>
 		</p>
 		
-		<div id="fb-wrapper" <#if SearchTransaction.response.facets?exists>class="fb-with-faceting"</#if>>
+		<div id="fb-wrapper" <#if SearchTransaction.response.facets?size &gt; 0>class="fb-with-faceting"</#if>>
 			<div id="fb-summary">
 				<#if SearchTransaction.response.resultPacket.spell?exists>
 					<span id="fb-spelling">Did you mean <a href="?${SearchTransaction.response.resultPacket.spell.url}">${SearchTransaction.response.resultPacket.spell.text}</a>?</span>
@@ -248,7 +248,7 @@
 				</#if>
 			</p>
 			
-			<#if SearchTransaction.response.facets?exists && (SearchTransaction.response.facets?size > 0)>
+			<#if SearchTransaction.response.facets?size &gt; 0>
 			<div id="fb-facets">
 				<form method="get">
 					<input type="hidden" name="query" value="${SearchTransaction.question.query}" />

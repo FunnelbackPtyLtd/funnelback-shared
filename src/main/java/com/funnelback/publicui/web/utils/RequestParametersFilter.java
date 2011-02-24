@@ -28,7 +28,7 @@ public class RequestParametersFilter {
 				out.add(name);
 			}
 		}
-		return (String[]) out.toArray(CONVERSION_ARRAY);
+		return out.toArray(CONVERSION_ARRAY);
 	}
 	
 	public String[] filter(String regex){

@@ -92,37 +92,9 @@
 		<title>Meta parameters operators (<literal>or, sand, and, ...</literal>)</title>
 		
 		<para>
-			Two possible syntaxes: <literal>meta_&lt;md&gt;_&lt;operator&gt;</literal> or <literal>query_&lt;operator&gt;</literal>.
-			These parameters are transformed in query expressions using the PADRE query language.
-		</para>
-		
-		<para>
-			Each operator has been implemented as a Java function:
-			<programlisting language="java">
-<![CDATA[...
-
-public String orsand(final String md, final String values[]) {
-	String[] data = values;
-	if (md != null) {
-		data = prefixStrings(values, md+":");
-	}	
-	return "|[" + StringUtils.join(data, " ") + "]";
-}
-
-public String or(final String md, final String values[]) {
-	String[] data = values;
-	if (md != null) {
-		data = prefixStrings(values, md+":");
-	}	
-	return "[" + StringUtils.join(data, " ") + "]";
-}
-
-...]]>
-			</programlisting>
-			
-			The operator to use is parsed from the parameter name (Eg. <literal>meta_b_orsand</literal> => <literal>orsand</literal>) and the
-			corresponding Java method is called by reflection.
-			This way, adding new operators is easy: Just code the new corresponding function and add the operator name to the list of valid operators.
+			The initial implementation was a complex modelisation of the parameter name into an operator and operands, however it didn't supported all the
+			features of the Perl UI, like combining operators (<literal>meta_Z_phrase_orsand=penguin</literal>). I ended up re-implementing this by 
+			converting the Perl code which was regular expressoin based.
 		</para>
 	</chapter>
 	

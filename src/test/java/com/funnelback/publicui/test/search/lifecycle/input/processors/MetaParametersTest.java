@@ -1,7 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -67,10 +66,10 @@ public class MetaParametersTest {
 		request.addParameter("meta_c_orplus", "orplus operator");
 		request.addParameter("meta_d_orsand", "orsand operator");
 		request.addParameter("meta_e_or", "or operator");
-		request.addParameter("meta_f_phrase", "phrase operator");
+		request.addParameter("meta_f_phrase", "phrase \"operator\"");
 		request.addParameter("meta_g_prox", "prox operator");
 		request.addParameter("meta_h_and", "and operator");
-		request.addParameter("meta_i_sand", "sand operator");
+		request.addParameter("meta_I_sand", "sand operator");
 		request.addParameter("meta_j_not", "not operator");
 		request.addParameter("dummy", "value");
 		
@@ -86,7 +85,7 @@ public class MetaParametersTest {
 		Assert.assertEquals("f:\"phrase operator\"", st.getQuestion().getMetaParameters().get(5));
 		Assert.assertEquals("g:`prox operator`", st.getQuestion().getMetaParameters().get(6));
 		Assert.assertEquals("+h:and +h:operator", st.getQuestion().getMetaParameters().get(7));
-		Assert.assertEquals("|i:sand |i:operator", st.getQuestion().getMetaParameters().get(8));
+		Assert.assertEquals("|I:sand |I:operator", st.getQuestion().getMetaParameters().get(8));
 		Assert.assertEquals("-j:not -j:operator", st.getQuestion().getMetaParameters().get(9));
 	}
 	
@@ -201,11 +200,17 @@ public class MetaParametersTest {
 		MetaParameters processor = new MetaParameters();
 		processor.process(st, request);
 		
-		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals(7, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("incomplete", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("x:second x:bad", st.getQuestion().getMetaParameters().get(1));
+		Assert.assertEquals("x:incomplete x:too", st.getQuestion().getMetaParameters().get(2));
+		Assert.assertEquals("first bad", st.getQuestion().getMetaParameters().get(3));
+		Assert.assertEquals("incomplete", st.getQuestion().getMetaParameters().get(4));
+		Assert.assertEquals("abc", st.getQuestion().getMetaParameters().get(5));
+		Assert.assertEquals("[def]", st.getQuestion().getMetaParameters().get(6));
 	}
 	
 	@Test
-	@Ignore
 	public void testCombination() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 
@@ -220,3 +225,4 @@ public class MetaParametersTest {
 	}
 	
 }
+
