@@ -298,13 +298,8 @@ public class StaxStreamParserTests {
 				+ "&docpath=%2Fsearch.cgi&clive=2&query=visa&topic.max_clusters=10", topic.getFewerLink());
 	}
 	
-	@Test
-	public void testInvalidXml() throws IOException {
-		try {
-			new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")));
-			Assert.fail();
-		} catch (XmlParsingException pxpe) {
-			System.out.println(pxpe);
-		}
+	@Test(expected=XmlParsingException.class)
+	public void testInvalidXml() throws IOException, XmlParsingException {
+		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")));
 	}
 }
