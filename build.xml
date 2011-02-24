@@ -12,6 +12,8 @@
 	<property name="doc.src.dir" value="src/main/docbook" />
 	<property name="doc.bin.dir" value="target/doc" />
 
+	<property name="install.location" value="web/webapps/funnelback-publicui" description="Install location of the artifact, relative to $SEARCH_HOME" />
+		
 	<import file="../build/build-common.xml" />
 	
 	<property name="web.dir" value="src/main/webapp" />
@@ -93,11 +95,8 @@
 
 	<target name="install" description="Installs in a local $SEARCH_HOME path">
 		<property environment="env" />
-		<copy file="${war.name}" todir="${env.SEARCH_HOME}/web/webapps" overwrite="true" />
-	</target>
-
-	<target name="install-test" description="Installs on a remote autotest VM">
-		<copy file="${war.name}" todir="\\auto-win2003\C$\funnelback\web\webapps" />
+		<delete dir="${env.SEARCH_HOME}/${install.location}" />
+		<unzip src="${war.name}" dest="${env.SEARCH_HOME}/${install.location}" overwrite="true" />
 	</target>
 
 	<target name="doc" description="Generate reference documentation">
