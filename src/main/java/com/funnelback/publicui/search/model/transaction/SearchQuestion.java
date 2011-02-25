@@ -87,6 +87,11 @@ public class SearchQuestion {
 	 */
 	@Getter @Setter private String userId = LogUtils.USERID_NOTHING;
 	
+	/**
+	 * Referer for this transaction, can be an empty string
+	 */
+	@Getter @Setter private String referer;
+	
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";

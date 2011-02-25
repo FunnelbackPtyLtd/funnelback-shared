@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -187,6 +188,9 @@ public class SearchController {
 	 */
 	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
 
+		// Referer
+		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : "");
+		
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
 		

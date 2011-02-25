@@ -32,7 +32,7 @@ public class Result implements ResultType {
 	@Getter private Integer component;
 	@Getter @Setter private String liveUrl;
 	@Getter private String summary;
-	@Getter private String cacheUrl;
+	@Getter @Setter private String cacheUrl;
 	@Getter private Date date;
 	@Getter private Integer fileSize;
 	@Getter private String fileType;
@@ -43,6 +43,9 @@ public class Result implements ResultType {
 	
 	/** By default filled with liveUrl, but will be updated at a later stage */
 	@Getter private String displayUrl;
+	
+	/** Filled at a later stage */
+	@Getter @Setter private String clickTrackingUrl;
 
 	/**
 	 * Represents XML Schema

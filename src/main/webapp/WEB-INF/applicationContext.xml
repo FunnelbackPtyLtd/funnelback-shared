@@ -28,7 +28,7 @@
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
-	<util:properties id="appProperties" location="classpath:publicui.properties" />
+	<util:properties id="appProperties" location="file:${funnelback.installdir}/conf/publicui.properties" />
 	
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.web.filters.HostnameRestrictionFilter" />	
@@ -57,8 +57,7 @@
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
 		</bean>
 		<ref bean="padreForking" />
-		<bean id="PostDataFetchHook"
-			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+		<bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
 		</bean>
@@ -67,6 +66,7 @@
 	<util:list id="outputFlow">
 		<ref bean="padreReturnCodeOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
+		<ref bean="fixCacheAndClickLinks" />
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="facetedNavigationTransformOutputProcessor" />
 		<ref bean="contextualNavigationOutputProcessor" />

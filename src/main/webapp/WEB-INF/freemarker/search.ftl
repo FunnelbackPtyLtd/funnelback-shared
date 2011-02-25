@@ -206,7 +206,12 @@
 						<h2 class="fb-title">Search results that match ${result.matched} of ${result.outOf} words</h2> 
 					<#else>
 						<li>
-							<h3><a href="${result.liveUrl}">${result.title?html}</a></h3>
+							<#if SearchTransaction.question.collection.configuration.valueAsBoolean("click_tracking")>
+								<h3><a href="${result.clickTrackingUrl}" title="${result.liveUrl}">${result.title?html}</a></h3>
+							<#else>
+								<h3><a href="${result.liveUrl}">${result.title?html}</a></h3>
+							</#if>
+							
 							
 							<p>
 								<#if result.date?exists><span class="fb-date">${result.date?date?string.medium}:</span></#if>
@@ -215,7 +220,7 @@
 							
 							<p>
 	            				<cite>${result.displayUrl?html}</cite>
-	                            - <a class="fb-cached" href="${result.cacheUrl?url}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
+	                            - <a class="fb-cached" href="${result.cacheUrl}" title="Cached version of ${result.title} (${result.rank})">Cached</a>
 	                            <a class="fb-explore" href="?collection=${SearchTransaction.question.collection.id}&amp;query=explore:${result.liveUrl}">Explore</a>
 							</p>
 			               

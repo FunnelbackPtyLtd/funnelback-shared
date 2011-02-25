@@ -60,7 +60,7 @@ public class ResultFactory {
 		}
 
 		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
-				fileType, tier, documentNumber, metadataMap, ql, liveUrl);
+				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null);
 	}
 
 	/**
