@@ -95,6 +95,7 @@ public class SearchQuestion {
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
+		public static final String PROFILE = "profile";
 		public static final String CLIVE = "clive";
 		public static final String GSCOPE1 = "gscope1";
 		
@@ -112,6 +113,13 @@ public class SearchQuestion {
 			 * Used in click tracking. Target URL to redirect to.
 			 */
 			public static final String INDEX_URL = "index_url";
+		}
+		
+		public static class Click {
+			public static final String URL = "url";
+			public static final String INDEX_URL = "index_url";
+			public static final String AUTH = "auth";
+			public static final String SEARCH_REFERER = "search_referer";
 		}
 		
 		public static class Serve {

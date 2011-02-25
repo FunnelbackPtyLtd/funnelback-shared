@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import org.apache.commons.codec.binary.Base64;
@@ -18,6 +19,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
  * Apply transformation to the cache and click URLs.
@@ -31,7 +33,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 public class FixCacheAndClickLinks implements OutputProcessor {
 
 	@Value("#{appProperties['urls.search.prefix']}")
-	private String searchUrlPrefix;
+	@Setter private String searchUrlPrefix;
 	
 	@Override
 	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
@@ -57,13 +59,19 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 		StringBuffer out = new StringBuffer(searchUrlPrefix)
 			.append(question.getCollection().getConfiguration().value(Keys.UI_CLICK_LINK)).append("?")
 			.append("rank=").append(r.getRank().toString())
-			.append("&collection=").append(r.getCollection())
-			.append("&url=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
-			.append("&index_url=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
-			.append("&auth=").append(getAuth(r.getLiveUrl(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)))
-			.append("&search_referer=").append(URLEncoder.encode(question.getReferer(), "UTF-8"))
-			.append("&query=").append(question.getQuery())
-			.append("&profile=").append(question.getProfile());
+			.append("&").append(RequestParameters.COLLECTION).append("=").append(r.getCollection())
+			.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
+			.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
+			.append("&").append(RequestParameters.Click.AUTH).append("=").append(getAuth(r.getLiveUrl(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)))
+			.append("&").append(RequestParameters.QUERY).append("=").append(question.getQuery());
+		
+		if (question.getProfile() != null) {
+			out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
+		}
+		
+		if (question.getReferer() != null) {
+			out.append("&").append(RequestParameters.Click.SEARCH_REFERER).append("=").append(URLEncoder.encode(question.getReferer(), "UTF-8"));
+		}
 		
 		return out.toString();
 	}
