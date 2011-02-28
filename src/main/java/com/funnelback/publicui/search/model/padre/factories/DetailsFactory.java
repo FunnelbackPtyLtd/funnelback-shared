@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.Details;
@@ -30,9 +32,11 @@ public class DetailsFactory {
 						+ str + "'. Will use current date", e);
 			}
 		}
-		
-		return new Details(data.get(Details.Schema.PADRE_VERSION),
-				data.get(Details.Schema.COLLECTION_SIZE), updated);
+				
+		return new Details(
+				StringUtils.trim(data.get(Details.Schema.PADRE_VERSION)),
+				StringUtils.trim(data.get(Details.Schema.COLLECTION_SIZE)),
+				updated);
 	}
 	
 	public static Details fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
