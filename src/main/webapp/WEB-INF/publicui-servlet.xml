@@ -39,6 +39,7 @@
 				<entry key="json" value="application/json" />
 				<entry key="xml" value="text/xml" />
 				<entry key="ftl" value="text/html" />
+				<entry key="legacy" value="#{T(com.funnelback.publicui.web.views.XSLTXStreamView).CONTENT_TYPE_LEGACY}" />
 			</map>
 		</property>
 		<property name="defaultViews">
@@ -51,6 +52,10 @@
 						</bean>
 					</constructor-arg>
 					<property name="contentType" value="text/xml;charset=UTF-8" />
+					<property name="modelKey" value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
+				</bean>
+				<bean class="com.funnelback.publicui.web.views.XSLTXStreamView">
+					<constructor-arg value="classpath:funnelback-legacy.xsl" />
 					<property name="modelKey" value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
 				</bean>
 			</list>
