@@ -30,6 +30,7 @@
 		<include name="**/*.xml" />
 		<include name="**/*.properties" />
 		<include name="**/*.groovy" />
+		<include name="**/*.xsl" />
 	</fileset>
 
 	<path id="classpath">
