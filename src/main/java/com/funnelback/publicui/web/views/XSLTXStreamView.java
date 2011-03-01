@@ -1,5 +1,7 @@
 package com.funnelback.publicui.web.views;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,11 +15,9 @@ import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.core.io.Resource;
+import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractView;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.TraxSource;
 
 /**
  * {@link View} that serialize the model using XStream, then
@@ -36,6 +36,8 @@ public class XSLTXStreamView extends AbstractView {
 	 */
 	@Setter private String modelKey;
 	
+	@Setter private Marshaller marshaller;
+	
 	/**
 	 * Pre-compiled XSL stylesheet
 	 */
@@ -51,7 +53,13 @@ public class XSLTXStreamView extends AbstractView {
 			throws Exception {
 		
 		response.setContentType("text/xml;charset=UTF-8");
-		TraxSource source = new TraxSource(model.get(modelKey), new XStream());
+
+		// Marshal to XML
+		StringWriter sw = new StringWriter();
+		marshaller.marshal(model.get(modelKey), new StreamResult(sw));
+
+		// Transform using XSLT
+		StreamSource source = new StreamSource(new StringReader(sw.getBuffer().toString()));
 		templates.newTransformer().transform(source, new StreamResult(response.getOutputStream()));
 	}
 	

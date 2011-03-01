@@ -13,6 +13,8 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class Details {
 
+	public static final String UPDATED_DATE_PATTERN = "EEE MMM dd HH:mm:ss yyyy";
+	
 	@Getter private final String padreVersion;
 	@Getter private final String collectionSize;
 	@Getter private final Date collectionUpdated;

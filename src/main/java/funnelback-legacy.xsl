@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-<xsl:output media-type="text/xml" encoding="UTF-8" method="xml" indent="yes" cdata-section-elements="title summary"/>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output
+	media-type="text/xml"
+	encoding="UTF-8"
+	method="xml"
+	indent="yes"
+	cdata-section-elements="title summary bb_title bb_desc md"
+	standalone="no" />
 
 <xsl:template match="/com.funnelback.publicui.search.model.transaction.SearchTransaction">
 	<PADRE_result_packet>
@@ -11,7 +17,12 @@
   		
   		<xsl:apply-templates select="response/resultPacket/resultsSummary" />
   		
+  		<xsl:apply-templates select="response/resultPacket/spell" />
+  		
+		<xsl:apply-templates select="response/resultPacket/bestBets" />
+  		
   		<xsl:apply-templates select="response/resultPacket/rmcs" />
+  		<xsl:apply-templates select="response/resultPacket/urlCounts" />
   		<xsl:apply-templates select="response/resultPacket/gScopeCounts" />
   		
   		<xsl:apply-templates select="response/resultPacket/results" />
@@ -32,8 +43,11 @@
   		
   		<query_processor_codes><xsl:value-of select="response/resultPacket/queryProcessorCodes" /></query_processor_codes>
   		<padre_elapsed_time><xsl:value-of select="response/resultPacket/padreElapsedTime" /></padre_elapsed_time>
+  		<xsl:apply-templates select="response/resultPacket/contextualNavigation" />
+  		
+  		
   		<xsl:if test="response/resultPacket/phlusterElapsedTime">
-  			<phluster_elapsed_time><xsl:value-of select="response/resultPacket/phlusterElapsedTime" /> sec.</phluster_elapsed_time>
+  			<phluster_elapsed_time><xsl:value-of select="format-number(response/resultPacket/phlusterElapsedTime, '0.000')" /> sec.</phluster_elapsed_time>
   		</xsl:if>
 	</PADRE_result_packet>
 </xsl:template>
@@ -59,14 +73,47 @@
 	</results_summary>
 </xsl:template>
 
+<xsl:template match="response/resultPacket/spell">
+	<spell>
+		<url><xsl:value-of select="url" /></url>
+		<text><xsl:value-of select="text" /></text>
+	</spell>
+</xsl:template>
+
+<xsl:template match="response/resultPacket/bestBets">
+	<best_bets>
+		<xsl:for-each select="com.funnelback.publicui.search.model.padre.BestBet">
+		<bb>
+			<bb_trigger><xsl:value-of select="trigger" /></bb_trigger>
+			<bb_link><xsl:value-of select="link" /></bb_link>
+			<bb_title><xsl:value-of select="title" /></bb_title>
+			<bb_desc><xsl:value-of select="description" /></bb_desc>		
+		</bb>		
+		</xsl:for-each>
+	</best_bets>
+</xsl:template>
+
 <xsl:template match="response/resultPacket/rmcs">
 	<xsl:for-each select="entry">
+		<xsl:sort select="int" data-type="number" order="descending" />
 		<rmc>
 			<xsl:attribute name="item">
 				<xsl:value-of select="string" />
 			</xsl:attribute>
 			<xsl:value-of select="int" />
 		</rmc>
+	</xsl:for-each>
+</xsl:template>
+
+<xsl:template match="response/resultPacket/urlCounts">
+	<xsl:for-each select="entry">
+		<xsl:sort select="int" data-type="number" order="descending" />
+		<urlcount>
+			<xsl:attribute name="item">
+				<xsl:value-of select="string" />
+			</xsl:attribute>
+			<xsl:value-of select="int" />
+		</urlcount>
 	</xsl:for-each>
 </xsl:template>
 
@@ -83,6 +130,9 @@
 
 <xsl:template match="response/resultPacket/results">
 	<results>
+		<xsl:text>
+
+</xsl:text>
 		<xsl:for-each select="com.funnelback.publicui.search.model.padre.Result">
 			<result>
 				<rank><xsl:value-of select="rank" /></rank>
@@ -92,6 +142,14 @@
 				<component><xsl:value-of select="component" /></component>
 				<click_tracking_url><xsl:value-of select="clickTrackingUrl" /></click_tracking_url>
 				<live_url><xsl:value-of select="liveUrl" /></live_url>
+				<xsl:for-each select="metaData/entry">
+					<xsl:sort select="string[1]" />
+					<md>
+						<xsl:attribute name="f"><xsl:value-of select="string[1]" /></xsl:attribute>
+						<xsl:value-of select="string[2]" />
+					</md>
+					
+				</xsl:for-each>
 				<summary><xsl:value-of select="summary" /></summary>
 				<cache_url><xsl:value-of select="cacheUrl" /></cache_url>
 				<xsl:if test="date">
@@ -121,5 +179,47 @@
 		</xsl:for-each>
 	</quicklinks>
 </xsl:template>
+
+<xsl:template match="response/resultPacket/contextualNavigation">
+	<contextual_navigation>
+		<search_terms><xsl:value-of select="searchTerm" /></search_terms>
+		<cluster_nav>
+			<xsl:attribute name="level"><xsl:value-of select="clusterNav/level" /></xsl:attribute>
+			<xsl:attribute name="url"><xsl:value-of select="clusterNav/url" /></xsl:attribute>
+			<xsl:value-of select="clusterNav/label" />
+		</cluster_nav>
+		
+		<xsl:for-each select="categories/com.funnelback.publicui.search.model.padre.Category">
+			<category>
+				<xsl:attribute name="name"><xsl:value-of select="name" /></xsl:attribute>
+				<xsl:attribute name="more"><xsl:value-of select="more" /></xsl:attribute>
+				
+				<xsl:for-each select="clusters/com.funnelback.publicui.search.model.padre.Cluster">
+					<cluster>
+						<xsl:attribute name="href"><xsl:value-of select="href" /></xsl:attribute>
+						<xsl:attribute name="count"><xsl:value-of select="count" /></xsl:attribute>
+						<xsl:value-of select="label" />
+					</cluster>
+				</xsl:for-each>
+				
+				<xsl:if test="moreLink">
+					<more_link>
+						<xsl:attribute name="label"><xsl:value-of select="name" /></xsl:attribute>
+						<xsl:value-of select="moreLink" />
+					</more_link>
+				</xsl:if>
+				
+				<xsl:if test="fewerLink">
+					<fewer_link>
+						<xsl:attribute name="label"><xsl:value-of select="name" /></xsl:attribute>
+						<xsl:value-of select="fewerLink" />
+					</fewer_link>
+				</xsl:if>
+				
+			</category>
+		</xsl:for-each>
+	</contextual_navigation>
+</xsl:template>
+
 
 </xsl:stylesheet>
