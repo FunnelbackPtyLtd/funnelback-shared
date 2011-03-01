@@ -240,8 +240,16 @@ public class StaxStreamParserTests {
 	@Test
 	public void testMisc() {
 		assertEquals(12, rp.getPadreElapsedTime().intValue());
+		assertEquals("2x", rp.getQueryProcessorCodes());
+		assertEquals(0.020, rp.getPhlusterElapsedTime().floatValue(), 0.001);
+
+		assertEquals(2, rp.getIncludeScopes().size());
+		assertEquals("include1", rp.getIncludeScopes().get(0));
+		assertEquals("include2", rp.getIncludeScopes().get(1));
 		
-		//FIXME: include/exclude scope, QP codes, phluster elapsed time, ...
+		assertEquals(2, rp.getExcludeScopes().size());
+		assertEquals("excludeA", rp.getExcludeScopes().get(0));
+		assertEquals("excludeB", rp.getExcludeScopes().get(1));
 	}
 	
 	@Test

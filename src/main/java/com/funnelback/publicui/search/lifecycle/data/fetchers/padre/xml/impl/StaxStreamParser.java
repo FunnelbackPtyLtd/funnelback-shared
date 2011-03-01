@@ -2,7 +2,10 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl;
 
 import java.io.StringReader;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
@@ -55,6 +58,10 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.setQueryAsProcessed(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.PADRE_ELAPSED_TIME.equals(xmlStreamReader.getLocalName())) {
 						packet.setPadreElapsedTime(Integer.parseInt(xmlStreamReader.getElementText()));
+					} else if (ResultPacket.Schema.PHLUSTER_ELAPSED_TIME.equals(xmlStreamReader.getLocalName())) {
+						packet.setPhlusterElapsedTime(parsePhlusterElapsedTime(xmlStreamReader.getElementText()));
+					} else if (ResultPacket.Schema.QUERY_PROCESSOR_CODES.equals(xmlStreamReader.getLocalName())) {
+						packet.setQueryProcessorCodes(xmlStreamReader.getElementText());
 					} else if (ResultsSummary.Schema.RESULTS_SUMMARY.equals(xmlStreamReader.getLocalName())) {
 						packet.setResultsSummary(ResultsSummaryFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (Spell.Schema.SPELL.equals(xmlStreamReader.getLocalName())) {
@@ -75,7 +82,12 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
 					} else if (ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
 						packet.setContextualNavigation(ContextualNavigationFactory.fromXmlStreamReader(xmlStreamReader));
+					} else if (ResultPacket.Schema.INCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
+						packet.getIncludeScopes().addAll(parseScopes(xmlStreamReader.getElementText()));
+					} else if (ResultPacket.Schema.EXCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
+						packet.getExcludeScopes().addAll(parseScopes(xmlStreamReader.getElementText()));
 					}
+					
 					break;
 				}
 			}
@@ -196,6 +208,33 @@ public class StaxStreamParser implements PadreXmlParser {
 		}
 		
 		return out;
+	}
+	
+	/**
+	 * Parses &lt;phluster_elapsed_time&gt;. It's a floating number
+	 * followed by a space and "sec.". Ex: '0.020 sec.'
+	 * @param data
+	 * @return
+	 */
+	private Float parsePhlusterElapsedTime(String data) {
+		if (data == null || "".equals(data)) {
+			return null;
+		} else {
+			return Float.parseFloat(data.substring(0, data.indexOf(" ")));
+		}
+	}
+
+	/**
+	 * Parses a include/exclude scope string (separated by @)
+	 * @param scopeString
+	 * @return
+	 */
+	private List<String> parseScopes(String scopeString) {
+		if (scopeString == null || "".equals(scopeString)) {
+			return new ArrayList<String>();
+		} else {
+			return Arrays.asList(scopeString.split(ResultPacket.Schema.SCOPE_SEPARATOR));
+		}
 	}
 	
 	private class RMC {

@@ -707,8 +707,8 @@
 
 </results>
 
-  <include_scope></include_scope>
-  <exclude_scope></exclude_scope>
+  <include_scope>include1@include2</include_scope>
+  <exclude_scope>excludeA@excludeB</exclude_scope>
   <query_processor_codes>2x</query_processor_codes>
   <padre_elapsed_time>12</padre_elapsed_time>
 

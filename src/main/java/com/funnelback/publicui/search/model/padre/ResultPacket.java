@@ -28,7 +28,17 @@ public class ResultPacket {
 	
 	@Getter @Setter private Error error;
 	
+	/** In ms */
 	@Getter @Setter private Integer padreElapsedTime;
+	
+	/** In seconds */
+	@Getter @Setter private Float phlusterElapsedTime;
+	
+	/**
+	 * Indicates how the query was processed.
+	 * @see log_codes() in queries/cgi.c
+	 */
+	@Getter @Setter private String queryProcessorCodes;
 	
 	@Getter @Setter private ContextualNavigation contextualNavigation;
 	
@@ -46,6 +56,16 @@ public class ResultPacket {
 	 * GScope counts (Faceting)
 	 */
 	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
+	
+	/**
+	 * Scopes (URL prefix, not gscope) included via the -scope parameter
+	 */
+	@Getter private final List<String> includeScopes = new ArrayList<String>();
+	
+	/**
+	 * Scopes (URL prefix, not gscope) excluded via the -scope parameter
+	 */
+	@Getter private final List<String> excludeScopes = new ArrayList<String>();
 	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
@@ -102,5 +122,12 @@ public class ResultPacket {
 		public static final String GSCOPE_VALUE = "value";
 		
 		public static final String PADRE_ELAPSED_TIME = "padre_elapsed_time";
+		public static final String QUERY_PROCESSOR_CODES = "query_processor_codes";
+		public static final String PHLUSTER_ELAPSED_TIME = "phluster_elapsed_time";
+		
+		public static final String INCLUDE_SCOPE = "include_scope";
+		public static final String EXCLUDE_SCOPE = "exclude_scope";
+		public static final String SCOPE_SEPARATOR = "@";
+		
 	}
 }

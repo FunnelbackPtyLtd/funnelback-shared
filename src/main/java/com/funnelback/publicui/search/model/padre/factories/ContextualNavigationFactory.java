@@ -19,9 +19,9 @@ public class ContextualNavigationFactory {
 		while(xmlStreamReader.hasNext()) {
 			int type = xmlStreamReader.next();
 			
-			switch(type){
-			case XMLStreamReader.START_ELEMENT:
-				
+			if (type == XMLStreamReader.END_ELEMENT && ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
+				break;
+			} else if (type == XMLStreamReader.START_ELEMENT) {
 				if (ContextualNavigation.Schema.SEARCH_TERMS.equals(xmlStreamReader.getLocalName())) {
 					cn.setSearchTerm(xmlStreamReader.getElementText());
 				} else if (ClusterNav.Schema.CLUSTER_NAV.equals(xmlStreamReader.getLocalName())) {
@@ -29,7 +29,6 @@ public class ContextualNavigationFactory {
 				} else if (Category.Schema.CATEGORY.equals(xmlStreamReader.getLocalName())) {
 					cn.getCategories().add(CategoryFactory.fromXmlStreamReader(xmlStreamReader));
 				} 
-				break;
 			}
 		}
 		
