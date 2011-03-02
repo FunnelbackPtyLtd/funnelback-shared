@@ -36,6 +36,9 @@ public class XSLTXStreamView extends AbstractView {
 	 */
 	@Setter private String modelKey;
 	
+	/**
+	 * Marshaller to use to generate initial XML
+	 */
 	@Setter private Marshaller marshaller;
 	
 	/**
@@ -43,9 +46,22 @@ public class XSLTXStreamView extends AbstractView {
 	 */
 	private Templates templates;
 	
+	/**
+	 * Source of XSLT stylesheet
+	 */
+	private Resource xslt;
+	
+	/**
+	 * Wether to pre-compile the styleseet or not
+	 */
+	@Setter private boolean cacheXslt = true;
+	
 	public XSLTXStreamView(Resource xslt) throws Exception {
 		log.debug("Compiling XSL from '" + xslt.toString() + "'");
-		templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getInputStream()));
+		this.xslt = xslt;
+		if (cacheXslt) {
+			templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getInputStream()));
+		}
 	}
 	
 	@Override
@@ -59,6 +75,9 @@ public class XSLTXStreamView extends AbstractView {
 		marshaller.marshal(model.get(modelKey), new StreamResult(sw));
 
 		// Transform using XSLT
+		if (!cacheXslt) {
+			templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getFile()));
+		}
 		StreamSource source = new StreamSource(new StringReader(sw.getBuffer().toString()));
 		templates.newTransformer().transform(source, new StreamResult(response.getOutputStream()));
 	}

@@ -71,7 +71,9 @@ public class SearchControllerTests {
 	@Test
 	public void testNoQueryShouldReturnSearchTransaction() {
 		Collection col = new Collection("test", null);
-		ModelAndView mav = searchController.noQuery(col);
+		SearchQuestion q = new SearchQuestion();
+		q.setCollection(col);
+		ModelAndView mav = searchController.search(new MockHttpServletRequest(), q);
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.MODEL_KEY_SEARCH_TRANSACTION);
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);

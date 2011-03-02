@@ -11,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import waffle.servlet.WindowsPrincipal;
@@ -85,71 +83,51 @@ public class SearchController {
 	}
 	
 	/**
-	 * Called when no query has been specified.	
-	 * @param collection
-	 * @return
-	 */
-	@RequestMapping(params={"!"+RequestParameters.QUERY})
-	public ModelAndView noQuery(@RequestParam("collection") Collection collection) {
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(collection);
-		
-		SearchTransaction transaction = new SearchTransaction(question, null);
-		
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
-		return new ModelAndView("search", model);		
-	}
-	
-	/**
 	 * Default handler when we have a query and a collection.
 	 * @param request
 	 * @param question
 	 * @return
 	 */
-	@RequestMapping(params={RequestParameters.COLLECTION, RequestParameters.QUERY})
+	@RequestMapping(params={RequestParameters.COLLECTION})
 	public ModelAndView search(
 			HttpServletRequest request,
 			@ModelAttribute SearchQuestion question) {
-		
-		// Special case when the 'query' parameter is present, but empty
-		// FIXME Tried to map that to the noQuery() method using @RequestMapping but didn't
-		// manage to find how to define an existing but empty parameter
-		if ("".equals(question.getQuery())) {
-			return noQuery(question.getCollection());
-		}
-		
+				
 		SearchTransaction transaction = null;
 		
 		additionalDataBinding(question, request);
 		
 		if (question.getCollection() != null) {
-			SearchResponse response = new SearchResponse();
-			transaction = new SearchTransaction(question, response);
-			try {
-				for (InputProcessor processor : inputFlow) {
-					processor.process(transaction, request);
+			if (question.getQuery() != null && ! "".equals(question.getQuery())) {
+				SearchResponse response = new SearchResponse();
+				transaction = new SearchTransaction(question, response);
+				try {
+					for (InputProcessor processor : inputFlow) {
+						processor.process(transaction, request);
+					}
+	
+					for (DataFetcher fetcher : dataFetchers) {
+						fetcher.fetchData(transaction);
+					}
+	
+					for (OutputProcessor processor : outputFlow) {
+						processor.process(transaction);
+					}
+	
+				} catch (InputProcessorException ipe) {
+					log.error(ipe);
+					transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
+				} catch (DataFetchException dfe) {
+					log.error(dfe);
+					transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
+				} catch (OutputProcessorException ope) {
+					log.error(ope);
+					transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
 				}
-
-				for (DataFetcher fetcher : dataFetchers) {
-					fetcher.fetchData(transaction);
-				}
-
-				for (OutputProcessor processor : outputFlow) {
-					processor.process(transaction);
-				}
-
-			} catch (InputProcessorException ipe) {
-				log.error(ipe);
-				transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
-			} catch (DataFetchException dfe) {
-				log.error(dfe);
-				transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
-			} catch (OutputProcessorException ope) {
-				log.error(ope);
-				transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
+			} else {
+				// Query is null
+				transaction = new SearchTransaction(question, null);
 			}
-
 		} else {
 			// Collection is null = non existent
 			log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
@@ -218,34 +196,4 @@ public class SearchController {
 			}
 		}
 	}
-	
-	/*
- 
-
-	@ExceptionHandler(MissingServletRequestParameterException.class)
-	public Map<String, Object> handleMissingParameterException(MissingServletRequestParameterException msrpe,
-			HttpServletRequest request) {
-
-		SearchTransaction transaction = new SearchTransaction(null, null);
-		transaction.setError(new SearchError(SearchError.Reason.MissingParameter, msrpe.getParameterName()));
-
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(SearchController.MODEL_KEY_SEARCH_TRANSACTION, transaction);
-
-		return model;
-	}
-
-	@ExceptionHandler(Exception.class)
-	public Map<String, Object> handleConversionFailed(Exception ex) {
-		SearchTransaction transaction = new SearchTransaction(null, null);
-		transaction.setError(new SearchError(SearchError.Reason.Unknown, ex.getMessage()));
-
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(SearchController.MODEL_KEY_SEARCH_TRANSACTION, transaction);
-
-		return model;
-	}
-	
-	*/
-
 }

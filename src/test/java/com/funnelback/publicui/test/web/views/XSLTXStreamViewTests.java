@@ -47,6 +47,7 @@ public class XSLTXStreamViewTests {
 		ResultPacket rp = new StaxStreamParser().parse(oldXml);
 		
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+		st.getQuestion().setQuery("dummy");
 		st.getResponse().setResultPacket(rp);
 		
 		Map<String, Object> model = new HashMap<String, Object>();

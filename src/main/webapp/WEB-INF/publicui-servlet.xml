@@ -58,6 +58,7 @@
 					<constructor-arg value="classpath:funnelback-legacy.xsl" />
 					<property name="modelKey" value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
 					<property name="marshaller" ref="xmlMarshaller" />
+					<property name="cacheXslt" value="false" />
 				</bean>
 			</list>
 		</property>

@@ -10,45 +10,66 @@
 
 <xsl:template match="/com.funnelback.publicui.search.model.transaction.SearchTransaction">
 	<PADRE_result_packet>
-		<xsl:apply-templates select="response/resultPacket/details" />
+		<xsl:if test="error">
+			<details><padre_version>Unknown</padre_version></details>
+			<error>
+				<xsl:if test="error/reason = 'InvalidCollection'">
+					<usermsg>Please specify a valid collection to search</usermsg>
+					<adminmsg>The collection parameter is invalid or missing</adminmsg>
+				</xsl:if>
+			</error>
+		</xsl:if>
 		
-		<query><xsl:value-of select="response/resultPacket/query" /></query>
-  		<query_as_processed><xsl:value-of select="response/resultPacket/queryAsProcessed" /></query_as_processed>
-  		
-  		<xsl:apply-templates select="response/resultPacket/resultsSummary" />
-  		
-  		<xsl:apply-templates select="response/resultPacket/spell" />
-  		
-		<xsl:apply-templates select="response/resultPacket/bestBets" />
-  		
-  		<xsl:apply-templates select="response/resultPacket/rmcs" />
-  		<xsl:apply-templates select="response/resultPacket/urlCounts" />
-  		<xsl:apply-templates select="response/resultPacket/gScopeCounts" />
-  		
-  		<xsl:apply-templates select="response/resultPacket/results" />
-  		
-  		<include_scope>
-  			<xsl:for-each select="response/resultPacket/includeScopes/string">
-  				<xsl:value-of select="." />
-  				<xsl:if test="not(position() = last())">@</xsl:if>
-  			</xsl:for-each>
-  		</include_scope>
-  		
-  		<exclude_scope>
-  			<xsl:for-each select="response/resultPacket/excludeScopes/string">
-  				<xsl:value-of select="." />
-  				<xsl:if test="not(position() = last())">@</xsl:if>
-  			</xsl:for-each>
-  		</exclude_scope>
-  		
-  		<query_processor_codes><xsl:value-of select="response/resultPacket/queryProcessorCodes" /></query_processor_codes>
-  		<padre_elapsed_time><xsl:value-of select="response/resultPacket/padreElapsedTime" /></padre_elapsed_time>
-  		<xsl:apply-templates select="response/resultPacket/contextualNavigation" />
-  		
-  		
-  		<xsl:if test="response/resultPacket/phlusterElapsedTime">
-  			<phluster_elapsed_time><xsl:value-of select="format-number(response/resultPacket/phlusterElapsedTime, '0.000')" /> sec.</phluster_elapsed_time>
-  		</xsl:if>
+		<xsl:if test="not(error) and not(question/query)">
+			<details><padre_version>Unknown</padre_version></details>
+			<error>
+				<usermsg>Please specify a valid query</usermsg>
+				<adminmsg>The query parameter is invalid or missing</adminmsg>
+			</error>
+		</xsl:if>
+		
+		<xsl:if test="not(error) and question/query">
+			
+			<xsl:apply-templates select="response/resultPacket/details" />
+			
+			<query><xsl:value-of select="response/resultPacket/query" /></query>
+	  		<query_as_processed><xsl:value-of select="response/resultPacket/queryAsProcessed" /></query_as_processed>
+	  		
+	  		<xsl:apply-templates select="response/resultPacket/resultsSummary" />
+	  		
+	  		<xsl:apply-templates select="response/resultPacket/spell" />
+	  		
+			<xsl:apply-templates select="response/resultPacket/bestBets" />
+	  		
+	  		<xsl:apply-templates select="response/resultPacket/rmcs" />
+	  		<xsl:apply-templates select="response/resultPacket/urlCounts" />
+	  		<xsl:apply-templates select="response/resultPacket/gScopeCounts" />
+	  		
+	  		<xsl:apply-templates select="response/resultPacket/results" />
+	  		
+	  		<include_scope>
+	  			<xsl:for-each select="response/resultPacket/includeScopes/string">
+	  				<xsl:value-of select="." />
+	  				<xsl:if test="not(position() = last())">@</xsl:if>
+	  			</xsl:for-each>
+	  		</include_scope>
+	  		
+	  		<exclude_scope>
+	  			<xsl:for-each select="response/resultPacket/excludeScopes/string">
+	  				<xsl:value-of select="." />
+	  				<xsl:if test="not(position() = last())">@</xsl:if>
+	  			</xsl:for-each>
+	  		</exclude_scope>
+	  		
+	  		<query_processor_codes><xsl:value-of select="response/resultPacket/queryProcessorCodes" /></query_processor_codes>
+	  		<padre_elapsed_time><xsl:value-of select="response/resultPacket/padreElapsedTime" /></padre_elapsed_time>
+	  		<xsl:apply-templates select="response/resultPacket/contextualNavigation" />
+	  		
+	  		
+	  		<xsl:if test="response/resultPacket/phlusterElapsedTime">
+	  			<phluster_elapsed_time><xsl:value-of select="format-number(response/resultPacket/phlusterElapsedTime, '0.000')" /> sec.</phluster_elapsed_time>
+	  		</xsl:if>
+	  	</xsl:if>
 	</PADRE_result_packet>
 </xsl:template>
 

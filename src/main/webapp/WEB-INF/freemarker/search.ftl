@@ -7,7 +7,11 @@
 	<link rel="stylesheet" media="screen" href="/search/search.css" type="text/css" />
 	<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
 	
-	<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
+	<#if SearchTransaction.question?exists && SearchTransaction.question.collection?exists>
+		<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
+	<#else>
+		<title>Funnelback Search</title>
+	</#if>
 	
 	<script type="text/javascript">
 		function prevPage(offset) {
