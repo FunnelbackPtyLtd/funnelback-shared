@@ -1,13 +1,16 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
-
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -44,13 +47,14 @@ public class PadreQueryStringBuilder {
 		
 	}
 	
+	@SneakyThrows(UnsupportedEncodingException.class)
 	private static String toQueryString(Map<String, String[]> map) {
 		StringBuffer out = new StringBuffer();
 		for(Iterator<Entry<String, String[]>> it = map.entrySet().iterator(); it.hasNext();) {
 
 			Entry<String, String[]> entry = it.next();
 			for (int i=0;i<entry.getValue().length; i++) {
-				out.append(entry.getKey() + "=" + entry.getValue()[i]);
+				out.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue()[i], "UTF-8"));
 				if (i+1 < entry.getValue().length) {
 					out.append(DELIMITER);
 				}
