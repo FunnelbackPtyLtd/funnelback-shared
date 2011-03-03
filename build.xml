@@ -65,7 +65,7 @@
 			outputDirectory="target/classes"  />
 	</target>
 	
-	<target name="dist" depends="clean, compile, i18n.generate.translations, test, doc">
+	<target name="package" depends="clean, compile, i18n.generate.translations, test, doc">
 		<tstamp />
 
 		<jar destfile="${jar.name}">
