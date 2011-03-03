@@ -167,7 +167,7 @@ public class SearchController {
 	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
 
 		// Referer
-		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : "");
+		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : null);
 		
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
