@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="publicui" basedir="." default="build">
+<project name="publicui" basedir="." default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<property name="src.dir" value="src/main/java/" />
 	<property name="bin.dir" value="target/classes/" />
 
@@ -13,6 +13,7 @@
 	<property name="doc.bin.dir" value="target/doc" />
 
 	<property name="install.location" value="web/webapps/funnelback-publicui" description="Install location of the artifact, relative to $SEARCH_HOME" />
+	<property name="maven.deploy" value="true" />
 		
 	<import file="../build/build-common.xml" />
 	
@@ -67,6 +68,14 @@
 	<target name="dist" depends="clean, compile, i18n.generate.translations, test, doc">
 		<tstamp />
 
+		<jar destfile="${jar.name}">
+			<manifest>			
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+			<fileset dir="${bin.dir}" />
+		</jar>
+		
 		<copy file="../common/funnelback-common.jar" todir="${web.dir}/WEB-INF/lib/" />
 		<war destfile="${war.name}" webxml="${web.dir}/WEB-INF/web.xml" duplicate="fail">
 			<manifest>
@@ -124,5 +133,7 @@
 		<gettext-merge keysFile="messages.pot" poDirectory="src/main/po" />
 		<eclipse.refreshLocal resource="${ant.project.name}" depth="infinite" />
 	</target>
+	
+	
 
 </project>
