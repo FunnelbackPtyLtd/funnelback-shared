@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -31,7 +31,7 @@ public class XSLTXStreamViewTests {
 	
 	@Before
 	public void before() throws Exception {
-		view = new XSLTXStreamView(new FileSystemResource("src/main/java/funnelback-legacy.xsl"));
+		view = new XSLTXStreamView(new ClassPathResource("funnelback-legacy.xsl"));
 		view.setModelKey(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
 		SearchXStreamMarshaller marshaller = new SearchXStreamMarshaller();
 		marshaller.afterPropertiesSet();	// Required to apply XStream customisation (calls customiseXStream())

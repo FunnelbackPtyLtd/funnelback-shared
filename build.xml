@@ -27,7 +27,7 @@
 	<taskdef name="gettext-generate-default" classname="org.xnap.commons.ant.gettext.GenerateDefaultBundleTask" classpath="${build.libs}/gettext-ant-tasks-0.9.7.jar"/>
 	<taskdef name="gettext-dist" classname="org.xnap.commons.ant.gettext.GettextDistTask" classpath="${build.libs}/gettext-ant-tasks-0.9.7.jar"/>
 
-	<fileset id="additional.bin.files" dir="${src.dir}">
+	<fileset id="additional.bin.files" dir="src/main/resources">
 		<include name="**/*.xml" />
 		<include name="**/*.properties" />
 		<include name="**/*.groovy" />

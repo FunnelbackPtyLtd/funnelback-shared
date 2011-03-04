@@ -13,7 +13,7 @@ public class I18n {
 	 * correct locale.
 	 */
 	public static org.xnap.commons.i18n.I18n i18n() {
-		return I18nFactory.getI18n(I18n.class, LocaleContextHolder.getLocale());
+		return I18nFactory.getI18n(I18n.class, "com.funnelback.publicui.i18n.Messages", LocaleContextHolder.getLocale());
 	}
 	
 }

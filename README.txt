@@ -92,6 +92,3 @@ TODO:
   * Embedded JS: http://embeddedjs.com/
   * YAJET: http://www.yajet.net/yajet/doc/yajet.html
  
-  
-  
- 
