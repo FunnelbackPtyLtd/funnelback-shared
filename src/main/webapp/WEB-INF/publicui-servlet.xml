@@ -35,6 +35,7 @@
 
 	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
 		<property name="encoding" value="UTF-8" />
+		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">

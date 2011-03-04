@@ -12,15 +12,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * A search collection.
  */
 @ToString
 @RequiredArgsConstructor
+@JsonIgnoreProperties("parametersTransforms")
 public class Collection {
 
 	/**
@@ -70,6 +74,7 @@ public class Collection {
 	 * List of parameters transformation (previously known as CGI Transforms).
 	 * Is read from cgi_transform.cfg
 	 */
+	@XStreamOmitField
 	@Getter @Setter private List<TransformRule> parametersTransforms = new ArrayList<TransformRule>();
 	
 	/**
