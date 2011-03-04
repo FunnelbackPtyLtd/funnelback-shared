@@ -31,7 +31,7 @@
 	</properties>
 
 	<build>
-
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -68,13 +68,6 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>merge</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>merge</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>dist</id>
 						<phase>compile</phase>
 						<goals>
@@ -92,6 +85,30 @@
 						<phase>clean</phase>
 						<goals>
 							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.11</version>
+				<configuration>
+					<sourceDirectory>src/main/docbook</sourceDirectory>
+					<htmlStylesheet>style.css</htmlStylesheet>
+					<highlightSource>true</highlightSource>
+					<chunkedOutput>true</chunkedOutput>
+					<postProcess>
+						<copy todir="target/docbkx/xhtml">
+							<fileset dir="src/main/docbook" includes="style.css" />								
+						</copy>
+					</postProcess>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-xhtml</goal>
 						</goals>
 					</execution>
 				</executions>
