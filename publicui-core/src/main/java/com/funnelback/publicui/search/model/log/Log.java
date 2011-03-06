@@ -11,6 +11,8 @@ import com.funnelback.publicui.search.model.collection.Profile;
 @RequiredArgsConstructor
 public abstract class Log {
 
+	public static final String USERID_NOTHING = "-";
+	
 	@Getter final protected Date date;
 	
 	@Getter final protected Collection collection;

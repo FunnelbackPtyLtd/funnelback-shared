@@ -14,6 +14,7 @@ import lombok.ToString;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.log.Log;
 
 @ToString
 @AllArgsConstructor
@@ -83,7 +84,7 @@ public class SearchQuestion {
 	 * User identifier for this transaction. Depending of the collection configuration
 	 * it can be an IP address, an md5 hash of the address, nothing ("-") or null. 
 	 */
-	@Getter @Setter private String userId = LogUtils.USERID_NOTHING;
+	@Getter @Setter private String userId = Log.USERID_NOTHING;
 	
 	/**
 	 * Referer for this transaction, can be an empty string
