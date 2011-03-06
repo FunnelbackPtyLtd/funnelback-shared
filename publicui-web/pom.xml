@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.funnelback.publicui</groupId>
-	<artifactId>funnelback-publicui</artifactId>
+	<artifactId>publicui-web</artifactId>
 	<version>10.2.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Java Public UI for Funnelback</name>
@@ -117,6 +117,11 @@
 	</reporting>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.funnelback.publicui</groupId>
+			<artifactId>publicui-core</artifactId>
+			<version>10.2.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.funnelback</groupId>
 			<artifactId>funnelback-common</artifactId>
