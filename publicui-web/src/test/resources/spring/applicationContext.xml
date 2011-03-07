@@ -60,5 +60,5 @@
 	<util:map id="profilingStats" key-type="java.lang.String"
 		value-type="java.util.LinkedList" />
 
-	<bean class="com.funnelback.publicui.search.service.config.StaxStreamFacetedNavigationConfigParser" />
+	<bean class="com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser" />
 </beans>

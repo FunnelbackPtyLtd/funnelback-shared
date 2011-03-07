@@ -1,10 +1,9 @@
-package com.funnelback.publicui.search.service.config;
+package com.funnelback.publicui.xml;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
-import com.funnelback.publicui.xml.XmlParsingException;
 
 public interface FacetedNavigationConfigParser {
 

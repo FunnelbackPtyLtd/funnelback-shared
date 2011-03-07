@@ -31,8 +31,9 @@ import com.funnelback.publicui.search.model.collection.Synonym;
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.config.FacetedNavigationConfigParser.Facets;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
 
 /**
  * Convenience super class for local config repositories

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service.config;
+package com.funnelback.publicui.xml;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryType;
 import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
-import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
  * Parses a faceted navigation configuration using a Stax Stream parser.

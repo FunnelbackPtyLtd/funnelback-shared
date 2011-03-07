@@ -17,8 +17,8 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 import com.funnelback.publicui.search.model.collection.facetednavigation.QueryItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.URLFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.XPathFill;
-import com.funnelback.publicui.search.service.config.FacetedNavigationConfigParser.Facets;
-import com.funnelback.publicui.search.service.config.StaxStreamFacetedNavigationConfigParser;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
+import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamFacetedNavigationConfigParserTests {
