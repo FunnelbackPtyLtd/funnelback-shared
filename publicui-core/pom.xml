@@ -12,6 +12,10 @@
 		<version>10.2.0-SNAPSHOT</version>
 	</parent>
 
+	<build>
+		<finalName>funnelback-${project.artifactId}-${project.version}</finalName>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
