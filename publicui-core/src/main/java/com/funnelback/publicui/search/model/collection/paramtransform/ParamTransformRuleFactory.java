@@ -15,7 +15,7 @@ import com.funnelback.publicui.search.model.collection.paramtransform.operation.
 import com.funnelback.publicui.search.model.collection.paramtransform.operation.Operation;
 import com.funnelback.publicui.search.model.collection.paramtransform.operation.RemoveAllValuesOperation;
 import com.funnelback.publicui.search.model.collection.paramtransform.operation.RemoveSpecificValuesOperation;
-import com.funnelback.publicui.web.utils.QueryStringUtils;
+import com.funnelback.publicui.utils.QueryStringUtils;
 
 /**
  * Builds a list of parameters transformation rules by

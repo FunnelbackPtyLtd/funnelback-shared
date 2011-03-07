@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.web.utils.QueryStringUtils;
+import com.funnelback.publicui.utils.QueryStringUtils;
 
 /**
  * Process PADRE contextual navigation output:

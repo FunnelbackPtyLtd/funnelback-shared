@@ -1,4 +1,4 @@
-package com.funnelback.publicui.web.utils;
+package com.funnelback.publicui.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
