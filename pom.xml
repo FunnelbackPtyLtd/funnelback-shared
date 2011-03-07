@@ -33,6 +33,7 @@
 	<modules>
 		<module>publicui-web</module>
 		<module>publicui-core</module>
+        <module>publicui-api</module>
 	</modules>
 
 	<build>
