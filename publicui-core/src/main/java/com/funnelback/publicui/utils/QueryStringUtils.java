@@ -50,13 +50,19 @@ public class QueryStringUtils {
 	public static String toString(Map<String, List<String>> qs, boolean prependQuestionMark) {
 		StringBuffer out = new StringBuffer();
 		for (Map.Entry<String, List<String>> entry: qs.entrySet()) {
-			for (String value: entry.getValue()) {
-				out.append("&")
-					.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
-					.append("=");
-				if(value != null) {
-					out.append(URLEncoder.encode(value, "UTF-8"));
+			if (entry.getValue() != null) {
+				for (String value: entry.getValue()) {
+					out.append("&")
+						.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+						.append("=");
+					if(value != null) {
+						out.append(URLEncoder.encode(value, "UTF-8"));
+					}
 				}
+			} else {
+				out.append("&")
+				.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+				.append("=");
 			}
 		}
 		return ((prependQuestionMark) ? "?" : "") + out.toString().substring(1);
