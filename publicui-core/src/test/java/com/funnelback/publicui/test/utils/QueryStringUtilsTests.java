@@ -48,21 +48,21 @@ public class QueryStringUtilsTests {
 			+ "&param4="
 			+ "&param5=null";
 			
-		Map<String, List<String>> map = QueryStringUtils.toMap(input);
+		Map<String, List<String>> map = QueryStringUtils.toMap("?" + input);
 		
-		Assert.assertEquals(map.get("param1"), Arrays.asList(new String[] {"value1"}));
-		Assert.assertEquals(map.get("param2"), Arrays.asList(new String[] {"first value", "second value"}));
-		Assert.assertEquals(map.get("param3"), Arrays.asList(new String[] {"\n\t"}));
-		Assert.assertEquals(map.get("param4"), null);
-		Assert.assertEquals(map.get("param5"), Arrays.asList(new String[] {"null"}));
+		Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
+		Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
+		Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
+		Assert.assertEquals(Arrays.asList(new String[0]), map.get("param4"));
+		Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
 		
-		map = QueryStringUtils.toMap("?" + input, true);
+		map = QueryStringUtils.toMap(input, false);
 
-		Assert.assertEquals(map.get("param1"), Arrays.asList(new String[] {"value1"}));
-		Assert.assertEquals(map.get("param2"), Arrays.asList(new String[] {"first value", "second value"}));
-		Assert.assertEquals(map.get("param3"), Arrays.asList(new String[] {"\n\t"}));
-		Assert.assertEquals(map.get("param4"), null);
-		Assert.assertEquals(map.get("param5"), Arrays.asList(new String[] {"null"}));
+		Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
+		Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));
+		Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
+		Assert.assertEquals(Arrays.asList(new String[0]), map.get("param4"));
+		Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
 	}
 	
 }
