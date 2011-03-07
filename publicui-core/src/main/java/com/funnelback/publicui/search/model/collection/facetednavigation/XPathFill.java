@@ -9,12 +9,10 @@ import java.util.Map.Entry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
-@Log
 public class XPathFill extends CategoryType implements MetadataBasedType {
 	@Getter @Setter private String metafield;
 	

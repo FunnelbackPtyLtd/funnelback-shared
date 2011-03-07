@@ -28,12 +28,13 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>3.0.5.RELEASE</spring.version>
 	</properties>
 
 	<modules>
 		<module>publicui-web</module>
 		<module>publicui-core</module>
-        <module>publicui-api</module>
+		<module>publicui-api</module>
 	</modules>
 
 	<build>
@@ -75,6 +76,25 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.xnap.commons</groupId>
+					<artifactId>maven-gettext-plugin</artifactId>
+					<version>1.2.3</version>
+					<configuration>
+						<outputFormat>class</outputFormat>
+						<keysFile>messages.pot</keysFile>
+						<poDirectory>src/main/po</poDirectory>
+					</configuration>
+					<executions>
+						<execution>
+							<id>dist</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>dist</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -84,7 +104,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-oxm</artifactId>
-				<version>3.0.5.RELEASE</version>
+				<version>${spring.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
@@ -147,6 +167,18 @@
 				<version>2.0.1</version>
 				<type>jar</type>
 				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.xnap.commons</groupId>
+				<artifactId>gettext-commons</artifactId>
+				<version>0.9.6</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

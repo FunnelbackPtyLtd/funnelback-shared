@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import lombok.SneakyThrows;
-import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
-@Log
 public class MetadataFieldFill extends CategoryType implements MetadataBasedType {
 
 	@Override

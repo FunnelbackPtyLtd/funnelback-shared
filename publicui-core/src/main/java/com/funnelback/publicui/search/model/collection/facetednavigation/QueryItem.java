@@ -5,12 +5,10 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
-@Log
 public class QueryItem extends CategoryType implements GScopeBasedType {
 	@Getter @Setter private String query;
 	@Getter @Setter private int gscopefield;
