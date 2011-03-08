@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="nofollow" />
+	<link rel="stylesheet" media="screen" href="../../css/search.css" type="text/css" />
+	<script type="text/javascript" src="../../js/jquery/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="../../js/pure/libs/pure.js"></script>
+	<script type="text/javascript" src="search.js"></script>
+	
+	<title>Funnelback Search</title>
+
+</head>
+
+<body>
+
+<div id="template">	
+
+	<!-- NO QUERY SPECIFIED -->
+	<div id="fb-initial" style="display:none">
+		<a href="http://funnelback.com/"><img src="../../img/funnelback.png" alt="Funnelback logo"></a>
+	</div>
+	
+	<!-- SEARCH LOGO -->
+	<div><a id="fb-logo" href="http://funnelback.com/"><img	src="../../img/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
+	
+	<!-- QUERY FORM -->
+	
+	<div id="fb-queryform">
+		<form method="GET">
+			<div>
+				<label for="query" style="text-indent: -9999em;">Search</label>
+				<input name="query" id="query" type="text" value="" accesskey="q" />
+				<input type="submit" value="Search" />
+			
+				<input type="hidden" name="collection" value="shakespeare-lear" />
+				<input type="hidden" name="profile" value="_default" />
+			</div>
+		</form>
+	</div>
+
+
+	<!-- SEARCH -->
+	
+	<p id="fb-matching">
+		<span id="fb-utils">
+			<a href="#" id="fb-advanced-toggle">Advanced search</a>
+			<span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
+		</span>
+		
+		<span class="fb-result-count" id="fb-page-start"></span> -
+		<span class="fb-result-count" id="fb-page-end"></span> of
+		<span class="fb-result-count" id="fb-total-matching"></span>
+		search results for <strong></strong>
+	</p>
+	
+	<div id="fb-wrapper">
+	
+		<!-- RESULTS SUMMARY -->
+		<div id="fb-summary">
+	
+			<!-- Did you mean...? -->
+			<span id="fb-spelling"></span>
+		
+			<!-- TIER BARS -->
+		</div>
+	
+		<!-- FEATURED PAGES (BEST BETS) -->
+		<div class="fb-best-bet"></div>
+	
+		<!-- RESULTS -->
+		<ol id="fb-results">
+	
+			<!-- EACH RESULT -->
+			<li class="result">
+				<h3>
+					<span class="fb-filetype"></span>
+					<a href="#" title=""></a>
+				</h3>
+	
+				<p class="fb-file-format">
+					<span></span>
+					<a class="fb-cached" href="#" title=""></a>
+				</p>
+				
+				<!-- QUERY BIASED SUMMARY (WITH DATE)-->
+				<p>
+					<span class="fb-date"></span>
+					<span class="fb-summary"></span>
+				</p>
+	
+				<!-- METADATA SUMMARIES -->
+				<span class="fb-meta"><span></span> </span>
+	
+				<!-- URL AND FILESIZE -->
+				<p>
+					<cite></cite>
+					- <a class="fb-cached" href="#" title="">Cached</a>
+					
+					<!-- EXPLORE LINKS -->
+					<a class="fb-explore" href=""></a>
+				</p>
+	
+	
+				<!-- QUICKLINKS -->
+			</li>
+	
+			<!-- NO RESULTS -->
+			<li id="fb-no-results">Your search for <strong></strong> did not return any results. <span>Please ensure that you:</span>
+				<ul>
+					<li>are not using any advanced search operators like + - | " etc.</li> 
+					<li>expect this document to exist within the <em></em></li>
+					<li>have permission to see any documents that may match your query</li>
+				</ul>
+			</li> 
+		</ol>
+	
+		<!-- SEARCH: NAVIGATION -->
+		<p class="fb-page-nav">
+			 [ <a href="#" class="fb-previous-result-page fb-page-nav" >Prev </a> ]
+			 <a href="#" >1</a>
+			 <span class="fb-current-result-page">2</span>
+			 <a href="#" >3</a>
+			 <a href="#" >4</a>
+			 [ <a href="#" class="fb-next-result-page fb-page-nav" >Next </a> ] 
+		</p>
+	
+	</div>
+</div>
+
+</body>
+</html>

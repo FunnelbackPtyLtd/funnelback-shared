@@ -4,8 +4,8 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="robots" content="nofollow" />
-	<link rel="stylesheet" media="screen" href="/search/search.css" type="text/css" />
-	<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
+	<link rel="stylesheet" media="screen" href="css/search.css" type="text/css" />
+	<script type="text/javascript" src="js/jquery/jquery-1.5.1.min.js"></script>
 	
 	<#if SearchTransaction.question?exists && SearchTransaction.question.collection?exists>
 		<title>${SearchTransaction.question.collection.id}, Funnelback Search</title>
