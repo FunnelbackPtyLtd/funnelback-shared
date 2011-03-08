@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -138,7 +139,11 @@ public class SearchController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
 
-		return new ModelAndView("search", model);
+		String uri = request.getRequestURI();
+		String viewName = uri.substring(uri.indexOf(".")+1) + "View";
+		log.debug("Selecting view '" + viewName + "'");
+		
+		return new ModelAndView(viewName, model);
 
 	}
 
