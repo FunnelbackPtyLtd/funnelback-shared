@@ -1,0 +1,108 @@
+<div id="template">
+
+{{#SearchTransaction}}
+	{{#response}}
+		{{#resultPacket}}
+		
+			<p id="fb-matching">
+				<span id="fb-utils">
+					<a href="#" id="fb-advanced-toggle">Advanced search</a>
+					<span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
+				</span>
+				
+				{{#resultsSummary}}
+				<span class="fb-result-count" id="fb-page-start">{{currStart}}</span> -
+				<span class="fb-result-count" id="fb-page-end">{{currEnd}}</span> of
+				<span class="fb-result-count" id="fb-total-matching">{{totalMatching}}</span>
+				{{/resultsSummary}}				
+				
+				search results for <strong>{{query}}</strong>
+				
+				
+			</p>		
+			
+			<div id="fb-wrapper">
+			
+					<!-- RESULTS SUMMARY -->
+					<div id="fb-summary">
+	
+						{{#spell}}
+							<!-- Did you mean...? -->
+							<span id="fb-spelling">
+								Did you mean
+								<a href="{{url}}">{{text}}</a> ?
+							</span>
+						{{/spell}}
+		
+						<!-- TIER BARS -->
+					</div>
+					
+					<!-- FEATURED PAGES (BEST BETS) -->
+					{{#bestBets}}
+						<div class="fb-best-bet"></div>
+					{{/bestBets}}
+	
+					<!-- RESULTS -->
+					<ol id="fb-results">
+					
+						{{#results}}
+							<!-- EACH RESULT -->
+							<li class="result{.section rank}{.even?} even{.end}{.end}">
+								<h3>
+									<span class="fb-filetype">{{fileType}}</span>
+									<a href="{displayUrl}" title="{{liveUrl}}">{{title}}</a>
+								</h3>
+					
+								<p class="fb-file-format">
+									<span></span>
+									<a class="fb-cached" href="" title=""></a>
+								</p>
+								
+								<!-- QUERY BIASED SUMMARY (WITH DATE)-->
+								<p>
+									<span class="fb-date">{{date}}</span>
+									<span class="fb-summary">{{summary}}</span>
+								</p>
+					
+								<!-- METADATA SUMMARIES -->
+								{{#metaData}}
+									{{#U}}
+										<span class="fb-meta"><span>U field:</span>{{U}}</span>
+									{{/U}}
+								{{/metaData}}
+					
+								<!-- URL AND FILESIZE -->
+								<p>
+									<cite>{{liveUrl}}</cite>
+									- <a class="fb-cached" href="{{cacheUrl}}" title="Cached version of {{title}}">Cached</a>
+									
+									<!-- EXPLORE LINKS -->
+									<a class="fb-explore" href=""></a>
+								</p>
+					
+					
+								<!-- QUICKLINKS -->
+							</li>
+						{{/results}}
+						
+			
+						<!-- NO RESULTS -->
+						{{#resultsSummary}}
+							{{^totalMatching}}
+								<li id="fb-no-results">Your search for <strong></strong> did not return any results. <span>Please ensure that you:</span>
+									<ul>
+										<li>are not using any advanced search operators like + - | " etc.</li> 
+										<li>expect this document to exist within the collection <em></em></li>
+										<li>have permission to see any documents that may match your query</li>
+									</ul>
+								</li>
+							{{/totalMatching}}
+						{{/resultsSummary}}
+					
+					</ol> 
+			</div>
+		{{/resultPacket}}		
+	{{/response}}
+  
+{{/SearchTransaction}}
+</div>
