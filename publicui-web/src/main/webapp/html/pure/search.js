@@ -1,11 +1,5 @@
 $p.core.error = function() {};
 
-function param(name){
-	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	if (!results) { return 0; }
-	return results[1] || 0;
-}
-
 function hasResults(arg) {
 	return arg.context.SearchTransaction.response.resultPacket.resultsSummary.totalMatching > 0;
 }
@@ -33,6 +27,7 @@ var directives = {
 	
 	'#fb-matching strong' : 'SearchTransaction.response.resultPacket.query',
 	'input[name="query"]@value' : 'SearchTransaction.response.resultPacket.query',
+	'input[name="collection"]@value' : 'SearchTransaction.question.collection.id',
 	
 	'ol#fb-results li.result' : {
 		'result<-SearchTransaction.response.resultPacket.results' : {
@@ -56,9 +51,9 @@ var directives = {
 
 jQuery(document).ready(function() {
 	jQuery.getJSON(
-			'/publicui-web/search.json',
+			'../../search.json',
 			{
-				collection: 'funnelback_documentation',
+				collection: param('collection'),
 				query: param('query')
 			},
 			function(data) {

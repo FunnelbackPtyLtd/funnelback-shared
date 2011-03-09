@@ -75,7 +75,7 @@
 	<!-- ***** -->
 
 	<!-- Profiling -->
-	<aop:aspectj-autoproxy />
+	<!-- aop:aspectj-autoproxy / -->
 	
 	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.DataPoint[]" />
 	<bean id="profilingStats" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
