@@ -47,8 +47,6 @@ TODO:
   * Impersonation using Basic method won't allow network access until the logon type is changed from LOGON_TYPE_NETWORK to LOGON_TYPE_NETWORK_CLEARTEXT
   * Test impersonation with delegation (Kerberos)
 
-* Look at Funnelback::SearchInterface::pre_search() to replement logic as an Interceptor ?
-
 * Remove test shorcuts
   * /_/* request mapping on SearchController
 
@@ -81,14 +79,6 @@ TODO:
   * Are currently set on top of collection.cfg's option
   * They should probably be merged, with one taking precedence on the other ?
   
-* JS templates engines:
-  * json-template: http://code.google.com/p/json-template/
-  * jQuery templates: http://api.jquery.com/category/plugins/templates/
-  * TrimPath: http://code.google.com/p/trimpath/
-  * Pure: http://beebole.com/pure/
-  * Mustache
-  * Tenjin: http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html
-  * Closure templates ? http://code.google.com/closure/templates/ -> requires compilation step
-  * Embedded JS: http://embeddedjs.com/
-  * YAJET: http://www.yajet.net/yajet/doc/yajet.html
- 
+* CollectionFormViewResolver: find a way to activate cache on it
+
+* Collection config reloading: Find a more clever mechanism for reloading only a specific config file and/or lazy loading.
