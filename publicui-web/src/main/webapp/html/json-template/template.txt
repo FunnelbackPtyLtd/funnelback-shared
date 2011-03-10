@@ -78,21 +78,15 @@
 					
 								<!-- QUICKLINKS -->
 							</li>
-						{.end}
-						
-			
-						<!-- NO RESULTS -->
-						{.section resultsSummary}
-							{.section totalMatching}
-							{.or}
+						{.or}
+								<!-- NO RESULTS -->
 								<li id="fb-no-results">Your search for <strong></strong> did not return any results. <span>Please ensure that you:</span>
 									<ul>
 										<li>are not using any advanced search operators like + - | " etc.</li> 
-										<li>expect this document to exist within the <em></em></li>
+										<li>expect this document to exist within the collection <em>{details.collectionSize}</em></li>
 										<li>have permission to see any documents that may match your query</li>
 									</ul>
 								</li>
-							{.end}
 						{.end}
 					
 					</ol> 

@@ -50,6 +50,13 @@
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
 	
-	<bean class="org.springframework.web.servlet.view.XmlViewResolver" />
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="order" value="0" />
+	</bean>
+	<bean class="com.funnelback.publicui.web.views.form.CollectionFormViewResolver">
+		<property name="order" value="1" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.RawContentCollectionFormView" />
+		<property name="cache" value="false" />
+	</bean>
 
 </beans>

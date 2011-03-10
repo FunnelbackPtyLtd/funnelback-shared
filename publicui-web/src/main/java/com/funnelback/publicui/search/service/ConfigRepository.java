@@ -47,5 +47,5 @@ public interface ConfigRepository {
 	 * @return
 	 */
 	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf);
-	
+
 }

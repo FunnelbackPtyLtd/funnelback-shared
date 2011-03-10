@@ -10,3 +10,7 @@ config.repository.autorefresh.interval=250
 
 # Prefix to use for click / cache URLs
 urls.search.prefix=/search/
+
+# Name of the per-collection web resources directory,
+# relative to profiles directory
+resources.web.directory.name=web

@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @ToString
 @RequiredArgsConstructor
-@JsonIgnoreProperties("parametersTransforms")
+@JsonIgnoreProperties({"parametersTransforms", "forms"})
 public class Collection {
 
 	/**
@@ -63,6 +63,10 @@ public class Collection {
 	
 	/** Faceted navigation configuration in live/idx/faceted_navigation.xml */
 	@Getter @Setter private FacetedNavigationConfig facetedNavigationLiveConfig;
+	
+	/** Forms (templates) */
+	@XStreamOmitField
+	@Getter private final Map<String, String> forms = new HashMap<String, String>();
 	
 	/**
 	 * In case of a meta collection, list of components collection ids.

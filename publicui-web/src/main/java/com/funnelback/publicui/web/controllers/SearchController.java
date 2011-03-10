@@ -140,7 +140,14 @@ public class SearchController {
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
 
 		String uri = request.getRequestURI();
-		String viewName = uri.substring(uri.indexOf(".")+1) + "View";
+		String viewSuffix = uri.substring(uri.indexOf(".")+1);
+		String viewName;
+		if ("xml".equals(viewSuffix) || "json".equals(viewSuffix)
+				|| "legacy".equals(viewSuffix) || "freemarker".equals(viewSuffix)) {
+			viewName = viewSuffix + "View";
+		} else {
+			viewName = question.getCollection().getId() + ":" + viewSuffix;
+		}
 		log.debug("Selecting view '" + viewName + "'");
 		
 		return new ModelAndView(viewName, model);

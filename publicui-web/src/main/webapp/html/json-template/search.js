@@ -2,9 +2,19 @@ function formatterFbDate(s) {
 	return new Date(s).toUTCString();
 }
 
+function formatterDump(s) {
+	var out = '';
+	for(var key in s) {
+		out += key + ':' + s[key] + '<br />';
+	}
+	return '<pre>' + out + '</pre>';
+}
+
 function more_formatters(formatterName) {
 	if (formatterName === 'fb-date') {
 		return formatterFbDate;
+	} else if (formatterName === 'dump') {
+		return formatterDump;
 	} else {
 		return null;
 	}
@@ -29,7 +39,7 @@ jQuery(document).ready( function() {
 	
 	// Request template file
 	jQuery.ajax({
-		url: 'template.txt',
+		url: 'html/json-template/template.txt',
 		dataType: 'text',
 		success: function(tplData) {
 			t = jsontemplate.Template(tplData,
@@ -55,7 +65,7 @@ jQuery(document).ready( function() {
 
 function search(collection, query) {
 	jQuery.getJSON(
-		'../../search.json',
+		'search.json',
 		{
 			collection: collection,
 			query: query

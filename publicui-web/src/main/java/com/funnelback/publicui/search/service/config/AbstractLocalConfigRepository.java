@@ -32,8 +32,8 @@ import com.funnelback.publicui.search.model.collection.paramtransform.ParamTrans
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
-import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
  * Convenience super class for local config repositories
@@ -51,6 +51,9 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	
 	/** Header line of the synonyms.cfg */
 	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
+	
+	/** Suffix of form files (templates) */
+	protected static final String FORM_FILE_SUFFIX = ".form2";
 	
 	@Autowired
 	protected File searchHome;
@@ -77,6 +80,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			c.setQuickLinksConfiguration(loadQuickLinksConfiguration(c));
 			c.getProfiles().putAll(loadProfiles(c));
 			c.getHookScriptsClasses().putAll(loadHookScriptsClasses(c));
+			c.getForms().putAll(loadFormFiles(c));
 			return c;
 		} catch (FileNotFoundException e) {
 			
@@ -318,6 +322,35 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		}
 		
 		return out;		
+	}
+	
+	private Map<String, String> loadFormFiles(Collection c) {
+		HashMap<String, String> out = new HashMap<String, String>();
+		
+		File[] forms = c.getConfiguration().getConfigDirectory().listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return ! pathname.isDirectory() && pathname.getName().endsWith(FORM_FILE_SUFFIX);
+			}
+		});
+		
+		if (forms.length == 0) {
+			log.warn("No form file (ending with '" + FORM_FILE_SUFFIX + "') found for collection '" + c.getId() + "'");
+		}
+		
+		for (File form: forms) {
+			log.debug("Loading form file '" + form.getAbsolutePath() + "'");
+			String fileName = form.getName();
+			try {
+				out.put(fileName.substring(0,
+							fileName.lastIndexOf(FORM_FILE_SUFFIX)),
+						FileUtils.readFileToString(form));
+			} catch (IOException ioe) {
+				log.warn("Unable to load form file '" + form.getAbsolutePath() + "'", ioe);
+			}
+		}
+		
+		return out;
 	}
 	
 	@Override
