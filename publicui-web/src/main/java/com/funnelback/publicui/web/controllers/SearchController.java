@@ -134,6 +134,12 @@ public class SearchController {
 			log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
 			transaction = new SearchTransaction(null, null);
 			transaction.setError(new SearchError(SearchError.Reason.InvalidCollection, request.getParameter(SearchQuestion.RequestParameters.COLLECTION)));
+			
+			//FIXME What to do if no collection ?
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
+
+			return new ModelAndView("no-collection", model);
 		}
 
 		Map<String, Object> model = new HashMap<String, Object>();
