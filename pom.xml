@@ -186,11 +186,11 @@
 	<distributionManagement>
 		<repository>
 			<id>funnelback-releases</id>
-			<url>http://svn.funnelback.com:8081/nexus/content/repositories/releases</url>
+			<url>http://maven-repo.funnelback.com:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>funnelback-snapshots</id>
-			<url>http://svn.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+			<url>http://maven-repo.funnelback.com:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
