@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.io.FileUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Script;
@@ -75,9 +77,19 @@ public class JavascriptCollectionFormView extends AbstractCollectionFormView {
 		ScriptableObject.putProperty(scope, "tpl", Context.javaToJS(templateContent, scope));
 
 		// Push model
+		/*
 		ScriptableObject.putProperty(scope, "data",
 				Context.javaToJS(model.get(SearchController.MODEL_KEY_SEARCH_TRANSACTION), scope));
+		*/
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+		ctx.evaluateString(scope, "var data = " + mapper.writeValueAsString(model.get(SearchController.MODEL_KEY_SEARCH_TRANSACTION)) + ";", "pushData", 1, null);
 
+		// Augment model
+		ctx.evaluateString(scope, "augment_model(data)", "augmentModel", 1, null);
+		
+		// Render
 		String rendered = (String) Context
 				.jsToJava(
 						ctx.evaluateString(

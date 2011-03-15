@@ -50,7 +50,6 @@ function more_formatters(formatterName) {
 	} else if (formatterName.search(/cut\./) > -1) {
 		return function(s) {
 			var str = formatterName.slice(4, formatterName.length);
-			print('nico' + str);
 			return s.replace(str, '');
 		};
 		
@@ -79,5 +78,53 @@ function more_predicates(predicateName) {
 
 	} else {
 		return null;
+	}
+}
+
+// --- Model augmentation
+function augment_model(model) {
+	if (model.response && model.response.resultPacket) {
+		var summary = model.response.resultPacket.resultsSummary;
+
+		// Previous
+		if (summary.prevStart > 0) {
+			if (model.question.queryString.search(/start_rank=/) > -1) {
+				summary.prevLink = '?' + model.question.queryString.replace(/start_rank=([^&]*)/, 'start_rank=' + summary.prevStart);
+			} else {
+				summary.prevLink = '?' + model.question.queryString + '&ampstart_rank=' + summary.prevStart;
+			}
+		}
+
+		var pages = (summary.totalMatching + summary.numRanks - 1) / summary.numRanks;
+		var currPage = (summary.currStart + summary.numRanks - 1) / summary.numRanks;
+		var firstPage = 1 ;
+		if (currPage > 4) {
+			firstPage = currPage - 4;
+		}
+		var pageLinks = new Array();
+		for (var pg = firstPage; pg < firstPage+10 && pg < pages ; pg++) {
+			var link = {};
+			link.page = pg;
+			if (pg == currPage) {
+				link.current = true;
+			} else {
+				if (model.question.queryString.search(/start_rank=/) > -1) {
+					link.link = '?' + model.question.queryString.replace(/start_rank=([^&]*)/, 'start_rank=' + ((pg-1)*summary.numRanks));
+				} else {
+					link.link = '?' + model.question.queryString + "&amp;start_rank=" + ((pg-1)*summary.numRanks);
+				}
+			}
+			pageLinks.push(link);
+		}
+		summary.pageLinks = pageLinks;
+		
+		// Next
+		if (summary.nextStart > 0) {
+			if (model.question.queryString.search(/start_rank=/) > -1) {
+				summary.nextLink = '?' + model.question.queryString.replace(/start_rank=([^&]*)/, 'start_rank=' + summary.nextStart);
+			} else {
+				summary.nextLink = '?' + model.question.queryString + "&amp;start_rank=" + summary.nextStart;
+			}
+		}
 	}
 }

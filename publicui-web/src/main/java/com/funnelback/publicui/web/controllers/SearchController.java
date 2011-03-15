@@ -187,6 +187,9 @@ public class SearchController {
 		// Referer
 		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : null);
 		
+		// Query string
+		question.setQueryString(request.getQueryString());
+		
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
 		

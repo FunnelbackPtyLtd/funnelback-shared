@@ -91,6 +91,11 @@ public class SearchQuestion {
 	 */
 	@Getter @Setter private String referer;
 	
+	/**
+	 * Initial query string. Useful to build additional links (previous, next ...)
+	 */
+	@Getter @Setter private String queryString;
+	
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
