@@ -5,8 +5,12 @@ import java.util.Locale;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.springframework.beans.BeanUtils;
+import net.sf.ehcache.hibernate.management.impl.BeanUtils;
+
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 
@@ -39,11 +43,12 @@ public class CollectionFormViewResolver extends AbstractCachingViewResolver impl
 			return null;
 		}
 
-		AbstractCollectionFormView view = BeanUtils.instantiate(viewClass);
+		AbstractCollectionFormView view = org.springframework.beans.BeanUtils.instantiate(viewClass);
+		getApplicationContext().getAutowireCapableBeanFactory().autowireBean(view);
 		view.setTemplateContent(c.getForms().get(formName));
+		view.setCollectionId(c.getId());
 		
 		return view;
 	}
 	
-
 }

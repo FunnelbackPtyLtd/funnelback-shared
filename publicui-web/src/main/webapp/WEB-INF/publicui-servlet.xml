@@ -56,7 +56,8 @@
 	<bean class="com.funnelback.publicui.web.views.form.CollectionFormViewResolver">
 		<property name="order" value="1" />
 		<!-- property name="viewClass" value="com.funnelback.publicui.web.views.form.RawContentCollectionFormView" / -->
-		<property name="viewClass" value="com.funnelback.publicui.web.views.form.JavascriptCollectionFormView" />
+		<!-- property name="viewClass" value="com.funnelback.publicui.web.views.form.JavascriptCollectionFormView" / -->
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.SoyCollectionFormView" />
 		<property name="cache" value="false" />
 	</bean>
 

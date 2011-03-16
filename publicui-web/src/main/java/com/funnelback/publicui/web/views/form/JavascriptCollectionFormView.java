@@ -74,7 +74,7 @@ public class JavascriptCollectionFormView extends AbstractCollectionFormView {
 		ctx.evaluateString(scope, FileUtils.readFileToString(scriptExtensionsResource.getFile()), "json-template-extension", 1, null);
 
 		// Push template
-		ScriptableObject.putProperty(scope, "tpl", Context.javaToJS(templateContent, scope));
+		ScriptableObject.putProperty(scope, "tpl", Context.javaToJS(getTemplateContent(), scope));
 
 		// Push model
 		/*

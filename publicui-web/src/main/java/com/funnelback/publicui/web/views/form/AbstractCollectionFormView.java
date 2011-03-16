@@ -7,6 +7,6 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public abstract class AbstractCollectionFormView extends AbstractUrlBasedView {
 
-	@Getter @Setter String templateContent;
-
+	@Getter @Setter private String templateContent;
+	@Getter @Setter private String collectionId;
 }
