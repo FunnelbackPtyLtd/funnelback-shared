@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="nofollow" />
+	<link rel="stylesheet" media="screen" href="css/search.css" type="text/css" />
+	
+	<script type="text/javascript" src="js/publicui.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="js/json-template/json-template.js"></script>
+	<script type="text/javascript" src="resources/shakespeare-lear/search.js"></script>
+	
+	
+	<title>Funnelback Search</title>
+
+	<style type="text/css">
+		li.even h3 {
+			border: solid 2px #dddddd;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	
+
+	<!-- NO QUERY SPECIFIED -->
+	<div id="fb-initial" style="display:none">
+		<a href="http://funnelback.com/"><img src="img/funnelback.png" alt="Funnelback logo"></a>
+	</div>
+	
+	<!-- SEARCH LOGO -->
+	<div><a id="fb-logo" href="http://funnelback.com/"><img	src="img/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
+	
+	<!-- QUERY FORM -->
+	
+	<div id="fb-queryform">
+		<form method="GET">
+			<div>
+				<label for="query" style="text-indent: -9999em;">Search</label>
+				<input name="query" id="query" type="text" value="" accesskey="q" />
+				<input type="submit" value="Search" />
+			
+				<input type="hidden" name="collection" value="shakespeare-lear" />
+				<input type="hidden" name="profile" value="_default" />
+			</div>
+		</form>
+	</div>
+
+
+	<div id="template"></div>
+
+</body>
+</html>
