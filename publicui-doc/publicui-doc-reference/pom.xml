@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.funnelback.publicui.doc</groupId>
+	<artifactId>publicui-doc-reference</artifactId>
+	<version>10.2.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Java Public UI for Funnelback - Reference doco</name>
+	<parent>
+		<groupId>com.funnelback.publicui.doc</groupId>
+		<artifactId>publicui-doc-parent</artifactId>
+		<version>10.2.0-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.11</version>
+				<configuration>
+					<htmlStylesheet>style.css</htmlStylesheet>
+					<chunkedOutput>true</chunkedOutput>
+					<xincludeSupported>true</xincludeSupported>
+					<postProcess>
+						<copy todir="target/docbkx/xhtml">
+							<fileset dir="src/docbkx/style" includes="*" />
+						</copy>
+						<copy todir="target/docbkx/html">
+							<fileset dir="src/docbkx/style" includes="*" />
+						</copy>
+					</postProcess>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>generate-xhtml</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
