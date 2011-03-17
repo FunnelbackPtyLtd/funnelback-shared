@@ -53,13 +53,23 @@
 	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
 		<property name="order" value="0" />
 	</bean>
-	<bean class="com.funnelback.publicui.web.views.form.CollectionFormViewResolver">
-		<property name="order" value="1" />
-		<!-- property name="viewClass" value="com.funnelback.publicui.web.views.form.RawContentCollectionFormView" / -->
-		<!-- property name="viewClass" value="com.funnelback.publicui.web.views.form.JavascriptCollectionFormView" / -->
-		<!-- property name="viewClass" value="com.funnelback.publicui.web.views.form.SoyCollectionFormView" / -->
-		<property name="viewClass" value="com.funnelback.publicui.web.views.form.EJSCollectionFormView" />
-		<property name="cache" value="false" />
+	
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+  		<property name="order" value="1" />
+  		<property name="viewClass" value="com.funnelback.publicui.web.views.form.JstlCollectionFormView" />
+  		<property name="prefix" value="forms/"/>
+  		<property name="suffix" value=".jsp"/>
 	</bean>
+
+	<!-- 
+	<bean class="com.funnelback.publicui.web.views.form.CollectionFormViewResolver">
+		<property name="order" value="2" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.RawContentCollectionFormView" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.JavascriptCollectionFormView" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.SoyCollectionFormView" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.EJSCollectionFormView" />
+		<property name="viewClass" value="com.funnelback.publicui.web.views.form.JstlCollectionFormView" />		
+		<property name="cache" value="false" />
+	</bean -->
 
 </beans>

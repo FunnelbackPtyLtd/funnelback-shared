@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en" id="implementation-notes">
+<part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+	xml:id="implementation-notes" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 	<title>Implementation notes</title>
 	
-	<chapter id="meta-dates">
+	<chapter xml:id="meta-dates">
 		<title>Date parameters (<literal>meta_(d|d1|d2|d3|d4|w1|w2|x|y|z)</literal>)</title>
 
 		<para>The Public UI allows passing date contraints to the query, expressed as <literal>meta_*</literal> parameters.</para>
 		<para><literal>d, d1, d2, d3, d4</literal> are documented in the product doco, but <literal>w1, w2, x, y, z</literal> aren't.</para>
 		
-		<section id="meta-dates-date-constraints">
+		<section xml:id="meta-dates-date-constraints">
 			<title>Date constraints (<literal>d, d1, d2, d3, d4</literal>)</title>
 			<para>(Check the product doco for details about these parameters).</para>
 			
@@ -32,7 +36,7 @@
 			</para>
 		</section>
 		
-		<section id="meta-dates-text-based-date-constraints">
+		<section xml:id="meta-dates-text-based-date-constraints">
 			<title>Text-based date constraints (<literal>x, y, z</literal>)</title>
 			<para>
 				As seen on the Perl code there is some processing related to text-based date constraint and <literal>x, y, z</literal> metadata classes:
@@ -69,12 +73,12 @@
 			</para>
 			
 			<para>
-				Unfortunately nobody was able to figure out what that was supposed to do (Check <ulink url="" type="issue">FUN-65</ulink>)
+				Unfortunately nobody was able to figure out what that was supposed to do (Check <link xlink:href="https://jira.funnelback.com/browse/FUN-65">FUN-65</link>)
 				so it has NOT been re-implemented.
 			</para>
 		</section>
 		
-		<section id="event-search">
+		<section xml:id="event-search">
 			<title>Event search (<literal>w1, w2</literal>)</title>
 			<para>(Check the PADRE doco for details about this feature.)</para>
 			
@@ -88,7 +92,7 @@
 		</section>
 	</chapter>
 	
-	<chapter id="meta-parameters-operators">
+	<chapter xml:id="meta-parameters-operators">
 		<title>Meta parameters operators (<literal>or, sand, and, ...</literal>)</title>
 		
 		<para>
@@ -98,7 +102,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="environment-variables">
+	<chapter xml:id="environment-variables">
 		<title>Environment variables</title>
 		
 		<para>
@@ -108,7 +112,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="passthrough-parameters">
+	<chapter xml:id="passthrough-parameters">
 		<title>Pass-through parameters</title>
 		
 		<para>
@@ -119,7 +123,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="meta-aliases">
+	<chapter xml:id="meta-aliases">
 		<title>Meta classes aliases (<literal>site:, allinurl:, link:, filetype:</literal>)</title>
 		
 		<para>
@@ -157,7 +161,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="clive-parameters">
+	<chapter xml:id="clive-parameters">
 		<title><literal>clive</literal> parameters</title>
 		
 		<para>The <literal>clive</literal> parameter is used to contraint search to specific components of a meta collection.</para>
@@ -190,16 +194,16 @@ fileshare]]>
 		</para>
 	</chapter>
 	
-	<chapter id="synonyms">
+	<chapter xml:id="synonyms">
 		<title>Synonyms</title>
 		
 		<para>
 			It has been decided that the synonyms feature will be implemented in PADRE, instead of re-implemting it in the Java UI.
-			Please check <ulink url="" type="issue">FUN-3368</ulink> for the details.
+			Please check <link xlink:href="https://jira.funnelback.com/browse/FUN-3368">FUN-3368</link> for the details.
 		</para>
 	</chapter>
 	
-	<chapter id="pseudo-live-links">
+	<chapter xml:id="pseudo-live-links">
 		<title>Pseudo live links</title>
 		
 		<para>
@@ -216,7 +220,7 @@ fileshare]]>
 		</para>
 	</chapter>
 	
-	<chapter id="contextual-navigation">
+	<chapter xml:id="contextual-navigation">
 		<title>Contextual Navigation</title>
 		
 		<para>
@@ -249,10 +253,10 @@ fileshare]]>
 		</para>
 	</chapter>
 	
-	<chapter id="cgi-transforms">
+	<chapter xml:id="cgi-transforms">
 		<title>CGI Transforms</title>
 		
-		<section id="cgi-transforms-overview">
+		<section xml:id="cgi-transforms-overview">
 			<title>Overview</title>
 			<para>
 				CGI Transforms in the Perl UI allowed users to add/change/remove query string parameters/values depending of a configuration file (See the product doco for more details).
@@ -263,13 +267,13 @@ fileshare]]>
 			</para>
 			
 			<para>
-				Using <ulink url="http://code.google.com/p/urlrewritefilter">URLRewriteFilter</ulink> has been investigated but it doesn't deal properly with query string parameters
-				(See <ulink url="https://groups.google.com/d/topic/urlrewrite/oHcnjCVF_ss/discussion">here</ulink> and
-				<ulink url="https://groups.google.com/d/topic/urlrewrite/6jWgBh452P0/discussion">here</ulink>) probably because of the aforementioned difficulty.
+				Using <link xlink:href="http://code.google.com/p/urlrewritefilter">URLRewriteFilter</link> has been investigated but it doesn't deal properly with query string parameters
+				(See <link xlink:href="https://groups.google.com/d/topic/urlrewrite/oHcnjCVF_ss/discussion">here</link> and
+				<link xlink:href="https://groups.google.com/d/topic/urlrewrite/6jWgBh452P0/discussion">here</link>) probably because of the aforementioned difficulty.
 			</para>
 			
 			<para>
-				The chosen approach is to write a <literal><ulink url="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</ulink></literal>
+				The chosen approach is to write a <literal><link xlink:href="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</link></literal>
 				that will override the methods related to getting request parameters to &quot;simulate&quot; the fact that some parameters have been altered. This seems to be the recommended way
 				of manipulating a request object.
 			</para>
@@ -277,7 +281,7 @@ fileshare]]>
 			<para>This wrapper is used with a servlet Filter that wraps the original request in it if the target collection uses CGI Transforms.</para>
 		</section>
 		
-		<section id="cgi-transforms-parsing">
+		<section xml:id="cgi-transforms-parsing">
 			<title>Parsing the <literal>cgi_transform.cfg</literal> file</title>
 			
 			<para>
@@ -293,17 +297,17 @@ fileshare]]>
 			
 			<para>
 				This approach makes implementing a new type of rule easy. All you'll need to do is:
-				<itemizedlist>
-					<listitem>Decide the syntax in the <literal>cgi_transform.cfg</literal></listitem>
-					<listitem>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</listitem>
-					<listitem>Code the new <literal>Operation</literal> to apply the parameter transformation</listitem>
-					<listitem>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</listitem>
-				</itemizedlist>
+				<simplelist>
+					<member>Decide the syntax in the <literal>cgi_transform.cfg</literal></member>
+					<member>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</member>
+					<member>Code the new <literal>Operation</literal> to apply the parameter transformation</member>
+					<member>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</member>
+				</simplelist>
 			</para>
 		</section>
 	</chapter>
 	
-	<chapter id="quicklinks">
+	<chapter xml:id="quicklinks">
 		<title>Quick Links</title>
 		
 		<para>
@@ -312,7 +316,7 @@ fileshare]]>
 		</para>
 	</chapter>
 	
-	<chapter id="faceted-navigation">
+	<chapter xml:id="faceted-navigation">
 		<title>Faceted navigation</title>
 		
 		<section>
@@ -322,12 +326,12 @@ fileshare]]>
 				<title>Configuration file locations</title>
 				<para>
 					A collection can have multiple <literal>faceted_navigation.(cfg|xml)</literal> configuration files:
-					<itemizedlist>
-						<listitem>A global one in <literal>conf/faceted_navigation.cfg</literal></listitem>
-						<listitem>Per-profile ones in <literal>conf/&lt;profile&gt;/faceted_navigation.cfg</literal></listitem>
-						<listitem>A global live one in <literal>data/&lt;collection&gt;live/idx/faceted_navigation.cfg</literal></listitem>
-						<listitem>Per-profile live ones in <literal>data/&lt;collection&gt;live/idx/&lt;profile&gt;/faceted_navigation.cfg</literal></listitem>
-					</itemizedlist>
+					<simplelist>
+						<member>A global one in <literal>conf/faceted_navigation.cfg</literal></member>
+						<member>Per-profile ones in <literal>conf/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
+						<member>A global live one in <literal>data/&lt;collection&gt;live/idx/faceted_navigation.cfg</literal></member>
+						<member>Per-profile live ones in <literal>data/&lt;collection&gt;live/idx/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
+					</simplelist>
 					
 					The ones in <literal>conf/</literal> should only be used by the Admin UI. The Public UI should use the ones in <literal>live/</literal> to acquire
 					the faceted navigation settings.
@@ -383,18 +387,18 @@ for (Facet f: facets) {
 		</section>
 	</chapter>
 	
-	<chapter id="hook-scripts">
+	<chapter xml:id="hook-scripts">
 		<title>Query transforms / hook scripts</title>
 		
 		<para>
 			The Perl UI has the ability to use custom scripts for various purposes:
-			<itemizedlist>
-				<listitem>Query transforms: Update the query expression with an arbitrary Perl script (See the product doco for more details),</listitem>
-				<listitem>
+			<simplelist>
+				<member>Query transforms: Update the query expression with an arbitrary Perl script (See the product doco for more details),</member>
+				<member>
 					Custom hook scripts: Since 10.1, a set of custom hook script can be defined per collection. This hook scripts will be called at various stages of the query lifecycle
 					(See Confluence for more information).
-				</listitem>
-			</itemizedlist>
+				</member>
+			</simplelist>
 			
 			Since these two features are similar I chose to merge them in a single feature: Custom per-collection Groovy hook scripts.
 		</para>
@@ -406,25 +410,22 @@ for (Facet f: facets) {
 		
 		<para>
 			To add new hooks in the future, we'll have to:
-			<itemizedlist>
-				<listitem>Add a value to the <literal>com.funnelback.publicui.search.model.collection.Collection.Hook</literal> enum</listitem>
-				<listitem>Update <literal>com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner</literal> with relevant code for this hook (if needed)</listitem>
-				<listitem>
+			<simplelist>
+				<member>Add a value to the <literal>com.funnelback.publicui.search.model.collection.Collection.Hook</literal> enum</member>
+				<member>Update <literal>com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner</literal> with relevant code for this hook (if needed)</member	>
+				<member>
 					Update the application configuration (<literal>applicationContext.xml</literal>) to instantiate any relevant <literal>GenericHookScriptRunner</literal>
 					on the correct phases.
-				</listitem>
-			</itemizedlist>
+				</member>
+			</simplelist>
 			
 			<literal>GenericHookScriptRunner</literal> is a class that is able to run a given hook script, for a given phase (It implements <literal>InputProcessor</literal>, 
 			<literal>OutputProcessor</literal> and <literal>DataFetcher</literal> so it's possible to use it in any phase)
 		</para>
 		
-		<section>
-		
-		</section>
 	</chapter>
 
-	<chapter id="hostname-restriction">
+	<chapter xml:id="hostname-restriction">
 		<title>Hostname based access restriction</title>
 		
 		<para>
@@ -449,20 +450,20 @@ abc.com.au=abc-news,abc-shop]]>
 		</para>
 	</chapter>
 	
-	<chapter id="i18n">
+	<chapter xml:id="i18n">
 		<title>Internationalisation</title>
 		
-		<section id="i18n-overview">
+		<section xml:id="i18n-overview">
 			<title>Overview</title>
 			<para>
-				The new UI supports localisation using the <ulink url="http://www.gnu.org/software/gettext/">GNU gettext</ulink> library. This solution has been chosen over a pure
+				The new UI supports localisation using the <link xlink:href="http://www.gnu.org/software/gettext/">GNU gettext</link> library. This solution has been chosen over a pure
 				Java (Spring) solution because:
-				<itemizedlist>
-					<listitem>It's cross language, meaning that we can re-use the same system to add i18n support to other components of Funnelback (PADRE ?)</listitem>
-					<listitem>It's using the default (en) translations as keys for the messages, preventing the use of crypting message keys in the code</listitem>
-				</itemizedlist>
+				<simplelist>
+					<member>It's cross language, meaning that we can re-use the same system to add i18n support to other components of Funnelback (PADRE ?)</member>
+					<member>It's using the default (en) translations as keys for the messages, preventing the use of crypting message keys in the code</member>
+				</simplelist>
 				
-				It's especially using the <ulink url="http://code.google.com/p/gettext-commons/">gettext-commons</ulink> Java implementation.			
+				It's especially using the <link xlink:href="http://code.google.com/p/gettext-commons/">gettext-commons</link> Java implementation.			
 			</para>
 			
 			<para>
@@ -471,7 +472,7 @@ abc.com.au=abc-news,abc-shop]]>
 			</para>
 		</section>
 		
-		<section id="i18n-gettext">
+		<section xml:id="i18n-gettext">
 			<title>Using gettext</title>
 			
 			<para>
@@ -480,7 +481,7 @@ abc.com.au=abc-news,abc-shop]]>
 			</para>
 			
 			<para>
-				The translation functions comes from the <ulink url="http://gettext-commons.googlecode.com/svn/apidocs/org/xnap/commons/i18n/I18n.html">I18n</ulink> class and are
+				The translation functions comes from the <link xlink:href="http://gettext-commons.googlecode.com/svn/apidocs/org/xnap/commons/i18n/I18n.html">I18n</link> class and are
 				pretty self-descriptive.
 			</para>
 			
@@ -492,18 +493,18 @@ abc.com.au=abc-news,abc-shop]]>
 			
 			<para>
 				At this point the translation is done by editing the <emphasis>PO</emphasis> files manually, or using a dedicated tool such as
-				<ulink url="http://www.poedit.net/">POEdit</ulink>.
+				<link xlink:href="http://www.poedit.net/">POEdit</link>.
 			</para>
 			
 			<para>
 				On the build step, two other Ant tasks are called:
-				<itemizedlist>
-					<listitem>The first one generate the default translations (en) using directly the keys files (As the keys are the english messages)</listitem>
-					<listitem>
+				<simplelist>
+					<member>The first one generate the default translations (en) using directly the keys files (As the keys are the english messages)</member>
+					<member>
 						The second one builds a set of Java classes, one for each language. This classes are copied to the application classes folder and embedded
 						in the application.
-					</listitem>
-				</itemizedlist>
+					</member>
+				</simplelist>
 			</para>
 		</section>
 	</chapter>

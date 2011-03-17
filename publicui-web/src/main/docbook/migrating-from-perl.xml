@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="migrating-from-perl" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+<part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+	xml:id="migrating-from-perl" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 	<title>Migrating from the Perl UI</title>
 	
-	<section>This section will list some points of interest when migrating from the Perl UI.</section>
+	<partintro>
+		<para>This section will list some points of interest when migrating from the Perl UI.</para>
+	</partintro>
 	
-	<chapter id="cgi-transforms">
+	<chapter xml:id="migrating-cgi-transforms">
 		<title>CGI transforms</title>
 		
 		<para>
@@ -15,7 +20,7 @@
 		<para>You'll probably need to check that your existing CGI Transforms works as expected with the new Public UI</para>
 	</chapter>
 	
-	<chapter id="faceted-nav-transforms">
+	<chapter xml:id="faceted-nav-transforms">
 		<title>Faceted navigation transforms</title>
 		
 		<para>
@@ -24,7 +29,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="query-transforms">
+	<chapter xml:id="query-transforms">
 		<title>Query transforms</title>
 		
 		<para>
@@ -33,7 +38,7 @@
 		</para>
 	</chapter>
 	
-	<chapter id="legacy-xml">
+	<chapter xml:id="legacy-xml">
 		<title>Using legacy XML format</title>
 		
 		<para>
@@ -44,10 +49,10 @@
 		<para>
 			Most of the format is correctly emulated but some tags are missing because it was either too complicated to match the new structure with the old one,
 			or because the feature was mostly unused. This is the case for:
-			<itemizedlist>
-				<listitem>Faceted navigation</listitem>
-				<listitem>Tier bars</listitem>
-			</itemizedlist>
+			<simplelist>
+				<member>Faceted navigation</member>
+				<member>Tier bars</member>
+			</simplelist>
 		</para>
 	</chapter>	
 

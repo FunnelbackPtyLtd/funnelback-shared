@@ -151,6 +151,8 @@ public class SearchController {
 		if ("xml".equals(viewSuffix) || "json".equals(viewSuffix)
 				|| "legacy".equals(viewSuffix) || "freemarker".equals(viewSuffix)) {
 			viewName = viewSuffix + "View";
+		} else if ("jstl".equals(viewSuffix)) {
+			viewName = question.getCollection().getId()	+ ((question.getProfile() != null) ? "_"+question.getProfile() : "");
 		} else {
 			viewName = question.getCollection().getId() + ":" + viewSuffix;
 		}
