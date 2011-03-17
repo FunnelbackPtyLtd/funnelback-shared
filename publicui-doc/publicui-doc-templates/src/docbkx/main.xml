@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+<!ENTITY engine-jsp SYSTEM "engines/jsp.xml">
+]>
+<book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+
+	<info>
+		<title>Templating engines investigation</title>
+
+		<productname>Funnelback Public UI</productname>
+
+		<releaseinfo>2011</releaseinfo>
+
+		<mediaobject>
+			<imageobject role="fo">
+				<imagedata align="center" fileref="images/logo-pdf.png"
+					format="PNG" width="240" />
+			</imageobject>
+		</mediaobject>
+
+		<authorgroup>
+			<author>
+				<personname>
+					<firstname>Nicolas</firstname>
+					<surname>Guillaumin</surname>
+				</personname>
+				<email>nguillaumin@funnelback.com</email>
+			</author>
+		</authorgroup>
+
+		<copyright>
+			<year>2011</year>
+			<holder>Funnelback</holder>
+		</copyright>
+
+	</info>
+
+	<toc />
+	
+	<preface xml:id="introduction">
+		<title>Foreword</title>
+		
+		<para>
+			Intro -HERE-.
+		</para>
+	</preface>
+	
+	&engine-jsp;
+	
+</book>
