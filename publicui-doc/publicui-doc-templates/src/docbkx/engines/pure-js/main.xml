@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+	xml:id="engine-purejs" xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+	<title>Pure JS</title>
+	
+	<section>
+		<title>Description</title>
+		
+		<para>
+			This Javascript engine does in-place replacement: The template is a HTML fragment which will gets filled with content.
+			The rules to insert content into the HTML are called "directives", and are CSS-selector based. For example the following directive
+			will insert the query term into the query text input: <code>'input[name="query"]@value' = 'response.resultPacket.query'</code>.
+		</para>
+		
+		<para>
+			Pros:
+			<simplelist>
+				<member>There is no directives to learn as the tempalte is pure HTML.</member>
+				<member>
+					The directive syntax uses CSS selectors, which are easy to understand and generally well known of web developers
+					(Popular Javascript libraries such as jQuery use the same syntax)
+				</member>
+			</simplelist>
+			
+			Cons:
+			<simplelist>
+				<member>
+					The directives syntax is difficult to read: It's hard to get an idea of which data goes where, compared to a
+					templating system in which template and data placeholders are mixed
+				</member>
+				<member>
+					As it's logic-less, the only way to extend it is to map CSS selectors to functions (See examples), making
+					it difficult to extend.
+				</member>
+			</simplelist>
+			
+		</para>
+
+	</section>
+	
+	<section>
+		<title>Sample template</title>
+		<para>
+			A Pure-JS template is simply an HTML fragment, for example:
+			<programlisting language="html"><xi:include href="engines/pure-js/template.html" parse="text" /></programlisting>
+			
+			Then the list of directives to fill this template with content:
+			<programlisting language="javascript"><xi:include href="engines/pure-js/directives.js" parse="text" /></programlisting>		
+		</para>
+	</section>
+
+		
+
+</chapter>

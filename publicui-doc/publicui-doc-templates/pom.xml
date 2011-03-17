@@ -24,17 +24,20 @@
 				<version>2.0.11</version>
 				<configuration>
 					<htmlStylesheet>style.css</htmlStylesheet>
-					<highlightSource>true</highlightSource>
 					<chunkedOutput>true</chunkedOutput>
+					<xincludeSupported>true</xincludeSupported>
 					<postProcess>
 						<copy todir="target/docbkx/xhtml">
-							<fileset dir="src/docbkx" includes="style.css" />
+							<fileset dir="src/docbkx/style" includes="*" />
+						</copy>
+						<copy todir="target/docbkx/html">
+							<fileset dir="src/docbkx/style" includes="*" />
 						</copy>
 					</postProcess>
 				</configuration>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<phase>generate-resources</phase>
 						<goals>
 							<goal>generate-xhtml</goal>
 						</goals>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book [
-<!ENTITY engine-jsp SYSTEM "engines/jsp.xml">
+<!ENTITY engine-jsp SYSTEM "engines/jsp/main.xml">
+<!ENTITY engine-purejs SYSTEM "engines/pure-js/main.xml">
 ]>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -47,6 +48,18 @@
 		</para>
 	</preface>
 	
+	<chapter xml:id="requirements">
+		<itemizedlist>
+			<listitem><para>Simple to use (for non-Java developers)</para></listitem>
+			<listitem><para>Flexible enough to allow arbitrary code snippets (See current PerlEval tag)</para></listitem>
+			<listitem><para>Provide a plugin mechanism to allow PnS / Customers to extend it</para></listitem>
+		</itemizedlist>
+			
+		
+	</chapter>
+	
 	&engine-jsp;
+	
+	&engine-purejs;
 	
 </book>

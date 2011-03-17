@@ -37,9 +37,10 @@ pre {
 pre.programlisting {
   font-size:     10pt;
   padding:       7pt 3pt;
-  border:        1pt solid black;
-  background:    #eeeeee;
+  border:        1pt solid #ddd;
+  background:    #eee;
   clear:         both;
+  border-radius: 3px;
 }
 
 div.table {
@@ -96,4 +97,21 @@ span.productname {
     font-size: 200%;
     font-weight: bold; 
     font-family: Verdana, Arial, helvetica, sans-serif;
+}
+
+table.simplelist {
+	padding-left: 3em;
+}
+
+table.simplelist td {
+	padding-left: 1em;
+	background-image: url('bullet-red.png');
+	background-position: 0 .5em;
+	background-repeat: no-repeat;
+}
+
+p code, table code {
+	background-color: #f8f8ff;
+	padding: .2em;
+	border: 1px solid #dedede;
 }
