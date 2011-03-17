@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>publicui-doc-templates</module>
+		<module>publicui-doc-reference</module>
 	</modules>
 
     <build>

@@ -54,30 +54,6 @@
 				<artifactId>cobertura-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>com.agilejava.docbkx</groupId>
-				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.11</version>
-				<configuration>
-					<sourceDirectory>src/main/docbook</sourceDirectory>
-					<htmlStylesheet>style.css</htmlStylesheet>
-					<highlightSource>true</highlightSource>
-					<chunkedOutput>true</chunkedOutput>
-					<postProcess>
-						<copy todir="target/docbkx/xhtml">
-							<fileset dir="src/main/docbook" includes="style.css" />
-						</copy>
-					</postProcess>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>pre-site</phase>
-						<goals>
-							<goal>generate-xhtml</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
