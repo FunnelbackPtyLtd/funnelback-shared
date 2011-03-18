@@ -23,6 +23,11 @@
 				<artifactId>docbkx-maven-plugin</artifactId>
 				<configuration>
 					<chunkedOutput>false</chunkedOutput>
+					<postProcess>
+						<copy todir="target/docbkx/xhtml/resources">
+							<fileset dir="src/docbkx/resources/" includes="*.png" />
+						</copy>
+					</postProcess>
 				</configuration>
 			</plugin>
 		</plugins>

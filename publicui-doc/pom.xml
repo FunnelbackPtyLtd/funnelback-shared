@@ -29,13 +29,9 @@
 						<highlightSource>true</highlightSource>
 						<chunkedOutput>true</chunkedOutput>
 						<xincludeSupported>true</xincludeSupported>
-						
 						<postProcess>
 							<copy todir="target/docbkx/xhtml">
 								<fileset dir="src/docbkx/style/" includes="*" />
-							</copy>
-							<copy todir="target/docbkx/xhtml/resources">
-								<fileset dir="src/docbkx/resources/" includes="*.png" />
 							</copy>
 						</postProcess>
 					</configuration>
