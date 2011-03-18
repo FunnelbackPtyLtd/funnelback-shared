@@ -10,15 +10,46 @@
 	<para>Here are the relevant criteria to consider when choosing our template engine.</para>
 	
 	<simplesect>
+		<title>Simplicity &amp; usability</title>
+		
+		<para>
+			We want to keep it simple as NickScript is currently. The language should be easy to understand and fast to learn (at least
+			for the basics). It shouldn't require specific skills other than web design / basic web developments. 
+		</para>
+		<para>
+			Form development should be the easiest possible, with clear error messages in case of errors.
+		</para>
+	</simplesect>
+	
+	<simplesect>
+		<title>Flexibility</title>
+		
+		<para>
+			The system should be flexible enough to cover unexpected use case. It should be able to provide an <code>EvalPerl</code> like feature
+			in a secure fashion.
+		</para>
+		
+		<para>
+			The system should be easily extensible with a plug-in mechanism.
+		</para>
+	</simplesect>
+	
+	<simplesect>
 		<title>Performance</title>
 		
-		<para>Performance...</para>
+		<para>
+			Rendering a template should be quick, including on the client-side if we choose a Javascript based template engine. How quick ?
+			let's say we want to keep it around 10ms for a start for the default form file.
+		</para>
 	</simplesect>
 	
 	<simplesect>
 		<title>Support &amp; community</title>
 		
-		<para>Support &amp; community...</para>
+		<para>
+			Relying on a third party template system saves us having to write and maintain our own. We have to make sure that the one we choose is
+			backed up by a solid community. Relases should be made regularly to fix bugs / add new features, and we have to be able to get community support.
+		</para>
 	</simplesect>
 
 </chapter>

@@ -24,6 +24,9 @@
 				<configuration>
 					<chunkedOutput>false</chunkedOutput>
 					<postProcess>
+						<copy todir="target/docbkx/xhtml">
+							<fileset dir="src/docbkx/style/" includes="*" />
+						</copy>
 						<copy todir="target/docbkx/xhtml/resources">
 							<fileset dir="src/docbkx/resources/" includes="*.png" />
 						</copy>

@@ -91,6 +91,7 @@
 		<xi:include href="engines/jsp/main.xml" />
 		<xi:include href="engines/pure-js/main.xml" />
 		<xi:include href="engines/json-template/main.xml" />
+		<xi:include href="engines/google-closure/main.xml" />
 	
 	</part>
 	
