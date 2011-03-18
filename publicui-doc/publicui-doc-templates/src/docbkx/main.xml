@@ -4,7 +4,8 @@
 <!ENTITY engine-purejs SYSTEM "engines/pure-js/main.xml">
 ]>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/TR/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" 
 	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
 	<info>
@@ -15,9 +16,8 @@
 		<releaseinfo>2011</releaseinfo>
 
 		<mediaobject>
-			<imageobject role="fo">
-				<imagedata align="center" fileref="images/logo-pdf.png"
-					format="PNG" width="240" />
+			<imageobject role="xhtml">
+				<imagedata align="center" fileref="fb-logo.png" format="PNG" />
 			</imageobject>
 		</mediaobject>
 
@@ -44,22 +44,54 @@
 		<title>Foreword</title>
 		
 		<para>
-			Intro -HERE-.
+			The new Public UI is written in Java for various reason, the main one being performance. Being written in Java means that we
+			can't run Perl code anymore, so will need to come up with a replacement solution for form files (NickScript).  
+		</para>
+		
+		<para>
+			The first solution that comes to mind is to re-implement NickScript in Java. But it has some shortcomings:
+			<simplelist>
+				<member>
+					The less code we have to develop and maintain, the better. There are already several generic template
+					engine out there (Think <emphasis>Freemarker</emphasis> on the Java world, or <emphasis>Smarty</emphasis> for PHP).
+					Why not try to integrate an existing template engine instead, and benefit of the existing features and support ? 
+				</member>
+				<member>
+					Because NickScript implements its own tags, it's difficult to do things that aren't supported by the core tags: You
+					either have to write your own plugin, or use <literal>EvalPerl</literal>,
+				</member>
+				<member>
+					<literal>EvalPerl</literal> is an obvious security hole. For what I
+					<ulink url="http://wiki.funnelback.com:8080/display/RnD/Public+UI+rewrite+-+the+EvalPerl+problem">observed</ulink>
+					it's used mostly to do formatting. Our template engine should make data formatting easier, instead of relying
+					on <literal>EvalPerl</literal>. On the other hand form developers will always need a way to evaluate some arbitrary
+					code, so we must keep this feature but in a more secure way,
+				</member>
+				<member>
+					The fixed tag order is a problem: You have to be aware of the tag execution order to do complex things in NickScript.
+					(On the other hand if we have to re-implement it we'll probably remove this constraint).
+				</member>
+			</simplelist>
+			
+			Whereas re-implementing NickScript should be investigated, it's worth considering alternate solutions.			
 		</para>
 	</preface>
 	
-	<chapter xml:id="requirements">
-		<itemizedlist>
-			<listitem><para>Simple to use (for non-Java developers)</para></listitem>
-			<listitem><para>Flexible enough to allow arbitrary code snippets (See current PerlEval tag)</para></listitem>
-			<listitem><para>Provide a plugin mechanism to allow PnS / Customers to extend it</para></listitem>
-		</itemizedlist>
-			
+	<part>
+		<title>Alternate solutions and general considerations</title>
+		<xi:include href="alternate-solutions.xml" />
+		<xi:include href="data-model.xml" />
+		<xi:include href="criteria.xml" />
+	</part>
+	
+	<part>
+
+		<title>Specific template engines investigation</title>
 		
-	</chapter>
+		<xi:include href="engines/jsp/main.xml" />
+		<xi:include href="engines/pure-js/main.xml" />
+		<xi:include href="engines/json-template/main.xml" />
 	
-	&engine-jsp;
-	
-	&engine-purejs;
+	</part>
 	
 </book>

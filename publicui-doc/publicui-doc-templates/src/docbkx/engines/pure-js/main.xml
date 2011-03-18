@@ -17,22 +17,25 @@
 		<para>
 			Pros:
 			<simplelist>
-				<member>There is no directives to learn as the tempalte is pure HTML.</member>
+				<member>There is no directives to learn as the template is pure HTML,</member>
 				<member>
 					The directive syntax uses CSS selectors, which are easy to understand and generally well known of web developers
-					(Popular Javascript libraries such as jQuery use the same syntax)
+					(Popular Javascript libraries such as jQuery use the same syntax).
 				</member>
 			</simplelist>
 			
 			Cons:
 			<simplelist>
 				<member>
-					The directives syntax is difficult to read: It's hard to get an idea of which data goes where, compared to a
-					templating system in which template and data placeholders are mixed
+					As the template is separated from the directives it's hard to get an idea of which data goes where, compared to a template
+					system in which template and data placeholders are mixed,
 				</member>
 				<member>
-					As it's logic-less, the only way to extend it is to map CSS selectors to functions (See examples), making
-					it difficult to extend.
+					As it's logic-less, the only way to extend it is to map CSS selectors to functions (See examples), making it difficult to extend.
+				</member>
+				<member>
+					It does in-place replacement, meaning that we can't run it twice on the same HTML DOM tree if we want to use it
+					on the client side. Once the template has been processed, it's lost.
 				</member>
 			</simplelist>
 			
@@ -43,11 +46,11 @@
 	<section>
 		<title>Sample template</title>
 		<para>
-			A Pure-JS template is simply an HTML fragment, for example:
-			<programlisting language="html"><xi:include href="engines/pure-js/template.html" parse="text" /></programlisting>
+			A Pure-JS template is simply an <quote>empty</quote> HTML fragment, for example:
+			<programlisting language="html"><xi:include href="template.html" parse="text" /></programlisting>
 			
 			Then the list of directives to fill this template with content:
-			<programlisting language="javascript"><xi:include href="engines/pure-js/directives.js" parse="text" /></programlisting>		
+			<programlisting language="javascript"><xi:include href="directives.js" parse="text" /></programlisting>		
 		</para>
 	</section>
 

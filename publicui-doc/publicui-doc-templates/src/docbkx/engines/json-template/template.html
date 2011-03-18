@@ -1,0 +1,36 @@
+<!-- RESULTS SUMMARY -->
+<div id="fb-summary">
+  {.section spell}
+    <!-- Did you mean...? -->
+    <span id="fb-spelling">
+      Did you mean <a href="{url}">{text}</a> ?
+    </span>
+  {.end}
+</div>
+
+...
+
+{.repeated section results}
+  <!-- EACH RESULT -->
+  <li class="result">
+    <!-- QUERY BIASED SUMMARY (WITH DATE)-->
+    <p>
+      <span class="fb-date">{date|utcformat}</span>
+      <span class="fb-summary">{summary}</span>
+    </p>
+
+    ...
+    
+  </li>
+{.or}
+  <!-- NO RESULTS -->
+  <li id="fb-no-results">
+    Your search for <strong>{query}</strong> did not return any results.
+    <span>Please ensure that you:</span>
+    <ul>
+      <li>are not using any advanced search operators like + - | " etc.</li> 
+      <li>expect this document to exist within the collection <em>{collection}</em></li>
+      <li>have permission to see any documents that may match your query</li>
+    </ul>
+  </li>
+{.end}

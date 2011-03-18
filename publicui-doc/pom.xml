@@ -17,34 +17,38 @@
 		<module>publicui-doc-reference</module>
 	</modules>
 
-    <build>
-        <pluginManagement>
-            <plugins>	
-                    <plugin>
-                        <groupId>com.agilejava.docbkx</groupId>
-                        <artifactId>docbkx-maven-plugin</artifactId>
-                        <version>2.0.11</version>
-                        <configuration>
-                            <htmlStylesheet>style.css</htmlStylesheet>
-                            <highlightSource>true</highlightSource>
-                            <chunkedOutput>true</chunkedOutput>
-                            <xincludeSupported>true</xincludeSupported> 
-                            <postProcess>
-                                <copy todir="target/docbkx/xhtml">
-                                    <fileset dir="src/docbkx/style/" includes="*" />
-                                </copy>
-                            </postProcess>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>generate-xhtml</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-        </plugins>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.agilejava.docbkx</groupId>
+					<artifactId>docbkx-maven-plugin</artifactId>
+					<version>2.0.11</version>
+					<configuration>
+						<htmlStylesheet>style.css</htmlStylesheet>
+						<highlightSource>true</highlightSource>
+						<chunkedOutput>true</chunkedOutput>
+						<xincludeSupported>true</xincludeSupported>
+						
+						<postProcess>
+							<copy todir="target/docbkx/xhtml">
+								<fileset dir="src/docbkx/style/" includes="*" />
+							</copy>
+							<copy todir="target/docbkx/xhtml/resources">
+								<fileset dir="src/docbkx/resources/" includes="*.png" />
+							</copy>
+						</postProcess>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>generate-xhtml</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
 		</pluginManagement>
 	</build>
 

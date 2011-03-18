@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+	xml:id="criteria" xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/TR/xlink"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+
+	<title>Criteria for choosing</title>
+	
+	<para>Here are the relevant criteria to consider when choosing our template engine.</para>
+	
+	<simplesect>
+		<title>Performance</title>
+		
+		<para>Performance...</para>
+	</simplesect>
+	
+	<simplesect>
+		<title>Support &amp; community</title>
+		
+		<para>Support &amp; community...</para>
+	</simplesect>
+
+</chapter>
