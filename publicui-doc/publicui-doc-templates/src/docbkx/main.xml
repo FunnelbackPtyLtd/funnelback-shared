@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book [
-<!ENTITY engine-jsp SYSTEM "engines/jsp/main.xml">
-<!ENTITY engine-purejs SYSTEM "engines/pure-js/main.xml">
-]>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
 	xmlns:xlink="http://www.w3.org/TR/xlink"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" 
@@ -45,7 +41,7 @@
 		
 		<para>
 			The new Public UI is written in Java for various reason, the main one being performance. Being written in Java means that we
-			can't run Perl code anymore, so will need to come up with a replacement solution for form files (NickScript).  
+      can't run Perl code anymore, so will need to come up with a replacement solution for form files (NickScript).  
 		</para>
 		
 		<para>
@@ -92,6 +88,10 @@
 		<xi:include href="engines/pure-js/main.xml" />
 		<xi:include href="engines/json-template/main.xml" />
 		<xi:include href="engines/google-closure/main.xml" />
+		<xi:include href="engines/embedded-js/main.xml" />
+		<xi:include href="engines/freemarker/main.xml" />
+		
+		<xi:include href="engines/other.xml" />
 	
 	</part>
 	

@@ -14,10 +14,10 @@
 		
 		<para>
 			We want to keep it simple as NickScript is currently. The language should be easy to understand and fast to learn (at least
-			for the basics). It shouldn't require specific skills other than web design / basic web developments. 
+			for the basics). It shouldn't require specific skills other than web design / basic web development. 
 		</para>
 		<para>
-			Form development should be the easiest possible, with clear error messages in case of errors.
+			Form development should be the easiest possible, with clear error messages in case of errors in the form file.
 		</para>
 	</simplesect>
 	
@@ -30,7 +30,7 @@
 		</para>
 		
 		<para>
-			The system should be easily extensible with a plug-in mechanism.
+			The system should be easy to extend, with a plug-in mechanism for example.
 		</para>
 	</simplesect>
 	
@@ -38,8 +38,8 @@
 		<title>Performance</title>
 		
 		<para>
-			Rendering a template should be quick, including on the client-side if we choose a Javascript based template engine. How quick ?
-			let's say we want to keep it around 10ms for a start for the default form file.
+			Rendering a template should be quick, including on the client-side if we choose a Javascript based template engine. But how quick do we want
+			it to be ? Could we consider 10ms to render a page reasonable ?
 		</para>
 	</simplesect>
 	
@@ -48,7 +48,7 @@
 		
 		<para>
 			Relying on a third party template system saves us having to write and maintain our own. We have to make sure that the one we choose is
-			backed up by a solid community. Relases should be made regularly to fix bugs / add new features, and we have to be able to get community support.
+			backed up by a solid community. Releases should be made regularly to fix bugs / add new features, and we have to be able to get community support.
 		</para>
 	</simplesect>
 

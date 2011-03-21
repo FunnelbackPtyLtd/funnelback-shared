@@ -42,6 +42,12 @@
 					<ulink url="http://phpjs.berlios.de/">phpjs</ulink> or <ulink url="http://j4p5.sourceforge.net/">j4p5</ulink>). That means
 					that we could re-use the same form files in Squiz too.
 				</member>
+				<member>
+					Some JS template engine don't require having a <emphasis>browser context</emphasis>: They don't use objects like <literal>window</literal>
+					or <literal>document</literal> and can process text without being run in a browser context. However, some engine like jQuery Templates require
+					a browser environment. It can be simulated using <ulink url="http://www.envjs.com/">EnvJS</ulink> for example. However in my experiments
+					I found it quite slow, and it adds a layer of complexity which doesn't help when debugging form files.
+				</member>
 			</simplelist>
 			
 			However it also has its drawbacks:
@@ -203,7 +209,7 @@ You have won $<%= value %>!
 		</para>
 	</section>
 	
-	<section>
+	<section id="directive-less-engines">
 		<title>Directive-less engines</title>
 		
 		<para>

@@ -9,7 +9,7 @@
 		<title>Description</title>
 
 		<para>
-			JSP is the standard <quote>web view</quote> technology that comes with Java. It's a kind of templae engine that gets compiled at run time
+			JSP is the standard <quote>web view</quote> technology that comes with Java. It's a kind of template engine that gets compiled at run time
 			into a Java class. The first version was a messy mix of HTML + Java code snippet, such as:
 			<programlisting language="jsp"><![CDATA[
 <html>
@@ -52,6 +52,7 @@
 			Pros:
 	        <simplelist>
 	            <member>It's based on the Java technology we're familiar with,</member>
+							<member>It's very well supported and documented because it's part of the Java platform,</member>
 	            <member>It's compiled by the application server (Jetty) as a Java class, which guarantees good performances as well as detailed compilation error messages,</member>
 	            <member>
 	            	The syntax of the tag libraries is very similar to NickScript tags: <code>&lt;prefix:Tag&gt;</code>. That means that we can imagine re-implement NickScript

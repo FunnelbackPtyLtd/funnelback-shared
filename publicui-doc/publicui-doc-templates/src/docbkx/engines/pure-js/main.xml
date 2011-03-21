@@ -15,6 +15,11 @@
 		</para>
 		
 		<para>
+			It's developed by a company called <ulink url="http://beebole.com">BeeBole</ulink> which makes a web-timesheet application. Pure-JS
+			has apparently been open-sourced from this product. There are regular commits and the mailing-list is active.
+		</para>
+		
+		<para>
 			Pros:
 			<simplelist>
 				<member>There is no directives to learn as the template is pure HTML,</member>
