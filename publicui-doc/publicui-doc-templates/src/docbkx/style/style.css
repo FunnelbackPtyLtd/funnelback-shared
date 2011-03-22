@@ -52,12 +52,19 @@ div.table {
 div.table table {
 	display: table;
 	width: 100%;
+	border-collapse: collapse;
 }
 
 div.table td {
 	padding-left: 7px;
 	padding-right: 7px;
 }
+
+div.table table th {
+	background-color: #eee;
+	padding: .5em;
+}
+
 
 .sidebar {
 	float: right;
@@ -112,6 +119,14 @@ p code,table code {
 	background-color: #eee;
 	padding: .1em;
 	border: 1px solid #ccc;
+	white-space: nowrap;
+	font-size: 10pt;
+}
+
+code.literal {
+	background-color: transparent;
+	padding: .1em;
+	border: none;
 	white-space: nowrap;
 	font-size: 10pt;
 }

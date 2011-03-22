@@ -19,13 +19,14 @@
 		
 		<para>
 			While it has the advantage of keeping things simple by not having to learn the data model, it's also very limited: If there isn't an existing
-			tag for your use case you have to write a plugin or rely on <code>EvalPerl</code>.
+			tag for your use case you have to write a plugin or rely on <code>EvalPerl</code>, and you have to learn the tags anyway.
 		</para>	
 		
 		<para>
 			Choosing to use an existing template engine instead of re-implementing NickScript changes that approach: Because these template engines are generic
-			by design there can't be a specific search-context <code>&lt;s:AfterSearchOnly /&gt;</code> tag. Instead the template engine provides a way to test
-			for the presence of a node in the data model, typically: <code>{#if PADRE_result_packet.results_summary.total_matching &gt; 0}...{/#if}</code>.
+			by design there can't be a specific business domain context <quote><code>&lt;s:AfterSearchOnly /&gt;</code></quote> tag. Instead the template engine
+			provides a way to test for the presence of a node in the data model, typically:
+			<code>{#if PADRE_result_packet.results_summary.total_matching &gt; 0}...{/#if}</code>.
 		</para>
 		
 		<para>
@@ -49,9 +50,10 @@
 				</imageobject>
 				<caption>
 					<para>
-						This mock-up shows a possible form design tool: On the left the form editor, pretty similar to the we already have, on the right
-						a preview of the data model for a specific search. The user can pick a node in the data model and drop it on his form. Depending of the
-						type of node he picked it generates different form tags.
+						This mock-up shows a possible form design tool: On the left there is the form editor, pretty similar to the one we already have,
+						on the right there is a preview of the data model for a specific search. The user can pick a node in the data model and drop it on
+						his form. Depending of the type of node he picked it generates different form tags (A list iteration tag, a placeholder to display
+						the value, etc.)
 					</para>
 				</caption>
 			</mediaobject>

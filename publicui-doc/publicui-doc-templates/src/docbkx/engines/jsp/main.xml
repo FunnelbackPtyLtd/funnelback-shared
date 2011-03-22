@@ -77,7 +77,8 @@
 	
 	    <para>
 	        The JVM provide a <emphasis>Security Manager</emphasis> to restrict permissions of certain classes. However it's difficult to setup because
-	        some parts of the Public UI needs access to those permissions (Reading / writing files, reading environment variables, etc). A fine-grained configuration
+	        some parts of the Public UI needs access to those permissions (Reading / writing files, reading environment variables, etc). More over the form
+	        files will still need file and/or network access to provide features such as template inclusion, or results merging. A fine-grained configuration
 	        is really difficult to achieve reliably. 
 	    </para>
 	    

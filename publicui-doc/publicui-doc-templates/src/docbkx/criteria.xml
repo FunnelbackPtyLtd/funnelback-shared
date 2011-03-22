@@ -7,7 +7,7 @@
 
 	<title>Criteria for choosing</title>
 	
-	<para>Here are the relevant criteria to consider when choosing our template engine.</para>
+	<para>Here are the relevant criteria I identified to consider when choosing our template engine.</para>
 	
 	<simplesect>
 		<title>Simplicity &amp; usability</title>
@@ -30,7 +30,9 @@
 		</para>
 		
 		<para>
-			The system should be easy to extend, with a plug-in mechanism for example.
+			The system should be easy to extend, with a plug-in mechanism or possibility to add directives.
+			This is an strong requirement if we want to match current NickScript features: We should be able to provide a base library of tags or
+			plugins, for example to provide the equivalent of <code>&lt;s:PrevNext /&gt;</code>.
 		</para>
 	</simplesect>
 	
@@ -41,6 +43,11 @@
 			Rendering a template should be quick, including on the client-side if we choose a Javascript based template engine. But how quick do we want
 			it to be ? Could we consider 10ms to render a page reasonable ?
 		</para>
+		
+		<remark>
+			I didn't benchmark the performance during my experiments as I wasn't to concerned with it, and proper benchmarking takes time. For what I could
+			observe every engine I tested seemed to be quite fast. However we'll have to properly benchmark the template engine we choose to confirm that impression.
+		</remark>
 	</simplesect>
 	
 	<simplesect>

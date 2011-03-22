@@ -19,7 +19,7 @@
 	<section>
 		<title>Hamlets</title>
 		<para>URL: <ulink url="http://hamlets.sourceforge.net">http://hamlets.sourceforge.net</ulink></para>
-		<para>Java based, parses HTML in a SAX fashion and throws event on unknown tag that you have to implement in Java. Originally written at IBM.</para>
+		<para>Java based, parses HTML in a SAX fashion and throws events on unknown tag that you have to implement in Java. Originally written at IBM.</para>
 		<para>Rejected as it seems to complex and oriented towards Java devs instead of web developers.</para>
 	</section>
 
@@ -35,7 +35,7 @@
 	<section>
 		<title>jsTenjin</title>
 		<para>URL: <ulink url="http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html">http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html</ulink></para>
-		<para>Javascript based, syntax similar to Embedded JS but too compled: Every single line has to start and end with delimiters <code>&lt;?js ...?&gt;</code>.</para>
+		<para>Javascript based, syntax similar to Embedded JS but too complex: Every single line has to start and end with delimiters <code>&lt;?js ...?&gt;</code>.</para>
 		<para>Last updated in 2007...</para>
 	</section>
 	
@@ -59,7 +59,7 @@
 				</listitem>
 				<listitem>
 					<para><ulink url="http://code.google.com/p/jin-template/">Jin Template</ulink>: HTML + Java or PHP</para>
-					<para>Uses pure HTML files as template and enbeds directives in HTML comments which makes it a bit hard to read.</para>
+					<para>Uses pure HTML files as template and embeds directives in HTML comments which makes it a bit hard to read.</para>
 					<para>Not very documented.</para>
 				</listitem>
 				<listitem>

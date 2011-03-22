@@ -24,6 +24,7 @@
 				<configuration>
 					<chunkedOutput>false</chunkedOutput>
 					<generateToc>book toc</generateToc>
+					<labelFromPart>1</labelFromPart>
 					<postProcess>
 						<copy todir="target/docbkx/xhtml">
 							<fileset dir="src/docbkx/style/" includes="*" />

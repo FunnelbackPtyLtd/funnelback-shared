@@ -34,14 +34,16 @@
 
 	</info>
 
-	<toc />
+	<toc>
+		<title>Table of contents</title>
+	</toc>
 	
 	<preface xml:id="introduction">
-		<title>Foreword</title>
+		<title>Introduction</title>
 		
 		<para>
-			The new Public UI is written in Java for various reason, the main one being performance. Being written in Java means that we
-      can't run Perl code anymore, so will need to come up with a replacement solution for form files (NickScript).  
+			The new Public UI is written in Java for various reason, the main one being performance. Being written in Java means that
+			Perl code can't run anymore, so we'll need to come up with a replacement solution for form files (NickScript).  
 		</para>
 		
 		<para>
@@ -54,13 +56,13 @@
 				</member>
 				<member>
 					Because NickScript implements its own tags, it's difficult to do things that aren't supported by the core tags: You
-					either have to write your own plugin, or use <literal>EvalPerl</literal>,
+					either have to write your own plugin, or use <code>EvalPerl</code>,
 				</member>
 				<member>
-					<literal>EvalPerl</literal> is an obvious security hole. For what I
+					<code>EvalPerl</code> is an obvious security hole. For what I
 					<ulink url="http://wiki.funnelback.com:8080/display/RnD/Public+UI+rewrite+-+the+EvalPerl+problem">observed</ulink>
 					it's used mostly to do formatting. Our template engine should make data formatting easier, instead of relying
-					on <literal>EvalPerl</literal>. On the other hand form developers will always need a way to evaluate some arbitrary
+					on <code>EvalPerl</code>. On the other hand form developers will always need a way to evaluate some arbitrary
 					code, so we must keep this feature but in a more secure way,
 				</member>
 				<member>
@@ -69,30 +71,32 @@
 				</member>
 			</simplelist>
 			
-			Whereas re-implementing NickScript should be investigated, it's worth considering alternate solutions.			
+			With this in mind, it's worth considering alternate solutions.			
 		</para>
 	</preface>
 	
 	<part>
-		<title>Alternate solutions and general considerations</title>
+		<title>Alternate solutions, general considerations and choice</title>
 		<xi:include href="alternate-solutions.xml" />
 		<xi:include href="data-model.xml" />
 		<xi:include href="criteria.xml" />
+		<xi:include href="conclusion.xml" />
 	</part>
 	
 	<part>
+		<title>Specific engines investigation</title>
 
-		<title>Specific template engines investigation</title>
-		
-		<xi:include href="engines/jsp/main.xml" />
 		<xi:include href="engines/pure-js/main.xml" />
 		<xi:include href="engines/json-template/main.xml" />
-		<xi:include href="engines/google-closure/main.xml" />
 		<xi:include href="engines/embedded-js/main.xml" />
+		
+		<xi:include href="engines/google-closure/main.xml" />
+		<xi:include href="engines/jsp/main.xml" />
 		<xi:include href="engines/freemarker/main.xml" />
 		
-		<xi:include href="engines/other.xml" />
-	
+		<xi:include href="engines/other.xml" />		
 	</part>
+	
+	<xi:include href="apdx-nickscript-features.xml" />
 	
 </book>
