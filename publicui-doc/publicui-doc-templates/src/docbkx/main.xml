@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
 	<info>
-		<title>Templating engines investigation</title>
+		<title>Template engines investigation</title>
 
 		<productname>Funnelback Public UI</productname>
 
@@ -42,8 +42,8 @@
 		<title>Introduction</title>
 		
 		<para>
-			The new Public UI is written in Java for various reason, the main one being performance. Being written in Java means that
-			Perl code can't run anymore, so we'll need to come up with a replacement solution for form files (NickScript).  
+			The new Public UI is written in Java for various reason, the main one being performance improvment. Being written in Java means that
+			Perl code can't be run anymore, so we'll need to come up with a replacement solution for form files (NickScript).  
 		</para>
 		
 		<para>
@@ -51,18 +51,18 @@
 			<simplelist>
 				<member>
 					The less code we have to develop and maintain, the better. There are already several generic template
-					engine out there (Think <emphasis>Freemarker</emphasis> on the Java world, or <emphasis>Smarty</emphasis> for PHP).
-					Why not try to integrate an existing template engine instead, and benefit of the existing features and support ? 
+					engine on the market (Think <emphasis>Freemarker</emphasis> on the Java world, or <emphasis>Smarty</emphasis> for PHP).
+					Why not try to integrate an existing template engine instead, and benefit from existing features and support ? 
 				</member>
 				<member>
 					Because NickScript implements its own tags, it's difficult to do things that aren't supported by the core tags: You
-					either have to write your own plugin, or use <code>EvalPerl</code>,
+					either have to write your own plug-in, or use <code>EvalPerl</code>,
 				</member>
 				<member>
 					<code>EvalPerl</code> is an obvious security hole. For what I
 					<ulink url="http://wiki.funnelback.com:8080/display/RnD/Public+UI+rewrite+-+the+EvalPerl+problem">observed</ulink>
 					it's used mostly to do formatting. Our template engine should make data formatting easier, instead of relying
-					on <code>EvalPerl</code>. On the other hand form developers will always need a way to evaluate some arbitrary
+					on <code>EvalPerl</code>. On the other hand form developers will always need a way to execute some arbitrary
 					code, so we must keep this feature but in a more secure way,
 				</member>
 				<member>
@@ -73,13 +73,20 @@
 			
 			With this in mind, it's worth considering alternate solutions.			
 		</para>
+		<para>
+			In the first part of this document I'll first introduce which criteria we should consider to choose a replacement template system, then describe
+			possible alternate solutions and general considerations. I'll conclude by my recommendation on which template engine we should use.
+		</para>
+		<para>
+			The second part gives a more detailed study on some template engines I've investigated, and certainly help to understand the conclusions I've reached.
+		</para>
 	</preface>
 	
 	<part>
-		<title>Alternate solutions, general considerations and choice</title>
-		<xi:include href="alternate-solutions.xml" />
-		<xi:include href="data-model.xml" />
+		<title>Criteria, general considerations and choice</title>
 		<xi:include href="criteria.xml" />
+		<xi:include href="alternate-solutions.xml" />
+		<xi:include href="data-model.xml" />		
 		<xi:include href="conclusion.xml" />
 	</part>
 	

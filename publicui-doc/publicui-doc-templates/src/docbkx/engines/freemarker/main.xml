@@ -18,14 +18,14 @@
 		<para>
 			It's using its own directive syntax such as <code>&lt;#if&gt;...&lt;/#if&gt;</code> or <code>&lt;#list items as item&gt;...&lt;/#list&gt;</code>.
 			It can be extended either by defining <emphasis>macros</emphasis> directly in FreeMarker language, or by developing custom directives in Java.
-			Macros and custom directives can be organised into namespaces and libraries for re-usability.
+			Macros and custom directives can be organized into namespaces and libraries for re-usability.
 		</para>
 	
 		<para>
 			Pros:
 			<simplelist>
 				<member>Great popularity and support,</member>
-				<member>Simple language but yet extensive, and very well documented,</member>
+				<member>Simple yet extensive language, and very well documented,</member>
 				<member>Out of the box support for many features like date / number formatting, escaping, etc.</member>
 				<member>Easy to extend.</member>
 			</simplelist>

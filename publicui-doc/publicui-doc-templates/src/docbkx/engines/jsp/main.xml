@@ -45,7 +45,7 @@
 			]]></programlisting>
 			
 			The tag libraries are extensible, meaning that you can develop your own tags in Java with their own prefix and tag names, for instance
-			<code>&lt;s:AfterSearchOnly&gt;...&lt;/s:AfterSearchOnly&gt;</code>.		
+			<code>&lt;s:AfterSearchOnly&gt;...&lt;/s:AfterSearchOnly&gt;</code> (Sounds familiar ? The syntax is very close to NickScript).		
 		</para>
 	
 		<para>

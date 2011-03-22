@@ -25,14 +25,14 @@
 		<title>Flexibility</title>
 		
 		<para>
-			The system should be flexible enough to cover unexpected use case. It should be able to provide an <code>EvalPerl</code> like feature
-			in a secure fashion.
+			The system should be flexible enough to cover unexpected use cases. It should be able to provide an <code>EvalPerl</code> like feature
+			in a secure way.
 		</para>
 		
 		<para>
 			The system should be easy to extend, with a plug-in mechanism or possibility to add directives.
 			This is an strong requirement if we want to match current NickScript features: We should be able to provide a base library of tags or
-			plugins, for example to provide the equivalent of <code>&lt;s:PrevNext /&gt;</code>.
+			plug-ins, for example to provide the equivalent of <code>&lt;s:PrevNext /&gt;</code>.
 		</para>
 	</simplesect>
 	
@@ -45,8 +45,9 @@
 		</para>
 		
 		<remark>
-			I didn't benchmark the performance during my experiments as I wasn't to concerned with it, and proper benchmarking takes time. For what I could
-			observe every engine I tested seemed to be quite fast. However we'll have to properly benchmark the template engine we choose to confirm that impression.
+			I didn't benchmark the performance during my experiments as proper benchmarking takes time and I focused on usability and flexibility to narrow
+            down the list of potential candidates. For what I could observe every engine I tested seemed to be reasonably fast. However we'll have to properly benchmark
+            the template engine we choose to confirm that impression.
 		</remark>
 	</simplesect>
 	
@@ -56,6 +57,15 @@
 		<para>
 			Relying on a third party template system saves us having to write and maintain our own. We have to make sure that the one we choose is
 			backed up by a solid community. Releases should be made regularly to fix bugs / add new features, and we have to be able to get community support.
+		</para>
+	</simplesect>
+	
+	<simplesect>
+		<title>Existing form files migration</title>
+		
+		<para>
+			We should be able to migrate easily existing form files to a new syntax. While it's reasonable to assume that we won't be able to provide a 100% accurate
+			conversion of existing form files, we should provide a tool that converts most of an existing form file.
 		</para>
 	</simplesect>
 

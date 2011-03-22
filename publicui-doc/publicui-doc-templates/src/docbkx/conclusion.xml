@@ -13,30 +13,35 @@
 	</para>
 
 	<para>
-		Unlike a classic application development approach where you have both access to the business side logic and to the rendering, our
-		final users only have access to the rendering part. The logic is embedded in the Public UI (and in PADRE) and impossible to change.
+		Unlike a classic application development approach where you have both access to the business side logic and the rendering, our
+		final users only have access to the rendering part. The logic is embedded in the Public UI (and in PADRE) and is impossible to change.
 	</para>
 	
 	<para>
-		For those reasons we need to provide some logic in our template system, since the raw data model itself will never fit everyone.
+		For those reasons we need to provide some logic in our template system, since the raw data model itself will never suit everyone.
 	</para>
 	
 	<para>
-		With the logic-less template system, if we wanted to provide logic capabilities, we'll have to implement it as an intermediate
+		if we wanted to provide logic capabilities with a logic-less template system we'll have to implement it as an intermediate
 		layer that sits between the raw data model pulled out from the Public UI, and the logic-less template. This layer would allow the
 		users to <quote>augment</quote> the model with any data they want to use in their logic-less template.
 	</para>
 	
 	<para>
-		While implementing this system is perfectly possible it will make things more complex. Currently all the <quote>display</quote> features
-		of a search service are concentrated in a single place, the form file. By separating more the logic and the presentation, we'll split the
-		form file in two or more parts: One that contains the code to augment the model, and one that contains the template. 
+		While implementing this system is perfectly possible it, will make things more complex. Currently all the <quote>display</quote> features
+		of a search service are concentrated in a single place, the form file. By separating completely the logic and the presentation, we'll split the
+		form file in two (or more) parts: One that contains the code to augment the model, and one that contains the template. It will require the
+		user to learn both the template language, and have development skills.
 	</para>
 	
 	<para>
-		While this logic-less approach is probably generally recommended I don't think it's relevant in the Funnelback context. It's certainly cleaner
-		to separate logic and presentation, but in the Funnelback context we have to make the trade off of mixing the two to keep things simple in
-		a user point of view.  
+		The logic less approach also makes migrating existing form files very difficult: It's not just a syntax change, but the whole approach of writing
+		form files that change.
+	</para>
+	
+	<para>
+		I don't think the logic-less approach is relevant in the Funnelback context. It's certainly cleaner	to separate logic and presentation,
+		but in the Funnelback context we have to make the trade off of mixing the two to keep things simple from the user point of view.  
 	</para>
 			
 	<para>For those reason I don't recommend choosing a logic-less template engine.</para>
@@ -60,7 +65,7 @@
 				<para>
 					The remaining ones are far for competing with the features offered by Java engines such as FreeMarker. They usually lacks simple extensibility
 					due to their design, and lacks features like template inclusion due to the limitation of the Javascript platform (no file access). The only
-					one interesting I found, called TrimPath, has been abandoned since 2007.
+					one interesting I found, called TrimPath, has unfortunately been abandoned since 2007.
 				</para>
 			</listitem>
 			<listitem>
@@ -86,7 +91,7 @@
 	<para>
 		I thing the cons overwhelm the pros: If form file development is made difficult because of error reporting and of the limitation of the platform itself, it's
 		not worth using Javascript, even if it's popular and well known among form developers. One one hand Javascript is well known, but on the other hand learning
-		NickScript hasn't really been a problem for now.
+		NickScript hasn't really been a problem.
 	</para>
 
 	<para>
@@ -96,17 +101,23 @@
 			<member>
 				This switch would have required some adjustments on the templates anyway because of the difference in behavior: On the client-side you only want to
 				render the lower part of the page (the results) and keep the upper part (query form) untouched. You don't want to re-render <emphasis>everything</emphasis>
+				for every query.
 			</member>
 			<member>
-				While preventing us to re-use the form file this doesn't stop us from coming up with a specific solution to client-side rendering, either based on a JS
-				templating engine, or by rolling our own solution.
+				While not using Javascript prevents us from re-using the form file, it doesn't stop us from coming up with a specific solution to client-side rendering,
+				either based on a JS template engine, or by rolling our own solution.
 			</member>
 		</simplelist>
 	</para>
 	
+	<para>
+		While I was really keen on using a Javascript engine when I began this study I think the practical problems are not worth it. I don't recommend using a JS engine
+		for now (But I recommend we ask ourselves this question again in a few years !).
+	</para>
+	
 	<blockquote><para>So... conclusion ?</para></blockquote>
 
-	<para>Having ruled-out logic-less template engine and Javascript based one, that leaves us with the good old Java template engines such as JSP, FreeMarker.</para>
+	<para>Having ruled-out logic-less template engine and Javascript based one, that leaves us with the good old Java template engines such as JSP, FreeMarker or Velocity.</para>
 	
 	<para>
 		JSP has the same security problem as Perl: It allows form designers to run arbitrary code. Moreover it's a bit less intuitive because you have to know a bit
@@ -120,17 +131,36 @@
 	</para>
 	
 	<para>
-		Freemarker doesn't have these pitfalls and provides several useful features:
+		I'm not very familiar with Velocity, but from what I read it's looks similar to FreeMarker and at the same time seems to be getting less and less
+		<ulink url="http://freemarker.blogspot.com/2007/12/velocity-of-freemarker-looking-at-5.html">popular</ulink>. It seems to be due part of the lack
+		of built-in features compared to FreeMarker, and the lack of extensibility.
+	</para>
+	
+	<para>
+		FreeMarker doesn't have these pitfalls and provides several useful features:
 		<simplelist>
 			<member>Simple but comprehensive syntax</member>
 			<member>Easy extension mechanism using macros: Macro can be coded using the FreeMarker syntax which doesn't require coding skills in a specific language.</member>
-			<member>Macros can be organised into namespaces for clarity</member>
-			<member>Macro can also be coded in Java for advanced functionality</member>
+			<member>Macros can be organized into namespaces for clarity</member>
+			<member>Macro can also be coded in Java for advanced functionality, as well as Groovy</member>
 			<member>Very detailed manual and good community support</member>
 			<member>Good performance</member>
 			<member>Good integration with the technologies we use for the Public UI (Java/Spring)</member>
 			<member>Existing experience in the RnD team (Used in Analytics)</member>
 		</simplelist>
+	</para>
+	
+	<para>
+		Migrating existing form files shouldn't be too difficult because the logic behind FreeMarker templates is close to the current form files. Moreover the syntax is close
+		especially if we develop <quote>legacy</quote> tags to ease migration, such as:
+		<programlisting><![CDATA[Using "s" namespace:
+<#import "/lib/funnelback_legacy.ftl" as s>
+
+Then (Using '@' for macros in FreeMarker syntax):
+<s:ResIf name="..."> ... </s:ResIf>               =>    <@s.ResIf name='...'> ... </@s.ResIf>
+<s:PrevNext label="..." ...> ... </s:PrevNext>    =>    <@s.PrevNext label="..." ...> ... </@s.PrevNext>		
+		]]>
+		</programlisting>
 	</para>
 	
 	<para>

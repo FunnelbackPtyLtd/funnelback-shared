@@ -8,13 +8,13 @@
 	<title>NickScript features requiring custom implementation</title>
 
 	<para>
-		Most of the NickScript tags purpose is to give access to the data model (Ex: <code>&lt;s:Res&gt;>title&lt;/s:Res&gt;</code>)
+		Most of the NickScript tags purpose is to give access to the data model (Ex: <code>&lt;s:Res&gt;title&lt;/s:Res&gt;</code>)
 		or to test presence / values of this model.
 	</para>
 	
 	<para>
 		Accessing the data model is the core of any template engine so any engine will provide that out of the box, however some other
-		tags have special behaviour that we'll need to re-implement.
+		tags have special behavior that we'll need to re-implement. I've listed them in a table below.
 	</para>
 
 	<para>
@@ -39,16 +39,16 @@
 		The following tags format data and won't be listed in the table, as they can be re-implemented using the formatting
 		capabilities of the template engine:
 		<simplelist>
-			<member>s:Truncate, s:TruncateURL, s:Cut</member>
-			<member>s:Boldicize, s:Italicize</member>
-			<member>s:Commify</member>
-			<member>s:URLEncode, s:HtmlDecode</member>
+			<member><code>s:Truncate</code>, <code>s:TruncateURL</code>, <code>s:Cut</code></member>
+			<member><code>s:Boldicize</code>, <code>s:Italicize</code></member>
+			<member><code>s:Commify</code></member>
+			<member><code>s:URLEncode</code>, <code>s:HtmlDecode</code></member>
 		</simplelist>
 	</para>
 
 	<para>
-		<table class="abc">
-			<title>abc</title>
+		<table>
+			<title>NickScript features to be re-implemented</title>
 			<tgroup cols="2">
 			
 				<thead>
@@ -63,12 +63,12 @@
 					<row>
 						<entry><code>s:cfg</code>, <code>s:FormChoice</code></entry>
 						<entry>Access collection config parameter</entry>
-						<entry>The collection config is embedded in the model, thus accessing config data is possible.</entry>
+						<entry>The collection config is embedded in the model, thus accessing config data is possible. Shouldn't need to be re-implemented.</entry>
 					</row>
 					<row>
 						<entry><code>s:cgi</code></entry>
 						<entry>Access CGI parameters</entry>
-						<entry>There is currently no replacement, however most (if not all) of the CGI variables are available in the model.</entry>
+						<entry>Most (if not all) of the CGI variables are available in the model. Shouldn't need to be re-implemented.</entry>
 					</row>
 					<row>
 						<entry><code>s:CurrentDate</code></entry>
@@ -83,14 +83,14 @@
 					<row>
 						<entry><code>s:IncludeFile</code></entry>
 						<entry>Include the content of a file</entry>
-						<entry>This needs to be re-implemented with a custom directive or plugin.</entry>
+						<entry>This needs to be re-implemented with a custom directive or plug-in.</entry>
 					</row>
 					<row>
 						<entry><code>s:rss</code>, <code>s:OpenSearch</code></entry>
 						<entry>Provide a RSS link to <literal>rss.cgi</literal> for a query term, or generate an OpenSearch snippet.</entry>
 						<entry>
 							Those tags are more <quote>helpers</quote> that generate an HTML snippet, than tags containing logic. It should be
-							possible either to embed the content directly in the page, or to use a <quote>aub template</quote> mechanism to refactor them.
+							possible either to embed the content directly in the page, or to use a <quote>sub template</quote> mechanism to re-factor them.
 						</entry>
 					</row>
 					<row>
@@ -108,27 +108,27 @@
 						<entry>Format appearance of tier bars</entry>
 						<entry>
 							All the data needed by these tags are present in the model. They could either be implemented directly into
-							the form file.
+							the form file or with <quote>sub templates</quote>.
 						</entry>
 					</row>
 					<row>
 						<entry><code>s:Select</code></entry>
 						<entry>Helper / utility to build <literal>&lt;select ... /&gt;</literal> HTML elements</entry>
 						<entry>
-							<para>Will need to be re-implemented as some sort of plugin.</para>
-							<warning>
+							<para>Will need to be re-implemented as some sort of plug-in.</para>
+							<note>
 								<para>
 									This will cause problem with non-classic template engine like the logic-less one, because everything is supposed
 									to be embedded in the model, which will obviously be difficult in case of HTML select form data.
 								</para>
-							</warning>
+							</note>
 						</entry>
 					</row>
 					<row>
 						<entry><code>s:PrevNext</code></entry>
 						<entry>Display previous / next page links</entry>
 						<entry>
-							Will have to be re-implemented as a plugin. Even if all the data is contained in the model the logic is too complex
+							Will have to be re-implemented as a plug-in. While the corresponding data is contained in the model the logic is too complex
 							to be embedded directly into each form file.
 						</entry>
 					</row>
@@ -137,7 +137,7 @@
 						<entry>It's evil, don't use it</entry>
 						<entry>
 							Most of the uses cases of <code>s:EvalPerl</code> can be replaced by using formatting functions, however the template engine
-							should provide a way to run arbitrary code, ideally with a plugin system to keep things clean.
+							should provide a way to run arbitrary code, ideally with a plug-in system to keep things clean.
 						</entry>
 					</row>
 					

@@ -12,27 +12,29 @@
 		<para>NickScript hide the underlying data model (The PADRE result packet) by using specific tags for specific purposes.</para>
 		
 		<para>
-			For example the tag <code>&lt;s:AfterSearchOnly /&gt;</code> is an equivalent of testing if the <literal>results_summary/total_matching</literal>
+			For example the tag <code>&lt;s:AfterSearchOnly /&gt;</code> is an equivalent of testing if the <literal>&lt;results_summary&gt;/&lt;total_matching&gt;</literal>
 			node of the data model contains <quote>0</quote> or not. In the same fashion, the <code>&lt;s:ResIf name="..." /&gt;</code> tag is an equivalent of
-			testing the presence of a specific child node of the current <literal>results/result</literal> being processed.
+			testing the presence of a specific child node of the current <literal>&lt;results&gt;/&lt;result&gt;</literal> being processed.
 		</para>
 		
 		<para>
 			While it has the advantage of keeping things simple by not having to learn the data model, it's also very limited: If there isn't an existing
-			tag for your use case you have to write a plugin or rely on <code>EvalPerl</code>, and you have to learn the tags anyway.
+			tag for your use case you have to write a plug-in or rely on <code>EvalPerl</code>, and you have to learn the tags anyway. It also forces us to
+            maintain a lot of <quote>simple</quote> tags for basic if/else statements (All the <literal>*If*</literal> tags).
 		</para>	
 		
 		<para>
 			Choosing to use an existing template engine instead of re-implementing NickScript changes that approach: Because these template engines are generic
-			by design there can't be a specific business domain context <quote><code>&lt;s:AfterSearchOnly /&gt;</code></quote> tag. Instead the template engine
+			by design there can't be a business domain context specific tags such as <quote><code>&lt;s:AfterSearchOnly /&gt;</code></quote>. Instead the template engine
 			provides a way to test for the presence of a node in the data model, typically:
 			<code>{#if PADRE_result_packet.results_summary.total_matching &gt; 0}...{/#if}</code>.
 		</para>
 		
 		<para>
 			With this approach users will have to learn the data model. It's not very different of learning a set of specific NickScript tags and it has some
-			advantages: Once you've understand the data model you practically can do anything with it, instead of being constrained to a set of specific tags.
-			By using generic tags you can for instance implement any condition checking directly in your template without having to write a plugin for it.
+			advantages: Once you've understand the data model you practically can do anything with it, instead of being constrained to a set of specific tags
+            and having to learn new tags to do new things. By using generic tags you can for instance implement any condition checking directly in your template
+            without having to write a plug-in for it.
 		</para>
 	</section>
 	

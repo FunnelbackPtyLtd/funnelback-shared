@@ -7,6 +7,10 @@
 
 	<title>Other template engines</title>
 	
+	<para>
+		I had a look at several other template engines but without actually trying them.
+	</para>
+	
 	<section>
 		<title>Casper</title>
 		<para>URL: <ulink url="http://code.google.com/p/casper">http://code.google.com/p/casper</ulink></para>
@@ -20,7 +24,7 @@
 		<title>Hamlets</title>
 		<para>URL: <ulink url="http://hamlets.sourceforge.net">http://hamlets.sourceforge.net</ulink></para>
 		<para>Java based, parses HTML in a SAX fashion and throws events on unknown tag that you have to implement in Java. Originally written at IBM.</para>
-		<para>Rejected as it seems to complex and oriented towards Java devs instead of web developers.</para>
+		<para>Rejected as it seems to complex and oriented towards Java developers instead of web developers.</para>
 	</section>
 
 	<section>
@@ -36,7 +40,7 @@
 		<title>jsTenjin</title>
 		<para>URL: <ulink url="http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html">http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html</ulink></para>
 		<para>Javascript based, syntax similar to Embedded JS but too complex: Every single line has to start and end with delimiters <code>&lt;?js ...?&gt;</code>.</para>
-		<para>Last updated in 2007...</para>
+		<para>The documentation is in broken English (Not that I'm a English specialist, but...), last updated in 2007.</para>
 	</section>
 	
 	<section>
@@ -45,6 +49,20 @@
 		<para>
 			Javascript based, but with a counter-intuitive syntax. Moreover there seems to be no community at all: A single message in their Google Groups
 			dated from Oct. 2010.
+		</para>
+	</section>
+	
+	<section>
+		<title>Scalate</title>
+		<para>URL: <ulink url="http://scalate.fusesource.org/">http://scalate.fusesource.org/</ulink></para>
+		<para>
+			Scala based (Functional programming language running on the JVM). Allows to plug 3 different template engine implementations: Mustache,
+			SSP which is like Velocity, and Scaml.
+		</para>
+		<para>
+			The <ulink url="http://scalate.fusesource.org/documentation/scaml-reference.html">Scaml</ulink> looked interesting at first, but the
+			problem is that everything must be implemented in Scala which makes things difficult for people not use to functional programming (Myself included !).
+			I tried it but was unable to find how to test if a property was <quote>null</quote>, and gave up.
 		</para>
 	</section>
 
@@ -66,8 +84,8 @@
 					<para><ulink url="http://code.google.com/p/trimpath/wiki/JavaScriptTemplates">TrimPath Templates</ulink>: Javascript</para>
 					<para>
 						Looked interesting at first sight with nice feature and easy to extend, but unfortunately seems abandoned: The last
-						release is from 2007, the last "news" on the page is from 2005, and the Google group is completely spamed and doesn't
-						contain any <quote>real</quote> message.
+						release is from 2007, the last "news" on the page is from 2005, and the Google group is completely spammed and doesn't
+						contain any real message.
 					</para>
 				</listitem>
 			</itemizedlist>

@@ -10,20 +10,20 @@
 		<title>Description</title>
 
 		<para>
-			This Java / Javascript based template engine is maitained by Google and used in some of its major products such as GMail or Google Docs.
-			It's part of the Google's <ulink url="http://code.google.com/closure/">Closure</ulink> framework which aim to provide efficient tool for
-			Javascript developers. The main idea of Closure is that all the development is done in Java, using well proven tools, and then compile the
-			resulting code into optimized Javascript.
+			This Java / Javascript based template engine is maintained by Google and used in some of its major products such as GMail or Google Docs.
+			It's part of the Google's <ulink url="http://code.google.com/closure/">Closure</ulink> framework which aim to provide efficient tools for
+			Javascript developers. The main idea of Closure is that all the development is done in Java, using well proven tools, and then the resulting
+			Java code is compiled into optimized and cross-browser compatible Javascript.
 		</para>
 		
 		<para>
 			Closure Templates uses it's own directives and does not allows to embed arbitrary code. However:
 			<simplelist>
-				<member>A template can be seen as a function wich takes parameters, meaning that it's possible to extend the system using sub templates.</member>
+				<member>A template can be seen as a function which takes parameters, meaning that it's possible to extend the system using sub templates.</member>
 				<member>The system can be extended by implementing custom directives and formatters, in Java and/or Javascript.</member>
 			</simplelist>
 			
-			Moreover it uses a <quote>namespace</quote> system: Each template is part of a namespace (like Java packages). Calling a template require using its
+			Moreover it's using namespaces: Each template is part of a namespace (like Java packages). Calling a template require using its
 			namespace. That could allow us to provide a base library under a <emphasis>funnelback</emphasis> namespace that could be re-used by form designers.
 		</para>
 		
@@ -34,15 +34,16 @@
 		</para>
 		
 		<para>
-			The system only knows how to deal with <quote>primitive</quote> data types: Numbers, Strings, boolean, lists and maps. That means that it can't deal
+			The system only knows how to deal with <quote>primitive</quote> data types: Numbers, Strings, Boolean, lists and maps. That means that it can't deal
 			with complex objects. These objects must be converted to this basic format before processing.
 		</para>
 		
 		<para>
 			Pros:
 			<simplelist>
-				<member>The namespace system permit good re-usability and isolations of the different components,</member>
-				<member>It's used and maintained by Google, guarantee of quality and support</member>
+				<member>The namespace system permit good re-usability and isolation of the different components,</member>
+				<member>It's used and maintained by Google, guarantee of quality and support,</member>
+				<member>It's developed in Java using something we know well, but results in JS code with all the advantages of JS.</member>
 			</simplelist>
 			
 			Cons:
@@ -51,20 +52,20 @@
 					<para>
 						There is no default object <quote>converter</quote> provided, meaning that we need to write one to convert our Java data model
 						to a primitive model compatible with Closure, if we want to use it directly from Java (From Javascript we could serialize our model
-						to a JSON feed.
+						to a JSON feed).
 					</para>
 				</listitem>
 				<listitem>
-					<para>While defining its own directives and functions it lacks basic ones such as string comparison or regular expressions.</para>
+					<para>It lacks basic directives such as string comparison or regular expressions.</para>
 				</listitem>
 				<listitem>
 					<para>
 						Extending it (To support for example regular expressions) is over complicated. It involves writing three implementations: One that deal with
 						Java objects, one that deal with engine-specific data type (<quote>Soy</quote>) objects, and one that deal with Javascript objects.
-						The Javascript one must be written in Java and generate Javascript code, which is pretty counter intuitive.
+						The Javascript one must be written in Java and generate Javascript code, which is pretty confusing.
 					</para>
 					<para>
-						Then you have to use Google Guice dependency injection framework to registre your implementation, which took me 3h to find out how to get it right !
+						Then you have to use Google Guice dependency injection framework to register your implementation, which took me 3h to find out how to get it right !
 					</para>
 				</listitem>
 				<listitem>
@@ -83,7 +84,7 @@
 						unless you add a <code>{sp}</code> after <code>{$name}</code>. 
 					</para>
 				</listitem>
-				<listitem><para>It's used and maintained by Google ;) Should we use and distribute Google technologies as part of Funnelback ?</para></listitem>
+				<listitem><para>It's used and maintained by Google... Should we use and distribute Google technologies as part of Funnelback ?</para></listitem>
 			</itemizedlist>
 		</para>
 	</section>

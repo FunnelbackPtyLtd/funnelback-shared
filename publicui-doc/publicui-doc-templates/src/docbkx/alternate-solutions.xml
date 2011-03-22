@@ -8,7 +8,7 @@
 	<title>Alternate solutions</title>
 
 	<para>
-		Investigating alternate solution is done on multiple aspects:
+		Multiple aspects are involved when investigating alternate solutions:
 		<simplelist>
 			<member>Which underlying technology could we use to replace Perl ?</member>
 			<member>Which approach could we take instead of defining specific form tags ?</member>
@@ -16,7 +16,7 @@
 	</para>
 
 	<remark>
-		Note: I've only considered Java and Javascript as possible Perl alternative. I assumed we didn't want to embed an additional language
+		Note: I've only considered Java and Javascript as possible Perl alternatives. I assumed we didn't want to embed an additional language
 		into Funnelback.
 	</remark>
 	
@@ -25,8 +25,8 @@
 		
 		<para>
 			Javascript <abbrev >(JS)</abbrev> based template engines have recently become very popular, the most popular ones probably being
-			<ulink url="http://api.jquery.com/category/plugins/templates/">jQuery templates</ulink>	(Initially developed by Microsoft) and
-			<ulink url="https://github.com/janl/mustache.js">mustache.js</ulink> (Used on the new Twitter).
+			<ulink url="http://api.jquery.com/category/plugins/templates/">jQuery templates</ulink>	(based on the popular jQuery library and
+            Initially developed by Microsoft) and <ulink url="https://github.com/janl/mustache.js">mustache.js</ulink> (Used on the new Twitter).
 		</para>
 		
 		<para>
@@ -35,12 +35,12 @@
 				<member>It's based on a well-known language used by web developers, which is the target audience for form files development,</member>
 				<member>
 					Using JS means that we could do the page rendering on the <emphasis>client-side</emphasis> (Browser). That could allows us to
-					save some server processing time, as well as provide <quote>ajaxy</quote> features such as an instant-search,
+					save some server processing time, as well as provide Ajax features such as an instant-search,
 				</member>
 				<member>
 					We can of course keep the default rendering process server-side, using a JS runtime for Java such as
 					<ulink url="http://www.mozilla.org/rhino/">Mozilla Rhino</ulink>. This dual client/server capability means that we could
-					use the same form files both server-side or client-side, with only minor modifications,
+					use the same form files both server-side or client-side, with minor modifications only,
 				</member>
 				<member>
 					In the Squiz/PHP perspective there seems to be some PHP JS runtimes, in the same fashion of Rhino for Java (See for example
@@ -53,46 +53,46 @@
 			<itemizedlist>
 				<listitem>
 					<para>
-						The Javascript interpreter/compiler, both on client side or server side, is generally not very verbose. It's difficult to get clear
+						The Javascript interpreter/compiler, both on client side or server side, is generally not very verbose. It's difficult to get useful
 						error messages. This is important when developing form files, because if you make a mistake you'd like to get the exact line number
 						of your form file causing the error.
 					</para>
 					<remark>
-						I observed during my experiments that when running a JS template engine with Rhino on the server side, if I did a syntax error on my
-						form file, it wasn't caught until the template gets interpreted and the error generated was an execution error coming from the code of
+						I observed that problem during my experiments when running a JS template engine with Rhino on the server side. If I did a syntax error on my
+						form file, it wasn't caught until the template gets interpreted. Moreover, the error generated was an execution error coming from the code of
 						the template engine. The line number I got was from the template engine JS file, not my form file, which makes things difficult to diagnose.
 					</remark>
 				</listitem>
 				<listitem>
 					<para>
 						Running Rhino on the server side can have a performance cost. I didn't benchmark it properly as in this experimental phase I didn't develop
-						the infrastructure to re-compile form files only when they changed and keep an already-compiled version (I recompiled them for every request).
-						However even in this mode the performance didn't seem to bad (about 10ms to render a template).
+						the infrastructure to re-compile form files only when they changed and keep an already-compiled version in memory (I recompiled them for
+                        every request). However even in this mode the performance didn't seem to bad (about 10ms to render a template).
 					</para>
 				</listitem>
 			</itemizedlist>
 		</para>
 		
 		<para>
-			Some JS template engine don't require having a <emphasis>browser context</emphasis>: They don't use objects like <literal>window</literal>
+			Some JS template engine don't require running in a <emphasis>browser context</emphasis>: They don't use objects like <literal>window</literal>
 			or <literal>document</literal> and can process text without being run in a browser context. However, the <quote>raw</quote> capabilities of
-			Javascript are really limited: There is no way to access files, or access network resources (Ajax), etc. Things like the <literal>XMLHttpRequest</literal>
-			object to perform Ajax requests is indeed provided by the browser, not the base Javascript implementation.
+			Javascript (As provided by a server-side runtime like Rhino) are really limited: There is no way to access files, or access network resources (Ajax), etc.
+            Things like the <literal>XMLHttpRequest</literal> object to perform Ajax requests is indeed provided by the browser, not the base Javascript implementation.
 		</para>
 
 		<para>In the same fashion there is no DOM capabilities in raw JS, meaning that libraries like jQuery won't be able to function.</para>
 		
 		<para>
-			If we choose to go the Javascript way we'll need to provide more that just the raw JS features, otherwise we won't be able to achieve complex
+			If we choose to adopt a Javascript engine we'll need to provide more that just the raw JS features, otherwise we won't be able to achieve complex
 			things like URL inclusion, or result merging, etc. There are different ways to provide these features:
 			<simplelist>
 				<member>
 					The <emphasis>Rhino</emphasis> Javascript runtime gives access to the Java world from Javascript, meaning that any script can access the Java
-					classes for file access (<literal>java.io.*</literal>) or network access (<literal>java.net.*</literal>). However that require to code in a mix of
-					Java and JS to use these features, which kills a bit the advantage of using JS.
+					classes for file access (<literal>java.io.*</literal>) or network access (<literal>java.net.*</literal>). However using these require Java knowledge
+					and is not really intuitive in Javascript.
 				</member>
 				<member>
-					We can use <ulink url="http://www.envjs.com/">EnvJS</ulink> which is a simulated browser environment for server-side Javascript. It provides all what
+					We can use <ulink url="http://www.envjs.com/">EnvJS</ulink> which is a simulated browser environment for server-side Javascript. It provides what
 					a browser environment usually provides such as <literal>XMLHttpRequest</literal> capabilities, HTML DOM capabilities, and adds file access capabilities.
 					Using this environment you can run libraries like jQuery on the server-side. 
 				</member>
@@ -104,7 +104,7 @@
 			</simplelist>
 			
 			We should be aware that using this additional layers adds complexity that could potentially impact performance (EnvJS wasn't very snappy during my experiments) and
-			usability: With all these libraries loaded and interpreted by the JS engine it's hard to diagnose form where the problem comes where a form file throw an error. 
+			usability: With all these libraries loaded and interpreted by the JS engine it's hard to diagnose the origin of the problem when a form contains an error. 
 		</para>
 			
 	</section>
@@ -113,14 +113,14 @@
 		<title>Logic less template engines</title>
 		
 		<para>
-			A template system purpose is to separate the application logic from the data presentation. However in most of the template engines you can implement
+			A template system purpose is to separate the application logic from the data presentation. However with most of the template engines you can implement
 			some application logic using directives such as if/else, loops or logical comparison, and sometimes more. That means that your data model is somehow processed in the
 			<quote>presentation</quote> part of your application, and that your templates contains <emphasis>code</emphasis>, which doesn't fully enforce the original
 			template system paradigm. 
 		</para>
 		<para>
 			A new approach to templates has emerged recently, with the leader in this movement being <ulink url="https://mustache.github.com/">Mustache</ulink>. This
-			new approach is to provide a template engine with no logic possibility at all: No if/else statement, no flexible looping, no comparison operators, no formatting
+			new approach is to provide a template engine with no logic possibility at all: No explicit if/else statement, no flexible looping, no comparison operators, no formatting
 			directives. This approach assumes that the data has been fully processed, prepared and formatted, and is ready to be displayed (and nothing else).
 		</para>
 		
@@ -163,12 +163,11 @@ Well, $6000.0, after taxes.]]></programlisting>
 		</para>
 		
 		<para>
-			In the other hand it's sometomes convenient to embed a bit of logic in the templates, at least to do simple things like if/else statements. A typical example in
+			In the other hand it's sometimes convenient to embed a bit of logic in the templates, at least to do simple things like if/else statements. A typical example in
 			our form file is the <quote>Cached</quote> link: If the file type is pdf,doc,xls or ppt we display a <quote>View as HTML</quote> link below the title
 			instead of the usual <quote>Cached</quote> link at the bottom of the result block. Reproducing that with a logic-less engine requires to code a specific
 			function and apply it to the data model. For example, with the following template:
-			<programlisting><![CDATA[
-<li>
+			<programlisting><![CDATA[<li>
 	<h3>
 		<a href="{{liveUrl}}">{{title}}</a>
 	</h3>
@@ -177,6 +176,7 @@ Well, $6000.0, after taxes.]]></programlisting>
 		<p class="fb-file-format">
 			<span>{{fileSize}} - {{fileTypeLabel}}</span>
 			<a href="{{cacheLink}}">View as HTML</span>
+        </p>
 	{{/html_view_link}}
 	
 	...
@@ -210,7 +210,7 @@ Well, $6000.0, after taxes.]]></programlisting>
                                    // ...
                            }
                        },
-	"cacheLink"      : "http://server/cache.cgi..."
+  "cacheLink"      : "http://server/cache.cgi..."
 }						
 				]]></programlisting>
 		</para>
@@ -218,13 +218,13 @@ Well, $6000.0, after taxes.]]></programlisting>
 		<para>
 			In the same fashion it'll be difficult to reproduce the <code>s:Select</code> tags we currently have (Tags that generates an HTML <code>&lt;select ... /&gt;</code>
 			input) because the arguments such as the select name, or the options, aren't part of the data model. As logic-less engine doesn't provide a way to express arguments
-			in their directives, that means that we have to provide a way to <quote>augment</quote> the data model whith this data at runtime.
+			in their directives, that means that we have to provide a way to <quote>augment</quote> the data model with this data at runtime.
 		</para>
 		
 		<para>
 			Let's investigate that option by taking an example: The generation of previous / next links. Generating these links needs a bit of
-			computing and logic to decide wether the <quote>First</quote> and <quote>Next</quote> links should be displayed, and to display
-			the page numbers (1 2 3 4 5 ...).
+			computing and logic to decide weather the <quote>First</quote> and <quote>Next</quote> links should be displayed or not, and to display
+			the correct page numbers (1 2 3 4 5 ...).
 		</para>
 	
 		<para>
@@ -236,7 +236,7 @@ Well, $6000.0, after taxes.]]></programlisting>
 				</imageobject>
 			</mediaobject>
 		
-			The logic-less approach require this intermediate layer that will update the data model with any relevant data that is not initially
+			The logic-less approach require an intermediate layer that will update the data model with any relevant data that is not initially
 			present:		
 			<mediaobject>
 				<imageobject>
@@ -246,7 +246,7 @@ Well, $6000.0, after taxes.]]></programlisting>
 		</para>
 
 		<para>
-			While we can implement this intermediate layer in a <quote>framework way</quote> to facilitate things for form designers, it will probably make things
+			While we can implement this intermediate layer in a <quote>framework way</quote> to facilitate development for form designers, it will probably make things
 			complicated anyway: To change something in a form you'll have to go to two different places: The form file that contains the display part, and the code listing
 			that contains the logic part.
 		</para>
@@ -300,8 +300,9 @@ Well, $6000.0, after taxes.]]></programlisting>
 			
 			Cons:
 			<simplelist>
-				<member>Templates clearly mix presentation and logic, which is generally not a good idea,</member>
+				<member>It's not really a template engine, but more a helper to do string concatenation,</member>
 				<member>Having these opening/closing tags <code>&lt;% ... %&gt;</code> make things difficult to read,</member>
+                <member>You need coding skills to write a template,</member>
 				<member>Changing the underlying technology breaks all the existing forms.</member>
 			</simplelist>
 		</para>

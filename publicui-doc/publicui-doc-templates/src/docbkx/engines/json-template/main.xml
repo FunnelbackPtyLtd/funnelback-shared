@@ -22,7 +22,7 @@
   {.plural?}
     Many results
   {.or}
-  One result
+    One result
   {.end}
 {.end}]]></programlisting>
 					</para>
@@ -34,8 +34,8 @@
 		</para>
 		
 		<para>
-			It's developed by individuals with no company behind them apparently. The latest release was from Nov. 2009 but there is a regain
-			in activity since March 2011. The Google group has a bit of activity and the lead developer is present.
+			It's developed by individuals with no company behind them. The latest release was from Nov. 2009 but there is a regain
+			in activity since March 2011. The Google group has a bit of activity and the lead developer is well present.
 		</para>
 	
 		<para>
@@ -46,7 +46,7 @@
 					the simple form has been the quickest (Excluding writing functions to deal with the logic). It has to do with it being
 					logic-less but also because it a bit more richer than Mustache which doesn't provide formatters or predicates.
 				</member>
-				<member>Templates are readable.</member>
+				<member>Templates are easy to read.</member>
 			</simplelist>
 
 			Cons:
