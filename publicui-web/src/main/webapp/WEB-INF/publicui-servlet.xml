@@ -49,6 +49,13 @@
 			</props>
 		</property>
 		<property name="defaultEncoding" value="UTF-8" />
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="changeParam">
+					<bean class="com.funnelback.publicui.web.views.freemarker.ChangeQSParamMethod" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
