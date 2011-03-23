@@ -8,6 +8,11 @@
 	cdata-section-elements="title summary bb_title bb_desc md"
 	standalone="no" />
 
+<!--
+    Legacy XML format stylesheet for Funnelback
+    Transforms a "new" format (Automatically serialised from Java beans) into an "old" one,
+    matching the previous Perl UI format.
+ -->
 <xsl:template match="/com.funnelback.publicui.search.model.transaction.SearchTransaction">
 	<PADRE_result_packet>
 		<xsl:if test="error">
