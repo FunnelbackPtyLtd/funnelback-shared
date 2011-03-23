@@ -149,12 +149,10 @@ public class SearchController {
 		String viewSuffix = uri.substring(uri.indexOf(".")+1);
 		String viewName;
 		if ("xml".equals(viewSuffix) || "json".equals(viewSuffix)
-				|| "legacy".equals(viewSuffix) || "freemarker".equals(viewSuffix)) {
+				|| "legacy".equals(viewSuffix)) {
 			viewName = viewSuffix + "View";
-		} else if ("jstl".equals(viewSuffix)) {
-			viewName = question.getCollection().getId()	+ ((question.getProfile() != null) ? "_"+question.getProfile() : "");
 		} else {
-			viewName = question.getCollection().getId() + ":" + viewSuffix;
+			viewName = "conf/" + question.getCollection().getId()	+ ((question.getProfile() != null) ? "/"+question.getProfile() : "") + "/simple";
 		}
 		log.debug("Selecting view '" + viewName + "'");
 		
