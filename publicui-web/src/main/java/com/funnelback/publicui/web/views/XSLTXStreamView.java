@@ -29,8 +29,6 @@ import org.springframework.web.servlet.view.AbstractView;
 @Log
 public class XSLTXStreamView extends AbstractView {
 
-	public static final String CONTENT_TYPE_LEGACY = "text/legacy-xml";
-	
 	/**
 	 * Key to serialize in the model
 	 */
@@ -80,11 +78,6 @@ public class XSLTXStreamView extends AbstractView {
 		}
 		StreamSource source = new StreamSource(new StringReader(sw.getBuffer().toString()));
 		templates.newTransformer().transform(source, new StreamResult(response.getOutputStream()));
-	}
-	
-	@Override
-	public String getContentType() {
-		return CONTENT_TYPE_LEGACY;
 	}
 
 }

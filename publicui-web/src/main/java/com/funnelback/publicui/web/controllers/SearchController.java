@@ -145,6 +145,7 @@ public class SearchController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
 
+		/*
 		String uri = request.getRequestURI();
 		String viewSuffix = uri.substring(uri.indexOf(".")+1);
 		String viewName;
@@ -155,6 +156,13 @@ public class SearchController {
 			viewName = "conf/" + question.getCollection().getId()	+ ((question.getProfile() != null) ? "/"+question.getProfile() : "") + "/simple";
 		}
 		log.debug("Selecting view '" + viewName + "'");
+		*/
+		// Generate the view name, relative to the Funnelback home
+		String viewName = DefaultValues.FOLDER_CONF + "/"
+			+ question.getCollection().getId()	+ "/"
+			+ question.getProfile() + "/"
+			+ question.getForm();
+		log.debug("Selected view '" + viewName + "'");
 		
 		return new ModelAndView(viewName, model);
 

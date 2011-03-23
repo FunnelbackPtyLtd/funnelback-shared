@@ -24,8 +24,21 @@ public class SearchQuestion {
 	@Getter @Setter private String query;
 	@Getter @Setter private String originalQuery;
 	@Getter @Setter private Collection collection;
+	
+	/**
+	 * Search profile, defaulting to "_default"
+	 */
 	@Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
+	
+	/**
+	 * Specific component of a meta-collection to query
+	 */
 	@Getter @Setter private String[] clive;
+	
+	/**
+	 * Display form (template)
+	 */
+	@Getter @Setter private String form = DefaultValues.DEFAULT_FORM;
 	
 	/**
 	 * Contextual Navigation: last clicked cluster

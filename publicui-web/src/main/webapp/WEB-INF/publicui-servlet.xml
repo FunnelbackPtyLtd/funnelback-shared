@@ -30,10 +30,6 @@
 	</mvc:interceptors>
 
 	<mvc:resources mapping="/dashboard-resources/**" location="/dashboard/" />
-	<mvc:resources mapping="/html/**" location="/html/" />
-	<mvc:resources mapping="/css/**" location="/css/" />
-	<mvc:resources mapping="/js/**" location="/js/" />
-	<mvc:resources mapping="/img/**" location="/img/" />
 
 	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
 		<property name="encoding" value="UTF-8" />
@@ -55,14 +51,46 @@
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
-		<property name="order" value="0" />
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="favorPathExtension" value="true" />
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="xml" value="text/xml" />
+				<entry key="json" value="application/json" />
+				<entry key="legacy" value="text/xml-legacy" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+					<property name="cache" value="true" />
+					<property name="prefix" value="" />
+					<property name="suffix" value=".ftl" />
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+
+				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg ref="xmlMarshaller" />
+					<property name="contentType" value="text/xml;charset=UTF-8" />
+					<property name="modelKey"
+						value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
+				</bean>
+
+				<bean id="legacyView" class="com.funnelback.publicui.web.views.XSLTXStreamView">
+					<constructor-arg value="classpath:funnelback-legacy.xsl" />
+					<property name="modelKey" value="#{T(com.funnelback.publicui.web.controllers.SearchController).MODEL_KEY_SEARCH_TRANSACTION}" />
+					<property name="marshaller" ref="xmlMarshaller" />
+					<property name="cacheXslt" value="true" />
+					<property name="contentType" value="text/xml-legacy" />
+				</bean>
+
+			</list>
+		</property>
 	</bean>
-	
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-		<property name="order" value="1" />
-		<property name="cache" value="true" />
-		<property name="prefix" value="" />
-		<property name="suffix" value=".ftl" />
-	</bean>
+
 </beans>
