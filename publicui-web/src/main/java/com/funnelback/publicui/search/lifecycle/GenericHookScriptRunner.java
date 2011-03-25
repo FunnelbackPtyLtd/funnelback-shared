@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -21,6 +22,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 /**
  * Generic hook script runner that can be used as an {@link InputProcessor},
  * {@link OutputProcessor} or {@link DataFetcher}
+ * 
+ * @see Collection.Hook
  */
 @Log
 public class GenericHookScriptRunner implements DataFetcher, InputProcessor, OutputProcessor {

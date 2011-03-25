@@ -20,6 +20,8 @@ import freemarker.template.TemplateModelException;
  */
 public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodModelEx {
 
+	public static final String NAME = "changeParam"; 
+	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object exec(List arguments) throws TemplateModelException {
