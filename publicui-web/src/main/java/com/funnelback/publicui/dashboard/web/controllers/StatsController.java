@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.dashboard;
+package com.funnelback.publicui.dashboard.web.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class StatsController {
 	public ModelAndView list() {
 		Map<String, Map<String, MethodStats>> model = new HashMap<String, Map<String, MethodStats>>();
 		model.put("statistics", stats);
-		return new ModelAndView("/dashboard/stats/list", model);
+		return new ModelAndView("/stats/list", model);
 	}
 	
 	@RequestMapping("{statsId}/show")
@@ -31,7 +31,7 @@ public class StatsController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("statsId", statsId);
 		model.put("statistics", stats.get(statsId));
-		return new ModelAndView("/dashboard/stats/show", model);
+		return new ModelAndView("/stats/show", model);
 	}
 	
 }

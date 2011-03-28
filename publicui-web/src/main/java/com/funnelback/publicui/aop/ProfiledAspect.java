@@ -34,7 +34,7 @@ public class ProfiledAspect {
 	public void profiledAnnotatedMethod() {
 	}
 
-	@Pointcut("within(com.funnelback.publicui..*)")
+	@Pointcut("within(com.funnelback.publicui.search..*)")
 	public void manuallyProfiledMethod() {
 	}
 

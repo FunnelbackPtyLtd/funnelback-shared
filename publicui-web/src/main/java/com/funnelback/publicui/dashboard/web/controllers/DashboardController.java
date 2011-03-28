@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.dashboard;
+package com.funnelback.publicui.dashboard.web.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +8,6 @@ public class DashboardController {
 
 	@RequestMapping("/dashboard/")
 	public String index() {
-		return "/dashboard/index";
+		return "/index";
 	}
 }

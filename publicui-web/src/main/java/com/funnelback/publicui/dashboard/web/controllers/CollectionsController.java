@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.dashboard;
+package com.funnelback.publicui.dashboard.web.controllers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public class CollectionsController {
 		HashMap<String, Object> model = new HashMap<String, Object>();
 		model.put("collections", configRepository.getAllCollections());
 		model.put("collection", configRepository.getCollection(id));
-		return new ModelAndView("/dashboard/collections/view", model);
+		return new ModelAndView("/collections/view", model);
 	}
 
 }

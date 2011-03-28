@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.dashboard;
+package com.funnelback.publicui.dashboard.web.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class CacheController {
 
 		Map<String, List<Statistics>> model = new HashMap<String, List<Statistics>>();
 		model.put("statistics", cacheStatistics);
-		return new ModelAndView("/dashboard/caches/list", model);
+		return new ModelAndView("/caches/list", model);
 	}
 	
 	@RequestMapping("{cacheName}/flush/")

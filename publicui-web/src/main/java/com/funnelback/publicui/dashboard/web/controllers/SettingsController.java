@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.dashboard;
+package com.funnelback.publicui.dashboard.web.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class SettingsController implements ApplicationContextAware {
 		}
 		model.put("outputFlow", classes);		
 		
-		return new ModelAndView("/dashboard/settings/list", model);
+		return new ModelAndView("/settings/list", model);
 	}
 	
 	@RequestMapping("{type}/{index}/remove")

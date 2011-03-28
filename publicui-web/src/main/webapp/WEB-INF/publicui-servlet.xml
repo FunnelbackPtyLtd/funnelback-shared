@@ -29,8 +29,6 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 
-	<mvc:resources mapping="/dashboard-resources/**" location="/dashboard/" />
-
 	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
 		<property name="encoding" value="UTF-8" />
 		<property name="autodetectAnnotations" value="true" />
