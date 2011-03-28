@@ -5,8 +5,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
-import com.funnelback.publicui.web.binding.CollectionEditor;
 
 public class CollectionEditorTest {
 

@@ -18,9 +18,9 @@ import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor;
 import com.funnelback.publicui.test.mock.MockLogService;
-import com.funnelback.publicui.web.controllers.SearchController;
-import com.funnelback.publicui.web.interceptors.SearchLogInterceptor;
 
 public class SearchLogInterceptorTests {
 

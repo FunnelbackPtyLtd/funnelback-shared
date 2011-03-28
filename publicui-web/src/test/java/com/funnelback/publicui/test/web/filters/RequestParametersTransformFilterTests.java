@@ -20,9 +20,9 @@ import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
+import com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter;
+import com.funnelback.publicui.search.web.filters.RequestParametersTransformWrapper;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
-import com.funnelback.publicui.web.filters.RequestParametersTransformFilter;
-import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

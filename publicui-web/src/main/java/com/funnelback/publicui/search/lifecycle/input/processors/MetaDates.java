@@ -18,7 +18,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
 
 /**
  * Processes meta_* parameters related to date:

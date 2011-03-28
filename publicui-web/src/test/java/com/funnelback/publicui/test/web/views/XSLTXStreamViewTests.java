@@ -21,8 +21,8 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.web.controllers.SearchController;
-import com.funnelback.publicui.web.views.XSLTXStreamView;
+import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.views.XSLTXStreamView;
 import com.funnelback.publicui.xml.SearchXStreamMarshaller;
 
 public class XSLTXStreamViewTests {

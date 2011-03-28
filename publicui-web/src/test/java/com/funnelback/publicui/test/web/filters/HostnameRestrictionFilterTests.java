@@ -3,7 +3,6 @@ package com.funnelback.publicui.test.web.filters;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jws.soap.SOAPBinding.ParameterStyle;
 import javax.servlet.ServletException;
 
 import org.junit.Assert;
@@ -18,9 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.ConfigRepository.GlobalConfiguration;
+import com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter;
+import com.funnelback.publicui.search.web.filters.RequestParametersTransformWrapper;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
-import com.funnelback.publicui.web.filters.HostnameRestrictionFilter;
-import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

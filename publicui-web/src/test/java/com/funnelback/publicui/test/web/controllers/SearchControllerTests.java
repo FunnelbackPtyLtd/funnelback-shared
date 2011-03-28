@@ -27,11 +27,11 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
 import com.funnelback.publicui.test.mock.MockInputProcessor;
 import com.funnelback.publicui.test.mock.MockOutputProcessor;
-import com.funnelback.publicui.web.controllers.SearchController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

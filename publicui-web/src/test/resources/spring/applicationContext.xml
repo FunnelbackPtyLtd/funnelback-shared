@@ -18,8 +18,8 @@
 	<!-- context:component-scan base-package="com.funnelback.publicui" / -->
 	<!-- aop:aspectj-autoproxy / -->
 
-	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
-	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.web.filters.HostnameRestrictionFilter" />	
+	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
+	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 
 	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg index="0" type="java.net.URL" value="classpath:ehcache.xml" />
@@ -47,10 +47,10 @@
 	
 	
 	<bean id="searchController"
-		class="com.funnelback.publicui.web.controllers.SearchController" />
+		class="com.funnelback.publicui.search.web.controllers.SearchController" />
 
 	<bean
-		class="com.funnelback.publicui.web.interceptors.AccessRestrictionInterceptor" />
+		class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 
 	<bean
 		class="com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks" />

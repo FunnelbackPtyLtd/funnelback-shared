@@ -30,8 +30,8 @@
 
 	<util:properties id="appProperties" location="file:${funnelback.installdir}/conf/publicui.properties" />
 	
-	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.web.filters.RequestParametersTransformFilter" />
-	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.web.filters.HostnameRestrictionFilter" />	
+	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
+	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 	
 	<!-- ***** List of processors to run ***** -->
 	

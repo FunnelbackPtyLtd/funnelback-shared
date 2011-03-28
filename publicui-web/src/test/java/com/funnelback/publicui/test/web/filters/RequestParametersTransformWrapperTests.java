@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
-import com.funnelback.publicui.web.filters.RequestParametersTransformWrapper;
+import com.funnelback.publicui.search.web.filters.RequestParametersTransformWrapper;
 
 public class RequestParametersTransformWrapperTests {
 

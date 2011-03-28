@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
 
 /**
  * Sets the "rmcf" query processor option on the fly if faceted navigation

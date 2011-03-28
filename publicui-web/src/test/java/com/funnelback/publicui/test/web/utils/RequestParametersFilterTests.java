@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.funnelback.publicui.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
 
 public class RequestParametersFilterTests {
 

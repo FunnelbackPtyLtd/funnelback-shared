@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
 
 /**
  * Transforms meta_* parameters into query expression.

@@ -46,7 +46,7 @@
 				<groupId>org.xnap.commons</groupId>
 				<artifactId>maven-gettext-plugin</artifactId>
 				<configuration>
-					<targetBundle>com.funnelback.publicui.web.i18n.Messages</targetBundle>
+					<targetBundle>com.funnelback.publicui.search.web.i18n.Messages</targetBundle>
 				</configuration>
 			</plugin>
 			<plugin>
