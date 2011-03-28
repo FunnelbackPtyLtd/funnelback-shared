@@ -39,6 +39,7 @@
 			
 			<query><xsl:value-of select="response/resultPacket/query" /></query>
 	  		<query_as_processed><xsl:value-of select="response/resultPacket/queryAsProcessed" /></query_as_processed>
+	  		<collection><xsl:value-of select="response/resultPacket/collection" /></collection>
 	  		
 	  		<xsl:apply-templates select="response/resultPacket/resultsSummary" />
 	  		
