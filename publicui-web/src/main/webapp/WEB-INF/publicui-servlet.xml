@@ -41,6 +41,7 @@
 			<list>
 				<value>file:#{searchHome.absolutePath}/</value>
 				<!-- value>file:#{searchHome.absolutePath}/lib/freemarker/</value -->
+				<value>/WEB-INF/freemarker/</value>
 			</list>
 		</property>
 		<property name="freemarkerSettings">
@@ -53,6 +54,12 @@
 			<map>
 				<entry key="#{T(com.funnelback.publicui.web.views.freemarker.ChangeQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.web.views.freemarker.ChangeQSParamMethod" />
+				</entry>
+				<entry key="#{T(com.funnelback.publicui.web.views.freemarker.IsEnabledMethod).NAME}">
+					<bean class="com.funnelback.publicui.web.views.freemarker.IsEnabledMethod" />
+				</entry>
+				<entry key="#{T(com.funnelback.publicui.web.views.freemarker.TruncateMethod).NAME}">
+					<bean class="com.funnelback.publicui.web.views.freemarker.TruncateMethod" />
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.web.views.freemarker.SleepMethod).NAME}">
 					<bean class="com.funnelback.publicui.web.views.freemarker.SleepMethod" />
@@ -76,10 +83,16 @@
 		</property>
 		<property name="viewResolvers">
 			<list>
-				<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+				<bean class="com.funnelback.publicui.web.views.freemarker.FallbackFreeMarkerViewResolver">
+					<constructor-arg>
+						<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView">
+							<property name="url" value="form-not-found.ftl" />
+						</bean>
+					</constructor-arg>
 					<property name="cache" value="true" />
 					<property name="prefix" value="" />
 					<property name="suffix" value=".ftl" />
+					<property name="contentType" value="text/html;charset=UTF-8" />
 				</bean>
 			</list>
 		</property>

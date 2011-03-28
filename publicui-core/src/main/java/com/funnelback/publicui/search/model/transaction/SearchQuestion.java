@@ -109,6 +109,11 @@ public class SearchQuestion {
 	 */
 	@Getter @Setter private String queryString;
 	
+	/**
+	 * Request parameters map
+	 */
+	@Getter private final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+	
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
@@ -137,6 +142,9 @@ public class SearchQuestion {
 			public static final String INDEX_URL = "index_url";
 			public static final String AUTH = "auth";
 			public static final String SEARCH_REFERER = "search_referer";
+			public static final String TYPE = "type";
+			
+			public static final String TYPE_FP = "FP";
 		}
 		
 		public static class Serve {

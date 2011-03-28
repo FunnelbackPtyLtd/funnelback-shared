@@ -198,6 +198,9 @@ public class SearchController {
 		// Query string
 		question.setQueryString(request.getQueryString());
 		
+		// Parameter map
+		question.getParameterMap().putAll(request.getParameterMap());
+		
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
 		

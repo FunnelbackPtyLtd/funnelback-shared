@@ -2,6 +2,8 @@ package com.funnelback.publicui.web.views.freemarker;
 
 import java.util.List;
 
+import com.funnelback.publicui.i18n.I18n;
+
 import lombok.extern.apachecommons.Log;
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
@@ -22,7 +24,7 @@ public class SleepMethod implements TemplateMethodModel, TemplateMethodModelEx {
 	@Override
 	public Object exec(List arguments) throws TemplateModelException {
 		if (arguments.size() != 1) {
-			throw new TemplateModelException("This method takes 1 argument: Sleep delay (in ms)");
+			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: Sleep delay (in ms)"));
 		}
 		
 		long delay = ((SimpleNumber) arguments.get(0)).getAsNumber().longValue();

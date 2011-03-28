@@ -51,9 +51,10 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
-	public void testQuery() {
+	public void testQueryAndCollection() {
 		assertEquals("visa", rp.getQuery());
 		assertEquals("visa", rp.getQueryAsProcessed());
+		assertEquals("gov_combined", rp.getCollection());
 	}
 	
 	@Test

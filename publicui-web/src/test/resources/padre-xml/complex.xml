@@ -9,6 +9,7 @@
 
   <query>visa</query>
   <query_as_processed>visa</query_as_processed>
+  <collection>gov_combined</collection>
 
 <results_summary>
   <fully_matching>200</fully_matching>

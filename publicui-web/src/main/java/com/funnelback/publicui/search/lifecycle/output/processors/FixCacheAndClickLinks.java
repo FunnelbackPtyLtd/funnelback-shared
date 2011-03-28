@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -22,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * Apply transformation to the cache and click URLs.
+ * Apply transformation to the cache and click URLs (Results, BestBets...)
  * <ul>
  * 	<li>Adds a prefix configured in the global app.properties (can be empty)</li>
  * 	<li>Generates click tracking URLs</li>
@@ -45,11 +46,18 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 					r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), r));
 				}
 			}
+			
+			if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+				// Apply click tracking to best bets links
+				for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
+					bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
+				}
+			}
 		}
 	}
 	
 	/**
-	 * Generates a click tracking URL with all the required parameters.
+	 * Generates a click tracking URL with all the required parameters for a result.
 	 * @param question
 	 * @param r
 	 * @return
@@ -73,6 +81,28 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			out.append("&").append(RequestParameters.Click.SEARCH_REFERER).append("=").append(URLEncoder.encode(question.getReferer(), "UTF-8"));
 		}
 		
+		return out.toString();
+	}
+	
+	/**
+	 * Builds a click-tracking URL for a best bet
+	 * @param question
+	 * @param bb
+	 * @return
+	 */
+	@SneakyThrows(UnsupportedEncodingException.class)
+	private String buildClickTrackingUrl(SearchQuestion question, BestBet bb) {
+		StringBuffer out = new StringBuffer(searchUrlPrefix)
+		.append(question.getCollection().getConfiguration().value(Keys.UI_CLICK_LINK)).append("?")
+		.append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
+		.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(bb.getLink(), "UTF-8"))
+		.append("&").append(RequestParameters.Click.AUTH).append("=").append(getAuth(bb.getLink(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)))
+		.append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP);
+
+		if (question.getProfile() != null) {
+			out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
+		}
+	
 		return out.toString();
 	}
 	

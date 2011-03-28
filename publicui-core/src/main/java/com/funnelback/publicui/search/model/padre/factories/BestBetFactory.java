@@ -18,7 +18,8 @@ public class BestBetFactory {
 				data.get(BestBet.Schema.BB_TRIGGER),
 				data.get(BestBet.Schema.BB_LINK),
 				data.get(BestBet.Schema.BB_TITLE),
-				data.get(BestBet.Schema.BB_DESC)
+				data.get(BestBet.Schema.BB_DESC),
+				data.get(BestBet.Schema.BB_LINK)		// Set click tracking = link by default
 			);
 	}
 	

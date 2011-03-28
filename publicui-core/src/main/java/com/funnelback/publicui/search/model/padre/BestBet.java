@@ -1,12 +1,15 @@
 package com.funnelback.publicui.search.model.padre;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * A best bet
  */
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class BestBet {
 
 	/** Trigger query / regexp */
@@ -20,6 +23,9 @@ public class BestBet {
 	
 	/** Description */
 	@Getter private final String description;
+	
+	/** URL with click tracking (click.cgi) */
+	@Getter @Setter private String clickTrackingUrl;
 	
 	public static class Schema {
 		public static final String BB = "bb";

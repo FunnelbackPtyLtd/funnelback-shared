@@ -3,8 +3,10 @@ package com.funnelback.publicui.search.model.padre;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * A quick link, associated to a result.
@@ -25,12 +27,12 @@ public class QuickLinks {
 	@Getter
 	private final List<QuickLink> quickLinks = new ArrayList<QuickLink>();
 
-	@RequiredArgsConstructor
+	@AllArgsConstructor
 	public static class QuickLink {
-		@Getter
-		private final String text;
-		@Getter
-		private final String url;
+
+		@Getter private final String text;
+		
+		@Getter @Setter private String url;
 	}
 
 	public static final class Schema {

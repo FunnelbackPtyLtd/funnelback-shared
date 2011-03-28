@@ -39,7 +39,7 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 			newValue = ((SimpleNumber) arguments.get(2)).toString();
 		}
 		
-		Pattern p = Pattern.compile("([&;])" + paramName + "=[^&]*");
+		Pattern p = Pattern.compile("([&;]|^)" + paramName + "=[^&]*");
 		Matcher m = p.matcher(qs);
 		if (m.find()) {
 			return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));

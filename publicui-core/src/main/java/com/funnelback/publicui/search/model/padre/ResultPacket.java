@@ -19,6 +19,7 @@ public class ResultPacket {
 	@Getter @Setter private Details details;
 	@Getter @Setter private String query;
 	@Getter @Setter private String queryAsProcessed;
+	@Getter @Setter private String collection;
 	
 	@Getter @Setter private ResultsSummary resultsSummary;
 	@Getter @Setter private Spell spell;
@@ -110,6 +111,7 @@ public class ResultPacket {
 		
 		public static final String QUERY = "query";
 		public static final String QUERY_AS_PROCESSED = "query_as_processed";
+		public static final String COLLECTION = "collection";
 		
 		public static final String RMC = "rmc";
 		public static final String RMC_ITEM = "item";
