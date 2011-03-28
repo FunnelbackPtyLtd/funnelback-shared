@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.publicui.aop.ProfiledAspect.MethodStats;
 
 @Controller
-@RequestMapping("/dashboard/stats/")
+@RequestMapping("/stats/")
 public class StatsController {
 
 	@Resource(name="profilingStatsNotSynchronized")

@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @lombok.extern.apachecommons.Log
-@RequestMapping({"/test", "/_/test"})
+// @RequestMapping({"/test", "/_/test"})
+@RequestMapping("/")
 public class TestsController {
 	
 	@RequestMapping("hello")

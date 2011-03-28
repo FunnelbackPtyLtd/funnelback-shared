@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 @Controller
-@RequestMapping("/dashboard/collections/")
+@RequestMapping("/collections/")
 public class CollectionsController {
 	
 	@Autowired

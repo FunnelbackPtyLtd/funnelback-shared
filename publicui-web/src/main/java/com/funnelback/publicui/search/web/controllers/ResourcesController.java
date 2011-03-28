@@ -32,7 +32,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Handles per-collection static resources
  */
 @Controller
-@RequestMapping({"/resources"})
+@RequestMapping({"/"})
 @lombok.extern.apachecommons.Log
 public class ResourcesController implements ApplicationContextAware {
 
@@ -46,6 +46,13 @@ public class ResourcesController implements ApplicationContextAware {
 	
 	@Value("#{appProperties['resources.web.directory.name=web']}")
 	private String collectionWebResourcesDirectoryName = "web";
+	
+	@RequestMapping("/test")
+	public void test(HttpServletResponse response) throws IOException {
+		response.setContentType("text/plain");
+		response.getWriter().write("Test !");
+		
+	}
 	
 	@RequestMapping("/{collectionId}/{resource:.*}")
 	public void handleRequestDefaultProfile(@PathVariable String collectionId, @PathVariable String resource,

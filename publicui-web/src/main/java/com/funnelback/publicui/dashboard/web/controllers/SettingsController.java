@@ -26,7 +26,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 
 @Controller
-@RequestMapping("/dashboard/settings/")
+@RequestMapping("/settings/")
 @Log
 public class SettingsController implements ApplicationContextAware {
 

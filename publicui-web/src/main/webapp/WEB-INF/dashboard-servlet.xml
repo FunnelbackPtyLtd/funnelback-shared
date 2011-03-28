@@ -18,7 +18,7 @@
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
 
-	<mvc:resources mapping="/dashboard/resources/**" location="/dashboard/" />
+	<mvc:resources mapping="/resources/**" location="/dashboard/" />
 
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="/WEB-INF/freemarker/dashboard/" />
