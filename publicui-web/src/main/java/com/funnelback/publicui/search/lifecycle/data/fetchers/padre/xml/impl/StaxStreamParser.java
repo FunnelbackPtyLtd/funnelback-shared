@@ -54,6 +54,7 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.setDetails(DetailsFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.QUERY.equals(xmlStreamReader.getLocalName())) {
 						packet.setQuery(xmlStreamReader.getElementText());
+						packet.setQueryCleaned(packet.getQuery());
 					} else if (ResultPacket.Schema.QUERY_AS_PROCESSED.equals(xmlStreamReader.getLocalName())) {
 						packet.setQueryAsProcessed(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.COLLECTION.equals(xmlStreamReader.getLocalName())) {

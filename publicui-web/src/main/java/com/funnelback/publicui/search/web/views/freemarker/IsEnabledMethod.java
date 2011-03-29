@@ -24,8 +24,12 @@ public class IsEnabledMethod implements TemplateMethodModel, TemplateMethodModel
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The value to check for."));
 		}
 		
-		String value = ((SimpleScalar) arguments.get(0)).getAsString();
-		return Config.isTrue(value);	
+		SimpleScalar arg = (SimpleScalar) arguments.get(0);
+		if (arg == null) {
+			return false;
+		} else {
+			return Config.isTrue(arg.getAsString());
+		}
 	}
 
 }

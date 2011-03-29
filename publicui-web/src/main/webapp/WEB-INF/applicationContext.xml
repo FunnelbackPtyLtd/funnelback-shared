@@ -71,6 +71,7 @@
 		<ref bean="facetedNavigationTransformOutputProcessor" />
 		<ref bean="contextualNavigationOutputProcessor" />
 		<ref bean="quickLinksOutputProcessor" />
+		<ref bean="queryCleanOutputProcessor" />
 	</util:list>
 
 	<!-- ***** -->

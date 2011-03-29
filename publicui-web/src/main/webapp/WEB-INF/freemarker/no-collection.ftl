@@ -11,10 +11,13 @@
 
 		ul {
 			list-style-type: none;
+			margin: 0;
+			padding: 0;
 		}
 		
 		li {
 			margin: 1em;
+			padding: 0;
 		}		
 	</style>
 	

@@ -62,6 +62,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SleepMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.SleepMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.BoldicizeMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.BoldicizeMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
 					<ref bean="IncludeUrlDirective" />
 				</entry>

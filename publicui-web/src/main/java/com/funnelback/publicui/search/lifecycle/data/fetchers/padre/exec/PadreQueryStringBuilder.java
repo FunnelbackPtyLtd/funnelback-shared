@@ -25,6 +25,7 @@ public class PadreQueryStringBuilder {
 	public static String buildQueryString(SearchTransaction transaction) {
 		Map<String, String[]> qs = new HashMap<String, String[]>();		
 		qs.put(Parameters.collection.toString(), new String[] {transaction.getQuestion().getCollection().getId()});
+		qs.put(Parameters.profile.toString(), new String[] {transaction.getQuestion().getProfile()});
 
 		// Build query
 		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
@@ -74,7 +75,7 @@ public class PadreQueryStringBuilder {
 	}
 	
 	public static enum Parameters {
-		collection,query;
+		collection,query,profile;
 	}
 	
 }

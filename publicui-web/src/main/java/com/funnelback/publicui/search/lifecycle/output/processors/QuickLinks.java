@@ -23,6 +23,7 @@ public class QuickLinks implements OutputProcessor {
 	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasResults(searchTransaction)) {
 			for (Result r : searchTransaction.getResponse().getResultPacket().getResults()) {
+
 				if (r.getQuickLinks() != null) {
 					for (QuickLink ql : r.getQuickLinks().getQuickLinks()) {
 						if (ql.getUrl() != null) {
@@ -39,7 +40,6 @@ public class QuickLinks implements OutputProcessor {
 								ql.setUrl("http://" + ql.getUrl());
 							}
 						}
-							
 					}
 				}
 			}

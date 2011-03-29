@@ -7,7 +7,7 @@
       Thu Jan 27 01:40:23 2011    </collection_updated>
   </details>
 
-  <query>visa</query>
+  <query>visa^0.345</query>
   <query_as_processed>visa</query_as_processed>
   <collection>gov_combined</collection>
 

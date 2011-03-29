@@ -19,6 +19,7 @@ public class ResultPacket {
 	@Getter @Setter private Details details;
 	@Getter @Setter private String query;
 	@Getter @Setter private String queryAsProcessed;
+	@Getter @Setter private String queryCleaned;
 	@Getter @Setter private String collection;
 	
 	@Getter @Setter private ResultsSummary resultsSummary;

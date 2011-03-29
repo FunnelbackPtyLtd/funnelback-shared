@@ -32,8 +32,8 @@ public class PassThroughParameters implements InputProcessor {
 	 * we deal with them specifically)
 	 */
 	public static final String[] IGNORED_NAMES = {
-		RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.CLIVE,
-		RequestParameters.ContextualNavigation.CN_CLICKED
+		RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.PROFILE,
+		RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED
 		};
 	
 	/**
