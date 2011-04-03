@@ -104,7 +104,7 @@ public class LocalLogService implements LogService {
 			.append(xmlData).append("\n")
 			.append(XML_ROOT_END);
 			
-		FileUtils.write(file, out.toString());
+		FileUtils.writeStringToFile(file, out.toString());
 	}
 	
 	/**
@@ -147,7 +147,9 @@ public class LocalLogService implements LogService {
 			targetFile.writeBytes(xmlData + "\n");
 			targetFile.writeBytes(XML_ROOT_END);
 		} finally {
-			IOUtils.closeQuietly(targetFile);
+			try {
+				targetFile.close();
+			} catch (IOException ioe) {}			
 		}
 	}
 
