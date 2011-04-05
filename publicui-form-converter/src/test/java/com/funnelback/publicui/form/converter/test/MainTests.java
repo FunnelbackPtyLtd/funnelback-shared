@@ -14,7 +14,6 @@ import com.funnelback.publicui.form.converter.Main;
 public class MainTests {
 
 	@Test
-	@Ignore
 	public void test() throws IOException {
 		File in = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.form.dist");
 		File expected = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.ftl.dist");
@@ -29,8 +28,8 @@ public class MainTests {
 		Main.main(args);
 		
 		Assert.assertEquals(
-				FileUtils.readFileToString(expected),
-				FileUtils.readFileToString(out)
+				FileUtils.readFileToString(expected).replaceAll("\\r?\\n", "\\n"),
+				FileUtils.readFileToString(out).replaceAll("\\r?\\n", "\\n")
 				);
 	}
 	

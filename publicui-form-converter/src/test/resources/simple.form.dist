@@ -396,7 +396,6 @@
 			<s:PrevNext separator="" label=""></s:PrevNext>
 		</p>		
 
-		
 		<!-- FACETED NAVIGATION -->
 		<s:FacetedSearch>
 		<div id="fb-facets">
