@@ -24,6 +24,7 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.BoldicizeConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.ContextualNavigationConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
+		<bean class="com.funnelback.publicui.form.converter.operations.SelectConversion" />
 	</util:list>
 
 </beans>

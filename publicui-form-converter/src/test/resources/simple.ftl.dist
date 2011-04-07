@@ -142,60 +142,14 @@
 			<fieldset>
 				<legend>Published...</legend>
 				<span><label for="meta_d1day">Published after</label>
-				<s:Select>
-					<name>meta_d1day</name>
-					<opt></opt>
-					<range>1..31</range>
-				</s:Select>
-				<s:Select>
-					<name>meta_d1month</name>
-					<opt></opt>
-					<opt>Jan</opt>
-					<opt>Feb</opt>
-					<opt>Mar</opt>
-					<opt>Apr</opt>
-					<opt>May</opt>
-					<opt>Jun</opt>
-					<opt>Jul</opt>
-					<opt>Aug</opt>
-					<opt>Sep</opt>
-					<opt>Oct</opt>
-					<opt>Nov</opt>
-					<opt>Dec</opt>
-				</s:Select>
-				<s:Select>
-					<name>meta_d1year</name>
-					<opt></opt>
-		                        <range>CURRENT_YEAR - 20..CURRENT_YEAR</range>
-				</s:Select></span>
+				<@s.Select name="meta_d1day" options=[""] range="1..31" />
+				<@s.Select name="meta_d1month" options=["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] />
+				<@s.Select name="meta_d1year" options=[""] range="CURRENT_YEAR - 20..CURRENT_YEAR" /></span>
 	
 				<span><label for="meta_d2day">Published before</label>
-				<s:Select>
-					<name>meta_d2day</name>
-					<opt></opt>
-					<range>1..31</range>
-				</s:Select>
-		                <s:Select>
-					<name>meta_d2month</name>
-					<opt></opt>
-					<opt>Jan</opt>
-					<opt>Feb</opt>
-					<opt>Mar</opt>
-					<opt>Apr</opt>
-					<opt>May</opt>
-					<opt>Jun</opt>
-					<opt>Jul</opt>
-					<opt>Aug</opt>
-					<opt>Sep</opt>
-					<opt>Oct</opt>
-					<opt>Nov</opt>
-					<opt>Dec</opt>
-				</s:Select>
-				<s:Select>
-					<name>meta_d2year</name>
-					<opt></opt>
-					<range>CURRENT_YEAR - 20..CURRENT_YEAR + 1</range>
-				</s:Select></span>
+				<@s.Select name="meta_d2day" options=[""] range="1..31" />
+		                <@s.Select name="meta_d2month" options=["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] />
+				<@s.Select name="meta_d2year" options=[""] range="CURRENT_YEAR - 20..CURRENT_YEAR + 1" /></span>
 
 				<span><label for="scope">Within (e.g. example.com)</label>
 				<input type="text" id="scope" name="scope" value="<@s.cgi>scope</@s.cgi>"></span>
@@ -203,25 +157,10 @@
 
 			<div>
 				<span><label for="meta_f_sand">File type</label>
-				<s:Select>
-					<name>meta_f_sand</name>
-					<opt>=Any </opt>
-					<opt>pdf=PDF  (.pdf) </opt>
-					<opt>xls=Excel (.xls) </opt>
-					<opt>ppt=Powerpoint (.ppt) </opt>
-					<opt>rtf=Rich Text (.rtf) </opt>
-					<opt>doc=Word (.doc) </opt>
-					<opt>docx=Word 2007+ (.docx) </opt>
-				</s:Select></span>
+				<@s.Select name="meta_f_sand" options=["=Any ", "pdf=PDF  (.pdf) ", "xls=Excel (.xls) ", "ppt=Powerpoint (.ppt) ", "rtf=Rich Text (.rtf) ", "doc=Word (.doc) ", "docx=Word 2007+ (.docx) "] /></span>
 
 				<span><label class="fb-sortby" for="sort">Sort results by</label>
-				<s:Select>
-					<name>sort</name>
-					<opt>=Relevance </opt>
-					<opt>date=Date</opt>
-					<opt>title=Title</opt>
-					<opt>url=URL</opt>
-				</s:Select></span>
+				<@s.Select name="sort" options=["=Relevance ", "date=Date", "title=Title", "url=URL"] /></span>
 
 
 				<input type="submit" value="Search" id="fb-advanced-submit">

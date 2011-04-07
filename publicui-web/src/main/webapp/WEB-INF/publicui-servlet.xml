@@ -68,6 +68,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
 					<ref bean="IncludeUrlDirective" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>

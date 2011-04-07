@@ -43,6 +43,9 @@ public class MetaParameters implements InputProcessor {
 	
 	private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").*");
 
+	private static final Pattern META_DATE_PATTERN = Pattern.compile("^" + META_PREFIX + "d(1|2|3|4|)(day|month|year|)$");
+	private static final Pattern META_EVENT_PATTERN = Pattern.compile("^" + META_PREFIX + "[wxyz](day|month|year|)$");
+	
 	/**
 	 * Pattern used to extract the metadata class
 	 */
@@ -70,6 +73,17 @@ public class MetaParameters implements InputProcessor {
 			String[] parameterNames = filter.filter(META_QUERY_PATTERN);
 
 			for (String name: parameterNames) {
+				
+				// Skip the date components (they are dealt with specially
+		        // later: a form may pass through independent
+		        // meta_d1_day / meta_d2_month / etc paramaters, to indicate
+		        // the start / end day / month / year)
+				if (META_DATE_PATTERN.matcher(name).matches()
+						|| META_EVENT_PATTERN.matcher(name).matches()) {
+					log.debug("Skipping date-related meta parameter '" + name + "'");
+					continue;
+				}
+				
 				if (request.getParameterValues(name) != null) {				
 					
 					// Gather all parameter values
