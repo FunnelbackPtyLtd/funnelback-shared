@@ -7,6 +7,7 @@ import com.funnelback.publicui.i18n.I18n;
 
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
@@ -39,7 +40,7 @@ public class TruncateMethod implements TemplateMethodModel, TemplateMethodModelE
 		
 		boolean stripMiddle = false;
 		if (arguments.size() == 3) {
-			stripMiddle = new Boolean(((SimpleScalar) arguments.get(2)).getAsString());
+			stripMiddle = ((TemplateBooleanModel) arguments.get(2)).getAsBoolean();
 		}
 		
 		if (! stripMiddle) {
