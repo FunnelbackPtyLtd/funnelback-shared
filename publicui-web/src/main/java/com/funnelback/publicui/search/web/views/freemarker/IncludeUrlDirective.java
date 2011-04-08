@@ -50,10 +50,8 @@ import freemarker.template.TemplateScalarModel;
  * - timeout: Time to wait in seconds for the remote resource
  * - convertrelative: wether we should attempt to convert relative links to absolute ones.
  */
-@Component("IncludeUrlDirective")
 @Log
 public class IncludeUrlDirective implements TemplateDirectiveModel {
-
 
 	public static final String NAME = "IncludeUrl";
 	
@@ -63,8 +61,11 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 		url, expiry, start, end, username, password, useragent, timeout, convertrelative
 	}
 	
-	@Autowired
 	protected CacheManager appCacheManager;
+	
+	public IncludeUrlDirective(CacheManager appCacheManager) {
+		this.appCacheManager = appCacheManager;
+	}
 	
 	@Override
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)

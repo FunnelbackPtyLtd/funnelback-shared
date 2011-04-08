@@ -270,7 +270,7 @@
 				
 				<!-- QUERY BIASED SUMMARY (WITH DATE)-->
 				<#if s.result.summary?exists>
-					<p><#if s.result.date?date?string("d MMM yyyy") != "No Date"><span class="fb-date">${s.result.date?date?string("d MMM yyyy")}:</span></#if>
+					<p><#if s.result.date?exists && s.result.date?date?string("d MMM yyyy") != "No Date"><span class="fb-date">${s.result.date?date?string("d MMM yyyy")}:</span></#if>
 					<span class="fb-summary">${s.result.summary}</span></p>
 				</#if>
 

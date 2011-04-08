@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
+import lombok.installer.IdeFinder.OS;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Ignore;
@@ -16,7 +17,7 @@ public class MainTests {
 	@Test
 	public void test() throws IOException {
 		File in = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.form.dist");
-		File expected = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.ftl.dist");
+		File expectedFile = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.ftl.dist");
 		File out = File.createTempFile(MainTests.class.getName(), "tmp");
 		out.deleteOnExit();
 		
@@ -28,8 +29,8 @@ public class MainTests {
 		Main.main(args);
 		
 		Assert.assertEquals(
-				FileUtils.readFileToString(expected).replaceAll("\\r?\\n", "\\n"),
-				FileUtils.readFileToString(out).replaceAll("\\r?\\n", "\\n")
+				FileUtils.readFileToString(expectedFile).replaceAll("\r?\n", "\n"),
+				FileUtils.readFileToString(out).replaceAll("\r?\n", "\n")
 				);
 	}
 	

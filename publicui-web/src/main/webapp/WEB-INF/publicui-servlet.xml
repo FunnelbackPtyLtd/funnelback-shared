@@ -66,7 +66,9 @@
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.BoldicizeMethod" />
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
-					<ref bean="IncludeUrlDirective" />
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective">
+						<constructor-arg ref="appCacheManager" />
+					</bean>
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
