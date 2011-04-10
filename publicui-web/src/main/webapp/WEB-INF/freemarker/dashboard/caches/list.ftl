@@ -1,5 +1,7 @@
 <#include "../inc/header.ftl" />
 
+<h1>Stats</h1>
+
 <table>
 <tr>
 	<th></th>

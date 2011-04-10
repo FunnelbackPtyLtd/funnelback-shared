@@ -19,19 +19,35 @@ public class StatsController {
 	@Resource(name="profilingStatsNotSynchronized")
 	private Map<String, MethodStats> stats;
 
+	@Resource(name="searchStats")
+	private Map<String, Long> searchStats;
+
 	@RequestMapping("list")
-	public ModelAndView list() {
-		Map<String, Map<String, MethodStats>> model = new HashMap<String, Map<String, MethodStats>>();
-		model.put("statistics", stats);
-		return new ModelAndView("/stats/list", model);
+	public String list() {
+		return "/stats/list";
 	}
 	
-	@RequestMapping("{statsId}/show")
-	public ModelAndView show(@PathVariable String statsId) {
+	
+	@RequestMapping("methods/list")
+	public ModelAndView methodsList() {
+		Map<String, Map<String, MethodStats>> model = new HashMap<String, Map<String, MethodStats>>();
+		model.put("statistics", stats);
+		return new ModelAndView("/stats/method/list", model);
+	}
+	
+	@RequestMapping("methods/{statsId}/show")
+	public ModelAndView methodsShow(@PathVariable String statsId) {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("statsId", statsId);
 		model.put("statistics", stats.get(statsId));
-		return new ModelAndView("/stats/show", model);
+		return new ModelAndView("/stats/method/show", model);
+	}
+	
+	@RequestMapping("search/list")
+	public ModelAndView searchList() {
+		Map<String, Map<String, Long>> model = new HashMap<String, Map<String, Long>>();
+		model.put("statistics", searchStats);
+		return new ModelAndView("/stats/search/list", model);
 	}
 	
 }

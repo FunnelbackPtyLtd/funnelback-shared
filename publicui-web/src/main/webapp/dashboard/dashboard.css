@@ -1,17 +1,23 @@
+/* Orange: #fc9804 */
 body {
 	font-family: Calibri, Arial;
 	padding: 0;
 	margin: 0;
 	color: #555555;
+	font-size: 13px;
 }
 
 a {
+	color:#1f1fcf;
 	text-decoration: none;
-	color: black;
 }
 
 a:hover {
-	background-color: #FC9804;
+	text-decoration: underline;
+}
+
+a:visited {
+	color:#1f1fcf;
 }
 
 h1 {
@@ -24,37 +30,39 @@ h1 span {
 
 nav#main {
 	margin: 0;
-	padding: .5em;
+	padding: 11px;
 	text-align: right;
 	margin-bottom: 1em;
+	background: #efefff;
+	line-height: em;
+	border: solid 1px #bbd;	
+}
 
-	background: #eee; /* for non-css3 browsers */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eee', endColorstr='#bbb'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#bbb)); /* for webkit browsers */
-	background: -moz-linear-gradient(top,  #eee,  #bbb); /* for firefox 3.6+ */
-	border-bottom: outset 1px;
+nav#main img {
+	position: absolute;
+	left: 1px;
+	top: 1px;
+	border: solid 2px white;
 }
 
 nav#main ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	font-size: large;
+	margin-right: 10px;
 }
 
 nav#main ul li {
 	display: inline;
 	margin: 0;
-	margin-left: .15em;
-	margin-right: .15em;
 }
 
-nav#main ul li a {
-	padding: .25em;
+nav#main ul li.sep {
+	color: #bbb;
 }
 
-nav#main ul li a:hover {
-	background-color: #FC9804;
+section {
+	padding: 10px;
 }
 
 div#ajax-messages {
@@ -87,16 +95,33 @@ table {
 }
 
 table, th, td {
-	border: solid 1px grey;
+	border: none;
+}
+
+td {
+	border: solid 1px #ccc;
+	padding: 2px;
 }
 
 th {
-	font-weight: normal;
-	background-color: lightgrey;
+	border-bottom: solid 1px black;
 }
 
-span.sparkline {
-	font-size: 1px;
+th {
+	background-color: #eee;
+}
+
+td.sparklines {
+	text-align: center;
+	width: 100px;
+}
+
+td.action {
+	text-align: center;
+}
+
+td.value {
+	text-align: right;
 }
 
 div#graphdiv {

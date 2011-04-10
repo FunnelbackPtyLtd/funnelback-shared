@@ -15,7 +15,7 @@
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-	<context:component-scan base-package="com.funnelback.publicui.aop,com.funnelback.publicui.log,com.funnelback.publicui.search,com.funnelback.publicui.xml" />
+	<context:component-scan base-package="com.funnelback.publicui.log,com.funnelback.publicui.search,com.funnelback.publicui.xml" />
 	<task:annotation-driven />
 	
 	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
@@ -75,15 +75,20 @@
 	</util:list>
 
 	<!-- ***** -->
-
-	<!-- Profiling -->
-	<aop:aspectj-autoproxy />
 	
-	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.DataPoint[]" />
+	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.MethodStats" />
 	<bean id="profilingStats" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetClass"><value>java.util.Collections</value></property>
 		<property name="targetMethod"><value>synchronizedMap</value></property>
 		<property name="arguments"><ref bean="profilingStatsNotSynchronized" /></property>
 	</bean>
+	
+	<util:map id="searchStatsNotSynchronized" key-type="java.lang.String" value-type="java.lang.Long" />
+	<bean id="searchStats" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"><value>java.util.Collections</value></property>
+		<property name="targetMethod"><value>synchronizedMap</value></property>
+		<property name="arguments"><ref bean="searchStatsNotSynchronized" /></property>
+	</bean>
+	
 	
 </beans>
