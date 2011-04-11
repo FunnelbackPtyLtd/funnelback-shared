@@ -14,10 +14,16 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreEx
 @Log
 public class PadreConnection {
 
+	/**
+	 * Is this connection closed ?
+	 */
+	private boolean closed = true;
+	
 	private PadreExecutor executor;
 	
 	public PadreConnection(PadreExecutor executor) {
 		this.executor = executor;
+		closed = false;
 	}
 	
 	/**
@@ -27,6 +33,10 @@ public class PadreConnection {
 	 * @throws IOException
 	 */
 	public String inputCmd(String cmd) throws IOException {
+		if (closed) {
+			throw new IllegalStateException("This connection is closed");
+		}
+		
 		final PadreStreamHandler handler = (PadreStreamHandler)executor.getStreamHandler();
 		new Wait() {
 			
@@ -53,6 +63,11 @@ public class PadreConnection {
 			+ out.toString()
 			+ "</" + ResultPacket.Schema.RESULT_PACKET + ">";
 
+	}
+	
+	public void close() {
+		log.debug("Closing connection");
+		executor.getStreamHandler().stop();
 	}
 	
 }

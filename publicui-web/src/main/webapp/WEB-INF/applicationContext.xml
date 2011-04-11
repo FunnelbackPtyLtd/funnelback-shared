@@ -33,7 +33,7 @@
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 	
-	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool">
+	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool" destroy-method="close">
 		<constructor-arg index="0">
 			<bean class="com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnectionFactory" />
 		</constructor-arg>

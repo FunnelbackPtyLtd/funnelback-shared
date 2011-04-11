@@ -36,7 +36,7 @@ public class PadreForkingPooled implements DataFetcher {
 		String padreOutput = null;
 		try {
 			c  = (PadreConnection) padrePool.borrowObject(searchTransaction.getQuestion().getCollection().getId());
-			
+						
 			padreOutput = c.inputCmd(PadreQueryStringBuilder.buildQuery(searchTransaction));
 			
 			searchTransaction.getResponse().setRawPacket(padreOutput.toString());
@@ -60,6 +60,7 @@ public class PadreForkingPooled implements DataFetcher {
 					log.error("Unable to return PADRE connection to the pool for collection '" + searchTransaction.getQuestion().getCollection().getId() + "'", e);
 				}
 			}
+			log.debug("Pool status: " + padrePool.getNumActive() + " active, " + padrePool.getNumIdle() + " idle");
 		}
 
 	}

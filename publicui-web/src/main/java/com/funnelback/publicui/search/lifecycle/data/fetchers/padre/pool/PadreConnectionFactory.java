@@ -67,6 +67,12 @@ public class PadreConnectionFactory extends BaseKeyedPoolableObjectFactory {
 		return new PadreConnection(executor);
 	}
 	
+	@Override
+	public void destroyObject(Object key, Object obj) throws Exception {
+		PadreConnection c = (PadreConnection) obj;
+		c.close();
+	}
+	
 	private class PadreResultHandler implements ExecuteResultHandler {
 		@Override
 		public void onProcessFailed(ExecuteException ex) {
