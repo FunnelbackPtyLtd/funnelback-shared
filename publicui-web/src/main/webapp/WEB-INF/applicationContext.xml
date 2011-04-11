@@ -33,7 +33,15 @@
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 	
+	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool">
+		<constructor-arg index="0">
+			<bean class="com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnectionFactory" />
+		</constructor-arg>
+		<!--  constructor-arg index="1" value="10" / -->
+	</bean>
+	
 	<!-- ***** List of processors to run ***** -->
+	
 	
 	<util:list id="inputFlow">
 		<!-- passThroughParametersInputProcessor should be first as it populates 
@@ -56,7 +64,8 @@
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
 		</bean>
-		<ref bean="padreForking" />
+		<ref bean="padreForking">
+		<!-- ref bean="padreForkingPooled" / -->
 		<bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />

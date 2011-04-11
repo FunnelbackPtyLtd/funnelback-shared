@@ -37,7 +37,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
 @lombok.extern.apachecommons.Log
 public class PadreForking implements DataFetcher {
 
-	private enum EnvironmentKeys {
+	public enum EnvironmentKeys {
 		SEARCH_HOME, QUERY_STRING, SystemRoot;
 	}
 	

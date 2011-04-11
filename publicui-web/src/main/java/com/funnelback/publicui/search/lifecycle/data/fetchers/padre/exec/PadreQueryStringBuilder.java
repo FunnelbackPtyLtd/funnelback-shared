@@ -27,19 +27,7 @@ public class PadreQueryStringBuilder {
 		qs.put(Parameters.collection.toString(), new String[] {transaction.getQuestion().getCollection().getId()});
 		qs.put(Parameters.profile.toString(), new String[] {transaction.getQuestion().getProfile()});
 
-		// Build query
-		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
-		if (transaction.getQuestion().getQueryExpressions().size() > 0) {
-			// Add additional query expressions
-			query.append(" " + StringUtils.join(transaction.getQuestion().getQueryExpressions(), " "));
-		}
-		if (transaction.getQuestion().getMetaParameters().size() > 0) {
-			// Add meta_* parameters transformed as query expressions
-			for (String value : transaction.getQuestion().getMetaParameters()) {
-				query.append(" " + value);
-			}
-		}
-		qs.put(Parameters.query.toString(), new String[] {query.toString()});
+		qs.put(Parameters.query.toString(), new String[] {buildQuery(transaction)});
 		
 		// Add any other parameter
 		qs.putAll(transaction.getQuestion().getAdditionalParameters());
@@ -66,6 +54,27 @@ public class PadreQueryStringBuilder {
 			}
 		}
 		return out.toString();
+	}
+	
+	/**
+	 * Builds query expression from the various input parameters
+	 * @param transaction
+	 * @return
+	 */
+	public static String buildQuery(SearchTransaction transaction) {
+		// Build query
+		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
+		if (transaction.getQuestion().getQueryExpressions().size() > 0) {
+			// Add additional query expressions
+			query.append(" " + StringUtils.join(transaction.getQuestion().getQueryExpressions(), " "));
+		}
+		if (transaction.getQuestion().getMetaParameters().size() > 0) {
+			// Add meta_* parameters transformed as query expressions
+			for (String value : transaction.getQuestion().getMetaParameters()) {
+				query.append(" " + value);
+			}
+		}
+		return query.toString();
 	}
 	
 	@RequiredArgsConstructor

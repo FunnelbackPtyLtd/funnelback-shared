@@ -145,12 +145,6 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 			filesToCheck.add(new File(c.getConfiguration().getConfigDirectory(), Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX));
 		}
 		
-		// Form files
-		for (String key: c.getForms().keySet()) {
-			filesToCheck.add(new File(c.getConfiguration().getConfigDirectory(), key + FORM_FILE_SUFFIX));
-		}
-		
-		
 		for(File file: filesToCheck) {
 			if (isFileStale(file, creationTime)) {
 				log.info("Config file '" + file.getAbsolutePath() + "' has changed.");
