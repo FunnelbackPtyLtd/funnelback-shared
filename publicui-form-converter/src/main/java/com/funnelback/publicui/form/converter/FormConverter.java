@@ -24,7 +24,7 @@ public class FormConverter {
 		log.info("Processing file '" + opts.input.getAbsolutePath() + "'");
 		
 		for (Operation o: steps) {
-			log.info("Applying operation " + o.getClass().getSimpleName());
+			log.debug("Applying operation " + o.getClass().getSimpleName());
 			input = o.process(input);
 		}
 		
