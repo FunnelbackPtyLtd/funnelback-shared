@@ -42,7 +42,7 @@ public class Result implements ResultType {
 	@Getter private QuickLinks quickLinks;
 	
 	/** By default filled with liveUrl, but will be updated at a later stage */
-	@Getter private String displayUrl;
+	@Getter @Setter private String displayUrl;
 	
 	/** Filled at a later stage */
 	@Getter @Setter private String clickTrackingUrl;
