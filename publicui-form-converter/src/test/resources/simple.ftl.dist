@@ -225,7 +225,7 @@
 			<span id="fb-spelling"><@s.CheckSpelling></@s.CheckSpelling></span>
 			
 			<!-- TIER BARS -->
-			<s:TierBarBestBets></s:TierBarBestBets>
+			
 			
 			
 
