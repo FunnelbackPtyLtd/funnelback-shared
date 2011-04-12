@@ -62,8 +62,8 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SleepMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.SleepMethod" />
 				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.BoldicizeMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.BoldicizeMethod" />
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TagifyMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.TagifyMethod" />
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective">
@@ -75,6 +75,9 @@
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SearchMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.SearchMethod" />
+				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod" />
 				</entry>
 			</map>
 		</property>

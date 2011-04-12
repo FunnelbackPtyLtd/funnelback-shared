@@ -8,27 +8,27 @@ import lombok.extern.slf4j.Log;
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
- * Converts <s:boldicize> tags.
+ * Converts <s:italicize> tags.
  * 
  * Assumes that some conversions already took place.
  * Expects the tag to be in a semi-converted form accessing
  * the FreeMarker data model:
  * 
- * <s:boldicize bold="${SearchTransaction...}">${...}</s:boldicize>
+ * <s:italicize italics="${SearchTransaction...}">${...}</s:italicize>
  */
 @Log
-public class BoldicizeConversion implements Operation {
+public class ItalicizeConversion implements Operation {
 
 	@Override
 	public String process(String in) {
 		String out = in;
 		
-		Matcher m = Pattern.compile("<s:boldicize\\s+bold=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
+		Matcher m = Pattern.compile("<s:italicize\\s+italics=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
 		if (m.find()) {
-			log.info("Processing <s:boldicize> tags");
-			out = m.replaceAll("<@s.boldicize bold=$1>");
+			log.info("Processing <s:italicize> tags");
+			out = m.replaceAll("<@s.italicize italics=$1>");
 			
-			out = out.replaceAll("(?i)</s:boldicize>", "</@s.boldicize>");
+			out = out.replaceAll("(?i)</s:italicize>", "</@s.italicize>");
 		}
 		
 		return out;

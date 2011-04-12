@@ -26,7 +26,7 @@ public class BasicTagConversion implements Operation {
 	public String process(final String in) {
 		String out = in;
 		for(String tag: TAGS) {
-			Pattern p = Pattern.compile("<(/?)s:" + tag + "([^>]*)>");
+			Pattern p = Pattern.compile("<(/?)s:" + tag + "([^>]*)>", Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(out);
 			if (m.find()) {
 				log.info("Processing tag '" + tag + "'");

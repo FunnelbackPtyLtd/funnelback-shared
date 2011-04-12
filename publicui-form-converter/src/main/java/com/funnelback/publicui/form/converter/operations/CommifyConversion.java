@@ -21,9 +21,9 @@ public class CommifyConversion implements Operation {
 	public String process(String in) {
 		String out = in;
 		
-		if (out.contains("<s:commify>")) {
+		if (out.matches("(?is).*<s:commify>.*")) {
 			log.info("Processing <s:commify> tags");
-			out = out.replaceAll("<s:commify>[^\\$]*\\$\\{([^\\}]*)\\}[^<]*</s:commify>", "\\${$1?string.number}");
+			out = out.replaceAll("(?i)<s:commify>[^\\$]*\\$\\{([^\\}]*)\\}[^<]*</s:commify>", "\\${$1?string.number}");
 		}
 		
 		return out;

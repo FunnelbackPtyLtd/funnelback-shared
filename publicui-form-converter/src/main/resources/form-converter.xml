@@ -23,11 +23,14 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.QueryCleanConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CommifyConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.BoldicizeConversion" />
+		<bean class="com.funnelback.publicui.form.converter.operations.ItalicizeConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.ContextualNavigationConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.SelectConversion" />
+		<bean class="com.funnelback.publicui.form.converter.operations.URLEncodeConversion" />
+		<bean class="com.funnelback.publicui.form.converter.operations.HTMLDecodeConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />		
-		<bean class="com.funnelback.publicui.form.converter.operations.RemoveTagPlugin" />
+		<bean class="com.funnelback.publicui.form.converter.operations.RemoveTagPlugin" />		
 	</util:list>
 
 </beans>

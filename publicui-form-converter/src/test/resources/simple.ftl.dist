@@ -217,7 +217,7 @@
 			<@s.IfDefCGI name="scope">
 				<p id="fb-scope">
 					Search scope: <@s.Truncate length=80><@s.cgi>scope</@s.cgi></@s.Truncate>
-					(<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=<s:URLEncode>${SearchTransaction.response.resultPacket.queryCleaned}</s:URLEncode>">Broaden search scope</a>)
+					(<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=${SearchTransaction.response.resultPacket.queryCleaned?url}">Broaden search scope</a>)
 				</p>
 			</@s.IfDefCGI>
 	 

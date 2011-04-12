@@ -1,0 +1,14 @@
+<s:TierBarBestBets>Best bets:</s:TierBarBestBets>
+<s:BestBets>Best bets content</s:BestBets>
+
+<s:BoLdIcIzE bold="${abc}">Camel case boldicize</s:BoldiCIZE>
+
+<s:italicize italics="${abc}">Italicize tag</s:italicize>
+<s:ItAlIcIzE italics="${def}">Camel case italicize</s:ItaliCIZE>
+
+<s:CuT cut="abc">Camel case cut</s:CUt>
+
+<s:UrLeNcOdE>${Camel case URLEncode}</s:URLEncoDe>
+
+<s:htmldecode>${htmldecode}</s:htmldecode>
+<s:HtMlDeCoDe>${htmldecode}</s:HTMLDecode>

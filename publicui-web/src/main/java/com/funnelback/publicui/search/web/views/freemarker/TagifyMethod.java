@@ -13,22 +13,25 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
 /**
- * Boldicize words in a given string
+ * Tagifies words in a given string
  */
-public class BoldicizeMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class TagifyMethod implements TemplateMethodModel, TemplateMethodModelEx {
 
 	private static final Pattern OPERATORS_PATTERN = Pattern.compile("[^\\w\\s']");
 
-	public static final String NAME = "boldify";	
+	public static final String NAME = "tagify";	
 	
 	@Override
 	public Object exec(List arguments) throws TemplateModelException {
-		if (arguments.size() != 2) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 2 arguments: The terms to boldicize, and the target string."));
+		if (arguments.size() != 3) {
+			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
+					+ "The tag to use, "
+					+ "the terms to boldicize, and the target string."));
 		}
 		
-		String terms = ((SimpleScalar) arguments.get(0)).getAsString();
-		String content = ((SimpleScalar) arguments.get(1)).getAsString();
+		String tag = ((SimpleScalar) arguments.get(0)).getAsString();
+		String terms = ((SimpleScalar) arguments.get(1)).getAsString();
+		String content = ((SimpleScalar) arguments.get(2)).getAsString();
 		
 		// First throw away any operators
 		terms = OPERATORS_PATTERN.matcher(terms).replaceAll("");
@@ -36,10 +39,10 @@ public class BoldicizeMethod implements TemplateMethodModel, TemplateMethodModel
 		// Make the bold words unique
 		HashSet<String> termSet = new HashSet<String>(Arrays.asList(terms.split("\\s")));
 		// Don't allow 'b' as a word - it would highlight existing <b> tags
-		termSet.remove("b");
+		termSet.remove(tag);
 		
 		for (String word: termSet) {
-			content = Pattern.compile("\\b(\\Q" + word + "\\E)\\b", Pattern.CASE_INSENSITIVE).matcher(content).replaceAll("<b>$1</b>");
+			content = Pattern.compile("\\b(\\Q" + word + "\\E)\\b", Pattern.CASE_INSENSITIVE).matcher(content).replaceAll("<"+tag+">$1</" +tag+">");
 		}
 		
 		return new SimpleScalar(content);
