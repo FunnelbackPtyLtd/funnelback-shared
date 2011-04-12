@@ -10,6 +10,7 @@
 	<util:list id="steps">
 		<bean class="com.funnelback.publicui.form.converter.operations.InsertHeader" />
 		<bean class="com.funnelback.publicui.form.converter.operations.BasicTagConversion" />
+		<bean class="com.funnelback.publicui.form.converter.operations.ResultsTierBarsConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.IfDefCGIConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.AddUrlPrefix" />
 		<bean class="com.funnelback.publicui.form.converter.operations.BestBetsConversion" />
@@ -25,7 +26,7 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.ContextualNavigationConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.SelectConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />
+		<bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />		
 	</util:list>
 
 </beans>

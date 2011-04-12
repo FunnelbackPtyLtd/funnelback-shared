@@ -82,3 +82,6 @@ TODO:
 * CollectionFormViewResolver: find a way to activate cache on it
 
 * Collection config reloading: Find a more clever mechanism for reloading only a specific config file and/or lazy loading.
+
+* Form tags:
+  * Implement CURRENT_DATE range in <Select> tag

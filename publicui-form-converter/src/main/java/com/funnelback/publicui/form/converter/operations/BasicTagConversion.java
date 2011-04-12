@@ -16,7 +16,7 @@ public class BasicTagConversion implements Operation {
 
 	private static final String[] TAGS = {
 		"AfterSearchOnly", "InitialFormOnly", "cfg", "OpenSearch",
-		"PrevNext", "cgi", "CheckSpelling", "BestBets", "Results",
+		"PrevNext", "cgi", "CheckSpelling", "BestBets", 
 		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
 		"NoClustersFound", "ClusterLayout", "Category", "Clusters", "ShowMoreClusters",
 		"ShowFewerClusters"		

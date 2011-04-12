@@ -226,8 +226,8 @@
 			
 			<!-- TIER BARS -->
 			<s:TierBarBestBets></s:TierBarBestBets>
-			<s:TierBarFullyMatching></s:TierBarFullyMatching>
-			<s:TierBarPartiallyMatching><h2 class="fb-title">Search results that match tier{constraints_matching} of tier{num_constraints} words</h2></s:TierBarPartiallyMatching>
+			
+			
 
 		</div> <!-- #fb-summary -->
 		
@@ -247,6 +247,14 @@
 
 			<!-- EACH RESULT -->
 			<@s.Results>
+			<#if s.result.class.simpleName == "TierBar">
+				<#if s.result.matched == s.result.outOf>
+					
+				<#else>
+					<h2 class="fb-title">Search results that match ${s.result.outOf} of ${s.result.matched} words</h2>
+				</#if>
+			<#else>
+
 			<li>
 				<h3>
 					<#if s.result.fileType == "pdf"><span class="fb-filetype fb-pdf">[PDF]</span></#if>
@@ -319,6 +327,7 @@
 					<s:ResPlugin name='ResultTagList'></s:ResPlugin>
 				</span>
 			</li>
+			</#if>
 			</@s.Results>
 
 		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
