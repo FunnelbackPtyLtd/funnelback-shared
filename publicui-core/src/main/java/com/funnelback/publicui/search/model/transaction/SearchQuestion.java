@@ -110,9 +110,9 @@ public class SearchQuestion {
 	@Getter @Setter private String queryString;
 	
 	/**
-	 * Request parameters map
+	 * input parameters map
 	 */
-	@Getter private final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+	@Getter private final Map<String, String[]> inputParameterMap = new HashMap<String, String[]>();
 	
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";

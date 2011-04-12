@@ -16,7 +16,7 @@ public class MockUserKeysMapper implements UserKeysMapper {
 	private boolean traversed = false;
 	
 	@Override
-	public List<String> getUserKeys(SearchTransaction transaction, HttpServletRequest request) {
+	public List<String> getUserKeys(SearchTransaction transaction) {
 		traversed = true;
 		return Arrays.asList(new String[] {MockUserKeysMapper.class.getSimpleName()});
 	}

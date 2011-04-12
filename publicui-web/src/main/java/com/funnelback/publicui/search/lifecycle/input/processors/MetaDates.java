@@ -4,21 +4,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import lombok.Getter;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.time.FastDateFormat;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.ServletRequestUtils;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.web.utils.MapKeyFilter;
+import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Processes meta_* parameters related to date:
@@ -79,22 +79,24 @@ public class MetaDates implements InputProcessor {
 			+ ").*");
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
-		if (request != null) {
-			RequestParametersFilter filter = new RequestParametersFilter(request);
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
+			MapKeyFilter filter = new MapKeyFilter(params);
 			if (filter.filter(PARAMETERS_PATTERN).length > 0) {
 				
 				for(Dates n: Dates.values()) {
 					
 					String date;
-					if (request.getParameter(PREFIX + n.toString()) != null) {
+					if (params.get(PREFIX + n.toString()) != null) {
 						// Direct date: meta_d1=20100101
-						date = request.getParameter(PREFIX + n.toString()).trim();
+						date = params.get(PREFIX + n.toString())[0].trim();
 					} else {
 						// Y/M/D split in 3 different parameters
-						String year = ServletRequestUtils.getStringParameter(request, PREFIX + n.toString() + YEAR, "");
-						String month = ServletRequestUtils.getStringParameter(request, PREFIX + n.toString() + MONTH, "");
-						String day = ServletRequestUtils.getStringParameter(request, PREFIX + n.toString() + DAY, "");
+						
+						String year = MapUtils.getString(params, PREFIX + n.toString() + YEAR, "");
+						String month = MapUtils.getString(params, PREFIX + n.toString() + MONTH, "");
+						String day = MapUtils.getString(params, PREFIX + n.toString() + DAY, "");
 						date = day + month + year;
 					}
 					
@@ -132,7 +134,7 @@ public class MetaDates implements InputProcessor {
 						log.debug("Added additional date query '" + extra.toString() + "'");
 					}
 				}
-				String eventSearchQueries = processEventSearch(request);
+				String eventSearchQueries = processEventSearch(params);
 				if ( eventSearchQueries.length() > 0) {
 					searchTransaction.getQuestion().getQueryExpressions().add(eventSearchQueries);
 					log.debug("Added additional event search query '" + eventSearchQueries + "'");
@@ -147,9 +149,9 @@ public class MetaDates implements InputProcessor {
 	 * @param request
 	 * @return
 	 */
-	private String processEventSearch(HttpServletRequest request) {
-		String w1 = ServletRequestUtils.getStringParameter(request, PREFIX + EventSearch.w1, "");
-		String w2 = ServletRequestUtils.getStringParameter(request, PREFIX + EventSearch.w2, "");
+	private String processEventSearch(Map<String, String[]> params) {
+		String w1 = MapUtils.getString(params, PREFIX + EventSearch.w1, "");
+		String w2 = MapUtils.getString(params, PREFIX + EventSearch.w2, "");
 		
 		StringBuffer out = new StringBuffer();
 		if (!"".equals(w1+w2)) {

@@ -41,24 +41,24 @@ public class ContextualNavigationTests {
 		ContextualNavigation processor = new ContextualNavigation();
 
 		// No transaction
-		processor.process(null);
+		processor.processOutput(null);
 
 		// No response
-		processor.process(new SearchTransaction(null, null));
+		processor.processOutput(new SearchTransaction(null, null));
 
 		// No results
 		SearchResponse response = new SearchResponse();
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 
 		// No results in packet
 		response.setResultPacket(new ResultPacket());
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 	}
 
 	@Test
 	public void test() throws OutputProcessorException, UnsupportedEncodingException {
 		ContextualNavigation processor = new ContextualNavigation();
-		processor.process(st);
+		processor.processOutput(st);
 		
 		com.funnelback.publicui.search.model.padre.ContextualNavigation cn = st.getResponse().getResultPacket().getContextualNavigation();
 		Assert.assertEquals(3, cn.getCategories().size());
@@ -88,7 +88,7 @@ public class ContextualNavigationTests {
 		st.getQuestion().setCnClickedCluster("previous cluster");
 		st.getQuestion().getCnPreviousClusters().add("previous previous cluster");
 		ContextualNavigation processor = new ContextualNavigation();
-		processor.process(st);
+		processor.processOutput(st);
 		
 		com.funnelback.publicui.search.model.padre.ContextualNavigation cn = st.getResponse().getResultPacket().getContextualNavigation();
 		Assert.assertEquals(3, cn.getCategories().size());

@@ -1,23 +1,28 @@
 package com.funnelback.publicui.test.web.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.MapKeyFilter;
 
 public class RequestParametersFilterTests {
 
 	@Test
 	public void test() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addParameter("param1", "");
-		request.addParameter("param2", "");
-		request.addParameter("meta_X", "y");
-		request.addParameter("meta_X_or", "y");
+		HashMap<String, String[]> params = new HashMap<String, String[]>();
 		
-		RequestParametersFilter f = new RequestParametersFilter(request);
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		params.put("param1", new String[] {""});
+		params.put("param2", new String[] {""});
+		params.put("meta_X", new String[] {"y"});
+		params.put("meta_X_or", new String[] {"y"});
+		
+		MapKeyFilter f = new MapKeyFilter(params);
 		
 		String[] actual = f.filter("^(p|m).*");
 		Assert.assertEquals(4, actual.length);

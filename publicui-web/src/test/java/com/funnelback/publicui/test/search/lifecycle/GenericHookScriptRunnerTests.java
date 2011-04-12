@@ -58,8 +58,8 @@ public class GenericHookScriptRunnerTests {
 		GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
 		st.getQuestion().getCollection().getHookScriptsClasses().remove(Hook.pre_datafetch);
 		
-		processor.process(st, null);
-		processor.process(st);
+		processor.processInput(st);
+		processor.processOutput(st);
 		processor.fetchData(st);
 		
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
@@ -72,8 +72,8 @@ public class GenericHookScriptRunnerTests {
 		GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
 		st.getQuestion().getCollection().getHookScriptsClasses().put(Hook.pre_datafetch, new GroovyClassLoader().parseClass("throw new RuntimeException()"));
 		
-		processor.process(st, null);
-		processor.process(st);
+		processor.processInput(st);
+		processor.processOutput(st);
 		processor.fetchData(st);
 		
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
@@ -84,8 +84,8 @@ public class GenericHookScriptRunnerTests {
 	public void testRunInDataPhase() throws Exception {
 		GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Data);
 		
-		processor.process(st, null);
-		processor.process(st);
+		processor.processInput(st);
+		processor.processOutput(st);
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
 		Assert.assertNull(st.getQuestion().getCnClickedCluster());
 		
@@ -100,11 +100,11 @@ public class GenericHookScriptRunnerTests {
 		GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_datafetch, Phase.Input);
 		
 		processor.fetchData(st);
-		processor.process(st);
+		processor.processOutput(st);
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
 		Assert.assertNull(st.getQuestion().getCnClickedCluster());
 		
-		processor.process(st, null);
+		processor.processInput(st);
 		
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
 		Assert.assertEquals("Clicked Cluster", st.getQuestion().getCnClickedCluster());		
@@ -114,12 +114,12 @@ public class GenericHookScriptRunnerTests {
 	public void testRunInOutputPhase() throws Exception {
 		GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_datafetch, Phase.Output);
 		
-		processor.process(st, null);
+		processor.processInput(st);
 		processor.fetchData(st);
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
 		Assert.assertNull(st.getQuestion().getCnClickedCluster());
 
-		processor.process(st);
+		processor.processOutput(st);
 		
 		Assert.assertEquals("Test query", st.getQuestion().getQuery());
 		Assert.assertEquals("Clicked Cluster", st.getQuestion().getCnClickedCluster());		

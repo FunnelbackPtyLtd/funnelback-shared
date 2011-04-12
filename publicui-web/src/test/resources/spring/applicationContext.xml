@@ -30,6 +30,8 @@
 			value="#{ T(java.lang.System).getenv('SEARCH_HOME') }" />
 	</bean>
 
+	<bean class="com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor" />
+
 	<util:list id="inputFlow">
 		<bean class="com.funnelback.publicui.test.mock.MockInputProcessor" />
 	</util:list>

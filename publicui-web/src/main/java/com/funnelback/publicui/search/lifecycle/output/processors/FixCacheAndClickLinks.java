@@ -37,7 +37,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 	@Setter private String searchUrlPrefix;
 	
 	@Override
-	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
 				&& SearchTransactionUtils.hasResults(searchTransaction)) {
 			for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {

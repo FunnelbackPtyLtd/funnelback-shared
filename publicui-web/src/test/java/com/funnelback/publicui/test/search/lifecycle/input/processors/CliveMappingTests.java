@@ -34,12 +34,12 @@ public class CliveMappingTests {
 	@Test
 	public void testInvalidParameters() {
 		try {
-			processor.process(null, null);
-			processor.process(new SearchTransaction(null, null), null);
-			processor.process(new SearchTransaction(new SearchQuestion(), null), null);
-			processor.process(new SearchTransaction(new SearchQuestion(), null), new MockHttpServletRequest());
+			processor.processInput(null);
+			processor.processInput(new SearchTransaction(null, null));
+			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
+			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
 			st.getQuestion().setClive(new String[0]);
-			processor.process(st, null);
+			processor.processInput(st);
 		} catch (Exception e) {
 			Assert.fail();
 		}
@@ -48,7 +48,7 @@ public class CliveMappingTests {
 	@Test
 	public void testCliveParameterButNoMetaComponents() throws InputProcessorException {
 		st.getQuestion().setClive(new String[] {"clive1", "clive2"});
-		processor.process(st, null);
+		processor.processInput(st);
 		
 		Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 	}
@@ -56,7 +56,7 @@ public class CliveMappingTests {
 	@Test
 	public void testNoCliveParameterButMetaComponents() throws InputProcessorException {
 		st.getQuestion().getCollection().setMetaComponents(new String[] {"value1", "value2"});
-		processor.process(st, null);
+		processor.processInput(st);
 		
 		Assert.assertNull(st.getQuestion().getClive());
 		Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
@@ -67,11 +67,11 @@ public class CliveMappingTests {
 		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
 		st.getQuestion().setClive(new String[] {"component1", "component2"});
 
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertArrayEquals(new String[]{"0", "1"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 		
 		st.getQuestion().setClive(new String[] {"component3"});
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertArrayEquals(new String[]{"2"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 	}
 	
@@ -80,7 +80,7 @@ public class CliveMappingTests {
 		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
 		st.getQuestion().setClive(new String[] {"invalid", "2", "component1"});
 
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertArrayEquals(new String[]{"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 		
 	}

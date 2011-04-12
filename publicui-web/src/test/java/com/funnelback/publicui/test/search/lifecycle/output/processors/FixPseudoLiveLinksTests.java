@@ -78,23 +78,23 @@ public class FixPseudoLiveLinksTests {
 	@Test
 	public void testMissingData() {
 		// No transaction
-		processor.process(null);
+		processor.processOutput(null);
 		
 		// No response
-		processor.process(new SearchTransaction(null, null));
+		processor.processOutput(new SearchTransaction(null, null));
 		
 		// No results
 		SearchResponse response = new SearchResponse();
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 		
 		// No results in packet
 		response.setResultPacket(new ResultPacket());
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 	}
 	
 	@Test
 	public void test() throws UnsupportedEncodingException {
-		processor.process(st);
+		processor.processOutput(st);
 		
 		ResultPacket rp = st.getResponse().getResultPacket();
 		

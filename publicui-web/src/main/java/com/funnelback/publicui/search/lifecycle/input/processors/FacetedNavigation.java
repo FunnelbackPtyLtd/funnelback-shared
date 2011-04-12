@@ -8,8 +8,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -27,7 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.MapKeyFilter;
 
 /**
  * Sets the "rmcf" query processor option on the fly if faceted navigation
@@ -43,7 +41,7 @@ public class FacetedNavigation implements InputProcessor {
 	private final Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + RequestParameters.FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.*))?");
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, final HttpServletRequest request) {
+	public void processInput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)) {
 			
 			FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
@@ -59,7 +57,7 @@ public class FacetedNavigation implements InputProcessor {
 				Set<Set<String>> gscope1Constraints = new HashSet<Set<String>>();
 				Set<Set<String>> queryConstraints = new HashSet<Set<String>>();
 				
-				RequestParametersFilter filter = new RequestParametersFilter(request);
+				MapKeyFilter filter = new MapKeyFilter(searchTransaction.getQuestion().getInputParameterMap());
 				String[] selectedFacetsParams = filter.filter(FACET_PARAM_PATTERN);
 				
 				if (selectedFacetsParams.length > 0) {
@@ -70,7 +68,7 @@ public class FacetedNavigation implements InputProcessor {
 						
 						final String facetName = m.group(1);
 						final String extraParam = m.group(3);
-						final String values[] = request.getParameterValues(selectedFacetParam);
+						final String values[] = searchTransaction.getQuestion().getInputParameterMap().get(selectedFacetParam);
 						log.debug("Fond facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
 						
 						// Find corresponding facet in config

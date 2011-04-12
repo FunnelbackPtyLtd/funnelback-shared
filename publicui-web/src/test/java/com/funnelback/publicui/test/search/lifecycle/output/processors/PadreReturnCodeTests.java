@@ -33,34 +33,34 @@ public class PadreReturnCodeTests {
 	@Test
 	public void testMissingData() throws OutputProcessorException {
 		// No transaction
-		processor.process(null);
+		processor.processOutput(null);
 		Assert.assertEquals(0, logService.getPublicUiWarnings().size());
 
 		// No question nor response
-		processor.process(new SearchTransaction(null, null));
+		processor.processOutput(new SearchTransaction(null, null));
 		Assert.assertEquals(0, logService.getPublicUiWarnings().size());
 		
 		// No question
-		processor.process(new SearchTransaction(new SearchQuestion(), null));
+		processor.processOutput(new SearchTransaction(new SearchQuestion(), null));
 		Assert.assertEquals(0, logService.getPublicUiWarnings().size());
 
 		// No return code
 		SearchResponse response = new SearchResponse();
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 		Assert.assertEquals(0, logService.getPublicUiWarnings().size());
 	}
 	
 	@Test
 	public void testCode0() throws OutputProcessorException {
 		st.getResponse().setReturnCode(0);
-		processor.process(st);
+		processor.processOutput(st);
 		Assert.assertEquals(0, logService.getPublicUiWarnings().size());
 	}
 	
 	@Test
 	public void testCode199() throws OutputProcessorException {
 		st.getResponse().setReturnCode(199);
-		processor.process(st);
+		processor.processOutput(st);
 		Assert.assertEquals(1, logService.getPublicUiWarnings().size());
 		Assert.assertTrue(logService.getPublicUiWarnings().get(0).getMessage().contains("Could not log query to collection''s query log"));
 		Assert.assertEquals("dummy", logService.getPublicUiWarnings().get(0).getCollection().getId());

@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
@@ -33,15 +31,15 @@ public class ExploreQuery implements InputProcessor {
 	@Setter private ExploreQueryGenerator generator;
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction) && request != null) {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
 			
 			Integer nbOfTerms = null;
-			if (request.getParameter(RequestParameters.EXP) != null) {
+			if (searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP) != null) {
 				try {
-					nbOfTerms = Integer.parseInt(request.getParameter(RequestParameters.EXP));
+					nbOfTerms = Integer.parseInt((searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)[0]));
 				} catch (Throwable t) {
-					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + request.getParameter(RequestParameters.EXP) + "'");
+					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)[0] + "'");
 				}
 			}
 			

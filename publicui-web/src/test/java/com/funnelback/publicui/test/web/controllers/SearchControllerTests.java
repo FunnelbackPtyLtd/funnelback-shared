@@ -99,16 +99,17 @@ public class SearchControllerTests {
 	}
 
 	@Test
-	public void testInvalidCollectionShouldGenerateSearchError() {
+	public void testInvalidCollectionShouldShowCollectionList() {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setQuery("test");
 		
 		ModelAndView mav = searchController.search(new MockHttpServletRequest(), sq);
-		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
-		Assert.assertNull(st.getQuestion());
-		Assert.assertNull(st.getResponse());
-		Assert.assertNotNull(st.getError());
-		Assert.assertEquals(SearchError.Reason.InvalidCollection, st.getError().getReason());
+		
+		List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+		Assert.assertNotNull(collections);
+		Assert.assertEquals(2, collections.size());
+		Assert.assertEquals("test1", collections.get(0).getId());
+		Assert.assertEquals("test2", collections.get(1).getId());
 	}
 	
 	@Test

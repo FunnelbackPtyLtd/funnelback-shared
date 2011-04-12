@@ -23,7 +23,7 @@ public class FacetedNavigationTransform implements OutputProcessor{
 	private static final String KEY_FACETS = "facets";
 	
 	@Override
-	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (searchTransaction != null
 				&& SearchTransactionUtils.hasCollection(searchTransaction)
 				&& searchTransaction.hasResponse()

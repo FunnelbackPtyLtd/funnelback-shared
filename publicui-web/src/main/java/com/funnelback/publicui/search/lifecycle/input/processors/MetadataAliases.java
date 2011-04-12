@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.Getter;
 import lombok.extern.apachecommons.Log;
 
@@ -33,7 +31,7 @@ public class MetadataAliases implements InputProcessor {
 	}
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQuery(searchTransaction)) {
 			boolean updateQuery = false;
 			String[] terms = searchTransaction.getQuestion().getQuery().split("\\s");

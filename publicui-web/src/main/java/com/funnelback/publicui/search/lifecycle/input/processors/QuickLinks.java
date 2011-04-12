@@ -2,8 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.stereotype.Component;
@@ -39,7 +37,7 @@ public class QuickLinks implements InputProcessor {
 	private static final String QL_OPT_RANK = "-QL_rank";
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)
 				&& searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration() != null
 				&& searchTransaction.getQuestion().getCollection().getQuickLinksConfiguration().size() > 0) {

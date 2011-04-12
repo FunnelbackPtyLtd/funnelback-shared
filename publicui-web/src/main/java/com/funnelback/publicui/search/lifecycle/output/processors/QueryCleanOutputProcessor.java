@@ -30,7 +30,7 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 	private static final Pattern WEIGHTED_OPERATORS_PATTERN = Pattern.compile("\\^\\d+\\.\\d+");
 	
 	@Override
-	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (searchTransaction.hasResponse() && SearchTransactionUtils.hasResults(searchTransaction)) {
 
 			// Remove any weighted query operators

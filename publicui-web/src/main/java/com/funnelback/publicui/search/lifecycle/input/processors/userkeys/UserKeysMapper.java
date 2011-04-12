@@ -2,8 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -11,6 +9,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface UserKeysMapper {
 
-	public List<String> getUserKeys(SearchTransaction transaction, HttpServletRequest request);
+	public List<String> getUserKeys(SearchTransaction transaction);
 	
 }

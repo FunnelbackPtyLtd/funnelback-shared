@@ -2,8 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 public class CliveMapping implements InputProcessor {
 
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)
 				&& SearchTransactionUtils.hasCollection(searchTransaction)
 				&& searchTransaction.getQuestion().getClive() != null

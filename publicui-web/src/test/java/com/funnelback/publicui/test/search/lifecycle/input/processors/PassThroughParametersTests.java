@@ -20,29 +20,29 @@ public class PassThroughParametersTests {
 		PassThroughParameters processor = new PassThroughParameters();
 		
 		// No transaction
-		processor.process(null, null);
+		processor.processInput(null);
 		
 		// No question
-		processor.process(new SearchTransaction(null, null), null);
+		processor.processInput(new SearchTransaction(null, null));
 		
 		// No collection
 		SearchQuestion question = new SearchQuestion();
-		processor.process(new SearchTransaction(question, null), null);		
+		processor.processInput(new SearchTransaction(question, null));		
 	}
 	
 	@Test
 	public void test() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setParameter(RequestParameters.QUERY, "query");
-		request.setParameter(RequestParameters.COLLECTION, "collection");
-		request.setParameter("param1", "value1");
-		request.setParameter("param2", new String[]{"value2a", "value2b"});
-		request.setParameter(RequestParameters.ContextualNavigation.CN_CLICKED, "abc");
-		request.setParameter(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", "def");
+		
+		st.getQuestion().getInputParameterMap().put(RequestParameters.QUERY, new String[] {"query"});
+		st.getQuestion().getInputParameterMap().put(RequestParameters.COLLECTION, new String[] {"collection"});
+		st.getQuestion().getInputParameterMap().put("param1", new String[] {"value1"});
+		st.getQuestion().getInputParameterMap().put("param2", new String[]{"value2a", "value2b"});
+		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_CLICKED, new String[] {"abc"});
+		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", new String[] {"def"});
 		
 		PassThroughParameters processor = new PassThroughParameters();
-		processor.process(st, request);
+		processor.processInput(st);
 		
 		// Only our 2 custom params should be there
 		Assert.assertEquals(2, st.getQuestion().getAdditionalParameters().size());

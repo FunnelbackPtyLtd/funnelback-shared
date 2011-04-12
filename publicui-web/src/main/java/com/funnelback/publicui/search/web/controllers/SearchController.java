@@ -2,10 +2,8 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +18,17 @@ import waffle.servlet.WindowsPrincipal;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
-import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
+import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.MapKeyFilter;
+import com.funnelback.publicui.utils.MapUtils;
 
 @Controller
 @RequestMapping({"/search", "/_/search"})
@@ -45,19 +38,8 @@ public class SearchController {
 	public static final String MODEL_KEY_SEARCH_TRANSACTION = SearchTransaction.class.getSimpleName();
 	public static final String MODEL_KEY_COLLECTION_LIST = "allCollections";
 
-	// Can't use @Autowired for those 3 one otherwise
-	// Spring will automatically construct a Set with all existing
-	// implementations of InputProcessor, DataFetcher, OutputProcessor
-	// ----
-	@Resource(name="inputFlow")
-	private List<InputProcessor> inputFlow;
-	
-	@Resource(name="dataFetchers")
-	private List<DataFetcher> dataFetchers;
-
-	@Resource(name="outputFlow")
-	private List<OutputProcessor> outputFlow;
-	// ----
+	@Autowired
+	private SearchTransactionProcessor processor;
 	
 	@Autowired
 	private ConfigRepository configRepository;
@@ -99,31 +81,7 @@ public class SearchController {
 		
 		if (question.getCollection() != null) {
 			if (question.getQuery() != null && ! "".equals(question.getQuery())) {
-				SearchResponse response = new SearchResponse();
-				transaction = new SearchTransaction(question, response);
-				try {
-					for (InputProcessor processor : inputFlow) {
-						processor.process(transaction, request);
-					}
-	
-					for (DataFetcher fetcher : dataFetchers) {
-						fetcher.fetchData(transaction);
-					}
-	
-					for (OutputProcessor processor : outputFlow) {
-						processor.process(transaction);
-					}
-	
-				} catch (InputProcessorException ipe) {
-					log.error(ipe);
-					transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
-				} catch (DataFetchException dfe) {
-					log.error(dfe);
-					transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
-				} catch (OutputProcessorException ope) {
-					log.error(ope);
-					transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
-				}
+				transaction = processor.process(question);
 			} else {
 				// Query is null
 				transaction = new SearchTransaction(question, null);
@@ -131,31 +89,12 @@ public class SearchController {
 		} else {
 			// Collection is null = non existent
 			log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
-			transaction = new SearchTransaction(null, null);
-			transaction.setError(new SearchError(SearchError.Reason.InvalidCollection, request.getParameter(SearchQuestion.RequestParameters.COLLECTION)));
-			
-			//FIXME What to do if no collection ?
-			Map<String, Object> model = new HashMap<String, Object>();
-			model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
-
-			return new ModelAndView("no-collection", model);
+			return noCollection();
 		}
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
 
-		/*
-		String uri = request.getRequestURI();
-		String viewSuffix = uri.substring(uri.indexOf(".")+1);
-		String viewName;
-		if ("xml".equals(viewSuffix) || "json".equals(viewSuffix)
-				|| "legacy".equals(viewSuffix)) {
-			viewName = viewSuffix + "View";
-		} else {
-			viewName = "conf/" + question.getCollection().getId()	+ ((question.getProfile() != null) ? "/"+question.getProfile() : "") + "/simple";
-		}
-		log.debug("Selecting view '" + viewName + "'");
-		*/
 		// Generate the view name, relative to the Funnelback home
 		String viewName = DefaultValues.FOLDER_CONF + "/"
 			+ question.getCollection().getId()	+ "/"
@@ -191,15 +130,22 @@ public class SearchController {
 	 */
 	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
 
+		// Parameter map
+		question.getInputParameterMap().putAll(request.getParameterMap());
+	
+		// Add any HTTP servlet specifics 
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader("host"));
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
+
 		// Referer
 		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : null);
 		
 		// Query string
 		question.setQueryString(request.getQueryString());
-		
-		// Parameter map
-		question.getParameterMap().putAll(request.getParameterMap());
-		
+				
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
 		
@@ -216,7 +162,7 @@ public class SearchController {
 		question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
 		
 		// Previously clicked clusters
-		RequestParametersFilter filter = new RequestParametersFilter(request);
+		MapKeyFilter filter = new MapKeyFilter(request.getParameterMap());
 		String[] paramNames = filter.filter(RequestParameters.ContextualNavigation.CN_PREV_PATTERN);
 		Arrays.sort(paramNames);
 		for(String paramName : paramNames) {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 
 @Component
@@ -33,16 +34,18 @@ public class SearchStatsAspect {
 	
 	@AfterReturning(pointcut="searchMethod()",returning="mav")
 	public void adviceManual(ModelAndView mav) {
-		SearchTransaction st = (SearchTransaction) mav.getModelMap().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
-		if (st != null) {
-			log.debug("*** Caught search on collection " + st.getQuestion().getCollection().getId());
-			
-			if (stats.get(st.getQuestion().getCollection().getId()) == null) {
-				stats.put(st.getQuestion().getCollection().getId(), (long) 1);
-			} else {
-				stats.put(st.getQuestion().getCollection().getId(), stats.get(st.getQuestion().getCollection().getId())+1);
+		Object o = mav.getModelMap().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+		if (o instanceof SearchTransaction) {
+			SearchTransaction st = (SearchTransaction) o;
+			if (SearchTransactionUtils.hasQueryAndCollection(st)) {
+				log.debug("*** Caught search on collection " + st.getQuestion().getCollection().getId());
+				
+				if (stats.get(st.getQuestion().getCollection().getId()) == null) {
+					stats.put(st.getQuestion().getCollection().getId(), (long) 1);
+				} else {
+					stats.put(st.getQuestion().getCollection().getId(), stats.get(st.getQuestion().getCollection().getId())+1);
+				}
 			}
-
 		}
 	}
 

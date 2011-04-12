@@ -65,18 +65,18 @@ public class FacetedNavigationTransformTests {
 	@Test
 	public void testMissingData() throws OutputProcessorException {
 		// No transaction
-		processor.process(null);
+		processor.processOutput(null);
 
 		// No response
-		processor.process(new SearchTransaction(null, null));
+		processor.processOutput(new SearchTransaction(null, null));
 
 		// No results
 		SearchResponse response = new SearchResponse();
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 
 		// No results in packet
 		response.setResultPacket(new ResultPacket());
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 		
 		// No facets
 		ResultPacket rp = new ResultPacket();
@@ -96,13 +96,13 @@ public class FacetedNavigationTransformTests {
 				null,
 				null, null, null));
 		response.setResultPacket(rp);
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 	}
 	
 	@Test
 	public void testScript() throws FileNotFoundException, EnvironmentVariableException, OutputProcessorException {
 		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(transformScriptClass);
-		processor.process(st);
+		processor.processOutput(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet (Groovy)", st.getResponse().getFacets().get(0).getName());
@@ -112,7 +112,7 @@ public class FacetedNavigationTransformTests {
 	@Test
 	public void testNoScript() throws OutputProcessorException {
 		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(null);
-		processor.process(st);
+		processor.processOutput(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
@@ -124,7 +124,7 @@ public class FacetedNavigationTransformTests {
 		@SuppressWarnings("unchecked")
 		Class<Script> s = new GroovyClassLoader().parseClass("throw new RuntimeException()");
 		st.getQuestion().getCollection().getFacetedNavigationConfConfig().setTransformScriptClass(s);
-		processor.process(st);
+		processor.processOutput(st);
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());

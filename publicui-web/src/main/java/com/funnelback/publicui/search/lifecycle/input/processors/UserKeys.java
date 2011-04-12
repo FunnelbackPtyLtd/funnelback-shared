@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.BeanUtils;
@@ -25,7 +23,7 @@ public class UserKeys implements InputProcessor {
 	
 	@Override
 	@Profiled
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)) {
 			String securityPlugin = searchTransaction.getQuestion().getCollection().getConfiguration().value(
 					Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
@@ -41,7 +39,7 @@ public class UserKeys implements InputProcessor {
 				try {
 					Class<?> clazz = Class.forName(className);
 					UserKeysMapper mapper = (UserKeysMapper) BeanUtils.instantiate(clazz);
-					searchTransaction.getQuestion().getUserKeys().addAll(mapper.getUserKeys(searchTransaction, request));
+					searchTransaction.getQuestion().getUserKeys().addAll(mapper.getUserKeys(searchTransaction));
 				} catch (ClassNotFoundException cnfe) {
 					throw new InputProcessorException(I18n.i18n().tr("Invalid security plugin ''{0}''", securityPlugin), cnfe);
 				}

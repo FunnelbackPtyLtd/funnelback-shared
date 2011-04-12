@@ -48,30 +48,30 @@ public class FixCacheAndClickLinksTests {
 	@Test
 	public void testMissingData() throws Exception{
 		// No transaction
-		processor.process(null);
+		processor.processOutput(null);
 		
 		// No response & question
-		processor.process(new SearchTransaction(null, null));
+		processor.processOutput(new SearchTransaction(null, null));
 		
 		// No question
-		processor.process(new SearchTransaction(null, new SearchResponse()));
+		processor.processOutput(new SearchTransaction(null, new SearchResponse()));
 		
 		// No response
-		processor.process(new SearchTransaction(new SearchQuestion(), null));
+		processor.processOutput(new SearchTransaction(new SearchQuestion(), null));
 		
 		// No results
 		SearchResponse response = new SearchResponse();
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 		
 		// No results in packet
 		response.setResultPacket(new ResultPacket());
-		processor.process(new SearchTransaction(null, response));
+		processor.processOutput(new SearchTransaction(null, response));
 	}
 	
 	@Test
 	public void testNoClickTracking() throws OutputProcessorException {
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "false");
-		processor.process(st);
+		processor.processOutput(st);
 
 		for (Result r: st.getResponse().getResultPacket().getResults()) {
 			Assert.assertTrue(r.getCacheUrl().startsWith("PREFIX"));
@@ -84,7 +84,7 @@ public class FixCacheAndClickLinksTests {
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.UI_CLICK_LINK, "CLICK_LINK");
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.SERVER_SECRET, "plop");
-		processor.process(st);
+		processor.processOutput(st);
 		
 		for (Result r: st.getResponse().getResultPacket().getResults()) {
 			Assert.assertFalse(r.getCacheUrl().contains("null"));

@@ -23,33 +23,33 @@ public class QuickLinksTests {
 	@Test
 	public void testMissingData() throws InputProcessorException {
 		// No transaction
-		processor.process(null, null);
+		processor.processInput(null);
 		
 		// No question
-		processor.process(new SearchTransaction(null, null), null);
+		processor.processInput(new SearchTransaction(null, null));
 		
 		// No collection
 		SearchQuestion question = new SearchQuestion();
 		SearchTransaction st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		
 		// No quicklinks config
 		question.setCollection(new Collection("dummy", null));
-		processor.process(new SearchTransaction(question, null), null);
+		processor.processInput(new SearchTransaction(question, null));
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// Empty quicklinks config
 		Collection c = new Collection("dummy", null);
 		c.setQuickLinksConfiguration(new HashMap<String, String>());
 		question.setCollection(c);
-		processor.process(new SearchTransaction(question, null), null);
+		processor.processInput(new SearchTransaction(question, null));
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// quicklinks disabled
 		c.getQuickLinksConfiguration().put(Keys.QuickLinks.QUICKLINKS, "disabled");		
 		question.setCollection(c);
-		processor.process(new SearchTransaction(question, null), null);
+		processor.processInput(new SearchTransaction(question, null));
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 	}
@@ -68,7 +68,7 @@ public class QuickLinksTests {
 		question.setCollection(c);
 
 		SearchTransaction st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=42"));
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL_rank=666"));
@@ -76,13 +76,13 @@ public class QuickLinksTests {
 		// Try with conflicting query processor options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
 		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -QL=4 -res=xml -QL_rank=all -something");
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// Try with non-conflicting QP options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
 		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -res=xml -something");
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=42"));
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL_rank=666"));
@@ -102,7 +102,7 @@ public class QuickLinksTests {
 		question.setCollection(c);
 
 		SearchTransaction st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=1"));
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL_rank=1"));
@@ -110,13 +110,13 @@ public class QuickLinksTests {
 		// Try with conflicting query processor options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
 		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -QL=4 -res=xml -QL_rank=all -something");
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// Try with non-conflicting QP options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
 		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -res=xml -something");
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=1"));
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL_rank=1"));

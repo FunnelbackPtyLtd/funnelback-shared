@@ -26,25 +26,25 @@ public class ExploreQueryTests {
 	@Test
 	public void testMissingData() throws InputProcessorException {
 		// No transaction
-		processor.process(null, null);
+		processor.processInput(null);
 		
 		// No question
-		processor.process(new SearchTransaction(null, null), null);
+		processor.processInput(new SearchTransaction(null, null));
 		
 		// No collection
 		SearchQuestion question = new SearchQuestion();
 		SearchTransaction st = new SearchTransaction(question, null);
-		processor.process(st, new MockHttpServletRequest());
+		processor.processInput(st);
 		Assert.assertNull(st.getQuestion().getQuery());
 		
 		// No query
 		question.setCollection(new Collection("dummy", null));
-		processor.process(new SearchTransaction(question, null), new MockHttpServletRequest());
+		processor.processInput(new SearchTransaction(question, null));
 		Assert.assertNull(st.getQuestion().getQuery());
 
 		// No explore query
 		question.setQuery("explore abc website");
-		processor.process(new SearchTransaction(question, null), new MockHttpServletRequest());
+		processor.processInput(new SearchTransaction(question, null));
 		Assert.assertEquals("explore abc website", st.getQuestion().getQuery());
 	}	
 
@@ -54,18 +54,17 @@ public class ExploreQueryTests {
 		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
 		st.getQuestion().setCollection(new Collection("dummy", null));
 		
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		processor.process(st, request);
+		processor.processInput(st);
 		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 		
 		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
-		request.setParameter("exp", "42");
-		processor.process(st, request);
+		st.getQuestion().getInputParameterMap().put("exp", new String[]{"42"});
+		processor.processInput(st);
 		Assert.assertEquals("42 queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 		
 		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
-		request.setParameter("exp", "bad");
-		processor.process(st, request);
+		st.getQuestion().getInputParameterMap().put("exp", new String[]{"bad"});
+		processor.processInput(st);
 		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 	}
 	

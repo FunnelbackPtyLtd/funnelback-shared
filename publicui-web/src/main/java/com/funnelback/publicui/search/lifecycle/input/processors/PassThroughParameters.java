@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +10,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Will collect all the parameters of the {@link HttpServletRequest} parameters and
@@ -45,11 +45,9 @@ public class PassThroughParameters implements InputProcessor {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		if (searchTransaction != null
-				&& searchTransaction.getQuestion() != null
-				&& request != null) {
-			searchTransaction.getQuestion().getAdditionalParameters().putAll(new HashMap<String, String[]>(request.getParameterMap()));
+	public void processInput(SearchTransaction searchTransaction) {
+		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+			searchTransaction.getQuestion().getAdditionalParameters().putAll(searchTransaction.getQuestion().getInputParameterMap());
 		
 			for (String ignored: IGNORED_NAMES) {
 				searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);

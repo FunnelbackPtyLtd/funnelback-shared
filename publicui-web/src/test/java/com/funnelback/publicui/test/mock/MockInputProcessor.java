@@ -18,7 +18,7 @@ public class MockInputProcessor implements InputProcessor {
 	private boolean throwError = false;
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		traversed = true;
 		if (throwError) {
 			throw new InputProcessorException(MockInputProcessor.class.getName(), null);

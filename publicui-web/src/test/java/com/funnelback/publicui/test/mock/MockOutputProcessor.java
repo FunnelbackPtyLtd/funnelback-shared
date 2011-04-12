@@ -16,7 +16,7 @@ public class MockOutputProcessor implements OutputProcessor {
 	private boolean throwError = false;
 	
 	@Override
-	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		traversed = true;
 		if (throwError) {
 			throw new OutputProcessorException(MockOutputProcessor.class.getName(), null);

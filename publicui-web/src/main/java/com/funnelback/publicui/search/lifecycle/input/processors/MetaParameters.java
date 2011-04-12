@@ -1,9 +1,8 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.apachecommons.Log;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.web.utils.RequestParametersFilter;
+import com.funnelback.publicui.search.web.utils.MapKeyFilter;
 
 /**
  * Transforms meta_* parameters into query expression.
@@ -67,9 +66,10 @@ public class MetaParameters implements InputProcessor {
 	private static final Pattern NON_ENCAPSULATING_OPERATORS_PATTERN = Pattern.compile("([a-z0-9]:)?(\"[^\"]+\"|`[^`]+`|[a-z0-9\\$\\*]\\S+)", Pattern.CASE_INSENSITIVE);
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) {
-		if (searchTransaction != null && searchTransaction.getQuestion() != null && request != null) {
-			RequestParametersFilter filter = new RequestParametersFilter(request);
+	public void processInput(SearchTransaction searchTransaction) {
+		if (searchTransaction != null && searchTransaction.getQuestion() != null) {
+			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
+			MapKeyFilter filter = new MapKeyFilter(params);
 			String[] parameterNames = filter.filter(META_QUERY_PATTERN);
 
 			for (String name: parameterNames) {
@@ -84,12 +84,12 @@ public class MetaParameters implements InputProcessor {
 					continue;
 				}
 				
-				if (request.getParameterValues(name) != null) {				
+				if (params.get(name) != null) {				
 					
 					// Gather all parameter values
 					//     &meta_x=first value&meta_x=second value
 					//  => { "first", "value", "second", "value" }
-					String stringValues = StringUtils.join(request.getParameterValues(name), " ");
+					String stringValues = StringUtils.join(params.get(name), " ");
 					if ("".equals(stringValues)) {
 						// No value for this parameter
 						continue;
@@ -136,7 +136,7 @@ public class MetaParameters implements InputProcessor {
 					// we successfully processed it
 					searchTransaction.getQuestion().getAdditionalParameters().remove(name);
 					
-					log.debug("Processed parameter '" + name + "=" + StringUtils.join(request.getParameterValues(name), " ") + "' "
+					log.debug("Processed parameter '" + name + "=" + StringUtils.join(params.get(name), " ") + "' "
 							+ "Transformed as '" + stringValues + "'");
 					
 				}

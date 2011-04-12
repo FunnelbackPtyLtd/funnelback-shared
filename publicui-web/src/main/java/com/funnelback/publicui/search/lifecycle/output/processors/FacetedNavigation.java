@@ -26,7 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 public class FacetedNavigation implements OutputProcessor {
 
 	@Override
-	public void process(SearchTransaction searchTransaction) {
+	public void processOutput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)
 				&& SearchTransactionUtils.hasResponse(searchTransaction)
 				&& searchTransaction.getResponse().hasResultPacket()) {

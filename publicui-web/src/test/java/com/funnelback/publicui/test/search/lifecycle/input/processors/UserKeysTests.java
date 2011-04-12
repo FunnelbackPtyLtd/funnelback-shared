@@ -23,14 +23,14 @@ public class UserKeysTests {
 		UserKeys processor = new UserKeys();
 		
 		// No transaction
-		processor.process(null, null);
+		processor.processInput(null);
 		
 		// No question
-		processor.process(new SearchTransaction(null, null), null);
+		processor.processInput(new SearchTransaction(null, null));
 		
 		// No collection
 		SearchQuestion question = new SearchQuestion();
-		processor.process(new SearchTransaction(question, null), null);		
+		processor.processInput(new SearchTransaction(question, null));		
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class UserKeysTests {
 		SearchTransaction st = new SearchTransaction(question, null);
 		
 		UserKeys uk = new UserKeys();
-		uk.process(st, null);
+		uk.processInput(st);
 		
 		Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
 		Assert.assertEquals(MockUserKeysMapper.class.getSimpleName(), st.getQuestion().getUserKeys().get(0));
@@ -61,7 +61,7 @@ public class UserKeysTests {
 		SearchTransaction st = new SearchTransaction(question, null);
 
 		UserKeys uk = new UserKeys();
-		uk.process(st, null);
+		uk.processInput(st);
 
 		Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
 		Assert.assertEquals(MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
@@ -78,13 +78,13 @@ public class UserKeysTests {
 		SearchTransaction st = new SearchTransaction(question, null);
 
 		UserKeys uk = new UserKeys();
-		uk.process(st, null);
+		uk.processInput(st);
 
 		Assert.assertEquals(0, st.getQuestion().getUserKeys().size());
 		
 		// Empty (non null) value
 		c.getConfiguration().setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "");
-		uk.process(st, null);
+		uk.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getUserKeys().size());
 	}
 	
@@ -101,7 +101,7 @@ public class UserKeysTests {
 		UserKeys uk = new UserKeys();
 		
 		try {
-			uk.process(st, null);
+			uk.processInput(st);
 			Assert.fail();
 		} catch (InputProcessorException ipe) {
 			Assert.assertEquals(ClassNotFoundException.class, ipe.getCause().getClass());

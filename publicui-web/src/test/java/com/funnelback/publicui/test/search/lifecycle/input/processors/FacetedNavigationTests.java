@@ -33,23 +33,23 @@ public class FacetedNavigationTests {
 		FacetedNavigation processor = new FacetedNavigation();
 		
 		// No transaction
-		processor.process(null, null);
+		processor.processInput(null);
 		
 		// No question
 		SearchTransaction st = new SearchTransaction(null, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertNull(st.getQuestion());
 		
 		// No collection
 		SearchQuestion question = new SearchQuestion();
 		st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		
 		// No faceted navigation config
 		question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
 		st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		
 		// No QP Options
@@ -57,7 +57,7 @@ public class FacetedNavigationTests {
 		c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null, null));
 		question.setCollection(c);
 		st = new SearchTransaction(question, null);
-		processor.process(st, null);
+		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 	}
@@ -72,7 +72,7 @@ public class FacetedNavigationTests {
 		
 		FacetedNavigation processor = new FacetedNavigation();
 		
-		processor.process(st, null);
+		processor.processInput(st);
 		
 		Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertEquals("-rmcfdt", st.getQuestion().getDynamicQueryProcessorOptions().get(0));

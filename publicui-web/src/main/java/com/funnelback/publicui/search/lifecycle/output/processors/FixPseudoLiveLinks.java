@@ -59,7 +59,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
-	public void process(SearchTransaction searchTransaction) {
+	public void processOutput(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
 		if (SearchTransactionUtils.hasResults(searchTransaction)) {
 			

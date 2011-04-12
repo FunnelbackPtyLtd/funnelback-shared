@@ -1,12 +1,10 @@
 package com.funnelback.publicui.search.lifecycle;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.ArrayUtils;
-
 import groovy.lang.Binding;
 import groovy.lang.Script;
 import lombok.extern.apachecommons.Log;
+
+import org.apache.commons.lang.ArrayUtils;
 
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -58,14 +56,14 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 	}
 	
 	@Override
-	public void process(SearchTransaction searchTransaction, HttpServletRequest request) throws InputProcessorException {
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (ArrayUtils.contains(phases, Phase.Input)) {
 			runHookScript(searchTransaction);
 		}
 	}
 
 	@Override
-	public void process(SearchTransaction searchTransaction) throws OutputProcessorException {
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (ArrayUtils.contains(phases, Phase.Output)) {
 			runHookScript(searchTransaction);
 		}

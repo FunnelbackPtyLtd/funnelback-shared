@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -9,7 +7,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface InputProcessor {
 
-	public void process(final SearchTransaction searchTransaction, final HttpServletRequest request)
+	public void processInput(final SearchTransaction searchTransaction)
 			throws InputProcessorException;
 
 }
