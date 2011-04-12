@@ -322,10 +322,7 @@
 					</#if>
 				</@s.Quicklinks>
 
-				<span class="tagging">
-					<s:ResPlugin name='ResultTagLink'>tag</s:ResPlugin>
-					<s:ResPlugin name='ResultTagList'></s:ResPlugin>
-				</span>
+				<span class="tagging"></span>
 			</li>
 			</#if>
 			</@s.Results>
