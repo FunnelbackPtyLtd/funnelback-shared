@@ -16,10 +16,10 @@ public class BasicTagConversion implements Operation {
 
 	private static final String[] TAGS = {
 		"AfterSearchOnly", "InitialFormOnly", "cfg", "OpenSearch",
-		"PrevNext", "cgi", "CheckSpelling", "BestBets", 
+		"PrevNext", "cgi", "CheckSpelling", "BestBets", "QueryClean", "HtmlDecode", "URLEncode",
 		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
 		"NoClustersFound", "ClusterLayout", "Category", "Clusters", "ShowMoreClusters",
-		"ShowFewerClusters"		
+		"ShowFewerClusters", "FacetScope"		
 	};
 	
 	@Override

@@ -93,7 +93,7 @@
 			<@s.IfDefCGI name="form"><input type="hidden" name="form" value="<@s.cgi>form</@s.cgi>"></@s.IfDefCGI>
 			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="<@s.cgi>scope</@s.cgi>"></@s.IfDefCGI>
 			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="<@s.cgi>profile</@s.cgi>"></@s.IfDefCGI>
-			<s:FacetScope>Within selected categories only</s:FacetScope>
+			<@s.FacetScope>Within selected categories only</@s.FacetScope>
                         <@s.IfDefCGI name="from-advanced"><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="?fb-advanced=true&amp;${QueryString?html}" id="fb-advanced-view">view advanced search</a>]</span></@s.IfDefCGI>
 			</div>
         	</form>
@@ -187,13 +187,13 @@
 		</span>
 
 		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
-			<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong>${SearchTransaction.response.resultPacket.queryCleaned}</strong>
+			<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong><@s.QueryClean></@s.QueryClean></strong>
 		</#if>
 		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching != 0>
 			<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
 			<span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
 			<span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching?string.number}</span>
-			search results for <strong>${SearchTransaction.response.resultPacket.queryCleaned}</strong>
+			search results for <strong><@s.QueryClean></@s.QueryClean></strong>
 		</#if>
 		<#if SearchTransaction.response.resultPacket.resultsSummary.partiallyMatching != 0>
 			where
@@ -217,7 +217,7 @@
 			<@s.IfDefCGI name="scope">
 				<p id="fb-scope">
 					Search scope: <@s.Truncate length=80><@s.cgi>scope</@s.cgi></@s.Truncate>
-					(<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=${SearchTransaction.response.resultPacket.queryCleaned?url}">Broaden search scope</a>)
+					(<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=<@s.URLEncode><@s.QueryClean></@s.QueryClean></@s.URLEncode>">Broaden search scope</a>)
 				</p>
 			</@s.IfDefCGI>
 	 

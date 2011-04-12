@@ -11,7 +11,7 @@
 
 <@s.cut cut="abc">Camel case cut</@s.cut>
 
-${Camel case URLEncode?url}
+<@s.URLEncode>${Camel case URLEncode}</@s.URLEncode>
 
-${htmlDecode(htmldecode)}
-${htmlDecode(htmldecode)}
+<@s.HtmlDecode>${htmldecode}</@s.HtmlDecode>
+<@s.HtmlDecode>${htmldecode}</@s.HtmlDecode>
