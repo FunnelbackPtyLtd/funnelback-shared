@@ -18,7 +18,7 @@ public class EnvConversion implements Operation {
 			log.info("Processing <s:env> tags");
 			out = out.replaceAll("<s:env>SCRIPT_NAME</s:env>", "");
 			
-			out = out.replaceAll("<s:env>QUERY_STRING</s:env>", "\\${SearchTransaction.question.queryString?html}");
+			out = out.replaceAll("<s:env>QUERY_STRING</s:env>", "\\${QueryString?html}");
 		}
 		
 		return out;

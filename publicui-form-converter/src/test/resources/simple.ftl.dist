@@ -94,7 +94,7 @@
 			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="<@s.cgi>scope</@s.cgi>"></@s.IfDefCGI>
 			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="<@s.cgi>profile</@s.cgi>"></@s.IfDefCGI>
 			<s:FacetScope>Within selected categories only</s:FacetScope>
-                        <@s.IfDefCGI name="from-advanced"><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="?fb-advanced=true&amp;${SearchTransaction.question.queryString?html}" id="fb-advanced-view">view advanced search</a>]</span></@s.IfDefCGI>
+                        <@s.IfDefCGI name="from-advanced"><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="?fb-advanced=true&amp;${QueryString?html}" id="fb-advanced-view">view advanced search</a>]</span></@s.IfDefCGI>
 			</div>
         	</form>
 	</div> <!-- #fb-queryform -->
@@ -177,7 +177,7 @@
 	<p id="fb-matching" class="<@s.FacetedSearch>fb-with-faceting</@s.FacetedSearch>">
 		<span id="fb-utils">
 			<@s.IfNotDefCGI name="fb-advanced">
-				<a href="?fb-advanced=true&amp;${SearchTransaction.question.queryString?html}" id="fb-advanced-toggle">Advanced search</a>
+				<a href="?fb-advanced=true&amp;${QueryString?html}" id="fb-advanced-toggle">Advanced search</a>
 			</@s.IfNotDefCGI>
 			<@s.IfDefCGI name="fb-advanced">
 				<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=<@s.cgi>query</@s.cgi>" id="fb-advanced-toggle">Simple search</a>

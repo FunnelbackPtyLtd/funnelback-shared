@@ -100,17 +100,7 @@ public class SearchQuestion {
 	@Getter @Setter private String userId = Log.USERID_NOTHING;
 	
 	/**
-	 * Referer for this transaction, can be an empty string
-	 */
-	@Getter @Setter private String referer;
-	
-	/**
-	 * Initial query string. Useful to build additional links (previous, next ...)
-	 */
-	@Getter @Setter private String queryString;
-	
-	/**
-	 * input parameters map
+	 * Input parameters map. In a Web servlet context will contain the request parameters map.
 	 */
 	@Getter private final Map<String, String[]> inputParameterMap = new HashMap<String, String[]>();
 	

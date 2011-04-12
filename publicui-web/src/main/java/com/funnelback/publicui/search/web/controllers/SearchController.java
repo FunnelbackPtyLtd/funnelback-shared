@@ -37,6 +37,7 @@ public class SearchController {
 
 	public static final String MODEL_KEY_SEARCH_TRANSACTION = SearchTransaction.class.getSimpleName();
 	public static final String MODEL_KEY_COLLECTION_LIST = "allCollections";
+	public static final String MODEL_KEY_QUERY_STRING = "QueryString";
 
 	@Autowired
 	private SearchTransactionProcessor processor;
@@ -88,12 +89,15 @@ public class SearchController {
 			}
 		} else {
 			// Collection is null = non existent
-			log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
+			if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
+				log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
+			}
 			return noCollection();
 		}
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
+		model.put(MODEL_KEY_QUERY_STRING, request.getQueryString());
 
 		// Generate the view name, relative to the Funnelback home
 		String viewName = DefaultValues.FOLDER_CONF + "/"
@@ -141,10 +145,7 @@ public class SearchController {
 		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
 
 		// Referer
-		question.setReferer((request.getHeader("Referer") != null) ? request.getHeader("Referer") : null);
-		
-		// Query string
-		question.setQueryString(request.getQueryString());
+		MapUtils.putIfNotNull(question.getInputParameterMap(), "HTTP_REFERER", request.getHeader("Referer"));
 				
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
