@@ -19,6 +19,8 @@ import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -33,12 +35,12 @@ import com.funnelback.publicui.xml.XmlParsingException;
 public class FixPseudoLiveLinksTests {
 
 	@Autowired
-	private MockConfigRepository configRepository;
+	protected MockConfigRepository configRepository;
 	
 	@Autowired
-	private FixPseudoLiveLinks processor;
+	protected FixPseudoLiveLinks processor;
 	
-	private SearchTransaction st;
+	protected SearchTransaction st;
 	
 	@Before
 	public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
@@ -76,7 +78,7 @@ public class FixPseudoLiveLinksTests {
 	}
 	
 	@Test
-	public void testMissingData() {
+	public void testMissingData() throws OutputProcessorException {
 		// No transaction
 		processor.processOutput(null);
 		
@@ -93,7 +95,7 @@ public class FixPseudoLiveLinksTests {
 	}
 	
 	@Test
-	public void test() throws UnsupportedEncodingException {
+	public void test() throws UnsupportedEncodingException, OutputProcessorException {
 		processor.processOutput(st);
 		
 		ResultPacket rp = st.getResponse().getResultPacket();

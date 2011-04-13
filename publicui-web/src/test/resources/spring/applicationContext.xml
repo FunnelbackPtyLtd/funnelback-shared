@@ -56,6 +56,9 @@
 
 	<bean
 		class="com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks" />
+
+	<bean
+		class="com.funnelback.publicui.search.lifecycle.output.processors.FixDisplayUrls" />
 		
 	<bean class="com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigationTransform" />
 

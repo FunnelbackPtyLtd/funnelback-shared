@@ -8,7 +8,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.MetaParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-public class MetaParametersTest {
+public class MetaParametersTests {
 	
 	@Test
 	public void testMissingData() throws InputProcessorException {
@@ -213,6 +213,22 @@ public class MetaParametersTest {
 		
 		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|Z:\"incomplete\""));
+	}
+	
+	@Test
+	public void testMetaDatesAreSkipped() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+		
+		st.getQuestion().getInputParameterMap().put("meta_d1day", new String[] {"1day"});
+		st.getQuestion().getInputParameterMap().put("meta_d2month", new String[] {"2month"});
+		st.getQuestion().getInputParameterMap().put("meta_d3year", new String[] {"3year"});
+		st.getQuestion().getInputParameterMap().put("meta_wday", new String[] {"wday"});
+		st.getQuestion().getInputParameterMap().put("meta_xmonth", new String[] {"xmonth"});
+		st.getQuestion().getInputParameterMap().put("meta_yyear", new String[] {"yyear"});
+		
+		new MetaParameters().processInput(st);
+		
+		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 	}
 	
 }

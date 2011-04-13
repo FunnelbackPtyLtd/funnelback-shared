@@ -82,7 +82,21 @@ public class SearchTransactionUtilsTests {
 		Assert.assertFalse(SearchTransactionUtils.hasQuestion(new SearchTransaction(null, null)));
 		Assert.assertFalse(SearchTransactionUtils.hasQuestion(new SearchTransaction(null, new SearchResponse())));
 		Assert.assertTrue(SearchTransactionUtils.hasQuestion(new SearchTransaction(new SearchQuestion(), null)));
+	}
+	
+	@Test
+	public void testSearchTransaction() {
+		Assert.assertFalse(new SearchTransaction(null, null).hasQuestion());
+		Assert.assertFalse(new SearchTransaction(null, null).hasResponse());
+
+		Assert.assertTrue(new SearchTransaction(new SearchQuestion(), null).hasQuestion());
+		Assert.assertFalse(new SearchTransaction(new SearchQuestion(), null).hasResponse());
 		
+		Assert.assertFalse(new SearchTransaction(null, new SearchResponse()).hasQuestion());
+		Assert.assertTrue(new SearchTransaction(null, new SearchResponse()).hasResponse());
+
+		Assert.assertTrue(new SearchTransaction(new SearchQuestion(), new SearchResponse()).hasQuestion());
+		Assert.assertTrue(new SearchTransaction(new SearchQuestion(), new SearchResponse()).hasResponse());
 	}
 	
 }

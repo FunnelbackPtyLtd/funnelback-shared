@@ -39,6 +39,28 @@ public class PadreForkingTests {
 	}
 	
 	@Test
+	public void testMissingData() throws DataFetchException, FileNotFoundException, EnvironmentVariableException {
+		SearchTransaction st = new SearchTransaction(null, null);
+		forking.fetchData(st);
+		Assert.assertNull(st.getResponse());
+		
+		SearchQuestion sq = new SearchQuestion();
+		st = new SearchTransaction(sq, null);
+		forking.fetchData(st);
+		Assert.assertNull(st.getResponse());
+		
+		sq.setQuery("query");
+		forking.fetchData(st);
+		Assert.assertNull(st.getResponse());
+		
+		sq.setQuery(null);
+		sq.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking")));
+		forking.fetchData(st);
+		Assert.assertNull(st.getResponse());
+		
+	}
+	
+	@Test
 	public void test() throws DataFetchException, EnvironmentVariableException, IOException {
 		String ext = ".sh";
 		if (OS.isFamilyWindows()) {
