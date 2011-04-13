@@ -83,5 +83,7 @@ TODO:
 
 * Collection config reloading: Find a more clever mechanism for reloading only a specific config file and/or lazy loading.
 
+* Rename hooks (pre/post datafetch not very meaningfull)
+
 * Form tags:
   * Implement CURRENT_DATE range in <Select> tag

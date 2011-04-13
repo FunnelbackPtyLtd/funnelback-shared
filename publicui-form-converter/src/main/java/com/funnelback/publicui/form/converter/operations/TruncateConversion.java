@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Log;
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
- * Converts s:Truncate tags
+ * Converts s:Truncate & s:TruncateURL tags
  */
 @Log
 public class TruncateConversion implements Operation {
@@ -19,13 +19,21 @@ public class TruncateConversion implements Operation {
 		
 		Matcher m = Pattern.compile("<s:Truncate\\s+(\\d+)([^>]*)>").matcher(out);
 		if (m.find()) {
-			log.info("Processing <s:Truncate: tags");
+			log.info("Processing <s:Truncate tags");
 			out = m.replaceAll("<@s.Truncate length=$1$2>");
 			out = out.replaceAll("</s:Truncate>", "</@s.Truncate>");
 			
 			// Replace 'stripMiddle' option by a boolean
 			out = out.replaceAll("stripMiddle", "stripMiddle=true");
 		}
+		
+		m = Pattern.compile("<s:TruncateURL\\s+(\\d+)([^>]*)>").matcher(out);
+		if (m.find()) {
+			log.info("Processing <s:TruncateURL tags");
+			out = m.replaceAll("<@s.TruncateURL length=$1$2>");
+			out = out.replaceAll("</s:TruncateURL>", "</@s.TruncateURL>");
+		}
+
 		
 		return out;
 	}

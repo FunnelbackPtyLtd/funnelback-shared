@@ -59,6 +59,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SleepMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.SleepMethod" />
 				</entry>

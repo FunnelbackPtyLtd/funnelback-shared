@@ -290,7 +290,7 @@
 				
 				<!-- URL AND FILESIZE -->
 				<p>
-				<cite><@s.cut cut="http://"><s:TruncateURL 75>${s.result.displayUrl}</s:TruncateURL></@s.cut></cite>
+				<cite><@s.cut cut="http://"><@s.TruncateURL length=75>${s.result.displayUrl}</@s.TruncateURL></@s.cut></cite>
                 		<#if ! s.result.fileType?matches("\\b(pdf|doc|xls|ppt)\\b", "r")>
 					- <a class="fb-cached" href="${s.result.cacheUrl}" title="Cached version of ${s.result.title} (${s.result.rank})">Cached</a>
 				</#if>
