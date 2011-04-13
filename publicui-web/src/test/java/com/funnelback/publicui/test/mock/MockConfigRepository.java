@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.mock;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,11 @@ public class MockConfigRepository implements ConfigRepository {
 	@Override
 	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf) {
 		return globalConfigs.get(conf);
+	}
+
+	@Override
+	public Date getLastUpdated(String collectionId) {
+		return new Date();
 	}
 
 }
