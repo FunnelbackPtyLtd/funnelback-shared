@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,12 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	 * the files to often
 	 */
 	private Map<String, Long> staleChecks = new HashMap<String, Long>();
+	
+	/**
+	 * Prefix used to store the last time the "index_time" file has been
+	 * checked for a specific collection, in the staleChecks map.
+	 */
+	private static final String LAST_UPDATED_STALE_KEY_PREFIX = "_LAST_UPDATED_DATE_";
 
 	
 	@Override
@@ -176,4 +183,26 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		return f.lastModified() > timestamp;
 	}
 
+	@Override
+	public Date getLastUpdated(String collectionId) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_lastUpdated_.toString() + collectionId;
+		
+		Element elt = cache.get(key);
+		if (elt == null) {
+			return loadLastUpdated(collectionId);
+		} else {
+			Long now = System.currentTimeMillis();
+			Long lastAccessTime = staleChecks.get(LAST_UPDATED_STALE_KEY_PREFIX + collectionId);
+			staleChecks.put(LAST_UPDATED_STALE_KEY_PREFIX + collectionId, now);
+			// Take an early exit if we've already check recently.
+			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
+				return (Date) elt.getObjectValue();
+			} else {
+				cache.remove(elt.getKey());
+				return super.getLastUpdated(collectionId);
+			}		
+		}
+	}
+	
 }

@@ -1,14 +1,20 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +36,9 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 
+import freemarker.core.ParseException;
+import freemarker.template.TemplateException;
+
 @Controller
 @RequestMapping({"/search", "/_/search"})
 @lombok.extern.apachecommons.Log
@@ -38,6 +47,7 @@ public class SearchController {
 	public static final String MODEL_KEY_SEARCH_TRANSACTION = SearchTransaction.class.getSimpleName();
 	public static final String MODEL_KEY_COLLECTION_LIST = "allCollections";
 	public static final String MODEL_KEY_QUERY_STRING = "QueryString";
+	public static final String MODEL_KEY_SEARCH_PREFIX = "SearchPrefix";
 
 	@Autowired
 	private SearchTransactionProcessor processor;
@@ -173,5 +183,5 @@ public class SearchController {
 				question.getCnPreviousClusters().add(value);
 			}
 		}
-	}
+	}	
 }

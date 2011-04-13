@@ -16,12 +16,10 @@ import com.funnelback.publicui.form.converter.Operation;
 @Log
 public class AddUrlPrefix implements Operation {
 
-	private static final String PREFIX = "/search/";
+	private static final String PREFIX = "${SearchPrefix}";
 	
 	@Override
 	public String process(final String in) {
-		log.warn("Using this operation is dangerous because it will hardcode very URL with a '/search' prefix");
-		
 		Matcher m = Pattern.compile("(href|src)=['\"]([^'\"]*)['\"]").matcher(in);
 		if (m.find()) {
 			String out = "";

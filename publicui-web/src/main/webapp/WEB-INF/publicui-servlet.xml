@@ -50,6 +50,10 @@
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="freemarkerVariables">
 			<map>
+				<entry
+					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController).MODEL_KEY_SEARCH_PREFIX}"
+					value="#{appProperties['urls.search.prefix']}"
+				/>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod" />
 				</entry>
@@ -81,6 +85,12 @@
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod" />
+				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod" />
+				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod" />
 				</entry>
 			</map>
 		</property>

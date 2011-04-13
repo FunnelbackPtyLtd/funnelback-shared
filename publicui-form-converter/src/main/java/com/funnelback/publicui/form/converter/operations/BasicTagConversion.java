@@ -19,7 +19,7 @@ public class BasicTagConversion implements Operation {
 		"PrevNext", "cgi", "CheckSpelling", "BestBets", "QueryClean", "HtmlDecode", "URLEncode",
 		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
 		"NoClustersFound", "ClusterLayout", "Category", "Clusters", "ShowMoreClusters",
-		"ShowFewerClusters", "FacetScope"		
+		"ShowFewerClusters", "FacetScope", "CurrentDate", "Date", "rss"		
 	};
 	
 	@Override

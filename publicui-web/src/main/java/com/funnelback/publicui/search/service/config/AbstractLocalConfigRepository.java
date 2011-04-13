@@ -8,7 +8,9 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.Synonym;
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
@@ -359,5 +362,36 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			return ! COMMENT_PATTERN.matcher(line).matches();
 		}
 	};
+	
+	/**
+	 * Reads the index_time file to get the last update time
+	 * of the index.
+	 * @param collectionId
+	 * @return The updated Date, or null if the date is not available.
+	 */
+	protected Date loadLastUpdated(String collectionId) {
+		if (collectionId == null) {
+			return null;
+		}
+		
+		try {
+			File indexTimeFile = new File(getCollection(collectionId).getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE
+					+ File.separator + DefaultValues.FOLDER_IDX,
+					Files.Index.INDEX_TIME);
+			if (indexTimeFile.canRead()) {
+				String time = FileUtils.readFileToString(indexTimeFile);
+				try {
+					return new SimpleDateFormat(Details.UPDATED_DATE_PATTERN).parse(time);
+				} catch (Exception e) {
+					log.warn("Could not parse last update date string '" + time + "' from '" + indexTimeFile.getAbsolutePath() + "'.", e);
+				}
+			}
+		} catch (IOException ioe) {
+			log.error("Could not load last updated date for collection '" + collectionId + "'", ioe);
+		}
+		
+		return null;
+	}
 	
 }

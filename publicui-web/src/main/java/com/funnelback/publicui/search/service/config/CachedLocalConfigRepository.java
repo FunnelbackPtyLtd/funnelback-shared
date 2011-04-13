@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import net.sf.ehcache.Element;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -27,7 +27,8 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 	protected static final String CACHE = "localConfigRepository";
 	protected enum CacheKeys {
 		_CACHE_allCollectionIds,
-		_CACHE_globalConfig_;
+		_CACHE_globalConfig_,
+		_CACHE_lastUpdated_;
 	}
 
 	@Autowired
@@ -95,6 +96,19 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 			return configData;
 		} else {
 			return (Map<String, String>) elt.getObjectValue();
+		}
+	}
+	
+	@Override
+	public Date getLastUpdated(String collectionId) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_lastUpdated_.toString() + collectionId;
+		
+		Element elt = cache.get(key);
+		if (elt == null) {
+			return loadLastUpdated(collectionId);
+		} else {
+			return (Date) elt.getObjectValue();
 		}
 	}
 

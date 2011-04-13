@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,5 +48,11 @@ public interface ConfigRepository {
 	 * @return
 	 */
 	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf);
+	
+	/**
+	 * @param c
+	 * @return The last update date for the collection
+	 */
+	public Date getLastUpdated(String collectionId);
 
 }

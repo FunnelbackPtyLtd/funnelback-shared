@@ -13,17 +13,17 @@
 	<@s.OpenSearch></@s.OpenSearch>
 	<meta name="robots" content="nofollow">
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">	
-        <link rel="stylesheet" media="screen" href="/search/search.css" type="text/css">
+        <link rel="stylesheet" media="screen" href="${SearchPrefix}search.css" type="text/css">
 	<!--[if !IE]>-->
-        <link rel="stylesheet" media="handheld, only screen and (max-device-width: 480px)" href="/search/search-mobile.css" type="text/css">
+        <link rel="stylesheet" media="handheld, only screen and (max-device-width: 480px)" href="${SearchPrefix}search-mobile.css" type="text/css">
 	<!--<![endif]-->
 	<meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;">
 
 	<!-- Query completion -->
-	<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
-	<script type="text/javascript" src="/search/js/jquery/jquery.tmpl.min.js"></script>
-	<script type="text/javascript" src="/search/js/jquery.funnelback-completion.js"></script>
+	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="${SearchPrefix}js/jquery.funnelback-completion.js"></script>
 
 	<script type="text/javascript">
                 // Query completion setup.
@@ -72,13 +72,13 @@
 	<!-- NO QUERY SPECIFIED -->
 	<@s.InitialFormOnly>
 		<div id="fb-initial">
-			<a href="http://funnelback.com/"><img src="/search/funnelback.png" alt="Funnelback logo"></a>
+			<a href="http://funnelback.com/"><img src="${SearchPrefix}funnelback.png" alt="Funnelback logo"></a>
 		</div>
 	</@s.InitialFormOnly>
 
 
 	<!-- SEARCH LOGO -->	
-	<div><a id="fb-logo" <@s.InitialFormOnly>class="fb-initial"</@s.InitialFormOnly> href="http://funnelback.com/"><img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
+	<div><a id="fb-logo" <@s.InitialFormOnly>class="fb-initial"</@s.InitialFormOnly> href="http://funnelback.com/"><img src="${SearchPrefix}funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
 
 
 	<!-- QUERY FORM -->
@@ -183,7 +183,7 @@
 				<a href="?collection=<@s.cgi>collection</@s.cgi>&amp;form=<@s.cgi>form</@s.cgi>&amp;query=<@s.cgi>query</@s.cgi>" id="fb-advanced-toggle">Simple search</a>
 			</@s.IfDefCGI>
 
-			<span id="fb-help">| <a href="/search/help/simple_search.html">Help</a></span>
+			<span id="fb-help">| <a href="${SearchPrefix}help/simple_search.html">Help</a></span>
 		</span>
 
 		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>

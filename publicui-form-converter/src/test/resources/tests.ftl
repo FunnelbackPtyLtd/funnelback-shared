@@ -15,3 +15,10 @@
 
 <@s.HtmlDecode>${htmldecode}</@s.HtmlDecode>
 <@s.HtmlDecode>${htmldecode}</@s.HtmlDecode>
+
+<@s.CurrentDate></@s.CurrentDate>
+<@s.Date prefix="ABC"></@s.Date>
+<@s.Date></@s.Date>
+
+<@s.rss>link</@s.rss>
+<@s.rss>button</@s.rss>
