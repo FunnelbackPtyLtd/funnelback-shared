@@ -205,4 +205,9 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		}
 	}
 	
+	@Override
+	public String[] getForms(String collectionId, String profileId) {
+		return loadFormList(collectionId, profileId);
+	}
+	
 }

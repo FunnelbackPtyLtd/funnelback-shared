@@ -92,6 +92,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FormListMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.FormListMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>

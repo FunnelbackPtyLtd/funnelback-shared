@@ -54,5 +54,12 @@ public interface ConfigRepository {
 	 * @return The last update date for the collection
 	 */
 	public Date getLastUpdated(String collectionId);
+	
+	/**
+	 * @param collectionId
+	 * @param profileId
+	 * @return The list of available forms for a collection, for a given profile
+	 */
+	public String[] getForms(String collectionId, String profileId);
 
 }

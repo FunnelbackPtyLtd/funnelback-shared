@@ -53,5 +53,10 @@ public class MockConfigRepository implements ConfigRepository {
 		return new Date();
 	}
 
+	@Override
+	public String[] getForms(String collectionId, String profileId) {
+		return new String[]{"simple"};
+	}
+
 }
 

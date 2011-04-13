@@ -28,7 +28,8 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 	protected enum CacheKeys {
 		_CACHE_allCollectionIds,
 		_CACHE_globalConfig_,
-		_CACHE_lastUpdated_;
+		_CACHE_lastUpdated_,
+		_CACHE_forms_;
 	}
 
 	@Autowired
@@ -109,6 +110,19 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 			return loadLastUpdated(collectionId);
 		} else {
 			return (Date) elt.getObjectValue();
+		}
+	}
+	
+	@Override
+	public String[] getForms(String collectionId, String profileId) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_forms_.toString() + collectionId;
+		
+		Element elt = cache.get(key);
+		if (elt == null) {
+			return loadFormList(collectionId, profileId);
+		} else {
+			return (String[]) elt.getObjectValue();
 		}
 	}
 

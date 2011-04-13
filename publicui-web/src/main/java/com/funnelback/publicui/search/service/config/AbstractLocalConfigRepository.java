@@ -55,6 +55,9 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	/** Header line of the synonyms.cfg */
 	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
 	
+	private static final String FTL_SUFFIX = ".ftl";
+	private static final Pattern FORM_BACKUP_PATTERN = Pattern.compile("-\\d{12}"+FTL_SUFFIX);
+	
 	@Autowired
 	protected File searchHome;
 	
@@ -370,12 +373,13 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	 * @return The updated Date, or null if the date is not available.
 	 */
 	protected Date loadLastUpdated(String collectionId) {
-		if (collectionId == null) {
+		Collection c = getCollection(collectionId);
+		if (c == null) {
 			return null;
 		}
 		
 		try {
-			File indexTimeFile = new File(getCollection(collectionId).getConfiguration().getCollectionRoot()
+			File indexTimeFile = new File(c.getConfiguration().getCollectionRoot()
 					+ File.separator + DefaultValues.VIEW_LIVE
 					+ File.separator + DefaultValues.FOLDER_IDX,
 					Files.Index.INDEX_TIME);
@@ -392,6 +396,36 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		}
 		
 		return null;
+	}
+	
+	protected String[] loadFormList(String collectionId, String profileId) {
+		if (collectionId == null || profileId == null) {
+			throw new IllegalArgumentException("collectionId and profileId cannot be null");
+		}
+		Collection c = getCollection(collectionId);
+		if (c == null) {
+			throw new IllegalArgumentException("Invalid collection '" + collectionId + "'");
+		}
+		
+		// Find form files, excluding backups (simple-20110101093000.ftl)
+		File profileDir = new File(c.getConfiguration().getConfigDirectory() + File.separator + profileId);
+		File[] formFiles = profileDir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isFile()
+					&& pathname.getName().endsWith(FTL_SUFFIX)
+					&& ! FORM_BACKUP_PATTERN.matcher(pathname.getName()).matches();
+			}
+		});
+		
+		// Remove .ftl suffix
+		String[] out = new String[formFiles.length];
+		for (int i=0; i<formFiles.length; i++) {
+			out[i] = formFiles[i].getName().replaceAll(FTL_SUFFIX+"$", "");
+		}
+		
+		return out;
+		
 	}
 	
 }

@@ -20,10 +20,12 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
 
+/**
+ * Performs an extra search.
+ */
 @Log
 public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx {
 

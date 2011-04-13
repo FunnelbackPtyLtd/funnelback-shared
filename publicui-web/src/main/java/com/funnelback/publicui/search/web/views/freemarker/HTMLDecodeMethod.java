@@ -11,6 +11,9 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
+/**
+ * Decodes HTML.
+ */
 public class HTMLDecodeMethod implements TemplateMethodModel, TemplateMethodModelEx {
 
 	public static final String NAME = "htmlDecode";

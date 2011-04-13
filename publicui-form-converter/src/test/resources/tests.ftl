@@ -22,3 +22,5 @@
 
 <@s.rss>link</@s.rss>
 <@s.rss>button</@s.rss>
+
+<@s.FormChoice></@s.FormChoice>
