@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.filters;
+package com.funnelback.publicui.test.search.web.filters;
 
 import java.util.HashMap;
 import java.util.Map;

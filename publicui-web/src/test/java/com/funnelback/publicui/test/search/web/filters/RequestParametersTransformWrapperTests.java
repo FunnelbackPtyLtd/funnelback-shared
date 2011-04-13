@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.filters;
+package com.funnelback.publicui.test.search.web.filters;
 
 import org.junit.Assert;
 import org.junit.Test;

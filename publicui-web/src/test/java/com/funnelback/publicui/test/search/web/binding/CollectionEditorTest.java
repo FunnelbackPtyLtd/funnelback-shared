@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.binding;
+package com.funnelback.publicui.test.search.web.binding;
 
 import junit.framework.Assert;
 

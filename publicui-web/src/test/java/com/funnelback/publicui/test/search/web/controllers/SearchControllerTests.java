@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.controllers;
+package com.funnelback.publicui.test.search.web.controllers;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.views;
+package com.funnelback.publicui.test.search.web.views;
 
 import java.io.File;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.interceptors;
+package com.funnelback.publicui.test.search.web.interceptors;
 
 import java.io.File;
 import java.io.FileNotFoundException;

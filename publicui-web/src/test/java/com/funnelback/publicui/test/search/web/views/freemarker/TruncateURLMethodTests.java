@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.web.views.freemarker;
+package com.funnelback.publicui.test.search.web.views.freemarker;
 
 import java.util.ArrayList;
 
