@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.utils;
+package com.funnelback.publicui.utils;
 
 import java.util.ArrayList;
 import java.util.List;

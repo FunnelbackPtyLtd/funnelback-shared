@@ -1,22 +1,19 @@
-package com.funnelback.publicui.test.web.utils;
+package com.funnelback.publicui.test.utils;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.funnelback.publicui.search.web.utils.MapKeyFilter;
+import com.funnelback.publicui.utils.MapKeyFilter;
 
-public class RequestParametersFilterTests {
+public class MapKeyFilterTests {
 
 	@Test
 	public void test() {
 		HashMap<String, String[]> params = new HashMap<String, String[]>();
 		
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		params.put("param1", new String[] {""});
 		params.put("param2", new String[] {""});
 		params.put("meta_X", new String[] {"y"});
