@@ -17,8 +17,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryType;
-import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 
 /**
  * Parses a faceted navigation configuration using a Stax Stream parser.
@@ -54,8 +54,8 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 						if (qpOptions != null) {
 							facets.qpOptions = qpOptions.trim();
 						}
-					} else if (Facet.Schema.FACET.equals(xmlStreamReader.getLocalName())) {
-						facets.facets.add(parseFacet(xmlStreamReader));
+					} else if (FacetDefinition.Schema.FACET.equals(xmlStreamReader.getLocalName())) {
+						facets.facetDefinitions.add(parseFacet(xmlStreamReader));
 					}
 					break;
 				}
@@ -74,19 +74,19 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private Facet parseFacet(XMLStreamReader reader) throws XMLStreamException {
-		if (! Facet.Schema.FACET.equals(reader.getLocalName())) {
+	private FacetDefinition parseFacet(XMLStreamReader reader) throws XMLStreamException {
+		if (! FacetDefinition.Schema.FACET.equals(reader.getLocalName())) {
 			throw new IllegalArgumentException();
 		}
 		
 		String data = null;
-		List<CategoryType> categories = new ArrayList<CategoryType>();
+		List<CategoryDefinition> categories = new ArrayList<CategoryDefinition>();
 		while(reader.hasNext() && reader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			
 			switch(reader.getEventType()){
 			case XMLStreamReader.START_ELEMENT:
 				
-				if (Facet.Schema.DATA.equals(reader.getLocalName())) {
+				if (FacetDefinition.Schema.DATA.equals(reader.getLocalName())) {
 					data = reader.getElementText();
 				} else {
 					try {
@@ -99,7 +99,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 				break;
 			}
 		}
-		return new Facet(data, categories);
+		return new FacetDefinition(data, categories);
 	}
 	
 	/**
@@ -110,13 +110,13 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 	 * @throws BeanInstantiationException
 	 * @throws ClassNotFoundException
 	 */
-	private CategoryType parseCategory(String facetName, XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
+	private CategoryDefinition parseCategory(String facetName, XMLStreamReader reader) throws XMLStreamException, BeanInstantiationException, ClassNotFoundException {
 		String name = reader.getLocalName();
 		
 		// The name = the class name of the corresponding Java classes.
 		// Ex: <QueryItem> => com.funnelback.publicui.model.collection.facetednavigation.QueryItem
 		// We instantiate the bean using reflection
-		CategoryType c = (CategoryType) BeanUtils.instantiate(Class.forName(CategoryType.class.getPackage().getName() + "." + name));
+		CategoryDefinition c = (CategoryDefinition) BeanUtils.instantiate(Class.forName(CategoryDefinition.class.getPackage().getName() + ".impl." + name));
 		c.setFacetName(facetName);
 		
 		// Then we'll use a BeanWrapper to set properties on the bean later, without knowing
@@ -131,7 +131,7 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 			
 			switch(reader.getEventType()){
 			case XMLStreamReader.START_ELEMENT:
-				if (Facet.Schema.DATA.equals(reader.getLocalName())) {
+				if (FacetDefinition.Schema.DATA.equals(reader.getLocalName())) {
 					c.setData(reader.getElementText());
 				} else if ( ArrayUtils.contains(CATEGORY_EXTRA_PROPERTIES, reader.getLocalName()) ) {
 					// This is a property value for our Category bean. Set the value using

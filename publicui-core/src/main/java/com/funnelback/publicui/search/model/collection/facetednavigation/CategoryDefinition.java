@@ -12,26 +12,40 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
 
 /**
- * Type of category (metadata field fill, url fill, xpath fill ...)
+ * Category definition (metadata field fill, url fill, xpath fill ...).
  *
  */
 @ToString
-public abstract class CategoryType {
+public abstract class CategoryDefinition {
 
+	/**
+	 * Separator used in PADRE results between a metadata field
+	 * and its value (Ex: <tt>&lt;rmc item="a:new south wales"&gt;</tt>)
+	 */
+	public static final String MD_VALUE_SEPARATOR = ":";
+
+	/**
+	 * Separator used in the query string parameters between
+	 * a facet name and its specific configuration (metadatafield or
+	 * gscope number).
+	 * Ex: <tt>f.Location|a=new%20south%20wales</tt>
+	 */
+	public static final String QS_PARAM_SEPARATOR = "|";
+	
 	/** Name of the facet containing this category type */
 	@Getter @Setter protected String facetName;
 	
 	/**
 	 * Specific data for this category type.
-	 * Depending of the effective type, can be a metadata class,
+	 * Depending of the actual type, can be a metadata class,
 	 * a query expression, etc.
 	 */
 	@Getter @Setter protected String data;
 	
 	@Getter @Setter protected String label;
 	
-	/** List of sub categories */
-	@Getter private final List<CategoryType> subCategories = new ArrayList<CategoryType>();
+	/** List of sub category definitions */
+	@Getter private final List<CategoryDefinition> subCategories = new ArrayList<CategoryDefinition>();
 	
 	/**
 	 * Generate a list of corresponding {@link Category} by applying
@@ -46,7 +60,7 @@ public abstract class CategoryType {
 	 * 
 	 * @param rp
 	 */
-	public abstract List<com.funnelback.publicui.search.model.transaction.Facet.Category> computeValues(final ResultPacket rp);
+	public abstract List<Category> computeValues(final ResultPacket rp);
 	
 	/**
 	 * @return the name of the query string parameter used
@@ -54,7 +68,7 @@ public abstract class CategoryType {
 	 * 
 	 * Ex: f.By Date|dc.date
 	 */
-	public abstract String getUrlParamName();
+	public abstract String getQueryStringParamName();
 	
 	/**
 	 * Given the value of a query string parameter, and any extra parameters,
@@ -79,7 +93,7 @@ public abstract class CategoryType {
 	 * @return
 	 */
 	public static MetadataAndValue parseMetadata(String item) {
-		int colon = item.indexOf(":");
+		int colon = item.indexOf(MD_VALUE_SEPARATOR);
 		return new MetadataAndValue(item.substring(0, colon), item.substring(colon + 1));
 	}
 

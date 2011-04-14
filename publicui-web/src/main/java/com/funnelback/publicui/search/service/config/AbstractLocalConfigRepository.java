@@ -157,7 +157,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		if (fnConfig.canRead()) {
 			try {
 				Facets f = fnConfigParser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(fnConfig));
-				return new FacetedNavigationConfig(f.qpOptions,f.facets, readGroovyScript(fnTransformConfig));
+				return new FacetedNavigationConfig(f.qpOptions,f.facetDefinitions, readGroovyScript(fnTransformConfig));
 			} catch (IOException ioe) {
 				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
 				return null;

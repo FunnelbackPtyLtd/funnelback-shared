@@ -1,9 +1,9 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
 /**
- * GScope based {@link CategoryType}.
+ * GScope based {@link CategoryDefinition}.
  */
-public interface GScopeBasedType {
+public interface GScopeBasedCategory {
 
 	/**
 	 * @return The GScope number for this category type

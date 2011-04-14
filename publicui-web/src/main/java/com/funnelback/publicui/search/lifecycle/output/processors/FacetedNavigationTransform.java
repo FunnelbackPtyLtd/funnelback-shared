@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 /**
  * Executes a faceted navigation transform script.

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.model.collection.facetednavigation;
+package com.funnelback.publicui.utils;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;

@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryType;
-import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
-import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationUtils;
-import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedType;
-import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedType;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
+import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 
 /**
@@ -72,10 +72,10 @@ public class FacetedNavigation implements InputProcessor {
 						log.debug("Fond facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
 						
 						// Find corresponding facet in config
-						Facet f = (Facet) CollectionUtils.find(config.getFacets(), new Predicate() {
+						FacetDefinition f = (FacetDefinition) CollectionUtils.find(config.getFacetDefinitions(), new Predicate() {
 							@Override
 							public boolean evaluate(Object o) {
-								return ((Facet) o).getName().equals(facetName);
+								return ((FacetDefinition) o).getName().equals(facetName);
 							}
 						});
 						
@@ -87,24 +87,24 @@ public class FacetedNavigation implements InputProcessor {
 							// Find corresponding category type, for each value
 							for(final String value: values) {
 								// Find category or subcategory
-								CategoryType ct = findCategoryType(f.getCategoryTypes(), value, extraParam);
+								CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, extraParam);
 								
 								if (ct != null) {
-									List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getUrlParamName());
+									List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getQueryStringParamName());
 									if (selectedCategoriesValues == null) {
 										selectedCategoriesValues = new ArrayList<String>();
 									}
 									// Put this category in the list of the selected ones
 									selectedCategoriesValues.add(value);
-									searchTransaction.getQuestion().getSelectedCategories().put(ct.getUrlParamName(), selectedCategoriesValues);
+									searchTransaction.getQuestion().getSelectedCategories().put(ct.getQueryStringParamName(), selectedCategoriesValues);
 									
 									// Add constraints for this category
-									if (ct instanceof GScopeBasedType) {
-										GScopeBasedType type = (GScopeBasedType) ct;
+									if (ct instanceof GScopeBasedCategory) {
+										GScopeBasedCategory type = (GScopeBasedCategory) ct;
 										gscope1FacetConstraints.add(type.getGScope1Constraint());
 										
-									} else if (ct instanceof MetadataBasedType) {
-										MetadataBasedType type = (MetadataBasedType) ct;
+									} else if (ct instanceof MetadataBasedCategory) {
+										MetadataBasedCategory type = (MetadataBasedCategory) ct;
 										queryFacetConstraints.add(type.getQueryConstraint(value));
 									}
 								}
@@ -212,12 +212,12 @@ public class FacetedNavigation implements InputProcessor {
 	 * @param extraParam
 	 * @return
 	 */
-	private CategoryType findCategoryType(List<CategoryType> cts, String value, String extraParam) {
-		for (CategoryType ct: cts) {
+	private CategoryDefinition findCategoryType(List<CategoryDefinition> cts, String value, String extraParam) {
+		for (CategoryDefinition ct: cts) {
 			if (ct.matches(value, extraParam)) {
 				return ct;
 			} else {
-				CategoryType sub = findCategoryType(ct.getSubCategories(), value, extraParam);
+				CategoryDefinition sub = findCategoryType(ct.getSubCategories(), value, extraParam);
 				if (sub != null) {
 					return sub;
 				}

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 /**
  * Cleans query by removing "technical" operators that we want
@@ -42,6 +42,7 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 				FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
 				
 				if (config != null) {
+					// Remove each query expression related to a facet config
 					for(String field: config.getMetadataFieldsUsed()) {
 						// delete phrases e.g. x:"a phrase"
 						q = q.replaceAll("|" + field + ":\".+?\"\\s?", "");

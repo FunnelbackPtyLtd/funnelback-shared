@@ -9,13 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryType;
-import com.funnelback.publicui.search.model.collection.facetednavigation.Facet;
-import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedType;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 
 /**
  * Faceted navigation configuration.
- * @see faceted_navigation.cfg
+ * @see <tt>faceted_navigation.cfg</tt>
  */
 @AllArgsConstructor
 public class FacetedNavigationConfig {
@@ -23,8 +23,8 @@ public class FacetedNavigationConfig {
 	/** Query processor options embedded in the config file */
 	@Getter private final String qpOptions;
 	
-	/** List of facets */
-	@Getter private final List<Facet> facets;
+	/** List of facets definitions */
+	@Getter private final List<FacetDefinition> facetDefinitions;
 	
 	/**
 	 * Groovy transform script
@@ -36,18 +36,17 @@ public class FacetedNavigationConfig {
 	 */
 	public List<String> getMetadataFieldsUsed() {
 		ArrayList<String> out = new ArrayList<String>();
-		if (facets != null) {
-			for (Facet facet: facets) {
-				if (facet.getCategoryTypes() != null) {
-					for (CategoryType ct: facet.getCategoryTypes()) {
-						if (ct != null && ct instanceof MetadataBasedType) {
-							out.add(((MetadataBasedType) ct).getMetadataClass());
+		if (facetDefinitions != null) {
+			for (FacetDefinition facet: facetDefinitions) {
+				if (facet.getCategoryDefinitions() != null) {
+					for (CategoryDefinition ct: facet.getCategoryDefinitions()) {
+						if (ct != null && ct instanceof MetadataBasedCategory) {
+							out.add(((MetadataBasedCategory) ct).getMetadataClass());
 						}
 					}
 				}
 			}
 		}
-		
 		return out;
 	}
 		
