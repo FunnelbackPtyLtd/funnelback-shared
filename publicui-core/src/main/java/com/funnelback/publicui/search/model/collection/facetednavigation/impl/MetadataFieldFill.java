@@ -11,7 +11,7 @@ import lombok.SneakyThrows;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
@@ -21,8 +21,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 public class MetadataFieldFill extends CategoryDefinition implements MetadataBasedCategory {
 
 	@Override
-	public List<Category> computeValues(final ResultPacket rp) {
-		List<Category> categories = new ArrayList<Category>();
+	public List<CategoryValue> computeValues(final ResultPacket rp) {
+		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		
 		// For each metadata count <rmc item="a:new south wales">42</rmc>
 		for (Entry<String, Integer> entry : rp.getRmcs().entrySet()) {
@@ -30,7 +30,7 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 			int count = entry.getValue();
 			MetadataAndValue mdv = parseMetadata(item);
 			if (this.data.equals(mdv.metadata)) {
-				categories.add(new Category(
+				categories.add(new CategoryValue(
 						mdv.value,
 						mdv.value,
 						count,

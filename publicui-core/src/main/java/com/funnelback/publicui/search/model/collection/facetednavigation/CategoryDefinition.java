@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 
 /**
  * Category definition (metadata field fill, url fill, xpath fill ...).
@@ -48,7 +48,7 @@ public abstract class CategoryDefinition {
 	@Getter private final List<CategoryDefinition> subCategories = new ArrayList<CategoryDefinition>();
 	
 	/**
-	 * Generate a list of corresponding {@link Category} by applying
+	 * Generate a list of corresponding {@link CategoryValue} by applying
 	 * this category type rule over a {@link ResultPacket}.
 	 * 
 	 * Used to generate "displayable" categories values on the UI
@@ -60,7 +60,7 @@ public abstract class CategoryDefinition {
 	 * 
 	 * @param rp
 	 */
-	public abstract List<Category> computeValues(final ResultPacket rp);
+	public abstract List<CategoryValue> computeValues(final ResultPacket rp);
 	
 	/**
 	 * @return the name of the query string parameter used

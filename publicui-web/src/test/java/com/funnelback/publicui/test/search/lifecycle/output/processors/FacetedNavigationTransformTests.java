@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigat
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryType;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -44,12 +44,12 @@ public class FacetedNavigationTransformTests {
 	
 	@Before
 	public void before() {
-		CategoryType ct = new CategoryType("Category Type");
-		ct.getCategories().add(new Facet.Category("value1", "category1", 5, "a=b"));
-		ct.getCategories().add(new Facet.Category("value2", "category2", 10, "c=d"));
+		Category ct = new Category("Category Type");
+		ct.getValues().add(new Facet.CategoryValue("value1", "category1", 5, "a=b"));
+		ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d"));
 		
 		Facet f = new Facet("Test Facet");
-		f.getCategoryTypes().add(ct);
+		f.getCategories().add(ct);
 		
 		SearchResponse sr = new SearchResponse();
 		sr.getFacets().add(f);
@@ -106,7 +106,7 @@ public class FacetedNavigationTransformTests {
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet (Groovy)", st.getResponse().getFacets().get(0).getName());
-		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategoryTypes().get(0).getLabel());
+		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategories().get(0).getLabel());
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class FacetedNavigationTransformTests {
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
-		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategoryTypes().get(0).getLabel());
+		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategories().get(0).getLabel());
 	}
 
 	@Test
@@ -128,7 +128,7 @@ public class FacetedNavigationTransformTests {
 
 		Assert.assertEquals(1, st.getResponse().getFacets().size());
 		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
-		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategoryTypes().get(0).getLabel());	
+		Assert.assertEquals("Category Type", st.getResponse().getFacets().get(0).getCategories().get(0).getLabel());	
 	}
 	
 }

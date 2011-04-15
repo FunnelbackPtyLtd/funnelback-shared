@@ -11,7 +11,7 @@ import lombok.SneakyThrows;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
@@ -29,8 +29,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 	private static final String MD = "v";
 	
 	@Override
-	public List<Category> computeValues(final ResultPacket rp) {
-		List<Category> categories = new ArrayList<Category>();
+	public List<CategoryValue> computeValues(final ResultPacket rp) {
+		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		
 		// Strip 'http://' prefixes as PADRE strips them.
 		String url = data.replaceFirst("^http://", "");
@@ -39,7 +39,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 			int count = entry.getValue();
 			if (item.startsWith(url)) {
 				item = item.substring(url.length());
-				categories.add(new Category(
+				categories.add(new CategoryValue(
 						item,
 						item,
 						count,

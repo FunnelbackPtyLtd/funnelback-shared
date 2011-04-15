@@ -9,7 +9,7 @@ import lombok.Setter;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
@@ -22,10 +22,10 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 	@Getter @Setter private int userSetGScope;
 	
 	@Override
-	public List<Category> computeValues(final ResultPacket rp) {
-		List<Category> categories = new ArrayList<Category>();
+	public List<CategoryValue> computeValues(final ResultPacket rp) {
+		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		if (rp.getGScopeCounts().get(userSetGScope) != null) {
-			categories.add(new Category(
+			categories.add(new CategoryValue(
 					Integer.toString(userSetGScope),
 					data,
 					rp.getGScopeCounts().get(userSetGScope),
