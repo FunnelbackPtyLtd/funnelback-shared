@@ -1,12 +1,8 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-
-import lombok.SneakyThrows;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
@@ -56,11 +52,9 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 	}
 
 	@Override
-	@SneakyThrows(UnsupportedEncodingException.class)
 	public String getQueryConstraint(String value) {
-		return data + ":\""+ URLEncoder.encode(
-				MetadataBasedCategory.INDEX_FIED_BOUNDARY + " "
+		return data + ":\""+ MetadataBasedCategory.INDEX_FIED_BOUNDARY + " "
 				+ value + " "
-				+ MetadataBasedCategory.INDEX_FIED_BOUNDARY, "UTF-8") + "\"";
+				+ MetadataBasedCategory.INDEX_FIED_BOUNDARY + "\"";
 	}
 }

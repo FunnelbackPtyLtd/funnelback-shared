@@ -84,7 +84,7 @@ public class SearchController {
 	@RequestMapping(params={RequestParameters.COLLECTION})
 	public ModelAndView search(
 			HttpServletRequest request,
-			@ModelAttribute SearchQuestion question) {
+			SearchQuestion question) {
 				
 		SearchTransaction transaction = null;
 		

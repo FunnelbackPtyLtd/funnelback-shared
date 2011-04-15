@@ -3,8 +3,6 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -90,13 +90,13 @@ public class FacetedNavigation implements InputProcessor {
 								CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, extraParam);
 								
 								if (ct != null) {
-									List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategories().get(ct.getQueryStringParamName());
+									List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategoryValues().get(ct.getQueryStringParamName());
 									if (selectedCategoriesValues == null) {
 										selectedCategoriesValues = new ArrayList<String>();
 									}
 									// Put this category in the list of the selected ones
 									selectedCategoriesValues.add(value);
-									searchTransaction.getQuestion().getSelectedCategories().put(ct.getQueryStringParamName(), selectedCategoriesValues);
+									searchTransaction.getQuestion().getSelectedCategoryValues().put(ct.getQueryStringParamName(), selectedCategoriesValues);
 									
 									// Add constraints for this category
 									if (ct instanceof GScopeBasedCategory) {

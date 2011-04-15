@@ -41,6 +41,11 @@ public class Facet {
 		@Getter @Setter private String label;
 		
 		/**
+		 * Name of the query string parameter for this category
+		 */
+		@Getter @Setter private String queryStringParamName;
+		
+		/**
 		 * Values for this category. Either a single one for
 		 * item type {@link CategoryDefinition} or multiple for
 		 * fill type {@link CategoryDefinition}.
@@ -52,8 +57,9 @@ public class Facet {
 		 */
 		@Getter private final List<Category> categories = new ArrayList<Category>();
 		
-		public Category(String label) {
+		public Category(String label, String queryStringParamName) {
 			this.label = label;
+			this.queryStringParamName = queryStringParamName;
 		}
 	}
 	

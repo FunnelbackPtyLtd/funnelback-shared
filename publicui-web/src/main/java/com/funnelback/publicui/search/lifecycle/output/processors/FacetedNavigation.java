@@ -61,12 +61,12 @@ public class FacetedNavigation implements OutputProcessor {
 		log.trace("Filling category '" + cDef + "'");
 		
 		// Fill the values for this category
-		Category category = new Category(cDef.getLabel());
+		Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
 		category.getValues().addAll(cDef.computeValues(searchTransaction.getResponse().getResultPacket()));
 		Collections.sort(category.getValues(), new CategoryValue.ByCountComparator(true));
 	
 		// Find out if this category is currently selected
-		if (searchTransaction.getQuestion().getSelectedCategories().containsKey(cDef.getQueryStringParamName())) {
+		if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(cDef.getQueryStringParamName())) {
 			// Something has been selected (f.FacetName|extraparm=value)
 			String[] paramName = cDef.getQueryStringParamName().split("\\" + CategoryDefinition.QS_PARAM_SEPARATOR);
 			
@@ -79,8 +79,8 @@ public class FacetedNavigation implements OutputProcessor {
 			}
 			log.trace("Category has been selected. Extra param is '" + extraParam + "'");
 			
-			// Find out selected category(ies)
-			List<String> selectedValues = searchTransaction.getQuestion().getSelectedCategories().get(cDef.getQueryStringParamName());
+			// Find out if a value for this category matches the selection
+			List<String> selectedValues = searchTransaction.getQuestion().getSelectedCategoryValues().get(cDef.getQueryStringParamName());
 			boolean valueMatches = CollectionUtils.exists(selectedValues, new Predicate() {
 				@Override
 				public boolean evaluate(Object o) {

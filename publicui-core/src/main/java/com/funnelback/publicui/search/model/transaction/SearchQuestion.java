@@ -86,7 +86,7 @@ public class SearchQuestion {
 	/**
 	 * Selected facets categories
 	 */
-	@Getter final private Map<String, List<String>> selectedCategories = new HashMap<String, List<String>>();
+	@Getter final private Map<String, List<String>> selectedCategoryValues = new HashMap<String, List<String>>();
 	
 	/**
 	 * Whether the request is impersonated

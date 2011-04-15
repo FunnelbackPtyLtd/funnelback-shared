@@ -44,7 +44,7 @@ public class FacetedNavigationTransformTests {
 	
 	@Before
 	public void before() {
-		Category ct = new Category("Category Type");
+		Category ct = new Category("Category Type", "");
 		ct.getValues().add(new Facet.CategoryValue("value1", "category1", 5, "a=b"));
 		ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d"));
 		
