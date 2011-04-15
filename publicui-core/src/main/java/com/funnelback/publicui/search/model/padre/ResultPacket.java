@@ -107,6 +107,8 @@ public class ResultPacket {
 	 */
 	public static final class Schema {
 		
+		public static final String PADRE_RESULT_PACKET = "PADRE_result_packet";
+		
 		public static final String BEST_BETS = "best_bets";
 		public static final String RESULTS = "results";
 		

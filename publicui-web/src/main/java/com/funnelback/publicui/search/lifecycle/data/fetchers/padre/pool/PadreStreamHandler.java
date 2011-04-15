@@ -11,8 +11,6 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 
-import com.funnelback.publicui.search.model.padre.Details;
-
 /**
  * Handles process streams for a resident PADRE instance.
  */
@@ -24,17 +22,6 @@ public class PadreStreamHandler implements ExecuteStreamHandler {
 	private InputStream processOutputStream;
 	
 	@Getter private BufferedReader outputStreamReader;
-	
-	/**
-	 * Header read when PADRE starts (Collection details)
-	 */
-	@Getter private String header;
-	
-	/**
-	 * Whenever the underlying PADRE instance is ready to be used.
-	 * This is false until the PADRE header has been read.
-	 */
-	private boolean ready = false;
 	
 	@Override
 	public void setProcessErrorStream(InputStream es) throws IOException {
@@ -53,22 +40,7 @@ public class PadreStreamHandler implements ExecuteStreamHandler {
 	}
 
 	@Override
-	public void start() throws IOException {
-		// Read the beginning of the packet (<details> tag)
-		log.debug("Starting stream handling");
-
-		String line = null;
-		StringBuffer out = new StringBuffer();
-		while ( (line = outputStreamReader.readLine()) != null) {
-			out.append(line).append("\n");
-			if (line.contains("</" + Details.Schema.DETAILS + ">")) {
-				break;
-			}
-		}
-		
-		header = out.toString();
-		ready = true;
-	}
+	public void start() throws IOException { }
 
 	@Override
 	public void stop() {
@@ -83,10 +55,6 @@ public class PadreStreamHandler implements ExecuteStreamHandler {
 			log.error("Unable to close streams", ioe);
 		}
 
-	}
-
-	public boolean isReady() {
-		return ready;
 	}
 	
 }

@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import lombok.extern.apachecommons.Log;
 
-import com.funnelback.common.padre.ResultPacket;
-import com.funnelback.common.utils.Wait;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreExecutor;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 
 /**
  * A pseudo connection to a resident PADRE binary.
@@ -37,15 +36,7 @@ public class PadreConnection {
 			throw new IllegalStateException("This connection is closed");
 		}
 		
-		final PadreStreamHandler handler = (PadreStreamHandler)executor.getStreamHandler();
-		new Wait() {
-			
-			@Override
-			public boolean until() {
-				return handler.isReady();
-			}
-		}.wait(1000, 1, "Readiness of PADRE stream handler");
-				
+		final PadreStreamHandler handler = (PadreStreamHandler)executor.getStreamHandler();				
 		handler.getProcessInputStream().write((cmd+"\n").getBytes());
 		handler.getProcessInputStream().flush();
 		
@@ -54,15 +45,12 @@ public class PadreConnection {
 		String line;
 		while ((line = handler.getOutputStreamReader().readLine()) != null) {
 			out.append(line);
-			if (line.contains("</" + com.funnelback.publicui.search.model.padre.ResultPacket.Schema.RESULTS + ">")) {
+			if (line.contains("</" + ResultPacket.Schema.PADRE_RESULT_PACKET + ">")) {
 				break;
 			}
 		}
 
-		return handler.getHeader()
-			+ out.toString()
-			+ "</" + ResultPacket.Schema.RESULT_PACKET + ">";
-
+		return out.toString();
 	}
 	
 	public void close() {
