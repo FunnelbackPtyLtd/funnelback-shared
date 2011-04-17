@@ -181,6 +181,8 @@ public class StaxStreamParserTests {
 		assertEquals("info-aus", first.getCollection());
 		assertEquals(0, first.getComponent().intValue());
 		assertEquals("http://www.immi.gov.au/e_visa/", first.getLiveUrl());
+		assertEquals("http://www.immi.gov.au/e_visa/", first.getDisplayUrl());
+		assertEquals("http://www.immi.gov.au/e_visa/", first.getIndexUrl());
 		assertEquals("A Maritime Crew <b>visa</b> is required by foreign crew of non-military ships visiting Australia. "
 				+ "... A Superyacht Crew <b>visa</b> is required by crew of Superyachts working in Australia.",
 				first.getSummary());
@@ -218,6 +220,8 @@ public class StaxStreamParserTests {
 		assertEquals("info-aus", last.getCollection());
 		assertEquals(0, last.getComponent().intValue());
 		assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getLiveUrl());
+		assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getDisplayUrl());
+		assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getIndexUrl());
 		assertEquals("Please wait to be connected to our operator. Please do not use the toll free number for <b>visa</b>"
 				+ " and immigration enquiries. ... Visas, migration and citizenship. The Embassy’s <b>Visa</b> &Migration"
 				+ " office processes <b>visa</b> applications from nationals and residents", last.getSummary());

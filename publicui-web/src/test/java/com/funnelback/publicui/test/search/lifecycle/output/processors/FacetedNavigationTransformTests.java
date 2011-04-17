@@ -94,7 +94,7 @@ public class FacetedNavigationTransformTests {
 				new Integer(0),
 				new Integer(0),
 				null,
-				null, null, null));
+				null, null, null, "liveUrl"));
 		response.setResultPacket(rp);
 		processor.processOutput(new SearchTransaction(null, response));
 	}

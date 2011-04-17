@@ -69,7 +69,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			.append("rank=").append(r.getRank().toString())
 			.append("&").append(RequestParameters.COLLECTION).append("=").append(r.getCollection())
 			.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
-			.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
+			.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
 			.append("&").append(RequestParameters.Click.AUTH).append("=").append(getAuth(r.getLiveUrl(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)))
 			.append("&").append(RequestParameters.QUERY).append("=").append(question.getQuery());
 		

@@ -43,9 +43,14 @@ public class Result implements ResultType {
 	
 	/** By default filled with liveUrl, but will be updated at a later stage */
 	@Getter @Setter private String displayUrl;
-	
+		
 	/** Filled at a later stage */
 	@Getter @Setter private String clickTrackingUrl;
+
+	/**
+	 * Original URL from the index, taken from indexUrl before any transformation.
+	 */
+	@Getter final private String indexUrl;
 
 	/**
 	 * Represents XML Schema
