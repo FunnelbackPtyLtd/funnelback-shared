@@ -7,9 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.web.views.freemarker.TagifyMethod;
-
 import freemarker.template.SimpleScalar;
+import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -72,5 +71,21 @@ public abstract class AbstractMethodTest {
 			out.add(new SimpleScalar(s));
 		}
 		return out;
+	}
+	
+	public static SimpleSequence buildSequenceStringArguments(String... str) {
+		SimpleSequence out = new SimpleSequence();
+		for (String s: str) {
+			out.add(s);
+		}
+		return out;
+	}
+	
+	public static List<TemplateModel> buildArguments(TemplateModel... templateModel) {
+		List<TemplateModel> out = new ArrayList<TemplateModel>();
+		for (TemplateModel tm: templateModel) {
+			out.add(tm);
+		}
+		return out;		
 	}
 }

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,18 +23,28 @@ public class RemoveQSParamMethod implements TemplateMethodModel, TemplateMethodM
 	@Override
 	public Object exec(List arguments) throws TemplateModelException {
 		if (arguments.size() != 2) {
-			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The query string and the parameter names"));
+			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The query string and the parameter name(s)"));
 		}
 		
 		String qs = ((SimpleScalar) arguments.get(0)).getAsString();
-		List<String> paramNames = ((SimpleSequence) arguments.get(1)).toList();
+		List<String> paramNames;
+		try {
+			// Try with a list
+			paramNames = ((SimpleSequence) arguments.get(1)).toList();
+		} catch (ClassCastException cce) {
+			// Fall back to a single string
+			paramNames = new ArrayList<String>();
+			paramNames.add( ((SimpleScalar) arguments.get(1)).getAsString());
+		}
 		
 		for (String paramName: paramNames) {
 			Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");
 			Matcher m = p.matcher(qs);
 			qs = m.replaceAll("");			
 		}
-		return qs;
+		
+		// If the tansformed query string starts with a "&", strip it
+		return qs.replaceAll("^&(amp;)?", "");
 
 	}
 
