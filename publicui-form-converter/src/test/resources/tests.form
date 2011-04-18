@@ -1,3 +1,6 @@
+<head>
+</head>
+
 <s:TierBarBestBets>Best bets:</s:TierBarBestBets>
 <s:BestBets>Best bets content</s:BestBets>
 
@@ -21,3 +24,20 @@
 <s:rss>button</s:rss>
 
 <s:FormChoice></s:FormChoice>
+
+<s:FacetedSearch>
+<div id="fb-facets">
+<s:Facet class="facet-class">
+	<s:DefaultMaximumDisplayedCategoriesPerFacet>5</s:DefaultMaximumDisplayedCategoriesPerFacet>
+	<s:AbsoluteMaximumDisplayedCategoriesPerFacet>10</s:AbsoluteMaximumDisplayedCategoriesPerFacet>
+	<h3><s:FacetLabel></s:FacetLabel></h3>
+	<s:Category sortBy="dummy" class="category-class">
+		<s:CategoryName></s:CategoryName>&nbsp;<span class="fb-facet-count">(<s:CategoryCount></s:CategoryCount>)</span>
+	</s:Category>
+	<s:Category>
+		<s:CategoryName></s:CategoryName>&nbsp;<span class="fb-facet-count">(<s:CategoryCount></s:CategoryCount>)</span>
+	</s:Category>
+	<s:MoreOrLessCategories class="moreless-class"></s:MoreOrLessCategories>
+</s:Facet>
+</div>
+</s:FacetedSearch>

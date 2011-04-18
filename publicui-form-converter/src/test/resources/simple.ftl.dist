@@ -66,6 +66,36 @@
 			}
 		};
 	</script>
+
+	<script type="text/javascript">
+		// Number of categories to display
+		var displayedCategories = 8;
+	
+		jQuery(document).ready(function() {
+		    jQuery('div.facet').each( function() {
+		        jQuery(this).children('div.fb-facet-count:gt('+(displayedCategories-1)+')').css('display', 'none');
+		    });
+		
+		    jQuery('.moreOrLessCategories>a').each( function() {
+		        var nbCategories = jQuery(this).parent().parent().children('div.fb-facet-count').size();
+		        if ( nbCategories <= displayedCategories ) {
+		            jQuery(this).css('display', 'none');
+		        } else {
+		            jQuery(this).css('display', 'inline');
+		            jQuery(this).click( function() {
+		                if (jQuery(this).text().indexOf('more...') < 0) {
+		                    jQuery(this).parent().parent().children('div.fb-facet-count:gt('+(displayedCategories-1)+')').css('display', 'none');
+		                    jQuery(this).text('more...');
+		                } else {
+		                    jQuery(this).parent().parent().children('div.fb-facet-count').css('display', 'block');
+		                    jQuery(this).text('less...');
+		                }
+		            });
+		        }
+		    });
+		});
+	</script>
+
 </head>
 <body>
 
@@ -352,7 +382,7 @@
 			<@s.Category>
 				<@s.CategoryName></@s.CategoryName>&nbsp;<span class="fb-facet-count">(<@s.CategoryCount></@s.CategoryCount>)</span>
 			</@s.Category>
-			<s:MoreOrLessCategories></s:MoreOrLessCategories>
+			<@s.MoreOrLessCategories></@s.MoreOrLessCategories>
 		</@s.Facet>
 		</div>
 		</@s.FacetedSearch>

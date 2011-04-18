@@ -1,6 +1,39 @@
 <#ftl encoding="utf-8" />
 <#import "/share/freemarker/funnelback_legacy.ftl" as s/>
 
+<head>
+
+	<script type="text/javascript">
+		// Number of categories to display
+		var displayedCategories = 5;
+	
+		jQuery(document).ready(function() {
+		    jQuery('div.facet-class').each( function() {
+		        jQuery(this).children('div.category-class:gt('+(displayedCategories-1)+')').css('display', 'none');
+		    });
+		
+		    jQuery('.moreless-class>a').each( function() {
+		        var nbCategories = jQuery(this).parent().parent().children('div.category-class').size();
+		        if ( nbCategories <= displayedCategories ) {
+		            jQuery(this).css('display', 'none');
+		        } else {
+		            jQuery(this).css('display', 'inline');
+		            jQuery(this).click( function() {
+		                if (jQuery(this).text().indexOf('more...') < 0) {
+		                    jQuery(this).parent().parent().children('div.category-class:gt('+(displayedCategories-1)+')').css('display', 'none');
+		                    jQuery(this).text('more...');
+		                } else {
+		                    jQuery(this).parent().parent().children('div.category-class').css('display', 'block');
+		                    jQuery(this).text('less...');
+		                }
+		            });
+		        }
+		    });
+		});
+	</script>
+
+</head>
+
 
 <@s.BestBets>Best bets:Best bets content</@s.BestBets>
 
@@ -24,3 +57,20 @@
 <@s.rss>button</@s.rss>
 
 <@s.FormChoice></@s.FormChoice>
+
+<@s.FacetedSearch>
+<div id="fb-facets">
+<@s.Facet class="facet-class">
+	
+	
+	<h3><@s.FacetLabel></@s.FacetLabel></h3>
+	<@s.Category sortBy="dummy" class="category-class" max=10>
+		<@s.CategoryName></@s.CategoryName>&nbsp;<span class="fb-facet-count">(<@s.CategoryCount></@s.CategoryCount>)</span>
+	</@s.Category>
+	<@s.Category max=10>
+		<@s.CategoryName></@s.CategoryName>&nbsp;<span class="fb-facet-count">(<@s.CategoryCount></@s.CategoryCount>)</span>
+	</@s.Category>
+	<@s.MoreOrLessCategories></@s.MoreOrLessCategories>
+</@s.Facet>
+</div>
+</@s.FacetedSearch>
