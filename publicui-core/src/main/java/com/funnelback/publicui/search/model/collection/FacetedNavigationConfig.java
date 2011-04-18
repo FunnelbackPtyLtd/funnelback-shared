@@ -39,12 +39,29 @@ public class FacetedNavigationConfig {
 		if (facetDefinitions != null) {
 			for (FacetDefinition facet: facetDefinitions) {
 				if (facet.getCategoryDefinitions() != null) {
-					for (CategoryDefinition ct: facet.getCategoryDefinitions()) {
-						if (ct != null && ct instanceof MetadataBasedCategory) {
-							out.add(((MetadataBasedCategory) ct).getMetadataClass());
-						}
+					for (CategoryDefinition cd: facet.getCategoryDefinitions()) {
+						out.addAll(collectMetadataFields(cd));
 					}
 				}
+			}
+		}
+		return out;
+	}
+	
+	/**
+	 * Recursively collect the metadata classes used for a specific {@link CategoryDefinition}
+	 * @param definition
+	 * @return
+	 */
+	private static List<String> collectMetadataFields(CategoryDefinition definition) {
+		ArrayList<String> out = new ArrayList<String>();
+		
+		if (definition instanceof MetadataBasedCategory) {
+			out.add( ((MetadataBasedCategory)definition).getMetadataClass());
+		}
+		if (definition.getSubCategories() != null) {
+			for (CategoryDefinition subDefinition: definition.getSubCategories()) {
+				out.addAll(collectMetadataFields(subDefinition));
 			}
 		}
 		return out;

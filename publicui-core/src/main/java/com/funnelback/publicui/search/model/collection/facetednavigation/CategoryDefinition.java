@@ -1,7 +1,9 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,6 +48,19 @@ public abstract class CategoryDefinition {
 	
 	/** List of sub category definitions */
 	@Getter private final List<CategoryDefinition> subCategories = new ArrayList<CategoryDefinition>();
+	
+	/**
+	 * @return The list of query string parameter names used by this category definition
+	 * and all its sub-category definitions (Recursively)
+	 */
+	public Set<String> getAllQueryStringParamNames() {
+		HashSet<String> out = new HashSet<String>();
+		out.add(getQueryStringParamName());
+		for (CategoryDefinition subDefinition: subCategories) {
+			out.addAll(subDefinition.getAllQueryStringParamNames());
+		}
+		return out;
+	}
 	
 	/**
 	 * Generate a list of corresponding {@link CategoryValue} by applying

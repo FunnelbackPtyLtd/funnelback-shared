@@ -45,16 +45,16 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 					// Remove each query expression related to a facet config
 					for(String field: config.getMetadataFieldsUsed()) {
 						// delete phrases e.g. x:"a phrase"
-						q = q.replaceAll("|" + field + ":\".+?\"\\s?", "");
+						q = q.replaceAll("\\|" + field + ":\".+?\"\\s?", "");
 						
 						// delete single elements e.g. x:query
-						q = q.replaceAll("|" + field + ":[^\"]\\S*\\s?", "");
+						q = q.replaceAll("\\|" + field + ":[^\"]\\S*\\s?", "");
 					}
 				}
 			}
 			
-			log.debug("Cleaned query '" + searchTransaction.getResponse().getResultPacket().getQuery() + "' to '" + q + "'");
-			searchTransaction.getResponse().getResultPacket().setQueryCleaned(q);
+			log.debug("Cleaned query '" + searchTransaction.getResponse().getResultPacket().getQuery() + "' to '" + q.trim() + "'");
+			searchTransaction.getResponse().getResultPacket().setQueryCleaned(q.trim());
 			
 		}
 	}

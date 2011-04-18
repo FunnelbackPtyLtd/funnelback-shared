@@ -13,7 +13,7 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
 /**
- * FreeMarker method to change a query strung parameter.
+ * FreeMarker method to change a query string parameter.
  * Given a query string, a parameter name and a value it will
  * either add the parameter if it doesn't exist, or replace its existing
  * value with the new one.
@@ -39,7 +39,7 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 			newValue = ((SimpleNumber) arguments.get(2)).toString();
 		}
 		
-		Pattern p = Pattern.compile("([&;]|^)" + paramName + "=[^&]*");
+		Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");
 		Matcher m = p.matcher(qs);
 		if (m.find()) {
 			return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));

@@ -347,13 +347,13 @@
 		<!-- FACETED NAVIGATION -->
 		<@s.FacetedSearch>
 		<div id="fb-facets">
-		<s:Facet>
-			<h3><s:FacetLabel></s:FacetLabel></h3>
+		<@s.Facet>
+			<h3><@s.FacetLabel></@s.FacetLabel></h3>
 			<@s.Category>
 				<@s.CategoryName></@s.CategoryName>&nbsp;<span class="fb-facet-count">(<@s.CategoryCount></@s.CategoryCount>)</span>
 			</@s.Category>
 			<s:MoreOrLessCategories></s:MoreOrLessCategories>
-		</s:Facet>
+		</@s.Facet>
 		</div>
 		</@s.FacetedSearch>
 

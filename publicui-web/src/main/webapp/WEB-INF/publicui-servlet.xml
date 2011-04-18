@@ -57,6 +57,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod" />
 				</entry>
