@@ -87,3 +87,4 @@ TODO:
 
 * Form tags:
   * Implement CURRENT_DATE range in <Select> tag
+  * Implement FacetScope

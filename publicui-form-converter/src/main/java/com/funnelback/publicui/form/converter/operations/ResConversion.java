@@ -33,7 +33,7 @@ public class ResConversion implements Operation {
 		}
 		
 		// Special case for metadata classes
-		out = out.replaceAll("([>'\"])md_(\\w)([<'\"])", "$1metaData.$2$3");
+		out = out.replaceAll("([>'\"])md_(\\w)([<'\"])", "$1metaData.$2!$3");
 		
 		// Replace <s:Res> with FreeMarker model access tags ${}
 		out = out.replaceAll("<s:Res>([^<]*)</s:Res>", "\\${s.result.$1}");

@@ -74,3 +74,18 @@
 </@s.Facet>
 </div>
 </@s.FacetedSearch>
+
+<!-- Old old tags -->
+<@s.BestBets>Best bets:FP content</@s.BestBets>
+<@s.ContextualNavigation></@s.ContextualNavigation>
+${s.result.something}
+<#if s.result.something_else?exists>
+A multi
+line
+thing
+</#if>
+<#if ! s.result.something?exists>a single line</#if>
+<#if s.result.collection == "mycollection">A single line</#if>
+<#if s.result.collection != "mycollection">Multi
+line
+statement</#if>

@@ -1,7 +1,7 @@
 <head>
 </head>
 
-<s:TierBarBestBets>Best bets:</s:TierBarBestBets>
+<s:TierBarFeaturedPages>Best bets:</s:TierBarFeaturedPages>
 <s:BestBets>Best bets content</s:BestBets>
 
 <s:BoLdIcIzE bold="${abc}">Camel case boldicize</s:BoldiCIZE>
@@ -41,3 +41,18 @@
 </s:Facet>
 </div>
 </s:FacetedSearch>
+
+<!-- Old old tags -->
+<s:FeaturedPages>FP content</s:FeaturedPages>
+<s:Fluster></s:Fluster>
+res{something}
+resif{something_else}{
+A multi
+line
+thing
+}
+resifnot{something}{a single line}
+resifcollection{mycollection}{A single line}
+resifnotcollection{mycollection}{Multi
+line
+statement}
