@@ -6,10 +6,10 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Decodes HTML.
@@ -24,7 +24,7 @@ public class HTMLDecodeMethod implements TemplateMethodModel, TemplateMethodMode
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The string to decode."));
 		}
 		
-		String str = ((SimpleScalar) arguments.get(0)).getAsString();
+		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		
 		return HtmlUtils.htmlUnescape(str);
 	}

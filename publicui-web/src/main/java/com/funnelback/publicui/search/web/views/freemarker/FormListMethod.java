@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
-import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Returns the list of form files for a given collection and profile.
@@ -29,8 +29,8 @@ public class FormListMethod implements TemplateMethodModel, TemplateMethodModelE
 					+ "The collection ID and the profile ID"));
 		}
 		
-		String collectionId = ((SimpleScalar) arguments.get(0)).getAsString();
-		String profileId = ((SimpleScalar) arguments.get(1)).getAsString();
+		String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		String profileId = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		
 		return configRepository.getForms(collectionId, profileId);
 	}

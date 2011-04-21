@@ -12,6 +12,7 @@ import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Removes a set of parameters from a query string.
@@ -26,7 +27,7 @@ public class RemoveQSParamMethod implements TemplateMethodModel, TemplateMethodM
 			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The query string and the parameter name(s)"));
 		}
 		
-		String qs = ((SimpleScalar) arguments.get(0)).getAsString();
+		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		List<String> paramNames;
 		try {
 			// Try with a list

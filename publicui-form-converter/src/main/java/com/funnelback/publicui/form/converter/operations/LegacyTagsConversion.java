@@ -15,7 +15,8 @@ public class LegacyTagsConversion implements Operation {
 		"(?s)resif\\{(.*?)\\}\\{(.*?)\\}",
 		"(?s)resifnot\\{(.*?)\\}\\{(.*?)\\}",
 		"(?s)resifcollection\\{(.*?)\\}\\{(.*?)\\}",
-		"(?s)resifnotcollection\\{(.*?)\\}\\{(.*?)\\}"
+		"(?s)resifnotcollection\\{(.*?)\\}\\{(.*?)\\}",
+		"fluster\\{(.*?)\\}"
 	};
 	
 	private static final String[] TO = {
@@ -26,7 +27,8 @@ public class LegacyTagsConversion implements Operation {
 		"<s:ResIf name=\"$1\">$2</s:ResIf>",
 		"<s:ResIfNot name=\"$1\">$2</s:ResIfNot>",
 		"<s:ResIfCollection name=\"$1\">$2</s:ResIfCollection>",
-		"<s:ResIfNotCollection name=\"$1\">$2</s:ResIfNotCollection>"
+		"<s:ResIfNotCollection name=\"$1\">$2</s:ResIfNotCollection>",
+		"contextual_navigation{$1}"
 	};
 	
 	@Override

@@ -89,3 +89,4 @@ thing
 <#if s.result.collection != "mycollection">Multi
 line
 statement</#if>
+${s.cluster.href}

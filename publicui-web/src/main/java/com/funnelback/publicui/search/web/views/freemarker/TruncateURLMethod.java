@@ -7,13 +7,14 @@ import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Truncates an URL in a smart way: Break only on directory separators
@@ -37,8 +38,8 @@ public class TruncateURLMethod implements TemplateMethodModel, TemplateMethodMod
 			throw new TemplateModelException(I18n.i18n().tr("This method takes at least 2 arguments: The URL to truncate, and the length."));
 		}
 		
-		String str = ((SimpleScalar) arguments.get(0)).getAsString();
-		int length = ((SimpleNumber) arguments.get(1)).getAsNumber().intValue();
+		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		int length = ((TemplateNumberModel) arguments.get(1)).getAsNumber().intValue();
 
 		if (str.length() <= length) {
 			return arguments.get(0);

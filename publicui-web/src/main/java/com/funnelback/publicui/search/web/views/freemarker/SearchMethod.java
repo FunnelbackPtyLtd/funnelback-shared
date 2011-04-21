@@ -22,6 +22,7 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Performs an extra search.
@@ -47,8 +48,8 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 		}
 		
 		SearchTransaction st = (SearchTransaction) ((StringModel) arguments.get(0)).getWrappedObject();
-		String collectionId = ((SimpleScalar) arguments.get(1)).getAsString();
-		String query = ((SimpleScalar) arguments.get(2)).getAsString();
+		String collectionId = ((TemplateScalarModel) arguments.get(1)).getAsString();
+		String query = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		
 
 		Collection collection = configRepository.getCollection(collectionId);

@@ -12,10 +12,11 @@ import com.funnelback.publicui.i18n.I18n;
 
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleNumber;
-import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Parses a range expression (used to build <select>)
@@ -40,8 +41,8 @@ public class ParseRangeMethod implements TemplateMethodModel, TemplateMethodMode
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The range expression."));
 		}
 
-		HashMap<String, SimpleNumber> map = new HashMap<String, SimpleNumber>();
-		String range = ((SimpleScalar) arguments.get(0)).getAsString();
+		HashMap<String, TemplateNumberModel> map = new HashMap<String, TemplateNumberModel>();
+		String range = ((TemplateScalarModel) arguments.get(0)).getAsString();
 	
 		log.debug("Incoming range is '" + range + "'");
 		

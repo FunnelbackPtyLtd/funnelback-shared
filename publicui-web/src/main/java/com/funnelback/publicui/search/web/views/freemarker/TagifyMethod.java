@@ -11,6 +11,7 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Tagifies words in a given string
@@ -29,9 +30,9 @@ public class TagifyMethod implements TemplateMethodModel, TemplateMethodModelEx 
 					+ "the terms to boldicize, and the target string."));
 		}
 		
-		String tag = ((SimpleScalar) arguments.get(0)).getAsString();
-		String terms = ((SimpleScalar) arguments.get(1)).getAsString();
-		String content = ((SimpleScalar) arguments.get(2)).getAsString();
+		String tag = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		String terms = ((TemplateScalarModel) arguments.get(1)).getAsString();
+		String content = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		
 		// First throw away any operators
 		terms = OPERATORS_PATTERN.matcher(terms).replaceAll("");

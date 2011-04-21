@@ -56,3 +56,4 @@ resifcollection{mycollection}{A single line}
 resifnotcollection{mycollection}{Multi
 line
 statement}
+fluster{cluster_url}

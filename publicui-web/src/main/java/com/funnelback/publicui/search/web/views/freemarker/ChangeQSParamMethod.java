@@ -6,11 +6,12 @@ import java.util.regex.Pattern;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * FreeMarker method to change a query string parameter.
@@ -29,14 +30,14 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 			throw new TemplateModelException(I18n.i18n().tr("This function takes 3 arguments: The query string, the parameter name, and the new value"));
 		}
 		
-		String qs = ((SimpleScalar) arguments.get(0)).getAsString();
-		String paramName = ((SimpleScalar) arguments.get(1)).getAsString();
+		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		String paramName = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String newValue = "";
 		try {
-			newValue = ((SimpleScalar) arguments.get(2)).getAsString();
+			newValue = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		} catch (ClassCastException cce) {
 			// Sometimes the new value is passed as a number, not a String.
-			newValue = ((SimpleNumber) arguments.get(2)).toString();
+			newValue = ((TemplateNumberModel) arguments.get(2)).toString();
 		}
 		
 		Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");

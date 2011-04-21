@@ -5,12 +5,13 @@ import java.util.regex.Pattern;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Truncates a String to the right, or to the middle if the optional
@@ -31,8 +32,8 @@ public class TruncateMethod implements TemplateMethodModel, TemplateMethodModelE
 					);
 		}
 		
-		String str = ((SimpleScalar) arguments.get(0)).getAsString();
-		int length = ((SimpleNumber) arguments.get(1)).getAsNumber().intValue();
+		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		int length = ((TemplateNumberModel) arguments.get(1)).getAsNumber().intValue();
 		
 		if (str.length() <= length) {
 			return arguments.get(0);

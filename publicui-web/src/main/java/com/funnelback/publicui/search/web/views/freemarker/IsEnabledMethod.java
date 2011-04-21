@@ -9,6 +9,7 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * FreeMarker method to check if a configuration parameter is enabled.
@@ -24,7 +25,7 @@ public class IsEnabledMethod implements TemplateMethodModel, TemplateMethodModel
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The value to check for."));
 		}
 		
-		SimpleScalar arg = (SimpleScalar) arguments.get(0);
+		TemplateScalarModel arg = (TemplateScalarModel) arguments.get(0);
 		if (arg == null) {
 			return false;
 		} else {

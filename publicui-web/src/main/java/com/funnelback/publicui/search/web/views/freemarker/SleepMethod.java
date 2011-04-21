@@ -6,11 +6,11 @@ import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
 
 /**
  * Freemarker function that sleeps for some milliseconds.
@@ -28,7 +28,7 @@ public class SleepMethod implements TemplateMethodModel, TemplateMethodModelEx {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: Sleep delay (in ms)"));
 		}
 		
-		long delay = ((SimpleNumber) arguments.get(0)).getAsNumber().longValue();
+		long delay = ((TemplateNumberModel) arguments.get(0)).getAsNumber().longValue();
 		
 		try {
 			log.debug("Sleeping for " + delay + " ms...");
