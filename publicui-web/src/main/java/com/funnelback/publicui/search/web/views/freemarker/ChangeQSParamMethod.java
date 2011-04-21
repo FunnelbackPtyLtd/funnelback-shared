@@ -40,9 +40,13 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 			newValue = ((TemplateNumberModel) arguments.get(2)).toString();
 		}
 		
+		
 		Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");
 		Matcher m = p.matcher(qs);
 		if (m.find()) {
+			// Escape backreferences in value
+			newValue = newValue.replace("$", "\\$");
+
 			return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));
 		} else {
 			return new SimpleScalar(qs + "&amp;" + paramName + "=" + newValue);

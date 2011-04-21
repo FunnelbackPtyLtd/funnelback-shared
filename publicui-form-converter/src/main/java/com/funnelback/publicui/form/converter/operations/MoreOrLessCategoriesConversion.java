@@ -52,14 +52,14 @@ public class MoreOrLessCategoriesConversion implements Operation {
 
 			// Try to find a custom class name for the facets
 			String facetClassName = DEFAULT_FACET_CLASS_NAME;
-			Matcher mFacet = Pattern.compile("<.*?Facet.*?class=['\"](.*?)['\"].*?>").matcher(out);
+			Matcher mFacet = Pattern.compile("<.*?Facet[^>]*?class=['\"](.*?)['\"].*?>").matcher(out);
 			if (mFacet.find() && mFacet.group(1) != null) {
 				facetClassName = mFacet.group(1);
 			}
 
 			// Try to find a custom class name for the categories
 			String categoryClassName = DEFAULT_CATEGORY_CLASS_NAME;
-			Matcher mCategory = Pattern.compile("<.*?Category.*?class=['\"](.*?)['\"].*?>").matcher(out);
+			Matcher mCategory = Pattern.compile("<.*?Category[^>]*?class=['\"](.*?)['\"].*?>").matcher(out);
 			if (mCategory.find() && mCategory.group(1) != null) {
 				categoryClassName = mCategory.group(1);
 			}

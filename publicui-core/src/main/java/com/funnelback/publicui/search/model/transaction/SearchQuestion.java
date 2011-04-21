@@ -143,6 +143,7 @@ public class SearchQuestion {
 		}
 		
 		public static final String FACET_PREFIX = "f.";
+		public static final String FACET_SCOPE = "facetScope";
 		
 		public static class ContextualNavigation {
 			public static final String CN_CLICKED = "clicked_fluster";

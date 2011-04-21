@@ -20,6 +20,15 @@ public class QueryStringUtils {
 		}
 	}
 	
+	public static Map<String, String[]> toArrayMap(String qs, boolean startsWithQuestionMark) {
+		Map<String, List<String>> converted = toMap(qs, startsWithQuestionMark);
+		Map<String, String[]> out = new HashMap<String, String[]>();
+		for (String key : converted.keySet()) {
+			out.put(key, converted.get(key).toArray(new String[0]));
+		}
+		return out;
+	}
+	
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public static Map<String, List<String>> toMap(String qs) {
 		Map<String, List<String>> params = new HashMap<String, List<String>>();

@@ -49,6 +49,7 @@
 		<ref bean="passThroughParametersInputProcessor" />
 		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
 		<ref bean="userKeysInputProcessor" />
+		<ref bean="facetScopeInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
