@@ -96,7 +96,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 		.append(question.getCollection().getConfiguration().value(Keys.UI_CLICK_LINK)).append("?")
 		.append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
 		.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(bb.getLink(), "UTF-8"))
-		.append("&").append(RequestParameters.Click.AUTH).append("=").append(getAuth(bb.getLink(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)))
+		.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(getAuth(bb.getLink(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
 		.append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP);
 
 		if (question.getProfile() != null) {
