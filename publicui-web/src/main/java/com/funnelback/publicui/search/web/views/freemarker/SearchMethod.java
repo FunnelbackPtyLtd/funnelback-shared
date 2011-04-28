@@ -41,13 +41,13 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 	public Object exec(List arguments) throws TemplateModelException {
 		if (arguments.size() < 3 || arguments.size() > 4) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
-					+ "The original SearchTransaction, "
+					+ "The original SearchQuestion, "
 					+ "the collection to search, "
 					+ "and the query terms."
 					+ "A forth argument can be set to use a specific map as input parameters"));
 		}
 		
-		SearchTransaction st = (SearchTransaction) ((StringModel) arguments.get(0)).getWrappedObject();
+		SearchQuestion q = (SearchQuestion) ((StringModel) arguments.get(0)).getWrappedObject();
 		String collectionId = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String query = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		
@@ -60,9 +60,9 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 		log.debug("Searching '" + query + "' on collection '" + collectionId);
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(collection);
-		sq.setOriginalQuery(st.getQuestion().getOriginalQuery());
-		sq.setQuery(st.getQuestion().getOriginalQuery());
-		sq.setProfile(st.getQuestion().getProfile());
+		sq.setOriginalQuery(q.getOriginalQuery());
+		sq.setQuery(q.getOriginalQuery());
+		sq.setProfile(q.getProfile());
 
 		if (arguments.size() == 4) {
 			sq.getInputParameterMap().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));

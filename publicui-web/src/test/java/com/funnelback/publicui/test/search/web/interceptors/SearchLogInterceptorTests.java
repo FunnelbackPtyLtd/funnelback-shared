@@ -59,17 +59,17 @@ public class SearchLogInterceptorTests {
 		
 		// Empty search transaction
 		ModelAndView mav = new ModelAndView();
-		mav.addObject(SearchController.MODEL_KEY_SEARCH_TRANSACTION, new SearchTransaction(null, null));
+		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(null, null));
 		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
 		Assert.assertEquals(0, logService.getCnLogs().size());
 		
 		// Empty question & response
-		mav.addObject(SearchController.MODEL_KEY_SEARCH_TRANSACTION, new SearchTransaction(new SearchQuestion(), new SearchResponse()));
+		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(new SearchQuestion(), new SearchResponse()));
 		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
 		Assert.assertEquals(0, logService.getCnLogs().size());
 		
 		// No Clicked Clusters
-		((SearchTransaction) mav.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION)).getQuestion().setCollection(new Collection("dummy", null));
+		((SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString())).getQuestion().setCollection(new Collection("dummy", null));
 		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
 		Assert.assertEquals(0, logService.getCnLogs().size());
 	}
@@ -77,7 +77,7 @@ public class SearchLogInterceptorTests {
 	@Test
 	public void testContextualNavigationLog() throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject(SearchController.MODEL_KEY_SEARCH_TRANSACTION, st);
+		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), st);
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRemoteAddr("5.6.7.8");

@@ -57,20 +57,20 @@ public class CompareConversion implements Operation {
 			// Converts <s:Compare tags that contains <@s.cfg> tags
 			m = Pattern.compile("<s:Compare\\s+<@s.cfg>\\s*([^>]*)\\s*</@s.cfg>\\s+(==|!=)\\s+(\\d+)\\s*>(.*?)</s:Compare>", Pattern.MULTILINE | Pattern.DOTALL).matcher(out);
 			if (m.find()) {
-				out = m.replaceAll("<#if SearchTransaction.question.collection.configuration.value(\"$1\")?exists && SearchTransaction.question.collection.configuration.value(\"$1\") $2 $3>$4</#if>");
+				out = m.replaceAll("<#if input.collection.configuration.value(\"$1\")?exists && input.collection.configuration.value(\"$1\") $2 $3>$4</#if>");
 			}
 			m = Pattern.compile("<s:Compare\\s+<@s.cfg>\\s*([^>]*)\\s*</@s.cfg>\\s+(==|!=)\\s+([^>]+)\\s*>(.*?)</s:Compare>", Pattern.MULTILINE | Pattern.DOTALL).matcher(out);
 			if (m.find()) {
-				out = m.replaceAll("<#if SearchTransaction.question.collection.configuration.value(\"$1\")?exists && SearchTransaction.question.collection.configuration.value(\"$1\") $2 \"$3\">$4</#if>");
+				out = m.replaceAll("<#if input.collection.configuration.value(\"$1\")?exists && input.collection.configuration.value(\"$1\") $2 \"$3\">$4</#if>");
 			}
 
 			m = Pattern.compile("<s:Compare\\s+<@s.cfg>\\s*([^>]*)\\s*</@s.cfg>\\s+=~\\s+([^>]+)\\s*>(.*?)</s:Compare>", Pattern.MULTILINE | Pattern.DOTALL).matcher(out);
 			if (m.find()) {
-				out = m.replaceAll("<#if SearchTransaction.question.collection.configuration.value(\"$1\")?exists && SearchTransaction.question.collection.configuration.value(\"$1\")?matches(\"$2\", \"r\")>$3</#if>");
+				out = m.replaceAll("<#if input.collection.configuration.value(\"$1\")?exists && input.collection.configuration.value(\"$1\")?matches(\"$2\", \"r\")>$3</#if>");
 			}
 			m = Pattern.compile("<s:Compare\\s+<@s.cfg>\\s*([^>]*)\\s*</@s.cfg>\\s+!~\\s+([^>]+)\\s*>(.*?)</s:Compare>", Pattern.MULTILINE | Pattern.DOTALL).matcher(out);
 			if (m.find()) {
-				out = m.replaceAll("<#if SearchTransaction.question.collection.configuration.value(\"$1\")?exists && ! SearchTransaction.question.collection.configuration.value(\"$1\")?matches(\"$2\", \"r\")>$3</#if>");
+				out = m.replaceAll("<#if input.collection.configuration.value(\"$1\")?exists && ! input.collection.configuration.value(\"$1\")?matches(\"$2\", \"r\")>$3</#if>");
 			}
 
 

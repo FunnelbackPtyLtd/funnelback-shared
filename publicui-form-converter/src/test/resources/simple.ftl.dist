@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
 	<title>
-		<@s.AfterSearchOnly>${SearchTransaction.question.inputParameterMap["query"]!?first!}${SearchTransaction.question.inputParameterMap["query_prox"]!?first!}<@s.IfDefCGI name="query">,</@s.IfDefCGI></@s.AfterSearchOnly>
+		<@s.AfterSearchOnly>${input.inputParameterMap["query"]!?first!}${input.inputParameterMap["query_prox"]!?first!}<@s.IfDefCGI name="query">,</@s.IfDefCGI></@s.AfterSearchOnly>
         	<@s.cfg>service_name</@s.cfg>, Funnelback Search
 	</title>
 
@@ -32,7 +32,7 @@
                         'enabled'    : '<@s.cfg>query_completion</@s.cfg>',
                         'collection' : '<@s.cfg>collection</@s.cfg>',
                         'program'    : '<@s.cfg>query_completion.program</@s.cfg>',
-                        <#if SearchTransaction.question.collection.configuration.value("query_completion.source")?exists && SearchTransaction.question.collection.configuration.value("query_completion.source") != "internal">'source'     : 'external',</#if>
+                        <#if input.collection.configuration.value("query_completion.source")?exists && input.collection.configuration.value("query_completion.source") != "internal">'source'     : 'external',</#if>
                         'format'     : '<@s.cfg>query_completion.format</@s.cfg>',
                         'alpha'      : '<@s.cfg>query_completion.alpha</@s.cfg>',
                         'show'       : '<@s.cfg>query_completion.show</@s.cfg>',
@@ -116,13 +116,13 @@
 		<form action="" method="GET">
 			<div>
 			<label for="query" style="text-indent: -9999em;">Search</label>
-			<input name="query" id="query" type="text" value="${SearchTransaction.question.inputParameterMap["query"]!?first!}" accesskey="q">
+			<input name="query" id="query" type="text" value="${input.inputParameterMap["query"]!?first!}" accesskey="q">
 			<input type="submit" value="Search">
-			<input type="hidden" name="collection" value="${SearchTransaction.question.inputParameterMap["collection"]!?first!}">
-			<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${SearchTransaction.question.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${SearchTransaction.question.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${SearchTransaction.question.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${SearchTransaction.question.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
+			<input type="hidden" name="collection" value="${input.inputParameterMap["collection"]!?first!}">
+			<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${input.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${input.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${input.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${input.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
 			<@s.FacetScope>Within selected categories only</@s.FacetScope>
                         <@s.IfDefCGI name="from-advanced"><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="?fb-advanced=true&amp;${QueryString?html}" id="fb-advanced-view">view advanced search</a>]</span></@s.IfDefCGI>
 			</div>
@@ -134,37 +134,37 @@
 		<form action="" method="GET">
 			<div>
                         <input type="hidden" name="from-advanced" value="true">
-			<input type="hidden" name="collection" value="${SearchTransaction.question.inputParameterMap["collection"]!?first!}">
-			<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${SearchTransaction.question.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${SearchTransaction.question.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${SearchTransaction.question.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
-			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${SearchTransaction.question.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
+			<input type="hidden" name="collection" value="${input.inputParameterMap["collection"]!?first!}">
+			<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${input.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${input.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${input.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
+			<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${input.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
 
 			<label for="query-advanced" style="text-indent: -9999em;">Advanced Search</label>
-			<input name="query" id="query-advanced" type="text" value="${SearchTransaction.question.inputParameterMap["query"]!?first!}" accesskey="q">
+			<input name="query" id="query-advanced" type="text" value="${input.inputParameterMap["query"]!?first!}" accesskey="q">
 
 			<fieldset>
 				<legend>Results that have...</legend>
 				<span><label for="query_and">All the words</label>
-			        <input type="text" id="query_and" name="query_and" value="${SearchTransaction.question.inputParameterMap["query_and"]!?first!}"></span>
+			        <input type="text" id="query_and" name="query_and" value="${input.inputParameterMap["query_and"]!?first!}"></span>
 
 				<span><label for="query_phrase">The phrase</label>
-			        <input type="text" id="query_phrase" name="query_phrase" value="${SearchTransaction.question.inputParameterMap["query_phrase"]!?first!}"></span>
+			        <input type="text" id="query_phrase" name="query_phrase" value="${input.inputParameterMap["query_phrase"]!?first!}"></span>
 
 				<span><label for="query_not">None of the words</label>
-				<input type="text" id="query_not" name="query_not" value="${SearchTransaction.question.inputParameterMap["query_not"]!?first!}"></span>
+				<input type="text" id="query_not" name="query_not" value="${input.inputParameterMap["query_not"]!?first!}"></span>
 			</fieldset>
 
 			<fieldset>
 				<legend>With metadata of...</legend>
 				<span><label for="meta_t">Title</label>
-				<input type="text" id="meta_t" name="meta_t" value="${SearchTransaction.question.inputParameterMap["meta_t"]!?first!}"></span>
+				<input type="text" id="meta_t" name="meta_t" value="${input.inputParameterMap["meta_t"]!?first!}"></span>
 
 				<span><label for="meta_a">Author</label>
-				<input type="text" id="meta_a" name="meta_a" value="${SearchTransaction.question.inputParameterMap["meta_a"]!?first!}"></span>
+				<input type="text" id="meta_a" name="meta_a" value="${input.inputParameterMap["meta_a"]!?first!}"></span>
 
 				<span><label for="meta_s">Subject</label>
-				<input type="text" id="meta_s" name="meta_s" value="${SearchTransaction.question.inputParameterMap["meta_s"]!?first!}"></span>
+				<input type="text" id="meta_s" name="meta_s" value="${input.inputParameterMap["meta_s"]!?first!}"></span>
 
 
 			</fieldset>
@@ -182,7 +182,7 @@
 				<@s.Select name="meta_d2year" options=[""] range="CURRENT_YEAR - 20..CURRENT_YEAR + 1" /></span>
 
 				<span><label for="scope">Within (e.g. example.com)</label>
-				<input type="text" id="scope" name="scope" value="${SearchTransaction.question.inputParameterMap["scope"]!?first!}"></span>
+				<input type="text" id="scope" name="scope" value="${input.inputParameterMap["scope"]!?first!}"></span>
 			</fieldset>
 
 			<div>
@@ -210,29 +210,29 @@
 				<a href="?fb-advanced=true&amp;${QueryString?html}" id="fb-advanced-toggle">Advanced search</a>
 			</@s.IfNotDefCGI>
 			<@s.IfDefCGI name="fb-advanced">
-				<a href="?collection=${SearchTransaction.question.inputParameterMap["collection"]!?first!}&amp;form=${SearchTransaction.question.inputParameterMap["form"]!?first!}&amp;query=${SearchTransaction.question.inputParameterMap["query"]!?first!}" id="fb-advanced-toggle">Simple search</a>
+				<a href="?collection=${input.inputParameterMap["collection"]!?first!}&amp;form=${input.inputParameterMap["form"]!?first!}&amp;query=${input.inputParameterMap["query"]!?first!}" id="fb-advanced-toggle">Simple search</a>
 			</@s.IfDefCGI>
 
 			<span id="fb-help">| <a href="${SearchPrefix}help/simple_search.html">Help</a></span>
 		</span>
 
-		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
+		<#if output.resultPacket.resultsSummary.totalMatching == 0>
 			<span class="fb-result-count" id="fb-total-matching">0</span> search results for <strong><@s.QueryClean></@s.QueryClean></strong>
 		</#if>
-		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching != 0>
-			<span class="fb-result-count" id="fb-page-start">${SearchTransaction.response.resultPacket.resultsSummary.currStart}</span> -
-			<span class="fb-result-count" id="fb-page-end">${SearchTransaction.response.resultPacket.resultsSummary.currEnd}</span> of
-			<span class="fb-result-count" id="fb-total-matching">${SearchTransaction.response.resultPacket.resultsSummary.totalMatching?string.number}</span>
+		<#if output.resultPacket.resultsSummary.totalMatching != 0>
+			<span class="fb-result-count" id="fb-page-start">${output.resultPacket.resultsSummary.currStart}</span> -
+			<span class="fb-result-count" id="fb-page-end">${output.resultPacket.resultsSummary.currEnd}</span> of
+			<span class="fb-result-count" id="fb-total-matching">${output.resultPacket.resultsSummary.totalMatching?string.number}</span>
 			search results for <strong><@s.QueryClean></@s.QueryClean></strong>
 		</#if>
-		<#if SearchTransaction.response.resultPacket.resultsSummary.partiallyMatching != 0>
+		<#if output.resultPacket.resultsSummary.partiallyMatching != 0>
 			where
 			<span class="fb-result-count" id="fb-fully-matching">
-				${SearchTransaction.response.resultPacket.resultsSummary.fullyMatching?string.number}
+				${output.resultPacket.resultsSummary.fullyMatching?string.number}
 			</span>
 			match all words and
 			<span class="fb-result-count" id="fb-partially-matching">
-				${SearchTransaction.response.resultPacket.resultsSummary.partiallyMatching?string.number}
+				${output.resultPacket.resultsSummary.partiallyMatching?string.number}
 			</span>
 			match some words.
 		</#if>
@@ -246,8 +246,8 @@
 			<!-- SEARCH SCOPE -->
 			<@s.IfDefCGI name="scope">
 				<p id="fb-scope">
-					Search scope: <@s.Truncate length=80>${SearchTransaction.question.inputParameterMap["scope"]!?first!}</@s.Truncate>
-					(<a href="?collection=${SearchTransaction.question.inputParameterMap["collection"]!?first!}&amp;form=${SearchTransaction.question.inputParameterMap["form"]!?first!}&amp;query=<@s.URLEncode><@s.QueryClean></@s.QueryClean></@s.URLEncode>">Broaden search scope</a>)
+					Search scope: <@s.Truncate length=80>${input.inputParameterMap["scope"]!?first!}</@s.Truncate>
+					(<a href="?collection=${input.inputParameterMap["collection"]!?first!}&amp;form=${input.inputParameterMap["form"]!?first!}&amp;query=<@s.URLEncode><@s.QueryClean></@s.QueryClean></@s.URLEncode>">Broaden search scope</a>)
 				</p>
 			</@s.IfDefCGI>
 	 
@@ -264,8 +264,8 @@
 		<!-- FEATURED PAGES (BEST BETS) -->
 		<@s.BestBets>
 		<div class="fb-best-bet">
-			<#if s.bb.title?exists><h3><a href="${s.bb.clickTrackingUrl}"><@s.boldicize bold=SearchTransaction.response.resultPacket.query>${s.bb.title}</@s.boldicize></a></h3></#if>
-			<#if s.bb.description?exists><p><@s.boldicize bold=SearchTransaction.response.resultPacket.query>${s.bb.description}</@s.boldicize></p></#if>
+			<#if s.bb.title?exists><h3><a href="${s.bb.clickTrackingUrl}"><@s.boldicize bold=output.resultPacket.query>${s.bb.title}</@s.boldicize></a></h3></#if>
+			<#if s.bb.description?exists><p><@s.boldicize bold=output.resultPacket.query>${s.bb.description}</@s.boldicize></p></#if>
 			<#if s.bb.title?exists><p><cite>${s.bb.link}</cite></p></#if>
 			<#if ! s.bb.title?exists><p><strong>${s.bb.trigger}:</strong> <a href="${s.bb.link}">${s.bb.link}</a></#if>
 		</div>
@@ -334,18 +334,18 @@
 					<ul class="fb-quicklinks">
 						<@s.QuickRepeat><li><a href="${s.ql.url}" title="${s.ql.text}">${s.ql.text}</a></li></@s.QuickRepeat>
 					</ul>
-					<#if SearchTransaction.question.collection.configuration.value("quicklinks.domain_searchbox")?exists && SearchTransaction.question.collection.configuration.value("quicklinks.domain_searchbox") == "true">
+					<#if input.collection.configuration.value("quicklinks.domain_searchbox")?exists && input.collection.configuration.value("quicklinks.domain_searchbox") == "true">
 					    <#if s.result.quickLinks.domain?matches("^[^/]*/?[^/]*$ ", "r")>
 						<form class="fb-quicklinks-search" action="" method="GET">
 							<div>
 							<input name="query" type="text">
 							<input type="submit" value="Search ${s.result.quickLinks.domain}">
-							<input type="hidden" name="collection" value="${SearchTransaction.question.inputParameterMap["collection"]!?first!}">
+							<input type="hidden" name="collection" value="${input.inputParameterMap["collection"]!?first!}">
 							<input type="hidden" name="meta_u_sand" value="${s.result.quickLinks.domain}">
-							<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${SearchTransaction.question.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
-							<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${SearchTransaction.question.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
-							<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${SearchTransaction.question.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
-							<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${SearchTransaction.question.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
+							<@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${input.inputParameterMap["enc"]!?first!}"></@s.IfDefCGI>
+							<@s.IfDefCGI name="form"><input type="hidden" name="form" value="${input.inputParameterMap["form"]!?first!}"></@s.IfDefCGI>
+							<@s.IfDefCGI name="scope"><input type="hidden" name="scope" value="${input.inputParameterMap["scope"]!?first!}"></@s.IfDefCGI>
+							<@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${input.inputParameterMap["profile"]!?first!}"></@s.IfDefCGI>
 							</div>
 						</form>
 					    </#if>
@@ -357,11 +357,11 @@
 			</#if>
 			</@s.Results>
 
-		<#if SearchTransaction.response.resultPacket.resultsSummary.totalMatching == 0>
-			<li id="fb-no-results">Your search for <strong>${SearchTransaction.question.inputParameterMap["query"]!?first!}</strong> did not return any results. <span>Please ensure that you:</span>
+		<#if output.resultPacket.resultsSummary.totalMatching == 0>
+			<li id="fb-no-results">Your search for <strong>${input.inputParameterMap["query"]!?first!}</strong> did not return any results. <span>Please ensure that you:</span>
 				<ul>
 					<li>are not using any advanced search operators like + - | " etc.</li> 
-					<li>expect this document to exist within the <em><@s.cfg>service_name</@s.cfg></em><@s.IfDefCGI name="scope"> and within <em><@s.Truncate length=80>${SearchTransaction.question.inputParameterMap["scope"]!?first!}</@s.Truncate></em></@s.IfDefCGI></li>
+					<li>expect this document to exist within the <em><@s.cfg>service_name</@s.cfg></em><@s.IfDefCGI name="scope"> and within <em><@s.Truncate length=80>${input.inputParameterMap["scope"]!?first!}</@s.Truncate></em></@s.IfDefCGI></li>
 					<li>have permission to see any documents that may match your query</li>
 				</ul>
 			</li> 

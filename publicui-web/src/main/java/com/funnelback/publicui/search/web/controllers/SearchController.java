@@ -1,22 +1,18 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import lombok.Setter;
-
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,18 +32,27 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 
-import freemarker.core.ParseException;
-import freemarker.template.TemplateException;
-
 @Controller
-@RequestMapping({"/search", "/_/search"})
+@RequestMapping({"/search.*", "/_/search.*"})
 @lombok.extern.apachecommons.Log
 public class SearchController {
 
-	public static final String MODEL_KEY_SEARCH_TRANSACTION = SearchTransaction.class.getSimpleName();
-	public static final String MODEL_KEY_COLLECTION_LIST = "allCollections";
-	public static final String MODEL_KEY_QUERY_STRING = "QueryString";
-	public static final String MODEL_KEY_SEARCH_PREFIX = "SearchPrefix";
+	public enum ModelAttributes {
+		SearchTransaction, AllCollections, QueryString, SearchPrefix,
+		input, output, error;
+		
+		public static Set<String> getNames() {
+			HashSet<String> out = new HashSet<String>();
+			for (ModelAttributes name: values()) {
+				out.add(name.toString());
+			}
+			return out;
+		}
+	}
+	
+	private enum ViewTypes {
+		html, xml, json, legacy;
+	}
 
 	@Autowired
 	private SearchTransactionProcessor processor;
@@ -67,10 +72,10 @@ public class SearchController {
 	@RequestMapping(params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollection() {
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(MODEL_KEY_COLLECTION_LIST, configRepository.getAllCollections());
+		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
 		// FIXME: Hack for the XML view that serialize only one item from the model
-		model.put(MODEL_KEY_SEARCH_TRANSACTION, configRepository.getAllCollections());
+		model.put(ModelAttributes.SearchTransaction.toString(), configRepository.getAllCollections());
 
 		return new ModelAndView("no-collection", model);
 	}
@@ -105,9 +110,9 @@ public class SearchController {
 			return noCollection();
 		}
 
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(MODEL_KEY_SEARCH_TRANSACTION, transaction);
-		model.put(MODEL_KEY_QUERY_STRING, request.getQueryString());
+		// Put the relevant objects in the model, depending
+		// of the view requested
+		Map<String, Object> model = getModel(ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI())), request, transaction);
 
 		// Generate the view name, relative to the Funnelback home
 		String viewName = DefaultValues.FOLDER_CONF + "/"
@@ -183,5 +188,24 @@ public class SearchController {
 				question.getCnPreviousClusters().add(value);
 			}
 		}
-	}	
+	}
+	
+	private Map<String, Object> getModel(ViewTypes vt, HttpServletRequest request, SearchTransaction st) {
+		Map<String, Object> out = new HashMap<String, Object>();
+		switch (vt) {
+		case json:
+		case html:
+			out.put(ModelAttributes.input.toString(), st.getQuestion());
+			out.put(ModelAttributes.output.toString(), st.getResponse());
+			out.put(ModelAttributes.error.toString(), st.getError());
+			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
+			break;
+		case xml:
+		case legacy:
+		default:
+			out.put(ModelAttributes.SearchTransaction.toString(), st);
+		}
+		
+		return out;
+	}
 }

@@ -13,12 +13,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 
-@lombok.extern.apachecommons.Log
 public class SearchLogInterceptor implements HandlerInterceptor {
 	
 	@Autowired
@@ -33,32 +31,33 @@ public class SearchLogInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 		if (modelAndView != null) {
-			Object o = modelAndView.getModel().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+			SearchQuestion q = null;
+			Object o = modelAndView.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
+			
 			if (o != null && o instanceof SearchTransaction) {
 				SearchTransaction t = (SearchTransaction) o;
-				
-				if (t.hasQuestion() && t.getQuestion().getCnClickedCluster() != null
-						&& t.getQuestion().getCollection() != null) {
-					
-					ContextualNavigationLog cnl = new ContextualNavigationLog(
-							new Date(),
-							t.getQuestion().getCollection(),
-							t.getQuestion().getCollection().getProfiles().get(t.getQuestion().getProfile()),
-							t.getQuestion().getUserId(),
-							t.getQuestion().getCnClickedCluster(),
-							t.getQuestion().getCnPreviousClusters());
-					
-					logService.logContextualNavigation(cnl);
+				q = t.getQuestion();
+			} else {
+				// Try directly with the question
+				o = modelAndView.getModel().get(SearchController.ModelAttributes.input.toString());
+				if ( o != null && o instanceof SearchQuestion) {
+					q = (SearchQuestion) o;
 				}
 			}
-
-			SearchQuestion sq = (SearchQuestion) modelAndView.getModel().get("searchQuery");
-			if (sq != null) { log.debug(sq); }
-		
-			SearchResponse srs = (SearchResponse) modelAndView.getModel().get("searchResults");
-			if (srs != null) { log.debug(srs); }
+			
+			if (q != null && q.getCnClickedCluster() != null && q.getCollection() != null) {
+				
+				ContextualNavigationLog cnl = new ContextualNavigationLog(
+						new Date(),
+						q.getCollection(),
+						q.getCollection().getProfiles().get(q.getProfile()),
+						q.getUserId(),
+						q.getCnClickedCluster(),
+						q.getCnPreviousClusters());
+				
+				logService.logContextualNavigation(cnl);
+			}
 		}
-		
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.web.controllers.SearchController;
@@ -34,22 +35,25 @@ public class SearchStatsAspect {
 	
 	@AfterReturning(pointcut="searchMethod()",returning="mav")
 	public void adviceManual(ModelAndView mav) {
-		Object o = mav.getModelMap().get(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
-		if (o instanceof SearchTransaction) {
-			SearchTransaction st = (SearchTransaction) o;
-			if (SearchTransactionUtils.hasQueryAndCollection(st)) {
-				log.debug("*** Caught search on collection " + st.getQuestion().getCollection().getId());
-				
-				if (stats.get(st.getQuestion().getCollection().getId()) == null) {
-					stats.put(st.getQuestion().getCollection().getId(), (long) 1);
-				} else {
-					stats.put(st.getQuestion().getCollection().getId(), stats.get(st.getQuestion().getCollection().getId())+1);
-				}
+		SearchQuestion q = null;
+		Object o = mav.getModelMap().get(SearchController.ModelAttributes.SearchTransaction.toString());
+		if (o != null && o instanceof SearchTransaction) {
+			q = ((SearchTransaction) o).getQuestion();
+		} else {
+			// Try with the question directly
+			o = mav.getModelMap().get(SearchController.ModelAttributes.input.toString());
+			if (o != null && o instanceof SearchQuestion) {
+				q = (SearchQuestion) o;
+			}
+		}
+		
+		if (q != null && q.getCollection() != null) {
+			if (stats.get(q.getCollection().getId()) == null) {
+				stats.put(q.getCollection().getId(), (long) 1);
+			} else {
+				stats.put(q.getCollection().getId(), stats.get(q.getCollection().getId())+1);
 			}
 		}
 	}
-
-	
-
 	
 }

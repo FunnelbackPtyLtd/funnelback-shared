@@ -32,7 +32,7 @@ public class XSLTXStreamViewTests {
 	@Before
 	public void before() throws Exception {
 		view = new XSLTXStreamView(new ClassPathResource("funnelback-legacy.xsl"));
-		view.setModelKey(SearchController.MODEL_KEY_SEARCH_TRANSACTION);
+		view.setModelKey(SearchController.ModelAttributes.SearchTransaction.toString());
 		SearchXStreamMarshaller marshaller = new SearchXStreamMarshaller();
 		marshaller.afterPropertiesSet();	// Required to apply XStream customisation (calls customiseXStream())
 		view.setMarshaller(marshaller);
@@ -51,7 +51,7 @@ public class XSLTXStreamViewTests {
 		st.getResponse().setResultPacket(rp);
 		
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(SearchController.MODEL_KEY_SEARCH_TRANSACTION, st);
+		model.put(SearchController.ModelAttributes.SearchTransaction.toString(), st);
 		
 		view.render(model, request, response);
 		
