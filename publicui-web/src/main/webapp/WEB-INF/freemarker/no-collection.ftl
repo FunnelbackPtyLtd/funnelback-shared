@@ -35,7 +35,7 @@
 	<p>${allCollections?size} collections:</p>
 	
 	<ul>
-		<#list allCollections as oneCollection>
+		<#list AllCollections as oneCollection>
 			<li><a href="?collection=${oneCollection.id}">Search ${oneCollection.configuration.value("service_name")}</a></li>
 		</#list>
 	</ul>
