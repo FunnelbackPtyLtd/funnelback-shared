@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
- * Processes quick links output:
+ * Processes quick links response:
  * <ul>
  * <li>Restores 'http://' prefixes</li>
  * </ul>

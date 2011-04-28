@@ -13,7 +13,7 @@ import freemarker.template.TemplateScalarModel;
 
 /**
  * FreeMarker method to check if a configuration parameter is enabled.
- * Compares the input parameter to various String meaning "enabled".
+ * Compares the question parameter to various String meaning "enabled".
  */
 public class IsEnabledMethod implements TemplateMethodModel, TemplateMethodModelEx {
 

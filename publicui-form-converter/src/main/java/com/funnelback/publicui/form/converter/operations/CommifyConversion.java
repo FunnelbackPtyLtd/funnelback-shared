@@ -11,7 +11,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * Expects the tags to be in a semi-converted form already accessing
  * the FreeMarker data model:
  * 
- * <s:commify>${output...}</s:commify>
+ * <s:commify>${response...}</s:commify>
  *
  */
 @Log

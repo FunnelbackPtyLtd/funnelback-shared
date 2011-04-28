@@ -41,7 +41,7 @@ public class SearchStatsAspect {
 			q = ((SearchTransaction) o).getQuestion();
 		} else {
 			// Try with the question directly
-			o = mav.getModelMap().get(SearchController.ModelAttributes.input.toString());
+			o = mav.getModelMap().get(SearchController.ModelAttributes.question.toString());
 			if (o != null && o instanceof SearchQuestion) {
 				q = (SearchQuestion) o;
 			}

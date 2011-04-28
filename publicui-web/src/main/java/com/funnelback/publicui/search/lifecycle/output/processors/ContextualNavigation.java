@@ -16,7 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
 
 /**
- * Process PADRE contextual navigation output:
+ * Process PADRE contextual navigation response:
  * - Clears up "more_link"s to remove the hardcoded script name /search/padre-sw.cgi
  * 
  *

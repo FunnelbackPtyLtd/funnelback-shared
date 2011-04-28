@@ -44,7 +44,7 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 					+ "The original SearchQuestion, "
 					+ "the collection to search, "
 					+ "and the query terms."
-					+ "A forth argument can be set to use a specific map as input parameters"));
+					+ "A forth argument can be set to use a specific map as question parameters"));
 		}
 		
 		SearchQuestion q = (SearchQuestion) ((StringModel) arguments.get(0)).getWrappedObject();

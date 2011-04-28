@@ -141,7 +141,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 	 * @param env Template environment
 	 * @param url Remote URL
 	 * @param params Template params
-	 * @return The remote content, or null if there was a problem in the input parameters
+	 * @return The remote content, or null if there was a problem in the question parameters
 	 * @throws TemplateModelException
 	 * @throws IOException
 	 * @throws AuthenticationException

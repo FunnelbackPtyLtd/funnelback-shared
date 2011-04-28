@@ -46,9 +46,9 @@ public class PadreForkingPooled implements DataFetcher {
 			log.error("Unable to communicate with PADRE", ioe);
 			throw new DataFetchException(I18n.i18n().tr("Unable to communicate with PADRE"), ioe);
 		} catch (XmlParsingException xpe) {
-			log.error("Unable to parse PADRE output", xpe);
-			log.error("PADRE output was: \n" + padreOutput);
-			throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE output"), xpe);
+			log.error("Unable to parse PADRE response", xpe);
+			log.error("PADRE response was: \n" + padreOutput);
+			throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE response"), xpe);
 		} catch (Exception e) {
 			log.error("Unable get a PADRE connection", e);
 			throw new DataFetchException(I18n.i18n().tr("Unable get a PADRE connection"), e);			

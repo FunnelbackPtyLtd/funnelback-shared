@@ -11,7 +11,7 @@ import com.funnelback.publicui.form.converter.Operation;
 @Log
 public class ResultDataConversion implements Operation {
 
-	private static final String MODEL_PREFIX = "output.resultPacket";
+	private static final String MODEL_PREFIX = "response.resultPacket";
 	
 	private static final String[][] MAPPING = {
 		{"query", ".query"},

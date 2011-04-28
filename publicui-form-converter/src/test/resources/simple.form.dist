@@ -83,13 +83,13 @@
 		<form action="<s:env>SCRIPT_NAME</s:env>" method="GET">
 			<div>
 			<label for="query" style="text-indent: -9999em;">Search</label>
-			<input name="query" id="query" type="text" value="<s:cgi>query</s:cgi>" accesskey="q">
-			<input type="submit" value="Search">
-			<input type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
-			<s:IfDefCGI enc><input type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI form><input type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI scope><input type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI profile><input type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
+			<question name="query" id="query" type="text" value="<s:cgi>query</s:cgi>" accesskey="q">
+			<question type="submit" value="Search">
+			<question type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
+			<s:IfDefCGI enc><question type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI form><question type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI scope><question type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI profile><question type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
 			<s:FacetScope>Within selected categories only</s:FacetScope>
                         <s:IfDefCGI from-advanced><br /><span id="fb-advanced-note">Your search contained advanced operators [<a href="<s:env>SCRIPT_NAME</s:env>?fb-advanced=true&amp;<s:env>QUERY_STRING</s:env>" id="fb-advanced-view">view advanced search</a>]</span></s:IfDefCGI>
 			</div>
@@ -100,38 +100,38 @@
 	<div id="fb-advanced"<s:IfNotDefCGI fb-advanced> style="display: none;"</s:IfNotDefCGI>>
 		<form action="<s:env>SCRIPT_NAME</s:env>" method="GET">
 			<div>
-                        <input type="hidden" name="from-advanced" value="true">
-			<input type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
-			<s:IfDefCGI enc><input type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI form><input type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI scope><input type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
-			<s:IfDefCGI profile><input type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
+                        <question type="hidden" name="from-advanced" value="true">
+			<question type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
+			<s:IfDefCGI enc><question type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI form><question type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI scope><question type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
+			<s:IfDefCGI profile><question type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
 
 			<label for="query-advanced" style="text-indent: -9999em;">Advanced Search</label>
-			<input name="query" id="query-advanced" type="text" value="<s:cgi>query</s:cgi>" accesskey="q">
+			<question name="query" id="query-advanced" type="text" value="<s:cgi>query</s:cgi>" accesskey="q">
 
 			<fieldset>
 				<legend>Results that have...</legend>
 				<span><label for="query_and">All the words</label>
-			        <input type="text" id="query_and" name="query_and" value="<s:cgi>query_and</s:cgi>"></span>
+			        <question type="text" id="query_and" name="query_and" value="<s:cgi>query_and</s:cgi>"></span>
 
 				<span><label for="query_phrase">The phrase</label>
-			        <input type="text" id="query_phrase" name="query_phrase" value="<s:cgi>query_phrase</s:cgi>"></span>
+			        <question type="text" id="query_phrase" name="query_phrase" value="<s:cgi>query_phrase</s:cgi>"></span>
 
 				<span><label for="query_not">None of the words</label>
-				<input type="text" id="query_not" name="query_not" value="<s:cgi>query_not</s:cgi>"></span>
+				<question type="text" id="query_not" name="query_not" value="<s:cgi>query_not</s:cgi>"></span>
 			</fieldset>
 
 			<fieldset>
 				<legend>With metadata of...</legend>
 				<span><label for="meta_t">Title</label>
-				<input type="text" id="meta_t" name="meta_t" value="<s:cgi>meta_t</s:cgi>"></span>
+				<question type="text" id="meta_t" name="meta_t" value="<s:cgi>meta_t</s:cgi>"></span>
 
 				<span><label for="meta_a">Author</label>
-				<input type="text" id="meta_a" name="meta_a" value="<s:cgi>meta_a</s:cgi>"></span>
+				<question type="text" id="meta_a" name="meta_a" value="<s:cgi>meta_a</s:cgi>"></span>
 
 				<span><label for="meta_s">Subject</label>
-				<input type="text" id="meta_s" name="meta_s" value="<s:cgi>meta_s</s:cgi>"></span>
+				<question type="text" id="meta_s" name="meta_s" value="<s:cgi>meta_s</s:cgi>"></span>
 
 
 			</fieldset>
@@ -195,7 +195,7 @@
 				</s:Select></span>
 
 				<span><label for="scope">Within (e.g. example.com)</label>
-				<input type="text" id="scope" name="scope" value="<s:cgi>scope</s:cgi>"></span>
+				<question type="text" id="scope" name="scope" value="<s:cgi>scope</s:cgi>"></span>
 			</fieldset>
 
 			<div>
@@ -221,7 +221,7 @@
 				</s:Select></span>
 
 
-				<input type="submit" value="Search" id="fb-advanced-submit">
+				<question type="submit" value="Search" id="fb-advanced-submit">
 			</div>
 
 			</div>
@@ -358,14 +358,14 @@
 					    <s:Compare <s:ql>domain</s:ql> =~ ^[^/]*/?[^/]*$ >
 						<form class="fb-quicklinks-search" action="<s:env>SCRIPT_NAME</s:env>" method="GET">
 							<div>
-							<input name="query" type="text">
-							<input type="submit" value="Search <s:ql>domain</s:ql>">
-							<input type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
-							<input type="hidden" name="meta_u_sand" value="<s:ql>domain</s:ql>">
-							<s:IfDefCGI enc><input type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
-							<s:IfDefCGI form><input type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
-							<s:IfDefCGI scope><input type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
-							<s:IfDefCGI profile><input type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
+							<question name="query" type="text">
+							<question type="submit" value="Search <s:ql>domain</s:ql>">
+							<question type="hidden" name="collection" value="<s:cgi>collection</s:cgi>">
+							<question type="hidden" name="meta_u_sand" value="<s:ql>domain</s:ql>">
+							<s:IfDefCGI enc><question type="hidden" name="enc" value="<s:cgi>enc</s:cgi>"></s:IfDefCGI>
+							<s:IfDefCGI form><question type="hidden" name="form" value="<s:cgi>form</s:cgi>"></s:IfDefCGI>
+							<s:IfDefCGI scope><question type="hidden" name="scope" value="<s:cgi>scope</s:cgi>"></s:IfDefCGI>
+							<s:IfDefCGI profile><question type="hidden" name="profile" value="<s:cgi>profile</s:cgi>"></s:IfDefCGI>
 							</div>
 						</form>
 					    </s:Compare>

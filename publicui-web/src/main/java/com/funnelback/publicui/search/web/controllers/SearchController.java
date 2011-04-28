@@ -39,7 +39,7 @@ public class SearchController {
 
 	public enum ModelAttributes {
 		SearchTransaction, AllCollections, QueryString, SearchPrefix,
-		input, output, error;
+		question, response, error;
 		
 		public static Set<String> getNames() {
 			HashSet<String> out = new HashSet<String>();
@@ -195,8 +195,8 @@ public class SearchController {
 		switch (vt) {
 		case json:
 		case html:
-			out.put(ModelAttributes.input.toString(), st.getQuestion());
-			out.put(ModelAttributes.output.toString(), st.getResponse());
+			out.put(ModelAttributes.question.toString(), st.getQuestion());
+			out.put(ModelAttributes.response.toString(), st.getResponse());
 			out.put(ModelAttributes.error.toString(), st.getError());
 			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
 			break;

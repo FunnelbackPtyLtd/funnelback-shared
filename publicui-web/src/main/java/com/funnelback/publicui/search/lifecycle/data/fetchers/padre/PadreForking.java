@@ -97,11 +97,11 @@ public class PadreForking implements DataFetcher {
 				log.error("PADRE forking failed", pfe);
 				throw new DataFetchException(I18n.i18n().tr("PADRE forking failed"), pfe);	
 			} catch (XmlParsingException pxpe) {
-				log.error("Unable to parse PADRE output", pxpe);
+				log.error("Unable to parse PADRE response", pxpe);
 				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
-					log.error("PADRE output was: \n" + padreOutput.getOutput());
+					log.error("PADRE response was: \n" + padreOutput.getOutput());
 				}
-				throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE output"), pxpe);
+				throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE response"), pxpe);
 			}
 		}
 	}

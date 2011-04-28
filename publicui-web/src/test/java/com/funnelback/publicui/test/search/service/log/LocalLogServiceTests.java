@@ -29,7 +29,7 @@ public class LocalLogServiceTests {
 	private static final String COLLECTION_NAME = "log-service";
 	
 	private static final File TEST_OUT_ROOT = new File("target" + File.separator
-			+ "test-output" + File.separator + COLLECTION_NAME); 
+			+ "test-response" + File.separator + COLLECTION_NAME); 
 	
 	private static final File TEST_IN_ROOT = new File("src" + File.separator
 			+ "test" + File.separator + "resources" + File.separator + COLLECTION_NAME);

@@ -21,7 +21,7 @@ public class FixTagsAsArguments implements Operation {
 		
 		Matcher m = Pattern.compile(TAG_PATTERN_START + "<@s\\.cgi>(.*?)</@s\\.cgi>" + TAG_PATTERN_END, Pattern.CASE_INSENSITIVE).matcher(out);
 		if (m.find()) {
-			out = m.replaceAll("<$1 ${input.inputParameterMap[\"$2\"]} $2>");
+			out = m.replaceAll("<$1 ${question.inputParameterMap[\"$2\"]} $2>");
 		}
 		
 		return out;

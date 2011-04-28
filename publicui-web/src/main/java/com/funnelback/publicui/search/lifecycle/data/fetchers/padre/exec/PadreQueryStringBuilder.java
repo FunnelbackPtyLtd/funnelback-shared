@@ -57,7 +57,7 @@ public class PadreQueryStringBuilder {
 	}
 	
 	/**
-	 * Builds query expression from the various input parameters
+	 * Builds query expression from the various question parameters
 	 * @param transaction
 	 * @return
 	 */

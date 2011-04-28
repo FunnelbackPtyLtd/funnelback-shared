@@ -21,7 +21,7 @@ public interface PadreForker {
 	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException;
 	
 	/**
-	 * PADRE output: A return code, and the content.
+	 * PADRE response: A return code, and the content.
 	 */
 	@RequiredArgsConstructor
 	public class PadreExecutionReturn {

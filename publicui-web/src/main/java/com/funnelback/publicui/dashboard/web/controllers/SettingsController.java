@@ -68,11 +68,11 @@ public class SettingsController implements ApplicationContextAware {
 	
 	@RequestMapping("{type}/{index}/remove")
 	public String remove(@PathVariable String type, @PathVariable int index) {
-		if ("input".equals(type)) {
+		if ("question".equals(type)) {
 			inputFlow.remove(index);
 		} else if ("data".equals(type)) {
 			dataFetchers.remove(index);
-		} else if ("output".equals(type)) {
+		} else if ("response".equals(type)) {
 			outputFlow.remove(index);
 		}
 		log.debug("Removed item " + index + " from '" + type + "' list");
@@ -86,11 +86,11 @@ public class SettingsController implements ApplicationContextAware {
 		
 		try {
 			Object o = context.getBeanFactory().autowire(Class.forName(clazz), AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, true);
-			if ("input".equals(type)) {
+			if ("question".equals(type)) {
 				inputFlow.add(index, (InputProcessor) o);
 			} else if ("data".equals(type)) {
 				dataFetchers.add(index, (DataFetcher) o);
-			} else if ("output".equals(type)) {
+			} else if ("response".equals(type)) {
 				outputFlow.add(index, (OutputProcessor) o);
 			}
 		} catch (Exception ex) {

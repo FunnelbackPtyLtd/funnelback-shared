@@ -139,7 +139,7 @@ public class WindowsNativePadreForker implements PadreForker {
 		}
 		
 		if (log.isTraceEnabled()) {
-			log.trace("PADRE output is: '" + result + "'");
+			log.trace("PADRE response is: '" + result + "'");
 		}
 		return new PadreExecutionReturn(returnCode, result);
 	}

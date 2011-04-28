@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 public class ForkingGenerator implements ExploreQueryGenerator {
 
 	/**
-	 * We take advantage of knowing that the XML output has proper newline chars.  
+	 * We take advantage of knowing that the XML response has proper newline chars.  
 	 */
 	private static final Pattern PADRE_RF_XML_PATTERN = Pattern.compile("^query=(.*?)$", Pattern.DOTALL | Pattern.MULTILINE);
 	

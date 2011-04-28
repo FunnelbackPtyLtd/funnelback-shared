@@ -42,7 +42,7 @@ public class CacheController {
 		
 		String content = dataRepository.getCachedDocument(collection, doc);
 		if (content != null) {
-			// TODO For now output as text/plain
+			// TODO For now response as text/plain
 			response.setContentType("text/plain");
 			response.getWriter().write(content);
 		} else {

@@ -39,7 +39,7 @@ public class SearchLogInterceptor implements HandlerInterceptor {
 				q = t.getQuestion();
 			} else {
 				// Try directly with the question
-				o = modelAndView.getModel().get(SearchController.ModelAttributes.input.toString());
+				o = modelAndView.getModel().get(SearchController.ModelAttributes.question.toString());
 				if ( o != null && o instanceof SearchQuestion) {
 					q = (SearchQuestion) o;
 				}
