@@ -32,7 +32,7 @@
 	
 	<p>Welcome to the Funnelback search service.</p>
 
-	<p>${allCollections?size} collections:</p>
+	<p>${AllCollections?size} collections:</p>
 	
 	<ul>
 		<#list AllCollections as oneCollection>
