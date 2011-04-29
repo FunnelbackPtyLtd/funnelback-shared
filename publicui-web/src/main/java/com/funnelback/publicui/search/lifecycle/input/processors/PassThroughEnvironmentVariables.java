@@ -24,7 +24,7 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
 	// SITE_SEARCH_ROOT: Used for Matrix OEM
 	public enum Keys {
-		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER;
+		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER;
 	}
 
 
@@ -35,11 +35,9 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
 			HashMap<String, String> out = new HashMap<String, String>();
 			
-			setIfNotNull(out, Keys.REMOTE_ADDR.toString(), MapUtils.getString(params, Keys.REMOTE_ADDR.toString(), null));
-			setIfNotNull(out, Keys.REQUEST_URI.toString(), MapUtils.getString(params, Keys.REQUEST_URI.toString(), null));
-			setIfNotNull(out, Keys.AUTH_TYPE.toString(), MapUtils.getString(params, Keys.AUTH_TYPE.toString(), null));
-			setIfNotNull(out, Keys.HTTP_HOST.toString(), MapUtils.getString(params, Keys.HTTP_HOST.toString(), null));
-			setIfNotNull(out, Keys.REMOTE_USER.toString(), MapUtils.getString(params, Keys.REMOTE_USER.toString(), null));
+			for (Keys key: Keys.values()) {
+				setIfNotNull(out, key.toString(), MapUtils.getString(params, key.toString(), null));
+			}
 			
 			log.debug("Adding environment variables: " + out);
 			searchTransaction.getQuestion().getEnvironmentVariables().putAll(out);

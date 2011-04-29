@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -31,6 +32,10 @@ public class PadreQueryStringBuilder {
 		
 		// Add any other parameter
 		qs.putAll(transaction.getQuestion().getAdditionalParameters());
+		// Remove from query string any parameter that will be passed as an environment variable
+		for (String key : transaction.getQuestion().getEnvironmentVariables().keySet()) {
+			qs.remove(key);
+		}
 		
 		return toQueryString(qs);
 		

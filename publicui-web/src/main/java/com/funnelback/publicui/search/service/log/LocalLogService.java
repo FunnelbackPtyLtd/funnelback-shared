@@ -134,7 +134,6 @@ public class LocalLogService implements LogService {
 			for (; i>0; i--) {
 				targetFile.seek(i);
 				b = targetFile.readByte();
-				log.debug("Read '" + b + "'");
 				if (0x0a == b) {
 					break;
 				}

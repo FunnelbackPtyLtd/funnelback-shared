@@ -160,7 +160,7 @@ public class SearchController {
 		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
 
 		// Referer
-		MapUtils.putIfNotNull(question.getInputParameterMap(), "HTTP_REFERER", request.getHeader("Referer"));
+		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), request.getHeader("Referer"));
 				
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
