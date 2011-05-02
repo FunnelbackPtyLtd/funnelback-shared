@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import org.apache.commons.io.FileUtils;
@@ -97,7 +98,7 @@ public class FixCacheAndClickLinksTests {
 			Assert.assertTrue(trackingUrl.contains("collection=" + r.getCollection()));
 			Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
 			Assert.assertTrue(trackingUrl.contains("index_url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
-			Assert.assertTrue(trackingUrl.matches(".*auth=[a-zA-Z0-9+/]{22}.*"));
+			Assert.assertTrue(URLDecoder.decode(trackingUrl, "UTF-8").matches(".*auth=[a-zA-Z0-9+/]{22}.*"));
 			Assert.assertTrue(trackingUrl.contains("query=" + st.getQuestion().getQuery()));
 			Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
 			Assert.assertTrue(trackingUrl.contains("referer=REFERER"));
