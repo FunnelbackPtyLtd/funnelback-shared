@@ -15,7 +15,7 @@
 		    jQuery('.moreless-class>a').each( function() {
 		        var nbCategories = jQuery(this).parent().parent().children('div.category-class').size();
 		        if ( nbCategories <= displayedCategories ) {
-		            jQuery(this).css('display', 'none');
+		            jQuery(this).parent().css('display', 'none');
 		        } else {
 		            jQuery(this).css('display', 'inline');
 		            jQuery(this).click( function() {
