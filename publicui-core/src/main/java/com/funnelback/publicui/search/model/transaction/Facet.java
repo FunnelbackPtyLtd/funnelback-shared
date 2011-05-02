@@ -29,6 +29,19 @@ public class Facet {
 	}
 	
 	/**
+	 * Recursively check if this facet has any value at all
+	 * @return
+	 */
+	public boolean hasValues() {
+		for (Category category: categories) {
+			if (category.hasValues() ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Category of a facet.
 	 * Correspond to the <i>definition</i> of a category,
 	 * not the value itself.
@@ -60,6 +73,24 @@ public class Facet {
 		public Category(String label, String queryStringParamName) {
 			this.label = label;
 			this.queryStringParamName = queryStringParamName;
+		}
+		
+		/**
+		 * Recursively check if this category or any of its sub-categories
+		 * has values.
+		 * @return
+		 */
+		public boolean hasValues() {
+			if (values.size() > 0) {
+				return true;
+ 			} else {
+ 				for (Category subCategory: categories) {
+ 					if (subCategory.hasValues()) {
+ 						return true;
+ 					}
+ 				}
+ 				return false;
+ 			}
 		}
 	}
 	

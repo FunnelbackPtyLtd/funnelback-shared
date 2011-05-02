@@ -80,6 +80,8 @@ public class FacetedNavigation implements InputProcessor {
 						});
 						
 						if (f != null) {
+							searchTransaction.getQuestion().getSelectedFacets().add(f.getName());
+							
 							// Set of constraints for this specific facet
 							Set<String> gscope1FacetConstraints = new HashSet<String>();
 							Set<String> queryFacetConstraints = new HashSet<String>();

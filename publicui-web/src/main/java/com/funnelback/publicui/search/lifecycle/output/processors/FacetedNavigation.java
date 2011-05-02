@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import lombok.extern.apachecommons.Log;
 
@@ -37,7 +38,8 @@ public class FacetedNavigation implements OutputProcessor {
 			
 			if (config != null) {
 				for(FacetDefinition f: config.getFacetDefinitions()) {
-					Facet facet = new Facet(f.getName());
+					final Facet facet = new Facet(f.getName());
+					
 					for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
 						facet.getCategories().add(fillCategories(ct, searchTransaction));
 					}

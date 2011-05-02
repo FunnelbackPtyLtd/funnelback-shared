@@ -2,8 +2,10 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import lombok.AllArgsConstructor;
@@ -82,6 +84,11 @@ public class SearchQuestion {
 	 * User keys for early binding DLS
 	 */
 	@Getter final private List<String> userKeys = new ArrayList<String>();
+	
+	/**
+	 * Selected facets
+	 */
+	@Getter final private Set<String> selectedFacets = new HashSet<String>();
 	
 	/**
 	 * Selected facets categories

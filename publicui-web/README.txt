@@ -87,4 +87,6 @@ TODO:
 
 * Form tags:
   * Implement CURRENT_DATE range in <Select> tag
-  * Implement FacetScope
+
+* Automated testing: Switch to "BasicSecurityFilterProvider" on autotest VMs
+  * Check if impersonation is still working with basic (See previous point with LOGON_TYPE_NETWORK)
