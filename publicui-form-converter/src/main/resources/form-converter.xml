@@ -32,6 +32,7 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />
 		<bean class="com.funnelback.publicui.form.converter.operations.FixTagsAsArguments" />		
 		<bean class="com.funnelback.publicui.form.converter.operations.RemoveTagPlugin" />
+		<bean class="com.funnelback.publicui.form.converter.operations.FixQueryCompletion" />
 	</util:list>
 
 </beans>

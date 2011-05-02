@@ -31,7 +31,7 @@
                     jQuery("#query").fbcompletion({
                         'enabled'    : '<@s.cfg>query_completion</@s.cfg>',
                         'collection' : '<@s.cfg>collection</@s.cfg>',
-                        'program'    : '<@s.cfg>query_completion.program</@s.cfg>',
+                        'program'    : '${SearchPrefix}<@s.cfg>query_completion.program</@s.cfg>',
                         <#if question.collection.configuration.value("query_completion.source")?exists && question.collection.configuration.value("query_completion.source") != "internal">'source'     : 'external',</#if>
                         'format'     : '<@s.cfg>query_completion.format</@s.cfg>',
                         'alpha'      : '<@s.cfg>query_completion.alpha</@s.cfg>',
