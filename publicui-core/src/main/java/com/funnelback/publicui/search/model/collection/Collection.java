@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.apachecommons.Log;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -25,13 +26,14 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @ToString
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"parametersTransforms", "forms"})
+@Log
 public class Collection {
 
 	/**
 	 * Collection types.
 	 */
 	public static enum Type {
-		unknown,web,filecopy,local,database,meta,trim,connector;
+		unknown,web,filecopy,local,database,meta,trim,connector,directory,push;
 	}
 
 	/**
@@ -86,7 +88,11 @@ public class Collection {
 	public Type getType() {
 		Type out = Type.unknown;
 		if (configuration != null && configuration.hasValue(Keys.COLLECTION_TYPE)) {
-			out = Type.valueOf(configuration.value(Keys.COLLECTION_TYPE));
+			try {
+				out = Type.valueOf(configuration.value(Keys.COLLECTION_TYPE));
+			} catch (IllegalArgumentException iae) {
+				log.warn("Unkown collection type: '" + configuration.value(Keys.COLLECTION_TYPE) + "'", iae);
+			}
 		}
 		return out;
 	}
