@@ -57,3 +57,13 @@ resifnotcollection{mycollection}{Multi
 line
 statement}
 fluster{cluster_url}
+
+<!-- Nested compare -->
+<s:Compare <s:Res>collection</s:Res> != people>
+<h3>
+  <s:Compare <s:Res>title</s:Res> == abc>
+    <s:Compare <s:Res>filetype</s:Res> == xls><span class="fb-filetype fb-pdf">[PDF]</span></s:Compare>
+    <s:Compare <s:Res>filetype</s:Res> == doc><span class="fb-filetype fb-doc">[DOC]</span></s:Compare>
+  </s:Compare>
+</h3>
+</s:Compare>

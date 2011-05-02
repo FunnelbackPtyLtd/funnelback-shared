@@ -90,3 +90,13 @@ thing
 line
 statement</#if>
 ${s.cluster.href}
+
+<!-- Nested compare -->
+<#if s.result.collection != "people">
+<h3>
+  <#if s.result.title == "abc">
+    <#if s.result.fileType == "xls"><span class="fb-filetype fb-pdf">[PDF]</span></#if>
+    <#if s.result.fileType == "doc"><span class="fb-filetype fb-doc">[DOC]</span></#if>
+  </#if>
+</h3>
+</#if>
