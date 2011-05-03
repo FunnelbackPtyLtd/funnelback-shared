@@ -33,6 +33,40 @@ Apache conf:
         Allow from 121.127.216.199
     </Location>
   
+Jetty Rewrite
+-------------
+
+<!-- =========================================================== -->
+<!-- Java Public UI rewrite rules                                -->
+<!-- =========================================================== -->
+    <Get id="serverHandler" name="handler"/>
+    <Set name="handler">
+        <New id="RewriteHandler" class="org.mortbay.jetty.handler.rewrite.RewriteHandler">
+            <Set name="handler"><Ref id="serverHandler"/></Set>
+            <Set name="rewriteRequestURI">true</Set>
+            <Set name="rewritePathInfo">false</Set>
+            <Set name="originalPathAttribute">requestedPath</Set>
+
+            <Set name="rules">
+                <Array type="org.mortbay.jetty.handler.rewrite.Rule">
+                    <Item>
+                        <New class="org.mortbay.jetty.handler.rewrite.RewriteRegexRule">
+                            <Set name="regex">/search/search\.(html|json|xml|legacy)</Set>
+                            <Set name="replacement">/publicui/search.$1</Set>
+                        </New>
+                    </Item>
+                    <Item>
+                        <New class="org.mortbay.jetty.handler.rewrite.RewriteRegexRule">
+                            <Set name="regex">/search/resources/(.*)</Set>
+                            <Set name="replacement">/publicui/resources/$1</Set>
+                        </New>
+                    </Item>
+                </Array>
+            </Set>
+        </New>
+    </Set>
+
+
   
 TODO:
 -----
@@ -90,3 +124,5 @@ TODO:
 
 * Automated testing: Switch to "BasicSecurityFilterProvider" on autotest VMs
   * Check if impersonation is still working with basic (See previous point with LOGON_TYPE_NETWORK)
+  
+  
