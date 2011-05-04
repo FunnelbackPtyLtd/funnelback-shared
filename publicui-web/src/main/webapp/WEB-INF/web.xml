@@ -45,6 +45,7 @@
 		<url-pattern>/search.json</url-pattern>
 		<url-pattern>/search.legacy</url-pattern>
 		<url-pattern>/search.xml</url-pattern>
+		<url-pattern>/open-search.xml</url-pattern>
 	</servlet-mapping>
 	
 	<filter>
