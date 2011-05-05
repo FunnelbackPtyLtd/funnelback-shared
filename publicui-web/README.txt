@@ -113,8 +113,6 @@ TODO:
   * Are currently set on top of collection.cfg's option
   * They should probably be merged, with one taking precedence on the other ?
   
-* CollectionFormViewResolver: find a way to activate cache on it
-
 * Collection config reloading: Find a more clever mechanism for reloading only a specific config file and/or lazy loading.
 
 * Rename hooks (pre/post datafetch not very meaningfull)

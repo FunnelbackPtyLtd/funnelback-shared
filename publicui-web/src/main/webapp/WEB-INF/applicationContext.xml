@@ -24,7 +24,6 @@
 	</bean>
 
 	<bean id="searchHome" class="java.io.File">
-		<!-- constructor-arg index="0" type="java.lang.String" value="#{ T(java.lang.System).getenv('SEARCH_HOME') }" / -->
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
@@ -32,16 +31,15 @@
 	
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
+	<bean id="ConfigurableSecurityFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableSecurityFilter" />
 	
 	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool" destroy-method="close">
 		<constructor-arg index="0">
 			<bean class="com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnectionFactory" />
 		</constructor-arg>
-		<!--  constructor-arg index="1" value="10" / -->
 	</bean>
 	
 	<!-- ***** List of processors to run ***** -->
-	
 	
 	<util:list id="inputFlow">
 		<!-- passThroughParametersInputProcessor should be first as it populates 
@@ -100,6 +98,5 @@
 		<property name="targetMethod"><value>synchronizedMap</value></property>
 		<property name="arguments"><ref bean="searchStatsNotSynchronized" /></property>
 	</bean>
-	
 	
 </beans>

@@ -88,17 +88,20 @@
 	
 	<!-- ==== Authentication filter for Windows ==== -->
 	<filter>
-		<filter-name>SecurityFilter</filter-name>
-		<filter-class>waffle.servlet.NegotiateSecurityFilter</filter-class>
+		<filter-name>ConfigurableSecurityFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<init-param>
 			<param-name>impersonate</param-name>
 			<param-value>true</param-value>
 		</init-param> 
 	</filter>
 		<filter-mapping>
-			<filter-name>SecurityFilter</filter-name>
-			<!-- Change mapping to /* to activate -->
-			<url-pattern>/_/*</url-pattern> 
+			<filter-name>ConfigurableSecurityFilter</filter-name>
+			<url-pattern>/*</url-pattern> 
 	</filter-mapping>
 	<!--  ========================================== -->
 

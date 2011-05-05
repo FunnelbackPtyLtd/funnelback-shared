@@ -14,3 +14,7 @@ urls.search.prefix=/search/
 # Name of the per-collection web resources directory,
 # relative to profiles directory
 resources.web.directory.name=web
+
+# Wether to activate the security filter
+# for Windows authentication
+security.enable=false
