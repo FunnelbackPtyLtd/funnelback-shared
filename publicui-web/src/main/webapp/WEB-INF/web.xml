@@ -19,7 +19,7 @@
 	
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>file:${funnelback.installdir}/conf/log4j.properties.default</param-value>
+		<param-value>file:${funnelback.installdir}/web/conf/publicui/log4j.properties</param-value>
 	</context-param>
 
 	<listener>

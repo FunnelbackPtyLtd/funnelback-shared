@@ -27,7 +27,7 @@
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
-	<util:properties id="appProperties" location="file:${funnelback.installdir}/conf/publicui.properties" />
+	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/publicui/publicui.properties" />
 	
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
