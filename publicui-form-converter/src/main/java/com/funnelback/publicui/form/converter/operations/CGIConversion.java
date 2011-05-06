@@ -22,7 +22,7 @@ public class CGIConversion implements Operation {
 		Matcher m = PATTERN.matcher(out);
 		if (m.find()) {
 			log.info("Processing <s:cgi> tags");
-			out = m.replaceAll("\\${question.inputParameterMap[\"$1\"]!?first!}");
+			out = m.replaceAll("\\${question.inputParameterMap[\"$1\"]!?first!?html}");
 		}
 		
 		return out;

@@ -12,10 +12,10 @@ import com.funnelback.publicui.form.converter.Operation;
 public class ResConversion implements Operation {
 
 	private static final String[][] MAPPING = {
-		{"final_result_link", "clickTrackingUrl"},
-		{"live_url", "liveUrl"},
-		{"display_url", "displayUrl"},
-		{"cache_url", "cacheUrl"},
+		{"final_result_link", "clickTrackingUrl?html"},
+		{"live_url", "liveUrl?html"},
+		{"display_url", "displayUrl?html"},
+		{"cache_url", "cacheUrl?html"},
 		{"filetype", "fileType"},
 		{"filesize", "fileSize"}
 	};

@@ -22,7 +22,7 @@ public class BestBetsConversion implements Operation {
 		String out = in;
 
 		// Normalize field names
-		out = out.replaceAll("final_bb_link", "bb_clickTrackingUrl");
+		out = out.replaceAll("final_bb_link", "bb_clickTrackingUrl?html");
 		out = out.replaceAll("bb_desc", "bb_description");
 		
 		// Replace if tags
@@ -39,7 +39,7 @@ public class BestBetsConversion implements Operation {
 		}
 		
 		// Replace data tags
-		out = out.replaceAll("bb\\{bb_(\\w*)\\}", "\\${s.bb.$1}");
+		out = out.replaceAll("bb\\{bb_([\\w\\?]*)\\}", "\\${s.bb.$1}");
 		
 		// Capture TierBar HTML fragment
 		// Try to capture TierBar HTML fragments
