@@ -3,8 +3,6 @@ package com.funnelback.publicui.search.web.views.freemarker;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.apachecommons.Log;
-
 import com.funnelback.publicui.i18n.I18n;
 
 import freemarker.template.SimpleScalar;
@@ -20,7 +18,6 @@ import freemarker.template.TemplateScalarModel;
  * Truncates an URL in a smart way: Break only on directory separators
  * and use 2 lines max.
  */
-@Log
 public class TruncateURLMethod implements TemplateMethodModel, TemplateMethodModelEx {
 
 	private TruncateMethod truncateMethod = new TruncateMethod();
@@ -33,7 +30,7 @@ public class TruncateURLMethod implements TemplateMethodModel, TemplateMethodMod
 	private static final String SPLIT = "<br/>";
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 2) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes at least 2 arguments: The URL to truncate, and the length."));
 		}

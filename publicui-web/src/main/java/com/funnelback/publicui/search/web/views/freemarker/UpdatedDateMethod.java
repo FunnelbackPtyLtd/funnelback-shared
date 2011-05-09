@@ -23,7 +23,7 @@ public class UpdatedDateMethod implements TemplateMethodModel, TemplateMethodMod
 	private ConfigRepository configRepository;
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 1) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The ID of a collection."));
 		}

@@ -25,7 +25,7 @@ public class FacetedNavigationConfigMethod implements TemplateMethodModel, Templ
 	private ConfigRepository configRepository;
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 2) {
 			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The collection and the profile"));
 		}

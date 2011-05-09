@@ -83,10 +83,7 @@ TODO:
 
 * Remove test shorcuts
   * /_/* request mapping on SearchController
-
-* Find a way to externally configure some web.xml features:
-  * Auth filter
-  
+ 
 * XML logging
   * Improve fault tolerance of writing an existing XML log (algorithm to search the closing </log> tag)
 
@@ -122,5 +119,7 @@ TODO:
 
 * Automated testing: Switch to "BasicSecurityFilterProvider" on autotest VMs
   * Check if impersonation is still working with basic (See previous point with LOGON_TYPE_NETWORK)
+  
+* Change i18n system ?
   
   

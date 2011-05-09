@@ -23,9 +23,8 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 
 	public static final String NAME = "changeParam"; 
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 3) {
 			throw new TemplateModelException(I18n.i18n().tr("This function takes 3 arguments: The query string, the parameter name, and the new value"));
 		}

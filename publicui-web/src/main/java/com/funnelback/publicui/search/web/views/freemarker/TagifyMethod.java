@@ -23,7 +23,7 @@ public class TagifyMethod implements TemplateMethodModel, TemplateMethodModelEx 
 	public static final String NAME = "tagify";	
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 3) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
 					+ "The tag to use, "

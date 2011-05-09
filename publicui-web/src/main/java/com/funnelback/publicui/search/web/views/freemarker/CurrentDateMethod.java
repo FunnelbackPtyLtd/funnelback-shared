@@ -15,7 +15,7 @@ public class CurrentDateMethod implements TemplateMethodModel, TemplateMethodMod
 	public static final String NAME = "currentDate";
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		return new Date();
 	}
 

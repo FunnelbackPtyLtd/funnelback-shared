@@ -81,6 +81,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRelativeDateMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRelativeDateMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SearchMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.SearchMethod" />
 				</entry>

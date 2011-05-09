@@ -5,7 +5,6 @@ import java.util.List;
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
@@ -20,7 +19,7 @@ public class IsEnabledMethod implements TemplateMethodModel, TemplateMethodModel
 	public static final String NAME = "is_enabled";
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() != 1) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The value to check for."));
 		}

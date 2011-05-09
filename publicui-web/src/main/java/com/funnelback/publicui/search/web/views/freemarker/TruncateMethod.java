@@ -24,7 +24,7 @@ public class TruncateMethod implements TemplateMethodModel, TemplateMethodModelE
 	private final Pattern LAST_WORD_PATTERN = Pattern.compile("(\\S+)\\s+(\\S+)$"); 
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() < 2 || arguments.size() > 3) {
 			throw new TemplateModelException(
 					I18n.i18n().tr(	"This method takes at least 2 arguments: The string to truncate, and the length."

@@ -12,7 +12,6 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 import freemarker.ext.beans.StringModel;
@@ -38,7 +37,7 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 	private SearchTransactionProcessor searchTransactionProcessor;
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments.size() < 3 || arguments.size() > 4) {
 			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
 					+ "The original SearchQuestion, "

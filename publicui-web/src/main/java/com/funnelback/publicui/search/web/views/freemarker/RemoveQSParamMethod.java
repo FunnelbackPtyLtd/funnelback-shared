@@ -21,8 +21,9 @@ public class RemoveQSParamMethod implements TemplateMethodModel, TemplateMethodM
 
 	public static final String NAME = "removeParam"; 
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(	@SuppressWarnings("rawtypes")List arguments) throws TemplateModelException {
 		if (arguments.size() != 2) {
 			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The query string and the parameter name(s)"));
 		}
