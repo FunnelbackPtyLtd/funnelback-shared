@@ -38,8 +38,6 @@
 
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
-		<url-pattern>/test/*</url-pattern>
-		<url-pattern>/_/*</url-pattern>
 		<url-pattern>/resources/*</url-pattern>
 		<url-pattern>/search.html</url-pattern>
 		<url-pattern>/search.json</url-pattern>
@@ -98,6 +96,10 @@
 			<param-name>impersonate</param-name>
 			<param-value>true</param-value>
 		</init-param> 
+		<init-param>
+			<param-name>allowGuestLogin</param-name>
+			<param-value>false</param-value>
+		</init-param>
 	</filter>
 		<filter-mapping>
 			<filter-name>ConfigurableSecurityFilter</filter-name>
