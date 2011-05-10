@@ -35,7 +35,7 @@ import waffle.servlet.NegotiateSecurityFilter;
 @Log
 public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 
-	@Value("#{appProperties['security.enable']?:false}")
+	@Value("#{appProperties['authentication']?:false}")
 	@Setter private boolean active = false;
 	
 	@Override

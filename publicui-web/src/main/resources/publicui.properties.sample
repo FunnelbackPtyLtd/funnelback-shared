@@ -17,4 +17,4 @@ resources.web.directory.name=web
 
 # Wether to activate the security filter
 # for Windows authentication
-security.enable=false
+authentication=false
