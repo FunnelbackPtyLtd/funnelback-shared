@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigationTransform;
+import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
@@ -77,7 +78,7 @@ public class FacetedNavigationTransformTests {
 		// No results in packet
 		response.setResultPacket(new ResultPacket());
 		processor.processOutput(new SearchTransaction(null, response));
-		
+
 		// No facets
 		ResultPacket rp = new ResultPacket();
 		rp.getResults().add(new Result(new Integer(0),
@@ -94,7 +95,7 @@ public class FacetedNavigationTransformTests {
 				new Integer(0),
 				new Integer(0),
 				null,
-				null, null, null, "liveUrl"));
+				null, null, null, null, "liveUrl"));
 		response.setResultPacket(rp);
 		processor.processOutput(new SearchTransaction(null, response));
 	}

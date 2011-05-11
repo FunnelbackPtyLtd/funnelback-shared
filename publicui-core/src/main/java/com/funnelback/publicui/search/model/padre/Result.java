@@ -47,6 +47,8 @@ public class Result implements ResultType {
 	/** Filled at a later stage */
 	@Getter @Setter private String clickTrackingUrl;
 
+	@Getter @Setter private Explain explain;
+	
 	/**
 	 * Original URL from the index, taken from indexUrl before any transformation.
 	 */
@@ -73,7 +75,9 @@ public class Result implements ResultType {
 		public static final String FILETYPE = "filetype";
 		public static final String TIER = "tier";
 		public static final String DOCNUM = "docnum";
+		public static final String EXPLAIN = "explain";
 		public static final String METADATA = "md";
 		public static final String ATTR_METADATA_F = "f";
 	}
 }
+

@@ -35,7 +35,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
-
+	
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
 		<url-pattern>/resources/*</url-pattern>
@@ -45,6 +45,18 @@
 		<url-pattern>/search.xml</url-pattern>
 		<url-pattern>/open-search.xml</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>content-optimiser</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>content-optimiser</servlet-name>
+		<url-pattern>/content-optimiser/*</url-pattern>
+	</servlet-mapping>
+
 	
 	<filter>
 		<filter-name>encodingFilter</filter-name>
@@ -117,6 +129,7 @@
 		<servlet-name>dashboard</servlet-name>
 		<url-pattern>/dashboard/*</url-pattern>
 	</servlet-mapping>
+
 
 	<filter-mapping>
 	   <filter-name>encodingFilter</filter-name>

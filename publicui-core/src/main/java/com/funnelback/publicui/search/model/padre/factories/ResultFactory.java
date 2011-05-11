@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 
@@ -60,7 +61,7 @@ public class ResultFactory {
 		}
 
 		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
-				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null, liveUrl);
+				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null, null, liveUrl);
 	}
 
 	/**
@@ -80,7 +81,8 @@ public class ResultFactory {
 
 		Map<String, String> data = new HashMap<String, String>();
 		QuickLinks ql = null;
-
+		Explain explain = null;
+		
 		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			if (xmlStreamReader.isStartElement()) {
 				if (Result.Schema.METADATA.equals(xmlStreamReader.getLocalName().toString())) {
@@ -90,6 +92,8 @@ public class ResultFactory {
 					data.put(Result.METADATA_PREFIX + mdClass, value);
 				} else if (QuickLinks.Schema.QUICKLINKS.equals(xmlStreamReader.getLocalName().toString())) {
 					ql = QuickLinksFactory.fromXmlStreamReader(xmlStreamReader);
+				} else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName().toString())) {
+					explain = ExplainFactory.fromXmlStreamReader(xmlStreamReader);
 				} else {
 					String name = xmlStreamReader.getName().toString();
 					String value = xmlStreamReader.getElementText();
