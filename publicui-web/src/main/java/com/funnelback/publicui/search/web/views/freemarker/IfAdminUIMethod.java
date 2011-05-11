@@ -1,0 +1,47 @@
+package com.funnelback.publicui.search.web.views.freemarker;
+
+import java.util.List;
+
+import lombok.extern.apachecommons.Log;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.service.ConfigRepository;
+
+import freemarker.ext.servlet.HttpRequestHashModel;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModelException;
+
+@Log
+public class IfAdminUIMethod implements TemplateMethodModel, TemplateMethodModelEx {
+
+	public static final String NAME = "isAdminUI"; 
+	
+	@Autowired
+	private ConfigRepository configRepository;
+
+	@Override
+	public Object exec(List arguments) throws TemplateModelException {
+		if (arguments.size() != 1) {
+			throw new TemplateModelException(I18n.i18n().tr("This function takes 1 arguments: The FreeMarker " + HttpRequestHashModel.class.getSimpleName()));
+		}
+		
+		HttpRequestHashModel model = (HttpRequestHashModel) arguments.get(0);
+		if (model == null || model.getRequest() == null) {
+			log.warn(HttpRequestHashModel.class.getSimpleName() + " is null or the contained request is null");
+			return Boolean.FALSE;
+		}
+
+		int adminPort = configRepository.getGlobalConfiguration().valueAsInt(Keys.Urls.ADMIN_PORT, -1);
+		
+		if (adminPort == model.getRequest().getServerPort()) {
+			return Boolean.TRUE;
+		} else {		 
+			return Boolean.FALSE;
+		}
+	}
+
+}
