@@ -78,6 +78,9 @@
 						<constructor-arg ref="appCacheManager" />
 					</bean>
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.AdminUIOnlyDirective).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.AdminUIOnlyDirective" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
 				</entry>

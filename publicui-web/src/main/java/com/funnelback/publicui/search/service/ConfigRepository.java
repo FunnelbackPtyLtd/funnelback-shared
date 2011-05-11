@@ -6,6 +6,7 @@ import java.util.Map;
 
 import lombok.Getter;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -16,7 +17,8 @@ import com.funnelback.publicui.search.model.collection.Collection;
 public interface ConfigRepository {
 
 	public static enum GlobalConfiguration {
-		DNSAliases(Files.DNS_ALIASES_FILENAME);
+		DNSAliases(Files.DNS_ALIASES_FILENAME),
+		GlobalCfg(null);	// global.cfg.default and global.cfg. Special case
 		
 		@Getter private final String fileName;
 		
@@ -47,7 +49,12 @@ public interface ConfigRepository {
 	 * @param conf File to read
 	 * @return
 	 */
-	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf);
+	public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf);
+	
+	/**
+	 * @return the global.cfg(.default) configuration data
+	 */
+	public Config getGlobalConfiguration();
 	
 	/**
 	 * @param c

@@ -14,6 +14,7 @@ import net.sf.ehcache.Element;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -27,7 +28,8 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 	protected static final String CACHE = "localConfigRepository";
 	protected enum CacheKeys {
 		_CACHE_allCollectionIds,
-		_CACHE_globalConfig_,
+		_CACHE_globalConfigFile_,
+		_CACHE_globalConfiguration_,
 		_CACHE_lastUpdated_,
 		_CACHE_forms_;
 	}
@@ -84,13 +86,13 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf) {
+	public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf) {
 		Cache cache = appCacheManager.getCache(CACHE);
-		String key = CacheKeys._CACHE_globalConfig_.toString() + conf.toString();
+		String key = CacheKeys._CACHE_globalConfigFile_.toString() + conf.toString();
 		
 		Element elt = cache.get(key);
 		if (elt == null) {
-			Map<String, String> configData = loadGlobalConfiguration(conf);
+			Map<String, String> configData = loadGlobalConfigurationFile(conf);
 			if (configData != null) {
 				cache.put(new Element(key, configData));
 			}
@@ -98,6 +100,14 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		} else {
 			return (Map<String, String>) elt.getObjectValue();
 		}
+	}
+	
+	@Override
+	public Config getGlobalConfiguration() {
+		if (globalConfiguration == null) {
+			loadGlobalConfiguration();
+		}
+		return globalConfiguration;
 	}
 	
 	@Override

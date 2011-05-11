@@ -17,8 +17,10 @@ import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -90,23 +92,44 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	}
 	
 	@Override
-	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf) {
+	public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf) {
 		Cache cache = appCacheManager.getCache(CACHE);
-		String key = CacheKeys._CACHE_globalConfig_.toString() + conf.toString();
+		String key = CacheKeys._CACHE_globalConfigFile_.toString() + conf.toString();
 		
 		Element elt = cache.get(key);
 		if (elt == null) {
-			return super.getGlobalConfiguration(conf);
+			return super.getGlobalConfigurationFile(conf);
 		} else {
 			// File in cache
 			File f = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, conf.getFileName());
 			if(isFileStale(f, elt.getCreationTime())) {
 				log.info("Configuration file '" + f.getAbsolutePath() + "' has changed and will be reloaded.");
 				cache.remove(elt.getKey());
-				return super.getGlobalConfiguration(conf);
+				return super.getGlobalConfigurationFile(conf);
 			}
 			return (Map<String, String>) elt.getObjectValue();
 		}
+	}
+	
+	@Override
+	public Config getGlobalConfiguration() {
+		if (globalConfiguration == null) {
+			loadGlobalConfiguration();
+		} else {
+			Long now = System.currentTimeMillis();
+			Long lastAccessTime = staleChecks.get(GlobalOnlyConfig.class.getName());
+			staleChecks.put(GlobalOnlyConfig.class.getName(), now);
+	
+			// Don't check again exit if we've already checked recently
+			if (lastAccessTime == null || now > (lastAccessTime+checkingInterval)) {
+				if (globalConfiguration.isStale(searchHome)) {
+					log.info("Global configuration data has changed and will be reloaded.");
+					loadGlobalConfiguration();
+				}
+			}
+		}
+		
+		return globalConfiguration;
 	}
 
 	/**

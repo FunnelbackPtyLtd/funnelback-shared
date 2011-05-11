@@ -46,7 +46,7 @@ public class HostnameRestrictionFilter implements Filter {
 		
 		String collectionId = request.getParameter(RequestParameters.COLLECTION);
 		if ( collectionId != null) {
-			Map<String, String> dnsAliases = configRepository.getGlobalConfiguration(GlobalConfiguration.DNSAliases);
+			Map<String, String> dnsAliases = configRepository.getGlobalConfigurationFile(GlobalConfiguration.DNSAliases);
 			if (dnsAliases != null) {
 				String hostName = request.getServerName();
 				if (dnsAliases.get(hostName) != null) {

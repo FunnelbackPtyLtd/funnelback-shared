@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
@@ -58,6 +59,8 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	private static final String FTL_SUFFIX = ".ftl";
 	private static final Pattern FORM_BACKUP_PATTERN = Pattern.compile("-\\d{12}"+FTL_SUFFIX);
 	
+	protected GlobalOnlyConfig globalConfiguration;
+	
 	@Autowired
 	protected File searchHome;
 	
@@ -71,7 +74,10 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	public abstract List<String> getAllCollectionIds();
 	
 	@Override
-	public abstract Map<String, String> getGlobalConfiguration(GlobalConfiguration conf);
+	public abstract Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf);
+	
+	@Override
+	public abstract Config getGlobalConfiguration();
 	
 	protected Collection loadCollection(String collectionId) {
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
@@ -343,7 +349,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	 * @param conf
 	 * @return
 	 */
-	protected Map<String, String> loadGlobalConfiguration(GlobalConfiguration conf) {
+	protected Map<String, String> loadGlobalConfigurationFile(GlobalConfiguration conf) {
 		File globalConfig = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, conf.getFileName());
 		if (globalConfig.canRead()) {
 			try {
@@ -353,6 +359,19 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Loads global.cfg(.default)
+	 * @return
+	 */
+	protected void loadGlobalConfiguration() {
+		log.debug("Loading global configuration data (global.cfg[.default])");
+		try {
+			globalConfiguration = new GlobalOnlyConfig(searchHome);
+		} catch (FileNotFoundException fnfe) {
+			log.error("Error while reading global configuration", fnfe);
+		}
 	}
 		
 	/**

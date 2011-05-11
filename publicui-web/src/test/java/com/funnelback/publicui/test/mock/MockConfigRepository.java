@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lombok.Getter;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
@@ -15,6 +16,8 @@ public class MockConfigRepository implements ConfigRepository {
 
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	@Getter private Map<GlobalConfiguration, Map<String, String>> globalConfigs = new HashMap<GlobalConfiguration, Map<String, String>>();
+	
+	@Getter private Config globalConfiguration;
 		
 	@Override
 	public Collection getCollection(String collectionId) {
@@ -44,7 +47,7 @@ public class MockConfigRepository implements ConfigRepository {
 	}
 	
 	@Override
-	public Map<String, String> getGlobalConfiguration(GlobalConfiguration conf) {
+	public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf) {
 		return globalConfigs.get(conf);
 	}
 
