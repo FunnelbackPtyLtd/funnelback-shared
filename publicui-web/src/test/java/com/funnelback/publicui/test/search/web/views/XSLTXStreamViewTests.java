@@ -11,12 +11,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -45,9 +43,8 @@ public class XSLTXStreamViewTests {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-		String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex-legacy.xml"));
-		String inputXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
-		ResultPacket rp = new StaxStreamParser().parse(inputXml);
+		String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
+		ResultPacket rp = new StaxStreamParser().parse(oldXml);
 		
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
 		st.getQuestion().setQuery("dummy");
@@ -115,12 +112,6 @@ public class XSLTXStreamViewTests {
 		oldXml = reOrder(oldXml, Pattern.compile("<urlcount.*</urlcount>", Pattern.DOTALL));
 		actual = reOrder(actual, Pattern.compile("<urlcount.*</urlcount>", Pattern.DOTALL));
 		
-		// Re-order md fields equally
-		/*
-		oldXml = reOrder(oldXml, Pattern.compile("</live_url>.*?<md f=.*</md>[^<]*?<summary>", Pattern.DOTALL));
-		actual = reOrder(actual, Pattern.compile("</live_url>.*?<md f=.*</md>[^<]*?<summary>", Pattern.DOTALL));
-		*/
-
 		// <md f... needs to be tested separately because there is no easy way
 		// to reorder them
 		p = Pattern.compile("<md f[^\\n]*</md>");
@@ -128,6 +119,9 @@ public class XSLTXStreamViewTests {
 		while (m.find()) {
 			Assert.assertTrue(actual.contains(m.group(0)));
 		}
+		
+		// <explain> tags didn't exist prior to v11
+		oldXml = oldXml.replaceAll("(?s)<explain>.*?</explain>\\n", "");
 		
 		// Then strip the <md> tags
 		oldXml = oldXml.replaceAll("<md f[^\\n]*</md>", "");
