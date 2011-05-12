@@ -13,6 +13,13 @@
     Transforms a "new" format (Automatically serialised from Java beans) into an "old" one,
     matching the previous Perl UI format.
  -->
+
+<!--
+	By default don't copy unkown tags
+	Only expected tag will be processed by templates
+-->
+<xsl:template match="@*|node()" />
+ 
 <xsl:template match="/com.funnelback.publicui.search.model.transaction.SearchTransaction">
 	<PADRE_result_packet>
 		<xsl:if test="error">
@@ -189,15 +196,11 @@
 				<filetype><xsl:value-of select="fileType" /></filetype>
 				<tier><xsl:value-of select="tier" /></tier>
 				<docnum><xsl:value-of select="docNum" /></docnum>
-				<xsl:apply-templates select="explain" />
 				<xsl:apply-templates select="quickLinks" />
 			</result>
 		</xsl:for-each>
 	</results>
 </xsl:template>
-
-<!-- explain didn't exists until FB 11. Hide it from legacy output -->
-<xsl:template match="explain" />
 
 <xsl:template match="quickLinks">
 	<quicklinks>
