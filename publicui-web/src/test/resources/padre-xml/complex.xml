@@ -533,6 +533,7 @@
   <filetype>html</filetype>
   <tier>1</tier>
   <docnum>1343</docnum>
+  <unexpected_tag>This tag shouldn't cause any problem at all and should just be ignored.<this_one_too>Yes...</this_one_too></unexpected_tag>
   </result>
 
   <result>

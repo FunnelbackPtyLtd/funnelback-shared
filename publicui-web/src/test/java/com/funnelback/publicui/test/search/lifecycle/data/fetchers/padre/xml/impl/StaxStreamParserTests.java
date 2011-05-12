@@ -78,6 +78,10 @@ public class StaxStreamParserTests {
 		assertEquals(0.997,e.getFeatureScores().get("content"),0.0001);
 		assertEquals(0,e.getFeatureScores().get("offlink"),0.0001);
 		assertEquals(0.512,e.getFeatureScores().get("urllen"),0.0001);
+		
+		for (int i=1; i<rp.getResults().size(); i++) {
+			assertNull(rp.getResults().get(i).getExplain());
+		}
 	}
 	
 	@Test
@@ -352,5 +356,4 @@ public class StaxStreamParserTests {
 		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")));
 	}
 }
-
 
