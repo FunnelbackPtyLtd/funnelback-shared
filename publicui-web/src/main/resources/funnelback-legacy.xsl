@@ -189,11 +189,15 @@
 				<filetype><xsl:value-of select="fileType" /></filetype>
 				<tier><xsl:value-of select="tier" /></tier>
 				<docnum><xsl:value-of select="docNum" /></docnum>
+				<xsl:apply-templates select="explain" />
 				<xsl:apply-templates select="quickLinks" />
 			</result>
 		</xsl:for-each>
 	</results>
 </xsl:template>
+
+<!-- explain didn't exists until FB 11. Hide it from legacy output -->
+<xsl:template match="explain" />
 
 <xsl:template match="quickLinks">
 	<quicklinks>

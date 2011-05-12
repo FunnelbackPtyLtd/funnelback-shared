@@ -40,13 +40,14 @@ public class XSLTXStreamViewTests {
 		view.setMarshaller(marshaller);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void test() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-		String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
-		ResultPacket rp = new StaxStreamParser().parse(oldXml);
+		String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex-legacy.xml"));
+		String inputXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
+		ResultPacket rp = new StaxStreamParser().parse(inputXml);
 		
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
 		st.getQuestion().setQuery("dummy");
