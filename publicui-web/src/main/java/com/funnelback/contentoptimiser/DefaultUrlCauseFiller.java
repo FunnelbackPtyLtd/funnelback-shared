@@ -1,44 +1,40 @@
 package com.funnelback.contentoptimiser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import lombok.extern.apachecommons.Log;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-@Log
+import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+
+
 @Component
 public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
 	@Override
-	public void FillCauses(UrlComparison comparison) {
-		for(int i = 0;i < comparison.getUrls().size();i++) {
-			List<RankingScore> causes = comparison.getUrls().get(i).getCauses();
-			causes.add(new RankingScore("Content"));
-			causes.add(new RankingScore("Anchors"));
-			causes.add(new RankingScore("URL"));
-			causes.add(new RankingScore("meta_tag"));
-		}
-/*		List<RankingScore> causes = comparison.getImportantOne().getCauses();
-		causes.add(new RankingScore("Content"));
-		causes.add(new RankingScore("Anchors"));
-		causes.add(new RankingScore("URL"));
-		causes.add(new RankingScore("meta_tag"));*/
+	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp) {
+		// TODO Auto-generated method stub
+		
+		
+		for (Result result : rp.getResults()) {
+			UrlInfoAndScore info = new UrlInfoAndScore();
+			
+			info.url = result.getLiveUrl();
+			info.rank = result.getRank();
+			info.title = result.getTitle();
 	
-		for(int i = 0;i < comparison.getUrls().size();i++) {
-			log.debug("Unsorted: "+ comparison.getUrls().get(i).sum());
+			List<RankingScore> causes = info.getCauses();
+			
+			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
+				causes.add(new RankingScore(feature.getKey(), (int)(feature.getValue()*100)));
+			}
+			comparison.getUrls().add(info);
 		}
-		
-		// todo: remove this later - it's fake!
-		Collections.sort(comparison.getUrls());
-		for(int i = 0;i < comparison.getUrls().size();i++) {
-			comparison.getUrls().get(i).setRank(i+1);
-			log.debug("Sorted: "+ comparison.getUrls().get(i).sum());
-		}
-		
+	}
+	
+	@Override
+	public void fillHints(UrlComparison comparison) {
 		comparison.hints.add(new Hint("<b>Content: </b>The document at rank 4 has a slightly higher content score. This is because the query terms \"King Lear\" appear 1 more time than the document at rank 1.","#","document content"));
 		comparison.hints.add(new Hint("<b>Content: </b> Neither document has a meta description tag. Perhaps add a meta description tag which succinctly describes the content?", "#", "meta tags"));
 		comparison.hints.add(new Hint("<b>Anchors: </b> Both documents have the same number of incoming links. Perhaps add links to these pages from other pages on the site? Make sure that the link text accurately describes the page content.", "#", "anchors"));
@@ -58,23 +54,9 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
 	@Override
 	public void setImportantUrl(String url, UrlComparison comparison) {
-		if(comparison.getUrls().size() <= 4) { 
-			UrlInfoAndScore info = new UrlInfoAndScore();
-			
-			info.url = url;
-			info.rank = 4;
-			info.title = "Title of this URL";
-			List<RankingScore> causes = info.getCauses();
-			causes.add(new RankingScore("Content"));
-			causes.add(new RankingScore("Anchors"));
-			causes.add(new RankingScore("URL"));
-			causes.add(new RankingScore("meta_tag"));
-			
-			comparison.setImportantOne(info);
-		} else {
-			comparison.setImportantOne(comparison.getUrls().get(4));
-		}
+		comparison.setImportantOne(comparison.getUrls().get(3));
 	}
+
 
 }
 

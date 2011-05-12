@@ -16,7 +16,7 @@ public class DefaultUrlCauseFillerTest {
 		f.addUrl("one", comparison);
 		f.setImportantUrl("one", comparison);
 
-		f.FillCauses(comparison);
+	//	f.FillCauses(comparison);
 		
 		Assert.assertTrue(comparison.getUrls().size() != 0);
 		Assert.assertTrue(comparison.getUrls().get(0).getCauses().size() != 0);
