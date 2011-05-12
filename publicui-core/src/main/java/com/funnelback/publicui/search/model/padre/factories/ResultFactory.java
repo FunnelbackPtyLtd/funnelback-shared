@@ -11,6 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.xml.XmlStreamUtils;
+import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
 
 /**
  * Builds {@link Result}s from various input sources.
@@ -95,9 +97,8 @@ public class ResultFactory {
 				} else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName().toString())) {
 					explain = ExplainFactory.fromXmlStreamReader(xmlStreamReader);
 				} else {
-					String name = xmlStreamReader.getName().toString();
-					String value = xmlStreamReader.getElementText();
-					data.put(name, value);
+					TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
+					data.put(tt.tag, tt.text);
 				}
 			}
 		}

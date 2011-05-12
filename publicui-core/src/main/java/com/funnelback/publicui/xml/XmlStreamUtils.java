@@ -37,4 +37,38 @@ public class XmlStreamUtils {
 		return data;
 	}
 	
+	/**
+	 * Given an element, returns a pair with the tag name, and the tag text.
+	 * If the element contains nested tag, their text will be collected too (but the
+	 * nested tag names will be lost)
+	 * 
+	 * @param xmlStreamReader an {@link XMLStreamReader} currently on a start element
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	public static TagAndText getTagAndValue(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		if (xmlStreamReader.getEventType() != XMLStreamReader.START_ELEMENT) {
+			throw new IllegalArgumentException("Expecting to be on a START_ELEMENT");
+		}
+		
+		TagAndText tv = new TagAndText();
+		tv.tag = xmlStreamReader.getName().toString();
+		
+		StringBuffer text = new StringBuffer();
+		do {
+			if (xmlStreamReader.hasText()) {
+				text.append(xmlStreamReader.getText());
+			}
+		} while (xmlStreamReader.next() != XMLStreamReader.END_ELEMENT || ! xmlStreamReader.getName().toString().equals(tv.tag));
+		
+		tv.text = text.toString();
+		
+		return tv;
+	}
+	
+	public static class TagAndText {
+		public String tag;
+		public String text;
+	}
+	
 }

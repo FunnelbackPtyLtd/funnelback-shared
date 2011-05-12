@@ -7,6 +7,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
+import com.funnelback.publicui.xml.XmlStreamUtils;
+import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
 
 public class ResultsSummaryFactory {
 
@@ -41,9 +43,8 @@ public class ResultsSummaryFactory {
 		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			if (xmlStreamReader.isStartElement()) {
 				// Start tag for an result entry
-				String name = xmlStreamReader.getName().toString();
-				String value = xmlStreamReader.getElementText();
-				data.put(name, Integer.parseInt(value));
+				TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
+				data.put(tt.tag, Integer.parseInt(tt.text));
 			}		
 		}
 		

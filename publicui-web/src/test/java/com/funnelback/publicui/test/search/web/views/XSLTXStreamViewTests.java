@@ -123,6 +123,9 @@ public class XSLTXStreamViewTests {
 		// <explain> tags didn't exist prior to v11
 		oldXml = oldXml.replaceAll("(?s)<explain>.*?</explain>\\n", "");
 		
+		// Remove <unexpected_tag> used for other tests
+		oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\\n", "");
+		
 		// Then strip the <md> tags
 		oldXml = oldXml.replaceAll("<md f[^\\n]*</md>", "");
 		actual = actual.replaceAll("<md f[^\\n]*</md>", "");
