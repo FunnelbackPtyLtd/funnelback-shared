@@ -20,6 +20,8 @@
 
 	<mvc:resources mapping="/resources/**" location="/dashboard/" />
 
+	<bean id="contextPathHolder" class="com.funnelback.publicui.utils.web.ContextPathHolder" />
+	
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="/WEB-INF/freemarker/dashboard/" />
 		<property name="freemarkerSettings">

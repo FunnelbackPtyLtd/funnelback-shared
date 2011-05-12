@@ -38,7 +38,7 @@ import com.funnelback.publicui.utils.MapUtils;
 public class SearchController {
 
 	public enum ModelAttributes {
-		SearchTransaction, AllCollections, QueryString, SearchPrefix,
+		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath,
 		question, response, error;
 		
 		public static Set<String> getNames() {

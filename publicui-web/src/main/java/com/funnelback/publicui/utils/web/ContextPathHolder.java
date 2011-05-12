@@ -1,15 +1,16 @@
-package com.funnelback.publicui.dashboard.web;
+package com.funnelback.publicui.utils.web;
 
 import javax.servlet.ServletContext;
 
 import lombok.Getter;
 import lombok.extern.apachecommons.Log;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
+/**
+ * Holds a context path (such as /publicui)
+ */
 @Log
-@Component("contextPathHolder")
 public class ContextPathHolder implements ServletContextAware {
 
 	@Getter private String contextPath;

@@ -30,11 +30,11 @@ public class ProfiledAspect {
 	@Resource(name = "profilingStatsNotSynchronized")
 	private Map<String, MethodStats> stats;
 
-	@Pointcut("within(com.funnelback.publicui..*) && execution(* *(..)) && @annotation(com.funnelback.publicui.aop.Profiled)")
+	@Pointcut("within(com.funnelback.publicui.search..*) && execution(* *(..)) && @annotation(com.funnelback.publicui.aop.Profiled)")
 	public void profiledAnnotatedMethod() {
 	}
 
-	@Pointcut("within(com.funnelback.publicui..*) && execution(* *(..))")
+	@Pointcut("within(com.funnelback.publicui.search..*) && execution(* *(..))")
 	public void manuallyProfiledMethod() {
 	}
 

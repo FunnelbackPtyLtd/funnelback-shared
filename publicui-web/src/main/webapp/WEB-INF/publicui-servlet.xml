@@ -33,6 +33,8 @@
 		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
+	<bean id="contextPathHolder" class="com.funnelback.publicui.utils.web.ContextPathHolder" />
+
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths">
 			<list>
@@ -52,6 +54,11 @@
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchPrefix.toString()}"
 					value="#{appProperties['urls.search.prefix']}"
 				/>
+				<entry
+					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
+					value="#{contextPathHolder.contextPath}"
+				/>									
+				
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod" />
 				</entry>
@@ -170,6 +177,5 @@
 	
 	<!-- Profiling -->
 	<aop:aspectj-autoproxy />
-	
 
 </beans>
