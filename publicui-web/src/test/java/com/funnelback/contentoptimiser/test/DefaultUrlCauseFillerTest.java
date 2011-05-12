@@ -1,41 +1,70 @@
 package com.funnelback.contentoptimiser.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
+import com.funnelback.contentoptimiser.RankingScore;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.xml.XmlParsingException;
 
 public class DefaultUrlCauseFillerTest {
 
 	@Test
-	public void testFillCauses () {
+	public void testFillHints () {
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
-		f.addUrl("one", comparison);
-		f.setImportantUrl("one", comparison);
 
-	//	f.FillCauses(comparison);
+		f.fillHints(comparison);
 		
-		Assert.assertTrue(comparison.getUrls().size() != 0);
-		Assert.assertTrue(comparison.getUrls().get(0).getCauses().size() != 0);
-		Assert.assertTrue(comparison.getImportantOne().getCauses().size() != 0);
-		Assert.assertTrue(comparison.getHints().size() != 0);
+		Assert.assertEquals(4,comparison.getHints().size());
 	}
+
 	
 	@Test
-	public void testSetImportantOne() {
+	public void testConsumeResultPacket() throws XmlParsingException, IOException {
+		StaxStreamParser parser = new StaxStreamParser();
+		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
 
-		Assert.assertNull(comparison.getImportantOne());
-		
-		String url = "url";
-		
-		f.setImportantUrl(url, comparison);
+		f.consumeResultPacket(comparison, rp);
+		f.setImportantUrl("", comparison);
+
 		
 		Assert.assertNotNull(comparison.getImportantOne());
-		Assert.assertEquals(url, comparison.getImportantOne().getUrl());
+		Assert.assertEquals(4,comparison.getImportantOne().getRank());		
+		
+		List<RankingScore> causes = comparison.getUrls().get(0).getCauses();		
+		assertNotNull(causes);
+		assertEquals("content",causes.get(0).getName());
+		assertEquals("offlink",causes.get(1).getName());
+		assertEquals("urllen",causes.get(2).getName());
+		assertEquals(41,causes.get(0).getPercentage());
+		assertEquals(0,causes.get(1).getPercentage());
+		assertEquals(7,causes.get(2).getPercentage());
+
+		causes = comparison.getUrls().get(1).getCauses();		
+		assertNotNull(causes);
+		assertEquals("content",causes.get(0).getName());
+		assertEquals("offlink",causes.get(1).getName());
+		assertEquals("urllen",causes.get(2).getName());
+		assertEquals(31,causes.get(0).getPercentage());
+		assertEquals(0,causes.get(1).getPercentage());
+		assertEquals(7,causes.get(2).getPercentage());
+
+		
 	}
 }

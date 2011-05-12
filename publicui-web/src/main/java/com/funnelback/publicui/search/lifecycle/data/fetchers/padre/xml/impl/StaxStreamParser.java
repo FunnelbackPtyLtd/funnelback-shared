@@ -18,6 +18,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXml
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
+import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
@@ -32,6 +33,7 @@ import com.funnelback.publicui.search.model.padre.factories.ResultsSummaryFactor
 import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.XmlStreamUtils;
 
 @Component("padreXmlParser")
 public class StaxStreamParser implements PadreXmlParser {
@@ -89,6 +91,11 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getIncludeScopes().addAll(parseScopes(xmlStreamReader.getElementText()));
 					} else if (ResultPacket.Schema.EXCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
 						packet.getExcludeScopes().addAll(parseScopes(xmlStreamReader.getElementText()));
+					} else if (ResultPacket.Schema.COOLER_WEIGHTINGS.equals(xmlStreamReader.getLocalName())) {
+						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.COOLER_WEIGHTINGS, xmlStreamReader);
+						for (Map.Entry<String,String> feature : stringFeatures.entrySet()) {
+							packet.getCoolerWeights().put(feature.getKey(), Float.parseFloat(feature.getValue()));
+						}
 					}
 					
 					break;

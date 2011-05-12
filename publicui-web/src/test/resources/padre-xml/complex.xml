@@ -464,6 +464,12 @@
   <gscope_matching value="2">6</gscope_matching>
 </gscope_counts>
 
+<cooler_weightings>
+        <content>0.41</content>
+        <offlink>0.14</offlink>
+        <urllen>0.14</urllen>
+</cooler_weightings>
+
 <results>
 
   <tier_bar>

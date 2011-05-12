@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_10.1.1.54 64MDPLFS (Web/Ent)</padre_version>
+    <collection_size>/opt/enterprise-search/funnelback/data/test-shakespeare/live/idx/index: 27.3 MB, 868 docs</collection_size>
+    <collection_updated>
+      Mon May  9 11:52:34 2011    </collection_updated>
+  </details>
+
+  <query>king lear</query>
+  <query_as_processed>king lear</query_as_processed>
+  <collection>test-shakespeare</collection>
+
+<results_summary>
+  <fully_matching>31</fully_matching>
+  <estimated_hits>31</estimated_hits>
+  <partially_matching>472</partially_matching>
+  <total_matching>503</total_matching>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+<cooler_weightings>
+	<content>0.41</content>
+	<offlink>0.14</offlink>
+	<urllen>0.14</urllen>
+</cooler_weightings>
+
+
+<results>
+
+  <tier_bar>
+  <matched>2</matched>
+  <outof>2</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title><![CDATA[SCENE I. <b>King</b> <b>Lear</b>'s palace.  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.1.1.html</live_url>
+<summary><![CDATA[Sennet. Enter <b>KING</b> <b>LEAR</b>, CORNWALL, ALBANY, GONERIL, REGAN, CORDELIA, and Attendants. ... Exeunt GLOUCESTER and EDMUND. <b>KING</b> <b>LEAR</b>.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.1.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.1.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>26872</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>14</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.639</final_score>
+		<lenratio>0.662</lenratio>
+		<cooler_scores>
+			<content>0.997</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>868</score>
+  <title><![CDATA[<b>King</b> <b>Lear</b>: List of Scenes  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/index.html</live_url>
+<summary><![CDATA[Shakespeare homepage | <b>King</b> <b>Lear</b>. ... Entire play as RTF. Act 1, Scene 1:  <b>King</b> <b>Lear</b>'s palace..]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Findex.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Findex.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>2811</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>25</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.555</final_score>
+		<lenratio>0.0619</lenratio>
+		<cooler_scores>
+			<content>0.766</content>
+			<offlink>0</offlink>
+			<urllen>0.535</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>3</rank>
+  <score>843</score>
+  <title><![CDATA[SCENE VII. A tent in the French camp. <b>LEAR</b> on a bed asleep,  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.4.7.html</live_url>
+<summary><![CDATA[To the Doctor. How does the <b>king</b>?. ... That we may wake the <b>king</b>: he hath slept long..]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.4.7.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.4.7.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>10378</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>15</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.539</final_score>
+		<lenratio>0.229</lenratio>
+		<cooler_scores>
+			<content>0.753</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>4</rank>
+  <score>716</score>
+  <title><![CDATA[<b>King</b> <b>Lear</b>: Entire Play  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/full.html</live_url>
+<summary><![CDATA[Shakespeare homepage |  <b>King</b> <b>Lear</b> | Entire play. Enter KENT, GLOUCESTER, and EDMUND. ... Sennet. Enter <b>KING</b> <b>LEAR</b>, CORNWALL, ALBANY, GONERIL, REGAN, CORDELIA, and Attendants.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>297646</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>19</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.458</final_score>
+		<lenratio>6.98</lenratio>
+		<cooler_scores>
+			<content>0.521</content>
+			<offlink>0</offlink>
+			<urllen>0.543</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>5</rank>
+  <score>652</score>
+  <title><![CDATA[Reference Handbook Table of Contents <b>King</b> <b>Lear</b>: Entire Play ...]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/full.rtf</live_url>
+<summary><![CDATA[Reference Handbook Table of Contents <b>King</b> <b>Lear</b>: Entire Play <b>King</b> <b>Lear</b> Shakespeare homepage 1 | <b>King</b> <b>Lear</b> 1 | Entire play ACT I SCENE I. ... <b>King</b> <b>Lear</b>'s palace. Enter KENT, GLOUCESTER, and EDMUND KENT I thought the <b>king</b> had more affected the Duke of]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.rtf.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.rtf</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>810044</filesize>
+  <filetype>rtf</filetype>
+  <tier>1</tier>
+  <docnum>24</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.417</final_score>
+		<lenratio>6.98</lenratio>
+		<cooler_scores>
+			<content>0.412</content>
+			<offlink>0</offlink>
+			<urllen>0.551</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>6</rank>
+  <score>651</score>
+  <title><![CDATA[Reference Handbook Table of Contents <b>King</b> <b>Lear</b>: Entire Play ...]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/full.pdf</live_url>
+<summary><![CDATA[Reference Handbook Table of Contents <b>King</b> <b>Lear</b>: Entire Play.3 Index.132 <b>King</b> <b>Lear</b>: Entire Play <b>King</b> <b>Lear</b> Shakespeare homepage1 | <b>King</b> Lear1 | Entire play ACT I SCENE I. ... <b>King</b> <b>Lear</b> s palace. Enter KENT, GLOUCESTER, and EDMUNDKENTI thought the <b>king</b> had]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.pdf.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Ffull.pdf</cache_url>
+  <date>11 Oct 2004</date>
+  <filesize>1668437</filesize>
+  <filetype>pdf</filetype>
+  <tier>1</tier>
+  <docnum>20</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.416</final_score>
+		<lenratio>7.03</lenratio>
+		<cooler_scores>
+			<content>0.41</content>
+			<offlink>0</offlink>
+			<urllen>0.551</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>7</rank>
+  <score>568</score>
+  <title><![CDATA[SCENE IV. A hall in the same.  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.1.4.html</live_url>
+<summary><![CDATA[Horns within. Enter <b>KING</b> <b>LEAR</b>, Knights, and Attendants. <b>KING</b> <b>LEAR</b>. ... Exit. <b>KING</b> <b>LEAR</b>.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.4.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.4.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>29570</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>16</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.363</final_score>
+		<lenratio>0.713</lenratio>
+		<cooler_scores>
+			<content>0.324</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>8</rank>
+  <score>564</score>
+  <title><![CDATA[SCENE IV. Before GLOUCESTER's castle. KENT in the stocks.  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.2.4.html</live_url>
+<summary><![CDATA[Enter <b>KING</b> <b>LEAR</b>, Fool, and Gentleman. <b>KING</b> <b>LEAR</b>. ... Re-enter <b>KING</b> <b>LEAR</b> with GLOUCESTER. <b>KING</b> <b>LEAR</b>.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.2.4.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.2.4.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>27890</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>26</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.361</final_score>
+		<lenratio>0.68</lenratio>
+		<cooler_scores>
+			<content>0.319</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>9</rank>
+  <score>560</score>
+  <title><![CDATA[SCENE IV. The heath. Before a hovel.  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.3.4.html</live_url>
+<summary><![CDATA[Enter <b>KING</b> <b>LEAR</b>, KENT, and Fool. KENT. ... Storm still. <b>KING</b> <b>LEAR</b>.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.3.4.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.3.4.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>16701</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>7</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.358</final_score>
+		<lenratio>0.407</lenratio>
+		<cooler_scores>
+			<content>0.311</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+  <result>
+  <rank>10</rank>
+  <score>560</score>
+  <title><![CDATA[SCENE V. Court before the same.  ]]></title>
+  <collection>test-shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.funnelback.com/Shakespeare/lear/lear.1.5.html</live_url>
+<summary><![CDATA[Enter <b>KING</b> <b>LEAR</b>, KENT, and Fool. <b>KING</b> <b>LEAR</b>.]]></summary>
+  <cache_url>cache.cgi?collection=test-shakespeare&amp;doc=http%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.5.html.pan.txt&amp;url=http%3A%2F%2Ftest-data.funnelback.com%2FShakespeare%2Flear%2Flear.1.5.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>5764</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>23</docnum>
+	<explain>
+		<consat>2</consat>
+		<final_score>0.358</final_score>
+		<lenratio>0.11</lenratio>
+		<cooler_scores>
+			<content>0.311</content>
+			<offlink>0</offlink>
+			<urllen>0.512</urllen>
+		</cooler_scores>
+	</explain>
+  </result>
+
+</results>
+
+  <include_scope></include_scope>
+  <exclude_scope></exclude_scope>
+  <query_processor_codes>SG2x</query_processor_codes>
+  <padre_elapsed_time>12</padre_elapsed_time>
+
+</PADRE_result_packet>

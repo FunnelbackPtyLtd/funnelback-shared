@@ -69,6 +69,8 @@ public class ResultPacket {
 	 */
 	@Getter private final List<String> excludeScopes = new ArrayList<String>();
 	
+	@Getter private final Map<String,Float> coolerWeights = new HashMap<String,Float>();
+	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
 	@SuppressWarnings("unchecked")
@@ -133,6 +135,7 @@ public class ResultPacket {
 		public static final String INCLUDE_SCOPE = "include_scope";
 		public static final String EXCLUDE_SCOPE = "exclude_scope";
 		public static final String SCOPE_SEPARATOR = "@";
+		public static final String COOLER_WEIGHTINGS = "cooler_weightings";
 		
 	}
 }

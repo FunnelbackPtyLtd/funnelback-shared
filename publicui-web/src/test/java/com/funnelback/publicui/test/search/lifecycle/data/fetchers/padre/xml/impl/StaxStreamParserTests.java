@@ -52,6 +52,19 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
+	public void testCoolerWeightings() {
+		assertEquals(3,rp.getCoolerWeights().size());
+		
+		assertNotNull(rp.getCoolerWeights().get("content"));
+		assertNotNull(rp.getCoolerWeights().get("offlink"));
+		assertNotNull(rp.getCoolerWeights().get("urllen"));
+		
+		assertEquals(0.41,rp.getCoolerWeights().get("content"),0.0001);
+		assertEquals(0.14,rp.getCoolerWeights().get("offlink"),0.0001);
+		assertEquals(0.14,rp.getCoolerWeights().get("urllen"),0.0001);
+	}
+	
+	@Test
 	public void testExplain() {
 		Explain e = rp.getResults().get(0).getExplain();
 		assertEquals(0.639, e.getFinalScore(), 0.0001);
@@ -339,4 +352,5 @@ public class StaxStreamParserTests {
 		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")));
 	}
 }
+
 
