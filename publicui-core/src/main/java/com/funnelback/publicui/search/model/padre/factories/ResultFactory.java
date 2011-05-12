@@ -29,7 +29,7 @@ public class ResultFactory {
 	 *            A map containing the metadata values (<md f="x">value</md>)
 	 * @return A result with populated values
 	 */
-	public static Result fromMap(Map<String, String> data, QuickLinks ql) {
+	public static Result fromMap(Map<String, String> data, QuickLinks ql,Explain explain) {
 		Integer rank = Integer.valueOf(data.get(Result.Schema.RANK));
 		Integer score = Integer.valueOf(data.get(Result.Schema.SCORE));
 		String title = data.get(Result.Schema.TITLE);
@@ -61,7 +61,7 @@ public class ResultFactory {
 		}
 
 		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
-				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null, null, liveUrl);
+				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null, explain, liveUrl);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ResultFactory {
 			}
 		}
 
-		return fromMap(data, ql);
+		return fromMap(data, ql,explain);
 	}
 	
 	private static SimpleDateFormat getDateFormatter() {

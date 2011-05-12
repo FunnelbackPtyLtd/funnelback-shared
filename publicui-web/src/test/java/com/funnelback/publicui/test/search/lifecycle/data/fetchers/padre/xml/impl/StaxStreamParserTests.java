@@ -22,6 +22,7 @@ import com.funnelback.publicui.search.model.padre.Category;
 import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
@@ -48,6 +49,22 @@ public class StaxStreamParserTests {
 		c.set(Calendar.SECOND, 23);
 		c.set(Calendar.MILLISECOND, 0);
 		assertEquals(c.getTime(), rp.getDetails().getCollectionUpdated());
+	}
+	
+	@Test
+	public void testExplain() {
+		Explain e = rp.getResults().get(0).getExplain();
+		assertEquals(0.639, e.getFinalScore(), 0.0001);
+		assertEquals(2, e.getConsat());
+		assertEquals(0.662,e.getLenratio(),0.0001);
+		
+		assertNotNull(e.getFeatureScores().get("content"));
+		assertNotNull(e.getFeatureScores().get("offlink"));
+		assertNotNull(e.getFeatureScores().get("urllen"));
+		
+		assertEquals(0.997,e.getFeatureScores().get("content"),0.0001);
+		assertEquals(0,e.getFeatureScores().get("offlink"),0.0001);
+		assertEquals(0.512,e.getFeatureScores().get("urllen"),0.0001);
 	}
 	
 	@Test
@@ -316,4 +333,10 @@ public class StaxStreamParserTests {
 	public void testInvalidXml() throws IOException, XmlParsingException {
 		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")));
 	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void testBadlyFormedExplainTag() throws IllegalStateException, XmlParsingException, IOException {
+		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")));
+	}
 }
+

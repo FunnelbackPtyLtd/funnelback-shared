@@ -21,7 +21,7 @@ public class XmlStreamUtils {
 		}
 		
 		return tagsToMap(xmlStreamReader);
-	}
+	} 
 	
 	private static Map<String, String> tagsToMap(XMLStreamReader xmlStreamReader) throws XMLStreamException {
 		Map<String, String> data = new HashMap<String, String>();

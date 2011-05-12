@@ -496,11 +496,6 @@
   		<consat>2</consat>
     	<final_score>0.639</final_score>
     	<lenratio>0.662</lenratio>
-    	<cooler_scores>
-    		<content>0.997</content>
- 			<offlink>0</offlink>
- 			<urllen>0.512</urllen>
-    	</cooler_scores>
   </explain>
 <quicklinks domain="www.immi.gov.au/e_visa/"><quicklink><qltext>Request a Visa</qltext><qlurl>www.immi.gov.au/e_visa/request.html</qlurl></quicklink><quicklink><qltext>Check your application status</qltext><qlurl>www.immi.gov.au/e_visa/application-status/</qlurl></quicklink></quicklinks>
   </result>

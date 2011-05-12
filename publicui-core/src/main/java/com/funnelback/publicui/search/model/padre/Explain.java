@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.padre;
 
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 public class Explain {
 
 		@Getter public final float finalScore;  
+		@Getter public final int consat;
+		@Getter public final float lenratio;
+		@Getter public final Map<String,Float> featureScores;
 		
 		public static final class Schema {
 			
