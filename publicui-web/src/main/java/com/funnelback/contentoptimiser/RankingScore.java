@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RankingScore {
 	@Getter private final String name;	
-	@Getter private final int percentage;
+	@Getter private final float percentage;
 }

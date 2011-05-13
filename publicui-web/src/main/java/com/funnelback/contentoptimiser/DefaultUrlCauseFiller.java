@@ -27,7 +27,7 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 			List<RankingScore> causes = info.getCauses();
 			
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
-				causes.add(new RankingScore(feature.getKey(), (int)Math.round( feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100 )));
+				causes.add(new RankingScore(feature.getKey(), feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100 ));
 			}
 			comparison.getUrls().add(info);
 		}

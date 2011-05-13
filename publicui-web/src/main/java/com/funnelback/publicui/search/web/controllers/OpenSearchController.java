@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.web.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,8 +30,10 @@ public class OpenSearchController {
 	@Autowired
 	private ConfigRepository configRepository;
 	
-	@Autowired
+	@Resource(name="openSearchView")
 	private FreeMarkerView openSearchView;
+	
+	
 
 	@RequestMapping(value="/"+URI,params=RequestParameters.COLLECTION)
 	public ModelAndView openSearch(HttpServletRequest request, HttpServletResponse response) {

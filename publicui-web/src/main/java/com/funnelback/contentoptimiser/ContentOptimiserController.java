@@ -1,9 +1,10 @@
 package com.funnelback.contentoptimiser;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.apachecommons.Log;
 
@@ -11,10 +12,17 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 @Log
@@ -24,16 +32,25 @@ public class ContentOptimiserController {
 	@Autowired
 	private UrlCausesFiller filler;
 	
+	@Autowired
+	private ConfigRepository configRepository;
+	
+	@InitBinder
+	public void initBinder(DataBinder binder) {
+		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+	}
+	
 	
 	@RequestMapping("content-optimiser.*") 
-	public Map contentOptimiser(String url1, String url2,String number) throws IOException, XmlParsingException {
+	public Map contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		UrlComparison comparison = new UrlComparison();
 		
+
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new ClassPathResource("explain-mockup.xml").getFile(), "UTF-8"));
 		
 		filler.consumeResultPacket(comparison,rp);		
-		filler.setImportantUrl(url2,comparison);
+		filler.setImportantUrl("",comparison);
 		
 		filler.fillHints(comparison);
 		

@@ -120,9 +120,15 @@
 		Specific view for OpenSearch controller.
 		It needs a specific configuration as it outputs XML and not HTML
 	-->
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView">
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="openSearchView">
 		<property name="url" value="open-search.ftl" />
 		<property name="contentType" value="text/xml;charset=UTF-8" /> 
+	</bean>
+
+
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserView">
+		<property name="url" value="contentoptimiser/content-optimiser.ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" /> 
 	</bean>
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">

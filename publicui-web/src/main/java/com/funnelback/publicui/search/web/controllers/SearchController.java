@@ -1,11 +1,13 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
@@ -15,25 +17,31 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import waffle.servlet.WindowsPrincipal;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
+import com.funnelback.contentoptimiser.UrlCausesFiller;
+import com.funnelback.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
+import com.funnelback.publicui.xml.XmlParsingException;
 
+//@RequestMapping({"/search.*", "/_/search.*","/search/"})
 @Controller
-@RequestMapping({"/search.*", "/_/search.*"})
 @lombok.extern.apachecommons.Log
 public class SearchController {
 
@@ -80,13 +88,40 @@ public class SearchController {
 		return new ModelAndView("no-collection", model);
 	}
 	
+	private UrlCausesFiller filler = new DefaultUrlCauseFiller();
+	
+
+	@Resource(name="contentOptimiserView")
+	private FreeMarkerView contentOptimiserView;
+	
+	@RequestMapping(value="/content-optimiser.html")
+	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+		UrlComparison comparison = new UrlComparison();
+		
+		ModelAndView search = search(request, question);
+		
+		Map<String, Object> model = search.getModel();
+		SearchResponse searchResponse = ((SearchResponse)model.get(ModelAttributes.response.toString()));
+		
+		filler.consumeResultPacket(comparison,searchResponse.getResultPacket());		
+		filler.setImportantUrl("",comparison);
+		
+		filler.fillHints(comparison);
+		
+		//Map<String,Object> m = new HashMap<String,Object>();
+		//log.debug(url1 + " " + url2 );
+		model.put("explanation",comparison);
+		
+		return new ModelAndView(contentOptimiserView,model);
+	}
+	
 	/**
 	 * Default handler when we have a query and a collection.
 	 * @param request
 	 * @param question
 	 * @return
 	 */
-	@RequestMapping(params={RequestParameters.COLLECTION})
+	@RequestMapping(value="/search.*",params={RequestParameters.COLLECTION})
 	public ModelAndView search(
 			HttpServletRequest request,
 			SearchQuestion question) {

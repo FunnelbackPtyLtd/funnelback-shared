@@ -44,8 +44,9 @@
 		<url-pattern>/search.legacy</url-pattern>
 		<url-pattern>/search.xml</url-pattern>
 		<url-pattern>/open-search.xml</url-pattern>
+		<url-pattern>/content-optimiser.html</url-pattern>
 	</servlet-mapping>
-
+<!-- 
 	<servlet>
 		<servlet-name>content-optimiser</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -55,7 +56,7 @@
 	<servlet-mapping>
 		<servlet-name>content-optimiser</servlet-name>
 		<url-pattern>/content-optimiser/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 	
 	<filter>

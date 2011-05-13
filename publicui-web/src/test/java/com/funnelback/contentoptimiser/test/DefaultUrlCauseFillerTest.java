@@ -52,18 +52,18 @@ public class DefaultUrlCauseFillerTest {
 		assertEquals("content",causes.get(0).getName());
 		assertEquals("offlink",causes.get(1).getName());
 		assertEquals("urllen",causes.get(2).getName());
-		assertEquals(41,causes.get(0).getPercentage());
-		assertEquals(0,causes.get(1).getPercentage());
-		assertEquals(7,causes.get(2).getPercentage());
+		assertEquals(40.877,causes.get(0).getPercentage(),0.0001);
+		assertEquals(0,causes.get(1).getPercentage(),0.0001);
+		assertEquals(7.168,causes.get(2).getPercentage(),0.0001);
 
 		causes = comparison.getUrls().get(1).getCauses();		
 		assertNotNull(causes);
 		assertEquals("content",causes.get(0).getName());
 		assertEquals("offlink",causes.get(1).getName());
 		assertEquals("urllen",causes.get(2).getName());
-		assertEquals(31,causes.get(0).getPercentage());
-		assertEquals(0,causes.get(1).getPercentage());
-		assertEquals(7,causes.get(2).getPercentage());
+		assertEquals(31.406,causes.get(0).getPercentage(),0.0001);
+		assertEquals(0,causes.get(1).getPercentage(),0.0001);
+		assertEquals(7.490,causes.get(2).getPercentage(),0.0001);
 
 		
 	}
