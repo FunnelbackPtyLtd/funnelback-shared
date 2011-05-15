@@ -5,20 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @ToString
 @RequiredArgsConstructor
+@JsonIgnoreProperties({"rawPacket"})
 public class SearchResponse {
 
 	@Getter @Setter private ResultPacket resultPacket;
 	
-	/** Useful for debugging. We should remove it for production */
+	/** Useful for debugging. */
+	@XStreamOmitField
 	@Getter @Setter private String rawPacket;
 	
 	/** PADRE return code (0 = SUCESS) */

@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @ToString
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"parametersTransforms", "forms"})
+@JsonIgnoreProperties({"parametersTransforms"})
 @Log
 public class Collection {
 
