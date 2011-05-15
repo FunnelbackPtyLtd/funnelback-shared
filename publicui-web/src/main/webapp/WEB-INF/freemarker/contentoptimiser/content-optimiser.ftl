@@ -72,8 +72,8 @@
 	        	$.jqplot.config.enablePlugins = true;
 	        
 	        	<#list explanation.importantOne.causes as cause>
-	        		${cause.name} = new Array();
-	        		important_${cause.name} = [[${cause.percentage},1]];
+	        		var ${cause.name} = new Array();
+	        		var important_${cause.name} = [[${cause.percentage},1]];
 	        	</#list>
 	        	
 
@@ -83,7 +83,7 @@
         			</#list>
         		</#list>
 	        	
-				barplot = $.jqplot('barplot', [
+				var barplot = $.jqplot('barplot', [
 	        	<#list explanation.importantOne.causes as cause>
 	        			${cause.name},
 	        	</#list>
@@ -108,7 +108,7 @@
 			    	}
 				});
 				
-				barplotImportant = $.jqplot('barplot-important', [
+				var barplotImportant = $.jqplot('barplot-important', [
 	        	<#list explanation.importantOne.causes as cause>
 	        			important_${cause.name},
 	        	</#list>
@@ -140,17 +140,17 @@
 	        	
 	        	<#list explanation.importantOne.causes as cause>
 	        		for(var i = 0; i < ${cause.name}.length;i++) {
-	        			${cause.name}[i] = [${cause.name}[i][1],${cause.name}[i][0] ];
+	        			${cause.name}[i] = [${explanation.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0] ];
 	        		}
 	        	
-	        		line_${cause.name} = [
+	        		var line_${cause.name} = [
 	        		  <#list 0..explanation.urls?size as x>
 	        		  	[${x},${cause.percentage}],
 	        		  </#list>
 	        		  [${explanation.urls?size}+1, ${cause.percentage}]
 	        		];
 	        		
-	        		plot_${cause.name} = $.jqplot('plot-${cause.name}', [${cause.name},line_${cause.name}], {
+	        		var plot_${cause.name} = $.jqplot('plot-${cause.name}', [${cause.name},line_${cause.name}], {
        				 	legend:{show:false},
        				 	axes:{
        				 		xaxis:{ticks: [ <#list 0..explanation.urls?size as x> ${x}, </#list> (${explanation.urls?size}+1) ],tickOptions:{formatString:'%d'}, min:0, max:${explanation.urls?size} +1,label: "Rank" , labelRenderer: $.jqplot.CanvasAxisLabelRenderer, tickRenderer: $.jqplot.CanvasAxisTickRenderer},
@@ -176,29 +176,14 @@
            		<#list explanation.urls as urlinfo>
 	                <tr>
 	                	<td style="vertical-align: center;">
-	                		<div style="overflow: hidden; white-space: nowrap; height: 43px; <#if urlinfo_index == 0> padding-top: 15px; </#if> ">
-	                			<#if urlinfo.rank == explanation.importantOne.rank> 
-	                				<b class="warn">
-	                			</#if>
-	                			
-	                			${urlinfo.rank}
-	                			
-	                			<#if urlinfo.rank == explanation.importantOne.rank> 
-	                				</b>
-	                			</#if>
+	                		<div style="overflow: hidden; white-space: nowrap; height: 43px; <#if urlinfo_index == 0> padding-top: 15px; </#if> <#if urlinfo.rank == explanation.importantOne.rank> background-color: #ffaaaa; </#if>">
+	                			${urlinfo.rank}	                			
 	                		</div>
 	                	</td> 
 	                	<td style="vertical-align: center;">
-	                		<div style="overflow: hidden; white-space: nowrap; width: 160px; height: 43px;<#if urlinfo_index == 0> padding-top: 15px; </#if> ">
-	                			<#if urlinfo.rank == explanation.importantOne.rank> 
-	                				<b class="warn">
-	                			</#if>
+	                		<div style="overflow: hidden; white-space: nowrap; width: 160px; height: 43px;<#if urlinfo_index == 0> padding-top: 15px; </#if><#if urlinfo.rank == explanation.importantOne.rank> background-color: #ffaaaa; </#if> ">
 	                			
-	                			<a href="${urlinfo.url}" <#if urlinfo.rank == explanation.importantOne.rank> class="warn" </#if> > ${urlinfo.title} </a>
-	                			
-	                			<#if urlinfo.rank == explanation.importantOne.rank> 
-	                				</b>
-	                			</#if>
+	                			<a href="${urlinfo.url}"> ${urlinfo.title} </a>
 	                			
 	                		</div>
 	                	</td> 
@@ -215,15 +200,13 @@
 	                <tr><th>Rank</th><th>Title</th><th>Ranking caused by</th></tr>
 	                <tr>
 	                	<td style="vertical-align: center;">
-	                		<div style="overflow: hidden; white-space: nowrap; height: 43px;padding-top: 15px;">
-	                				<b class="warn">${explanation.importantOne.rank}</b>
+	                		<div style="overflow: hidden; white-space: nowrap; height: 43px;padding-top: 15px; background-color: #ffaaaa;">
+	                				${explanation.importantOne.rank}
 	                		</div>
 	                	</td> 
 	                	<td style="vertical-align: center;">
-	                		<div style="overflow: hidden; white-space: nowrap; width: 160px; height: 43px; padding-top: 15px;">
-	                				<b class="warn">
-			                			<a href="${explanation.importantOne.url}" class="warn"> ${explanation.importantOne.title} </a>
-	                				</b>
+	                		<div style="overflow: hidden; white-space: nowrap; width: 160px; height: 43px; padding-top: 15px; background-color: #ffaaaa;">
+	                			<a href="${explanation.importantOne.url}"> ${explanation.importantOne.title} </a>
 	                		</div>
 	                	</td> 
 	                	<td><div class="jqPlot" id="barplot-important" style="height:60px; width:300px;"></div></td>
