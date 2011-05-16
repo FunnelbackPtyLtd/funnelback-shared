@@ -28,6 +28,11 @@ public class Facet {
 		this.name = name;
 	}
 	
+	@Override
+	public String toString() {
+		return "Facet '" + name + "'";
+	}
+	
 	/**
 	 * Recursively check if this facet has any value at all
 	 * @return
@@ -92,6 +97,11 @@ public class Facet {
  				return false;
  			}
 		}
+		
+		@Override
+		public String toString() {
+			return "Category '" + label + "' (" + values.size() + " values, " + categories.size() + " sub-categories)";
+		}
 	}
 	
 	/**
@@ -113,7 +123,12 @@ public class Facet {
 		
 		/** Query String parameters to use to select this value */
 		@Getter @Setter private String queryStringParam;
-		
+
+		@Override
+		public String toString() {
+			return label + " (" + count + "). data=[" + data + "], queryStringParam=[" + queryStringParam + "]";
+		}
+
 		/**
 		 * Compares by number of occurences
 		 */
@@ -130,6 +145,7 @@ public class Facet {
 				}
 			}
 		}
+		
 	}
 	
 }

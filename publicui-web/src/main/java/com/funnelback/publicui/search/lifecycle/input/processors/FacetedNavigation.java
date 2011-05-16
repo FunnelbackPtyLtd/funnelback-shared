@@ -69,7 +69,7 @@ public class FacetedNavigation implements InputProcessor {
 						final String facetName = m.group(1);
 						final String extraParam = m.group(3);
 						final String values[] = searchTransaction.getQuestion().getInputParameterMap().get(selectedFacetParam);
-						log.debug("Fond facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
+						log.debug("Found facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
 						
 						// Find corresponding facet in config
 						FacetDefinition f = (FacetDefinition) CollectionUtils.find(config.getFacetDefinitions(), new Predicate() {
@@ -138,7 +138,7 @@ public class FacetedNavigation implements InputProcessor {
 	}
 
 	/**
-	 * Get updated gscope1 parameters by taking into account any existing gscop1 parameter
+	 * Get updated gscope1 parameters by taking into account any existing gscope1 parameter
 	 * and a set of constraints from the faceted navigation.
 	 * Each facet constraints will be combined with and AND, and each category constraint will be
 	 * combined with an OR.
@@ -177,7 +177,7 @@ public class FacetedNavigation implements InputProcessor {
 	
 	/**
 	 * Gets a query expression composed by query constraints coming from faceted navigation.
-	 * Each facet constraints will be combined with and AND, and each category constraint will be
+	 * Each facet constraints will be combined with an AND, and each category constraint will be
 	 * combined with an OR.
 	 * @param queryConstraints
 	 * @return
