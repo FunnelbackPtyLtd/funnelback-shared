@@ -1,6 +1,7 @@
 <head>
 </head>
 
+<body onload="javascript:dummy();">
 <s:TierBarFeaturedPages>Best bets:</s:TierBarFeaturedPages>
 <s:BestBets>Best bets content</s:BestBets>
 
@@ -67,3 +68,5 @@ fluster{cluster_url}
   </s:Compare>
 </h3>
 </s:Compare>
+
+</body>

@@ -1,5 +1,6 @@
 <#ftl encoding="utf-8" />
 <#import "/share/freemarker/funnelback_legacy.ftl" as s/>
+<#import "/share/freemarker/funnelback.ftl" as fb/>
 
 <head>
 
@@ -34,6 +35,8 @@
 
 </head>
 
+<body onload="javascript:dummy();">
+<@fb.ViewModeBanner />
 
 <@s.BestBets>Best bets:Best bets content</@s.BestBets>
 
@@ -100,3 +103,5 @@ ${s.cluster.href}
   </#if>
 </h3>
 </#if>
+
+</body>
