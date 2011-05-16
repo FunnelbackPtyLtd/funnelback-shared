@@ -107,7 +107,8 @@
 						    	        
 			    	        ]
 			        	},	
-			        	xaxis: {min: 0, max: 100, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
+			        	xaxis: {min: 0, max: <#list explanation.importantOne.causes as cause> ${cause.name}[0][0] + </#list> 0
+	        	, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
 			    	}
 				});
 				
@@ -156,20 +157,20 @@
 				});				
 				
 				<#list explanation.importantOne.causes as cause>
-	        		$("#legend").append('<span style="display: inline-block; padding: 2px; padding-left: 5px; padding-right: 5px;"><span style="display: inline-block;  width: 12px; height: 10px; background-color: '+barplot.seriesColors[${cause_index}]+' ">&nbsp;</span> <span>${cause.name}</span>');
+	        		$("#legend").append('<span style="display: inline-block; padding: 2px; padding-left: 5px; padding-right: 5px;"><span style="display: inline-block;  width: 12px; height: 10px; background-color: '+barplot.seriesColors[${cause_index}%16]+' ">&nbsp;</span> <span>${cause.name}</span>');
 	        	</#list>
 	        	
 	        	
 	        	<#list explanation.importantOne.causes as cause>
 	        		for(var i = 0; i < ${cause.name}.length;i++) {
-	        			${cause.name}[i] = [${explanation.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0]/${explanation.weights[cause.name]}];
+	        			${cause.name}[i] = [${explanation.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0]/${explanation.weights[cause.name]}*100];
 	        		}
 	        	
 	        		var line_${cause.name} = [
 	        		  <#list 0..explanation.urls?size as x>
-	        		  	[${x},${cause.percentage}/${explanation.weights[cause.name]}],
+	        		  	[${x},${cause.percentage}/${explanation.weights[cause.name]}*100],
 	        		  </#list>
-	        		  [${explanation.urls?size}+1, ${cause.percentage}/${explanation.weights[cause.name]}]
+	        		  [${explanation.urls?size}+1, ${cause.percentage}/${explanation.weights[cause.name]}*100]
 	        		];
 	        		
 	        		var plot_${cause.name} = $.jqplot('plot-${cause.name}', [${cause.name},line_${cause.name}], {
@@ -184,7 +185,7 @@
  							    }
        				 		},
         				series:[
-            				{showLine:false, markerOptions:{style:'circle'},color: barplot.seriesColors[${cause_index}]},
+            				{showLine:false, markerOptions:{style:'circle'},color: barplot.seriesColors[${cause_index}%16]},
             				{showLine:true, color:'#ff9999', showMarker:false},
 		        		],
     				});
@@ -249,22 +250,10 @@
 			</table>
 		</div>    	
 
-        <div class="section">
-            <ul>
-        		<#list explanation.hints as hint>
-        			<li style="">
-        				${hint.html}
-        				<div style="clear: both; text-align: right; margin: 0px; padding 0px;">
-        					<a href="${hint.link}">more about ${hint.linkText}</a>
-        				</div>
-        			</li>
-        		</#list>
-       		</ul>
-        </div>
-        <#list explanation.importantOne.causes as cause>
+        <#list explanation.hintsByWin as hint>
         	<div class="section">
-        		<h4>${cause.name}</h4>
-	        	<div class="jqPlot" id="plot-${cause.name}" style="height:300px; width:500px;"></div>
+        		<h4>${hint.name}</h4>
+	        	<div class="jqPlot" id="plot-${hint.name}" style="height:300px; width:500px;"></div>
         	</div>
         </#list>
         

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +16,8 @@ public class UrlComparison {
 	
 	@Getter @Setter private UrlInfoAndScore importantOne;
 	
-	@Getter	private final List<Hint> hints = new ArrayList<Hint>();
+	@Getter	private final List<Hint> hintsByWin = new ArrayList<Hint>();
+	@Getter	private final Map<String,Hint> hintsByName = new HashMap<String,Hint>();
 	
 	@Getter private final Map<String, Float> weights = new HashMap<String,Float>();
 

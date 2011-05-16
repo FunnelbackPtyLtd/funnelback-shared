@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class UrlInfoAndScore implements Comparable<UrlInfoAndScore>{
-	@Getter @Setter
-	String url;
-	@Getter @Setter
-	String title;
-	@Getter @Setter
-	int rank;
-	
-	@Getter
-	List<RankingScore> causes = new ArrayList<RankingScore>();
+	@Getter private final String url;
+	@Getter private final String title;
+	@Getter private final int rank;
+	@Getter private final List<RankingScore> causes = new ArrayList<RankingScore>();
 
 	public int sum() {
 		int sumThis = 0;

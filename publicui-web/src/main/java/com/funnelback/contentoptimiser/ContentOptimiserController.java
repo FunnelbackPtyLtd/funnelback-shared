@@ -42,7 +42,7 @@ public class ContentOptimiserController {
 	
 	
 	@RequestMapping("content-optimiser.*") 
-	public Map contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+	public Map<String, Object> contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		UrlComparison comparison = new UrlComparison();
 		
 
@@ -50,8 +50,7 @@ public class ContentOptimiserController {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new ClassPathResource("explain-mockup.xml").getFile(), "UTF-8"));
 		
 		filler.consumeResultPacket(comparison,rp);		
-		filler.setImportantUrl("",comparison);
-		
+		filler.setImportantUrl("",comparison, rp);
 		filler.fillHints(comparison);
 		
 

@@ -1,7 +1,10 @@
 package com.funnelback.contentoptimiser.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,13 +25,26 @@ import com.funnelback.publicui.xml.XmlParsingException;
 public class DefaultUrlCauseFillerTest {
 
 	@Test
-	public void testFillHints () {
+	public void testFillHints () throws XmlParsingException, IOException {
+		StaxStreamParser parser = new StaxStreamParser();
+		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
-
-		f.fillHints(comparison);
 		
-		Assert.assertEquals(4,comparison.getHints().size());
+		f.consumeResultPacket(comparison, rp);
+		f.setImportantUrl("", comparison, rp);
+		
+		List<RankingScore> causes = comparison.getUrls().get(0).getCauses();
+		//assertEquals("offlink",causes.get(1).getName());
+		assertTrue("offlink".equals(causes.get(1).getName()));
+		assertNotNull(comparison.getWeights().get("offlink"));
+		
+		f.fillHints(comparison);
+
+		
+		assertFalse("offlink".equals(causes.get(1).getName()));
+		assertNull(comparison.getWeights().get("offlink"));
+		//Assert.assertEquals(4,comparison.getHints().size());
 	}
 
 	
@@ -41,7 +57,7 @@ public class DefaultUrlCauseFillerTest {
 		UrlComparison comparison = new UrlComparison();
 
 		f.consumeResultPacket(comparison, rp);
-		f.setImportantUrl("", comparison);
+		f.setImportantUrl("", comparison, rp);
 
 		
 		Assert.assertNotNull(comparison.getImportantOne());

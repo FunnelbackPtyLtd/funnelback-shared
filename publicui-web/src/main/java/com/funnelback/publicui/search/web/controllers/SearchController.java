@@ -29,6 +29,7 @@ import com.funnelback.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -103,8 +104,9 @@ public class SearchController {
 		Map<String, Object> model = search.getModel();
 		SearchResponse searchResponse = ((SearchResponse)model.get(ModelAttributes.response.toString()));
 		
-		filler.consumeResultPacket(comparison,searchResponse.getResultPacket());		
-		filler.setImportantUrl("",comparison);
+		ResultPacket resultPacket = searchResponse.getResultPacket();
+		filler.consumeResultPacket(comparison,resultPacket);		
+		filler.setImportantUrl("",comparison,resultPacket);
 		
 		filler.fillHints(comparison);
 		
