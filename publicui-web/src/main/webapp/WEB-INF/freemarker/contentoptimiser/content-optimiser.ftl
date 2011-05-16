@@ -71,10 +71,13 @@
         		
 	        	$.jqplot.config.enablePlugins = true;
 	        
+	        	
 	        	<#list explanation.importantOne.causes as cause>
 	        		var ${cause.name} = new Array();
 	        		var important_${cause.name} = [[${cause.percentage},1]];
+	        		var weight_${cause.name} = [[${explanation.weights[cause.name]},1]]
 	        	</#list>
+	        	
 	        	
 
         		<#list explanation.urls as urlinfo>
@@ -130,8 +133,27 @@
 			    	}
 				});
 				
+				var barplotWeight = $.jqplot('barplot-weights', [
+	        	<#list explanation.importantOne.causes as cause>
+	        			weight_${cause.name},
+	        	</#list>
 				
-				
+				], {
+	    			stackSeries: true, 
+	    			legend: {show: false},
+	    			seriesDefaults: {
+	        			renderer: $.jqplot.BarRenderer, 
+	        			shadowAngle: 135, 
+	        			rendererOptions: {barDirection: 'horizontal', barWidth: 20}
+	    			}, 
+	    			axes: {
+	        			yaxis: {
+				            renderer: $.jqplot.CategoryAxisRenderer, 
+			    	        ticks: [' ']
+			        	},	
+			        	xaxis: {min: 0, max: 100, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
+			    	}
+				});				
 				
 				<#list explanation.importantOne.causes as cause>
 	        		$("#legend").append('<span style="display: inline-block; padding: 2px; padding-left: 5px; padding-right: 5px;"><span style="display: inline-block;  width: 12px; height: 10px; background-color: '+barplot.seriesColors[${cause_index}]+' ">&nbsp;</span> <span>${cause.name}</span>');
@@ -140,14 +162,14 @@
 	        	
 	        	<#list explanation.importantOne.causes as cause>
 	        		for(var i = 0; i < ${cause.name}.length;i++) {
-	        			${cause.name}[i] = [${explanation.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0] ];
+	        			${cause.name}[i] = [${explanation.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0]/${explanation.weights[cause.name]}];
 	        		}
 	        	
 	        		var line_${cause.name} = [
 	        		  <#list 0..explanation.urls?size as x>
-	        		  	[${x},${cause.percentage}],
+	        		  	[${x},${cause.percentage}/${explanation.weights[cause.name]}],
 	        		  </#list>
-	        		  [${explanation.urls?size}+1, ${cause.percentage}]
+	        		  [${explanation.urls?size}+1, ${cause.percentage}/${explanation.weights[cause.name]}]
 	        		];
 	        		
 	        		var plot_${cause.name} = $.jqplot('plot-${cause.name}', [${cause.name},line_${cause.name}], {
@@ -212,8 +234,21 @@
 	                	<td><div class="jqPlot" id="barplot-important" style="height:60px; width:300px;"></div></td>
 	                </tr>	
 			</table>
-		</div>    		
+		</div>    	
         
+        <div class="section">
+	        <table>
+	                <tr>
+	                	<td style="vertical-align: center;">
+	                		<div style="overflow: hidden; white-space: nowrap; width: 190px; height: 43px; padding-top: 15px;">
+	                			Maximum possible scores:
+	                		</div>
+	                	</td> 
+	                	<td><div class="jqPlot" id="barplot-weights" style="height:60px; width:300px;"></div></td>
+	                </tr>	
+			</table>
+		</div>    	
+
         <div class="section">
             <ul>
         		<#list explanation.hints as hint>

@@ -65,6 +65,9 @@ public class DefaultUrlCauseFillerTest {
 		assertEquals(0,causes.get(1).getPercentage(),0.0001);
 		assertEquals(7.490,causes.get(2).getPercentage(),0.0001);
 
-		
+		assertNotNull(comparison.getWeights());
+		assertEquals(41,comparison.getWeights().get("content"),0.0001);
+		assertEquals(14,comparison.getWeights().get("offlink"),0.0001);
+		assertEquals(14,comparison.getWeights().get("urllen"),0.0001);
 	}
 }

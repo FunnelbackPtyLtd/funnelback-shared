@@ -2,6 +2,7 @@ package com.funnelback.contentoptimiser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,12 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp) {
 		// TODO Auto-generated method stub
 		
+		// Add weights
+		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
+			comparison.getWeights().put(weightEntry.getKey(), weightEntry.getValue() * 100);
+		}
 		
+		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
 			UrlInfoAndScore info = new UrlInfoAndScore();
 			
@@ -35,10 +41,10 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 	
 	@Override
 	public void fillHints(UrlComparison comparison) {
-		comparison.hints.add(new Hint("<b>Content: </b>The document at rank 4 has a slightly higher content score. This is because the query terms \"King Lear\" appear 1 more time than the document at rank 1.","#","document content"));
-		comparison.hints.add(new Hint("<b>Content: </b> Neither document has a meta description tag. Perhaps add a meta description tag which succinctly describes the content?", "#", "meta tags"));
-		comparison.hints.add(new Hint("<b>Anchors: </b> Both documents have the same number of incoming links. Perhaps add links to these pages from other pages on the site? Make sure that the link text accurately describes the page content.", "#", "anchors"));
-		comparison.hints.add(new Hint("<b>URL:</b> <b class='warn'>The document at rank 1 has a higher URL score.</b> This is because the URL contains the query term \"lear\" 1 more time, and it is slightly shorter. Do the URLs for both documents describe the content? Would a human be able to predict what the content found at the URL is without looking?", "#", "URL naming"));
+		comparison.getHints().add(new Hint("<b>Content: </b>The document at rank 4 has a slightly higher content score. This is because the query terms \"King Lear\" appear 1 more time than the document at rank 1.","#","document content"));
+		comparison.getHints().add(new Hint("<b>Content: </b> Neither document has a meta description tag. Perhaps add a meta description tag which succinctly describes the content?", "#", "meta tags"));
+		comparison.getHints().add(new Hint("<b>Anchors: </b> Both documents have the same number of incoming links. Perhaps add links to these pages from other pages on the site? Make sure that the link text accurately describes the page content.", "#", "anchors"));
+		comparison.getHints().add(new Hint("<b>URL:</b> <b class='warn'>The document at rank 1 has a higher URL score.</b> This is because the URL contains the query term \"lear\" 1 more time, and it is slightly shorter. Do the URLs for both documents describe the content? Would a human be able to predict what the content found at the URL is without looking?", "#", "URL naming"));
 	}
 
 	@Override
