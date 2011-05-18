@@ -34,6 +34,7 @@
 	</bean>
 
 	<bean id="contextPathHolder" class="com.funnelback.publicui.utils.web.ContextPathHolder" />
+	<!-- bean id="ajaxProxyController" class="com.funnelback.publicui.search.web.controllers.AjaxProxyController" / -->
 
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths">
