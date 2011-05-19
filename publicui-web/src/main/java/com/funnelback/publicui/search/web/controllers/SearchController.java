@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,26 +18,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
-import waffle.servlet.WindowsPrincipal;
-
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
-import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.utils.MapKeyFilter;
-import com.funnelback.publicui.utils.MapUtils;
+import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 //@RequestMapping({"/search.*", "/_/search.*","/search/"})
@@ -48,7 +41,7 @@ public class SearchController {
 
 	public enum ModelAttributes {
 		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath,
-		question, response, error;
+		extra, question, response, error;
 		
 		public static Set<String> getNames() {
 			HashSet<String> out = new HashSet<String>();
@@ -129,8 +122,7 @@ public class SearchController {
 			SearchQuestion question) {
 				
 		SearchTransaction transaction = null;
-		
-		additionalDataBinding(question, request);
+		SearchQuestionBinder.bind(request, question);
 		
 		if (question.getCollection() != null) {
 			if (question.getQuery() != null && ! "".equals(question.getQuery())) {
@@ -161,71 +153,6 @@ public class SearchController {
 		return new ModelAndView(viewName, model);
 
 	}
-
-	/**
-	 * Detects if the request is impersonated.
-	 * 
-	 * TODO The current implementation doesn't really check if the user is impersonated
-	 * but only relies on the fact that it has been authenticated using the Waffle filter.
-	 * Unfortunately J2EE 5 doesn't allow us to have access to the FilterConfig to read
-	 * the value of the "impersonate" parameter (Possible with J2EE 6)
-	 *   - Either switch to J2EE 6
-	 *   - Or update the WindowsPrincipal with a impersonation status field ?
-	 *   
-	 * @param request
-	 * @return true if the request is impersonated, false otherwise
-	 */
-	public boolean isRequestImpersonated(HttpServletRequest request) {
-		return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
-	}
-	
-	/**
-	 * FIXME Workaround the fact that there is no way to do custom databinding with Spring MVC 3
-	 * @param question
-	 * @param request
-	 */
-	private void additionalDataBinding(SearchQuestion question, HttpServletRequest request) {
-
-		// Parameter map
-		question.getInputParameterMap().putAll(request.getParameterMap());
-	
-		// Add any HTTP servlet specifics 
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader("host"));
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
-
-		// Referer
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), request.getHeader("Referer"));
-				
-		// Copy original query
-		question.setOriginalQuery(question.getQuery());
-		
-		// Is request impersonated ?
-		question.setImpersonated(isRequestImpersonated(request));
-		
-		// User identifier
-		if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
-			question.setUserId(LogUtils.getUserIdentifier(request,
-					DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
-		}
-		
-		// Last clicked cluster
-		question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
-		
-		// Previously clicked clusters
-		MapKeyFilter filter = new MapKeyFilter(request.getParameterMap());
-		String[] paramNames = filter.filter(RequestParameters.ContextualNavigation.CN_PREV_PATTERN);
-		Arrays.sort(paramNames);
-		for(String paramName : paramNames) {
-			// We don't really care of the indexes given in parameter names
-			String value = request.getParameter(paramName);
-			if (value != null && !"".equals(value) ) {
-				question.getCnPreviousClusters().add(value);
-			}
-		}
-	}
 	
 	private Map<String, Object> getModel(ViewTypes vt, HttpServletRequest request, SearchTransaction st) {
 		Map<String, Object> out = new HashMap<String, Object>();
@@ -235,6 +162,7 @@ public class SearchController {
 			out.put(ModelAttributes.question.toString(), st.getQuestion());
 			out.put(ModelAttributes.response.toString(), st.getResponse());
 			out.put(ModelAttributes.error.toString(), st.getError());
+			out.put(ModelAttributes.extra.toString(), st.getExtraSearches());
 			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
 			break;
 		case xml:

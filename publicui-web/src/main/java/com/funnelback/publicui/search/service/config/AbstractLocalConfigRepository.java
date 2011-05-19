@@ -6,6 +6,7 @@ import groovy.lang.Script;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,11 +15,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.Config;
@@ -35,6 +38,7 @@ import com.funnelback.publicui.search.model.collection.paramtransform.ParamTrans
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
 import com.funnelback.publicui.xml.XmlParsingException;
@@ -56,8 +60,12 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	/** Header line of the synonyms.cfg */
 	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
 	
-	private static final String FTL_SUFFIX = ".ftl";
-	private static final Pattern FORM_BACKUP_PATTERN = Pattern.compile("-\\d{12}"+FTL_SUFFIX);
+	protected static final String FTL_SUFFIX = ".ftl";
+	protected static final String CFG_SUFFIX = ".cfg";
+	
+	protected static final Pattern FORM_BACKUP_PATTERN = Pattern.compile("-\\d{12}"+FTL_SUFFIX);
+	
+	protected static final String EXTRA_SEARCHES_PREFIX = "extra_search";
 	
 	protected GlobalOnlyConfig globalConfiguration;
 	
@@ -445,6 +453,27 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		
 		return out;
 		
+	}
+	
+	protected Map<String, String> loadExtraSearchConfiguration(Collection collection, String extraSearchId) {
+		File config = new File(collection.getConfiguration().getConfigDirectory(),
+				EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
+		
+		if (config.canRead()) {
+			try {
+				FileReader reader = new FileReader(config);
+				Properties p = new Properties();
+				p.load(reader);
+				IOUtils.closeQuietly(reader);
+				return MapUtils.fromProperties(p);
+			} catch (IOException ioe) {
+				log.error("Unable to read extra searches configuration file '" + config.getAbsolutePath() + "'", ioe);
+			}
+		} else {
+			log.warn("Extra searches configuration file '" + config.getAbsolutePath() + "' doesn't exist");
+		}
+		
+		return null;
 	}
 	
 }

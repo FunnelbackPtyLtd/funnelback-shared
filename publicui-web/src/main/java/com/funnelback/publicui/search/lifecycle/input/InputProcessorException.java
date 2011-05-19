@@ -7,4 +7,8 @@ public class InputProcessorException extends Exception {
 	public InputProcessorException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public InputProcessorException(String message) {
+		super(message);
+	}
 }

@@ -31,7 +31,8 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		_CACHE_globalConfigFile_,
 		_CACHE_globalConfiguration_,
 		_CACHE_lastUpdated_,
-		_CACHE_forms_;
+		_CACHE_forms_,
+		_CACHE_extraSearches_;
 	}
 
 	@Autowired
@@ -117,7 +118,11 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		
 		Element elt = cache.get(key);
 		if (elt == null) {
-			return loadLastUpdated(collectionId);
+			Date lastUpdated =  loadLastUpdated(collectionId);
+			if (lastUpdated != null) {
+				cache.put(new Element(key, lastUpdated));
+			}
+			return lastUpdated;
 		} else {
 			return (Date) elt.getObjectValue();
 		}
@@ -130,9 +135,30 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		
 		Element elt = cache.get(key);
 		if (elt == null) {
-			return loadFormList(collectionId, profileId);
+			String[] forms = loadFormList(collectionId, profileId);
+			if ( forms != null) {
+				cache.put(new Element(key, forms));
+			}
+			return forms;
 		} else {
 			return (String[]) elt.getObjectValue();
+		}
+	}
+	
+	@Override
+	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_extraSearches_.toString() + collection.getId() + "_" + extraSearchId;
+			
+		Element elt = cache.get(key);
+		if (elt == null) {
+			Map<String, String> config = loadExtraSearchConfiguration(collection, extraSearchId);
+			if ( config != null) {
+				cache.put(new Element(key, config));
+			}
+			return config;
+		} else {
+			return (Map<String, String>) elt.getObjectValue();
 		}
 	}
 

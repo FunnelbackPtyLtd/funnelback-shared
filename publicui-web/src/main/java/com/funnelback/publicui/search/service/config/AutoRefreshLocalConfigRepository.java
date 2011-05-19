@@ -228,9 +228,32 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		}
 	}
 	
+	/**
+	 * Not cached, as it's rarely used and caching won't really help
+	 */
 	@Override
 	public String[] getForms(String collectionId, String profileId) {
 		return loadFormList(collectionId, profileId);
+	}
+	
+	@Override
+	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String key = CacheKeys._CACHE_extraSearches_.toString() + collection.getId() + "_" + extraSearchId;
+			
+		Element elt = cache.get(key);
+		if (elt == null) {
+			return super.getExtraSearchConfiguration(collection, extraSearchId);
+		} else {
+			File config = new File(collection.getConfiguration().getConfigDirectory(),
+					EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
+			if (config.lastModified() > elt.getCreationTime()) {
+				cache.remove(key);
+				return super.getExtraSearchConfiguration(collection, extraSearchId);
+			} else {
+				return (Map<String, String>) elt.getObjectValue();
+			}
+		}
 	}
 	
 }

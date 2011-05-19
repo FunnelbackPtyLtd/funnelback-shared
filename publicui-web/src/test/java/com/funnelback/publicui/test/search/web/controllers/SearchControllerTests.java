@@ -205,17 +205,6 @@ public class SearchControllerTests {
 		
 		Assert.assertEquals(SearchError.Reason.OutputProcessorError, st.getError().getReason());
 	}
-
-	@Test
-	public void testIsRequestImpersonated() {
-		Assert.assertFalse(searchController.isRequestImpersonated(request));
-		
-		request.setUserPrincipal(new UserPrincipal("test"));
-		Assert.assertFalse(searchController.isRequestImpersonated(request));
-		
-		request.setUserPrincipal(new WindowsPrincipal(new MockWindowsIdentity()));
-		Assert.assertTrue(searchController.isRequestImpersonated(request));
-	}
 	
 	private class MockWindowsIdentity implements IWindowsIdentity {
 

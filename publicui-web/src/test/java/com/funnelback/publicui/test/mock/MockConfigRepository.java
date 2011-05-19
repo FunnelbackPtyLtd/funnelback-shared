@@ -60,6 +60,11 @@ public class MockConfigRepository implements ConfigRepository {
 	public String[] getForms(String collectionId, String profileId) {
 		return new String[]{"simple"};
 	}
+	
+	@Override
+	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
+		throw new IllegalStateException("Not yet implemented");
+	}
 
 }
 

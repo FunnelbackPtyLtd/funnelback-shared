@@ -1,6 +1,9 @@
 package com.funnelback.publicui.utils;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 public class MapUtils {
 
@@ -31,6 +34,19 @@ public class MapUtils {
 		if (data != null) {
 			out.put(key, new String[] {data});
 		}
+	}
+	
+	/**
+	 * Converts a {@link Properties} to a {@link Map}
+	 * @param p
+	 * @return
+	 */
+	public static Map<String, String> fromProperties(Properties p) {
+		Map<String, String> out = new HashMap<String, String>();
+		for (Entry<Object, Object> entry: p.entrySet()) {
+			out.put(entry.getKey().toString(), entry.getValue().toString());
+		}
+		return out;		
 	}
 	
 }

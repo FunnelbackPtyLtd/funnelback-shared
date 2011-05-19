@@ -68,5 +68,12 @@ public interface ConfigRepository {
 	 * @return The list of available forms for a collection, for a given profile
 	 */
 	public String[] getForms(String collectionId, String profileId);
+	
+	/**
+	 * @param collection
+	 * @param extraSearchId
+	 * @return The extra search configuration data for the given collection and extra search source.
+	 */
+	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId);
 
 }

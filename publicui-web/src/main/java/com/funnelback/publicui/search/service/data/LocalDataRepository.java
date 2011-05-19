@@ -33,7 +33,7 @@ public class LocalDataRepository implements DataRepository {
 				if (doc.exists()) {
 					break;
 				}
-				log.debug("Cached document '" + doc.getAbsolutePath() + "' doesn't exists.");
+				log.debug("Cached document '" + doc.getAbsolutePath() + "' doesn't exist.");
 			} catch (FileNotFoundException fnfe) {
 				log.warn("Error while trying to access cached document under the collecton_root at '" + folder + File.separator + relativeUrl, fnfe);
 			}
