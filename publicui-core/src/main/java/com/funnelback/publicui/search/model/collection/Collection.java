@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @ToString
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"parametersTransforms"})
+@JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses"})
 @Log
 public class Collection {
 
@@ -52,9 +52,11 @@ public class Collection {
 	@Getter final private String id;
 	
 	/** Collection configuration */
+	@XStreamOmitField
 	@Getter final private Config configuration;
 	
 	/** Quick Links configuration (quicklinks.cfg) */
+	@XStreamOmitField
 	@Getter @Setter private Map<String, String> quickLinksConfiguration;
 	
 	/** Search profiles (Key = profile id) */
@@ -82,6 +84,7 @@ public class Collection {
 	/**
 	 * Custom hook scripts (Groovy)
 	 */
+	@XStreamOmitField
 	@Getter private final Map<Hook, Class<Script>> hookScriptsClasses = new HashMap<Hook, Class<Script>>();
 	
 	/** Collection type */
