@@ -29,10 +29,15 @@ public class ChangeCollectionQuestionFactory implements ExtraSearchQuestionFacto
 		String collectionId = extraSearchConfiguration.get(Keys.COLLECTION);
 		if (collectionId != null && configRepository.getCollection(collectionId) != null) {
 			out.setCollection(configRepository.getCollection(collectionId));
-			return out;
 		} else {
 			throw new InputProcessorException("Invalid collection parameter '" + collectionId + "'");
 		}
+		
+		if (extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS) != null) {
+			out.getDynamicQueryProcessorOptions().add(extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS));
+		}
+		
+		return out;
 	}
 
 }
