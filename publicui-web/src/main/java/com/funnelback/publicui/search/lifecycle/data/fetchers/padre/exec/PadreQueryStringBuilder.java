@@ -20,11 +20,20 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 /**
  * Helper to build a query string that will be passed to PADRE. 
  */
+@RequiredArgsConstructor
 public class PadreQueryStringBuilder {
 
 	private static final String DELIMITER = "&";
 	
-	public static String buildQueryString(SearchTransaction transaction) {
+	private final SearchTransaction transaction;
+
+	/**
+	 * Whether to apply faceted navigation constraints where
+	 * building the query string or not
+	 */
+	private final boolean withFacetConstraints;
+	
+	public String buildQueryString() {
 		Map<String, String[]> qs = new HashMap<String, String[]>();
 		
 		// Add any additional parameter
@@ -34,11 +43,11 @@ public class PadreQueryStringBuilder {
 		qs.put(Parameters.collection.toString(), new String[] {transaction.getQuestion().getCollection().getId()});
 		qs.put(Parameters.profile.toString(), new String[] {transaction.getQuestion().getProfile()});
 
-		qs.put(Parameters.query.toString(), new String[] {buildQuery(transaction)});
+		qs.put(Parameters.query.toString(), new String[] {buildQuery()});
 		
-		String gscope1 = buildGScope1(transaction);
+		String gscope1 = buildGScope1();
 		if (gscope1 != null && ! "".equals(gscope1)) {
-			qs.put(Parameters.gscope1.toString(), new String[] {buildGScope1(transaction)});
+			qs.put(Parameters.gscope1.toString(), new String[] {buildGScope1()});
 		}
 		
 		// Remove from query string any parameter that will be passed as an environment variable
@@ -76,7 +85,7 @@ public class PadreQueryStringBuilder {
 	 * @param transaction
 	 * @return
 	 */
-	public static String buildQuery(SearchTransaction transaction) {
+	public String buildQuery() {
 		// Build query
 		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
 		if (transaction.getQuestion().getQueryExpressions().size() > 0) {
@@ -91,7 +100,7 @@ public class PadreQueryStringBuilder {
 			}
 		}
 		
-		if (transaction.getQuestion().getFacetsQueryConstraints().size() > 0) {
+		if (withFacetConstraints && transaction.getQuestion().getFacetsQueryConstraints().size() > 0) {
 			// Add query constraints for faceted navigation
 			for (String value: transaction.getQuestion().getFacetsQueryConstraints()) {
 				query.append(" " + value);
@@ -106,10 +115,10 @@ public class PadreQueryStringBuilder {
 	 * @param transaction
 	 * @return
 	 */
-	private static String buildGScope1(SearchTransaction transaction) {
+	private String buildGScope1() {
 		String facetGscopeConstraints = transaction.getQuestion().getFacetsGScopeConstraints();
 		// Do we have gscope constraints due to faceted navigation ?
-		if ( facetGscopeConstraints!= null && ! "".equals(facetGscopeConstraints)) {
+		if ( withFacetConstraints && facetGscopeConstraints!= null && ! "".equals(facetGscopeConstraints)) {
 			
 			// Do we have other gscope constraints (coming from query string)
 			if (transaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {

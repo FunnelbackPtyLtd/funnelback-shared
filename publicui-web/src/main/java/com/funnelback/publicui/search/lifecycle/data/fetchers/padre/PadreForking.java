@@ -73,7 +73,7 @@ public class PadreForking implements DataFetcher {
 	
 			Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
 			env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
-			env.put(EnvironmentKeys.QUERY_STRING.toString(), PadreQueryStringBuilder.buildQueryString(searchTransaction));
+			env.put(EnvironmentKeys.QUERY_STRING.toString(), new PadreQueryStringBuilder(searchTransaction, true). buildQueryString());
 	
 			// SystemRoot environment variable is MANDATORWY for TRIM DLS checks
 			// The TRIM SDK uses WinSock to connect to the remote server, and 
