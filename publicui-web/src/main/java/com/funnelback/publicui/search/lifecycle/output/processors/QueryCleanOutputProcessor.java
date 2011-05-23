@@ -31,26 +31,16 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction.hasResponse() && SearchTransactionUtils.hasResults(searchTransaction)) {
+		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse() && SearchTransactionUtils.hasResults(searchTransaction)) {
 
 			// Remove any weighted query operators
 			String q = WEIGHTED_OPERATORS_PATTERN.matcher(
 					searchTransaction.getResponse().getResultPacket().getQuery()
 				).replaceAll("");
 			
-			if (SearchTransactionUtils.hasCollection(searchTransaction)) {
-				FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
-				
-				if (config != null) {
-					// Remove each query expression related to a facet config
-					for(String field: config.getMetadataFieldsUsed()) {
-						// delete phrases e.g. x:"a phrase"
-						q = q.replaceAll("\\|" + field + ":\".+?\"\\s?", "");
-						
-						// delete single elements e.g. x:query
-						q = q.replaceAll("\\|" + field + ":[^\"]\\S*\\s?", "");
-					}
-				}
+			// Remove any faceted navigation constraint
+			for (String constraint: searchTransaction.getQuestion().getFacetsQueryConstraints()) {
+				q = q.replaceAll("\\Q"+constraint+"\\E", "");
 			}
 			
 			log.debug("Cleaned query '" + searchTransaction.getResponse().getResultPacket().getQuery() + "' to '" + q.trim() + "'");

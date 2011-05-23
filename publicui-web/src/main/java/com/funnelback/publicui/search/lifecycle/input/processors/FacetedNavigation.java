@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -118,21 +119,16 @@ public class FacetedNavigation implements InputProcessor {
 						
 					}
 					
-					String existingGScope1Parameters = "";
-					if (searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
-						// Only one value is relevant
-						existingGScope1Parameters = searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)[0];
+					if (gscope1Constraints.size() > 0) {
+						searchTransaction.getQuestion().setFacetsGScopeConstraints(getGScope1Parameters(gscope1Constraints));
+						log.debug("Added gscope1 constraints '" + searchTransaction.getQuestion().getFacetsGScopeConstraints());
 					}
 					
-					String updatedParameters = getGScope1Parameters(gscope1Constraints, existingGScope1Parameters);
-					searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.GSCOPE1, new String[] {updatedParameters.replace("+", "%2B")});
-					log.debug("Updated gscope1 constraints from '" + existingGScope1Parameters + "' to '" + updatedParameters + "'");
-					
-					
-					List<String> additionalQueryConstraints = getQueryConstraints(queryConstraints);
-					searchTransaction.getQuestion().getQueryExpressions().addAll(additionalQueryConstraints);
-					log.debug("Added query constraints '" + StringUtils.join(additionalQueryConstraints, ",") + "'");
+					if (queryConstraints.size() > 0) {
+						searchTransaction.getQuestion().getFacetsQueryConstraints().addAll(getQueryConstraints(queryConstraints));
+						log.debug("Added query constraints '" + StringUtils.join(searchTransaction.getQuestion().getFacetsQueryConstraints(), ",") + "'");
 					}
+				}
 			}
 		}
 	}
@@ -146,7 +142,7 @@ public class FacetedNavigation implements InputProcessor {
 	 * @param existingGScope1Parameters
 	 * @return
 	 */
-	private String getGScope1Parameters(Set<Set<String>> gscope1Constraints, String existingGScope1Parameters) {
+	private String getGScope1Parameters(Set<Set<String>> gscope1Constraints) {
 		String updated = "";
 		if (gscope1Constraints.size() > 0) {
 			Stack<String> out = new Stack<String>();
@@ -168,9 +164,9 @@ public class FacetedNavigation implements InputProcessor {
 			updated = serializeRPN(out);
 
 			// Add existing constraints and an AND operator
-			if (existingGScope1Parameters != null && !"".equals(existingGScope1Parameters)) {
-				updated += existingGScope1Parameters + "+";
-			}
+			// if (existingGScope1Parameters != null && !"".equals(existingGScope1Parameters)) {
+			// 	updated += existingGScope1Parameters + "+";
+			// }
 		}
 		return updated;
 	}
@@ -194,8 +190,11 @@ public class FacetedNavigation implements InputProcessor {
 					newConstraints.append("|" + queryConstraint.iterator().next());
 				} else if (queryConstraint.size() > 1) {
 					newConstraints.append("|[");
-					for (String constraint: queryConstraint) {
-						newConstraints.append(" ").append(constraint);
+					for (Iterator<String> it = queryConstraint.iterator(); it.hasNext();) {
+						newConstraints.append(it.next());
+						if (it.hasNext()) {
+							newConstraints.append(" ");
+						}
 					}
 					newConstraints.append("]");
 				}

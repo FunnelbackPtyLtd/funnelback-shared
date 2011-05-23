@@ -96,6 +96,18 @@ public class SearchQuestion {
 	@Getter final private Map<String, List<String>> selectedCategoryValues = new HashMap<String, List<String>>();
 	
 	/**
+	 * Query constraints to apply for faceted navigation
+	 * (In addition to other query expressions).
+	 */
+	@Getter @Setter private List<String> facetsQueryConstraints = new ArrayList<String>();
+	
+	/**
+	 * GScope constraints to apply for faceted navigation
+	 * (In addition to existing gscope constraints).
+	 */
+	@Getter @Setter private String facetsGScopeConstraints;
+	
+	/**
 	 * Whether the request is impersonated
 	 */
 	@Getter @Setter private boolean impersonated;
