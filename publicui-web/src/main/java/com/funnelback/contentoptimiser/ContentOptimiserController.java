@@ -20,9 +20,9 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.Sta
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 @Log

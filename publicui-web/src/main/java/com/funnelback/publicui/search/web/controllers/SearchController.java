@@ -19,15 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
-import com.funnelback.contentoptimiser.UrlCausesFiller;
-import com.funnelback.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
@@ -76,38 +71,19 @@ public class SearchController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
-		// FIXME: Hack for the XML view that serialize only one item from the model
+		// FIXME: Hack for the XML view that serialise only one item from the model
 		model.put(ModelAttributes.SearchTransaction.toString(), configRepository.getAllCollections());
 
 		return new ModelAndView("no-collection", model);
 	}
-	
-	private UrlCausesFiller filler = new DefaultUrlCauseFiller();
-	
 
 	@Resource(name="contentOptimiserView")
 	private FreeMarkerView contentOptimiserView;
 	
 	@RequestMapping(value="/content-optimiser.html")
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
-		UrlComparison comparison = new UrlComparison();
-		
-		ModelAndView search = search(request, question);
-		
-		Map<String, Object> model = search.getModel();
-		SearchResponse searchResponse = ((SearchResponse)model.get(ModelAttributes.response.toString()));
-		
-		ResultPacket resultPacket = searchResponse.getResultPacket();
-		filler.consumeResultPacket(comparison,resultPacket);		
-		filler.setImportantUrl("",comparison,resultPacket);
-		
-		filler.fillHints(comparison);
-		
-		//Map<String,Object> m = new HashMap<String,Object>();
-		//log.debug(url1 + " " + url2 );
-		model.put("explanation",comparison);
-		
-		return new ModelAndView(contentOptimiserView,model);
+		question.getInputParameterMap().put(RequestParameters.EXPLAIN, new String[] {"on"});
+		return new ModelAndView(contentOptimiserView, search(request, question).getModel());
 	}
 	
 	/**

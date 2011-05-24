@@ -129,6 +129,7 @@ public class SearchQuestion {
 		public static final String PROFILE = "profile";
 		public static final String CLIVE = "clive";
 		public static final String GSCOPE1 = "gscope1";
+		public static final String EXPLAIN = "explain";
 		
 		/** Explore: Number of query terms */
 		public static final String EXP = "exp";

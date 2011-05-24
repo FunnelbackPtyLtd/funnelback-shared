@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

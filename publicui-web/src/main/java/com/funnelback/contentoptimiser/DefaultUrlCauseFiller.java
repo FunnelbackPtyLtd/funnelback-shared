@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingScore;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
 
 
 @Component

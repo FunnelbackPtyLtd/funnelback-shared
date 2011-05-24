@@ -15,11 +15,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
-import com.funnelback.contentoptimiser.RankingScore;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
-import com.funnelback.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingScore;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class DefaultUrlCauseFillerTest {

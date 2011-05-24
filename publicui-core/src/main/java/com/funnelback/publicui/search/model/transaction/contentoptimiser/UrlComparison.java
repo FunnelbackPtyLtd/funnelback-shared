@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
