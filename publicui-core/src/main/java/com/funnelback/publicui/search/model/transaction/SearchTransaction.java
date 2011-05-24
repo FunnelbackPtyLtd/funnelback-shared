@@ -8,6 +8,7 @@ import java.util.concurrent.FutureTask;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.apachecommons.Log;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -19,8 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"extraSearchesTasks"})
+@Log
 public class SearchTransaction {
 
+	/**
+	 * Key to use for the extra search related to faceted navigation.
+	 */
+	public static final String EXTRA_SEARCH_FACETED_NAV = "__faceted_nav__";
+	
 	@Getter private final SearchQuestion question;
 	@Getter private final SearchResponse response;
 	@Getter @Setter private SearchError error;
@@ -51,6 +58,7 @@ public class SearchTransaction {
 			try {
 				extraSearches.put(key, extraSearchesTasks.get(key).get());
 			} catch (Exception e) {
+				log.error("Unable to wait results for extra search '" + key + "'", e);
 			}
 		}
 	}

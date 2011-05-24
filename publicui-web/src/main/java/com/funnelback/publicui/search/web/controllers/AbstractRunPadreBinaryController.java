@@ -14,7 +14,7 @@ import lombok.extern.apachecommons.Log;
 import org.apache.commons.exec.OS;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;

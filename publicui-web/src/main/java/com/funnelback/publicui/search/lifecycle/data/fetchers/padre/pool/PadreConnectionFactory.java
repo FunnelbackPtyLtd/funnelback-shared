@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.PadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreExecutor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
