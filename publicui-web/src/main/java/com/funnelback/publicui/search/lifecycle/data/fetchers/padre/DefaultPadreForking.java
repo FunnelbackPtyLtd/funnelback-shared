@@ -1,0 +1,31 @@
+package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
+
+import org.springframework.stereotype.Component;
+
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.xml.XmlParsingException;
+
+/**
+ * <p>Default implementation of {@link AbstractPadreForking}.</p>
+ * 
+ * <p>Builds a standard query string and update the main data model with
+ * PADRE output.</p>
+ */
+@Component
+public class DefaultPadreForking extends AbstractPadreForking {
+
+	@Override
+	protected String getQueryString(SearchTransaction transaction) {
+		return new PadreQueryStringBuilder(transaction, true).buildQueryString();
+	}
+
+	@Override
+	protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
+		transaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
+		transaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
+		transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
+	}
+
+}
