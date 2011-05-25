@@ -20,17 +20,23 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfo
 public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
 	@Override
-	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp) {
+	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp,HintFactory hintFactory) {
 		// TODO Auto-generated method stub
 		
 		// Add weights, create hint objects
 		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
 			comparison.getWeights().put(weightEntry.getKey(), weightEntry.getValue() * 100);
 			
-			Hint h = new Hint(weightEntry.getKey());
-			comparison.getHintsByName().put(weightEntry.getKey(),h);
-			comparison.getHintsByWin().add(h);
+
 		}
+
+		Map<String, Hint> hintsByName = comparison.getHintsByName();
+		for (Entry<String,String> nameAndType : rp.getExplainTypes().entrySet()) {
+			Hint h = hintFactory.create(nameAndType.getKey(),nameAndType.getValue());
+			hintsByName.put(nameAndType.getKey(),h);
+			comparison.getHintsByWin().add(h);			
+		}
+
 		
 		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
@@ -41,14 +47,8 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
 				causes.add(new RankingScore(feature.getKey(), percentage));
-
-				// Set max and min scores for this feature in the hint object
-				// Used for calculating possible wins, and features that are uninteresting
-				if(comparison.getHintsByName().get(feature.getKey()).getMaxScore() < percentage) {
-					comparison.getHintsByName().get(feature.getKey()).setMaxScore(percentage);
-				} else if(comparison.getHintsByName().get(feature.getKey()).getMinScore() > percentage) {
-					comparison.getHintsByName().get(feature.getKey()).setMinScore(percentage);
-				}
+				Hint hint = hintsByName.get(feature.getKey());
+				hint.rememberScore(percentage);
 			}
 			comparison.getUrls().add(info);
 		}
@@ -59,7 +59,7 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		// Remove features which have no variance
 		List<Hint> remove = new ArrayList<Hint>();		
 		for (Hint hint : comparison.getHintsByWin()) {
-			if((hint.getMaxScore() - hint.getMinScore()) < 0.000001) {
+			if(!hint.isInteresting()) {
 				for (UrlInfoAndScore url : comparison.getUrls()) {
 					RankingScore toRemove = null;
 					for (RankingScore cause : url.getCauses()) {
@@ -91,7 +91,7 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		comparison.setImportantOne(comparison.getUrls().get(3));
 		
 		for (RankingScore cause : comparison.getImportantOne().getCauses()) {
-			comparison.getHintsByName().get(cause.getName()).setWin(cause.getPercentage(),comparison.getWeights().get(cause.getName()));
+			comparison.getHintsByName().get(cause.getName()).caculateWin(cause.getPercentage(),comparison.getWeights().get(cause.getName()));
 		}
 		Collections.sort(comparison.getHintsByWin());
 	}

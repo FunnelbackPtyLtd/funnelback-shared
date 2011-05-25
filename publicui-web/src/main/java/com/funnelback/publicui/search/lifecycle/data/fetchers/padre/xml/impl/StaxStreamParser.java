@@ -96,6 +96,9 @@ public class StaxStreamParser implements PadreXmlParser {
 						for (Map.Entry<String,String> feature : stringFeatures.entrySet()) {
 							packet.getCoolerWeights().put(feature.getKey(), Float.parseFloat(feature.getValue()));
 						}
+					} else if (ResultPacket.Schema.EXPLAIN_TYPES.equals(xmlStreamReader.getLocalName())) {
+						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.EXPLAIN_TYPES, xmlStreamReader);
+						packet.getExplainTypes().putAll(stringFeatures);
 					}
 					
 					break;

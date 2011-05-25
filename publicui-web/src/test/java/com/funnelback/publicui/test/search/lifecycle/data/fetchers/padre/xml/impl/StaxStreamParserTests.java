@@ -85,6 +85,41 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
+	public void testWinType() {
+		Map<String,String> winTypes = rp.getExplainTypes();
+		
+		assertEquals("max_other",winTypes.get("content"));
+		assertEquals("max_other",winTypes.get("onlink"));
+		assertEquals("max_other",winTypes.get("offlink"));
+		assertEquals("max_other",winTypes.get("urllen"));
+		assertEquals("max_other",winTypes.get("qie"));
+		assertEquals("max_other",winTypes.get("annie"));
+		assertEquals("max_other",winTypes.get("domain_weight"));
+		assertEquals("max_other",winTypes.get("geoprox"));
+		assertEquals("max_other",winTypes.get("log_annie"));
+		assertEquals("max_other",winTypes.get("annie_rank"));
+		assertEquals("max_other",winTypes.get("BM25F"));
+		assertEquals("max_other",winTypes.get("an_okapi"));
+		assertEquals("max_other",winTypes.get("comp_wt"));
+		assertEquals("max_other",winTypes.get("BM25F_rank"));
+		assertEquals("max_other",winTypes.get("host_incoming_link_score"));
+		assertEquals("max_other",winTypes.get("host_click_score"));
+		assertEquals("max_other",winTypes.get("host_linking_hosts_score"));
+		assertEquals("max_other",winTypes.get("host_linked_hosts_score"));
+		assertEquals("max_other",winTypes.get("host_rank_in_crawl_order_score"));
+		assertEquals("max_other",winTypes.get("host_domain_shallowness_score"));		
+	
+		assertEquals("max_possible",winTypes.get("recency"));
+		assertEquals("max_possible",winTypes.get("urltype"));
+		assertEquals("max_possible",winTypes.get("nonbin"));
+		assertEquals("max_possible",winTypes.get("no_ads"));
+		assertEquals("max_possible",winTypes.get("imp_phrase"));
+		assertEquals("max_possible",winTypes.get("consistency"));
+		assertEquals("max_possible",winTypes.get("mainhosts"));
+		assertEquals("max_possible",winTypes.get("document_number"));
+	}
+	
+	@Test
 	public void testQueryAndCollection() {
 		assertEquals("visa^0.345", rp.getQuery());
 		assertEquals("visa", rp.getQueryAsProcessed());
@@ -356,4 +391,5 @@ public class StaxStreamParserTests {
 		new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")));
 	}
 }
+
 

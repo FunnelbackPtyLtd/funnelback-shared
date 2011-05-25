@@ -49,20 +49,6 @@
 		<url-pattern>/ajax-proxy.xml</url-pattern>
 		<url-pattern>/content-optimiser.html</url-pattern>
 	</servlet-mapping>
-
-	<!-- 
-	<servlet>
-		<servlet-name>content-optimiser</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<load-on-startup>4</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>content-optimiser</servlet-name>
-		<url-pattern>/content-optimiser/*</url-pattern>
-	</servlet-mapping>
-	-->
-
 	
 	<filter>
 		<filter-name>encodingFilter</filter-name>

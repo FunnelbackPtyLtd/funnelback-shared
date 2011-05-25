@@ -70,6 +70,7 @@ public class ResultPacket {
 	@Getter private final List<String> excludeScopes = new ArrayList<String>();
 	
 	@Getter private final Map<String,Float> coolerWeights = new HashMap<String,Float>();
+	@Getter private final Map<String,String> explainTypes = new HashMap<String,String>();
 	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
@@ -136,6 +137,8 @@ public class ResultPacket {
 		public static final String EXCLUDE_SCOPE = "exclude_scope";
 		public static final String SCOPE_SEPARATOR = "@";
 		public static final String COOLER_WEIGHTINGS = "cooler_weightings";
+
+		public static final String EXPLAIN_TYPES = "explain_types";
 		
 	}
 }

@@ -2,20 +2,35 @@ package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @RequiredArgsConstructor
-public class Hint implements Comparable<Hint> {
+public abstract class Hint implements Comparable<Hint> {
 //	@Getter private final String html;
 //	@Getter private final String link;
 //	@Getter private final String linkText;
 	
-	
 	@Getter private final String name;
-	@Getter @Setter private float maxScore;
-	@Getter @Setter private float minScore = 101;
-	@Getter private float win;
+	@Getter protected float win;
+
+	protected float maxScore;
+	protected float minScore = 101;
+	protected int count = 0;
+
+	public void rememberScore(float score) {
+		// Set max and min scores for this feature in the hint object
+		// Used for calculating possible wins, and features that are uninteresting
+		if(maxScore < score) {
+			maxScore = score;
+		}
+		if(minScore > score) {
+			minScore = score;
+		}
+		count++;
+	}
 	
+	public boolean isInteresting() {
+		return (count != 0 && win > 0.0000001);
+	}
 	
 	@Override
 	public int compareTo(Hint that) {
@@ -24,8 +39,5 @@ public class Hint implements Comparable<Hint> {
 		return 0;
 	}
 
-	public void setWin(float percentage, float weighting) {
-		win = maxScore - (percentage);
-//		win = (weighting - percentage);
-	}
+	public abstract void caculateWin(float selectedScore, float weighting);
 }

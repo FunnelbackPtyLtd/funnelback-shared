@@ -6,7 +6,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComp
 public interface UrlCausesFiller {
 	public void fillHints(UrlComparison comparison);
 
-	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp);
+	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp, HintFactory hintFactory);
 
 	public void setImportantUrl(String url, UrlComparison comparison,
 			ResultPacket original);

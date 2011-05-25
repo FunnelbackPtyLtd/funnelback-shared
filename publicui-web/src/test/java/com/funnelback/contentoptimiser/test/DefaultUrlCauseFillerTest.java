@@ -14,7 +14,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.contentoptimiser.DefaultHintFactory;
 import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
+import com.funnelback.contentoptimiser.HintFactory;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -30,8 +32,9 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
-		
-		f.consumeResultPacket(comparison, rp);
+		HintFactory hf = new DefaultHintFactory();
+
+		f.consumeResultPacket(comparison, rp,hf);
 		f.setImportantUrl("", comparison, rp);
 		
 		List<RankingScore> causes = comparison.getUrls().get(0).getCauses();
@@ -55,8 +58,9 @@ public class DefaultUrlCauseFillerTest {
 
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
+		HintFactory hf = new DefaultHintFactory();
 
-		f.consumeResultPacket(comparison, rp);
+		f.consumeResultPacket(comparison, rp,hf);
 		f.setImportantUrl("", comparison, rp);
 
 		

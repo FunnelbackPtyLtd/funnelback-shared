@@ -122,6 +122,8 @@ public class XSLTXStreamViewTests {
 		
 		// <explain> tags didn't exist prior to v11
 		oldXml = oldXml.replaceAll("(?s)<explain>.*?</explain>\\n", "");
+		// As well as <explain_types>
+		oldXml = oldXml.replaceAll("(?s)<explain_types>.*?</explain_types>\\n", "");
 		// As well as <cooler_weightings>
 		oldXml = oldXml.replaceAll("(?s)<cooler_weightings>.*?</cooler_weightings>\\n", "");
 		
