@@ -31,7 +31,7 @@ public class SearchTransaction {
 	@Getter private final SearchQuestion question;
 	@Getter private final SearchResponse response;
 	@Getter @Setter private SearchError error;
-	
+
 	/**
 	 * Any additional extra search transactions performed during this transaction.
 	 */

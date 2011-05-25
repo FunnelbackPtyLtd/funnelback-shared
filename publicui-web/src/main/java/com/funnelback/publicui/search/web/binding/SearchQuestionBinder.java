@@ -26,6 +26,7 @@ public class SearchQuestionBinder {
 		to.getInputParameterMap().putAll(from.getInputParameterMap());
 		to.setQuery(from.getQuery());
 		to.setOriginalQuery(from.getOriginalQuery());
+		to.setCollection(from.getCollection());
 		to.setImpersonated(from.isImpersonated());
 		to.setUserId(from.getUserId());
 		to.setCnClickedCluster(from.getCnClickedCluster());

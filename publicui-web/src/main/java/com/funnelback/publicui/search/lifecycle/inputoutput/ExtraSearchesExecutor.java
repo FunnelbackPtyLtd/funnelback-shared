@@ -40,7 +40,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (searchTransaction != null && searchTransaction.getExtraSearchesQuestions().size() > 0) {
 			for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
-
+				
+				entry.getValue().setExtraSearch(true);
 				FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
 						new Callable<SearchTransaction>() {
 							@Override

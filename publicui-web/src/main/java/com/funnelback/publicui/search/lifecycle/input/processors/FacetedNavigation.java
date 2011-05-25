@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import lombok.extern.apachecommons.Log;
 
@@ -38,8 +37,6 @@ import com.funnelback.publicui.utils.MapKeyFilter;
 @Log
 @Component("facetedNavigationInputProcessor")
 public class FacetedNavigation implements InputProcessor {
-
-	private final Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + RequestParameters.FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.*))?");
 	
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
@@ -59,12 +56,12 @@ public class FacetedNavigation implements InputProcessor {
 				Set<Set<String>> queryConstraints = new HashSet<Set<String>>();
 				
 				MapKeyFilter filter = new MapKeyFilter(searchTransaction.getQuestion().getInputParameterMap());
-				String[] selectedFacetsParams = filter.filter(FACET_PARAM_PATTERN);
+				String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
 				
 				if (selectedFacetsParams.length > 0) {
 					for (final String selectedFacetParam: selectedFacetsParams) {
 						log.debug("Found facet parameter '" + selectedFacetParam + "'");
-						Matcher m = FACET_PARAM_PATTERN.matcher(selectedFacetParam);
+						Matcher m = RequestParameters.FACET_PARAM_PATTERN.matcher(selectedFacetParam);
 						m.find();
 						
 						final String facetName = m.group(1);

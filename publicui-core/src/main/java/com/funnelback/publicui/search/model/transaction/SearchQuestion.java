@@ -122,7 +122,12 @@ public class SearchQuestion {
 	 * Input parameters map. In a Web servlet context will contain the request parameters map.
 	 */
 	@Getter private final Map<String, String[]> inputParameterMap = new HashMap<String, String[]>();
-	
+
+	/**
+	 * Indicates if this is the main search or an extra search.
+	 */
+	@Getter @Setter private boolean extraSearch = false;
+
 	public static class RequestParameters {
 		public static final String COLLECTION = "collection";
 		public static final String QUERY = "query";
@@ -164,6 +169,7 @@ public class SearchQuestion {
 		
 		public static final String FACET_PREFIX = "f.";
 		public static final String FACET_SCOPE = "facetScope";
+		public final static Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.*))?");
 		
 		public static class ContextualNavigation {
 			public static final String CN_CLICKED = "clicked_fluster";
