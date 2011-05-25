@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * a question, a response and possible error.
  */
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"extraSearchesTasks"})
+@JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions"})
 @Log
 public class SearchTransaction {
 
@@ -33,36 +33,30 @@ public class SearchTransaction {
 	@Getter @Setter private SearchError error;
 	
 	/**
-	 * Any additional extra search performed during this transaction.
+	 * Any additional extra search transactions performed during this transaction.
 	 */
 	@Getter private final Map<String, SearchTransaction> extraSearches = new HashMap<String, SearchTransaction>();
 
+	/**
+	 * Additional {@link SearchQuestion}s to process as extra searches.
+	 */
 	@XStreamOmitField
-	private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
+	@Getter private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
 	
 	/**
-	 * Adds an extra search task. Assumes it has already been started
+	 * Internal holder of extra searches tasks
+	 */
+	@XStreamOmitField
+	@Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
+	
+	/**
+	 * Adds an {@link SearchQuestion} to be processed as an extra search.
 	 * @param key
-	 * @param task
+	 * @param q
 	 */
-	public void addExtraSearch(String key, FutureTask<SearchTransaction> task) {
-		extraSearchesTasks.put(key, task);
-	}
-	
-	/**
-	 * Wait for all pending extra searches task to complete,
-	 * and fill {@link #extraSearches}.
-	 */
-	public void joinExtraSearches() {
-		for (String key: extraSearchesTasks.keySet()) {
-			try {
-				extraSearches.put(key, extraSearchesTasks.get(key).get());
-			} catch (Exception e) {
-				log.error("Unable to wait results for extra search '" + key + "'", e);
-			}
-		}
-	}
-	
+	public void addExtraSearch(String key, SearchQuestion q) {
+		extraSearchesQuestions.put(key, q);
+	}	
 	
 	public boolean hasResponse() { return response != null; }
 	public boolean hasQuestion() { return question != null; }
