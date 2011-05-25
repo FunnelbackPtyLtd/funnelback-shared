@@ -1,0 +1,81 @@
+package com.funnelback.publicui.search.lifecycle.inputoutput;
+
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+import lombok.extern.apachecommons.Log;
+
+import org.apache.commons.lang.time.StopWatch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.stereotype.Component;
+
+import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
+import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+/**
+ * <p>Executes the extra searches on the input phase using the questions
+ * in {@link SearchTransaction#getExtraSearchesQuestions()} and submitting
+ * them to a {@link TaskExecutor}.</p>
+ * 
+ * <p>Wait for the extra searches to complete on the output phase.</p>
+ */
+@Component
+@Log
+public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
+
+	@Autowired
+	private SearchTransactionProcessor transactionProcessor;
+
+	@Autowired
+	private TaskExecutor executor;
+
+	@Override
+	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+		if (searchTransaction != null && searchTransaction.getExtraSearchesQuestions().size() > 0) {
+			for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
+
+				FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
+						new Callable<SearchTransaction>() {
+							@Override
+							public SearchTransaction call() throws Exception {
+								StopWatch sw = new StopWatch();
+								try {
+									sw.start();
+									return transactionProcessor.process(entry.getValue());
+								} finally {
+									sw.stop();
+									log.debug("Extra search '" + entry.getKey() + "' took " + sw.toString());
+								}
+							}
+						});
+
+				searchTransaction.getExtraSearchesTasks().put(entry.getKey(), task);
+				log.trace("Submitting extra search '" + entry.getKey() + "'");
+				executor.execute(task);
+			}
+		}
+	}
+
+	@Override
+	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+		if (searchTransaction != null && searchTransaction.getExtraSearchesTasks().size() > 0) {
+			// Wait for all pending extra searches task to complete,
+			// and fill {@link #extraSearches}.
+			for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
+				try {
+					searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get());
+				} catch (Exception e) {
+					log.error("Unable to wait results for extra search '" + entry.getKey() + "'", e);
+				}
+			}
+		}
+	}
+
+}

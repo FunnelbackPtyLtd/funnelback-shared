@@ -29,11 +29,11 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 
 /**
- * Sets the "rmcf" query processor option on the fly if faceted navigation
- * is enabled on this collection.
+ * <p>Sets the <em>-rmcf</em> query processor option on the fly if faceted navigation
+ * is enabled on this collection.</p>
  * 
- * Checks for any selected category(ies) and adds corresponding constraints
- * to the search question (gscopes or query expressions)
+ * <p>Checks for any selected category(ies) and adds corresponding constraints
+ * to the search question (gscopes or query expressions).</p>
  */
 @Log
 @Component("facetedNavigationInputProcessor")

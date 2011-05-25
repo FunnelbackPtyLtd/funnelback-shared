@@ -27,11 +27,11 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 /**
- * Prepares any extra search and starts their execution.
+ * Prepares extra searches configured in <code>collection.cfg</code>.
  */
-@Component("extraSearchesSubmitInputProcessor")
+@Component("extraSearchesInputProcessor")
 @Log
-public class ExtraSearchesSubmit implements InputProcessor, ApplicationContextAware {
+public class ExtraSearches implements InputProcessor, ApplicationContextAware {
 
 	/**
 	 * Key containing the class of the {@link ExtraSearchQuestionFactory}
@@ -44,12 +44,6 @@ public class ExtraSearchesSubmit implements InputProcessor, ApplicationContextAw
 	@Autowired
 	private ConfigRepository configRepository;
 	
-	@Autowired
-	private SearchTransactionProcessor processor;
-	
-	@Autowired
-	private TaskExecutor executor;
-	
 	private ApplicationContext applicationContext;
 	
 	@Override
@@ -59,18 +53,17 @@ public class ExtraSearchesSubmit implements InputProcessor, ApplicationContextAw
 			
 			String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.PublicUI.EXTRA_SEARCHES).split(",");
 			
-			// Configure and submit extra searches
 			for (final String extraSearch: extraSearches) {
 				log.trace("Configuring extra search '" + extraSearch + "'");
 				
 				Map<String, String> extraSearchConfiguration = configRepository.getExtraSearchConfiguration(
 						searchTransaction.getQuestion().getCollection(),
 						extraSearch);
+
 				if (extraSearchConfiguration != null) {
 					Class<? extends ExtraSearchQuestionFactory> clazz = DEFAULT_CLASS;
 					
 					try {
-						
 						
 						if (extraSearchConfiguration.get(KEY_CLASS) != null) {
 							// Try to use user defined class
@@ -79,29 +72,13 @@ public class ExtraSearchesSubmit implements InputProcessor, ApplicationContextAw
 						ExtraSearchQuestionFactory factory = applicationContext.getAutowireCapableBeanFactory().createBean(clazz);
 						final SearchQuestion q = factory.buildQuestion(searchTransaction.getQuestion(), extraSearchConfiguration);
 						
-						log.trace("Submitting extra search '" + extraSearch
+						log.trace("Adding extra search '" + extraSearch
 								+ "' on collection '" + q.getCollection().getId() + "'"
 								+ " with query '" + q.getQuery() + "'");
 
-						FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
-								new Callable<SearchTransaction>() {
-									@Override
-									public SearchTransaction call() throws Exception {
-										StopWatch sw = new StopWatch();
-										try {
-											sw.start();
-											return processor.process(q);
-										} finally {
-											sw.stop();
-											log.debug("Extra search '" + extraSearch + "' took " + sw.toString());
-										}
-									}
-								});
-
-						searchTransaction.addExtraSearch(extraSearch, task);
-						executor.execute(task);
+						searchTransaction.addExtraSearch(extraSearch, q);
 					} catch (Exception e) {
-						log.error("Unable to process extra search '" + extraSearch + "'", e);
+						log.error("Unable to configure extra search '" + extraSearch + "'", e);
 					}
 				} else {
 					log.error("Extra search configuration '" + extraSearch + "' for collection '"
@@ -115,5 +92,4 @@ public class ExtraSearchesSubmit implements InputProcessor, ApplicationContextAw
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;		
 	}
-	
 }

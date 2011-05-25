@@ -57,7 +57,8 @@
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
-		<ref bean="extraSearchesSubmitInputProcessor" />
+		<ref bean="extraSearchesInputProcessor" />
+		<ref bean="extraSearchesExecutor" />
 	</util:list>
 
 	<util:list id="dataFetchers">
@@ -85,7 +86,7 @@
 		<ref bean="quickLinksOutputProcessor" />
 		<ref bean="queryCleanOutputProcessor" />
 		<ref bean="contentOptimiserOutputProcessor" />
-		<ref bean="extraSearchesJoinOutputProcessor" />
+		<ref bean="extraSearchesExecutor" />
 	</util:list>
 
 	<!-- ***** -->
