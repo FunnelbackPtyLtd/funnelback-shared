@@ -31,7 +31,7 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse() && SearchTransactionUtils.hasResults(searchTransaction)) {
+		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse()) {
 
 			// Remove any weighted query operators
 			String q = WEIGHTED_OPERATORS_PATTERN.matcher(
