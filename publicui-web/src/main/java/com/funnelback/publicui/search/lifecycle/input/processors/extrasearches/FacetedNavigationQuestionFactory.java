@@ -18,11 +18,15 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
 		SearchQuestion out = new SearchQuestion();
 		SearchQuestionBinder.bind(originalQuestion, out);
 		
+		// Remove faceted navigation parameters
 		MapKeyFilter filter = new MapKeyFilter(originalQuestion.getInputParameterMap());
 		String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
 		for (String paramName: selectedFacetsParams) {
 			out.getInputParameterMap().remove(paramName);
 		}
+		
+		// Remove additional 'facetScope' parameter used in faceted navigation
+		out.getInputParameterMap().remove(RequestParameters.FACET_SCOPE);
 		
 		out.setFacetsGScopeConstraints(null);
 		out.getFacetsQueryConstraints().clear();

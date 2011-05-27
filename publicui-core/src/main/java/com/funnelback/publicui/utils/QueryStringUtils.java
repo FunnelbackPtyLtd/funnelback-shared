@@ -38,17 +38,19 @@ public class QueryStringUtils {
 		    for (String param : query.split("&")) {
 		        String[] pair = param.split("=");
 		        String key = URLDecoder.decode(pair[0], "UTF-8");
-		        String value = null;
-		        if (pair.length > 1) {
-		        	value = URLDecoder.decode(pair[1], "UTF-8");
-		        }
-		        List<String> values = params.get(key);
-	        	if (values == null) {
-	        		values = new ArrayList<String>();
-	        		params.put(key, values);
-	        	}
-		        if (value != null) {
-		        	values.add(value);
+		        if (key != null && ! "".equals(key)) {
+			        String value = null;
+			        if (pair.length > 1) {
+			        	value = URLDecoder.decode(pair[1], "UTF-8");
+			        }
+			        List<String> values = params.get(key);
+		        	if (values == null) {
+		        		values = new ArrayList<String>();
+		        		params.put(key, values);
+		        	}
+			        if (value != null) {
+			        	values.add(value);
+			        }
 		        }
 		    }
 		}
