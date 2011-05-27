@@ -24,11 +24,11 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class SearchTransaction {
 
 	/**
-	 * Key to use for the extra search related to faceted navigation.
+	 * Keys for internal extra searches
 	 */
-	public static final String EXTRA_SEARCH_FACETED_NAV = "__faceted_nav__";
-
-	public static final String CONTENT_OPTIMISER_SELECT_DOCUMENT = "__content_optimiser__";
+	public static enum ExtraSearches {
+		FACETED_NAVIGATION, CONTENT_OPTIMISER_SELECT_DOCUMENT;
+	}
 	
 	@Getter private final SearchQuestion question;
 	@Getter private final SearchResponse response;

@@ -20,7 +20,7 @@ public class MultiFacetedNavigation implements InputProcessor {
 				&& Config.isTrue(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.PublicUI.FULL_FACETS_LIST))
 				&& ! searchTransaction.getQuestion().isExtraSearch()) {
 			SearchQuestion q = new FacetedNavigationQuestionFactory().buildQuestion(searchTransaction.getQuestion(), null);
-			searchTransaction.addExtraSearch(SearchTransaction.EXTRA_SEARCH_FACETED_NAV, q);
+			searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString(), q);
 		}
 	}
 

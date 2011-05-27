@@ -27,7 +27,7 @@ public class ContentOptimiserSelectDocument implements InputProcessor {
 			Map<String,String> m = new HashMap<String,String>();
 			m.put(RequestParameters.OPTIMISER_URL, searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL )[0] );
 			SearchQuestion q = new ContentOptimiserSelectUrlQuestionFactory().buildQuestion(searchTransaction.getQuestion(),m);
-			searchTransaction.addExtraSearch(SearchTransaction.CONTENT_OPTIMISER_SELECT_DOCUMENT, q);
+			searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString(), q);
 		}
 
 	}

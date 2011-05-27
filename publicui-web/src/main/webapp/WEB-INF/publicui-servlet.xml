@@ -36,6 +36,10 @@
 	<bean id="contextPathHolder" class="com.funnelback.publicui.utils.web.ContextPathHolder" />
 	<!-- bean id="ajaxProxyController" class="com.funnelback.publicui.search.web.controllers.AjaxProxyController" / -->
 
+	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL tempaltes -->
+	<bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
+	<bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
+
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths">
 			<list>
@@ -58,8 +62,17 @@
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
 					value="#{contextPathHolder.contextPath}"
-				/>									
-				
+				/>
+				<entry
+					key="ExtraSearches">
+					<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+						<property name="targetObject"><ref local="freemarkerEnumModels" /></property>
+						<property name="targetMethod"><value>get</value></property>
+						<property name="arguments">
+							<list><value>com.funnelback.publicui.search.model.transaction.SearchTransaction$ExtraSearches</value></list>
+						</property>
+					</bean>
+				</entry>											
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod" />
 				</entry>
@@ -116,7 +129,7 @@
 			</map>
 		</property>
 	</bean>
-
+	
 	<!--
 		Specific view for OpenSearch controller.
 		It needs a specific configuration as it outputs XML and not HTML

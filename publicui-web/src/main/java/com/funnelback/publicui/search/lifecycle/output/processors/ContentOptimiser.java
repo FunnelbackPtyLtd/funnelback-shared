@@ -38,7 +38,7 @@ public class ContentOptimiser implements OutputProcessor {
 //			if(searchTransaction.get)
 		
 			
-			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.CONTENT_OPTIMISER_SELECT_DOCUMENT);
+			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString());
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
 				//log.error(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDisplayUrl());
 				filler.setImportantUrl(comparison,selectedDocument.getResponse().getResultPacket());
