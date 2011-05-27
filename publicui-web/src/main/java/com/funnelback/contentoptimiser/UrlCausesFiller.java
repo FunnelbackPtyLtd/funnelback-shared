@@ -8,6 +8,5 @@ public interface UrlCausesFiller {
 
 	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp, HintFactory hintFactory);
 
-	public void setImportantUrl(String url, UrlComparison comparison,
-			ResultPacket original);
+	public void setImportantUrl(UrlComparison comparison, ResultPacket resultPacket);
 }

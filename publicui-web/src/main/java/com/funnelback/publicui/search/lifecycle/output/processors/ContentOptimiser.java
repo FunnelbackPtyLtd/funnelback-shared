@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import lombok.extern.apachecommons.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComp
  * Process explain output from PADRE and generates relevant data model for the
  * content optimiser
  */
+@Log
 @Component("contentOptimiserOutputProcessor")
 public class ContentOptimiser implements OutputProcessor {
 
@@ -27,13 +30,20 @@ public class ContentOptimiser implements OutputProcessor {
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
-				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.EXPLAIN)) {
+				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.EXPLAIN)
+				&& !searchTransaction.getQuestion().isExtraSearch()) {
 			UrlComparison comparison = new UrlComparison();
 		
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
-			filler.setImportantUrl("", comparison, searchTransaction.getResponse().getResultPacket());
-			filler.fillHints(comparison);
+//			if(searchTransaction.get)
+		
 			
+			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.CONTENT_OPTIMISER_SELECT_DOCUMENT);
+			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
+				//log.error(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDisplayUrl());
+				filler.setImportantUrl(comparison,selectedDocument.getResponse().getResultPacket());
+				filler.fillHints(comparison);
+			}
 			searchTransaction.getResponse().setUrlComparison(comparison);
 		}
 	}

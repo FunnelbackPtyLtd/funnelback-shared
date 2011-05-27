@@ -170,6 +170,7 @@ public class SearchQuestion {
 		public static final String FACET_PREFIX = "f.";
 		public static final String FACET_SCOPE = "facetScope";
 		public final static Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.*))?");
+		public static final String OPTIMISER_URL = "optimiser_url";
 		
 		public static class ContextualNavigation {
 			public static final String CN_CLICKED = "clicked_fluster";

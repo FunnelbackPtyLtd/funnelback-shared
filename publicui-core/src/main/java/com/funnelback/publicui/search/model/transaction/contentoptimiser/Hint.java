@@ -1,22 +1,22 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class Hint implements Comparable<Hint> {
-//	@Getter private final String html;
-//	@Getter private final String link;
-//	@Getter private final String linkText;
-	
-	@Getter private final String name;
-	@Getter protected float win;
 
+	@Getter private final String name;	
+	@Getter private final Map<String,Float> scores = new HashMap<String,Float>();
+		
+	@Getter protected float win;
 	protected float maxScore;
 	protected float minScore = 101;
-	protected int count = 0;
 
-	public void rememberScore(float score) {
+	public void rememberScore(float score,String rank) {
 		// Set max and min scores for this feature in the hint object
 		// Used for calculating possible wins, and features that are uninteresting
 		if(maxScore < score) {
@@ -25,11 +25,11 @@ public abstract class Hint implements Comparable<Hint> {
 		if(minScore > score) {
 			minScore = score;
 		}
-		count++;
+		scores.put(rank, score);
 	}
 	
 	public boolean isInteresting() {
-		return (count != 0 && win > 0.0000001);
+		return (scores.size()!=0) && win > 0.0000001;
 	}
 	
 	@Override

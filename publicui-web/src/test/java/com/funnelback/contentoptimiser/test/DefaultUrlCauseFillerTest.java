@@ -35,19 +35,22 @@ public class DefaultUrlCauseFillerTest {
 		HintFactory hf = new DefaultHintFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
-		f.setImportantUrl("", comparison, rp);
+		f.setImportantUrl(comparison,rp);
 		
-		List<RankingScore> causes = comparison.getUrls().get(0).getCauses();
-		//assertEquals("offlink",causes.get(1).getName());
-		assertTrue("offlink".equals(causes.get(1).getName()));
+
+		assertNotNull(comparison.getHintsByName().get("offlink"));
+		assertNotNull(comparison.getHintsByName().get("urllen"));
+		assertNotNull(comparison.getHintsByName().get("content"));
+		assertEquals(29,comparison.getHintsByWin().size());
 		assertNotNull(comparison.getWeights().get("offlink"));
 		
 		f.fillHints(comparison);
-
 		
-		assertFalse("offlink".equals(causes.get(1).getName()));
-		assertNull(comparison.getWeights().get("offlink"));
-		//Assert.assertEquals(4,comparison.getHints().size());
+		assertNotNull(comparison.getHintsByName().get("urllen"));
+		assertNull(comparison.getHintsByName().get("content"));
+		assertNull(comparison.getHintsByName().get("offlink"));
+		assertEquals(1,comparison.getHintsByWin().size());
+		assertNotNull(comparison.getWeights().get("offlink"));
 	}
 
 	
@@ -61,30 +64,22 @@ public class DefaultUrlCauseFillerTest {
 		HintFactory hf = new DefaultHintFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
-		f.setImportantUrl("", comparison, rp);
+		f.setImportantUrl(comparison,rp);
 
 		
 		Assert.assertNotNull(comparison.getImportantOne());
-		Assert.assertEquals(4,comparison.getImportantOne().getRank());		
+		Assert.assertEquals("1",comparison.getImportantOne().getRank());		
 		
-		List<RankingScore> causes = comparison.getUrls().get(0).getCauses();		
-		assertNotNull(causes);
-		assertEquals("content",causes.get(0).getName());
-		assertEquals("offlink",causes.get(1).getName());
-		assertEquals("urllen",causes.get(2).getName());
-		assertEquals(40.877,causes.get(0).getPercentage(),0.0001);
-		assertEquals(0,causes.get(1).getPercentage(),0.0001);
-		assertEquals(7.168,causes.get(2).getPercentage(),0.0001);
 
-		causes = comparison.getUrls().get(1).getCauses();		
-		assertNotNull(causes);
-		assertEquals("content",causes.get(0).getName());
-		assertEquals("offlink",causes.get(1).getName());
-		assertEquals("urllen",causes.get(2).getName());
-		assertEquals(31.406,causes.get(0).getPercentage(),0.0001);
-		assertEquals(0,causes.get(1).getPercentage(),0.0001);
-		assertEquals(7.490,causes.get(2).getPercentage(),0.0001);
+		assertEquals(40.877,comparison.getHintsByName().get("content").getScores().get("1"),0.0001);
+		assertEquals(0,comparison.getHintsByName().get("offlink").getScores().get("1"),0.0001);
+		assertEquals(7.168,comparison.getHintsByName().get("urllen").getScores().get("1"),0.0001);
 
+		assertEquals(31.406,comparison.getHintsByName().get("content").getScores().get("2"),0.0001);
+		assertEquals(0,comparison.getHintsByName().get("offlink").getScores().get("2"),0.0001);
+		assertEquals(7.490,comparison.getHintsByName().get("urllen").getScores().get("2"),0.0001);
+		
+		
 		assertNotNull(comparison.getWeights());
 		assertEquals(41,comparison.getWeights().get("content"),0.0001);
 		assertEquals(14,comparison.getWeights().get("offlink"),0.0001);

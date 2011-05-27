@@ -1,9 +1,12 @@
 package com.funnelback.contentoptimiser;
 
+import lombok.extern.apachecommons.Log;
+
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 
+@Log
 @Component
 public class DefaultHintFactory implements HintFactory {
 
@@ -14,8 +17,9 @@ public class DefaultHintFactory implements HintFactory {
 		} else if("max_possible".equals(type)) {
 			return new HintMaxPossible(name);
 		}
-
-		return null;
+		
+		log.warn("Unknown feature type in content optimiser : '" + type + "'. Returning max_other");
+		return new HintMaxOther(name);
 	}
 
 }

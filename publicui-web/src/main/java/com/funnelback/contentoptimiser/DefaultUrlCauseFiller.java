@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.extern.apachecommons.Log;
+
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.padre.Result;
@@ -15,7 +17,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
 
-
+@Log
 @Component
 public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
@@ -40,15 +42,13 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		
 		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
-			UrlInfoAndScore info = new UrlInfoAndScore(result.getLiveUrl(),result.getTitle(),result.getRank());
+			UrlInfoAndScore info = new UrlInfoAndScore(result.getLiveUrl(),result.getTitle(),""+ result.getRank());
 	
-			List<RankingScore> causes = info.getCauses();
-			
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
-				causes.add(new RankingScore(feature.getKey(), percentage));
+				//causes.add(new RankingScore(feature.getKey(), percentage));
 				Hint hint = hintsByName.get(feature.getKey());
-				hint.rememberScore(percentage);
+				hint.rememberScore(percentage,"" +result.getRank());
 			}
 			comparison.getUrls().add(info);
 		}
@@ -60,40 +60,40 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		List<Hint> remove = new ArrayList<Hint>();		
 		for (Hint hint : comparison.getHintsByWin()) {
 			if(!hint.isInteresting()) {
-				for (UrlInfoAndScore url : comparison.getUrls()) {
-					RankingScore toRemove = null;
-					for (RankingScore cause : url.getCauses()) {
-						if(cause.getName().equals(hint.getName())) {
-							toRemove = (cause);
-						}
-					}
-					if(toRemove != null) url.getCauses().remove(toRemove);
-				}
-				RankingScore toRemove = null;
-				for (RankingScore cause :comparison.getImportantOne().getCauses()) {
-					if(cause.getName().equals(hint.getName())) comparison.getUrls().remove(cause);
-				}
-				if(toRemove != null) comparison.getImportantOne().getCauses().remove(toRemove);
-				comparison.getWeights().remove(hint.getName());
-				comparison.getHintsByName().remove(hint.getName());				
+				log.info("Removing " + hint.getName());
 				remove.add(hint);
+				comparison.getHintsByName().remove(hint.getName());
 			}
 		}
 		comparison.getHintsByWin().removeAll(remove);
-	/*	comparison.getHints().add(new Hint("<b>Content: </b>The document at rank 4 has a slightly higher content score. This is because the query terms \"King Lear\" appear 1 more time than the document at rank 1.","#","document content"));
-		comparison.getHints().add(new Hint("<b>Content: </b> Neither document has a meta description tag. Perhaps add a meta description tag which succinctly describes the content?", "#", "meta tags"));
-		comparison.getHints().add(new Hint("<b>Anchors: </b> Both documents have the same number of incoming links. Perhaps add links to these pages from other pages on the site? Make sure that the link text accurately describes the page content.", "#", "anchors"));
-		comparison.getHints().add(new Hint("<b>URL:</b> <b class='warn'>The document at rank 1 has a higher URL score.</b> This is because the URL contains the query term \"lear\" 1 more time, and it is slightly shorter. Do the URLs for both documents describe the content? Would a human be able to predict what the content found at the URL is without looking?", "#", "URL naming"));*/
 	}
 	
 	@Override
-	public void setImportantUrl(String url, UrlComparison comparison,ResultPacket original) {
-		comparison.setImportantOne(comparison.getUrls().get(3));
-		
-		for (RankingScore cause : comparison.getImportantOne().getCauses()) {
-			comparison.getHintsByName().get(cause.getName()).caculateWin(cause.getPercentage(),comparison.getWeights().get(cause.getName()));
+	public void setImportantUrl(UrlComparison comparison,ResultPacket rp) {		
+		Result importantResult = rp.getResults().get(0);
+		// First see if we already have this URL
+		for (UrlInfoAndScore url : comparison.getUrls()) {
+			if(url.getUrl().equals(importantResult.getDisplayUrl())) {
+				comparison.setImportantOne(url);
+			}
 		}
+		// Otherwise we must create it ourselves
+		if(comparison.getImportantOne() == null) {
+			UrlInfoAndScore url = new UrlInfoAndScore(importantResult.getLiveUrl(),importantResult.getTitle(),"> 10");
+			comparison.setImportantOne(url);
+		}
+		for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
+			float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
+			Hint hint = comparison.getHintsByName().get(feature.getKey());
+			if(comparison.getImportantOne().getRank().equals("> 10")) {
+				hint.rememberScore(percentage, "> 10");
+			}
+			hint.caculateWin(percentage, rp.getCoolerWeights().get(feature.getKey())*100);
+		}
+		
+		
 		Collections.sort(comparison.getHintsByWin());
+		
 	}
 
 

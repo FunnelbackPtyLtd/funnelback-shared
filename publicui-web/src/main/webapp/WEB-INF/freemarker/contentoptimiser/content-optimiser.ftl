@@ -72,23 +72,23 @@
 	        	$.jqplot.config.enablePlugins = true;
 	        
 	        	
-	        	<#list response.urlComparison.importantOne.causes as cause>
-	        		var ${cause.name} = new Array();
-	        		var important_${cause.name} = [[${cause.percentage},1]];
-	        		var weight_${cause.name} = [[${response.urlComparison.weights[cause.name]},1]]
-	        	</#list>
+	        	<#list response.urlComparison.hintsByWin as hint>
+        				var ${hint.name} = new Array(); // ${response.urlComparison.importantOne.rank}
+var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank]},1]];
+		        		var weight_${hint.name} = [[${response.urlComparison.weights[hint.name]},1]]
+       	    	</#list>
 	        	
 	        	
 
         		<#list response.urlComparison.urls as urlinfo>
-        			<#list urlinfo.causes as cause>
-        				${cause.name}.push([${cause.percentage},${response.urlComparison.urls?size} + 1 - ${urlinfo.rank}]);
+        			<#list response.urlComparison.hintsByWin as hint>
+       					${hint.name}.push([${hint.scores[urlinfo.rank]},${response.urlComparison.urls?size} + 1 - ${urlinfo.rank}]);
         			</#list>
         		</#list>
 	        	
 				var barplot = $.jqplot('barplot', [
-	        	<#list response.urlComparison.importantOne.causes as cause>
-	        			${cause.name},
+	        	<#list response.urlComparison.hintsByWin as hint>
+	        			${hint.name},
 	        	</#list>
 				
 				], {
@@ -107,14 +107,17 @@
 						    	        
 			    	        ]
 			        	},	
-			        	xaxis: {min: 0, max: <#list response.urlComparison.importantOne.causes as cause> ${cause.name}[0][0] + </#list> 0
+			        	xaxis: {min: 0, max: 
+			        		<#list response.urlComparison.hintsByWin as hint>
+				        			${hint.name}[0][0] +
+			        		</#list> 0
 	        	, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
 			    	}
 				});
 				
 				var barplotImportant = $.jqplot('barplot-important', [
-	        	<#list response.urlComparison.importantOne.causes as cause>
-	        			important_${cause.name},
+	        	<#list response.urlComparison.hintsByWin as hint>
+	        			important_${hint.name},
 	        	</#list>
 				
 				], {
@@ -122,7 +125,7 @@
 	    			legend: {show: false},
 	    			seriesDefaults: {
 	        			renderer: $.jqplot.BarRenderer, 
-	        			shadowAngle: 135, 
+	        			shadowAngle: 135,
 	        			rendererOptions: {barDirection: 'horizontal', barWidth: 20}
 	    			}, 
 	    			axes: {
@@ -130,13 +133,16 @@
 				            renderer: $.jqplot.CategoryAxisRenderer, 
 			    	        ticks: [' ']
 			        	},	
-			        	xaxis: {min: 0, max: 100, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
+			        	xaxis: {min: 0, max: 
+			        		<#list response.urlComparison.hintsByWin as hint>
+				        			${hint.name}[0][0] +
+			        		</#list> 0, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
 			    	}
 				});
 				
 				var barplotWeight = $.jqplot('barplot-weights', [
-	        	<#list response.urlComparison.importantOne.causes as cause>
-	        			weight_${cause.name},
+	        	<#list response.urlComparison.hintsByWin as hint>
+	        			weight_${hint.name},
 	        	</#list>
 				
 				], {
@@ -156,24 +162,24 @@
 			    	}
 				});				
 				
-				<#list response.urlComparison.importantOne.causes as cause>
-	        		$("#legend").append('<span style="display: inline-block; padding: 2px; padding-left: 5px; padding-right: 5px;"><span style="display: inline-block;  width: 12px; height: 10px; background-color: '+barplot.seriesColors[${cause_index}%16]+' ">&nbsp;</span> <span>${cause.name}</span>');
+				<#list response.urlComparison.hintsByWin as hint>
+	        			$("#legend").append('<span style="display: inline-block; padding: 2px; padding-left: 5px; padding-right: 5px;"><span style="display: inline-block;  width: 12px; height: 10px; background-color: '+barplot.seriesColors[${hint_index}%16]+' ">&nbsp;</span> <span>${hint.name}</span>');
 	        	</#list>
 	        	
 	        	
-	        	<#list response.urlComparison.importantOne.causes as cause>
-	        		for(var i = 0; i < ${cause.name}.length;i++) {
-	        			${cause.name}[i] = [${response.urlComparison.urls?size}+1-${cause.name}[i][1],${cause.name}[i][0]/${response.urlComparison.weights[cause.name]}*100];
+				<#list response.urlComparison.hintsByWin as hint>
+	        		for(var i = 0; i < ${hint.name}.length;i++) {
+	        			${hint.name}[i] = [${response.urlComparison.urls?size}+1-${hint.name}[i][1],${hint.name}[i][0]/${response.urlComparison.weights[hint.name]}*100];
 	        		}
 	        	
-	        		var line_${cause.name} = [
+	        		var line_${hint.name} = [
 	        		  <#list 0..response.urlComparison.urls?size as x>
-	        		  	[${x},${cause.percentage}/${response.urlComparison.weights[cause.name]}*100],
+	        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank]}/${response.urlComparison.weights[hint.name]}*100],
 	        		  </#list>
-	        		  [${response.urlComparison.urls?size}+1, ${cause.percentage}/${response.urlComparison.weights[cause.name]}*100]
+	        		  [${response.urlComparison.urls?size}+1, ${hint.scores[response.urlComparison.importantOne.rank]}/${response.urlComparison.weights[hint.name]}*100]
 	        		];
 	        		
-	        		var plot_${cause.name} = $.jqplot('plot-${cause.name}', [${cause.name},line_${cause.name}], {
+	        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},line_${hint.name}], {
        				 	legend:{show:false},
        				 	axes:{
        				 		xaxis:{ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x}, </#list> (${response.urlComparison.urls?size}+1) ],tickOptions:{formatString:'%d'}, min:0, max:${response.urlComparison.urls?size} +1,label: "Rank" , labelRenderer: $.jqplot.CanvasAxisLabelRenderer, tickRenderer: $.jqplot.CanvasAxisTickRenderer},
@@ -185,7 +191,7 @@
  							    }
        				 		},
         				series:[
-            				{showLine:false, markerOptions:{style:'circle'},color: barplot.seriesColors[${cause_index}%16]},
+            				{showLine:false, markerOptions:{style:'circle'},color: barplot.seriesColors[${hint_index}%16]},
             				{showLine:true, color:'#ff9999', showMarker:false},
 		        		],
     				});
@@ -217,14 +223,14 @@
         	    <tr><td></td><td></td><td><div id="legend"></div></td></tr>
         </table>
         
-    	<div class="section" <#if  (response.urlComparison.urls?size >= response.urlComparison.importantOne.rank) > style="display: none;" </#if> >
+    	<div class="section" <#if ! response.urlComparison.importantOne.rank?ends_with(" 10")> style="display: none;" </#if> >
     		<h4>Selected Document</h4>
 	        <table>
 	                <tr><th>Rank</th><th>Title</th><th>Ranking caused by</th></tr>
 	                <tr>
 	                	<td style="vertical-align: center;">
 	                		<div style="overflow: hidden; white-space: nowrap; height: 43px;padding-top: 15px; background-color: #ffaaaa;">
-	                				${response.urlComparison.importantOne.rank}
+	                				> 10
 	                		</div>
 	                	</td> 
 	                	<td style="vertical-align: center;">

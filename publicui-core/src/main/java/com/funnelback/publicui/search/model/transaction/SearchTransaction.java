@@ -27,6 +27,8 @@ public class SearchTransaction {
 	 * Key to use for the extra search related to faceted navigation.
 	 */
 	public static final String EXTRA_SEARCH_FACETED_NAV = "__faceted_nav__";
+
+	public static final String CONTENT_OPTIMISER_SELECT_DOCUMENT = "__content_optimiser__";
 	
 	@Getter private final SearchQuestion question;
 	@Getter private final SearchResponse response;
