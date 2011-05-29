@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
-import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 /**
  * Cleans query by removing "technical" operators that we want
@@ -31,7 +28,8 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse()) {
+		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse() 
+				&& searchTransaction.getResponse().getResultPacket().getQuery() != null) {
 
 			// Remove any weighted query operators
 			String q = WEIGHTED_OPERATORS_PATTERN.matcher(
