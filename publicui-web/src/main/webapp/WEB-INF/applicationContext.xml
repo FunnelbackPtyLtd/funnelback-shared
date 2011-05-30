@@ -82,6 +82,7 @@
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
 		<ref bean="fixCacheAndClickLinks" />
 		<ref bean="fixDisplayUrlsOutputProcessor" />
+		<ref bean="htmlEncodeSummaries" />
 		<ref bean="facetedNavigationOutputProcessor" />
 		<ref bean="facetedNavigationTransformOutputProcessor" />
 		<ref bean="contextualNavigationOutputProcessor" />

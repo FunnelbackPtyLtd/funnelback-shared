@@ -31,7 +31,7 @@ public class Result implements ResultType {
 	@Getter private String collection;
 	@Getter private Integer component;
 	@Getter @Setter private String liveUrl;
-	@Getter private String summary;
+	@Getter @Setter private String summary;
 	@Getter @Setter private String cacheUrl;
 	@Getter private Date date;
 	@Getter private Integer fileSize;
