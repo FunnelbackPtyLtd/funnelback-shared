@@ -45,8 +45,8 @@
 		<url-pattern>/search.xml</url-pattern>
 		<url-pattern>/open-search.xml</url-pattern>
 		<url-pattern>/suggest.json</url-pattern>
-		<url-pattern>/ajax-proxy.json</url-pattern>
-		<url-pattern>/ajax-proxy.xml</url-pattern>
+		<!-- url-pattern>/ajax-proxy.json</url-pattern -->
+		<!-- url-pattern>/ajax-proxy.xml</url-pattern -->
 		<url-pattern>/content-optimiser.html</url-pattern>
 		<url-pattern>/content-optimiser-kickoff.html</url-pattern>
 	</servlet-mapping>
@@ -106,9 +106,10 @@
 			<param-value>false</param-value>
 		</init-param>
 	</filter>
-		<filter-mapping>
-			<filter-name>ConfigurableSecurityFilter</filter-name>
-			<url-pattern>/*</url-pattern> 
+	
+	<filter-mapping>
+		<filter-name>ConfigurableSecurityFilter</filter-name>
+		<url-pattern>/*</url-pattern> 
 	</filter-mapping>
 	<!--  ========================================== -->
 

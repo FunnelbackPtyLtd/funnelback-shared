@@ -1,18 +1,19 @@
 package com.funnelback.publicui.search.model.padre;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
  * A spelling suggestion
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 public class Spell {
 
-	@Getter private final String url;
-	@Getter private final String text;
+	@Getter @Setter private String url;
+	@Getter @Setter private String text;
 
 	public static final class Schema {
 

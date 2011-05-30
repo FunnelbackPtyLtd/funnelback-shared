@@ -1,17 +1,18 @@
 package com.funnelback.publicui.search.model.padre;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Contextual navigation navigation details
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ClusterNav {
 
-	@Getter private final  Integer level;
-	@Getter private final String url;
-	@Getter private final String label;
+	@Getter @Setter private Integer level;
+	@Getter @Setter private String url;
+	@Getter @Setter private String label;
 	
 	public final static class Schema {
 		public static final String CLUSTER_NAV = "cluster_nav";

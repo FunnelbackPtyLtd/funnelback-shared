@@ -1,24 +1,25 @@
 package com.funnelback.publicui.search.model.padre;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Search result summary, with document counts.
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ResultsSummary {
 	
-	@Getter private final Integer fullyMatching;
-	@Getter private final Integer estimatedHits;
-	@Getter private final Integer partiallyMatching;
-	@Getter private final Integer totalMatching;
+	@Getter @Setter private Integer fullyMatching;
+	@Getter @Setter private Integer estimatedHits;
+	@Getter @Setter private Integer partiallyMatching;
+	@Getter @Setter private Integer totalMatching;
 	
-	@Getter private final Integer numRanks;
-	@Getter private final Integer currStart;
-	@Getter private final Integer currEnd;
-	@Getter private final Integer prevStart;
-	@Getter private final Integer nextStart;
+	@Getter @Setter private Integer numRanks;
+	@Getter @Setter private Integer currStart;
+	@Getter @Setter private Integer currEnd;
+	@Getter @Setter private Integer prevStart;
+	@Getter @Setter private Integer nextStart;
 
 	/**
 	 * Represents XML Schema

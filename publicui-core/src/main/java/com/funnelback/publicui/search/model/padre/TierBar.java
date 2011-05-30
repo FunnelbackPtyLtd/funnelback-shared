@@ -10,11 +10,16 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class TierBar implements ResultType {
 
-	@Getter private final int matched;
-	@Getter private final int outOf;
+	@Getter @Setter private int matched;
+	@Getter @Setter private int outOf;
 	
 	@Getter @Setter private int firstRank;
 	@Getter @Setter private int lastRank;
+	
+	public TierBar(int matched, int outOf) {
+		this.matched = matched;
+		this.outOf = outOf;
+	}
 	
 	public final class Schema {
 		public static final String TIER_BAR = "tier_bar";

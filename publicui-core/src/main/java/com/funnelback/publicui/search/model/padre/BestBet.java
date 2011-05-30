@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.model.padre;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,19 +16,25 @@ import lombok.Setter;
 public class BestBet {
 
 	/** Trigger query / regexp */
-	@Getter private final String trigger;
+	@Getter @Setter private String trigger;
 	
 	/** Link */
-	@Getter private final String link;
+	@Getter @Setter private String link;
 	
 	/** Title */
-	@Getter private final String title;
+	@Getter @Setter private String title;
 	
 	/** Description */
-	@Getter private final String description;
+	@Getter @Setter private String description;
 	
 	/** URL with click tracking (click.cgi) */
 	@Getter @Setter private String clickTrackingUrl;
+	
+	/**
+	 * Custom data place holder for custom processors and
+	 * hooks. Anything can be put there by users.
+	 */
+	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
 	public static class Schema {
 		public static final String BB = "bb";

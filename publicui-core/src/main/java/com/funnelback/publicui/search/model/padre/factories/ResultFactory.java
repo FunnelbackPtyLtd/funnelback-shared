@@ -62,8 +62,26 @@ public class ResultFactory {
 			}
 		}
 
-		return new Result(rank, score, title, collection, component, liveUrl, summary, cacheUrl, date, fileSize,
-				fileType, tier, documentNumber, metadataMap, ql, liveUrl, null, explain, liveUrl);
+		return new Result(
+				rank,
+				score,
+				title,
+				collection,
+				component,
+				liveUrl,
+				summary,
+				cacheUrl,
+				date,
+				fileSize,
+				fileType,
+				tier,
+				documentNumber,
+				metadataMap,
+				ql,
+				liveUrl,
+				null,
+				explain,
+				liveUrl);
 	}
 
 	/**

@@ -2,7 +2,9 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
@@ -23,6 +25,12 @@ public class Facet {
 	
 	/** Category of this facet */
 	@Getter private final List<Category> categories = new ArrayList<Category>();
+	
+	/**
+	 * Custom data place holder for custom processors and
+	 * hooks. Anything can be put there by users.
+	 */
+	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
 	public Facet(String name) {
 		this.name = name;

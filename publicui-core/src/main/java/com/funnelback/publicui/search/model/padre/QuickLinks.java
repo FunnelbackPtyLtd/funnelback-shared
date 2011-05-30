@@ -5,21 +5,19 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * A quick link, associated to a result.
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class QuickLinks {
 
 	/**
 	 * Domain of the quick links. Note: This is not a domain only, but could be
 	 * a partial URL such as: www.domain.com/folder1/folder2/
 	 */
-	@Getter
-	private final String domain;
+	@Getter @Setter private String domain;
 
 	/**
 	 * List of quick links
@@ -29,9 +27,7 @@ public class QuickLinks {
 
 	@AllArgsConstructor
 	public static class QuickLink {
-
-		@Getter private final String text;
-		
+		@Getter @Setter private String text;
 		@Getter @Setter private String url;
 	}
 

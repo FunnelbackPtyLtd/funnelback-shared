@@ -3,23 +3,29 @@ package com.funnelback.publicui.search.model.padre;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * Contextual navigation category (type, topic, site, ...)
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Category {
 
-	@Getter final private String name;
-	@Getter final private Integer more;
+	@Getter @Setter private String name;
+	@Getter @Setter private Integer more;
 	
 	@Getter @Setter private String moreLink;
 	@Getter @Setter private String fewerLink;
 	
 	@Getter private final List<Cluster> clusters = new ArrayList<Cluster>();
+	
+	public Category(String name, Integer more) {
+		this.name = name;
+		this.more = more;
+	}
+	
 	
 	public final static class Schema {
 		public static final String CATEGORY = "category";

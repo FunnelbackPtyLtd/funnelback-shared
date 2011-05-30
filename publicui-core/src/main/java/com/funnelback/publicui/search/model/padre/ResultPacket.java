@@ -95,15 +95,6 @@ public class ResultPacket {
 		}
 	}
 	
-	/* TODO:
-	 * Tier bars
-	 * Phluster elapsed time
-	 * Include scope
-	 * Exclude Scope
-	 * Query Processor Codes
-	 * ...
-	 */
-	
 	/**
 	 * Represents XML Schema
 	 *

@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 /**
@@ -22,9 +23,9 @@ public class Cluster {
 	}
 	
 	@Getter private String href;
-	@Getter private final Integer count;
-	@Getter private final String label;
-	@Getter private String query;
+	@Getter @Setter private Integer count;
+	@Getter @Setter private String label;
+	@Getter @Setter private String query;
 	
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public void setHref(String href) {

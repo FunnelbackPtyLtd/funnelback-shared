@@ -37,7 +37,7 @@ public class SearchResponse {
 	 * Custom data place holder for custom processors and
 	 * hooks. Anything can be put there by users.
 	 */
-	@Getter private Map<String, Object> customData = new HashMap<String, Object>();
+	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
 	/**
 	 * URL comparison data, for content optimiser.
