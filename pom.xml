@@ -246,12 +246,17 @@
 						<configuration>
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
+							<outputFile>${project.build.directory}/dependency/${project.artifactId}.classpath</outputFile>
+							<fileSeparator>/</fileSeparator>
+							<pathSeparator>:</pathSeparator>
+							<prefix>$SEARCH_HOME/lib/java/publicui</prefix>
 						</configuration>
 						<executions>
 							<execution>
 								<phase>package</phase>
 								<goals>
 									<goal>copy-dependencies</goal>
+									<goal>build-classpath</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -271,6 +276,7 @@
 							<prefix>&lt;SystemProperty name="funnelback.installdir" /&gt;</prefix>
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
+							<outputFile>${project.build.directory}/dependency/${project.artifactId}.jetty.classpath</outputFile>
 						</configuration>
 					</plugin>
 				</plugins>
