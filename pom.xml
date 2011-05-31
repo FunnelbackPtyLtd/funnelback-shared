@@ -234,6 +234,26 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<profiles>
+		<profile>
+			<id>installers-jetty</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<prefix>&lt;SystemProperty name="funnelback.installdir" /&gt;</prefix>
+							<includeScope>runtime</includeScope>
+							<excludeScope>provided</excludeScope>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 	<repositories>
 		<repository>
 			<id>gettext-commons-site</id>
