@@ -25,13 +25,13 @@ public class RemoveTagPlugin implements Operation {
 		Matcher m = TAG_LINK_PATTERN.matcher(out);
 		if (m.find()) {
 			out = m.replaceAll("");
-			log.warn("Tagging link plugin tag(s) ('ResultTagLink') have been removed.");
+			log.warn("Unsupported tagging link plugin tag(s) ('<s:ResultTagLink>') have been removed.");
 		}
 
 		m = TAG_LIST_PATTERN.matcher(out);
 		if (m.find()) {
 			out = m.replaceAll("");
-			log.warn("Tagging list plugin tag(s) ('ResultTagList') have been removed.");
+			log.warn("Unsupported tagging list plugin tag(s) ('<s:ResultTagList>') have been removed.");
 		}
 				
 		return out;

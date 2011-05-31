@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import lombok.extern.slf4j.Log;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,14 +20,14 @@ public class FormConverter {
 	public void run(CliOptions opts) throws IOException {
 		
 		String input = FileUtils.readFileToString(opts.input);
-		log.info("Processing file '" + opts.input.getAbsolutePath() + "'");
+		log.warn("Processing file '" + opts.input.getAbsolutePath() + "'");
 		
 		for (Operation o: steps) {
 			log.debug("Applying operation " + o.getClass().getSimpleName());
 			input = o.process(input);
 		}
 		
-		log.info("Writing converted file to '" + opts.output.getAbsolutePath() + "'");
+		log.warn("Writing converted file to '" + opts.output.getAbsolutePath() + "'");
 		FileUtils.writeStringToFile(opts.output, input);
 	}
 

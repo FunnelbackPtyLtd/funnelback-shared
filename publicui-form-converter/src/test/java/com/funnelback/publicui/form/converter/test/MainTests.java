@@ -24,6 +24,7 @@ public class MainTests {
 		out.deleteOnExit();
 		
 		String[] args = {
+				"-v",
 				"-i ", in.getAbsolutePath(),
 				"-o ", out.getAbsolutePath()
 		};

@@ -13,6 +13,12 @@ public class CliOptions {
 	@Parameter(names={"-o", "--output"}, description="Output form file", required=true)
 	public File output;
 	
+	@Parameter(names={"-v"}, description="Enable verbose output", required=false)
+	public boolean verbose = false;
+	
+	@Parameter(names={"-vv"}, description="Enable more verbose output", required=false)
+	public boolean veryVerbose = false;
+	
 	
 	public class FileConverter implements IStringConverter<File> {
 		@Override

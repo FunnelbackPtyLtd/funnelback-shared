@@ -16,7 +16,7 @@ import com.funnelback.publicui.form.converter.Operation;
 @Log
 public class MoreOrLessCategoriesConversion implements Operation {
 
-	private static final Pattern JQUERY_JS_PATTERN = Pattern.compile("src=['\"]?jquery.*?\\.js", Pattern.CASE_INSENSITIVE);
+	private static final Pattern JQUERY_JS_PATTERN = Pattern.compile("src=['\"]?.*?jquery.*?\\.js", Pattern.CASE_INSENSITIVE);
 	private static final Pattern MORE_LESS_TAG_PATTERN = Pattern.compile("<s:MoreOrLessCategories\\s*(class=['\"](.*?)['\"])?\\s*>");
 	
 	private final static String DEFAULT_LINK_CLASS_NAME = "moreOrLessCategories";
@@ -36,7 +36,7 @@ public class MoreOrLessCategoriesConversion implements Operation {
 			if (! JQUERY_JS_PATTERN.matcher(out).find()) {
 				log.warn("The converted form requires jQuery for faceted navigation 'more.../less...' categories links, "
 						+ "but your form file doesn't seem to include the jQuery javascript library. Please ensure that "
-						+ "the converted form file includes jQuery");
+						+ "the converted form file includes jQuery if you're using faceted navigation.");
 			}
 			
 			// Try to find a custom class name for the link

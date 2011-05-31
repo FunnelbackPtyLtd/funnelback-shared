@@ -40,7 +40,10 @@ public class ResConversion implements Operation {
 		
 		if (out.contains("result.date")) {
 			out = out.replaceAll("result\\.date", "result.date?date?string(\"d MMM yyyy\")");
-			log.warn("The date formatting directive has been automatically added. This will cause errors if results have no date.");
+			log.warn("<s:Res>date</s:Res> tags have been converted to ${result.date?date?string(\"d MMM yyy\")}. "
+					+ "This will cause errors if results have no date, so you should manually check these statements"
+					+ " and possibly test for the presence of a date before trying to format it."
+					);
 		}
 		
 		return out;
