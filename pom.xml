@@ -247,6 +247,8 @@
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
 							<outputFile>${project.build.directory}/dependency/${project.artifactId}.classpath</outputFile>
+							<!-- Always output unix-style classpath by convention. The installer
+							will convert it to a Windows one if necessary -->
 							<fileSeparator>/</fileSeparator>
 							<pathSeparator>:</pathSeparator>
 							<prefix>$SEARCH_HOME/lib/java/publicui</prefix>
@@ -260,24 +262,6 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>installers-jetty</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<prefix>&lt;SystemProperty name="funnelback.installdir" /&gt;/lib/java/publicui</prefix>
-							<includeScope>runtime</includeScope>
-							<excludeScope>provided</excludeScope>
-							<outputFile>${project.build.directory}/dependency/${project.artifactId}.jetty.classpath</outputFile>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
