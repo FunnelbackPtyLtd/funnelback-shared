@@ -1,3 +1,5 @@
+<#ftl encoding="utf-8" />
+<#import "/share/freemarker/funnelback_legacy.ftl" as s/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,7 +112,13 @@
 			</div>        
         </#if>
         <div class="summary">
-        	
+        	<#if (response.urlComparison.urls?size > 0)>
+        		<p>Showing results 1-${response.urlComparison.urls?size} of ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;.
+        						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].url}">${response.urlComparison.urls[0].title}</a>.
+        	</#if>
+        	<#if (response.urlComparison.importantOne??)>
+				<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>.        		
+        	</#if> 
         </div>   
            
         <script type="text/javascript">

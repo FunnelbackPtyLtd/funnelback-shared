@@ -80,14 +80,14 @@ public class SearchController {
 	@Resource(name="contentOptimiserView")
 	private FreeMarkerView contentOptimiserView;
 	
-	@RequestMapping(value="/content-optimiser.html")
+	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, new String[] {"on"});
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, new String[] {"999"});
 		
 		return new ModelAndView(contentOptimiserView, search(request, question).getModel());
 	}
-	
+			
 	/**
 	 * Default handler when we have a query and a collection.
 	 * @param request

@@ -30,11 +30,12 @@
 		<form action="/publicui/content-optimiser.html" method="GET"> 
 			<div> 
 			<label for="query" style="text-indent: -9999em;">Optimise</label> 
-			<input name="query" id="query" type="text" value="" accesskey="q"> 
-			<input type="hidden" name="collection" value="test-web"> 
-			<input type="hidden" name="profile" value="_default">
-			URL<label for="optimiser_url" style="text-indent: -9999em;">URL</label>  
-			<input name="optimiser_url" id="optimiser_url" type="text" value="" accesskey="o">
+			<input name="query" id="query" type="text" style="margin-right: 5px;" value="" accesskey="q">Query 
+			 
+			<label for="optimiser_url" style="text-indent: -9999em;">URL</label> 
+			<input name="optimiser_url" id="optimiser_url" style="width: 300; font-size: 1em; padding: 2px 4px; margin-right: 5px;" type="text" value="" accesskey="o">URL  
+			<input type="hidden" name="collection" value="${collection}"/>
+			
 			<input type="submit" value="Optimise">                         
 			</div> 
         	</form> 
