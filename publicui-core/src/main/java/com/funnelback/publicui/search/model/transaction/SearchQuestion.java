@@ -135,6 +135,7 @@ public class SearchQuestion {
 		public static final String CLIVE = "clive";
 		public static final String GSCOPE1 = "gscope1";
 		public static final String EXPLAIN = "explain";
+		public static final String NUM_RANKS = "num_ranks";
 		
 		/** Explore: Number of query terms */
 		public static final String EXP = "exp";

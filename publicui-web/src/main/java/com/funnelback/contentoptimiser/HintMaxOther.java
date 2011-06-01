@@ -5,8 +5,8 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 
 public class HintMaxOther extends Hint {
 
-	public HintMaxOther(String name) {
-		super(name);
+	public HintMaxOther(String name,String category) {
+		super(name,category);
 	}
 
 	@Override

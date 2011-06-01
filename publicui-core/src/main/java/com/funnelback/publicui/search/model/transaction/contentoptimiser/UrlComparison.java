@@ -13,10 +13,13 @@ public class UrlComparison {
 	@Getter private final List<UrlInfoAndScore> urls = new ArrayList<UrlInfoAndScore>();
 	
 	@Getter @Setter private UrlInfoAndScore importantOne;
+	@Getter private final List<String> messages = new ArrayList<String>();
 	
 	@Getter	private final List<Hint> hintsByWin = new ArrayList<Hint>();
 	@Getter	private final Map<String,Hint> hintsByName = new HashMap<String,Hint>();
 	
 	@Getter private final Map<String, Float> weights = new HashMap<String,Float>();
-
+	
+	@Getter private final List<HintCollection> hintCollections = new ArrayList<HintCollection>();
+	@Getter private final Map<String,HintCollection> hintCollectionsByName = new HashMap<String,HintCollection>();
 }

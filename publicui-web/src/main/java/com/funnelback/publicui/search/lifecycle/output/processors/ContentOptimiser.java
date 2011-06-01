@@ -35,15 +35,22 @@ public class ContentOptimiser implements OutputProcessor {
 			UrlComparison comparison = new UrlComparison();
 		
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
-//			if(searchTransaction.get)
-		
 			
 			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString());
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
-				//log.error(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDisplayUrl());
-				filler.setImportantUrl(comparison,selectedDocument.getResponse().getResultPacket());
-				filler.fillHints(comparison);
+				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0].equals("")) {
+					comparison.getMessages().add("No document URL selected.");
+				}else{
+					filler.setImportantUrl(comparison,searchTransaction.getResponse().getResultPacket(),searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0]);
+				}
+			} else {
+				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) == null) {
+					comparison.getMessages().add("No document URL selected.");
+				} else {
+					comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0] + "' was not returned for the query.");
+				}
 			}
+			filler.fillHintCollections(comparison);
 			searchTransaction.getResponse().setUrlComparison(comparison);
 		}
 	}

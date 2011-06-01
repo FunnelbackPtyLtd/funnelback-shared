@@ -19,7 +19,7 @@ public class ContentOptimiserSelectUrlQuestionFactory implements
 		SearchQuestionBinder.bind(originalQuestion, out);
 		
 		out.getInputParameterMap().put("xscope", new String[] { extraSearchConfiguration.get(RequestParameters.OPTIMISER_URL) } );
-		out.getInputParameterMap().put("daat" , new String[] { "off"});
+//		out.getInputParameterMap().put("daat" , new String[] { "off"});
 		return out;
 	}
 

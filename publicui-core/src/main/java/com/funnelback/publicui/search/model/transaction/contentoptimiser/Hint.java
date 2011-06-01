@@ -1,6 +1,8 @@
 package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -10,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 public abstract class Hint implements Comparable<Hint> {
 
 	@Getter private final String name;	
+	@Getter private final String category;
 	@Getter private final Map<String,Float> scores = new HashMap<String,Float>();
-		
+	@Getter private final List<String> hintTexts = new ArrayList<String>();
+	
 	@Getter protected float win;
 	protected float maxScore;
 	protected float minScore = 101;
@@ -29,7 +33,7 @@ public abstract class Hint implements Comparable<Hint> {
 	}
 	
 	public boolean isInteresting() {
-		return (scores.size()!=0) && win > 0.0000001;
+		return (scores.size()!=0); // && win > 0.0000001;
 	}
 	
 	@Override
