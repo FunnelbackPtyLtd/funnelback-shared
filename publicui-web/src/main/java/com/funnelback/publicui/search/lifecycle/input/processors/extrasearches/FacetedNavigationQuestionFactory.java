@@ -10,7 +10,7 @@ import com.funnelback.publicui.utils.MapKeyFilter;
 
 public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFactory {
 
-	private static final String NUM_RANKS_OPT = "-numranks0";
+	private static final String NUM_RANKS_OPT = "-num_ranks1";
 	
 	@Override
 	public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
