@@ -115,10 +115,11 @@
         	<#if (response.urlComparison.urls?size > 0)>
         		<p>Showing results 1-${response.urlComparison.urls?size} of ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;.
         						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].url}">${response.urlComparison.urls[0].title}</a>.
+	        	<#if (response.urlComparison.importantOne??)>
+					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>.        		
+	        	</#if> 
+	        		<p>Here is a breakdown of the ranking for the top ${response.urlComparison.urls?size} documents:</p>
         	</#if>
-        	<#if (response.urlComparison.importantOne??)>
-				<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>.        		
-        	</#if> 
         </div>   
            
         <script type="text/javascript">
@@ -372,6 +373,9 @@
 			<div id="legend"></div>
 		</div>
 		<#if response.urlComparison.importantOne??>
+			<div class="section">
+				<p>Here is a breakdown of the best ways to improve the ranking of the selected page. Categories are sorted by the potential improvement to the ranking - so improvement suggestions listed first will be the most effective. Red lines in the graphs indicate the current score for the selected document.</p> 
+			</div>
 			<#list response.urlComparison.hintCollections as hc>
 			    <div class="section" style="clear: both;">
 			    	<div style="float: left; width:400px;">
