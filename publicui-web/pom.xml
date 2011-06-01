@@ -276,6 +276,36 @@
 
 	<profiles>
 		<profile>
+			<!--
+				Dev. profile:
+				- Packages dependencies into the WAR
+				- Installs the WAR in $SEARCH_HOME/web/webapps/
+			-->
+			<id>development</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<configuration>
+									<target name="install">
+										<property environment="env" />
+										<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" todir="${env.SEARCH_HOME}/web/webapps/" overwrite="true" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>installers</id>
 			<build>
 				<plugins>
