@@ -82,13 +82,13 @@
 		}
 	</style>
 	
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/jquery-1.5.1.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/jquery.jqplot.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/plugins/jqplot.canvasTextRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0b/plugins/jqplot.barRenderer.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
 		<title>Funnelback Content Optimiser</title>
 </head>
