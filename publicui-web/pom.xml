@@ -34,7 +34,7 @@
 
 	<build>
 		<!-- No version in WAR filename as it's dropped in web/webapps/ and auto-deployed -->
-		<finalName>${artifactId}</finalName>
+		<finalName>funnelback-publicui</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
