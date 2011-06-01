@@ -286,10 +286,33 @@
 							<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<includeScope>runtime</includeScope>
+							<excludeScope>provided</excludeScope>
+							<outputFile>${project.build.directory}/dependency/${project.artifactId}.classpath</outputFile>
+							<!-- Output a classpath string for Jetty: Separator is always a semi-colon
+							(or a comma) regardless of the OS. -->
+							<fileSeparator>/</fileSeparator>
+							<pathSeparator>;</pathSeparator>
+							<prefix>$SEARCH_HOME/lib/java/publicui</prefix>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+									<goal>build-classpath</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>					
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
-	
 
 </project>
