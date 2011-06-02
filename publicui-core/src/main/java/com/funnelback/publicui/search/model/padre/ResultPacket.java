@@ -22,6 +22,8 @@ public class ResultPacket {
 	@Getter @Setter private String queryCleaned;
 	@Getter @Setter private String collection;
 	
+	@Getter private final List<QSup> qSups = new ArrayList<QSup>();
+	
 	@Getter @Setter private ResultsSummary resultsSummary;
 	@Getter @Setter private Spell spell;
 	@Getter final private List<BestBet> bestBets = new ArrayList<BestBet>();
@@ -109,6 +111,9 @@ public class ResultPacket {
 		public static final String QUERY = "query";
 		public static final String QUERY_AS_PROCESSED = "query_as_processed";
 		public static final String COLLECTION = "collection";
+		
+		public static final String QSUP = "qsup";
+		public static final String QSUP_SRC = "src";
 		
 		public static final String RMC = "rmc";
 		public static final String RMC_ITEM = "item";

@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamParserTests {
@@ -124,7 +125,14 @@ public class StaxStreamParserTests {
 		assertEquals("visa^0.345", rp.getQuery());
 		assertEquals("visa", rp.getQueryAsProcessed());
 		assertEquals("visa^0.345", rp.getQueryCleaned());
+		
 		assertEquals("gov_combined", rp.getCollection());
+		
+		assertEquals(2, rp.getQSups().size());
+		assertEquals(Source.SPEL, rp.getQSups().get(0).getSrc());
+		assertEquals("taxation", rp.getQSups().get(0).getQuery());
+		assertEquals(Source.SYNS, rp.getQSups().get(1).getSrc());
+		assertEquals("u:australia.gov.au t:\"tax\"", rp.getQSups().get(1).getQuery());
 	}
 	
 	@Test

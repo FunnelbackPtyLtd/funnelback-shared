@@ -10,6 +10,9 @@
   <query>visa^0.345</query>
   <query_as_processed>visa</query_as_processed>
   <collection>gov_combined</collection>
+  
+  <qsup src="SPEL">taxation</qsup>
+  <qsup src="SYNS">u:australia.gov.au t:"tax"</qsup>
 
 <results_summary>
   <fully_matching>200</fully_matching>

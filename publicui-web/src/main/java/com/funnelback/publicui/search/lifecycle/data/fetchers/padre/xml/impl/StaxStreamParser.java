@@ -18,12 +18,13 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXml
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
-import com.funnelback.publicui.search.model.padre.Explain;
+import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
 import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
@@ -61,6 +62,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.setQueryAsProcessed(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.COLLECTION.equals(xmlStreamReader.getLocalName())) {
 						packet.setCollection(xmlStreamReader.getElementText());
+					} else if (ResultPacket.Schema.QSUP.equals(xmlStreamReader.getLocalName())) {
+						packet.getQSups().add(parseQSup(xmlStreamReader));
 					} else if (ResultPacket.Schema.PADRE_ELAPSED_TIME.equals(xmlStreamReader.getLocalName())) {
 						packet.setPadreElapsedTime(Integer.parseInt(xmlStreamReader.getElementText()));
 					} else if (ResultPacket.Schema.PHLUSTER_ELAPSED_TIME.equals(xmlStreamReader.getLocalName())) {
@@ -169,6 +172,25 @@ public class StaxStreamParser implements PadreXmlParser {
 			return rmc; 
 		}
 		
+		return null;
+	}
+	
+	private QSup parseQSup(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		if (!ResultPacket.Schema.QSUP.equals(xmlStreamReader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		if ( xmlStreamReader.getAttributeCount() == 1
+				&& ResultPacket.Schema.QSUP_SRC.equals(xmlStreamReader.getAttributeLocalName(0))) {
+			try {
+				return new QSup(
+						Source.valueOf(xmlStreamReader.getAttributeValue(0)),
+						xmlStreamReader.getElementText()
+						);
+			} catch (Exception e) {
+				return new QSup(Source.Unknown, xmlStreamReader.getElementText());
+			}
+		}
 		return null;
 	}
 	
