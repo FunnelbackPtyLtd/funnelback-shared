@@ -119,6 +119,9 @@ public class XSLTXStreamViewTests {
 		while (m.find()) {
 			Assert.assertTrue(actual.contains(m.group(0)));
 		}
+		// Then strip the <md> tags
+		oldXml = oldXml.replaceAll("<md f[^\\n]*</md>", "");
+		actual = actual.replaceAll("<md f[^\\n]*</md>", "");
 		
 		// <explain> tags didn't exist prior to v11
 		oldXml = oldXml.replaceAll("(?s)<explain>.*?</explain>\\n", "");
@@ -126,15 +129,12 @@ public class XSLTXStreamViewTests {
 		oldXml = oldXml.replaceAll("(?s)<explain_types>.*?</explain_types>\\n", "");
 		// As well as <cooler_weightings>
 		oldXml = oldXml.replaceAll("(?s)<cooler_weightings>.*?</cooler_weightings>\\n", "");
+		// As well as <qsup> for query blending
+		oldXml = oldXml.replaceAll("(?s)<qsup.*?>.*?</qsup>\\n", "");
 		
 		// Remove <unexpected_tag> used for other tests
 		oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\\n", "");
 		
-		
-		
-		// Then strip the <md> tags
-		oldXml = oldXml.replaceAll("<md f[^\\n]*</md>", "");
-		actual = actual.replaceAll("<md f[^\\n]*</md>", "");
 		
 		Assert.assertEquals(oldXml, actual);
 	}
