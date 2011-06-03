@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("htmlEncodeSummaries")
 public class HTMLEncodeSummaries implements OutputProcessor {
 
-	private static final String PADRE_HIGHLIGHT_TAG = "b";
+	private static final String PADRE_HIGHLIGHT_TAG = "strong";
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
