@@ -39,6 +39,7 @@ public class Result implements ResultType {
 	@Getter @Setter private String fileType;
 	@Getter @Setter private Integer tier;
 	@Getter @Setter private Integer docNum;
+	@Getter @Setter private Float kmFromOrigin;
 	@Getter @Setter private Map<String, String> metaData;
 	@Getter @Setter private QuickLinks quickLinks;
 	
@@ -82,6 +83,7 @@ public class Result implements ResultType {
 		public static final String FILETYPE = "filetype";
 		public static final String TIER = "tier";
 		public static final String DOCNUM = "docnum";
+		public static final String KM_FROM_ORIGIN = "km_from_origin";
 		public static final String EXPLAIN = "explain";
 		public static final String METADATA = "md";
 		public static final String ATTR_METADATA_F = "f";

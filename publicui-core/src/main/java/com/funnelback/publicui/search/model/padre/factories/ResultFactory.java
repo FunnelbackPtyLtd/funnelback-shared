@@ -54,6 +54,11 @@ public class ResultFactory {
 		String fileType = data.get(Result.Schema.FILETYPE);
 		Integer tier = Integer.valueOf(data.get(Result.Schema.TIER));
 		Integer documentNumber = Integer.valueOf(data.get(Result.Schema.DOCNUM));
+		
+		Float kmFromOrigin = null;
+		if (data.get(Result.Schema.KM_FROM_ORIGIN) != null) {
+			kmFromOrigin = Float.valueOf(data.get(Result.Schema.KM_FROM_ORIGIN));
+		}
 
 		HashMap<String, String> metadataMap = new HashMap<String, String>();
 		for (String key : data.keySet()) {
@@ -76,6 +81,7 @@ public class ResultFactory {
 				fileType,
 				tier,
 				documentNumber,
+				kmFromOrigin,
 				metadataMap,
 				ql,
 				liveUrl,

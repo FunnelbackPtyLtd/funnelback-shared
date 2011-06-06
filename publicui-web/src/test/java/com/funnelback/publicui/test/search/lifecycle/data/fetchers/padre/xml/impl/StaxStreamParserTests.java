@@ -317,6 +317,10 @@ public class StaxStreamParserTests {
 		assertEquals("Politics;Politics;Embassies;embassies", md.get("R"));
 		
 		assertNull(last.getQuickLinks());
+		
+		// Geo features
+		Result fifth = rp.getResults().get(4);
+		Assert.assertEquals(1295.8, fifth.getKmFromOrigin(), .001);
 
 	}
 	
