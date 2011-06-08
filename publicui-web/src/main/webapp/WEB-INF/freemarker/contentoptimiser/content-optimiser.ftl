@@ -1,5 +1,6 @@
 <#ftl encoding="utf-8" />
 <#import "/share/freemarker/funnelback_legacy.ftl" as s/>
+<#setting number_format="computer">
 <!DOCTYPE html>
 <html lang="en">
 <head>
