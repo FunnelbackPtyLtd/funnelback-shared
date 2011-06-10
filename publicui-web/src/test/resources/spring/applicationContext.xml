@@ -36,6 +36,11 @@
 	</bean>
 
 	<bean class="com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor" />
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="useCodeAsDefaultMessage"><value>true</value></property>
+	</bean>
+	<bean id="i18n" class="com.funnelback.publicui.i18n.I18n" />
 
 	<util:list id="inputFlow">
 		<bean class="com.funnelback.publicui.test.mock.MockInputProcessor" />

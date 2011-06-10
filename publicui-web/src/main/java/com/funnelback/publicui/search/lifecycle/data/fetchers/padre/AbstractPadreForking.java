@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
@@ -53,6 +55,9 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	@Value("#{appProperties['padre.fork.native.timeout']}")
 	@Setter
 	protected int padreWaitTimeout;
+
+	@Autowired
+	protected I18n i18n;
 	
 	@Override
 	@Profiled
@@ -84,21 +89,21 @@ public abstract class AbstractPadreForking implements DataFetcher {
 			PadreExecutionReturn padreOutput = null;
 			try {
 				if (searchTransaction.getQuestion().isImpersonated()) {
-					padreOutput = new WindowsNativePadreForker(padreWaitTimeout).execute(commandLine, env);
+					padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 				} else {
-					padreOutput = new JavaPadreForker().execute(commandLine, env);
+					padreOutput = new JavaPadreForker(i18n).execute(commandLine, env);
 				}
 
 				updateTransaction(searchTransaction, padreOutput);
 			} catch (PadreForkingException pfe) {
 				log.error("PADRE forking failed", pfe);
-				throw new DataFetchException(I18n.i18n().tr("PADRE forking failed"), pfe);	
+				throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);	
 			} catch (XmlParsingException pxpe) {
 				log.error("Unable to parse PADRE response", pxpe);
 				if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
 					log.error("PADRE response was: \n" + padreOutput.getOutput());
 				}
-				throw new DataFetchException(I18n.i18n().tr("Unable to parse PADRE response"), pxpe);
+				throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
 			}
 		}
 	}

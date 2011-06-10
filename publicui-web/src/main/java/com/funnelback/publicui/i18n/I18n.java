@@ -1,19 +1,25 @@
 package com.funnelback.publicui.i18n;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.xnap.commons.i18n.I18nFactory;
+import org.springframework.stereotype.Component;
 
 /**
- * Internationalization utils
+ * Internationalisation utils
  */
+@Component("i18n")
 public class I18n {
 
-	/**
-	 * @return  a {@link org.xnap.commons.i18n.I18n} ready for use with the
-	 * correct locale.
-	 */
-	public static org.xnap.commons.i18n.I18n i18n() {
-		return I18nFactory.getI18n(I18n.class, "com.funnelback.publicui.search.web.i18n.Messages", LocaleContextHolder.getLocale());
+	@Autowired
+	private MessageSource messages;
+	
+	public String tr(String code) {
+		return messages.getMessage(code, null, LocaleContextHolder.getLocale());		
+	}
+	
+	public String tr(String code, Object... args) {
+		return messages.getMessage(code, args, LocaleContextHolder.getLocale());
 	}
 	
 }

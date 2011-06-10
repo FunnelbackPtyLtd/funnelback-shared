@@ -3,10 +3,9 @@ package com.funnelback.publicui.test.search.web.views.freemarker;
 import java.util.ArrayList;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.web.views.freemarker.TruncateMethod;
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod;
 
 import freemarker.template.SimpleNumber;
@@ -14,39 +13,7 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
-public class TruncateURLMethodTests {
-
-	private TruncateURLMethod method;
-	
-	@Before
-	public void before() {
-		method = new TruncateURLMethod();
-	}
-	
-	@Test
-	public void testMissingArguments() {
-		try {
-			method.exec(null);
-			Assert.fail();
-		} catch (NullPointerException npe) {
-		} catch (TemplateModelException tme) {
-		}
-
-		try {
-			method.exec(new ArrayList<SimpleScalar>());
-			Assert.fail();
-		} catch (TemplateModelException tme) {
-		}
-		
-		try {
-			ArrayList<SimpleScalar> arguments = new ArrayList<SimpleScalar>();
-			arguments.add(new SimpleScalar("missing"));
-			
-			method.exec(arguments);
-			Assert.fail();
-		} catch (TemplateModelException tme) {
-		}
-	}
+public class TruncateURLMethodTests extends AbstractMethodTest {
 	
 	@Test
 	public void testTooShort() throws TemplateModelException {
@@ -117,6 +84,21 @@ public class TruncateURLMethodTests {
 		result = (SimpleScalar) method.exec(arguments);
 		Assert.assertEquals("\\\\thisi\u2026file.ext", result.getAsString());
 
+	}
+
+	@Override
+	protected AbstractTemplateMethod buildMethod() {
+		return new TruncateURLMethod();
+	}
+
+	@Override
+	protected int getRequiredArgumentsCount() {
+		return 2;
+	}
+
+	@Override
+	protected int getOptionalArgumentsCount() {
+		return 0;
 	}
 
 

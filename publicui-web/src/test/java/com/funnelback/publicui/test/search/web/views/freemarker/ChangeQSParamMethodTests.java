@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod;
 
 import freemarker.template.SimpleNumber;
@@ -46,7 +47,7 @@ public class ChangeQSParamMethodTests extends AbstractMethodTest {
 	}
 
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new ChangeQSParamMethod();
 	}
 

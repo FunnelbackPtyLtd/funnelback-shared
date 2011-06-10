@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod;
 
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
@@ -35,7 +35,7 @@ public class IsEnabledMethodTests extends AbstractMethodTest {
 	}
 	
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new IsEnabledMethod();
 	}
 

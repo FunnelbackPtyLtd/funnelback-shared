@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.funnelback.publicui.i18n.I18n;
-
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
@@ -19,16 +15,16 @@ import freemarker.template.TemplateScalarModel;
  * either add the parameter if it doesn't exist, or replace its existing
  * value with the new one.
  */
-public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class ChangeQSParamMethod extends AbstractTemplateMethod {
+
+	public ChangeQSParamMethod() {
+		super(3, 0);
+	}
 
 	public static final String NAME = "changeParam"; 
 	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 3) {
-			throw new TemplateModelException(I18n.i18n().tr("This function takes 3 arguments: The query string, the parameter name, and the new value"));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		String paramName = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String newValue = "";
@@ -52,5 +48,4 @@ public class ChangeQSParamMethod implements TemplateMethodModel, TemplateMethodM
 		}
 
 	}
-
 }

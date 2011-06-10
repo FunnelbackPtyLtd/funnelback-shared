@@ -45,13 +45,6 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.xnap.commons</groupId>
-				<artifactId>maven-gettext-plugin</artifactId>
-				<configuration>
-					<targetBundle>com.funnelback.publicui.search.web.i18n.Messages</targetBundle>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 			</plugin>
@@ -171,10 +164,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.xnap.commons</groupId>
-			<artifactId>gettext-commons</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>3.2.7</version>
@@ -263,16 +252,6 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>gettext-commons-site</id>
-			<url>http://gettext-commons.googlecode.com/svn/maven-repository/</url>
-			<releases>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<profiles>
 		<profile>

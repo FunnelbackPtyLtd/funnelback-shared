@@ -24,6 +24,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
+import com.funnelback.publicui.i18n.I18n;
+
 import freemarker.core.Environment;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDirectiveBody;
@@ -59,10 +61,12 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 		url, expiry, start, end, username, password, useragent, timeout, convertrelative
 	}
 	
-	protected CacheManager appCacheManager;
+	private CacheManager appCacheManager;
+	private I18n i18n;
 	
-	public IncludeUrlDirective(CacheManager appCacheManager) {
+	public IncludeUrlDirective(CacheManager appCacheManager, I18n i18n) {
 		this.appCacheManager = appCacheManager;
+		this.i18n = i18n;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -72,7 +76,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 
 		TemplateModel param = (TemplateModel) params.get(Parameters.url.toString());
 		if (param == null) {
-			env.getOut().write("<!-- " + NAME + " requires an 'url' parameter -->");
+			env.getOut().write("<!-- " + i18n.tr("parameter.missing", "url") + " -->");
 			return;
 		}
 		
@@ -105,7 +109,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 						env.getOut().write((String) elt.getObjectValue());
 					}
 				} catch (Exception e) {
-					env.getOut().write("<!-- Error while refreshing remote content. Previous cached version will be returned, Please check the logs -->");
+					env.getOut().write("<!-- " + i18n.tr("freemarker.method.IncludeUrlDirective.refresh.error") + " -->");
 					log.error("Error while requesting request content from url '" + url + "'. Previous cached version will be returned.", e);
 					env.getOut().write((String) elt.getObjectValue());
 				}
@@ -131,7 +135,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 					env.getOut().write("<!-- No remote content returned -->");
 				}
 			} catch (Exception e) {
-				env.getOut().write("<!-- Error while requesting remote content. Please check the logs -->");
+				env.getOut().write("<!-- " + i18n.tr("freemarker.method.IncludeUrlDirective.remote.error") + " -->");
 				log.error("Error while requesting request content from URL '" + url + "'", e);
 			}
 		}
@@ -185,7 +189,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 				log.debug("Set credentials with username '" + userName + "'");
 				
 			} else {
-				env.getOut().write("<!-- Username specified without a password. Please specify a password -->");
+				env.getOut().write("<!-- " + i18n.tr("freemarker.method.IncludeUrlDirective.remote.password") + " -->");
 				return null;
 			}
 		}

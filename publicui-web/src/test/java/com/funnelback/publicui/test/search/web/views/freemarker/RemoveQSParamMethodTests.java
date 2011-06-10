@@ -3,10 +3,10 @@ package com.funnelback.publicui.test.search.web.views.freemarker;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod;
 
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class RemoveQSParamMethodTests extends AbstractMethodTest {
@@ -45,7 +45,7 @@ public class RemoveQSParamMethodTests extends AbstractMethodTest {
 	}
 
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new RemoveQSParamMethod();
 	}
 

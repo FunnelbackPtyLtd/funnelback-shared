@@ -17,8 +17,6 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateScalarModel;
@@ -27,7 +25,7 @@ import freemarker.template.TemplateScalarModel;
  * Performs an extra search.
  */
 @Log
-public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class SearchMethod extends AbstractTemplateMethod {
 
 	public final static String NAME = "search";
 	@Autowired
@@ -36,16 +34,12 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 	@Autowired
 	private SearchTransactionProcessor searchTransactionProcessor;
 	
+	public SearchMethod() {
+		super(3, 1);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() < 3 || arguments.size() > 4) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
-					+ "The original SearchQuestion, "
-					+ "the collection to search, "
-					+ "and the query terms."
-					+ "A forth argument can be set to use a specific map as question parameters"));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		SearchQuestion q = (SearchQuestion) ((StringModel) arguments.get(0)).getWrappedObject();
 		String collectionId = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String query = ((TemplateScalarModel) arguments.get(2)).getAsString();
@@ -53,7 +47,7 @@ public class SearchMethod implements TemplateMethodModel, TemplateMethodModelEx 
 
 		Collection collection = configRepository.getCollection(collectionId);
 		if (collection == null) {
-			throw new TemplateModelException(I18n.i18n().tr("Invalid collection {0}", collectionId));
+			throw new TemplateModelException(i18n.tr("collection.invalid", collectionId));
 		}
 		
 		log.debug("Searching '" + query + "' on collection '" + collectionId);

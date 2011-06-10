@@ -5,31 +5,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.funnelback.publicui.i18n.I18n;
-
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
 /**
  * Tagifies words in a given string
  */
-public class TagifyMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class TagifyMethod extends AbstractTemplateMethod {
 
 	private static final Pattern OPERATORS_PATTERN = Pattern.compile("[^\\w\\s']");
 
 	public static final String NAME = "tagify";	
 	
+	public TagifyMethod() {
+		super(3, 0);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 3) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 3 arguments: "
-					+ "The tag to use, "
-					+ "the terms to boldicize, and the target string."));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String tag = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		String terms = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String content = ((TemplateScalarModel) arguments.get(2)).getAsString();

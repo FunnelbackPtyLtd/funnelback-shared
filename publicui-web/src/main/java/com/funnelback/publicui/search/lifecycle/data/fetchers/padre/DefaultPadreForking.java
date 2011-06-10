@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -27,5 +28,10 @@ public class DefaultPadreForking extends AbstractPadreForking {
 		transaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
 		transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
 	}
+
+	public void setI18n(I18n i18n) {
+		this.i18n = i18n;
+	}
+
 
 }

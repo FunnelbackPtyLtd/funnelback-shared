@@ -4,10 +4,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod;
 
-import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class HTMLDecodeMethodTests extends AbstractMethodTest {
@@ -36,7 +35,7 @@ public class HTMLDecodeMethodTests extends AbstractMethodTest {
 	}
 	
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new HTMLDecodeMethod();
 	}
 

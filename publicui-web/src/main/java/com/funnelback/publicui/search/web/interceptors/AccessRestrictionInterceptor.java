@@ -43,6 +43,9 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 	@Autowired
 	private ConfigRepository configRepository;
 	
+	@Autowired
+	private I18n i18n;
+	
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception { }
@@ -121,7 +124,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 			} else {
 				// No collection in the initial request, should not happen as we should have been
 				// unable to check ACCESS_RESTRICTION at the first place
-				throw new IllegalStateException(I18n.i18n().tr("Missing ''{0}'' parameter", RequestParameters.COLLECTION));
+				throw new IllegalStateException(i18n.tr("parameter.missing", RequestParameters.COLLECTION));
 			}
 			
 			log.debug("Applying access alternate setting for collection '" + collection.getId() + "'. Redirecting to '" + out.toString() + "'");

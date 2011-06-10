@@ -4,31 +4,27 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
 /**
  * Returns the list of form files for a given collection and profile.
  */
-public class FormListMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class FormListMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "formList";
 	
 	@Autowired
 	private ConfigRepository configRepository;
 	
+	public FormListMethod() {
+		super(2, 0);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 2) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 2 argument: "
-					+ "The collection ID and the profile ID"));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		String profileId = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		

@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.i18n.I18n;
@@ -23,6 +24,7 @@ import com.sun.jna.ptr.IntByReference;
  * Forks PADRE using Windows Native calls, in order to use impersonation.
  */
 @Log
+@RequiredArgsConstructor
 public class WindowsNativePadreForker implements PadreForker {
 	
 	/**
@@ -30,14 +32,12 @@ public class WindowsNativePadreForker implements PadreForker {
 	 */
 	private static final int STDOUT_BUFFER_SIZE = 4096;
 	
+	public final I18n i18n;
+	
 	/**
 	 * How long to wait, in ms, for PADRE to finish
 	 */
-	public int waitTimeout;
-	
-	public WindowsNativePadreForker(int waitTimeout) {
-		this.waitTimeout = waitTimeout;
-	}
+	public final int waitTimeout;
 	
 	@Override
 	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
@@ -58,7 +58,7 @@ public class WindowsNativePadreForker implements PadreForker {
 					WinNT.TOKEN_ALL_ACCESS,
 					true,
 					hToken)) {
-				throw new PadreForkingException(I18n.i18n().tr("Call to ''{0}'' function failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			
 			// Duplicate token in order to obtain a primary token
@@ -70,7 +70,7 @@ public class WindowsNativePadreForker implements PadreForker {
 					WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation,
 					WinNT.TOKEN_TYPE.TokenPrimary,
 					primaryToken)) {
-				throw new PadreForkingException(I18n.i18n().tr("Call to ''{0}'' function failed", "DuplicateTokenEx()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "DuplicateTokenEx()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 	
 			// Create Pipes for STDOUT
@@ -81,10 +81,10 @@ public class WindowsNativePadreForker implements PadreForker {
 			HANDLEByReference hChildOutRead = new HANDLEByReference();
 			HANDLEByReference hChildOutWrite = new HANDLEByReference();
 			if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, saPipes, 0) ) {
-				throw new PadreForkingException(I18n.i18n().tr("Call to ''{0}'' function failed", "CreatePipe(stdin)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreatePipe(stdin)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			if (! Kernel32.INSTANCE.SetHandleInformation(hChildOutRead.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
-				throw new PadreForkingException(I18n.i18n().tr("Call to ''{0}'' function failed", "CreatePipe(stdout)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreatePipe(stdout)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			
 			WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
@@ -107,7 +107,7 @@ public class WindowsNativePadreForker implements PadreForker {
 					null,
 					si,
 					pi)) {
-				throw new PadreForkingException(I18n.i18n().tr("Call to ''{0}'' function failed", "CreateProcessAsUser()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreateProcessAsUser()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			log.debug("Created process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
 			

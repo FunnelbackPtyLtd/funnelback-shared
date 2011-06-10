@@ -7,9 +7,9 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.ParseRelativeDateMethod;
 
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class ParseRelativeDateMethodTests extends AbstractMethodTest {
@@ -47,7 +47,7 @@ public class ParseRelativeDateMethodTests extends AbstractMethodTest {
 	}
 	
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new ParseRelativeDateMethod();
 	}
 

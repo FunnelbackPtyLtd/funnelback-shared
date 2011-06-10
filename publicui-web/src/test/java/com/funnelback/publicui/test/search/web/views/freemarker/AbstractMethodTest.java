@@ -6,6 +6,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -13,17 +20,25 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public abstract class AbstractMethodTest {
 
+	@Autowired
+	private I18n i18n;
+	
 	protected TemplateMethodModel method;
 	
-	protected abstract TemplateMethodModel buildMethod();
+	protected abstract AbstractTemplateMethod buildMethod();
 	protected abstract int getRequiredArgumentsCount();
 	protected abstract int getOptionalArgumentsCount();
 	
 	@Before
 	public void before() {
-		method = buildMethod();
+		AbstractTemplateMethod m = buildMethod();
+		m.setI18n(i18n);
+		method = m;
+		
 	}
 	
 	@Test
@@ -35,7 +50,7 @@ public abstract class AbstractMethodTest {
 			}
 		} catch (NullPointerException npe) {
 		} catch (TemplateModelException tme) {
-			if (getRequiredArgumentsCount() > 0) {
+			if (getRequiredArgumentsCount() <= 0) {
 				Assert.fail("Method should execute with null arguments");
 			}
 		}

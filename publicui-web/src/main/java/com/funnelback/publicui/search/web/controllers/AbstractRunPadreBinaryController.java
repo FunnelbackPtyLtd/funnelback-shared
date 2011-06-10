@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.exec.OS;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
@@ -35,6 +37,9 @@ public abstract class AbstractRunPadreBinaryController {
 	
 	private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
 	private static final String HEADER_NAME_SEPARATOR = ": ";
+	
+	@Autowired
+	private I18n i18n;
 
 	/**
 	 * Runs a PADRE binary.
@@ -62,7 +67,7 @@ public abstract class AbstractRunPadreBinaryController {
 		}
 
 		try {
-			PadreExecutionReturn out = new JavaPadreForker().execute(commandLine, env);
+			PadreExecutionReturn out = new JavaPadreForker(i18n).execute(commandLine, env);
 
 			Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
 			if (m.matches()) {

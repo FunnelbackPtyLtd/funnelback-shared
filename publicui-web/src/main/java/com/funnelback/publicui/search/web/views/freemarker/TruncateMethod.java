@@ -17,21 +17,18 @@ import freemarker.template.TemplateScalarModel;
  * Truncates a String to the right, or to the middle if the optional
  * stripMiddle argument is set.
  */
-public class TruncateMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class TruncateMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "truncate";
 	
 	private final Pattern LAST_WORD_PATTERN = Pattern.compile("(\\S+)\\s+(\\S+)$"); 
 	
+	public TruncateMethod() {
+		super(2, 1);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() < 2 || arguments.size() > 3) {
-			throw new TemplateModelException(
-					I18n.i18n().tr(	"This method takes at least 2 arguments: The string to truncate, and the length."
-							+ " A 3rd optional 'stripMiddle' argument is availaible, set to to truncate in the middle instead of at the end")
-					);
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		int length = ((TemplateNumberModel) arguments.get(1)).getAsNumber().intValue();
 		

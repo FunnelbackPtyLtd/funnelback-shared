@@ -5,29 +5,25 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.funnelback.publicui.i18n.I18n;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
 /**
  * Removes a set of parameters from a query string.
  */
-public class RemoveQSParamMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class RemoveQSParamMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "removeParam"; 
 	
+	public RemoveQSParamMethod() {
+		super(2, 0);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object exec(	@SuppressWarnings("rawtypes")List arguments) throws TemplateModelException {
-		if (arguments.size() != 2) {
-			throw new TemplateModelException(I18n.i18n().tr("This function takes 2 arguments: The query string and the parameter name(s)"));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes")List arguments) throws TemplateModelException {
 		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		List<String> paramNames;
 		try {

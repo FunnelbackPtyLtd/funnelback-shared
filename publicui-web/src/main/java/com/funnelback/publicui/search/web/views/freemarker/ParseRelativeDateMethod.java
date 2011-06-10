@@ -10,10 +10,6 @@ import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
-import com.funnelback.publicui.i18n.I18n;
-
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
@@ -23,7 +19,7 @@ import freemarker.template.TemplateScalarModel;
  *
  */
 @Log
-public class ParseRelativeDateMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class ParseRelativeDateMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "parseRelativeDate";
 	
@@ -33,12 +29,12 @@ public class ParseRelativeDateMethod implements TemplateMethodModel, TemplateMet
 	
 	private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("ddMMMyyyy");
 	
+	public ParseRelativeDateMethod() {
+		super(1,0);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 1) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The expression to parse."));
-		}
-
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String range = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		String out = range;
 		

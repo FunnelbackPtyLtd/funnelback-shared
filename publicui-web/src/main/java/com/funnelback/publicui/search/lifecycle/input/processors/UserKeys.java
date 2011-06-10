@@ -1,8 +1,10 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
@@ -20,6 +22,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("userKeysInputProcessor")
 @Log
 public class UserKeys implements InputProcessor {
+	
+	@Autowired
+	@Setter private I18n i18n;
 	
 	@Override
 	@Profiled
@@ -41,7 +46,7 @@ public class UserKeys implements InputProcessor {
 					UserKeysMapper mapper = (UserKeysMapper) BeanUtils.instantiate(clazz);
 					searchTransaction.getQuestion().getUserKeys().addAll(mapper.getUserKeys(searchTransaction));
 				} catch (ClassNotFoundException cnfe) {
-					throw new InputProcessorException(I18n.i18n().tr("Invalid security plugin ''{0}''", securityPlugin), cnfe);
+					throw new InputProcessorException(i18n.tr("inputprocessor.userkeys.plugin.invalid", securityPlugin), cnfe);
 				}
 			}
 		}

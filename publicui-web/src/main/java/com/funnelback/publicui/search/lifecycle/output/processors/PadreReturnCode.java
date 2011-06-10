@@ -30,6 +30,9 @@ public class PadreReturnCode implements OutputProcessor {
 	@Autowired
 	@Setter private LogService logService;
 	
+	@Autowired
+	@Setter private I18n i18n;
+	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasResponse(searchTransaction)
@@ -44,7 +47,7 @@ public class PadreReturnCode implements OutputProcessor {
 								searchTransaction.getQuestion().getCollection(),
 								searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
 								searchTransaction.getQuestion().getUserId(),
-								I18n.i18n().tr("Could not log query to collection''s query log")));
+								i18n.tr("outputprocessor.padrereturncode.log.failed")));
 				break;
 			}
 		}

@@ -5,11 +5,11 @@ import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod;
 
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleNumber;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class ParseRangeMethodTests extends AbstractMethodTest {
@@ -43,7 +43,7 @@ public class ParseRangeMethodTests extends AbstractMethodTest {
 	}
 	
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new ParseRangeMethod();
 	}
 

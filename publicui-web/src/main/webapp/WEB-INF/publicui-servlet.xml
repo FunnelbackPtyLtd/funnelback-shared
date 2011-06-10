@@ -88,15 +88,13 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod" />
 				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SleepMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.SleepMethod" />
-				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TagifyMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.TagifyMethod" />
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective">
 						<constructor-arg ref="appCacheManager" />
+						<constructor-arg ref="i18n"></constructor-arg>
 					</bean>
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IfAdminUIMethod).NAME}">

@@ -6,10 +6,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.TagifyMethod;
 
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class TagifyMethodTests extends AbstractMethodTest {
@@ -51,7 +51,7 @@ public class TagifyMethodTests extends AbstractMethodTest {
 	}
 
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new TagifyMethod();
 	}
 

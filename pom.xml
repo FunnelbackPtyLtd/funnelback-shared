@@ -80,25 +80,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<groupId>org.xnap.commons</groupId>
-					<artifactId>maven-gettext-plugin</artifactId>
-					<version>1.2.3</version>
-					<configuration>
-						<outputFormat>class</outputFormat>
-						<keysFile>messages.pot</keysFile>
-						<poDirectory>src/main/po</poDirectory>
-					</configuration>
-					<executions>
-						<execution>
-							<id>dist</id>
-							<phase>compile</phase>
-							<goals>
-								<goal>dist</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -215,11 +196,6 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.xnap.commons</groupId>
-				<artifactId>gettext-commons</artifactId>
-				<version>0.9.6</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -268,13 +244,6 @@
 		</profile>
 	</profiles>
 	
-	<repositories>
-		<repository>
-			<id>gettext-commons-site</id>
-			<url>http://gettext-commons.googlecode.com/svn/maven-repository/</url>
-		</repository>
-	</repositories>
-
 	<reporting>
 		<plugins>
 			<plugin>

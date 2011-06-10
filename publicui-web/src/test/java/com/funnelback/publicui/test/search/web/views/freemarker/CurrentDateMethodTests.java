@@ -5,9 +5,9 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod;
 
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
 public class CurrentDateMethodTests extends AbstractMethodTest {
@@ -23,7 +23,7 @@ public class CurrentDateMethodTests extends AbstractMethodTest {
 	}
 	
 	@Override
-	protected TemplateMethodModel buildMethod() {
+	protected AbstractTemplateMethod buildMethod() {
 		return new CurrentDateMethod();
 	}
 

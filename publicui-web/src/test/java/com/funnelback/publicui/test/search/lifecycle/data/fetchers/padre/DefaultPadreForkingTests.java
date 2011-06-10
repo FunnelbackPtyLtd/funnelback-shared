@@ -10,9 +10,14 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.DefaultPadreForking;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
@@ -25,13 +30,19 @@ import com.funnelback.publicui.xml.XmlParsingException;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.WinNT;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultPadreForkingTests {
 
+	@Autowired
+	private I18n i18n;
+	
 	private DefaultPadreForking forking;
 	
 	@Before
 	public void before() {
 		forking = new DefaultPadreForking();
+		forking.setI18n(i18n);
 		forking.setPadreWaitTimeout(30);
 		forking.setPadreXmlParser(new StaxStreamParser());
 		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));

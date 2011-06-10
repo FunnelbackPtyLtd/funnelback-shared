@@ -3,10 +3,7 @@ package com.funnelback.publicui.search.web.views.freemarker;
 import java.util.List;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
@@ -14,16 +11,16 @@ import freemarker.template.TemplateScalarModel;
  * FreeMarker method to check if a configuration parameter is enabled.
  * Compares the question parameter to various String meaning "enabled".
  */
-public class IsEnabledMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class IsEnabledMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "is_enabled";
 	
+	public IsEnabledMethod() {
+		super(1, 0);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 1) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The value to check for."));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		TemplateScalarModel arg = (TemplateScalarModel) arguments.get(0);
 		if (arg == null) {
 			return false;

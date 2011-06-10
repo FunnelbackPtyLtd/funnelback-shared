@@ -3,7 +3,12 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.PadreReturnCode;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -12,6 +17,9 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockLogService;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class PadreReturnCodeTests {
 
 	private PadreReturnCode processor;
@@ -20,11 +28,15 @@ public class PadreReturnCodeTests {
 	
 	private SearchTransaction st;
 	
+	@Autowired
+	private I18n i18n;
+	
 	@Before
 	public void before() {
 		logService = new MockLogService();
 		processor = new PadreReturnCode();
 		processor.setLogService(logService);
+		processor.setI18n(i18n);
 		
 		st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
 		st.getQuestion().setCollection(new Collection("dummy", null));
@@ -62,7 +74,7 @@ public class PadreReturnCodeTests {
 		st.getResponse().setReturnCode(199);
 		processor.processOutput(st);
 		Assert.assertEquals(1, logService.getPublicUiWarnings().size());
-		Assert.assertTrue(logService.getPublicUiWarnings().get(0).getMessage().contains("Could not log query to collection''s query log"));
+		Assert.assertTrue(logService.getPublicUiWarnings().get(0).getMessage().contains("outputprocessor.padrereturncode.log.failed"));
 		Assert.assertEquals("dummy", logService.getPublicUiWarnings().get(0).getCollection().getId());
 	}
 

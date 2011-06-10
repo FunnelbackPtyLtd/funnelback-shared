@@ -4,28 +4,23 @@ import java.util.List;
 
 import org.springframework.web.util.HtmlUtils;
 
-import com.funnelback.publicui.i18n.I18n;
-
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
 /**
  * Decodes HTML.
  */
-public class HTMLDecodeMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public class HTMLDecodeMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "htmlDecode";
 	
+	public HTMLDecodeMethod() {
+		super(1, 0);
+	}
+	
 	@Override
-	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		if (arguments.size() != 1) {
-			throw new TemplateModelException(I18n.i18n().tr("This method takes 1 argument: The string to decode."));
-		}
-		
+	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		
 		return HtmlUtils.htmlUnescape(str);
 	}
 
