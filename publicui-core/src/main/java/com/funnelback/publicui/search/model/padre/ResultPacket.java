@@ -62,6 +62,12 @@ public class ResultPacket {
 	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
 	
 	/**
+	 * Regular expression to use to highlight query terms in titles,
+	 * summaries or metadata.
+	 */
+	@Getter @Setter private String queryHighlightRegex;
+	
+	/**
 	 * Scopes (URL prefix, not gscope) included via the -scope parameter
 	 */
 	@Getter private final List<String> includeScopes = new ArrayList<String>();
@@ -124,6 +130,8 @@ public class ResultPacket {
 		public static final String GSCOPE_COUNTS = "gscope_counts";
 		public static final String GSCOPE_MATCHING = "gscope_matching";
 		public static final String GSCOPE_VALUE = "value";
+		
+		public static final String QHLRE = "qhlre";
 		
 		public static final String PADRE_ELAPSED_TIME = "padre_elapsed_time";
 		public static final String QUERY_PROCESSOR_CODES = "query_processor_codes";

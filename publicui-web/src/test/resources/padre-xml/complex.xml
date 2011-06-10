@@ -466,6 +466,7 @@
   <gscope_matching value="1">54</gscope_matching>
   <gscope_matching value="2">6</gscope_matching>
 </gscope_counts>
+    <qhlre>\bmanager\b|\bassistant\b</qhlre>
 
 <cooler_weightings>
         <content>0.41</content>

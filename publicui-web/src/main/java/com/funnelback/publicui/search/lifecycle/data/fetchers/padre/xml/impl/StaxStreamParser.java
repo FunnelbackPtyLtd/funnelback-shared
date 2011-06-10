@@ -12,6 +12,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import lombok.extern.apachecommons.Log;
+
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
@@ -19,12 +21,12 @@ import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.QSup;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
 import com.funnelback.publicui.search.model.padre.TierBar;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
@@ -37,6 +39,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
 @Component("padreXmlParser")
+@Log
 public class StaxStreamParser implements PadreXmlParser {
 
 	@Override
@@ -88,6 +91,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getUrlCounts().put(urlCount.url, urlCount.count);
 					} else if (ResultPacket.Schema.GSCOPE_COUNTS.equals(xmlStreamReader.getLocalName())) {
 						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
+					} else if (ResultPacket.Schema.QHLRE.equals(xmlStreamReader.getLocalName())) {
+						packet.setQueryHighlightRegex(xmlStreamReader.getElementText());
 					} else if (ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
 						packet.setContextualNavigation(ContextualNavigationFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.INCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
@@ -102,6 +107,8 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.EXPLAIN_TYPES.equals(xmlStreamReader.getLocalName())) {
 						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.EXPLAIN_TYPES, xmlStreamReader);
 						packet.getExplainTypes().putAll(stringFeatures);
+					} else {
+						log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
 					}
 					
 					break;
@@ -140,6 +147,8 @@ public class StaxStreamParser implements PadreXmlParser {
 					}
 					lastTierBar = TierBarFactory.fromXmlStreamReader(xmlStreamReader);
 					lastTierBar.setFirstRank(tierBarFirstRank);
+				} else {
+					log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' in the " + ResultPacket.Schema.RESULTS + " block");
 				}
 				break;
 			}

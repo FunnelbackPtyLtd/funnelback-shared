@@ -337,6 +337,8 @@ public class StaxStreamParserTests {
 		assertEquals(2, rp.getExcludeScopes().size());
 		assertEquals("excludeA", rp.getExcludeScopes().get(0));
 		assertEquals("excludeB", rp.getExcludeScopes().get(1));
+		
+		assertEquals("\\bmanager\\b|\\bassistant\\b", rp.getQueryHighlightRegex());
 	}
 	
 	@Test
