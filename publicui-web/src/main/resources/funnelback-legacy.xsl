@@ -57,6 +57,9 @@
 	  		<xsl:apply-templates select="response/resultPacket/rmcs" />
 	  		<xsl:apply-templates select="response/resultPacket/urlCounts" />
 	  		<xsl:apply-templates select="response/resultPacket/gScopeCounts" />
+	  		<xsl:if test="response/resultPacket/queryHighlightRegex">
+	  			<qhlre><xsl:value-of select="response/resultPacket/queryHighlightRegex" /></qhlre>
+	  		</xsl:if>
 	  		
 	  		<xsl:apply-templates select="response/resultPacket/results" />
 	  		
