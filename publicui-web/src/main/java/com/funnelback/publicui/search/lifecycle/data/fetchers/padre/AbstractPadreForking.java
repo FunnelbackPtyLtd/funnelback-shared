@@ -9,9 +9,6 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -22,7 +19,6 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -92,6 +88,9 @@ public abstract class AbstractPadreForking implements DataFetcher {
 					padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 				} else {
 					padreOutput = new JavaPadreForker(i18n).execute(commandLine, env);
+				}
+				if (log.isTraceEnabled()) {
+					log.trace("\n---- RAW result packet BEGIN ----:\n\n"+padreOutput.getOutput()+"\n---- RAW result packet END ----");
 				}
 
 				updateTransaction(searchTransaction, padreOutput);
