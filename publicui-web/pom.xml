@@ -166,16 +166,17 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>3.2.7</version>
+			<version>3.3.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna-platform</artifactId>
-			<version>3.2.8-beta</version>
+			<artifactId>jna</artifactId>
+			<version>3.3.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
+			<classifier>platform</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
