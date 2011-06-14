@@ -1,13 +1,12 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
@@ -27,9 +25,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
-import com.funnelback.publicui.xml.XmlParsingException;
 
-//@RequestMapping({"/search.*", "/_/search.*","/search/"})
 @Controller
 @lombok.extern.apachecommons.Log
 public class SearchController {
@@ -87,7 +83,7 @@ public class SearchController {
 	@RequestMapping(value="/search.*",params={RequestParameters.COLLECTION})
 	public ModelAndView search(
 			HttpServletRequest request,
-			SearchQuestion question) {
+			@Valid SearchQuestion question) {
 				
 		SearchTransaction transaction = null;
 		SearchQuestionBinder.bind(request, question);

@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +27,14 @@ public class SearchQuestion {
 		
 	@Getter @Setter private String query;
 	@Getter @Setter private String originalQuery;
+	
 	@Getter @Setter private Collection collection;
 	
 	/**
 	 * Search profile, defaulting to "_default"
 	 */
+	@NotNull
+	@javax.validation.constraints.Pattern(regexp="[\\w-_]+")
 	@Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 	
 	/**
@@ -40,6 +45,8 @@ public class SearchQuestion {
 	/**
 	 * Display form (template)
 	 */
+	@NotNull
+	@javax.validation.constraints.Pattern(regexp="[\\w]+")
 	@Getter @Setter private String form = DefaultValues.DEFAULT_FORM;
 	
 	/**

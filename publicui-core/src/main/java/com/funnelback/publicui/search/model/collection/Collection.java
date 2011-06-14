@@ -49,6 +49,7 @@ public class Collection {
 	}
 	
 	/** Collection id (technical name) */
+	@javax.validation.constraints.Pattern(regexp="[\\w-_]+")
 	@Getter final private String id;
 	
 	/** Collection configuration */
