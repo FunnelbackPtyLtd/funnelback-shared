@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -37,6 +38,8 @@ public class DefaultDocFromCache implements DocFromCache {
 	@Setter
 	File searchHome;
 	
+	@Autowired
+	I18n i18n;
 	
 	private final String ignoreIndexerOptionPrefixes[] = {
 			 "-forcexml",
@@ -94,11 +97,11 @@ public class DefaultDocFromCache implements DocFromCache {
 			getCache.execute(clGetCache);
 		} catch (FileNotFoundException e1) {
 			log.error("File not found " + tempDir + File.pathSeparator + "cachefile");
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_CREATING_CACHE_FILE);
+			comparison.getMessages().add(i18n.tr("error.creatingCacheFile"));
 			return null;
 		} catch (IOException e) {
 			log.error("Failed to get document from cache with command line " + clGetCache.toString());
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_CALLING_CACHE_CGI);
+			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
 			return null;
 		}
 		
@@ -108,7 +111,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		try {
 			bldinfo = new File(config.getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".bldinfo");
 		} catch (FileNotFoundException e) {
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_CONFIG_FILE_NOT_FOUND);
+			comparison.getMessages().add(i18n.tr("error.configFileNotFound"));
 		}
 
 		String[] args = new String[0];
@@ -116,7 +119,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			args = getArgsFromBldinfo(bldinfo);
 		} catch (IOException e1) {
 			log.error("Failed to read bldinfo file '" + bldinfo.toString() + "': " + e1.getMessage());
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_READING_BLDINFO);
+			comparison.getMessages().add(i18n.tr("error.readingBldinfo"));
 			return null;
 		}
 
@@ -130,7 +133,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			indexDocument.execute(clIndexDocument);
 		} catch (IOException e) {
 			log.error("Failed to index document with command line " + clIndexDocument.toString());
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_CALLING_INDEXER);
+			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
 			return null;
 		}
 		String wordsInDoc;
@@ -139,7 +142,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
 			log.error("Failed to open words in doc file after indexing: " + e);
-			comparison.getMessages().add(ContentOptimiserMessages.ERROR_READING_INDEXED_FILE + e.getMessage());
+			comparison.getMessages().add(i18n.tr("error.readingIndexedFile"));
 			return null;
 		}
 		return wordsInDoc;

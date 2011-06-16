@@ -16,6 +16,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -31,6 +32,9 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
 	@Autowired
 	DocFromCache docFromCache;
+	
+	@Autowired
+	I18n i18n;
 
 
 	
@@ -238,7 +242,7 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		}	
 		// Maybe we don't have this URL?
 		if(importantResult == null) {
-			comparison.getMessages().add(ContentOptimiserMessages.SELECTED_DOCUMENT_TOO_FAR_DOWN);
+			comparison.getMessages().add(i18n.tr("info.selectedDocumentTooFarDown"));
 			return;
 		}
 		
