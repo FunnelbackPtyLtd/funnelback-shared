@@ -41,6 +41,7 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.FixQueryCompletion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.AddPreviewBannerTag" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CategoryWhiteBlackListRemove" />
+		<bean class="com.funnelback.publicui.form.converter.operations.CategoryRenameRemove" />
 	</util:list>
 
 </beans>

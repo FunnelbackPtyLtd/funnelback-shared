@@ -20,7 +20,7 @@ public class MainTests {
 	public void test() throws IOException {
 		File in = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.form.dist");
 		File expectedFile = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + "simple.ftl.dist");
-		File out = File.createTempFile(MainTests.class.getName(), "tmp");
+		File out = File.createTempFile(MainTests.class.getName(), ".tmp");
 		out.deleteOnExit();
 		
 		String[] args = {

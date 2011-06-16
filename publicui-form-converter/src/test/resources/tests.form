@@ -76,4 +76,9 @@ fluster{cluster_url}
 
 <s:ShortFacetLabel title="true"></s:ShortFacetLabel>
 
+<s:CategoryRename>
+	<s:From>original</s:From>
+	<s:To>new_name</s:To>
+</s:CategoryRename>
+
 </body>
