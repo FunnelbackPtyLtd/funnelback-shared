@@ -70,7 +70,7 @@ public class DefaultDocFromCacheTest {
 		
 		
 		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("testGetDocumentForks", new NoOptionsConfig("testGetDocumentForks").setValue("indexer", idx).setValue(Keys.COLLECTION_ROOT,"/opt/funnelback/data/test-web/")));
+		qs.setCollection(new Collection("testGetDocumentForks", new NoOptionsConfig("testGetDocumentForks").setValue("indexer", idx).setValue(Keys.COLLECTION_ROOT,"src/test/resources/dummy-search_home/data/data-repository")));
 		
 		UrlComparison comparison = new UrlComparison();
 		

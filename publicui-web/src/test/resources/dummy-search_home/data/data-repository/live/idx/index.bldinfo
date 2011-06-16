@@ -1,0 +1,38 @@
+ersion FUNNELBACK_PADRE_10.1.1.56 64MDPLFS (Web/Ent)
+index_format: Linux-10.2.DF7
+/opt/funnelback/bin/padre-iw
+/opt/funnelback/data/test-web/live/data
+/opt/funnelback/data/test-web/live/idx_reindex/index
+-F/opt/funnelback/data/test-web/live/idx_reindex/index.click.anchors.gz
+-F/opt/funnelback/conf/test-web/index.click.anchors.gz
+-ifb
+-MWIPD20000
+-noaltanx
+-nosrcanx
+-W20000
+-big7
+-cleanup
+-hashlog
+-MMF/opt/funnelback/conf/test-web/metamap.cfg
+-EM/opt/funnelback/conf/test-web/external_metadata.cfg
+-XMF/opt/funnelback/conf/test-web/xml.cfg
+-cleanup
+idxch_classes: acdw
+WORD-POSITIONS
+CONTENT_FIELDS: tcs
+miebl: 72
+SORT_SIGNIF: 20
+facet_item_sepchars: |
+VBYTE_COMPRESSION
+PACKED_LENS
+doctable_fieldwidths: 47 5 3 5 5 4 2 5 5 3 1 1 8 0 0 0
+Num_docs: 3000005
+date_of_most_recent_doc: 20110509
+Text_size_in_bytes: 84151453421
+Num_postings: 5911528492
+Longest_postings_list: 574037336 bytes
+CHAMBER_HWM: 0
+link_onscale: 13.0321
+link_offscale: 10.7163
+Total content word occurrences: 3345975343
+Average document length: 1115.32 content words  
