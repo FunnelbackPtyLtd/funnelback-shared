@@ -81,4 +81,9 @@ fluster{cluster_url}
 	<s:To>new_name</s:To>
 </s:CategoryRename>
 
+<s:CategorySortOrder [appearsAt="top|bottom"]>
+	<s:CategorySortItem>category_name</s:CategorySortItem>
+	<s:CategorySortItem>category_name</s:CategorySortItem>
+</s:CategorySortOrder>
+
 </body>
