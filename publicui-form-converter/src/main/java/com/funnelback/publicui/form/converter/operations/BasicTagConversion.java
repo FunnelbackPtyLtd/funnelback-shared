@@ -20,7 +20,7 @@ public class BasicTagConversion implements Operation {
 		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
 		"NoClustersFound", "ClusterLayout", "Category", "CategoryName", "CategoryCount",
 		"Clusters", "ShowMoreClusters", "ShowFewerClusters", "FacetScope", "CurrentDate",
-		"Date", "rss", "FormChoice", "Facet", "FacetLabel"		
+		"Date", "rss", "FormChoice", "Facet", "FacetLabel", "ShortFacetLabel"		
 	};
 	
 	@Override

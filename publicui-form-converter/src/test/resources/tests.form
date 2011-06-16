@@ -73,4 +73,6 @@ fluster{cluster_url}
 <s:CategoryWhiteList>abc</s:CategoryWhiteList>
 <s:CategoryBlackList>def</s:CategoryBlackList>
 
+<s:ShortFacetLabel title="true"></s:ShortFacetLabel>
+
 </body>

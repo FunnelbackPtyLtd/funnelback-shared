@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
 /**
  * Facet, coming from results.
@@ -52,6 +52,16 @@ public class Facet {
 			}
 		}
 		return false;
+	}
+	
+	public Category findDeepestCategory(List<String> categoryParamNames) {
+		for (Category category: categories) {
+			Category deepest = category.findDeepest(categoryParamNames);
+			if (deepest != null) {
+				return deepest;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -104,6 +114,22 @@ public class Facet {
  				}
  				return false;
  			}
+		}
+		
+		public Category findDeepest(List<String> categoryParamNames) {
+			Category out = null;
+			if (categoryParamNames.contains(this.queryStringParamName)) {
+				out = this;
+			}
+			
+			for (Category c: categories) {
+				Category deepest = c.findDeepest(categoryParamNames);
+				if (deepest != null) {
+					out = deepest;
+					break;
+				}
+			}
+			return out;
 		}
 		
 		@Override
