@@ -22,6 +22,10 @@ import com.funnelback.contentoptimiser.HintMaxOther;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingScore;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.xml.XmlParsingException;
@@ -32,13 +36,20 @@ public class DefaultUrlCauseFillerTest {
 	public void testFillHints () throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+		ResultPacket selectedRp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/content-optimiser-single-document.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();
 		HintFactory hf = new DefaultHintFactory();
 
+		SearchResponse response = new SearchResponse();
+		response.setResultPacket(rp);
+		SearchQuestion question = new SearchQuestion();
+		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, new String[] { "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html" });		
+		SearchTransaction allTransaction = new SearchTransaction(question,response);
+		
+		
 		f.consumeResultPacket(comparison, rp,hf);
-		String url = "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html";
-		f.setImportantUrl(comparison, rp, url);
+		f.setImportantUrl(comparison, allTransaction);
 		
 		assertNotNull(comparison.getHintsByName().get("offlink"));
 		assertNotNull(comparison.getHintsByName().get("urllen"));
@@ -77,8 +88,13 @@ public class DefaultUrlCauseFillerTest {
 		f.consumeResultPacket(comparison, rp,hf);
 		assertNull(comparison.getImportantOne());
 		
-		String url = "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html";
-		f.setImportantUrl(comparison, rp, url);
+		SearchResponse response = new SearchResponse();
+		response.setResultPacket(rp);
+		SearchQuestion question = new SearchQuestion();
+		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, new String[] { "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html" });		
+		SearchTransaction allTransaction = new SearchTransaction(question,response);
+
+		f.setImportantUrl(comparison, allTransaction);
 		
 		assertNotNull(comparison.getImportantOne());
 		assertEquals("3",comparison.getImportantOne().getRank());
@@ -98,8 +114,13 @@ public class DefaultUrlCauseFillerTest {
 		f.consumeResultPacket(comparison, rp,hf);
 		assertNull(comparison.getImportantOne());
 		
-		String url = "http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html";
-		f.setImportantUrl(comparison, rp, url);
+		SearchResponse response = new SearchResponse();
+		response.setResultPacket(rp);
+		SearchQuestion question = new SearchQuestion();
+		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, new String[] { "http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html" });		
+		SearchTransaction allTransaction = new SearchTransaction(question,response);
+
+		f.setImportantUrl(comparison, allTransaction);
 		
 		assertNotNull(comparison.getImportantOne());
 
@@ -113,7 +134,7 @@ public class DefaultUrlCauseFillerTest {
 	public void testConsumeResultPacket() throws XmlParsingException, IOException {
 		
 		StaxStreamParser parser = new StaxStreamParser();
-		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+		ResultPacket rp = parser.parse(FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 
 		UrlCausesFiller f = new DefaultUrlCauseFiller();
 		UrlComparison comparison = new UrlComparison();

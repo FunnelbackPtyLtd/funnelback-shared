@@ -1,5 +1,6 @@
 package com.funnelback.contentoptimiser;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,13 +13,15 @@ import java.util.Map.Entry;
 
 import lombok.extern.apachecommons.Log;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.HintCollection;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingScore;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
 
@@ -26,6 +29,11 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfo
 @Component
 public class DefaultUrlCauseFiller implements UrlCausesFiller {
 
+	@Autowired
+	DocFromCache docFromCache;
+
+
+	
 	// TODO replace with an implementation that gets this from padre's XML
 	private String getCategory(String key) {
 		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox"};
@@ -155,9 +163,9 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		return m;
 	}
 	
+	// Reads the weights and top 10 results from the result packet. 
 	@Override
 	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp,HintFactory hintFactory) {
-		// TODO Auto-generated method stub
 		
 		// Add weights, create hint objects
 		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
@@ -189,7 +197,7 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 	}
 	
 
-
+	// Called after an importantUrl has been selected. Groups hints together into a set of features
 	@Override
 	public void fillHintCollections(UrlComparison comparison) {
 		// First remove uninteresting features
@@ -216,15 +224,21 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 		Collections.sort(comparison.getHintCollections());
 	}
 	
+	
 	@Override
-	public void setImportantUrl(UrlComparison comparison,ResultPacket allRp, String urlString) {
+	public void setImportantUrl(UrlComparison comparison,SearchTransaction searchTransaction) {
+		
+		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
+		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0];
+
+		
 		Result importantResult = null;
 		for (Result result : allRp.getResults()) {
 			if(result.getDisplayUrl().equals(urlString) || result.getDisplayUrl().equals("http://" + urlString)) importantResult = result;
-		}
+		}	
 		// Maybe we don't have this URL?
 		if(importantResult == null) {
-			comparison.getMessages().add("The selected document appeared too far down the ranking to be examined");
+			comparison.getMessages().add(ContentOptimiserMessages.SELECTED_DOCUMENT_TOO_FAR_DOWN);
 			return;
 		}
 		
@@ -252,10 +266,17 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 			hint.caculateWin(percentage, allRp.getCoolerWeights().get(feature.getKey())*100);
 		}
 		
-		Collections.sort(comparison.getHintsByWin());	
+		Collections.sort(comparison.getHintsByWin());
 	}
 
-
+	@Override
+	public void obtainContentBreakdown(UrlComparison comparison,
+			SearchTransaction searchTransaction, ResultPacket importantRp) {
+		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
+		if (documentContent != null ) {
+//			comparison.getMessages().add(documentContent);
+		}
+	}	
 }
 
 
