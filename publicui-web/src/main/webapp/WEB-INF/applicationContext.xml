@@ -94,6 +94,7 @@
 		<ref bean="fixDisplayUrlsOutputProcessor" />
 		<ref bean="htmlEncodeSummaries" />
 		<ref bean="facetedNavigationOutputProcessor" />
+		<ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
 		<ref bean="facetedNavigationTransformOutputProcessor" />
 		<ref bean="contextualNavigationOutputProcessor" />
 		<ref bean="quickLinksOutputProcessor" />

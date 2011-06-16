@@ -18,16 +18,16 @@ public class BasicTagConversion implements Operation {
 		"AfterSearchOnly", "InitialFormOnly", "cfg", "OpenSearch",
 		"PrevNext", "CheckSpelling", "BestBets", "QueryClean", "HtmlDecode", "URLEncode",
 		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
-		"NoClustersFound", "ClusterLayout", "Category", "Clusters", "ShowMoreClusters",
-		"ShowFewerClusters", "FacetScope", "CurrentDate", "Date", "rss", "FormChoice",
-		"Facet", "FacetLabel"		
+		"NoClustersFound", "ClusterLayout", "Category", "CategoryName", "CategoryCount",
+		"Clusters", "ShowMoreClusters", "ShowFewerClusters", "FacetScope", "CurrentDate",
+		"Date", "rss", "FormChoice", "Facet", "FacetLabel"		
 	};
 	
 	@Override
 	public String process(final String in) {
 		String out = in;
 		for(String tag: TAGS) {
-			Pattern p = Pattern.compile("<(/?)s:" + tag + "([^>]*)>", Pattern.CASE_INSENSITIVE);
+			Pattern p = Pattern.compile("<(/?)s:" + tag + "(\\s[^>]*)*>", Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(out);
 			if (m.find()) {
 				log.info("Processing tag '" + tag + "'");

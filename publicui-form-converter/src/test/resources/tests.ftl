@@ -104,4 +104,8 @@ ${s.cluster.href}
 </h3>
 </#if>
 
+<!-- Faceted navigation extra tags -->
+
+
+
 </body>

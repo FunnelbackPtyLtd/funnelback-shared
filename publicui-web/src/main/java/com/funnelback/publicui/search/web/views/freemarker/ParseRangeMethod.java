@@ -39,7 +39,7 @@ public class ParseRangeMethod extends AbstractTemplateMethod {
 		HashMap<String, TemplateNumberModel> map = new HashMap<String, TemplateNumberModel>();
 		String range = ((TemplateScalarModel) arguments.get(0)).getAsString();
 	
-		log.debug("Incoming range is '" + range + "'");
+		log.trace("Incoming range is '" + range + "'");
 		
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		Matcher m = CURRENT_YEAR_OP_PATTERN.matcher(range);
@@ -56,7 +56,7 @@ public class ParseRangeMethod extends AbstractTemplateMethod {
 		
 		range = range.replace(CURRENT_YEAR, Integer.toString(year));
 		
-		log.debug("After " + CURRENT_YEAR + " processing: '" + range + "'");
+		log.trace("After " + CURRENT_YEAR + " processing: '" + range + "'");
 		
 		m = RANGE_PATTERN.matcher(range);
 		if (m.find()) {	

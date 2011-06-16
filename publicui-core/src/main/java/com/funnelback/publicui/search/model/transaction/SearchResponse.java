@@ -30,12 +30,13 @@ public class SearchResponse {
 	/** PADRE return code (0 = SUCESS) */
 	@Getter @Setter private int returnCode;
 	
-	/** Computed facets */
-	@Getter @Setter private List<Facet> facets = new ArrayList<Facet>();
+	/** Computed facets, never null */
+	@Getter private final List<Facet> facets = new ArrayList<Facet>();
 	
 	/**
-	 * Custom data place holder for custom processors and
-	 * hooks. Anything can be put there by users.
+	 * <p>Custom data place holder for custom processors and
+	 * hooks. Anything can be put there by users.</p>
+	 * <p>Never null</p>
 	 */
 	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	

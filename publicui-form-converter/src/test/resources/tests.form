@@ -69,4 +69,8 @@ fluster{cluster_url}
 </h3>
 </s:Compare>
 
+<!-- Faceted navigation extra tags -->
+<s:CategoryWhiteList>abc</s:CategoryWhiteList>
+<s:CategoryBlackList>def</s:CategoryBlackList>
+
 </body>
