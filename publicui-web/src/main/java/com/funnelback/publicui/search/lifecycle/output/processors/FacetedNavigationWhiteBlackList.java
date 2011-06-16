@@ -33,20 +33,23 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 				&& searchTransaction.getResponse().getFacets().size() > 0) {
 			
 			Config config = searchTransaction.getQuestion().getCollection().getConfiguration();
-			if (config.hasValue(Keys.FacetedNavigation.WHITE_LIST)) {
-				for (Facet f: searchTransaction.getResponse().getFacets()) {
+			for (Facet f: searchTransaction.getResponse().getFacets()) {
+				if (config.hasValue(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())) {
 					applyWhiteList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.WHITE_LIST).split(","));
+						config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName()).split(","));
+					
+					log.debug("Applied white list '"+config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())+ "'"
+							+ " to facet '" + f.getName() + "'");
 				}
-				log.debug("Applied white list '"+config.value(Keys.FacetedNavigation.WHITE_LIST)+ "'");
-			}
 			
-			if (config.hasValue(Keys.FacetedNavigation.BLACK_LIST)) {
-				for (Facet f: searchTransaction.getResponse().getFacets()) {
+				if (config.hasValue(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())) {
 					applyBlackList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.BLACK_LIST).split(","));
+						config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName()).split(","));
+					
+					log.debug("Applied black list '"+config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())+"'"
+							+ " to facet '" + f.getName() + "'");
 				}
-				log.debug("Applied black list '"+config.value(Keys.FacetedNavigation.BLACK_LIST)+"'");
+				
 			}
 		}
 	}

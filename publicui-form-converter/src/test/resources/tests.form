@@ -71,6 +71,7 @@ fluster{cluster_url}
 
 <!-- Faceted navigation extra tags -->
 <s:CategoryWhiteList>abc</s:CategoryWhiteList>
+<s:CategoryWhiteList>cba</s:CategoryWhiteList>
 <s:CategoryBlackList>def</s:CategoryBlackList>
 
 <s:ShortFacetLabel title="true"></s:ShortFacetLabel>

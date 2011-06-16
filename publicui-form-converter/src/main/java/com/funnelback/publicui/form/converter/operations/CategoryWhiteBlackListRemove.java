@@ -33,7 +33,7 @@ public class CategoryWhiteBlackListRemove implements Operation {
 			out = sb.toString();
 			log.warn("<s:CategoryWhiteList> tags have been removed. You'll need to add the following parameter "
 					+ "to your collection.cfg to re-enable category white list:\n"
-					+ "faceted_navigation.white_list=" + StringUtils.join(terms, ","));
+					+ "faceted_navigation.white_list.<Facet name>=" + StringUtils.join(terms, ","));
 		}
 
 		m = Pattern.compile("<s:CategoryBlackList>(.*?)</s:CategoryBlackList>").matcher(out);
@@ -48,7 +48,7 @@ public class CategoryWhiteBlackListRemove implements Operation {
 			out = sb.toString();
 			log.warn("<s:CategoryBlackList> tags have been removed. You'll need to add the following parameter "
 					+ "to your collection.cfg to re-enable category black list:\n"
-					+ "faceted_navigation.black_list=" + StringUtils.join(terms, ","));
+					+ "faceted_navigation.black_list.<Facet name>=" + StringUtils.join(terms, ","));
 		}
 
 		return out;
