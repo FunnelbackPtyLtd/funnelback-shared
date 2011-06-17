@@ -1,22 +1,16 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 import lombok.extern.apachecommons.Log;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
-import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.ChangeCollectionQuestionFactory;
@@ -46,6 +40,7 @@ public class ExtraSearches implements InputProcessor, ApplicationContextAware {
 	
 	private ApplicationContext applicationContext;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)

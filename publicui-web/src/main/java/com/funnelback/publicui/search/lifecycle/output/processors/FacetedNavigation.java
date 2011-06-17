@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import lombok.extern.apachecommons.Log;
 

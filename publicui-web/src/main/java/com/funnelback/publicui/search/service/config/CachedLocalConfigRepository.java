@@ -145,6 +145,7 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
 		Cache cache = appCacheManager.getCache(CACHE);

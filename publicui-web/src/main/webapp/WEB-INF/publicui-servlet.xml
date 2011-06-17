@@ -170,6 +170,7 @@
 					<property name="prefix" value="" />
 					<property name="suffix" value=".ftl" />
 					<property name="contentType" value="text/html;charset=UTF-8" />
+					<property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
 				</bean>
 			</list>
 		</property>

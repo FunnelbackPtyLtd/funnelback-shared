@@ -70,7 +70,6 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getAllCollectionIds() {
 		File configDirectory = new File(searchHome, DefaultValues.FOLDER_CONF);
@@ -91,6 +90,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		return collectionIds;			
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf) {
 		Cache cache = appCacheManager.getCache(CACHE);
@@ -236,6 +236,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		return loadFormList(collectionId, profileId);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
 		Cache cache = appCacheManager.getCache(CACHE);

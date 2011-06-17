@@ -43,7 +43,6 @@ public class PassThroughParameters implements InputProcessor {
 		RequestParameters.ContextualNavigation.CN_PREV_PATTERN
 	};
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {

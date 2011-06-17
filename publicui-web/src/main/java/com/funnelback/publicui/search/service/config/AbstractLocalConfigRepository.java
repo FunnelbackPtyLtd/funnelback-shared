@@ -8,7 +8,6 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +32,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
-import com.funnelback.publicui.search.model.collection.Synonym;
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.padre.Details;
@@ -57,10 +55,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	/** A comment line in a config file starts with a hash */
 	private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*#.*");
 	
-	/** Header line of the synonyms.cfg */
-	private static final String SYNONYMS_HEADER = "PADRE Thesaurus Version: 2";
-	
-	protected static final String FTL_SUFFIX = ".ftl";
+	public static final String FTL_SUFFIX = ".ftl";
 	protected static final String CFG_SUFFIX = ".cfg";
 	
 	protected static final Pattern FORM_BACKUP_PATTERN = Pattern.compile("-\\d{12}"+FTL_SUFFIX);
@@ -247,6 +242,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	private String[] readConfig(Collection c, File configFile) {
 		if (configFile.canRead()) {
 			try {
+				@SuppressWarnings("unchecked")
 				List<String> lines = FileUtils.readLines(configFile);				
 				CollectionUtils.filter(lines, new RemoveCommentsPredicate());
 				return lines.toArray(new String[0]);
@@ -271,46 +267,6 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		} catch (FileNotFoundException fnfe) {
 			return new HashMap<String, String>(0);
 		}
-	}
-	
-	/**
-	 * Loads synonyms.cfg
-	 * @param c
-	 * @return
-	 * @deprecated Synonyms will be done by PADRE, see FUN-3368.
-	 */
-	@Deprecated
-	private Synonym[] loadSynonyms(Collection c) {
-
-		File[] synonymsConfigs = new File[] {
-				new File(c.getConfiguration().getConfigDirectory(), Files.SYNONYMS_CONFIG_FILENAME),
-				new File(c.getConfiguration().getConfigDirectory() + File.separator + DefaultValues.DEFAULT_PROFILE, Files.SYNONYMS_CONFIG_FILENAME)
-		};
-		
-		for (File config: synonymsConfigs) {
-			if (config.canRead()) {
-				try {
-					List<String> lines = FileUtils.readLines(config);
-					if (SYNONYMS_HEADER.equals(lines.get(0))) {
-						ArrayList<Synonym> synonyms = new ArrayList<Synonym>();
-						for (int i=1; i<lines.size(); i++) {
-							try {
-								synonyms.add(Synonym.fromConfigLine(lines.get(i)));
-							} catch (ParseException pe) {
-								log.warn("Error while parsing synonym line '" + lines.get(i) + "'", pe);
-							}
-						}
-						return synonyms.toArray(new Synonym[0]);
-					} else {
-						log.warn("Invalid Synonyms configuration. Unkown header '" + lines.get(0) + "'");
-					}
-				} catch (IOException ioe) {
-					log.error("Unable to read synonyms configuration from '" + config.getAbsolutePath() + "'", ioe);
-				}
-			}
-		}
-		
-		return new Synonym[0];		
 	}
 	
 	/**
