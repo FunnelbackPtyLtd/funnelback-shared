@@ -10,6 +10,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
@@ -38,12 +39,12 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 						getUrl().lastIndexOf(AbstractLocalConfigRepository.FTL_SUFFIX));
 				
 				// Search for custom headers
-				String propertyPrefix = "publicui.form."+name;
-				if (config.hasValue(propertyPrefix+".headers.count")) {
-					int nbHeaders = config.valueAsInt(propertyPrefix+".headers.count", 0);
+				String propertyPrefix = Keys.PublicUI.FORM_PREFIX+"."+name;
+				if (config.hasValue(propertyPrefix+"."+Keys.PublicUI.HEADERS_COUNT_SUFFIX)) {
+					int nbHeaders = config.valueAsInt(propertyPrefix+"."+Keys.PublicUI.HEADERS_COUNT_SUFFIX, 0);
 					int sent = 0;
 					for (int i=0; i<nbHeaders; i++) {
-						String header = config.value(propertyPrefix+".headers."+i, null);
+						String header = config.value(propertyPrefix+"."+Keys.PublicUI.HEADERS_SUFFIX+"."+i, null);
 						if (header != null && header.contains(":")) {
 							String[] kv = header.split(":");
 							response.setHeader(kv[0], kv[1]);
@@ -54,10 +55,12 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 				}
 				
 				// Search for a custom content type
-				if (config.hasValue(propertyPrefix+".content_type")) {
+				if (config.hasValue(propertyPrefix+"."+Keys.PublicUI.FORM_CONTENT_TYPE_SUFFIX)) {
 					// setContentType(config.value(propertyPrefix+".content_type"));
-					response.setContentType(config.value(propertyPrefix+".content_type"));
-					log.debug("Set custom Content Type '" + config.value(propertyPrefix+".content_type") + "' for form '"+name+"'");
+					response.setContentType(config.value(propertyPrefix+"."+Keys.PublicUI.FORM_CONTENT_TYPE_SUFFIX));
+					log.debug("Set custom Content Type '"
+							+ config.value(propertyPrefix+"."+Keys.PublicUI.FORM_CONTENT_TYPE_SUFFIX)
+							+ "' for form '"+name+"'");
 				}
 			}
 		}
