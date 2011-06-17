@@ -85,7 +85,7 @@ public class ResultFactory {
 				metadataMap,
 				ql,
 				liveUrl,
-				null,
+				liveUrl,
 				explain,
 				liveUrl);
 	}

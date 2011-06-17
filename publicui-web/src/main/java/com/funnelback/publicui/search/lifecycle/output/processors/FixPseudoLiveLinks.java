@@ -39,7 +39,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	private String searchUrlPrefix;
 	
 	public static final Type[] SUPPORTED_TYPES = {
-		Type.trim, Type.connector, Type.filecopy, Type.database
+		Type.trim, Type.connector, Type.filecopy, Type.database, Type.directory
 	};
 	
 	/** Local scheme as used in DB or Connector collection */
@@ -81,6 +81,7 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 				
 				case database:
 				case connector:
+				case directory:
 					// Simply strip off "local://"
 					if (result.getLiveUrl().startsWith(LOCAL_SCHEME)) {
 						// TODO use a proper regexp ?

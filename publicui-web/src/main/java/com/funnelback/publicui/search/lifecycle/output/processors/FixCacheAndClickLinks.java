@@ -44,6 +44,8 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 				r.setCacheUrl(searchUrlPrefix + r.getCacheUrl());
 				if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
 					r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), r));
+				} else {
+					r.setClickTrackingUrl(r.getLiveUrl());
 				}
 			}
 			
