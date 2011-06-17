@@ -76,7 +76,7 @@ public class FixCacheAndClickLinksTests {
 
 		for (Result r: st.getResponse().getResultPacket().getResults()) {
 			Assert.assertTrue(r.getCacheUrl().startsWith("PREFIX"));
-			Assert.assertNull(r.getClickTrackingUrl());
+			Assert.assertEquals(r.getClickTrackingUrl(), r.getLiveUrl());
 		}
 	}
 	

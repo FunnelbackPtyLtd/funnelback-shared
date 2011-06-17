@@ -177,7 +177,9 @@
 				<title><xsl:value-of select="title" /></title>
 				<collection><xsl:value-of select="collection" /></collection>
 				<component><xsl:value-of select="component" /></component>
-				<click_tracking_url><xsl:value-of select="clickTrackingUrl" /></click_tracking_url>
+				<xsl:if test="clickTrackingUrl != liveUrl">
+					<click_tracking_url><xsl:value-of select="clickTrackingUrl" /></click_tracking_url>
+				</xsl:if>
 				<live_url><xsl:value-of select="liveUrl" /></live_url>
 				<xsl:for-each select="metaData/entry">
 					<xsl:sort select="string[1]" />
