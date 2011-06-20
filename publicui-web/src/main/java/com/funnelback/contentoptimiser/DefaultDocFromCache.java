@@ -20,6 +20,7 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -88,12 +89,14 @@ public class DefaultDocFromCache implements DocFromCache {
 		log.info(tempDir);
 
 		Executor getCache = new DefaultExecutor();			
-		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + DefaultValues.FOLDER_PUBLIC + File.separator + "cache.cgi"));
+		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)));
 		File cacheFile = new File(tempDir,"cachefile");
+		FileOutputStream fos = null;
 		try {
+			fos = new FileOutputStream(cacheFile);
 			// Get this document from cache, and put it in <tempDir>/cachefile
 			clGetCache.addArgument(cacheUrl);
-			getCache.setStreamHandler(new PumpStreamHandler(new FileOutputStream(cacheFile), null));
+			getCache.setStreamHandler(new PumpStreamHandler(fos, null));
 			getCache.execute(clGetCache);
 		} catch (FileNotFoundException e1) {
 			log.error("File not found " + tempDir + File.pathSeparator + "cachefile");
@@ -103,6 +106,8 @@ public class DefaultDocFromCache implements DocFromCache {
 			log.error("Failed to get document from cache with command line " + clGetCache.toString());
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
 			return null;
+		} finally {
+			IOUtils.closeQuietly(fos);
 		}
 		
 		Executor indexDocument = new DefaultExecutor();

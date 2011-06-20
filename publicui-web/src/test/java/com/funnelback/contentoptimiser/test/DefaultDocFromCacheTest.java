@@ -58,8 +58,9 @@ public class DefaultDocFromCacheTest {
 	
 	@Test
 	public void testGetDocumentForks() throws FileNotFoundException, EnvironmentVariableException {
+		File searchHome = new File("src/test/resources/dummy-search_home");
 		DefaultDocFromCache dFromC = new DefaultDocFromCache();
-		dFromC.setSearchHome(new File("src/test/resources/dummy-search_home"));
+		dFromC.setSearchHome(searchHome);
 
 		
 		String ext = ".sh";
@@ -68,9 +69,15 @@ public class DefaultDocFromCacheTest {
 		}		
 		String idx = "mock-padre-iw" + ext;
 		
+		String cacheCgi = "cache" + ((OS.isFamilyWindows()) ? ".bat" : ".cgi");		
 		
 		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("testGetDocumentForks", new NoOptionsConfig("testGetDocumentForks").setValue("indexer", idx).setValue(Keys.COLLECTION_ROOT,"src/test/resources/dummy-search_home/data/data-repository")));
+		qs.setCollection(new Collection("testGetDocumentForks",
+				new NoOptionsConfig(searchHome, "testGetDocumentForks")
+					.setValue("indexer", idx)
+					.setValue(Keys.UI_CACHE_LINK, cacheCgi)
+					.setValue(Keys.COLLECTION_ROOT,
+							new File(searchHome, "data" + File.separator + "data-repository").toString())));
 		
 		UrlComparison comparison = new UrlComparison();
 		
