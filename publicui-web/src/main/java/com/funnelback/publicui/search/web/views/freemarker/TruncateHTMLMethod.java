@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.web.views.freemarker;
 
 import java.util.List;
 
-import com.funnelback.common.Text;
+import com.funnelback.common.utils.TextUtils;
 
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
@@ -25,7 +25,7 @@ public class TruncateHTMLMethod extends AbstractTemplateMethod {
 		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		int length = ((TemplateNumberModel) arguments.get(1)).getAsNumber().intValue();
 		
-		return Text.truncateHtml(str, "\u2026", length);		
+		return TextUtils.truncateHtml(str, "\u2026", length);		
 	}
 
 }
