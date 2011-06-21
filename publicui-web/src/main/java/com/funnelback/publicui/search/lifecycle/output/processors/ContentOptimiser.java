@@ -30,19 +30,22 @@ public class ContentOptimiser implements OutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+		log.info("Process output content optimiser");
 		if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
 				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.EXPLAIN)
 				&& !searchTransaction.getQuestion().isExtraSearch()) {
 			UrlComparison comparison = new UrlComparison();
-		
+			log.info("Process output content optimiser has all data");
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
-			
+			log.info("Done consuming result packet");
 			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString());
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0].equals("")) {
 					comparison.getMessages().add("No document URL selected.");
 				}else{
+					log.info("setting important url");
 					filler.setImportantUrl(comparison,searchTransaction);
+					log.info("obtaining content");
 					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket());
 				}
 			} else {

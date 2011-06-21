@@ -301,7 +301,7 @@
        				 			},
        				 		yaxis:{ 
        				 			label:'Score',
- 							    pad: 0,
+ 
  							   }
        				 		},
         				series:[
@@ -326,7 +326,9 @@
 	                	</td> 
 	                	<td style="vertical-align: center;">
 	                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.urlComparison.importantOne?? && urlinfo.rank == response.urlComparison.importantOne.rank> background-color: #ffaaaa; </#if> ">	                			
-	                			<a href="${urlinfo.url}"> ${urlinfo.title} </a>
+	                			<a href="?query=${question.inputParameterMap["query"]!?first!?url}&collection=${question.inputParameterMap["collection"]!?first!?url}&profile=${question.inputParameterMap["profile"]!?first!?url}&optimiser_url=${urlinfo.url?url}"> 
+		                			${urlinfo.title} 
+	                			</a>
 	                			
 	                		</div>
 	                	</td> 

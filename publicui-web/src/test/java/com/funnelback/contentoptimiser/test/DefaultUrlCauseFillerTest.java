@@ -16,7 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultHintFactory;
-import com.funnelback.contentoptimiser.DefaultUrlCauseFiller;
+import com.funnelback.contentoptimiser.DefaultUrlCausesFiller;
 import com.funnelback.contentoptimiser.HintFactory;
 import com.funnelback.contentoptimiser.HintMaxOther;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
@@ -37,7 +37,7 @@ public class DefaultUrlCauseFillerTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		ResultPacket selectedRp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/content-optimiser-single-document.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCauseFiller();
+		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		UrlComparison comparison = new UrlComparison();
 		HintFactory hf = new DefaultHintFactory();
 
@@ -81,7 +81,7 @@ public class DefaultUrlCauseFillerTest {
 	public void testSetImportantURLalreadyThere() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCauseFiller();
+		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		UrlComparison comparison = new UrlComparison();
 		HintFactory hf = new DefaultHintFactory();
 
@@ -107,7 +107,7 @@ public class DefaultUrlCauseFillerTest {
 	public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCauseFiller();
+		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		UrlComparison comparison = new UrlComparison();
 		HintFactory hf = new DefaultHintFactory();
 
@@ -136,7 +136,7 @@ public class DefaultUrlCauseFillerTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 
-		UrlCausesFiller f = new DefaultUrlCauseFiller();
+		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		UrlComparison comparison = new UrlComparison();
 		HintFactory hf = new DefaultHintFactory();
 

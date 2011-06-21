@@ -4,11 +4,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import lombok.extern.apachecommons.Log;
@@ -16,6 +18,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -25,10 +28,12 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.HintCollection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.TreeMultiset;
 
 @Log
 @Component
-public class DefaultUrlCauseFiller implements UrlCausesFiller {
+public class DefaultUrlCausesFiller implements UrlCausesFiller {
 
 	@Autowired
 	DocFromCache docFromCache;
@@ -277,10 +282,34 @@ public class DefaultUrlCauseFiller implements UrlCausesFiller {
 	public void obtainContentBreakdown(UrlComparison comparison,
 			SearchTransaction searchTransaction, ResultPacket importantRp) {
 		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
-		if (documentContent != null ) {
-//			comparison.getMessages().add(documentContent);
+		if(documentContent != null) {
+			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent);
+			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
+			
+			for(String queryWord : queryWords){
+				DocumentContentScoreBreakdown content = dwp.explainQueryTerm(queryWord);
+				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + content.getCount() + " time(s) in the raw document. "
+							+ "It is more common than " + content.getPercentageLess() + "% of other terms in the document. ");
+				if(content.getCounts().size() != 0) {
+					RankerOptions rOpt = new RankerOptions(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
+					
+					StringBuilder sb = new StringBuilder();
+					sb.append("In addition, \"<b>" + queryWord + "</b>\" has: ");
+					for(Map.Entry<String, Integer> e : content.getCounts()) {
+						sb.append(e.getValue() + " occurences in metadata field '"+ e.getKey() +"', which has weight " + rOpt.getMetaWeight(e.getKey()) + "; ");
+					}
+					comparison.getMessages().add(sb.toString());
+				}
+			}
+			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords()));
+			
+			
+		} else {
+			// we didn't get a document back from cache
 		}
-	}	
+	}
+
+
 }
 
 

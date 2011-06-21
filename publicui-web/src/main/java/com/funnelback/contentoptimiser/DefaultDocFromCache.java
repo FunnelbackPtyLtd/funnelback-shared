@@ -86,7 +86,7 @@ public class DefaultDocFromCache implements DocFromCache {
 	public String getDocument(UrlComparison comparison, String cacheUrl,Config config) {
 		// Create a temp directory to store the cache copy and the index
 		File tempDir = Files.createTempDir();
-		log.info(tempDir);
+		log.info("Created tempdir");
 
 		Executor getCache = new DefaultExecutor();			
 		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)));
@@ -95,6 +95,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		try {
 			fos = new FileOutputStream(cacheFile);
 			// Get this document from cache, and put it in <tempDir>/cachefile
+			log.info("Obtaining doc from cache");
 			clGetCache.addArgument(cacheUrl);
 			getCache.setStreamHandler(new PumpStreamHandler(fos, null));
 			getCache.execute(clGetCache);
@@ -109,11 +110,12 @@ public class DefaultDocFromCache implements DocFromCache {
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
-		
+		log.info("....done");
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value("indexer"/*Keys.INDEXER*/)));
 		File bldinfo = null;
 		try {
+			log.info("reading bldinfo");
 			bldinfo = new File(config.getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".bldinfo");
 		} catch (FileNotFoundException e) {
 			comparison.getMessages().add(i18n.tr("error.configFileNotFound"));
@@ -127,8 +129,9 @@ public class DefaultDocFromCache implements DocFromCache {
 			comparison.getMessages().add(i18n.tr("error.readingBldinfo"));
 			return null;
 		}
-
+		log.info("....done");
 		try {
+			log.info("Indexing");
 			clIndexDocument.addArgument("-f");
 			clIndexDocument.addArgument(cacheFile.getPath());
 			clIndexDocument.addArgument(tempDir + File.separator + "index-single");
@@ -141,8 +144,10 @@ public class DefaultDocFromCache implements DocFromCache {
 			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
 			return null;
 		}
+		log.info("....done");
 		String wordsInDoc;
 		try {
+			log.info("Reading words in doc");
 			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
@@ -150,6 +155,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			comparison.getMessages().add(i18n.tr("error.readingIndexedFile"));
 			return null;
 		}
+		log.info("Done");
 		return wordsInDoc;
 	}
 	
