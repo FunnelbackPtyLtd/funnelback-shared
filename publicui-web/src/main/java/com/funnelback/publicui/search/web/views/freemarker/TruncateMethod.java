@@ -3,12 +3,8 @@ package com.funnelback.publicui.search.web.views.freemarker;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.funnelback.publicui.i18n.I18n;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
