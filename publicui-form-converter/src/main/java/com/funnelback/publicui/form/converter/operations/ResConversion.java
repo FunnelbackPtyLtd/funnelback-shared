@@ -38,6 +38,9 @@ public class ResConversion implements Operation {
 		// Replace <s:Res> with FreeMarker model access tags ${}
 		out = out.replaceAll("<s:Res>([^<]*)</s:Res>", "\\${s.result.$1}");
 		
+		// Place filesize formatting method
+		out = out.replace("${s.result.fileSize}", "${filesize(s.result.fileSize)}");
+		
 		if (out.contains("result.date")) {
 			out = out.replaceAll("result\\.date", "result.date?date?string(\"d MMM yyyy\")");
 			log.warn("<s:Res>date</s:Res> tags have been converted to ${result.date?date?string(\"d MMM yyy\")}. "

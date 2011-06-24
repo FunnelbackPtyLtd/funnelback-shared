@@ -24,13 +24,13 @@ import freemarker.template.TemplateModelException;
 public abstract class AbstractTemplateMethod implements TemplateMethodModel, TemplateMethodModelEx {
 
 	@Autowired
-	@Setter public I18n i18n;
+	@Setter protected I18n i18n;
 	
 	private final int requiredArgumentsCount;
 	private final int maxOptionalArgumentsCount;
 	
 	@Override
-	public Object exec(List arguments) throws TemplateModelException {
+	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		if (arguments == null && requiredArgumentsCount != 0) {
 			throw new TemplateModelException(
 					i18n.tr("freemarker.method.arguments.null",
@@ -93,6 +93,6 @@ public abstract class AbstractTemplateMethod implements TemplateMethodModel, Tem
 	 * @param arguments
 	 * @return
 	 */
-	protected abstract Object execMethod(List arguments) throws TemplateModelException;
+	protected abstract Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException;
 	
 }

@@ -299,13 +299,13 @@
 					</a>
 				</h3>
 				
-				<#if s.result.fileType == "pdf"><p class="fb-file-format"><span>${s.result.fileSize} - PDF</span>
+				<#if s.result.fileType == "pdf"><p class="fb-file-format"><span>${filesize(s.result.fileSize)} - PDF</span>
 				<a class="fb-cached" href="${s.result.cacheUrl?html}" title="View '${s.result.title}' as HTML">View as HTML</a></p></#if>
-				<#if s.result.fileType == "doc"><p class="fb-file-format"><span>${s.result.fileSize} - Microsoft Word</span>
+				<#if s.result.fileType == "doc"><p class="fb-file-format"><span>${filesize(s.result.fileSize)} - Microsoft Word</span>
 				<a class="fb-cached" href="${s.result.cacheUrl?html}" title="View '${s.result.title}' as HTML">View as HTML</a></p></#if>
-				<#if s.result.fileType == "xls"><p class="fb-file-format"><span>${s.result.fileSize} - Microsoft Excel</span>
+				<#if s.result.fileType == "xls"><p class="fb-file-format"><span>${filesize(s.result.fileSize)} - Microsoft Excel</span>
 				<a class="fb-cached" href="${s.result.cacheUrl?html}" title="View '${s.result.title}' as HTML">View as HTML</a></p></#if>
-				<#if s.result.fileType == "ppt"><p class="fb-file-format"><span>${s.result.fileSize} - Microsoft Powerpoint</span>
+				<#if s.result.fileType == "ppt"><p class="fb-file-format"><span>${filesize(s.result.fileSize)} - Microsoft Powerpoint</span>
 				<a class="fb-cached" href="${s.result.cacheUrl?html}" title="View '${s.result.title}' as HTML">View as HTML</a></p></#if>
 				
 				<!-- QUERY BIASED SUMMARY (WITH DATE)-->
