@@ -336,8 +336,8 @@
 					<ul class="fb-quicklinks">
 						<@s.QuickRepeat><li><a href="${s.ql.url}" title="${s.ql.text}">${s.ql.text}</a></li></@s.QuickRepeat>
 					</ul>
-					<#if question.collection.configuration.value("quicklinks.domain_searchbox")?exists && question.collection.configuration.value("quicklinks.domain_searchbox") == "true">
-					    <#if s.result.quickLinks.domain?matches("^[^/]*/?[^/]*$ ", "r")>
+					<#if question.collection.quickLinksConfiguration["quicklinks.domain_searchbox"]?exists && question.collection.quickLinksConfiguration["quicklinks.domain_searchbox"] == "true">
+					    <#if s.result.quickLinks.domain?matches("^[^/]*/?[^/]*$", "r")>
 						<form class="fb-quicklinks-search" action="" method="GET">
 							<div>
 							<input name="query" type="text">
