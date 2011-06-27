@@ -394,7 +394,7 @@
 		<!-- CONTEXTUAL NAVIGATION -->
 		<@s.ContextualNavigation>
 		<div id="fb-contextual-navigation">
-			<s:ClusterNavLayout></s:ClusterNavLayout>
+			<@s.ClusterNavLayout></@s.ClusterNavLayout>
 			<@s.NoClustersFound></@s.NoClustersFound>
 			<@s.ClusterLayout>
 				<h2>Have you tried?</h2>
