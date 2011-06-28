@@ -18,8 +18,8 @@ public class ResultsTierBarsConversion implements Operation {
 	public String process(String in) {
 		String out = in;
 
-		out = out.replace("tier{num_constraints}", "${s.result.matched}");
-		out = out.replace("tier{constraints_matching}", "${s.result.outOf}");
+		out = out.replace("tier{num_constraints}", "${s.result.outOf}");
+		out = out.replace("tier{constraints_matching}", "${s.result.matched}");
 		
 		// Try to capture TierBar HTML fragments
 		String fullyMatchingHtml = DEFAULT_FULLY_HTML;

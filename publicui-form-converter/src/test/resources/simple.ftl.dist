@@ -283,7 +283,7 @@
 				<#if s.result.matched == s.result.outOf>
 					
 				<#else>
-					<h2 class="fb-title">Search results that match ${s.result.outOf} of ${s.result.matched} words</h2>
+					<h2 class="fb-title">Search results that match ${s.result.matched} of ${s.result.outOf} words</h2>
 				</#if>
 			<#else>
 
