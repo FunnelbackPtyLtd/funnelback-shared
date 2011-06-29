@@ -112,7 +112,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		}
 		log.info("....done");
 		Executor indexDocument = new DefaultExecutor();
-		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value("indexer"/*Keys.INDEXER*/)));
+		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
 		File bldinfo = null;
 		try {
 			log.info("reading bldinfo");

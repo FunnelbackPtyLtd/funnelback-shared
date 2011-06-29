@@ -63,6 +63,8 @@
 
 	<bean
 		class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
+	<bean
+		class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
 
 	<bean
 		class="com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks" />

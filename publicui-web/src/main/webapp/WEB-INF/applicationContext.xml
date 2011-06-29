@@ -15,7 +15,7 @@
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser" />
+	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors" />
 
 	<task:annotation-driven executor="taskExecutor" />
 	<task:executor id="taskExecutor" pool-size="100" rejection-policy="CALLER_RUNS" />
