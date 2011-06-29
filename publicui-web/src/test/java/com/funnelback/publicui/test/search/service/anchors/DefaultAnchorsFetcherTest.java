@@ -81,7 +81,7 @@ public class DefaultAnchorsFetcherTest {
 
 		Assert.assertTrue(m.containsKey("[K]click associated query"));
 		Assert.assertEquals(1,m.get("[K]click associated query").getExternalLinkCount());
-		Assert.assertEquals(" ",m.get("[K]click associated query").getLinkType());
+		Assert.assertEquals("K",m.get("[K]click associated query").getLinkType());
 		
 	}
 	

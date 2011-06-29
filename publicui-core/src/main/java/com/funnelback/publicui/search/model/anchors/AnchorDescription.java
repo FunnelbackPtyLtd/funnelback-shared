@@ -8,8 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
+import lombok.extern.apachecommons.Log;
 
-
+@Log
 public class AnchorDescription implements Comparable<AnchorDescription> {
 
 	@Getter private final String anchorText;
@@ -38,10 +39,14 @@ public class AnchorDescription implements Comparable<AnchorDescription> {
 			// this is an anchortext with a link type
 			this.linkType = m.group(1);
 			this.anchorText = m.group(2);
+		} else if (anchorText.startsWith("[K]")){
+			this.anchorText = anchorText.substring(anchorText.indexOf(']') +1);	
+			linkType = "K";
 		} else {
-			// this is an anchortext without a link type
+			// this is an anchortext with an unknown link type
 			this.anchorText = anchorText.replaceAll("[\\[\\]]", " "); // strip '[' and ']' characters	
 			linkType = " ";
+			log.warn("Unkown link type when parsing anchortext '"+anchorText+"'");
 		}
 	}
 	

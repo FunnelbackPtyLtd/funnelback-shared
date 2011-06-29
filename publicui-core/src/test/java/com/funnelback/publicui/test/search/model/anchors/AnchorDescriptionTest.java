@@ -34,8 +34,8 @@ public class AnchorDescriptionTest {
 	@Test
 	public void testClickDataLinkType() {
 		AnchorDescription a = new AnchorDescription("[K]blank anchortext");
-		Assert.assertEquals(" ",a.getLinkType());
-		Assert.assertEquals(" K blank anchortext",a.getAnchorText());
+		Assert.assertEquals("K",a.getLinkType());
+		Assert.assertEquals("blank anchortext",a.getAnchorText());
 	}
 	
 	@Test

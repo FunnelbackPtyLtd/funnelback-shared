@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
@@ -16,25 +17,29 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	private final Multiset<Entry<String,Integer>> termsSortedByFrequency;
 	private final int totalWordCount;
 	
-	public DefaultDocumentWordsProcessor(String wordsInDocument) {
+	public DefaultDocumentWordsProcessor(String wordsInDocument, AnchorModel anchors) {
 		countByTerms = new HashMap<String,Map<String,Integer>>(); 
 		int count = 0;
 		String[] words = wordsInDocument.split("\\s+");
+	
 		for(String word : words){
 			if(word.indexOf('_') != -1) {
 				String[] wordAndFieldType = word.split("_");
 				String fieldName = wordAndFieldType[1];
-				if(! countByTerms.containsKey(fieldName)) countByTerms.put(fieldName, new HashMap<String,Integer>());
-				if(! countByTerms.get(fieldName).containsKey(wordAndFieldType[0])) countByTerms.get(fieldName).put(wordAndFieldType[0],0);
-				countByTerms.get(fieldName).put(wordAndFieldType[0],(countByTerms.get(fieldName).get(wordAndFieldType[0])+1));
+				String singleWord = wordAndFieldType[0];
 				
+				countWord(singleWord, fieldName);
 			} else {
-				if(! countByTerms.containsKey("_")) countByTerms.put("_", new HashMap<String,Integer>());
-				if(! countByTerms.get("_").containsKey(word)) countByTerms.get("_").put(word,0);
-				countByTerms.get("_").put(word,(countByTerms.get("_").get(word)+1));
+				String fieldName = "_";
+				countWord(word, fieldName);
 				count++;
 			}
 		}
+		
+		
+		
+		
+		
 		totalWordCount = count;
 
 		termsSortedByFrequency = TreeMultiset.create(new Comparator<Entry<String,Integer>>() {
@@ -51,6 +56,15 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 		for(Entry<String,Integer> e : countByTerms.get("_").entrySet()) {
 			termsSortedByFrequency.add(e);
 		}
+	}
+
+	private void countWord(String singleWord, String fieldName) {
+		// Make sure we have a dictionary for this field type
+		if(! countByTerms.containsKey(fieldName)) countByTerms.put(fieldName, new HashMap<String,Integer>());
+		// Make sure we have an entry in the dictionary for this field type
+		if(! countByTerms.get(fieldName).containsKey(singleWord)) countByTerms.get(fieldName).put(singleWord,0);
+		// Increment the entry
+		countByTerms.get(fieldName).put(singleWord,(countByTerms.get(fieldName).get(singleWord)+1));
 	}
 	
 	@Override

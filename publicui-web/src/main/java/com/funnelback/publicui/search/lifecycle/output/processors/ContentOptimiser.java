@@ -9,10 +9,13 @@ import com.funnelback.contentoptimiser.HintFactory;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.anchors.AnchorDescription;
+import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
 
 /**
  * Process explain output from PADRE and generates relevant data model for the
@@ -24,6 +27,9 @@ public class ContentOptimiser implements OutputProcessor {
 
 	@Autowired
 	private UrlCausesFiller filler;
+	
+	@Autowired
+	AnchorsFetcher fetcher;
 	
 	@Autowired
 	private HintFactory hintFactory;
@@ -46,7 +52,15 @@ public class ContentOptimiser implements OutputProcessor {
 					log.info("setting important url");
 					filler.setImportantUrl(comparison,searchTransaction);
 					log.info("obtaining content");
-					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket());
+					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),searchTransaction.getQuestion().getCollection());
+					
+					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
+					log.info("obtaining anchors");		
+				
+					for(AnchorDescription anchor : anchors.getAnchors()) {
+						comparison.getMessages().add(anchor.getAnchorText());
+					}
+					log.info("done");
 				}
 			} else {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) == null) {

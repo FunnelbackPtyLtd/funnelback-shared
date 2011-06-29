@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -240,18 +241,19 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
 		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0];
 
-		
+		// See if the selected document appears for the long query
 		Result importantResult = null;
 		for (Result result : allRp.getResults()) {
 			if(result.getDisplayUrl().equals(urlString) || result.getDisplayUrl().equals("http://" + urlString)) importantResult = result;
 		}	
-		// Maybe we don't have this URL?
+		
+		// If the selected document didn't appear in the long query, then terminate early
 		if(importantResult == null) {
 			comparison.getMessages().add(i18n.tr("info.selectedDocumentTooFarDown"));
 			return;
 		}
 		
-		// First see if we already have this URL
+		// First see if the model already contains the selected document (it will if it's in the top 10)
 		for (UrlInfoAndScore url : comparison.getUrls()) {
 			if(url.getUrl().equals(importantResult.getDisplayUrl())) {
 				comparison.setImportantOne(url);
@@ -280,10 +282,10 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 
 	@Override
 	public void obtainContentBreakdown(UrlComparison comparison,
-			SearchTransaction searchTransaction, ResultPacket importantRp) {
+			SearchTransaction searchTransaction, ResultPacket importantRp,AnchorModel anchors) {
 		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
 		if(documentContent != null) {
-			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent);
+			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors);
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			
 			for(String queryWord : queryWords){
@@ -302,8 +304,6 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 				}
 			}
 			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords()));
-			
-			
 		} else {
 			// we didn't get a document back from cache
 		}
