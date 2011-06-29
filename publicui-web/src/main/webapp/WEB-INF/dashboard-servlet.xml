@@ -32,7 +32,7 @@
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="freemarkerVariables">
 			<map>
-				<entry key="contextPath" value="#{contextPathHolder.contextPath}" />
+				<entry key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}" value="#{contextPathHolder.contextPath}" />
 			</map>
 		</property>
 	</bean>
