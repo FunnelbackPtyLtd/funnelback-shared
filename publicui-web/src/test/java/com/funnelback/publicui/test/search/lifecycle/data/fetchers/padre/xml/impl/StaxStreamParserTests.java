@@ -67,6 +67,8 @@ public class StaxStreamParserTests {
 	
 	@Test
 	public void testExplain() {
+		String expectedStopWords = "a ai am an and any are as at au aussi aux avec be been but by c ca can ce ceci cela ces cet cette ci comme d dans de des do du elle elles en est et etc for from had has her his how i if  il ils in is it j je l la le les leur leurs lui ma mais me mes moi mon my n ne ni non nor not of on ont or ou out par pas qu quand que qui quoi se ses si sont suis sur that the their then there to toi tu un une vous was were what when where who why with y you";
+		
 		Explain e = rp.getResults().get(0).getExplain();
 		assertEquals(0.639, e.getFinalScore(), 0.0001);
 		assertEquals(2, e.getConsat());
@@ -82,6 +84,14 @@ public class StaxStreamParserTests {
 		
 		for (int i=1; i<rp.getResults().size(); i++) {
 			assertNull(rp.getResults().get(i).getExplain());
+		}
+		
+		String[] expectedStopWordsArray = expectedStopWords.split("\\s+");
+		int i =0;
+		assertEquals("All stop words should be present",expectedStopWordsArray.length,rp.getStopWords().size());
+		for(String stopWord : rp.getStopWords()) {
+			assertEquals("Stop words should match expected stop words",expectedStopWordsArray[i],stopWord);
+			i++;
 		}
 	}
 	

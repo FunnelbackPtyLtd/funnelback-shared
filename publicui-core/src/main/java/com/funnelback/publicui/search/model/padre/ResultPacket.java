@@ -79,6 +79,7 @@ public class ResultPacket {
 	
 	@Getter private final Map<String,Float> coolerWeights = new HashMap<String,Float>();
 	@Getter private final Map<String,String> explainTypes = new HashMap<String,String>();
+	@Getter private final List<String> stopWords = new ArrayList<String>();
 	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
@@ -143,6 +144,8 @@ public class ResultPacket {
 		public static final String COOLER_WEIGHTINGS = "cooler_weightings";
 
 		public static final String EXPLAIN_TYPES = "explain_types";
+
+		public static final String STOP_WORDS = "stop_words";
 		
 	}
 }

@@ -129,6 +129,8 @@ public class XSLTXStreamViewTests {
 		oldXml = oldXml.replaceAll("(?s)<explain_types>.*?</explain_types>\\n", "");
 		// As well as <cooler_weightings>
 		oldXml = oldXml.replaceAll("(?s)<cooler_weightings>.*?</cooler_weightings>\\n", "");
+		// As well as <stop_words>
+		oldXml = oldXml.replaceAll("(?s)<stop_words>.*?</stop_words>\\n", "");
 		// As well as <qsup> for query blending
 		oldXml = oldXml.replaceAll("(?s)<qsup.*?>.*?</qsup>\\n", "");
 		// As well as <km_from_origin> for geo-related features
