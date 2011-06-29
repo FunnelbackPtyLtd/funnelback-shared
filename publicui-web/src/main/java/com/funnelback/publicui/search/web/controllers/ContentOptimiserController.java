@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -53,7 +54,9 @@ public class ContentOptimiserController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
-		return new ModelAndView("no-collection", model);
+		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
 	}
 	
 	

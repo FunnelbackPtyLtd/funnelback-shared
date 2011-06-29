@@ -70,7 +70,9 @@ public class SearchController {
 		// FIXME: Hack for the XML view that serialise only one item from the model
 		model.put(ModelAttributes.SearchTransaction.toString(), configRepository.getAllCollections());
 
-		return new ModelAndView("no-collection", model);
+		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
 	}
 
 			

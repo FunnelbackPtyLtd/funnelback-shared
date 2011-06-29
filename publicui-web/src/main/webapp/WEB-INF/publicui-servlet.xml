@@ -165,16 +165,6 @@
 		<property name="contentType" value="text/html;charset=UTF-8" /> 
 	</bean>
 	
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="anchorsView">
-		<property name="url" value="anchors/anchors.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" /> 
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="anchorsDetailView">
-		<property name="url" value="anchors/anchors-detail.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" /> 
-	</bean>
-	
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserKickoffView">
 		<property name="url" value="contentoptimiser/content-optimiser-kickoff.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" /> 
@@ -195,7 +185,7 @@
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
 					<constructor-arg>
 						<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView">
-							<property name="url" value="form-not-found.ftl" />
+							<property name="url" value="web/templates/publicui/form-not-found.ftl" />
 						</bean>
 					</constructor-arg>
 					<property name="cache" value="true" />

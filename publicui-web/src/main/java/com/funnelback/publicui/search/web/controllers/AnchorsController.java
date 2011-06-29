@@ -53,12 +53,6 @@ public class AnchorsController {
 	@Autowired
 	AnchorsFetcher fetcher;
 	
-	@Resource(name="anchorsView")
-	private FreeMarkerView anchorsView;
-
-	@Resource(name="anchorsDetailView")
-	private FreeMarkerView anchorsDetailView;
-	
 	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docNum","!anchortext"})
 	public ModelAndView anchors(HttpServletResponse response,
 			@RequestParam(RequestParameters.COLLECTION) Collection collection, String docNum) throws IOException {
@@ -67,7 +61,10 @@ public class AnchorsController {
 		
 		Map<String,Object> model = new HashMap<String,Object>(); 
 		model.put("anchors", anchors);
-		return new ModelAndView(anchorsView,model);
+		return new ModelAndView(
+				DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_PUBLICUI+"/anchors/anchors",model);
 	}
 
 	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docNum","anchortext"})
@@ -86,7 +83,10 @@ public class AnchorsController {
 		Map<String,Object> model = new HashMap<String,Object>(); 
 		model.put("anchors", anchors);
 		model.put("max_urls_per_page",AnchorDetail.MAX_URLS_PER_PAGE);
-		return new ModelAndView(anchorsDetailView,model);
+		return new ModelAndView(
+				DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_PUBLICUI+"/anchors/anchors-detail",model);
 	}
 	
 	
@@ -100,7 +100,10 @@ public class AnchorsController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
-		return new ModelAndView("no-collection", model);
+		return new ModelAndView(
+				DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
 	}
 	
 }
