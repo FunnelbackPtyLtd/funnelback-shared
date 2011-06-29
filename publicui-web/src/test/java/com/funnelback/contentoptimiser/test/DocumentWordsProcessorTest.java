@@ -1,5 +1,6 @@
 package com.funnelback.contentoptimiser.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -7,19 +8,29 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultDocumentWordsProcessor;
 import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
 import com.funnelback.contentoptimiser.DocumentWordsProcessor;
+import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 
 
 public class DocumentWordsProcessorTest {
 
+	private AnchorModel anchors;
+	
+	@Before
+	public void setupAnchors() {
+		anchors = new AnchorModel();
+		anchors.setAnchors(new ArrayList<AnchorDescription>());
+	}
+	
 	@Test
 	public void testObtainContent() {
-		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", new AnchorModel());
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors);
 		
 		DocumentContentScoreBreakdown content = dwp.explainQueryTerm("five");
 		Assert.assertEquals(content.getCount(), 2);
@@ -43,7 +54,7 @@ public class DocumentWordsProcessorTest {
 	
 	@Test
 	public void testDocumentOverview() {
-		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",new AnchorModel());
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors);
 		String[] expectedFive =new String[] {"two","five","three","six","one"};
 		Assert.assertTrue("Top five words were " + Arrays.toString(dwp.getTopFiveWords()) + " but expected " + Arrays.toString(expectedFive), Arrays.equals(expectedFive, dwp.getTopFiveWords()));
 		Assert.assertEquals(9,dwp.totalWords());
