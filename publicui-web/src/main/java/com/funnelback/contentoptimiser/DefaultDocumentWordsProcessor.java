@@ -39,7 +39,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 		
 		for(AnchorDescription anchor : anchors.getAnchors()) {
 			String[] anchorWords = anchor.getAnchorText().split("\\s+");
-			int occurences = anchor.getLinksTo().size();
+			int occurences = anchor.getTotalLinkCount();
 			for(String word : anchorWords) {
 				if(anchor.getLinkType().equals("K")) {
 					for(int i = 0; i < occurences; i++) countWord(word,"K");

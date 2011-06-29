@@ -70,4 +70,8 @@ public class AnchorDescription implements Comparable<AnchorDescription> {
 		return ret;
 	}
 
+	public int getTotalLinkCount() {
+		return internalLinkCount + externalLinkCount;
+	}
+
 }

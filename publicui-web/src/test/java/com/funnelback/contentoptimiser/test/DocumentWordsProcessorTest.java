@@ -30,12 +30,30 @@ public class DocumentWordsProcessorTest {
 	
 	@Test
 	public void testObtainContent() {
+		AnchorDescription anchorDescription = new AnchorDescription("[k1]five text");
+		anchorDescription.linkTo("0");
+		anchorDescription.linkTo("1");
+		anchorDescription.linkTo("2");
+		
+		AnchorDescription anchorDescription2 = new AnchorDescription("[k0]five text");
+		anchorDescription2.linkTo("0");
+		anchorDescription2.linkTo("1");
+		
+		AnchorDescription anchorDescription3 = new AnchorDescription("[K]anchor five");
+		anchorDescription3.linkTo("-1");
+		
+		anchors.getAnchors().add(anchorDescription);
+		anchors.getAnchors().add(anchorDescription2);
+		anchors.getAnchors().add(anchorDescription3);
+		
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors);
 		
 		DocumentContentScoreBreakdown content = dwp.explainQueryTerm("five");
 		Assert.assertEquals(content.getCount(), 2);
 		Assert.assertEquals(1, content.getCount("t").intValue());
 		Assert.assertEquals(1, content.getCount("h").intValue());
+		Assert.assertEquals(5, content.getCount("k").intValue());
+		Assert.assertEquals(1, content.getCount("K").intValue());
 		Assert.assertNull(content.getCount("x"));
 		
 		Set<Map.Entry<String,Integer>> s = content.getCounts();
@@ -45,7 +63,13 @@ public class DocumentWordsProcessorTest {
 		Assert.assertEquals("t", e.getKey());
 		Assert.assertEquals(1, e.getValue().intValue());
 		e = it.next();
+		Assert.assertEquals("k", e.getKey());
+		Assert.assertEquals(5, e.getValue().intValue());
+		e = it.next();
 		Assert.assertEquals("h", e.getKey());
+		Assert.assertEquals(1, e.getValue().intValue());
+		e = it.next();
+		Assert.assertEquals("K", e.getKey());
 		Assert.assertEquals(1, e.getValue().intValue());
 		Assert.assertFalse(it.hasNext());
 		
@@ -62,3 +86,4 @@ public class DocumentWordsProcessorTest {
 	}
 	
 }
+
