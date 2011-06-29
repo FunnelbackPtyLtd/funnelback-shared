@@ -85,18 +85,19 @@
 		}
 	</style>
 	
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasTextRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-	<script type="text/javascript" src="/publicui/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="/publicui/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="${ContextPath}/dashboard/resources/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
 		<title>Funnelback Content Optimiser</title>
 </head>
 
 <body>
+	
     <div id="content-optimiser-pane">
         <div style="margin-bottom: 30px;">
         	<h3 style="position: relative; top: 34px; left: 195px; margin: 0px; padding: 0px;">	Content Optimiser</h3>
