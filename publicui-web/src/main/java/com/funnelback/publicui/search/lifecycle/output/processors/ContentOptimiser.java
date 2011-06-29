@@ -57,9 +57,6 @@ public class ContentOptimiser implements OutputProcessor {
 					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
 					log.info("obtaining anchors");		
 				
-					for(AnchorDescription anchor : anchors.getAnchors()) {
-						comparison.getMessages().add(anchor.getAnchorText());
-					}
 					log.info("done");
 				}
 			} else {
