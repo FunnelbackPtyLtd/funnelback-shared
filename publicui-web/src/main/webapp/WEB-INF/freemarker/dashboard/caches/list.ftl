@@ -30,7 +30,7 @@
 					<th>${key}</th>
 					<td>${stats.associatedCache.get(key).creationTime}</td>
 					<td>${stats.associatedCache.get(key).serializedSize}</td>
-					<td><a href="${contextPath}/dashboard/caches/${stats.associatedCache.name}/remove/${key}/">Remove</a></td>
+					<td><a href="${ContextPath}/dashboard/caches/${stats.associatedCache.name}/remove/${key}/">Remove</a></td>
 				</tr>
 			</#list>
 		<#else>
@@ -39,7 +39,7 @@
 
 		</table>
 	</td>
-	<td><a href="${contextPath}/dashboard/caches/${stats.associatedCache.name}/flush/">Flush</a></td>
+	<td><a href="${ContextPath}/dashboard/caches/${stats.associatedCache.name}/flush/">Flush</a></td>
 </tr>	
 </#list>
 
