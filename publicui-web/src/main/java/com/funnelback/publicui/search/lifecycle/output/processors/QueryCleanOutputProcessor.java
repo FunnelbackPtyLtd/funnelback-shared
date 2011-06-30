@@ -26,6 +26,16 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 
 	private static final Pattern WEIGHTED_OPERATORS_PATTERN = Pattern.compile("\\^\\d+\\.\\d+");
 	
+	/**
+	 * <p>List of what PADRE considers to be punctuation.</p>
+	 * <p>We need those because PADRE will strip punctuation from 
+	 * facet constraintes, eg "$++ trades & services $++" will become
+	 * "$++ trades services $++".</p>
+	 * 
+	 * @see <tt>padre/src/index/extractor.c</tt>
+	 */
+	private static final String PADRE_PUNC_CHARS = "\\s[\\Q.!?-@;,/:'\"/&()[]_|\\E]\\s";
+	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (searchTransaction.hasQuestion() && searchTransaction.hasResponse() 
@@ -38,7 +48,10 @@ public class QueryCleanOutputProcessor implements OutputProcessor {
 			
 			// Remove any faceted navigation constraint
 			for (String constraint: searchTransaction.getQuestion().getFacetsQueryConstraints()) {
-				q = q.replaceAll("\\Q"+constraint+"\\E", "");
+				// Try both with the original constraint, and the
+				// PADRE stripped version
+				q = q.replaceAll("\\Q"+constraint+"\\E", "")
+					.replaceAll("\\Q"+constraint.replaceAll(PADRE_PUNC_CHARS, " ")+"\\E", "");
 			}
 			
 			log.debug("Cleaned query '" + searchTransaction.getResponse().getResultPacket().getQuery() + "' to '" + q.trim() + "'");

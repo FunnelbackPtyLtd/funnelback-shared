@@ -38,6 +38,13 @@ public class RemoveQSParamMethod extends AbstractTemplateMethod {
 			Pattern p = Pattern.compile("([&;]|^)\\Q" + paramNames.get(i) + "\\E=[^&]*");
 			Matcher m = p.matcher(qs);
 			qs = m.replaceAll("");			
+			
+			// Try with the same parameter, but with encoded spaces
+			// as it seems Chrome automatically encodes them (?!)
+			p = Pattern.compile("([&;]|^)\\Q" + paramNames.get(i).toString().replace(" ", "%20") + "\\E=[^&]*");
+			m = p.matcher(qs);
+			qs = m.replaceAll("");			
+
 		}
 		
 		// If the transformed query string starts with a "&", strip it

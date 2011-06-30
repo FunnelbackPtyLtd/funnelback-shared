@@ -1,11 +1,14 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
@@ -27,6 +30,7 @@ public class XPathFill extends CategoryDefinition implements MetadataBasedCatego
 	@Getter @Setter private String metafield;
 	
 	@Override
+	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		
@@ -42,7 +46,7 @@ public class XPathFill extends CategoryDefinition implements MetadataBasedCatego
 						mdv.value,
 						mdv.value,
 						count,
-						getQueryStringParamName() + "=" + mdv.value));
+						getQueryStringParamName() + "=" + URLEncoder.encode(mdv.value, "UTF-8")));
 			}
 		}
 		return categories;

@@ -1,10 +1,13 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
@@ -29,6 +32,7 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
 	@Getter @Setter private int gscopefield;
 	
 	@Override
+	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		if (rp.getGScopeCounts().get(gscopefield) != null) {
@@ -36,7 +40,7 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
 					Integer.toString(gscopefield),
 					data,
 					rp.getGScopeCounts().get(gscopefield),
-					getQueryStringParamName() + "=" + data));
+					getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8")));
 		}
 		return categories;
 	}
