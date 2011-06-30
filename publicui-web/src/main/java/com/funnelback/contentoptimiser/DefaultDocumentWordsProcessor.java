@@ -3,8 +3,10 @@ package com.funnelback.contentoptimiser;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
@@ -77,13 +79,17 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	}
 	
 	@Override
-	public String[] getTopFiveWords() {
+	public String[] getTopFiveWords(List<String> stopWords,String fieldType) {
 		int i = 0;
+		Set<String> stopSet = new HashSet<String>(stopWords);
+		
 		List<String> topFive = new ArrayList<String>(5);
 		for(Entry<String,Integer> e : termsSortedByFrequency) {
 			if(i == 5) break;
-			i++;
-			topFive.add(e.getKey());
+			if(! stopSet.contains(e.getKey())) {
+				topFive.add(e.getKey());
+				i++;
+			}
 		}
 		return topFive.toArray(new String[0]);
 	}

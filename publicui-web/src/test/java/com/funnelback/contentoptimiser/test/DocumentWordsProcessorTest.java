@@ -80,7 +80,7 @@ public class DocumentWordsProcessorTest {
 	public void testDocumentOverview() {
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors);
 		String[] expectedFive =new String[] {"two","five","three","six","one"};
-		Assert.assertTrue("Top five words were " + Arrays.toString(dwp.getTopFiveWords()) + " but expected " + Arrays.toString(expectedFive), Arrays.equals(expectedFive, dwp.getTopFiveWords()));
+		Assert.assertTrue("Top five words in document incorrect ", Arrays.equals(expectedFive, dwp.getTopFiveWords(new ArrayList<String>(),"_")));
 		Assert.assertEquals(9,dwp.totalWords());
 		Assert.assertEquals(6, dwp.uniqueWords());
 	}

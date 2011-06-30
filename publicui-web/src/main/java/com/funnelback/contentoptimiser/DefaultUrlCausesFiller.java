@@ -303,7 +303,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 					comparison.getMessages().add(sb.toString());
 				}
 			}
-			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords()));
+			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords(importantRp.getStopWords(),"_")));
 		} else {
 			// we didn't get a document back from cache
 		}
