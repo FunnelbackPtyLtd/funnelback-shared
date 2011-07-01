@@ -95,6 +95,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FacetScopeRemoveMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.FacetScopeRemoveMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod" />
 				</entry>
