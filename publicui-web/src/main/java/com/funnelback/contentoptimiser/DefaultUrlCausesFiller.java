@@ -194,7 +194,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		for (Result result : rp.getResults()) {
 			if(comparison.getUrls().size() >= 10) break;
 			
-			UrlInfoAndScore info = new UrlInfoAndScore(result.getLiveUrl(),result.getTitle(),""+ result.getRank());
+			UrlInfoAndScore info = new UrlInfoAndScore(result.getLiveUrl(),result.getCacheUrl(),result.getTitle(),""+ result.getRank());
 	
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
@@ -259,9 +259,10 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 				comparison.setImportantOne(url);
 			}
 		}
+		
 		// Otherwise we must create it ourselves
 		if(comparison.getImportantOne() == null) {
-			UrlInfoAndScore url = new UrlInfoAndScore(importantResult.getLiveUrl(),importantResult.getTitle(), ""+importantResult.getRank());
+			UrlInfoAndScore url = new UrlInfoAndScore(importantResult.getLiveUrl(),importantResult.getCacheUrl(),importantResult.getTitle(), ""+importantResult.getRank());
 			comparison.setImportantOne(url);
 			for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;

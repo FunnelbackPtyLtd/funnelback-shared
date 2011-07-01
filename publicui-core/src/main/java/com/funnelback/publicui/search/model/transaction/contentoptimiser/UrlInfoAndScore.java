@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UrlInfoAndScore {
 	@Getter private final String url;
+	@Getter private final String cacheUrl;
 	@Getter private final String title;
 	@Getter private final String rank;
 	

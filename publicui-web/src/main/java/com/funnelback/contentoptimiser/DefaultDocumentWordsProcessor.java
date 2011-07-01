@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import lombok.extern.apachecommons.Log;
+
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
-
+@Log
 public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 
 	private final Map<String,Map<String,Integer>> countByTerms;
@@ -21,6 +23,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	private final int totalWordCount;
 	
 	public DefaultDocumentWordsProcessor(String wordsInDocument, AnchorModel anchors) {
+		log.info(wordsInDocument);
 		countByTerms = new HashMap<String,Map<String,Integer>>(); 
 		int count = 0;
 		String[] words = wordsInDocument.split("\\s+");

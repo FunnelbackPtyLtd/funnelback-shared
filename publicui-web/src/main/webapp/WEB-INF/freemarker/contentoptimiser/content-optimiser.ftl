@@ -118,7 +118,8 @@
         		<p>Showing results 1-${response.urlComparison.urls?size} of ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;.
         						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].url}">${response.urlComparison.urls[0].title}</a>.
 	        	<#if (response.urlComparison.importantOne??)>
-					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>.        		
+					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>. 
+					 You can view it in the cache <a href="${response.urlComparison.importantOne.cacheUrl}">here</a></p>
 	        	</#if> 
 	        		<p>Here is a breakdown of the ranking for the top ${response.urlComparison.urls?size} documents:</p>
         	</#if>
@@ -133,7 +134,7 @@
 	            var cssObj = {
 	                  'position' : 'absolute',
 	                  'font-weight' : 'bold',
-	                  'left' : (mouseX + 20) + 'px', //usually needs more offset here
+	                  'left' : (mouseX + 20) + 'px',
 	                  'top' : mouseY + 'px'
 	                };
 	            $('#chartpseudotooltip').stop(true,true);
