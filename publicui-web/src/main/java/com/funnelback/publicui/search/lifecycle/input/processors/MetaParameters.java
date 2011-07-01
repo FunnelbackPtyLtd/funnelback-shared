@@ -68,7 +68,7 @@ public class MetaParameters implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
 		if (searchTransaction != null && searchTransaction.getQuestion() != null) {
-			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
+			Map<String, String> params = searchTransaction.getQuestion().getInputParameterMap();
 			MapKeyFilter filter = new MapKeyFilter(params);
 			String[] parameterNames = filter.filter(META_QUERY_PATTERN);
 
@@ -86,58 +86,55 @@ public class MetaParameters implements InputProcessor {
 				
 				if (params.get(name) != null) {				
 					
-					// Gather all parameter values
-					//     &meta_x=first value&meta_x=second value
-					//  => { "first", "value", "second", "value" }
-					String stringValues = StringUtils.join(params.get(name), " ");
-					if ("".equals(stringValues)) {
+					String stringValue = params.get(name);
+					if ("".equals(stringValue)) {
 						// No value for this parameter
 						continue;
 					}
 					
 					// Trunc operator (abc def => *abc* *def*)
 					if (Operators.trunc.isPresentIn(name)) {
-						stringValues = stringValues.replaceAll("(\\S+)", "*$1*");
+						stringValue = stringValue.replaceAll("(\\S+)", "*$1*");
 					}
 					
 					// Encapsulating operators (" ", [ ], ` `)
 					if (Operators.orplus.isPresentIn(name)) {
-						stringValues = "+[" + stringValues + "]";
+						stringValue = "+[" + stringValue + "]";
 					} else if (Operators.orsand.isPresentIn(name)) {
-						stringValues = "|[" + stringValues + "]";
+						stringValue = "|[" + stringValue + "]";
 					} else if (Operators.phrase.isPresentIn(name)) {
-						stringValues = stringValues.replace("\"", "");
-						stringValues = "\"" + stringValues + "\"";
+						stringValue = stringValue.replace("\"", "");
+						stringValue = "\"" + stringValue + "\"";
 					} else if (Operators.prox.isPresentIn(name)) {
-						stringValues = "`" + stringValues + "`";
+						stringValue = "`" + stringValue + "`";
 					} else if (Operators.or.isPresentIn(name)) {
-						stringValues = "[" + stringValues + "]";
+						stringValue = "[" + stringValue + "]";
 					}
 					
 					// Add metadata class
 					Matcher m = META_CLASS_PATTERN.matcher(name);
 					if (m.find()) {
 						String metadataClass = m.group(1);
-						stringValues = ADD_META_CLASS_PATTERN.matcher(stringValues).replaceAll(metadataClass + ":$1");
+						stringValue = ADD_META_CLASS_PATTERN.matcher(stringValue).replaceAll(metadataClass + ":$1");
 					}
 					
 					// Non encapsulating operators (+, |, -)
 					if (Operators.and.isPresentIn(name)) {
-						stringValues = addNonEncapsulatingOperator("+", stringValues);
+						stringValue = addNonEncapsulatingOperator("+", stringValue);
 					} else if (Operators.sand.isPresentIn(name)) {
-						stringValues = addNonEncapsulatingOperator("|", stringValues);
+						stringValue = addNonEncapsulatingOperator("|", stringValue);
 					} else if (Operators.not.isPresentIn(name)) {
-						stringValues = addNonEncapsulatingOperator("-", stringValues);
+						stringValue = addNonEncapsulatingOperator("-", stringValue);
 					}
 					
-					searchTransaction.getQuestion().getMetaParameters().add(stringValues);
+					searchTransaction.getQuestion().getMetaParameters().add(stringValue);
 
 					// Remove the parameter from the list that will be passed to PADRE if
 					// we successfully processed it
 					searchTransaction.getQuestion().getAdditionalParameters().remove(name);
 					
-					log.debug("Processed parameter '" + name + "=" + StringUtils.join(params.get(name), " ") + "' "
-							+ "Transformed as '" + stringValues + "'");
+					log.debug("Processed parameter '" + name + "=" + params.get(name) + "' "
+							+ "Transformed as '" + stringValue + "'");
 					
 				}
 			}

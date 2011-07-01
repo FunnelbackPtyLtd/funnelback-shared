@@ -28,8 +28,8 @@ public class ContentOptimiserSelectDocument implements InputProcessor {
 				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.OPTIMISER_URL)
 				&& ! searchTransaction.getQuestion().isExtraSearch()) {
 			Map<String,String> m = new HashMap<String,String>();
-			log.info("Beginning extra search for content optimiser: " +  searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL )[0] );
-			m.put(RequestParameters.OPTIMISER_URL, searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL )[0] );
+			log.info("Beginning extra search for content optimiser: " +  searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL ) );
+			m.put(RequestParameters.OPTIMISER_URL, searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL ) );
 			SearchQuestion q = new ContentOptimiserSelectUrlQuestionFactory().buildQuestion(searchTransaction.getQuestion(),m);
 			searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString(), q);
 		}

@@ -15,14 +15,22 @@ public class MapUtils {
 	 * @param defaultValue
 	 * @return
 	 */
-	public static String getString(Map<String, String[]> map, Object key, String defaultValue) {
+	@Deprecated
+	public static String getFirstString(Map<String, String[]> map, Object key, String defaultValue) {
 		if (map.get(key) != null && map.get(key).length > 0 ) {
 			return map.get(key)[0];
 		} else {
 			return defaultValue;
 		}
 	}
-	
+
+	public static String getString(Map<String, String> map, Object key, String defaultValue) {
+		if (map.get(key) != null ) {
+			return map.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
 	/**
 	 * Put a String value in a map, transforming it into a 1-slot String array, and only
 	 * if it's not null.
@@ -30,9 +38,15 @@ public class MapUtils {
 	 * @param key
 	 * @param data
 	 */
-	public static void putIfNotNull(Map<String, String[]> out, String key, String data) {
+	public static void __OLD__putIfNotNull(Map<String, String[]> out, String key, String data) {
 		if (data != null) {
 			out.put(key, new String[] {data});
+		}
+	}
+	
+	public static void putIfNotNull(Map<String, String> out, String key, String data) {
+		if (data != null) {
+			out.put(key, data);
 		}
 	}
 	

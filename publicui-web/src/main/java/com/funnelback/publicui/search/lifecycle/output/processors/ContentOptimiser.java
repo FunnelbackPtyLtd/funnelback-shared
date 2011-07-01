@@ -43,7 +43,7 @@ public class ContentOptimiser implements OutputProcessor {
 			log.info("Done consuming result packet");
 			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString());
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
-				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0].equals("")) {
+				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL).equals("")) {
 					comparison.getMessages().add("No document URL selected.");
 				}else{
 					log.info("setting important url");
@@ -60,7 +60,7 @@ public class ContentOptimiser implements OutputProcessor {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) == null) {
 					comparison.getMessages().add("No document URL selected.");
 				} else {
-					comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0] + "' was not returned for the query.");
+					comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) + "' was not returned for the query.");
 				}
 			}
 			filler.fillHintCollections(comparison);

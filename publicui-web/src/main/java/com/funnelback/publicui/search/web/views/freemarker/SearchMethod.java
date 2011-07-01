@@ -65,13 +65,13 @@ public class SearchMethod extends AbstractTemplateMethod {
 	}
 	
 	
-	private Map<String, String[]> convertSimpleHashToParmeterMap(TemplateHashModelEx hash) throws TemplateModelException {
-		Map<String, String[]> out = new HashMap<String, String[]>();
+	private Map<String, String> convertSimpleHashToParmeterMap(TemplateHashModelEx hash) throws TemplateModelException {
+		Map<String, String> out = new HashMap<String, String>();
 		
 		for (TemplateModelIterator it = hash.keys().iterator(); it.hasNext();) {
 			String key = ((SimpleScalar) it.next()).getAsString();
 			String value = hash.get(key).toString();
-			out.put(key, new String[] {value});
+			out.put(key, value);
 		}
 		
 		return out;

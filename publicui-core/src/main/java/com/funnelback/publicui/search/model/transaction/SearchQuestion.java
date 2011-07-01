@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -72,7 +73,7 @@ public class SearchQuestion {
 	/**
 	 * Additional parameters to pass as-is to PADRE
 	 */
-	@Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
+	@Getter final private Map<String, String> additionalParameters = new HashMap<String, String>();
 	
 	/**
 	 * List of environment variables to repass to PADRE
@@ -126,9 +127,17 @@ public class SearchQuestion {
 	@Getter @Setter private String userId = Log.USERID_NOTHING;
 	
 	/**
-	 * Input parameters map. In a Web servlet context will contain the request parameters map.
+	 * <p>Input parameters map.</p>
+	 * <p>In a Web servlet context will contain the request parameters map, except that
+	 * only the first value of every parameter will be kept.</p>
 	 */
-	@Getter private final Map<String, String[]> inputParameterMap = new HashMap<String, String[]>();
+	@Getter private final Map<String, String> inputParameterMap = new HashMap<String, String>();
+	
+	/**
+	 * <p>Raw input parameters coming from the invocation endpoint.</p>
+	 * <p>In a web servlet context will contain the raw {@link HttpServletRequest#getParameterMap()}</p>
+	 */
+	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
 
 	/**
 	 * Indicates if this is the main search or an extra search.

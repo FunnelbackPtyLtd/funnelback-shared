@@ -68,11 +68,11 @@ public class CliveMappingTests {
 		st.getQuestion().setClive(new String[] {"component1", "component2"});
 
 		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]{"0", "1"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+		Assert.assertEquals("0,1", st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 		
 		st.getQuestion().setClive(new String[] {"component3"});
 		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]{"2"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+		Assert.assertEquals("2", st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 	}
 	
 	@Test
@@ -81,7 +81,7 @@ public class CliveMappingTests {
 		st.getQuestion().setClive(new String[] {"invalid", "2", "component1"});
 
 		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]{"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+		Assert.assertEquals("0", st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 		
 	}
 	

@@ -41,11 +41,11 @@ public class PassThroughEnvironmentVariablesTests {
 		PassThroughEnvironmentVariables processor = new PassThroughEnvironmentVariables();
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("REMOTE_ADDR", new String[] {"1.2.3.4"});
-		st.getQuestion().getInputParameterMap().put("REQUEST_URI", new String[] {"/uri"});
-		st.getQuestion().getInputParameterMap().put("AUTH_TYPE", new String[] {"authtype"});
-		st.getQuestion().getInputParameterMap().put("HTTP_HOST", new String[] {"host.com"});
-		st.getQuestion().getInputParameterMap().put("REMOTE_USER", new String[] {"batman"});
+		st.getQuestion().getInputParameterMap().put("REMOTE_ADDR", "1.2.3.4");
+		st.getQuestion().getInputParameterMap().put("REQUEST_URI", "/uri");
+		st.getQuestion().getInputParameterMap().put("AUTH_TYPE", "authtype");
+		st.getQuestion().getInputParameterMap().put("HTTP_HOST", "host.com");
+		st.getQuestion().getInputParameterMap().put("REMOTE_USER", "batman");
 		
 		processor.processInput(st);
 		

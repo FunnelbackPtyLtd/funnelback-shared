@@ -32,11 +32,11 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
+			Map<String, String> params = searchTransaction.getQuestion().getInputParameterMap();
 			HashMap<String, String> out = new HashMap<String, String>();
 			
 			for (Keys key: Keys.values()) {
-				setIfNotNull(out, key.toString(), MapUtils.getString(params, key.toString(), null));
+				setIfNotNull(out, key.toString(), params.get(key.toString()));
 			}
 			
 			log.debug("Adding environment variables: " + out);

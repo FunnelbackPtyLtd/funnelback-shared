@@ -58,12 +58,12 @@ public class ExploreQueryTests {
 		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 		
 		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
-		st.getQuestion().getInputParameterMap().put("exp", new String[]{"42"});
+		st.getQuestion().getInputParameterMap().put("exp", "42");
 		processor.processInput(st);
 		Assert.assertEquals("42 queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 		
 		st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
-		st.getQuestion().getInputParameterMap().put("exp", new String[]{"bad"});
+		st.getQuestion().getInputParameterMap().put("exp", "bad");
 		processor.processInput(st);
 		Assert.assertEquals("null queries for http://host.com/url.html on collection dummy and another term", st.getQuestion().getQuery());
 	}

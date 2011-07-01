@@ -12,12 +12,12 @@ public class MapKeyFilterTests {
 
 	@Test
 	public void test() {
-		HashMap<String, String[]> params = new HashMap<String, String[]>();
+		HashMap<String, String> params = new HashMap<String, String>();
 		
-		params.put("param1", new String[] {""});
-		params.put("param2", new String[] {""});
-		params.put("meta_X", new String[] {"y"});
-		params.put("meta_X_or", new String[] {"y"});
+		params.put("param1", "");
+		params.put("param2", "");
+		params.put("meta_X", "y");
+		params.put("meta_X_or", "y");
 		
 		MapKeyFilter f = new MapKeyFilter(params);
 		

@@ -34,12 +34,12 @@ public class PassThroughParametersTests {
 	public void test() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put(RequestParameters.QUERY, new String[] {"query"});
-		st.getQuestion().getInputParameterMap().put(RequestParameters.COLLECTION, new String[] {"collection"});
-		st.getQuestion().getInputParameterMap().put("param1", new String[] {"value1"});
-		st.getQuestion().getInputParameterMap().put("param2", new String[]{"value2a", "value2b"});
-		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_CLICKED, new String[] {"abc"});
-		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", new String[] {"def"});
+		st.getQuestion().getInputParameterMap().put(RequestParameters.QUERY, "query");
+		st.getQuestion().getInputParameterMap().put(RequestParameters.COLLECTION, "collection");
+		st.getQuestion().getInputParameterMap().put("param1", "value1");
+		st.getQuestion().getInputParameterMap().put("param2", "value2a,value2b");
+		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_CLICKED, "abc");
+		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", "def");
 		
 		PassThroughParameters processor = new PassThroughParameters();
 		processor.processInput(st);
@@ -58,12 +58,8 @@ public class PassThroughParametersTests {
 		}
 		
 		
-		Assert.assertEquals(1, st.getQuestion().getAdditionalParameters().get("param1").length);
-		Assert.assertEquals("value1", st.getQuestion().getAdditionalParameters().get("param1")[0]);
-		
-		Assert.assertEquals(2, st.getQuestion().getAdditionalParameters().get("param2").length);
-		Assert.assertEquals("value2a", st.getQuestion().getAdditionalParameters().get("param2")[0]);
-		Assert.assertEquals("value2b", st.getQuestion().getAdditionalParameters().get("param2")[1]);
+		Assert.assertEquals("value1", st.getQuestion().getAdditionalParameters().get("param1"));
+		Assert.assertEquals("value2a,value2b", st.getQuestion().getAdditionalParameters().get("param2"));
 
 	}
 

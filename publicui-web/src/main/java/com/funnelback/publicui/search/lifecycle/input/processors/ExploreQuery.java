@@ -37,9 +37,9 @@ public class ExploreQuery implements InputProcessor {
 			Integer nbOfTerms = null;
 			if (searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP) != null) {
 				try {
-					nbOfTerms = Integer.parseInt((searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)[0]));
+					nbOfTerms = Integer.parseInt((searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)));
 				} catch (Throwable t) {
-					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)[0] + "'");
+					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP) + "'");
 				}
 			}
 			

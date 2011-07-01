@@ -31,7 +31,7 @@ public class FacetScope implements InputProcessor {
 						RequestParameters.FACET_SCOPE, null);
 				
 				if (facetScope != null && ! "".equals(facetScope)) {
-					Map<String, String[]> qs = QueryStringUtils.toArrayMap(facetScope, false);
+					Map<String, String> qs = QueryStringUtils.toArrayMap(facetScope, false);
 					searchTransaction.getQuestion().getInputParameterMap().putAll(qs);
 					log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + qs + "'");
 				}

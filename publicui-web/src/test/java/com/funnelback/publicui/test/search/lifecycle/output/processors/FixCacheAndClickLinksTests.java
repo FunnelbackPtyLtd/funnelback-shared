@@ -37,7 +37,7 @@ public class FixCacheAndClickLinksTests {
 		question.setQuery("livelinks");
 		question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
 		question.setProfile("profile-test");
-		question.getInputParameterMap().put("HTTP_REFERER", new String[] {"REFERER"});
+		question.getInputParameterMap().put("HTTP_REFERER", "REFERER");
 		
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));

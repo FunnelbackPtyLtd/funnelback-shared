@@ -81,7 +81,7 @@ public class MetaDates implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			Map<String, String[]> params = searchTransaction.getQuestion().getInputParameterMap();
+			Map<String, String> params = searchTransaction.getQuestion().getInputParameterMap();
 			MapKeyFilter filter = new MapKeyFilter(params);
 			if (filter.filter(PARAMETERS_PATTERN).length > 0) {
 				
@@ -90,7 +90,7 @@ public class MetaDates implements InputProcessor {
 					String date;
 					if (params.get(PREFIX + n.toString()) != null) {
 						// Direct date: meta_d1=20100101
-						date = params.get(PREFIX + n.toString())[0].trim();
+						date = params.get(PREFIX + n.toString()).trim();
 					} else {
 						// Y/M/D split in 3 different parameters
 						
@@ -149,7 +149,7 @@ public class MetaDates implements InputProcessor {
 	 * @param request
 	 * @return
 	 */
-	private String processEventSearch(Map<String, String[]> params) {
+	private String processEventSearch(Map<String, String> params) {
 		String w1 = MapUtils.getString(params, PREFIX + EventSearch.w1, "");
 		String w2 = MapUtils.getString(params, PREFIX + EventSearch.w2, "");
 		

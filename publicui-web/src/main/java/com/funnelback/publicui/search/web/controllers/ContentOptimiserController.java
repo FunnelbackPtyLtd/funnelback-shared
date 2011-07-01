@@ -62,8 +62,8 @@ public class ContentOptimiserController {
 	
 	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
-		question.getInputParameterMap().put(RequestParameters.EXPLAIN, new String[] {"on"});
-		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
+		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
 		
 		return new ModelAndView(contentOptimiserView, searchController.search(request, question).getModel());
 	}

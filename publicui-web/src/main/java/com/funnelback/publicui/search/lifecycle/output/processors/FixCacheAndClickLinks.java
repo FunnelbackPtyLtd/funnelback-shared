@@ -79,8 +79,8 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
 		}
 		
-		if (question.getInputParameterMap().get("HTTP_REFERER") != null && question.getInputParameterMap().get("HTTP_REFERER").length > 0) {
-			out.append("&").append(RequestParameters.Click.SEARCH_REFERER).append("=").append(URLEncoder.encode(question.getInputParameterMap().get("HTTP_REFERER")[0], "UTF-8"));
+		if (question.getInputParameterMap().get("HTTP_REFERER") != null) {
+			out.append("&").append(RequestParameters.Click.SEARCH_REFERER).append("=").append(URLEncoder.encode(question.getInputParameterMap().get("HTTP_REFERER"), "UTF-8"));
 		}
 		
 		return out.toString();

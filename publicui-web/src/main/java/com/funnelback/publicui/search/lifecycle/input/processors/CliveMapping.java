@@ -46,7 +46,7 @@ public class CliveMapping implements InputProcessor {
 							+ "' to '" + StringUtils.join(clives, ",") + "'");
 				}
 	
-				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.CLIVE, clives.toArray(new String[0]));
+				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.CLIVE, StringUtils.join(clives, ","));
 			}
 		}
 

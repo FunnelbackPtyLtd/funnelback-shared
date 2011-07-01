@@ -239,7 +239,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	public void setImportantUrl(UrlComparison comparison,SearchTransaction searchTransaction) {
 		
 		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
-		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL)[0];
+		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL);
 
 		// See if the selected document appears for the long query
 		Result importantResult = null;

@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,7 +40,13 @@ public class SearchQuestionBinder {
 	 * @param question
 	 */
 	public static void bind(HttpServletRequest request, SearchQuestion question) {
-		question.getInputParameterMap().putAll(request.getParameterMap());
+		question.getRawInputParameters().putAll(request.getParameterMap());
+		
+		for (@SuppressWarnings("unchecked")
+		Iterator<String> it = request.getParameterMap().keySet().iterator(); it.hasNext(); ) {
+			String key = it.next();
+			question.getInputParameterMap().put(key, request.getParameter(key));
+		}
 		
 		// Add any HTTP servlet specifics 
 		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
