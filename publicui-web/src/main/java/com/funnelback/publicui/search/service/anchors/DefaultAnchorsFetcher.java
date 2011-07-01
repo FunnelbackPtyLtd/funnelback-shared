@@ -169,9 +169,8 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 
 	public Map<String, AnchorDescription> parseAnchorsToMap(AnchorModel model,
 			ByteArrayOutputStream anchorsOutput) {
-		String[] A = anchorsOutput.toString().split("\n"); // this is the part to change if this gets too slow - sometimes the output can be very large
-		Pattern p = Pattern.compile("^([\\d]+) ([-\\d]+) (.+)$");
-		
+		String[] A = anchorsOutput.toString().split(System.getProperty("line.separator")); // this is the part to change if this gets too slow - sometimes the output can be very large
+		Pattern p = Pattern.compile("([\\d]+) ([-\\d]+) (.+)");
 		Map<String,AnchorDescription> anchors = new HashMap<String,AnchorDescription>();
 		
 		for(String line : A) {

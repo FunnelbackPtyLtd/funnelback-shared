@@ -53,11 +53,11 @@ public class AnchorsController {
 	@Autowired
 	AnchorsFetcher fetcher;
 	
-	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docNum","!anchortext"})
+	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","!anchortext"})
 	public ModelAndView anchors(HttpServletResponse response,
-			@RequestParam(RequestParameters.COLLECTION) Collection collection, String docNum) throws IOException {
+			@RequestParam(RequestParameters.COLLECTION) Collection collection, String docnum) throws IOException {
 		
-		AnchorModel anchors = fetcher.fetchGeneral(Integer.parseInt(docNum),collection);
+		AnchorModel anchors = fetcher.fetchGeneral(Integer.parseInt(docnum),collection);
 		
 		Map<String,Object> model = new HashMap<String,Object>(); 
 		model.put("anchors", anchors);
@@ -67,10 +67,10 @@ public class AnchorsController {
 				+DefaultValues.FOLDER_PUBLICUI+"/anchors/anchors",model);
 	}
 
-	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docNum","anchortext"})
+	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","anchortext"})
 	public ModelAndView anchorsDetail(HttpServletResponse response,
 			@RequestParam(RequestParameters.COLLECTION) Collection collection,
-			String docNum, 
+			String docnum, 
 			String anchortext,
 			String start) throws IOException {
 		
@@ -78,7 +78,7 @@ public class AnchorsController {
 		if(start != null){ 
 			startInt = Integer.parseInt(start);
 		}
-		AnchorModel anchors = fetcher.fetchDetail(Integer.parseInt(docNum),collection,anchortext,startInt);
+		AnchorModel anchors = fetcher.fetchDetail(Integer.parseInt(docnum),collection,anchortext,startInt);
 		
 		Map<String,Object> model = new HashMap<String,Object>(); 
 		model.put("anchors", anchors);
