@@ -2,10 +2,10 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,8 +13,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 
 /**
@@ -25,7 +25,7 @@ public class PadreQueryStringBuilder {
 
 	private static final String DELIMITER = "&";
 	
-	private final SearchTransaction transaction;
+	private final SearchQuestion question;
 
 	/**
 	 * Whether to apply faceted navigation constraints where
@@ -34,14 +34,14 @@ public class PadreQueryStringBuilder {
 	private final boolean withFacetConstraints;
 	
 	public String buildQueryString() {
-		Map<String, String> qs = new HashMap<String, String>();
+		Map<String, String> qs = new TreeMap<String, String>();
 		
 		// Add any additional parameter
-		qs.putAll(transaction.getQuestion().getAdditionalParameters());
+		qs.putAll(question.getAdditionalParameters());
 		
 		// Then craft our owns (Their value will overwrite any existing one in the additional set)
-		qs.put(Parameters.collection.toString(), transaction.getQuestion().getCollection().getId());
-		qs.put(Parameters.profile.toString(), transaction.getQuestion().getProfile());
+		qs.put(Parameters.collection.toString(), question.getCollection().getId());
+		qs.put(Parameters.profile.toString(), question.getProfile());
 
 		qs.put(Parameters.query.toString(), buildQuery());
 		
@@ -51,7 +51,7 @@ public class PadreQueryStringBuilder {
 		}
 		
 		// Remove from query string any parameter that will be passed as an environment variable
-		for (String key : transaction.getQuestion().getEnvironmentVariables().keySet()) {
+		for (String key : question.getEnvironmentVariables().keySet()) {
 			qs.remove(key);
 		}
 		
@@ -69,8 +69,11 @@ public class PadreQueryStringBuilder {
 				// FIXME clive is the only multi-valued parameter in PADRE
 				// Maybe we should change that.
 				String[] clives = entry.getValue().split(",");
-				for (String clive: clives) {
-					out.append(entry.getKey()+"="+URLEncoder.encode(clive, "UTF-8"));
+				for (int i=0; i<clives.length; i++) {
+					out.append(entry.getKey()+"="+URLEncoder.encode(clives[i], "UTF-8"));
+					if (i+1 < clives.length) {
+						out.append(DELIMITER);
+					}
 				}
 			} else {
 				out.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
@@ -91,22 +94,26 @@ public class PadreQueryStringBuilder {
 	 */
 	public String buildQuery() {
 		// Build query
-		StringBuffer query = new StringBuffer(transaction.getQuestion().getQuery());
-		if (transaction.getQuestion().getQueryExpressions().size() > 0) {
-			// Add additional query expressions
-			query.append(" " + StringUtils.join(transaction.getQuestion().getQueryExpressions(), " "));
+		StringBuffer query = new StringBuffer();
+		if (question.getQuery() != null) {
+			query.append(question.getQuery());
 		}
 		
-		if (transaction.getQuestion().getMetaParameters().size() > 0) {
+		if (question.getQueryExpressions().size() > 0) {
+			// Add additional query expressions
+			query.append(" " + StringUtils.join(question.getQueryExpressions(), " "));
+		}
+		
+		if (question.getMetaParameters().size() > 0) {
 			// Add meta_* parameters transformed as query expressions
-			for (String value : transaction.getQuestion().getMetaParameters()) {
+			for (String value : question.getMetaParameters()) {
 				query.append(" " + value);
 			}
 		}
 		
-		if (withFacetConstraints && transaction.getQuestion().getFacetsQueryConstraints().size() > 0) {
+		if (withFacetConstraints && question.getFacetsQueryConstraints().size() > 0) {
 			// Add query constraints for faceted navigation
-			for (String value: transaction.getQuestion().getFacetsQueryConstraints()) {
+			for (String value: question.getFacetsQueryConstraints()) {
 				query.append(" " + value);
 			}
 		}
@@ -120,26 +127,26 @@ public class PadreQueryStringBuilder {
 	 * @return
 	 */
 	private String buildGScope1() {
-		String facetGscopeConstraints = transaction.getQuestion().getFacetsGScopeConstraints();
+		String facetGscopeConstraints = question.getFacetsGScopeConstraints();
 		// Do we have gscope constraints due to faceted navigation ?
 		if ( withFacetConstraints && facetGscopeConstraints!= null && ! "".equals(facetGscopeConstraints)) {
 			
 			// Do we have other gscope constraints (coming from query string)
-			if (transaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
+			if (question.getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
 				// Combine them
-				return transaction.getQuestion().getFacetsGScopeConstraints()
+				return question.getFacetsGScopeConstraints()
 					// Only the [0] value is relevant
 					+ (CharUtils.isAsciiNumeric(facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1))
 							? ","
 							: "")
-					+ transaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1)
+					+ question.getAdditionalParameters().get(RequestParameters.GSCOPE1)
 					+ "+";
 			} else {
-				return transaction.getQuestion().getFacetsGScopeConstraints();
+				return question.getFacetsGScopeConstraints();
 			}
 		} else {
-			if (transaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
-				return transaction.getQuestion().getAdditionalParameters().get(RequestParameters.GSCOPE1);
+			if (question.getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
+				return question.getAdditionalParameters().get(RequestParameters.GSCOPE1);
 			} else {
 				return null;
 			}

@@ -20,7 +20,7 @@ public class FacetedNavPadreForking extends AbstractPadreForking {
 
 	@Override
 	protected String getQueryString(SearchTransaction transaction) {
-		return new PadreQueryStringBuilder(transaction, false).buildQueryString();
+		return new PadreQueryStringBuilder(transaction.getQuestion(), false).buildQueryString();
 	}
 
 	@Override

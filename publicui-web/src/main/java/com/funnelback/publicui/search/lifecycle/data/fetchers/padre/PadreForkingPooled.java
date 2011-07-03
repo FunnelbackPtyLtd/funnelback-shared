@@ -40,7 +40,7 @@ public class PadreForkingPooled implements DataFetcher {
 		try {
 			c  = (PadreConnection) padrePool.borrowObject(searchTransaction.getQuestion().getCollection().getId());
 						
-			padreOutput = c.inputCmd(new PadreQueryStringBuilder(searchTransaction, true).buildQuery());
+			padreOutput = c.inputCmd(new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildQuery());
 			
 			searchTransaction.getResponse().setRawPacket(padreOutput.toString());
 			searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput));

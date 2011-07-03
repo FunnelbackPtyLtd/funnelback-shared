@@ -19,7 +19,7 @@ public class DefaultPadreForking extends AbstractPadreForking {
 
 	@Override
 	protected String getQueryString(SearchTransaction transaction) {
-		return new PadreQueryStringBuilder(transaction, true).buildQueryString();
+		return new PadreQueryStringBuilder(transaction.getQuestion(), true).buildQueryString();
 	}
 
 	@Override
