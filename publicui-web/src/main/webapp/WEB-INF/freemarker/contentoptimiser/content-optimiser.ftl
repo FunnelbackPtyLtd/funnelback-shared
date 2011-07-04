@@ -328,7 +328,7 @@
 	                	</td> 
 	                	<td style="vertical-align: center;">
 	                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.urlComparison.importantOne?? && urlinfo.rank == response.urlComparison.importantOne.rank> background-color: #ffaaaa; </#if> ">	                			
-	                			<a href="?query=${question.inputParameterMap["query"]!?first!?url}&collection=${question.inputParameterMap["collection"]!?first!?url}&profile=${question.inputParameterMap["profile"]!?first!?url}&optimiser_url=${urlinfo.url?url}"> 
+	                			<a href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.inputParameterMap["profile"]?url}&optimiser_url=${urlinfo.url?url}"> 
 		                			${urlinfo.title} 
 	                			</a>
 	                			
