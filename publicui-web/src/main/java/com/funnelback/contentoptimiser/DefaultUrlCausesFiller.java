@@ -33,7 +33,9 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	
 	@Autowired
 	I18n i18n;
-
+	
+	@Autowired
+	TermWeightFetcher termWeightFetcher;
 
 	
 	// TODO replace with an implementation that gets this from padre's XML
@@ -285,6 +287,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 				DocumentContentScoreBreakdown content = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + content.getCount() + " time(s) in the raw document. "
 							+ "It is more common than " + content.getPercentageLess() + "% of other terms in the document. ");
+				Map<String,Integer> termWeights = termWeightFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
 				if(content.getCounts().size() != 0) {
 					RankerOptions rOpt = new RankerOptions(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
 					
@@ -294,6 +297,8 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 						sb.append(e.getValue() + " occurences in metadata field '"+ e.getKey() +"', which has weight " + rOpt.getMetaWeight(e.getKey()) + "; ");
 					}
 					comparison.getMessages().add(sb.toString());
+					
+
 				}
 				
 			}

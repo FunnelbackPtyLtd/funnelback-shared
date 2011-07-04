@@ -48,11 +48,11 @@ public class ContentOptimiser implements OutputProcessor {
 				}else{
 					log.info("setting important url");
 					filler.setImportantUrl(comparison,searchTransaction);
-					log.info("obtaining content");
-					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),searchTransaction.getQuestion().getCollection());
-					
-					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
 					log.info("obtaining anchors");		
+					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),searchTransaction.getQuestion().getCollection());
+					log.info("obtaining content");					
+					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
+	
 				
 					log.info("done");
 				}

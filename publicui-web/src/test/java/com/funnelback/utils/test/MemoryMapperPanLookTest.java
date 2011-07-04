@@ -8,8 +8,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.utils.DefaultPanLookFactory;
 import com.funnelback.utils.PanLook;
-import com.funnelback.utils.PanLookFactory;
 
 
 public class MemoryMapperPanLookTest {
@@ -80,7 +80,7 @@ public class MemoryMapperPanLookTest {
 
 	private void checkPanLook(String[] expected, String prefix) throws IOException {
 		int count = 0;
-		PanLook panlook = new PanLookFactory().getPanLook(testFile,prefix);
+		PanLook panlook = new DefaultPanLookFactory().getPanLook(testFile,prefix);
 		for(String line : panlook) {
 			Assert.assertEquals("pan-look should return the correct line(s) for prefix '" + prefix +"'",expected[count], line);
 			count++;
