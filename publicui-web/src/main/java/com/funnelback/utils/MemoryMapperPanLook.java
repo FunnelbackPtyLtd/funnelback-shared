@@ -1,0 +1,96 @@
+package com.funnelback.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.management.RuntimeErrorException;
+
+
+
+public class MemoryMapperPanLook implements PanLook{
+
+	ArrayList<String> matches = new ArrayList<String>();
+	private final MemoryMappedLineSeeker seeker;
+	private static final long sizeOfLineSep = System.getProperty("line.separator").getBytes().length;
+
+
+    
+	public MemoryMapperPanLook(File sortedFile, String prefix) throws IOException {
+		seeker = new MemoryMappedLineSeeker(sortedFile);
+
+		// Get the first line that starts with prefix
+	    long aLineThatStartsWith = findStartOfLineThatBeginsWith(prefix,0,sortedFile.length()-1);
+	    
+	    long firstLineThatStartsWith = aLineThatStartsWith;
+	    long pos = aLineThatStartsWith;
+	    if(aLineThatStartsWith != -1) {
+	    	// rewind til we find the first line that doesn't start with prefix;
+	    	while(pos != 0) {
+	    		pos = seeker.getStartOfLine(pos - sizeOfLineSep - 1);
+	    		if( ! seeker.getString(pos).startsWith(prefix)) break;
+	    		else firstLineThatStartsWith = pos;
+	    	}
+	    	// now add all lines that start with prefix to the matches array
+	    	long offset = 0;
+	    	String line = seeker.getString(firstLineThatStartsWith + offset);
+	    	do {	
+	    		matches.add(line);
+	    		offset += line.getBytes().length  + sizeOfLineSep;
+	    		line = seeker.getString(firstLineThatStartsWith + offset);
+	    	} while(line.startsWith(prefix));
+	    }
+	}
+	
+	private long findStartOfLineThatBeginsWith(String prefix,long bottom, long top) {
+		long halfWay = bottom + (top -bottom) / 2;
+		long lineStart = seeker.getStartOfLine(halfWay);
+		String thisLine = seeker.getString(lineStart);
+		if(thisLine.startsWith(prefix)) {
+			// we've found a match! 
+			return lineStart;
+		} else if(thisLine.compareTo(prefix) < 0) {
+			// prefix is bigger than this line
+			if(bottom == top) {
+				// binary search has no more divisions to make; we didn't find a match
+				return -1;			
+			}
+			if(lineStart == bottom) {
+				// we didn't find a match, but maybe the division means 
+				// we're not looking at the end of the file.
+				// Search again from the very end of the file
+				return findStartOfLineThatBeginsWith(prefix, top, top);
+			}
+			// keep searching further up the file
+			return findStartOfLineThatBeginsWith(prefix,lineStart,top);
+		} else if(thisLine.compareTo(prefix) > 0) {
+			// prefix is smaller than this line
+			if(bottom == top) {
+				// binary search has no more divisions to make;  we didn't find a match
+				return -1;
+			}
+			// keep searching further down the file
+			return findStartOfLineThatBeginsWith(prefix,bottom,lineStart);
+			
+		} else {
+			// This is just here to allow compilation, because
+			// the compiler can't tell that one of the three if() paths
+			// above must happen.
+			throw new RuntimeException("Binary search failure in MemoryMapperPanLook - should never happen");
+		}
+	}
+
+	
+	@Override
+	public Iterator<String> iterator() {
+		return matches.iterator();
+	}
+	
+}
+
