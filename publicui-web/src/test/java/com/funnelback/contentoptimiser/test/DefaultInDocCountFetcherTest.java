@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.contentoptimiser.DefaultTermWeightFetcher;
+import com.funnelback.contentoptimiser.DefaultInDocCountFetcher;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
@@ -27,7 +27,7 @@ import com.funnelback.utils.PanLookFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class DefaultTermWeightFetcherTest {
+public class DefaultInDocCountFetcherTest {
 
 
 	@Autowired
@@ -35,7 +35,7 @@ public class DefaultTermWeightFetcherTest {
 	
 	@Test
 	public void testSeriousError() throws FileNotFoundException, EnvironmentVariableException {
-		DefaultTermWeightFetcher fetcher = new DefaultTermWeightFetcher();
+		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
 		UrlComparison comparison = new UrlComparison();
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
@@ -48,7 +48,7 @@ public class DefaultTermWeightFetcherTest {
 	
 	@Test
 	public void testParseError() throws FileNotFoundException, EnvironmentVariableException {
-		DefaultTermWeightFetcher fetcher = new DefaultTermWeightFetcher();
+		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
 		UrlComparison comparison = new UrlComparison();
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
@@ -65,7 +65,7 @@ public class DefaultTermWeightFetcherTest {
 
 	@Test
 	public void testFetcher() throws FileNotFoundException, EnvironmentVariableException {
-		DefaultTermWeightFetcher fetcher = new DefaultTermWeightFetcher();
+		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
 		
 		UrlComparison comparison = new UrlComparison();
 		

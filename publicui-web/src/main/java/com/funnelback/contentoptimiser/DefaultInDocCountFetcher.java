@@ -20,7 +20,7 @@ import com.funnelback.utils.PanLookFactory;
 
 @Log
 @Component
-public class DefaultTermWeightFetcher implements TermWeightFetcher {
+public class DefaultInDocCountFetcher implements InDocCountFetcher {
 
 	@Autowired @Setter
 	public PanLookFactory panLookFactory;
