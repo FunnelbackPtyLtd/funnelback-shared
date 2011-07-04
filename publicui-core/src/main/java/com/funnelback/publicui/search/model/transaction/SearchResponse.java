@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @ToString
@@ -43,7 +43,7 @@ public class SearchResponse {
 	/**
 	 * URL comparison data, for content optimiser.
 	 */
-	@Getter @Setter private UrlComparison urlComparison;
+	@Getter @Setter private ContentOptimiserModel urlComparison;
 	
 	public boolean hasResultPacket() { return resultPacket != null; }
 	

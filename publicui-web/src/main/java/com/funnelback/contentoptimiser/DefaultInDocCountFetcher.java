@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.utils.PanLook;
 import com.funnelback.utils.PanLookFactory;
 
@@ -29,7 +29,7 @@ public class DefaultInDocCountFetcher implements InDocCountFetcher {
 	I18n i18n;
 	
 	@Override
-	public Map<String,Integer> getTermWeights(UrlComparison comparison, String queryWord, Collection collection) {
+	public Map<String,Integer> getTermWeights(ContentOptimiserModel comparison, String queryWord, Collection collection) {
 		Map<String,Integer> termWeights = new HashMap<String,Integer>();
 		
 		try {

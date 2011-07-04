@@ -116,9 +116,9 @@
         <div class="summary">
         	<#if (response.urlComparison.urls?size > 0)>
         		<p>Showing results 1-${response.urlComparison.urls?size} of ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;.
-        						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].url}">${response.urlComparison.urls[0].title}</a>.
+        						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}">${response.urlComparison.urls[0].title}</a>.
 	        	<#if (response.urlComparison.importantOne??)>
-					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.url}">${response.urlComparison.importantOne.title}</a>. 
+					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.liveUrl}">${response.urlComparison.importantOne.title}</a>. 
 					 You can view it in the cache <a href="${response.urlComparison.importantOne.cacheUrl}">here</a></p>
 	        	</#if> 
 	        		<p>Here is a breakdown of the ranking for the top ${response.urlComparison.urls?size} documents:</p>
@@ -156,7 +156,7 @@
 	        	<#list response.urlComparison.hintsByWin as hint>
         				var ${hint.name} = new Array();
         				featureNames.push('${hint.name}');
-						<#if response.urlComparison.importantOne?? > var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank]},1]]; </#if>
+						<#if response.urlComparison.importantOne?? > var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank?string]},1]]; </#if>
 		        		var weight_${hint.name} = [[${response.urlComparison.weights[hint.name]},1]]
        	    	</#list>
 	        	
@@ -164,7 +164,7 @@
 
         		<#list response.urlComparison.urls as urlinfo>
         			<#list response.urlComparison.hintsByWin as hint>
-       					${hint.name}.push([${hint.scores[urlinfo.rank]},${response.urlComparison.urls?size?c} + 1 - ${urlinfo.rank}]);
+       					${hint.name}.push([${hint.scores[urlinfo.rank?string]},${response.urlComparison.urls?size?c} + 1 - ${urlinfo.rank}]);
         			</#list>
         		</#list>
       	
@@ -279,9 +279,9 @@
 	        		<#if response.urlComparison.importantOne??> 
 		        		var line_${hint.name} = [
 		        		  <#list 0..response.urlComparison.urls?size as x>
-		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank]}/${response.urlComparison.weights[hint.name]}*100],
+		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100],
 		        		  </#list>
-		        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank]}/${response.urlComparison.weights[hint.name]}*100]
+		        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
 		        		];
 		        	</#if>
 	        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},
@@ -328,7 +328,7 @@
 	                	</td> 
 	                	<td style="vertical-align: center;">
 	                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.urlComparison.importantOne?? && urlinfo.rank == response.urlComparison.importantOne.rank> background-color: #ffaaaa; </#if> ">	                			
-	                			<a href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.inputParameterMap["profile"]?url}&optimiser_url=${urlinfo.url?url}"> 
+	                			<a href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.inputParameterMap["profile"]?url}&optimiser_url=${urlinfo.liveUrl?url}"> 
 		                			${urlinfo.title} 
 	                			</a>
 	                			
@@ -352,7 +352,7 @@
 		                	</td> 
 		                	<td style="vertical-align: center;">
 		                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px; padding-top: 20px;">
-		                			<a href="${response.urlComparison.importantOne.url}"> ${response.urlComparison.importantOne.title} </a>
+		                			<a href="${response.urlComparison.importantOne.liveUrl}"> ${response.urlComparison.importantOne.title} </a>
 		                		</div>
 		                	</td> 
 		                	<td><div class="jqPlot" id="barplot-important" style="height:60px; width:435px;"></div></td>

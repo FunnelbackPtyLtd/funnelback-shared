@@ -27,7 +27,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
@@ -82,7 +82,7 @@ public class DefaultDocFromCache implements DocFromCache {
 	}
 	
 	@Override
-	public String getDocument(UrlComparison comparison, String cacheUrl,Config config) {
+	public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config) {
 		// Create a temp directory to store the cache copy and the index
 		File tempDir = Files.createTempDir();
 		log.info("Created tempdir");

@@ -14,7 +14,7 @@ import com.funnelback.contentoptimiser.DefaultDocFromCache;
 import com.funnelback.contentoptimiser.DocFromCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 
 
 public class DefaultDocFromCacheTest {
@@ -79,7 +79,7 @@ public class DefaultDocFromCacheTest {
 					.setValue(Keys.COLLECTION_ROOT,
 							new File(searchHome, "data" + File.separator + "data-repository").toString())));
 		
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		
 		
 		dFromC.getDocument(comparison, "cache-url", qs.getCollection().getConfiguration());

@@ -1,18 +1,14 @@
 package com.funnelback.contentoptimiser.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultHintFactory;
@@ -26,8 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingScore;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class DefaultUrlCauseFillerTest {
@@ -38,7 +33,7 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		ResultPacket selectedRp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/content-optimiser-single-document.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		HintFactory hf = new DefaultHintFactory();
 
 		SearchResponse response = new SearchResponse();
@@ -82,7 +77,7 @@ public class DefaultUrlCauseFillerTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		HintFactory hf = new DefaultHintFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
@@ -108,7 +103,7 @@ public class DefaultUrlCauseFillerTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		HintFactory hf = new DefaultHintFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
@@ -137,7 +132,7 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		HintFactory hf = new DefaultHintFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);

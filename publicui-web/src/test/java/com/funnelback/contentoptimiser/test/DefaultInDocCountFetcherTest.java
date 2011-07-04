@@ -20,7 +20,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.contentoptimiser.DefaultInDocCountFetcher;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.utils.PanLook;
 import com.funnelback.utils.PanLookFactory;
 
@@ -36,7 +36,7 @@ public class DefaultInDocCountFetcherTest {
 	@Test
 	public void testSeriousError() throws FileNotFoundException, EnvironmentVariableException {
 		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
 		fetcher.setPanLookFactory(getMockExplodingPanLookFactory());
@@ -49,7 +49,7 @@ public class DefaultInDocCountFetcherTest {
 	@Test
 	public void testParseError() throws FileNotFoundException, EnvironmentVariableException {
 		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
 		fetcher.setPanLookFactory(getMockParsingErrorPanLookFactory());
@@ -67,7 +67,7 @@ public class DefaultInDocCountFetcherTest {
 	public void testFetcher() throws FileNotFoundException, EnvironmentVariableException {
 		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
 		
-		UrlComparison comparison = new UrlComparison();
+		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy")); 
 		fetcher.setPanLookFactory(getMockPanLookFactory());

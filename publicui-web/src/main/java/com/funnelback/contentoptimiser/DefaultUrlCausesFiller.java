@@ -20,10 +20,9 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.HintCollection;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
 
 @Component
 public class DefaultUrlCausesFiller implements UrlCausesFiller {
@@ -169,7 +168,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	
 	// Reads the weights and top 10 results from the result packet. 
 	@Override
-	public void consumeResultPacket(UrlComparison comparison, ResultPacket rp,HintFactory hintFactory) {
+	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp,HintFactory hintFactory) {
 		
 		// Add weights, create hint objects
 		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
@@ -187,8 +186,6 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
 			if(comparison.getUrls().size() >= 10) break;
-			
-			UrlInfoAndScore info = new UrlInfoAndScore(result.getLiveUrl(),result.getCacheUrl(),result.getTitle(),""+ result.getRank());
 	
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
@@ -196,14 +193,14 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 				Hint hint = hintsByName.get(feature.getKey());
 				hint.rememberScore(percentage,"" +result.getRank());
 			}
-			comparison.getUrls().add(info);
+			comparison.getUrls().add(result);
 		}
 	}
 	
 
 	// Called after an importantUrl has been selected. Groups hints together into a set of features
 	@Override
-	public void fillHintCollections(UrlComparison comparison) {
+	public void fillHintCollections(ContentOptimiserModel comparison) {
 		// First remove uninteresting features
 		List<Hint> remove = new ArrayList<Hint>();		
 		for (Hint hint : comparison.getHintsByWin()) {
@@ -230,7 +227,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	
 	
 	@Override
-	public void setImportantUrl(UrlComparison comparison,SearchTransaction searchTransaction) {
+	public void setImportantUrl(ContentOptimiserModel comparison,SearchTransaction searchTransaction) {
 		
 		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
 		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL);
@@ -248,16 +245,15 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		}
 		
 		// First see if the model already contains the selected document (it will if it's in the top 10)
-		for (UrlInfoAndScore url : comparison.getUrls()) {
-			if(url.getUrl().equals(importantResult.getDisplayUrl())) {
+		for (Result url : comparison.getUrls()) {
+			if(url.getDisplayUrl().equals(importantResult.getDisplayUrl())) {
 				comparison.setImportantOne(url);
 			}
 		}
 		
 		// Otherwise we must create it ourselves
 		if(comparison.getImportantOne() == null) {
-			UrlInfoAndScore url = new UrlInfoAndScore(importantResult.getLiveUrl(),importantResult.getCacheUrl(),importantResult.getTitle(), ""+importantResult.getRank());
-			comparison.setImportantOne(url);
+			comparison.setImportantOne(importantResult);
 			for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
 				Hint hint = comparison.getHintsByName().get(feature.getKey());
@@ -276,7 +272,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	}
 
 	@Override
-	public void obtainContentBreakdown(UrlComparison comparison,
+	public void obtainContentBreakdown(ContentOptimiserModel comparison,
 			SearchTransaction searchTransaction, ResultPacket importantRp,AnchorModel anchors) {
 		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
 		if(documentContent != null) {

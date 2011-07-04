@@ -5,14 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.funnelback.publicui.search.model.padre.Result;
+
 import lombok.Getter;
 import lombok.Setter;
 
-public class UrlComparison {
+public class ContentOptimiserModel {
 	
-	@Getter private final List<UrlInfoAndScore> urls = new ArrayList<UrlInfoAndScore>();
+	@Getter private final List<Result> urls = new ArrayList<Result>();
 	
-	@Getter @Setter private UrlInfoAndScore importantOne;
+	@Getter @Setter private Result importantOne;
 	@Getter private final List<String> messages = new ArrayList<String>();
 	
 	@Getter	private final List<Hint> hintsByWin = new ArrayList<Hint>();
