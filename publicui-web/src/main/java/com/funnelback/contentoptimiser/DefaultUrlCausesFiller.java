@@ -290,7 +290,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			
 			for(String queryWord : queryWords){
-				DocumentContentScoreBreakdown content = dwp.explainQueryTerm(queryWord);
+				DocumentContentScoreBreakdown content = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + content.getCount() + " time(s) in the raw document. "
 							+ "It is more common than " + content.getPercentageLess() + "% of other terms in the document. ");
 				if(content.getCounts().size() != 0) {
@@ -303,6 +303,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 					}
 					comparison.getMessages().add(sb.toString());
 				}
+				
 			}
 			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords(importantRp.getStopWords(),"_")));
 		} else {

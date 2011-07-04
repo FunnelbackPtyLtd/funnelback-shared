@@ -1,32 +1,24 @@
 package com.funnelback.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
 
 
 
 public class MemoryMapperPanLook implements PanLook{
 
 	ArrayList<String> matches = new ArrayList<String>();
-	private final MemoryMappedLineSeeker seeker;
+	private final PanLookSeeker seeker;
 	private static final long sizeOfLineSep = System.getProperty("line.separator").getBytes().length;
 
 
-    
-	public MemoryMapperPanLook(File sortedFile, String prefix) throws IOException {
-		seeker = new MemoryMappedLineSeeker(sortedFile);
+	public MemoryMapperPanLook(PanLookSeeker seeker, String prefix) throws IOException {
+		this.seeker = seeker;
 
 		// Get the first line that starts with prefix
-	    long aLineThatStartsWith = findStartOfLineThatBeginsWith(prefix,0,sortedFile.length()-1);
+	    long aLineThatStartsWith = findStartOfLineThatBeginsWith(prefix,0,seeker.length()-1);
 	    
 	    long firstLineThatStartsWith = aLineThatStartsWith;
 	    long pos = aLineThatStartsWith;
@@ -44,7 +36,7 @@ public class MemoryMapperPanLook implements PanLook{
 	    		matches.add(line);
 	    		offset += line.getBytes().length  + sizeOfLineSep;
 	    		line = seeker.getString(firstLineThatStartsWith + offset);
-	    	} while(line.startsWith(prefix));
+	    	} while(line.startsWith(prefix) || line.startsWith(prefix.replaceAll(" ","_")));
 	    }
 	}
 	

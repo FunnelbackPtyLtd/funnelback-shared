@@ -16,6 +16,7 @@ import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
 import com.funnelback.contentoptimiser.DocumentWordsProcessor;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.collection.Collection;
 
 
 public class DocumentWordsProcessorTest {
@@ -48,7 +49,7 @@ public class DocumentWordsProcessorTest {
 		
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors);
 		
-		DocumentContentScoreBreakdown content = dwp.explainQueryTerm("five");
+		DocumentContentScoreBreakdown content = dwp.explainQueryTerm("five",new Collection("test1", null));
 		Assert.assertEquals(content.getCount(), 2);
 		Assert.assertEquals(1, content.getCount("t").intValue());
 		Assert.assertEquals(1, content.getCount("h").intValue());

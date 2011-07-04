@@ -1,5 +1,7 @@
 package com.funnelback.contentoptimiser;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,8 +13,12 @@ import java.util.Map.Entry;
 
 import lombok.extern.apachecommons.Log;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.utils.PanLook;
+import com.funnelback.utils.PanLookFactory;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 @Log
@@ -22,8 +28,9 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	private final Multiset<Entry<String,Integer>> termsSortedByFrequency;
 	private final int totalWordCount;
 	
+	private final PanLookFactory panLookFactory = new PanLookFactory();
+	
 	public DefaultDocumentWordsProcessor(String wordsInDocument, AnchorModel anchors) {
-		log.info(wordsInDocument);
 		countByTerms = new HashMap<String,Map<String,Integer>>(); 
 		int count = 0;
 		String[] words = wordsInDocument.split("\\s+");
@@ -98,18 +105,18 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	}
 
 	@Override
-	public DocumentContentScoreBreakdown explainQueryTerm(String query) {
+	public DocumentContentScoreBreakdown explainQueryTerm(String queryTerm, Collection collection) {
 		Map<String, Integer> plainDictionary = countByTerms.get("_");
 		if(plainDictionary == null) {
 			// the document doesn't contain any body words!
-			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(query));
+			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(queryTerm));
 		}
 		
-		Integer count = plainDictionary.get(query);
+		Integer count = plainDictionary.get(queryTerm);
 		
 		if(count == null) {
 			// the document doesn't contain this word in the body text!
-			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(query));
+			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(queryTerm));
 		}
 		
 		int countTermsLess = 0;
@@ -118,7 +125,21 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 		}
 		int percentageLess = Math.round((float) countTermsLess/(float)(termsSortedByFrequency.size()-1) *(float)100);
 		
-		Map<String, Integer> m = buildSingleTermMap(query);
+		Map<String, Integer> m = buildSingleTermMap(queryTerm);
+		
+		PanLook searchLexForTerm = null;
+		
+		/*try {
+			log.info("Opening lex file");
+			File lexFile = new File(collection.getConfiguration().getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX +".lex");
+		
+			searchLexForTerm = panLookFactory.getPanLookForLex(lexFile,queryTerm);
+			for(String line : searchLexForTerm) {
+				log.info("Obtained " + line);
+			}
+		} catch (IOException e1) {
+			log.error("IOException when reading index.lex",e1);
+		}*/	
 		
 		return new DocumentContentScoreBreakdown(count,percentageLess,m);
 	}

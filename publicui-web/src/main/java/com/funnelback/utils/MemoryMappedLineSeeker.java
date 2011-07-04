@@ -2,14 +2,13 @@ package com.funnelback.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemoryMappedLineSeeker {
+public class MemoryMappedLineSeeker implements PanLookSeeker {
 	private static final long PAGE_SIZE = Integer.MAX_VALUE;
 	private static final byte finalLineSep = System.getProperty("line.separator").getBytes()[ System.getProperty("line.separator").getBytes().length -1];
 	private static final byte startLineSep = System.getProperty("line.separator").getBytes()[0];
@@ -38,8 +37,9 @@ public class MemoryMappedLineSeeker {
 	 * @param position a position anywhere in the file
 	 * @return the position that that line starts with
 	 */
+	@Override
 	public long getStartOfLine(long position) {
-		char candidate = getChar(position);
+		byte candidate = getChar(position);
 		while(position != 0) {
 			position--;
 			candidate = getChar(position);
@@ -49,25 +49,35 @@ public class MemoryMappedLineSeeker {
 		return 0;
 	}
 
-    private char getChar(long bytePosition) {
+    private byte getChar(long bytePosition) {
         int page  = (int) (bytePosition / PAGE_SIZE);
         int index = (int) (bytePosition % PAGE_SIZE);
-        return (char) buffers.get(page).get(index);
+        return buffers.get(page).get(index);
     }
 
-
+    @Override
 	public String getString(long position) {
-		StringBuilder sb = new StringBuilder();
+		long start = position;
 		if(position < fileSize) {
-			char c = getChar(position);
-			
+			byte c = getChar(position);			
 			while(c != startLineSep) {
-				sb.append(c);
-				if(position == fileSize-1) break;
+				if(position == fileSize -1) {
+					position++;
+					break;
+				}
 				c = getChar(++position);
 			}
 		}
-		return sb.toString();
+		byte[] str = new byte[(int) (position - start)];
+		for(int i = 0; i < position - start;i++) {
+			str[i] = getChar(start+i);
+		}
+		return new String(str);
+	}
+
+	@Override
+	public long length() {
+		return fileSize;
 	}
 	   
 
