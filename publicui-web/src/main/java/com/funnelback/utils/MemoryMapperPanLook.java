@@ -57,26 +57,20 @@ public class MemoryMapperPanLook implements PanLook{
 			return lineStart;
 		} else if(thisLine.compareTo(prefix) < 0) {
 			// prefix is bigger than this line
-			if(bottom == top) {
+			if(halfWay == top || halfWay == bottom) {
 				// binary search has no more divisions to make; we didn't find a match
 				return -1;			
 			}
-			if(lineStart == bottom) {
-				// we didn't find a match, but maybe the division means 
-				// we're not looking at the end of the file.
-				// Search again from the very end of the file
-				return findStartOfLineThatBeginsWith(prefix, top, top);
-			}
 			// keep searching further up the file
-			return findStartOfLineThatBeginsWith(prefix,lineStart,top);
+			return findStartOfLineThatBeginsWith(prefix,halfWay,top);
 		} else if(thisLine.compareTo(prefix) > 0) {
 			// prefix is smaller than this line
-			if(bottom == top) {
+			if(halfWay == top || halfWay == bottom)  {
 				// binary search has no more divisions to make;  we didn't find a match
 				return -1;
 			}
 			// keep searching further down the file
-			return findStartOfLineThatBeginsWith(prefix,bottom,lineStart);
+			return findStartOfLineThatBeginsWith(prefix,bottom,halfWay);
 			
 		} else {
 			// This is just here to allow compilation, because
