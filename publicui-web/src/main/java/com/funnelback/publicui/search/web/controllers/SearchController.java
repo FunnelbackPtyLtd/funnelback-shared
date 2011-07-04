@@ -128,7 +128,9 @@ public class SearchController {
 			out.put(ModelAttributes.question.toString(), st.getQuestion());
 			out.put(ModelAttributes.response.toString(), st.getResponse());
 			out.put(ModelAttributes.error.toString(), st.getError());
-			out.put(ModelAttributes.extra.toString(), st.getExtraSearches());
+			if (st.getExtraSearches().size() > 0) {
+				out.put(ModelAttributes.extra.toString(), st.getExtraSearches());
+			}
 			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
 			break;
 		case xml:
