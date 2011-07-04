@@ -1,19 +1,14 @@
 package com.funnelback.contentoptimiser;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.Map.Entry;
-
-import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,10 +24,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.HintCollection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlComparison;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.UrlInfoAndScore;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.TreeMultiset;
 
-@Log
 @Component
 public class DefaultUrlCausesFiller implements UrlCausesFiller {
 
