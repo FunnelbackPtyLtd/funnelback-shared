@@ -1,13 +1,13 @@
 package com.funnelback.contentoptimiser;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 
-public class HintMaxPossibleMultiWordOnly extends Hint {
+public class RankingFeatureMaxPossibleMultiWordOnly extends RankingFeature {
 
 	final boolean maybeMultiword;
 	
-	public HintMaxPossibleMultiWordOnly(String name,String category,ResultPacket rp) {
+	public RankingFeatureMaxPossibleMultiWordOnly(String name,String category,ResultPacket rp) {
 		super(name,category);
 		// IF there are no spaces in the query, it will be a single word query
 		maybeMultiword = rp.getQueryCleaned().indexOf(' ') != -1;

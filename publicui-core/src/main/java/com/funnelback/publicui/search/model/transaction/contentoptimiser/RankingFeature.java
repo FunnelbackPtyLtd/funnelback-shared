@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class Hint implements Comparable<Hint> {
+public abstract class RankingFeature implements Comparable<RankingFeature> {
 
 	@Getter private final String name;	
 	@Getter private final String category;
@@ -37,7 +37,7 @@ public abstract class Hint implements Comparable<Hint> {
 	}
 	
 	@Override
-	public int compareTo(Hint that) {
+	public int compareTo(RankingFeature that) {
 		if(this.win < that.getWin()) return 1;
 		if(that.getWin() < this.win) return -1;
 		return 0;

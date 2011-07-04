@@ -5,7 +5,7 @@ import lombok.extern.apachecommons.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.contentoptimiser.HintFactory;
+import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -30,7 +30,7 @@ public class ContentOptimiser implements OutputProcessor {
 	AnchorsFetcher fetcher;
 	
 	@Autowired
-	private HintFactory hintFactory;
+	private RankingFeatureFactory hintFactory;
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {

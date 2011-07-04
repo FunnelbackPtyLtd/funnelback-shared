@@ -21,8 +21,8 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.Hint;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.HintCollection;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
 
 @Component
 public class DefaultUrlCausesFiller implements UrlCausesFiller {
@@ -168,16 +168,16 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	
 	// Reads the weights and top 10 results from the result packet. 
 	@Override
-	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp,HintFactory hintFactory) {
+	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp,RankingFeatureFactory hintFactory) {
 		
 		// Add weights, create hint objects
 		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
 			comparison.getWeights().put(weightEntry.getKey(), weightEntry.getValue() * 100);
 		}
 
-		Map<String, Hint> hintsByName = comparison.getHintsByName();
+		Map<String, RankingFeature> hintsByName = comparison.getHintsByName();
 		for (Entry<String,String> nameAndType : rp.getExplainTypes().entrySet()) {
-			Hint h = hintFactory.create(nameAndType.getKey(),nameAndType.getValue(),getCategory(nameAndType.getKey()),rp);
+			RankingFeature h = hintFactory.create(nameAndType.getKey(),nameAndType.getValue(),getCategory(nameAndType.getKey()),rp);
 			hintsByName.put(nameAndType.getKey(),h);
 			comparison.getHintsByWin().add(h);			
 		}
@@ -190,7 +190,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
 				//causes.add(new RankingScore(feature.getKey(), percentage));
-				Hint hint = hintsByName.get(feature.getKey());
+				RankingFeature hint = hintsByName.get(feature.getKey());
 				hint.rememberScore(percentage,"" +result.getRank());
 			}
 			comparison.getUrls().add(result);
@@ -202,8 +202,8 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 	@Override
 	public void fillHintCollections(ContentOptimiserModel comparison) {
 		// First remove uninteresting features
-		List<Hint> remove = new ArrayList<Hint>();		
-		for (Hint hint : comparison.getHintsByWin()) {
+		List<RankingFeature> remove = new ArrayList<RankingFeature>();		
+		for (RankingFeature hint : comparison.getHintsByWin()) {
 			if(!hint.isInteresting()) {
 				remove.add(hint);
 				comparison.getHintsByName().remove(hint.getName());
@@ -211,9 +211,9 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		}
 		comparison.getHintsByWin().removeAll(remove);
 		
-		for (Hint hint : comparison.getHintsByWin()) {
+		for (RankingFeature hint : comparison.getHintsByWin()) {
 			if(! comparison.getHintCollectionsByName().containsKey(hint.getCategory())) {
-				HintCollection hc = new HintCollection(hint.getCategory());
+				RankingFeatureCategory hc = new RankingFeatureCategory(hint.getCategory());
 				comparison.getHintCollections().add(hc);
 				comparison.getHintCollectionsByName().put(hint.getCategory(), hc);
 			}
@@ -256,7 +256,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 			comparison.setImportantOne(importantResult);
 			for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
-				Hint hint = comparison.getHintsByName().get(feature.getKey());
+				RankingFeature hint = comparison.getHintsByName().get(feature.getKey());
 				hint.rememberScore(percentage, "" +importantResult.getRank());
 			}
 		}
@@ -264,7 +264,7 @@ public class DefaultUrlCausesFiller implements UrlCausesFiller {
 		// now calculate the wins for each feature;
 		for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 			float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
-			Hint hint = comparison.getHintsByName().get(feature.getKey());
+			RankingFeature hint = comparison.getHintsByName().get(feature.getKey());
 			hint.caculateWin(percentage, allRp.getCoolerWeights().get(feature.getKey())*100);
 		}
 		

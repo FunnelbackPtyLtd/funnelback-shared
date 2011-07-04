@@ -11,10 +11,10 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import com.funnelback.contentoptimiser.DefaultHintFactory;
+import com.funnelback.contentoptimiser.DefaultRankingFeatureFactory;
 import com.funnelback.contentoptimiser.DefaultUrlCausesFiller;
-import com.funnelback.contentoptimiser.HintFactory;
-import com.funnelback.contentoptimiser.HintMaxOther;
+import com.funnelback.contentoptimiser.RankingFeatureFactory;
+import com.funnelback.contentoptimiser.RankingFeatureMaxOther;
 import com.funnelback.contentoptimiser.UrlCausesFiller;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -34,7 +34,7 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket selectedRp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/content-optimiser-single-document.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
-		HintFactory hf = new DefaultHintFactory();
+		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
@@ -78,7 +78,7 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
-		HintFactory hf = new DefaultHintFactory();
+		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
 		assertNull(comparison.getImportantOne());
@@ -104,7 +104,7 @@ public class DefaultUrlCauseFillerTest {
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
-		HintFactory hf = new DefaultHintFactory();
+		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
 		assertNull(comparison.getImportantOne());
@@ -133,7 +133,7 @@ public class DefaultUrlCauseFillerTest {
 
 		UrlCausesFiller f = new DefaultUrlCausesFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
-		HintFactory hf = new DefaultHintFactory();
+		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
 
@@ -141,9 +141,9 @@ public class DefaultUrlCauseFillerTest {
 		assertEquals(0,comparison.getHintsByName().get("offlink").getScores().get("1"),0.0001);
 		assertEquals(23.04,comparison.getHintsByName().get("urllen").getScores().get("1"),0.0001);
 		
-		assertTrue(comparison.getHintsByName().get("content") instanceof HintMaxOther);
-		assertTrue(comparison.getHintsByName().get("offlink") instanceof HintMaxOther);
-		assertTrue(comparison.getHintsByName().get("urllen") instanceof HintMaxOther);
+		assertTrue(comparison.getHintsByName().get("content") instanceof RankingFeatureMaxOther);
+		assertTrue(comparison.getHintsByName().get("offlink") instanceof RankingFeatureMaxOther);
+		assertTrue(comparison.getHintsByName().get("urllen") instanceof RankingFeatureMaxOther);
 		
 		assertEquals(31.406,comparison.getHintsByName().get("content").getScores().get("2"),0.0001);
 		assertEquals(0,comparison.getHintsByName().get("offlink").getScores().get("2"),0.0001);

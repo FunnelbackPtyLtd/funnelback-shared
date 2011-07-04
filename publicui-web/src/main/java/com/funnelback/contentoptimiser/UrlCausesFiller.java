@@ -9,7 +9,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 public interface UrlCausesFiller {
 	public void fillHintCollections(ContentOptimiserModel comparison);
 
-	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp, HintFactory hintFactory);
+	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp, RankingFeatureFactory hintFactory);
 	void setImportantUrl(ContentOptimiserModel comparison, SearchTransaction searchTransaction);
 
 	void obtainContentBreakdown(ContentOptimiserModel comparison,

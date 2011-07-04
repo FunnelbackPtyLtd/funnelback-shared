@@ -17,11 +17,11 @@ public class ContentOptimiserModel {
 	@Getter @Setter private Result importantOne;
 	@Getter private final List<String> messages = new ArrayList<String>();
 	
-	@Getter	private final List<Hint> hintsByWin = new ArrayList<Hint>();
-	@Getter	private final Map<String,Hint> hintsByName = new HashMap<String,Hint>();
+	@Getter	private final List<RankingFeature> hintsByWin = new ArrayList<RankingFeature>();
+	@Getter	private final Map<String,RankingFeature> hintsByName = new HashMap<String,RankingFeature>();
 	
 	@Getter private final Map<String, Float> weights = new HashMap<String,Float>();
 	
-	@Getter private final List<HintCollection> hintCollections = new ArrayList<HintCollection>();
-	@Getter private final Map<String,HintCollection> hintCollectionsByName = new HashMap<String,HintCollection>();
+	@Getter private final List<RankingFeatureCategory> hintCollections = new ArrayList<RankingFeatureCategory>();
+	@Getter private final Map<String,RankingFeatureCategory> hintCollectionsByName = new HashMap<String,RankingFeatureCategory>();
 }

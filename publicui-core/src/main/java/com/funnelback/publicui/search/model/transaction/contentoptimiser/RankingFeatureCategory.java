@@ -7,20 +7,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class HintCollection implements Comparable<HintCollection> {
+public class RankingFeatureCategory implements Comparable<RankingFeatureCategory> {
 	@Getter private final String name;
-	@Getter private final List<Hint> hints = new ArrayList<Hint>();
+	@Getter private final List<RankingFeature> hints = new ArrayList<RankingFeature>();
 	
 	public float getWin() {
 		float total = 0;
-		for (Hint hint : hints) {
+		for (RankingFeature hint : hints) {
 			total += hint.getWin();
 		}
 		return total;
 	}
 	
 	@Override
-	public int compareTo(HintCollection that) {
+	public int compareTo(RankingFeatureCategory that) {
 		if(this.getWin() < that.getWin()) return 1;
 		if(that.getWin() < this.getWin()) return -1;
 		return 0;
