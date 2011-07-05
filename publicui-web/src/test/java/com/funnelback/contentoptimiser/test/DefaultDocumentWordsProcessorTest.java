@@ -43,7 +43,7 @@ public class DefaultDocumentWordsProcessorTest {
 		AnchorDescription anchorDescription3 = new AnchorDescription("[K]anchor five");
 		anchorDescription3.linkTo("-1");
 		
-		anchors.getAnchors().add(anchorDescription);
+		anchors.getAnchors().add(anchorDescription);	
 		anchors.getAnchors().add(anchorDescription2);
 		anchors.getAnchors().add(anchorDescription3);
 		

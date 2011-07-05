@@ -6,14 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.RankingFeatureMaxOther;
@@ -23,10 +17,9 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.Sta
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.xml.XmlParsingException;
-import com.thoughtworks.xstream.XStream;
 
 
-public class HintTest {
+public class RankingFeatureTest {
 
 	@Test
 	public void testHintMaxOther() {
