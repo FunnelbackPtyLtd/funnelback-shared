@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.fetchers.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;

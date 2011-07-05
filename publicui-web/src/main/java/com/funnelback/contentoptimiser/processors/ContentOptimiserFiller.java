@@ -1,12 +1,12 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.processors;
 
+import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 
-public interface UrlCausesFiller {
+public interface ContentOptimiserFiller {
 	public void fillHintCollections(ContentOptimiserModel comparison);
 
 	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp, RankingFeatureFactory hintFactory);

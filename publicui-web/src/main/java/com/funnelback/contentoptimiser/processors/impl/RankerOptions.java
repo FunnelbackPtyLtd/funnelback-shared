@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.processors.impl;
 
 import java.util.HashMap;
 import java.util.Map;

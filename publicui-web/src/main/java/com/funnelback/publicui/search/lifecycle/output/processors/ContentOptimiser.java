@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
-import com.funnelback.contentoptimiser.UrlCausesFiller;
+import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
 public class ContentOptimiser implements OutputProcessor {
 
 	@Autowired
-	private UrlCausesFiller filler;
+	private ContentOptimiserFiller filler;
 	
 	@Autowired
 	AnchorsFetcher fetcher;

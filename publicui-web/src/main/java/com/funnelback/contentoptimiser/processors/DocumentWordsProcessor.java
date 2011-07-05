@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.processors;
 
 import java.util.List;
 

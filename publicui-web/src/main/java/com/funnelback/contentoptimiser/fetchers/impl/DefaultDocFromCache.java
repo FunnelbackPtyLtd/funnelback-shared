@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.fetchers.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.google.common.base.Charsets;

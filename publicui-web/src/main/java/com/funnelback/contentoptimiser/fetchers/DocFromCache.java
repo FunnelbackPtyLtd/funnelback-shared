@@ -1,6 +1,4 @@
-package com.funnelback.contentoptimiser;
-
-import java.io.File;
+package com.funnelback.contentoptimiser.fetchers;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;

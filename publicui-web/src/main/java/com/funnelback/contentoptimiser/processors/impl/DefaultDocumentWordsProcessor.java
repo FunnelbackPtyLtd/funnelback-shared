@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.processors.impl;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
+import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.collection.Collection;

@@ -11,15 +11,15 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.contentoptimiser.DefaultDocumentWordsProcessor;
 import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
-import com.funnelback.contentoptimiser.DocumentWordsProcessor;
+import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
+import com.funnelback.contentoptimiser.processors.impl.DefaultDocumentWordsProcessor;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 
-public class DocumentWordsProcessorTest {
+public class DefaultDocumentWordsProcessorTest {
 
 	private AnchorModel anchors;
 	

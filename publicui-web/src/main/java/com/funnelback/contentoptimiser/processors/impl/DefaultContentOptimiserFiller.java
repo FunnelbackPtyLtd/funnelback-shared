@@ -1,4 +1,4 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.contentoptimiser.processors.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
+import com.funnelback.contentoptimiser.RankingFeatureFactory;
+import com.funnelback.contentoptimiser.fetchers.DocFromCache;
+import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
+import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
+import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -25,7 +31,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
 
 @Component
-public class DefaultUrlCausesFiller implements UrlCausesFiller {
+public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
 	@Autowired
 	DocFromCache docFromCache;

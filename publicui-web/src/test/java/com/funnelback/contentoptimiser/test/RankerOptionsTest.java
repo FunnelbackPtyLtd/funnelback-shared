@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.funnelback.contentoptimiser.RankerOptions;
+import com.funnelback.contentoptimiser.processors.impl.RankerOptions;
 
 public class RankerOptionsTest {
 	

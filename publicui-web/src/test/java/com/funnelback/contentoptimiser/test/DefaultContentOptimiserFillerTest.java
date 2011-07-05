@@ -12,10 +12,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultRankingFeatureFactory;
-import com.funnelback.contentoptimiser.DefaultUrlCausesFiller;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.RankingFeatureMaxOther;
-import com.funnelback.contentoptimiser.UrlCausesFiller;
+import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
+import com.funnelback.contentoptimiser.processors.impl.DefaultContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -25,14 +25,14 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.xml.XmlParsingException;
 
-public class DefaultUrlCauseFillerTest {
+public class DefaultContentOptimiserFillerTest {
 
 	@Test
 	public void testFillHints () throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
-		ResultPacket selectedRp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/content-optimiser-single-document.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCausesFiller();
+	
+		ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
@@ -76,7 +76,7 @@ public class DefaultUrlCauseFillerTest {
 	public void testSetImportantURLalreadyThere() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCausesFiller();
+		ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
@@ -92,7 +92,7 @@ public class DefaultUrlCauseFillerTest {
 		f.setImportantUrl(comparison, allTransaction);
 		
 		assertNotNull(comparison.getImportantOne());
-		assertEquals("3",comparison.getImportantOne().getRank());
+		assertEquals(new Integer(3),comparison.getImportantOne().getRank());
 		assertEquals(10.004,comparison.getHintsByName().get("content").getWin(),0.0001);
 		assertEquals(0,comparison.getHintsByName().get("offlink").getWin(),0.0001);
 		assertEquals(1.755,comparison.getHintsByName().get("urllen").getWin(),0.0001);
@@ -102,7 +102,7 @@ public class DefaultUrlCauseFillerTest {
 	public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
-		UrlCausesFiller f = new DefaultUrlCausesFiller();
+		ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
@@ -119,7 +119,7 @@ public class DefaultUrlCauseFillerTest {
 		
 		assertNotNull(comparison.getImportantOne());
 
-		assertEquals("18",comparison.getImportantOne().getRank());
+		assertEquals(new Integer(18),comparison.getImportantOne().getRank());
 		assertEquals(30.504,comparison.getHintsByName().get("content").getWin(),0.0001);
 		assertEquals(0,comparison.getHintsByName().get("offlink").getWin(),0.0001);
 		assertEquals(1.755,comparison.getHintsByName().get("urllen").getWin(),0.0001);
@@ -131,7 +131,7 @@ public class DefaultUrlCauseFillerTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		ResultPacket rp = parser.parse(FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
 
-		UrlCausesFiller f = new DefaultUrlCausesFiller();
+		ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
