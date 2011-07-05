@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DocumentContentScoreBreakdown {
+public class SingleTermFrequencies {
 
 	private final int count;
 	@Getter private final int percentageLess;

@@ -11,7 +11,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
+import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.contentoptimiser.processors.impl.DefaultDocumentWordsProcessor;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
@@ -49,7 +49,7 @@ public class DefaultDocumentWordsProcessorTest {
 		
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors);
 		
-		DocumentContentScoreBreakdown content = dwp.explainQueryTerm("five",new Collection("test1", null));
+		SingleTermFrequencies content = dwp.explainQueryTerm("five",new Collection("test1", null));
 		Assert.assertEquals(content.getCount(), 2);
 		Assert.assertEquals(1, content.getCount("t").intValue());
 		Assert.assertEquals(1, content.getCount("h").intValue());

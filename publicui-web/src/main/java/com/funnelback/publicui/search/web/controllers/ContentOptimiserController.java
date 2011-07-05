@@ -31,10 +31,14 @@ public class ContentOptimiserController {
 	private ConfigRepository configRepository;
 	
 	@Resource(name="contentOptimiserKickoffView")
-	FreeMarkerView contentOptimiserKickoffView; 
+	private FreeMarkerView contentOptimiserKickoffView; 
 
 	@Resource(name="contentOptimiserView")
 	private FreeMarkerView contentOptimiserView;
+	
+	@Resource(name="contentOptimiserTextView")
+	private FreeMarkerView contentOptimiserTextView;
+
 	
 	@Autowired
 	private SearchController searchController;
@@ -43,7 +47,6 @@ public class ContentOptimiserController {
 	public void initBinder(DataBinder binder) {
 		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
 	}
-	
 	
 	/**
 	 * Called when no collection has been specified.
@@ -60,12 +63,20 @@ public class ContentOptimiserController {
 	}
 	
 	
-	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
+	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"advanced"})
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
 		
 		return new ModelAndView(contentOptimiserView, searchController.search(request, question).getModel());
+	}
+	
+	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
+	public ModelAndView contentOptimiserTextOnly(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
+		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
+		
+		return new ModelAndView(contentOptimiserTextView, searchController.search(request, question).getModel());
 	}
 	
 

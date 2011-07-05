@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
+import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
@@ -100,18 +100,18 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	}
 
 	@Override
-	public DocumentContentScoreBreakdown explainQueryTerm(String queryTerm, Collection collection) {
+	public SingleTermFrequencies explainQueryTerm(String queryTerm, Collection collection) {
 		Map<String, Integer> plainDictionary = countByTerms.get("_");
 		if(plainDictionary == null) {
 			// the document doesn't contain any body words!
-			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(queryTerm));
+			return new SingleTermFrequencies(0,0,buildSingleTermMap(queryTerm));
 		}
 		
 		Integer count = plainDictionary.get(queryTerm);
 		
 		if(count == null) {
 			// the document doesn't contain this word in the body text!
-			return new DocumentContentScoreBreakdown(0,0,buildSingleTermMap(queryTerm));
+			return new SingleTermFrequencies(0,0,buildSingleTermMap(queryTerm));
 		}
 		
 		int countTermsLess = 0;
@@ -122,7 +122,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 		
 		Map<String, Integer> m = buildSingleTermMap(queryTerm);
 	
-		return new DocumentContentScoreBreakdown(count,percentageLess,m);
+		return new SingleTermFrequencies(count,percentageLess,m);
 	}
 
 	private Map<String, Integer> buildSingleTermMap(String query) {

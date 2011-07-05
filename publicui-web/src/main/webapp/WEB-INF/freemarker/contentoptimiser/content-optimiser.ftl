@@ -100,7 +100,7 @@
 	
     <div id="content-optimiser-pane">
         <div style="margin-bottom: 30px;">
-        	<h3 style="position: relative; top: 34px; left: 195px; margin: 0px; padding: 0px;">	Content Optimiser</h3>
+        	<h3 style="position: relative; top: 34px; left: 195px; margin: 0px; padding: 0px;">	Content Optimiser Advanced View</h3>
         	<img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36">
         	
         </div>
@@ -148,11 +148,7 @@
 
         	$(function() {
         		$("#barplot-cell").append('<div class="jqPlot" id="barplot" style="height:' + (50 * ${response.urlComparison.urls?size?c}) + 'px; width:435px;"></div>');
-        		
-        		
-	     //   	$.jqplot.config.enablePlugins = true;
-	        
-
+   
 	        	<#list response.urlComparison.hintsByWin as hint>
         				var ${hint.name} = new Array();
         				featureNames.push('${hint.name}');

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.contentoptimiser.DocumentContentScoreBreakdown;
+import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
@@ -286,17 +286,17 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			
 			for(String queryWord : queryWords){
-				DocumentContentScoreBreakdown content = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
+				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				Map<String,Integer> idfs = inDocCountFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
-				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + content.getCount() + " time(s) in the raw document. "
-							+ "It is more common than " + content.getPercentageLess() + "% of other terms in the document, and appears in " + (idfs.get("_")-1) +  " other documents");
+				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + frequencies.getCount() + " time(s) in the raw document. "
+							+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (idfs.get("_")-1) +  " other documents");
 
-				if(content.getCounts().size() != 0) {
+				if(frequencies.getCounts().size() != 0) {
 					RankerOptions rOpt = new RankerOptions(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
 					
 					StringBuilder sb = new StringBuilder();
 					sb.append("In addition, \"<b>" + queryWord + "</b>\" has: ");
-					for(Map.Entry<String, Integer> e : content.getCounts()) {
+					for(Map.Entry<String, Integer> e : frequencies.getCounts()) {
 						sb.append(e.getValue() + " occurences in metadata field '"+ e.getKey() +"', which has weight " + rOpt.getMetaWeight(e.getKey()) + " and occurs in " +idfs.get(e.getKey()) + " documents ; ");
 					}
 			

@@ -168,6 +168,11 @@
 		<property name="contentType" value="text/html;charset=UTF-8" /> 
 	</bean>
 	
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserTextView">
+		<property name="url" value="contentoptimiser/content-optimiser-text-only.ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" /> 
+	</bean>
+	
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserKickoffView">
 		<property name="url" value="contentoptimiser/content-optimiser-kickoff.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" /> 
