@@ -16,6 +16,8 @@
 	<mvc:annotation-driven />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+	
+	<mvc:resources mapping="/content-optimiser/resources/**" location="/content-optimiser/" />
 
 	<mvc:interceptors>
 		<mvc:interceptor>
@@ -230,6 +232,6 @@
 	</bean>
 	
 	<!-- Profiling -->
-	<aop:aspectj-autoproxy />
+	<!--  aop:aspectj-autoproxy / -->
 
 </beans>

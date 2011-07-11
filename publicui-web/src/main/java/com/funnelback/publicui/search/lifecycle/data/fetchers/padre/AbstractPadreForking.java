@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -56,7 +55,6 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	protected I18n i18n;
 	
 	@Override
-	@Profiled
 	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
 		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
 			

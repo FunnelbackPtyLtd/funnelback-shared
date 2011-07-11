@@ -27,7 +27,7 @@
 	<!-- QUERY FORM --> 
 	<div id="fb-queryform" class="fb-initial" > 
 		Content Optimiser
-		<form action="/publicui/content-optimiser.html" method="GET"> 
+		<form action="content-optimiser.html" method="GET"> 
 			<div> 
 			<label for="query" style="text-indent: -9999em;">Optimise</label> 
 			<input name="query" id="query" type="text" style="margin-right: 5px;" value="" accesskey="q">Query 

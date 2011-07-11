@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.aop.Profiled;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -27,7 +26,6 @@ public class UserKeys implements InputProcessor {
 	@Setter private I18n i18n;
 	
 	@Override
-	@Profiled
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)) {
 			String securityPlugin = searchTransaction.getQuestion().getCollection().getConfiguration().value(

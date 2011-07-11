@@ -32,7 +32,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Handles per-collection static resources
  */
 @Controller
-@RequestMapping({"/"})
+@RequestMapping("/resources/")
 @lombok.extern.apachecommons.Log
 public class ResourcesController implements ApplicationContextAware {
 
@@ -47,20 +47,13 @@ public class ResourcesController implements ApplicationContextAware {
 	@Value("#{appProperties['resources.web.directory.name=web']}")
 	private String collectionWebResourcesDirectoryName = "web";
 	
-	@RequestMapping("/test")
-	public void test(HttpServletResponse response) throws IOException {
-		response.setContentType("text/plain");
-		response.getWriter().write("Test !");
-		
-	}
-	
-	@RequestMapping("/{collectionId}/{resource:.*}")
+	@RequestMapping("{collectionId}/{resource:.*}")
 	public void handleRequestDefaultProfile(@PathVariable String collectionId, @PathVariable String resource,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		handleRequest(collectionId, DefaultValues.DEFAULT_PROFILE, resource, request, response);
 	}
 	
-	@RequestMapping("/{collectionId}/{profileId}/{resource:.*}")
+	@RequestMapping("{collectionId}/{profileId}/{resource:.*}")
 	public void handleRequest(@PathVariable String collectionId, @PathVariable String profileId, @PathVariable String resource,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		Collection c = configRepository.getCollection(collectionId);
@@ -87,12 +80,15 @@ public class ResourcesController implements ApplicationContextAware {
 				
 					handler.handleRequest(request, response);
 				} catch (IOException ioe) {
-					log.error("Error on resource '" + logicPath + "'", ioe); 
+					log.error("Error on resource '" + logicPath + "'", ioe);
+					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				}
+			} else {
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			}
+		} else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
-
-		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 	}
 
 	private boolean validateResourcePath(String path) {

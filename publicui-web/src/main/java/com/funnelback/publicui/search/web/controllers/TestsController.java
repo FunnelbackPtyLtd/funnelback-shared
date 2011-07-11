@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Setter;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.UrlResource;
 import org.springframework.scripting.groovy.GroovyScriptFactory;
 import org.springframework.scripting.support.ResourceScriptSource;
@@ -14,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @lombok.extern.apachecommons.Log
 // @RequestMapping({"/test", "/_/test"})
 @RequestMapping("/")
-public class TestsController {
+public class TestsController implements ApplicationContextAware {
+	
+	/** Needed to instantiate Spring resource request handler */
+	@Setter private ApplicationContext applicationContext;
 	
 	@RequestMapping("hello")
 	public void facetedNav(HttpServletResponse response) throws IOException {
