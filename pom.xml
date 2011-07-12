@@ -55,6 +55,7 @@
 							<include>**/*Tests.java</include>
 							<include>**/*Test.java</include>
 						</includes>
+						<argLine>-Dfile.encoding=UTF-8</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
