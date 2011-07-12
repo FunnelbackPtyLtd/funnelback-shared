@@ -5,10 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
-import lombok.extern.apachecommons.Log;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -17,9 +15,7 @@ import com.funnelback.contentoptimiser.MultipleConfigReader;
 import com.funnelback.contentoptimiser.processors.impl.MetaInfo;
 import com.funnelback.contentoptimiser.processors.impl.RankerOptions;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.thoughtworks.xstream.XStream;
 
-@Log
 public class MetaInfoFetcher {
 	@Getter private final RankerOptions rankerOptions;
 	private final Map<String,MetaInfo> metaInfos;
@@ -40,15 +36,6 @@ public class MetaInfoFetcher {
 		};
 		
 		metaInfos = configReader.read(Arrays.asList(fileNamesToRead),new HashSet<String>(Arrays.asList(fileNamesToExpect)));//Collections.unmodifiableMap(m);
-	}
-	
-	public void obtainXml() {
-		XStream xstream = new XStream();
-		xstream.alias("namesAndSuggestions",Map.class);
-		xstream.alias("className", String.class);
-		xstream.alias("info", MetaInfo.class);
-		xstream.alias("metadataClass", Map.Entry.class);
-		log.warn(xstream.toXML(metaInfos));
 	}
 
 	public MetaInfo get(String metaClass) {

@@ -128,7 +128,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	private Map<String, Integer> buildSingleTermMap(String query) {
 		Map<String,Integer> m = new HashMap<String,Integer>();
 		for(Entry<String,Map<String,Integer>> e : countByTerms.entrySet()) {
-			if(e.getValue().containsKey(query) && ! e.getKey().equals("_")) {
+			if(e.getValue().containsKey(query)) {
 				m.put(e.getKey(),e.getValue().get(query));
 			}
 		}

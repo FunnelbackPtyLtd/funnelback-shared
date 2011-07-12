@@ -53,9 +53,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	@Autowired
 	InDocCountFetcher inDocCountFetcher;
 	
-	@Autowired
-	@Setter
-	File searchHome;
+	@Autowired @Setter File searchHome;
 	
 	// TODO replace with an implementation that gets this from padre's XML
 	private String getCategory(String key) {
@@ -313,7 +311,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			
 				int i = 0;
 				MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection(),searchHome);
-				mf.obtainXml();
+				
+				contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words, or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords())); 
+				
 				for(String queryWord : queryWords){
 					SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 					Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
@@ -321,35 +321,20 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 					
 					
 					long totalDocuments = bldInfoStats.getTotalDocuments();
-					double rawScoreForTerm = Math.log((double)totalDocuments / inDocFreqs.get("_").doubleValue());
-					if(frequencies.getCount() == 0) {
-						contentHints.add(new ContentHint("Query term \"<strong>" + queryWord + 
-								"</strong>\" does not occur in the raw document. The document would match the query"+
-								" better if it contained more occurences of \"<strong>"+queryWord+ "</strong>\".",
-								(rawScoreForTerm *10)- (rawScoreForTerm * frequencies.getCount()) ));
-					} else if(frequencies.getCount() < FEW_OCCURRENCES_THRESHOLD) {
-						contentHints.add(new ContentHint("Query term \"<strong>" + queryWord + "</strong>\" appears few times in the raw document. The document would match the query better if it contained more occurences of \"<strong>"+queryWord+ "</strong>\". Currently, this term is more common than " + frequencies.getPercentageLess() + "% of other terms in the document.",
-								(rawScoreForTerm *10)- (rawScoreForTerm * frequencies.getCount()) ));						
-					}
-					
 					//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
 	
 					for(Entry<String,Integer> metaFreqs : inDocFreqs.entrySet()) {
-						if("_".equals(metaFreqs.getKey())) continue; // skip the pure count - we've already dealt with it
-						
 						Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
 						Integer termFreq = frequencies.getCount(metaFreqs.getKey());
 						
-						 {
-
-							ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
-									inDocFreq, termFreq, mf,
-									metaFreqs.getKey());
-							if(contentHint != null) {
-								if(termFreq != 0) contentHint.setBucket(0);
-								contentHints.add(contentHint);
-							}
+						ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
+								inDocFreq, termFreq, mf,
+								metaFreqs.getKey());
+						if(contentHint != null) {
+							if(termFreq != 0) contentHint.setBucket(0);
+							contentHints.add(contentHint);
 						}
+						
 					}
 					
 					contentHints.add(new ContentHint(queryWord,i++));
@@ -358,8 +343,8 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 					comparison.getHintsByName().get("content").getHintTexts().clear();
 					Collections.sort(contentHints);
 					for(ContentHint hint : contentHints) {
-						//if(hint.getScoreEstimate() > 0) 
-							comparison.getHintsByName().get("content").getHintTexts().add(hint.getScoreEstimate() +" " + hint.getHintText());
+						if(hint.getScoreEstimate() > 0) 
+							comparison.getHintsByName().get("content").getHintTexts().add(hint.getHintText());
 					}
 				}
 				
@@ -380,23 +365,23 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			String metaClass) {
 		double rawWeightForTerm = Math.log((double)totalDocuments / inDocFreq.doubleValue()) * mf.getRankerOptions().getMetaWeight(metaClass);
 		String metaTitle = mf.get(metaClass).getLongTitle();
+		String metaHelp = mf.get(metaClass).getImprovementSuggestion();
+		
+		String occurs = null;
+		
 		if(termFreq == 0) {
-			return new ContentHint("Query term \"<strong>" + queryWord + 
-					"</strong>\" does not occur in "+metaTitle+ 
-					". The document would match the query better if it contained more occurences "+
-					"of \"<strong>"+queryWord+ "</strong>\". " +inDocFreq.doubleValue()/totalDocuments ,
-					(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
-					inDocFreq.doubleValue()/totalDocuments);
+			occurs = "does not occur";
 		} else if(termFreq < FEW_OCCURRENCES_THRESHOLD) {
-			return new ContentHint("Query term \"<strong>" + queryWord + 
-					"</strong>\" appears few times in "+metaTitle+ 
-					". The document would match the query better if it contained more occurences "+
-					"of \"<strong>"+queryWord+ "</strong>\"." +inDocFreq.doubleValue()/totalDocuments,
-					(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
-					inDocFreq.doubleValue()/totalDocuments);						
+			occurs = "appears few times";
 		} else {
 			return null;
 		}
+		
+		return new ContentHint("Query term \"<strong>" + queryWord + 
+				"</strong>\" "+occurs+" in "+metaTitle+ 
+				". " +  metaHelp ,
+				(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
+				inDocFreq.doubleValue()/totalDocuments);
 	}
 
 }

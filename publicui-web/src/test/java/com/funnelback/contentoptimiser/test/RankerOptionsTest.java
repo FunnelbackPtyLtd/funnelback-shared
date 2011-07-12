@@ -2,6 +2,7 @@ package com.funnelback.contentoptimiser.test;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.funnelback.contentoptimiser.processors.impl.RankerOptions;
@@ -16,6 +17,64 @@ public class RankerOptionsTest {
 		Assert.assertEquals(0.628,o.getMetaWeight("k"),0.0001);
 		Assert.assertEquals(0.800,o.getMetaWeight("K"),0.0001);
 		Assert.assertEquals(0.288,o.getMetaWeight("t"),0.0001);
-		Assert.assertEquals(1,o.getMetaWeight("x"),0.0001); // should return 1 for unknown options
+		Assert.assertEquals(0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
 	}
+
+	@Test
+	public void testDefaults() {
+		String optionsString = "SMqb -daat -sco2";
+		RankerOptions o = new RankerOptions(optionsString);
+		
+		Assert.assertEquals("default should be 0.5",0.5,o.getMetaWeight("k"),0.0001);
+		Assert.assertEquals("default should be 0.5",0.5,o.getMetaWeight("K"),0.0001);
+		Assert.assertEquals("default should be 1.0", 1.0,o.getMetaWeight("t"),0.0001);
+		Assert.assertEquals("Should return 0 for unknown options",0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
+		
+		optionsString = "SMqb -daat -sco7";
+		o = new RankerOptions(optionsString);
+
+		Assert.assertEquals("default should be 0.5",0.5,o.getMetaWeight("k"),0.0001);
+		Assert.assertEquals("default should be 0.5",0.5,o.getMetaWeight("K"),0.0001);
+		Assert.assertEquals("default should be 1.0", 1.0,o.getMetaWeight("t"),0.0001);
+		Assert.assertEquals("Should return 0 for unknown options",0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
+	
+	}
+	
+	@Test
+	public void testExplicit() {
+		
+		String optionsString = "SMqb -daat -sco7t";
+		RankerOptions o = new RankerOptions(optionsString);
+		Assert.assertEquals("should be set to 0 if not explicitly enabled",0.0,o.getMetaWeight("k"),0.0001);
+		Assert.assertEquals("should be set to 0 if not explicitly enabled",0.0,o.getMetaWeight("K"),0.0001);
+		Assert.assertEquals("default should be 1.0", 1.0,o.getMetaWeight("t"),0.0001);
+		Assert.assertEquals("Should return 0 for unknown options",0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
+
+		optionsString = "SMqb -daat -sco7tK";
+		o = new RankerOptions(optionsString);
+		Assert.assertEquals("should be set to 0 if not explicitly enabled",0.0,o.getMetaWeight("k"),0.0001);
+		Assert.assertEquals("default should be 0.5",0.5,o.getMetaWeight("K"),0.0001);
+		Assert.assertEquals("default should be 1.0", 1.0,o.getMetaWeight("t"),0.0001);
+		Assert.assertEquals("Should return 0 for unknown options",0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
+
+		optionsString = "SMqb -daat -sco7t -wmeta k 0.6";
+		o = new RankerOptions(optionsString);
+		Assert.assertEquals("explicitly set to 0.6",0.6,o.getMetaWeight("k"),0.0001);
+		Assert.assertEquals("should be set to 0 if not explicitly enabled",0.0,o.getMetaWeight("K"),0.0001);
+		Assert.assertEquals("default should be 1.0", 1.0,o.getMetaWeight("t"),0.0001);
+		Assert.assertEquals("Should return 0 for unknown options",0,o.getMetaWeight("x"),0.0001); // should return 0 for unknown options
+
+	}
+	
+	@Test @Ignore
+	public void testUVWeights() {
+		// ignored this test, since -uv only exists in documentation and not actual padre!
+		String optionsString = "SMqb -daat -sco2 -uv";
+		RankerOptions o = new RankerOptions(optionsString);
+		
+		Assert.assertEquals(1.0,o.getMetaWeight("u"),0.0001);
+		Assert.assertEquals(1.0,o.getMetaWeight("v"),0.0001);
+	}
+
+	
 }
