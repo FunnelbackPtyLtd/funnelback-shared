@@ -62,7 +62,7 @@ public class SearchController {
 	 * Called when no collection has been specified.
 	 * @return a list of all available collections.
 	 */
-	@RequestMapping(params="!"+RequestParameters.COLLECTION)
+	@RequestMapping(value={"/", "/search.*"},params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollection() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
