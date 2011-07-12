@@ -14,7 +14,7 @@ public class MapKeyFilter {
 	
 	private String[] keys;
 	
-	public MapKeyFilter(Map<String, String> parameters) {
+	public MapKeyFilter(Map<String, ?> parameters) {
 		keys = parameters.keySet().toArray(CONVERSION_ARRAY);
 	}
 	

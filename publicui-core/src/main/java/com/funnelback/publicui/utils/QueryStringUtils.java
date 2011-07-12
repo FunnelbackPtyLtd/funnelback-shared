@@ -20,12 +20,25 @@ public class QueryStringUtils {
 		}
 	}
 	
-	public static Map<String, String> toArrayMap(String qs, boolean startsWithQuestionMark) {
+	public static Map<String, String> toSingleMap(String qs, boolean startsWithQuestionMark) {
 		Map<String, List<String>> converted = toMap(qs, startsWithQuestionMark);
 		Map<String, String> out = new HashMap<String, String>();
 		for (String key : converted.keySet()) {
 			if (converted.get(key).size() > 0) {
 				out.put(key, converted.get(key).get(0));
+			} else {
+				out.put(key, null);
+			}
+		}
+		return out;
+	}
+	
+	public static Map<String, String[]> toArrayMap(String qs, boolean startsWithQuestionMark) {
+		Map<String, List<String>> converted = toMap(qs, startsWithQuestionMark);
+		Map<String, String[]> out = new HashMap<String, String[]>();
+		for (String key : converted.keySet()) {
+			if (converted.get(key).size() > 0) {
+				out.put(key, converted.get(key).toArray(new String[0]));
 			} else {
 				out.put(key, null);
 			}

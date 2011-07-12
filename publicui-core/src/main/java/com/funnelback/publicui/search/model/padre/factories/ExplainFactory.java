@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.funnelback.common.config.DefaultValues.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;

@@ -8,7 +8,6 @@ import java.util.concurrent.FutureTask;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -20,7 +19,6 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions"})
-@Log
 public class SearchTransaction {
 
 	/**
