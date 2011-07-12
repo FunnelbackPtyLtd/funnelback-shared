@@ -2,9 +2,6 @@ package com.funnelback.contentoptimiser.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -55,24 +52,8 @@ public class DefaultDocumentWordsProcessorTest {
 		Assert.assertEquals(1, content.getCount("h").intValue());
 		Assert.assertEquals(5, content.getCount("k").intValue());
 		Assert.assertEquals(1, content.getCount("K").intValue());
-		Assert.assertNull(content.getCount("x"));
-		
-		Set<Map.Entry<String,Integer>> s = content.getCounts();
-		Iterator<Map.Entry<String,Integer>> it = s.iterator();
-		Assert.assertTrue(it.hasNext());
-		Map.Entry<String, Integer> e = it.next();
-		Assert.assertEquals("t", e.getKey());
-		Assert.assertEquals(1, e.getValue().intValue());
-		e = it.next();
-		Assert.assertEquals("k", e.getKey());
-		Assert.assertEquals(5, e.getValue().intValue());
-		e = it.next();
-		Assert.assertEquals("h", e.getKey());
-		Assert.assertEquals(1, e.getValue().intValue());
-		e = it.next();
-		Assert.assertEquals("K", e.getKey());
-		Assert.assertEquals(1, e.getValue().intValue());
-		Assert.assertFalse(it.hasNext());
+		Assert.assertEquals("Should contain no occurences of unknown fields",0, content.getCount("x").intValue());
+
 		
 		Assert.assertEquals(80,content.getPercentageLess());
 	}
@@ -81,9 +62,9 @@ public class DefaultDocumentWordsProcessorTest {
 	public void testDocumentOverview() {
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors);
 		String[] expectedFive =new String[] {"two","five","three","six","one"};
-		Assert.assertTrue("Top five words in document incorrect ", Arrays.equals(expectedFive, dwp.getTopFiveWords(new ArrayList<String>(),"_")));
-		Assert.assertEquals(9,dwp.totalWords());
-		Assert.assertEquals(6, dwp.uniqueWords());
+		Assert.assertTrue("Top five words in document incorrect ", Arrays.equals(expectedFive, dwp.getCommonWords(new ArrayList<String>(),"_")));
+		Assert.assertEquals(9,dwp.getTotalWords());
+		Assert.assertEquals(6, dwp.setUniqueWords());
 	}
 	
 }

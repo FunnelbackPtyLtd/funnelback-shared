@@ -1,6 +1,5 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 
 
 public class RankingFeatureMaxOther extends RankingFeature {

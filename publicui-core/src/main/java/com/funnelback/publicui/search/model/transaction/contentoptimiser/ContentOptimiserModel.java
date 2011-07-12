@@ -15,6 +15,7 @@ public class ContentOptimiserModel {
 	@Getter private final List<Result> urls = new ArrayList<Result>();
 	
 	@Getter @Setter private Result importantOne;
+	@Getter @Setter private DocumentContentModel content;
 	@Getter private final List<String> messages = new ArrayList<String>();
 	
 	@Getter	private final List<RankingFeature> hintsByWin = new ArrayList<RankingFeature>();

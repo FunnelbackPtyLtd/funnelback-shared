@@ -1,7 +1,6 @@
-package com.funnelback.contentoptimiser;
+package com.funnelback.publicui.search.model.transaction.contentoptimiser;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 
 public class RankingFeatureMaxPossibleMultiWordOnly extends RankingFeature {
 

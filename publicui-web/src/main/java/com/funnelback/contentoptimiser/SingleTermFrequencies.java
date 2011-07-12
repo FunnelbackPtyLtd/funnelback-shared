@@ -1,7 +1,6 @@
 package com.funnelback.contentoptimiser;
 
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +14,11 @@ public class SingleTermFrequencies {
 	private final Map<String,Integer> metaDataCounts;
 	
 	public Integer getCount(String metaDataField) {
-		return metaDataCounts.get(metaDataField);
+		if(metaDataCounts.containsKey(metaDataField)) {
+			return metaDataCounts.get(metaDataField);
+		} else return 0;
 	}
 	
-	public Set<Map.Entry<String,Integer>> getCounts() {
-		return metaDataCounts.entrySet();
-	}
-
 	public int getCount() {
 		return count;
 	}

@@ -45,14 +45,16 @@ public class ContentOptimiser implements OutputProcessor {
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL).equals("")) {
 					comparison.getMessages().add("No document URL selected.");
+					filler.fillHintCollections(comparison);
 				}else{
 					log.info("setting important url");
 					filler.setImportantUrl(comparison,searchTransaction);
 					log.info("obtaining anchors");		
 					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),searchTransaction.getQuestion().getCollection());
+					log.info("Filling hint texts");
+					filler.fillHintCollections(comparison);
 					log.info("obtaining content");					
 					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
-	
 				
 					log.info("done");
 				}
@@ -62,8 +64,8 @@ public class ContentOptimiser implements OutputProcessor {
 				} else {
 					comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) + "' was not returned for the query.");
 				}
+				filler.fillHintCollections(comparison);
 			}
-			filler.fillHintCollections(comparison);
 			searchTransaction.getResponse().setUrlComparison(comparison);
 		}
 	}

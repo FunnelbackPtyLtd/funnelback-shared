@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxOther;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossible;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossibleMultiWordOnly;
 
 @Log
 @Component

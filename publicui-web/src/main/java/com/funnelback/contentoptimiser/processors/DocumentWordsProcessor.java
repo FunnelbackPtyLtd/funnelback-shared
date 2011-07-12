@@ -9,9 +9,9 @@ public interface DocumentWordsProcessor {
 	
 	SingleTermFrequencies explainQueryTerm(String query, Collection collection);
 
-	String[] getTopFiveWords(List<String> stopWords, String fieldType);
+	String[] getCommonWords(List<String> stopWords, String fieldType);
 
-	int totalWords();
-	int uniqueWords();
+	int getTotalWords();
+	int setUniqueWords();
 
 }

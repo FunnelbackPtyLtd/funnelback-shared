@@ -10,12 +10,12 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import com.funnelback.contentoptimiser.RankingFeatureMaxOther;
-import com.funnelback.contentoptimiser.RankingFeatureMaxPossible;
-import com.funnelback.contentoptimiser.RankingFeatureMaxPossibleMultiWordOnly;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxOther;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossible;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossibleMultiWordOnly;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 

@@ -1,5 +1,7 @@
 package com.funnelback.contentoptimiser.processors.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,14 +12,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import lombok.Setter;
+import lombok.extern.apachecommons.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.Keys;
-import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
+import com.funnelback.contentoptimiser.SingleTermFrequencies;
+import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
+import com.funnelback.contentoptimiser.fetchers.impl.DefaultBldInfoStatsFetcher;
+import com.funnelback.contentoptimiser.fetchers.impl.MetaInfoFetcher;
 import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.i18n.I18n;
@@ -27,11 +34,15 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
 
+@Log
 @Component
 public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
+
+	private static final int FEW_OCCURRENCES_THRESHOLD = 10;
 
 	@Autowired
 	DocFromCache docFromCache;
@@ -41,7 +52,10 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	
 	@Autowired
 	InDocCountFetcher inDocCountFetcher;
-
+	
+	@Autowired
+	@Setter
+	File searchHome;
 	
 	// TODO replace with an implementation that gets this from padre's XML
 	private String getCategory(String key) {
@@ -165,7 +179,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		m.put("imp_phrase",imp_phrase);
 
 		List<String> content = new ArrayList<String>();
-		content.add("<b class=\"warn\">TODO CONTENT SCORE BREAKDOWN</b>");
+		content.add("<b class=\"warn\">Content score breakdown unavailable</b>");
 		m.put("content",content);
 
 
@@ -280,37 +294,110 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	@Override
 	public void obtainContentBreakdown(ContentOptimiserModel comparison,
 			SearchTransaction searchTransaction, ResultPacket importantRp,AnchorModel anchors) {
+		DocumentContentModel content = new DocumentContentModel();
+		
 		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
 		if(documentContent != null) {
 			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors);
+	
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			
-			for(String queryWord : queryWords){
-				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
-				Map<String,Integer> idfs = inDocCountFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
-				comparison.getMessages().add("Query term \"<b>" + queryWord + "</b>\" appears " + frequencies.getCount() + " time(s) in the raw document. "
-							+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (idfs.get("_")-1) +  " other documents");
-
-				if(frequencies.getCounts().size() != 0) {
-					RankerOptions rOpt = new RankerOptions(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
-					
-					StringBuilder sb = new StringBuilder();
-					sb.append("In addition, \"<b>" + queryWord + "</b>\" has: ");
-					for(Map.Entry<String, Integer> e : frequencies.getCounts()) {
-						sb.append(e.getValue() + " occurences in metadata field '"+ e.getKey() +"', which has weight " + rOpt.getMetaWeight(e.getKey()) + " and occurs in " +idfs.get(e.getKey()) + " documents ; ");
-					}
+			try {
+				BldInfoStatsFetcher bldInfoStats = new DefaultBldInfoStatsFetcher(searchTransaction.getQuestion().getCollection());
+								
+				content.setTotalWords(dwp.getTotalWords());
+				content.setUniqueWords(dwp.setUniqueWords());
+				content.setCommonWords(Arrays.toString(dwp.getCommonWords(importantRp.getStopWords(),"_")));
+				
+				List<ContentHint> contentHints = new ArrayList<ContentHint>();
 			
-					comparison.getMessages().add(sb.toString());
+				int i = 0;
+				MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection(),searchHome);
+				mf.obtainXml();
+				for(String queryWord : queryWords){
+					SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
+					Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
 
+					
+					
+					long totalDocuments = bldInfoStats.getTotalDocuments();
+					double rawScoreForTerm = Math.log((double)totalDocuments / inDocFreqs.get("_").doubleValue());
+					if(frequencies.getCount() == 0) {
+						contentHints.add(new ContentHint("Query term \"<strong>" + queryWord + 
+								"</strong>\" does not occur in the raw document. The document would match the query"+
+								" better if it contained more occurences of \"<strong>"+queryWord+ "</strong>\".",
+								(rawScoreForTerm *10)- (rawScoreForTerm * frequencies.getCount()) ));
+					} else if(frequencies.getCount() < FEW_OCCURRENCES_THRESHOLD) {
+						contentHints.add(new ContentHint("Query term \"<strong>" + queryWord + "</strong>\" appears few times in the raw document. The document would match the query better if it contained more occurences of \"<strong>"+queryWord+ "</strong>\". Currently, this term is more common than " + frequencies.getPercentageLess() + "% of other terms in the document.",
+								(rawScoreForTerm *10)- (rawScoreForTerm * frequencies.getCount()) ));						
+					}
+					
+					//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
+	
+					for(Entry<String,Integer> metaFreqs : inDocFreqs.entrySet()) {
+						if("_".equals(metaFreqs.getKey())) continue; // skip the pure count - we've already dealt with it
+						
+						Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
+						Integer termFreq = frequencies.getCount(metaFreqs.getKey());
+						
+						 {
+
+							ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
+									inDocFreq, termFreq, mf,
+									metaFreqs.getKey());
+							if(contentHint != null) {
+								if(termFreq != 0) contentHint.setBucket(0);
+								contentHints.add(contentHint);
+							}
+						}
+					}
+					
+					contentHints.add(new ContentHint(queryWord,i++));
+				}
+				if(contentHints.size() != 0) {
+					comparison.getHintsByName().get("content").getHintTexts().clear();
+					Collections.sort(contentHints);
+					for(ContentHint hint : contentHints) {
+						//if(hint.getScoreEstimate() > 0) 
+							comparison.getHintsByName().get("content").getHintTexts().add(hint.getScoreEstimate() +" " + hint.getHintText());
+					}
 				}
 				
+			} catch (IOException e1) {
+				comparison.getMessages().add(i18n.tr("error.readingStatisticsFromBldinfo"));
+				log.error("IOException when reading bldinfo file:", e1);
 			}
-			comparison.getMessages().add("There are " + dwp.totalWords() + " total words in the document. " +  dwp.uniqueWords() + " of those words are unique. The top 5 words are " + Arrays.toString(dwp.getTopFiveWords(importantRp.getStopWords(),"_")));
+
+			
 		} else {
 			// we didn't get a document back from cache
 		}
+		comparison.setContent(content);
 	}
 
+	private ContentHint obtainContentHint(String queryWord, long totalDocuments,
+			Integer inDocFreq, Integer termFreq, MetaInfoFetcher mf,
+			String metaClass) {
+		double rawWeightForTerm = Math.log((double)totalDocuments / inDocFreq.doubleValue()) * mf.getRankerOptions().getMetaWeight(metaClass);
+		String metaTitle = mf.get(metaClass).getLongTitle();
+		if(termFreq == 0) {
+			return new ContentHint("Query term \"<strong>" + queryWord + 
+					"</strong>\" does not occur in "+metaTitle+ 
+					". The document would match the query better if it contained more occurences "+
+					"of \"<strong>"+queryWord+ "</strong>\". " +inDocFreq.doubleValue()/totalDocuments ,
+					(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
+					inDocFreq.doubleValue()/totalDocuments);
+		} else if(termFreq < FEW_OCCURRENCES_THRESHOLD) {
+			return new ContentHint("Query term \"<strong>" + queryWord + 
+					"</strong>\" appears few times in "+metaTitle+ 
+					". The document would match the query better if it contained more occurences "+
+					"of \"<strong>"+queryWord+ "</strong>\"." +inDocFreq.doubleValue()/totalDocuments,
+					(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
+					inDocFreq.doubleValue()/totalDocuments);						
+		} else {
+			return null;
+		}
+	}
 
 }
 

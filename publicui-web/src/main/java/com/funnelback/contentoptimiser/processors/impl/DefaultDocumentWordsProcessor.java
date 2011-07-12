@@ -84,7 +84,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	}
 	
 	@Override
-	public String[] getTopFiveWords(List<String> stopWords,String fieldType) {
+	public String[] getCommonWords(List<String> stopWords,String fieldType) {
 		int i = 0;
 		Set<String> stopSet = new HashSet<String>(stopWords);
 		
@@ -136,12 +136,12 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	}
 
 	@Override
-	public int totalWords() {
+	public int getTotalWords() {
 		return totalWordCount;
 	}
 
 	@Override
-	public int uniqueWords() {
+	public int setUniqueWords() {
 		return termsSortedByFrequency.size();
 	}
 

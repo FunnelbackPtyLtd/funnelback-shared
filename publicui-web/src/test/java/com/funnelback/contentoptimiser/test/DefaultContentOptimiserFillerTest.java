@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import com.funnelback.contentoptimiser.DefaultRankingFeatureFactory;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
-import com.funnelback.contentoptimiser.RankingFeatureMaxOther;
 import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.impl.DefaultContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
@@ -23,6 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxOther;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class DefaultContentOptimiserFillerTest {
@@ -41,7 +41,6 @@ public class DefaultContentOptimiserFillerTest {
 		SearchQuestion question = new SearchQuestion();
 		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");		
 		SearchTransaction allTransaction = new SearchTransaction(question,response);
-		
 		
 		f.consumeResultPacket(comparison, rp,hf);
 		f.setImportantUrl(comparison, allTransaction);
