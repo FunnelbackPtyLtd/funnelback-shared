@@ -12,7 +12,7 @@
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
-	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.aop" />
+	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui" />
 	<mvc:annotation-driven />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
@@ -49,7 +49,7 @@
 		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
-	<bean id="contextPathHolder" class="com.funnelback.publicui.utils.web.ContextPathHolder" />
+	
 	<!-- bean id="ajaxProxyController" class="com.funnelback.publicui.search.web.controllers.AjaxProxyController" / -->
 
 	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL tempaltes -->
@@ -77,7 +77,7 @@
 				/>
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
-					value="#{contextPathHolder.contextPath}"
+					value="#{contextHolder.contextPath}"
 				/>
 				<entry
 					key="ExtraSearches">
