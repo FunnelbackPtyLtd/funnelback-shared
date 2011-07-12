@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttr
 import com.funnelback.publicui.xml.XmlParsingException;
 
 @Controller
+@RequestMapping("/content-optimiser")
 public class ContentOptimiserController {
 
 	@Autowired
@@ -52,7 +53,7 @@ public class ContentOptimiserController {
 	 * Called when no collection has been specified.
 	 * @return a list of all available collections.
 	 */
-	@RequestMapping(value="/content-optimiser-kickoff.html",params="!"+RequestParameters.COLLECTION)
+	@RequestMapping(value="/",params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollectionKickoff() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
@@ -63,7 +64,7 @@ public class ContentOptimiserController {
 	}
 	
 	
-	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"advanced"})
+	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"advanced"})
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
@@ -71,7 +72,7 @@ public class ContentOptimiserController {
 		return new ModelAndView(contentOptimiserView, searchController.search(request, question).getModel());
 	}
 	
-	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
+	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
 	public ModelAndView contentOptimiserTextOnly(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
@@ -80,18 +81,18 @@ public class ContentOptimiserController {
 	}
 	
 
-	@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
+	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
 	public ModelAndView collectionNoQuery(HttpServletRequest request) {
 			return kickoff(request);
 	}
 	
-	@RequestMapping(value="/content-optimiser.html") 
+	@RequestMapping(value="/optimise.html") 
 	public ModelAndView noCollectionContentOptimiser(){
 		return noCollectionKickoff();
 	}
 	
 	//@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
-	@RequestMapping(value={"/content-optimiser-kickoff.html"})
+	@RequestMapping(value={"/"})
 	public ModelAndView kickoff(HttpServletRequest request) {
 		Map<String,Object> m = new HashMap<String,Object>();
 		m.put("collection", request.getParameter(RequestParameters.COLLECTION));

@@ -11,13 +11,11 @@
 				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
-
+	
 	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.aop" />
 	<mvc:annotation-driven />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
-	
-	<mvc:resources mapping="/content-optimiser/resources/**" location="/content-optimiser/" />
 
 	<mvc:interceptors>
 		<mvc:interceptor>
@@ -183,6 +181,7 @@
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="favorPathExtension" value="true" />
 		<property name="ignoreAcceptHeader" value="true" />
+		<property name="defaultContentType" value="text/html" />
 		<property name="mediaTypes">
 			<map>
 				<entry key="xml" value="text/xml" />
@@ -230,8 +229,7 @@
 			</list>
 		</property>
 	</bean>
+		
+	<mvc:resources mapping="/content-optimiser/**" location="/content-optimiser/" />
 	
-	<!-- Profiling -->
-	<!--  aop:aspectj-autoproxy / -->
-
 </beans>

@@ -43,20 +43,22 @@
 	
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
-		<url-pattern>/resources/*</url-pattern>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<!--  servlet-mapping>
+		<servlet-name>publicui</servlet-name>
 		<url-pattern>/search.html</url-pattern>
 		<url-pattern>/search.json</url-pattern>
 		<url-pattern>/search.legacy</url-pattern>
 		<url-pattern>/search.xml</url-pattern>
 		<url-pattern>/open-search.xml</url-pattern>
 		<url-pattern>/suggest.json</url-pattern>
-		<!-- url-pattern>/ajax-proxy.json</url-pattern -->
-		<!-- url-pattern>/ajax-proxy.xml</url-pattern -->
 		<url-pattern>/anchors.html</url-pattern>
-		<url-pattern>/content-optimiser/resources/*</url-pattern>
+		<url-pattern>/content-optimiser/*/*</url-pattern>
 		<url-pattern>/content-optimiser.html</url-pattern>
 		<url-pattern>/content-optimiser-kickoff.html</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping -->
 	
 	<filter>
 		<filter-name>encodingFilter</filter-name>

@@ -31,8 +31,8 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 /**
  * Handles per-collection static resources
  */
-@Controller
-@RequestMapping("/resources/")
+@Controller("NicoController")
+@RequestMapping("/resources/{collectionId}")
 @lombok.extern.apachecommons.Log
 public class ResourcesController implements ApplicationContextAware {
 
@@ -47,13 +47,19 @@ public class ResourcesController implements ApplicationContextAware {
 	@Value("#{appProperties['resources.web.directory.name=web']}")
 	private String collectionWebResourcesDirectoryName = "web";
 	
-	@RequestMapping("{collectionId}/{resource:.*}")
+	@RequestMapping("/test.html")
+	public void handleRequestDefaultProfile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/plain");
+		response.getWriter().write("hello");
+	}
+	
+	@RequestMapping("/{resource:.*}")
 	public void handleRequestDefaultProfile(@PathVariable String collectionId, @PathVariable String resource,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		handleRequest(collectionId, DefaultValues.DEFAULT_PROFILE, resource, request, response);
 	}
 	
-	@RequestMapping("{collectionId}/{profileId}/{resource:.*}")
+	@RequestMapping("/{profileId}/{resource:.*}")
 	public void handleRequest(@PathVariable String collectionId, @PathVariable String profileId, @PathVariable String resource,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		Collection c = configRepository.getCollection(collectionId);
