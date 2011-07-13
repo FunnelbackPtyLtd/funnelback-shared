@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.utils.PanLook;
 import com.funnelback.utils.PanLookFactory;
@@ -29,12 +28,15 @@ public class DefaultInDocCountFetcher implements InDocCountFetcher {
 	@Autowired @Setter
 	I18n i18n;
 	
+	@Autowired File searchHome;
+
+	
 	@Override
-	public Map<String,Integer> getTermWeights(ContentOptimiserModel comparison, String queryWord, Collection collection) {
+	public Map<String,Integer> getTermWeights(ContentOptimiserModel comparison, String queryWord, String collectionName) {
 		Map<String,Integer> termWeights = new HashMap<String,Integer>();
 		
 		try {
-			PanLook lexSearch = panLookFactory.getPanLookForLex(new File(collection.getConfiguration().getCollectionRoot(),DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".lex"), queryWord);
+			PanLook lexSearch = panLookFactory.getPanLookForLex(new File(searchHome,DefaultValues.FOLDER_DATA + File.separator + collectionName + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".lex"), queryWord);
 			
 			for(String line : lexSearch) {
 				try{

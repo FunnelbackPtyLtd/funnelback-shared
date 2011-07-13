@@ -6,6 +6,6 @@ import lombok.Setter;
 public class DocumentContentModel {
 	@Getter @Setter private int totalWords;
 	@Getter @Setter private int uniqueWords;
-	@Getter @Setter private String commonWords;
+	@Getter @Setter private String commonWords = "[]";
 
 }

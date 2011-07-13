@@ -40,7 +40,7 @@ public class DefaultInDocCountFetcherTest {
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
 		fetcher.setPanLookFactory(getMockExplodingPanLookFactory());
-		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection);
+		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection.getId());
 		Assert.assertEquals("Should have no term weights if pan-look exploded",0,termWeights.size());
 		Assert.assertEquals("Should have only one error message",1,comparison.getMessages().size());
 		Assert.assertEquals("Error message should be correct",i18n.tr("error.obtainingTermWeights"),comparison.getMessages().get(0));
@@ -53,7 +53,7 @@ public class DefaultInDocCountFetcherTest {
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
 		fetcher.setI18n(i18n);
 		fetcher.setPanLookFactory(getMockParsingErrorPanLookFactory());
-		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection);
+		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection.getId());
 		Assert.assertEquals("term weights should only contain three entries",3,termWeights.size());
 		Assert.assertEquals("General term weight (_) should be correct",5,termWeights.get("_").intValue());
 		Assert.assertEquals("Anchor weight (k) should be correct",1,termWeights.get("k").intValue());
@@ -71,7 +71,7 @@ public class DefaultInDocCountFetcherTest {
 		
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy")); 
 		fetcher.setPanLookFactory(getMockPanLookFactory());
-		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection);
+		Map<String,Integer> termWeights = fetcher.getTermWeights(comparison, "testterm",collection.getId());
 		
 		Assert.assertEquals("term weights should only contain three entries",3,termWeights.size());
 		Assert.assertEquals("General term weight (_) should be correct",5,termWeights.get("_").intValue());

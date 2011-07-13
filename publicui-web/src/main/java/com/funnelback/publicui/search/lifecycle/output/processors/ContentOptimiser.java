@@ -50,21 +50,34 @@ public class ContentOptimiser implements OutputProcessor {
 					log.info("setting important url");
 					filler.setImportantUrl(comparison,searchTransaction);
 					log.info("obtaining anchors");		
-					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),searchTransaction.getQuestion().getCollection());
+					AnchorModel anchors = fetcher.fetchGeneral(selectedDocument.getResponse().getResultPacket().getResults().get(0).getDocNum(),selectedDocument.getResponse().getResultPacket().getResults().get(0).getCollection());
 					log.info("Filling hint texts");
 					filler.fillHintCollections(comparison);
 					log.info("obtaining content");					
-					filler.obtainContentBreakdown(comparison, searchTransaction, selectedDocument.getResponse().getResultPacket(),anchors);
+					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors);
 				
 					log.info("done");
 				}
 			} else {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) == null) {
 					comparison.getMessages().add("No document URL selected.");
+					filler.fillHintCollections(comparison);
 				} else {
-					comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) + "' was not returned for the query.");
+					filler.setImportantUrl(comparison,searchTransaction);
+					log.info("obtaining anchors");		
+					if(comparison.getImportantOne() != null){
+						AnchorModel anchors = fetcher.fetchGeneral(comparison.getImportantOne().getDocNum(),comparison.getImportantOne().getCollection());
+						log.info("Filling hint texts");
+						filler.fillHintCollections(comparison);
+						log.info("obtaining content");					
+						filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors);
+					} else {
+						comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) + "' was not returned for the query.");
+						filler.fillHintCollections(comparison);
+					}
+	
 				}
-				filler.fillHintCollections(comparison);
+				
 			}
 			searchTransaction.getResponse().setUrlComparison(comparison);
 		}

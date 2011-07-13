@@ -82,7 +82,7 @@ public class DefaultDocFromCacheTest {
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		
 		
-		dFromC.getDocument(comparison, "cache-url", qs.getCollection().getConfiguration());
+		dFromC.getDocument(comparison, "cache-url", qs.getCollection().getConfiguration(),"data-repository");
 		Assert.assertTrue("Unexpected messages: " + comparison.getMessages().toString(),comparison.getMessages().isEmpty());
 	}
 }

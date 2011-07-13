@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.service.anchors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorDetail;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
-import com.funnelback.publicui.search.model.collection.Collection;
 
 @Log
 @Component
@@ -41,9 +39,9 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 	I18n i18n;
 	
 	@Override
-	public AnchorModel fetchGeneral(int docNum,Collection collection) {
+	public AnchorModel fetchGeneral(int docNum,String collectionName) {
 		AnchorModel model = new AnchorModel();
-		Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collection, model);
+		Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collectionName, model);
 		
 		List<AnchorDescription> anchorsList = new ArrayList<AnchorDescription>(anchors.values());
 		Collections.sort(anchorsList);
@@ -53,10 +51,10 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 	}
 	
 	@Override
-	public AnchorModel fetchDetail(int docNum, Collection collection,
+	public AnchorModel fetchDetail(int docNum, String collectionName,
 			String anchortext,int start) {
 		AnchorModel model = new AnchorModel();
-		Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collection, model);
+		Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collectionName, model);
 
 		String lookupAnchortext = AnchorDescription.cleanAnchorText(anchortext);
 		AnchorDetail detail = new AnchorDetail(lookupAnchortext);
@@ -64,14 +62,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 		
 			AnchorDescription description = anchors.get(lookupAnchortext);
 			
-			File indexStem = null;
-			try {
-				indexStem = new File(collection.getConfiguration().getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
-			} catch (FileNotFoundException e1) {
-				model.setError(i18n.tr("anchors.collection.file.not.found"));
-				log.error("FileNotFound exception (Collection root doesn't exist): ", e1);
-				return model;
-			}
+			File indexStem = new File(searchHome,DefaultValues.FOLDER_DATA + File.separator + collectionName + File.separator +  DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
 			
 			List<String> sortedList = new ArrayList<String>(description.getLinksTo());
 			Collections.sort(sortedList);
@@ -95,20 +86,13 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 		return model;
 	}
 
-	private Map<String,AnchorDescription> commonAnchorsProcessing(int docNum, Collection collection,
+	private Map<String,AnchorDescription> commonAnchorsProcessing(int docNum, String collectionName,
 			AnchorModel model) {
-		model.setCollection(collection.getId());
+		model.setCollection(collectionName);
 		String formattedDocnum = String.format("%08d",docNum);
 		model.setDocNum(formattedDocnum);
 	
-		File indexStem = null;
-		try {
-			indexStem = new File(collection.getConfiguration().getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
-		} catch (FileNotFoundException e1) {
-			model.setError(i18n.tr("anchors.collection.file.not.found"));
-			log.error("FileNotFound exception when obtianing collection root: ", e1);
-			return new HashMap<String,AnchorDescription>();
-		}
+		File indexStem = new File(searchHome,DefaultValues.FOLDER_DATA + File.separator + collectionName + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
 		
 		File distilledFile = new File(indexStem.getAbsolutePath() + ".distilled");
 		model.setDistilledFileName(distilledFile.toString()); 

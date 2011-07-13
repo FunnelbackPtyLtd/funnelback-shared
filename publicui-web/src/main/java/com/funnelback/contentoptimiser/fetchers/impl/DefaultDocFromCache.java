@@ -83,7 +83,7 @@ public class DefaultDocFromCache implements DocFromCache {
 	}
 	
 	@Override
-	public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config) {
+	public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config,String collectionId) {
 		// Create a temp directory to store the cache copy and the index
 		File tempDir = Files.createTempDir();
 		log.info("Created tempdir");
@@ -114,12 +114,9 @@ public class DefaultDocFromCache implements DocFromCache {
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
 		File bldinfo = null;
-		try {
-			log.info("reading bldinfo");
-			bldinfo = new File(config.getCollectionRoot(), DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".bldinfo");
-		} catch (FileNotFoundException e) {
-			comparison.getMessages().add(i18n.tr("error.configFileNotFound"));
-		}
+
+		log.info("reading bldinfo");
+		bldinfo = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionId + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".bldinfo");
 
 		String[] args = new String[0];
 		try {

@@ -16,6 +16,7 @@ import com.thoughtworks.xstream.XStream;
 @Log
 public class MetaInfoConfigReader implements ConfigReader<MetaInfo> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, MetaInfo> read(String file) {
 		XStream xstream = new XStream();

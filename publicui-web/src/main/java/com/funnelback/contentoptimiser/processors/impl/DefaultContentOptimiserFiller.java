@@ -1,6 +1,7 @@
 package com.funnelback.contentoptimiser.processors.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,6 @@ import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
-import com.funnelback.contentoptimiser.fetchers.impl.DefaultBldInfoStatsFetcher;
 import com.funnelback.contentoptimiser.fetchers.impl.MetaInfoFetcher;
 import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
@@ -52,6 +52,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	
 	@Autowired
 	InDocCountFetcher inDocCountFetcher;
+	
+	@Autowired
+	BldInfoStatsFetcher bldInfoStatsFetcher;
 	
 	@Autowired @Setter File searchHome;
 	
@@ -253,7 +256,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		// See if the selected document appears for the long query
 		Result importantResult = null;
 		for (Result result : allRp.getResults()) {
-			if(result.getDisplayUrl().equals(urlString) || result.getDisplayUrl().equals("http://" + urlString)) importantResult = result;
+			if(result.getLiveUrl().equals(urlString) || result.getLiveUrl().equals("http://" + urlString)) importantResult = result;
 		}	
 		
 		// If the selected document didn't appear in the long query, then terminate early
@@ -291,69 +294,80 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
 	@Override
 	public void obtainContentBreakdown(ContentOptimiserModel comparison,
-			SearchTransaction searchTransaction, ResultPacket importantRp,AnchorModel anchors) {
+			SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors) {
 		DocumentContentModel content = new DocumentContentModel();
 		
-		String documentContent = docFromCache.getDocument(comparison, importantRp.getResults().get(0).getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration());
+		String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
 		if(documentContent != null) {
 			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors);
 	
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			
-			try {
-				BldInfoStatsFetcher bldInfoStats = new DefaultBldInfoStatsFetcher(searchTransaction.getQuestion().getCollection());
-								
-				content.setTotalWords(dwp.getTotalWords());
-				content.setUniqueWords(dwp.setUniqueWords());
-				content.setCommonWords(Arrays.toString(dwp.getCommonWords(importantRp.getStopWords(),"_")));
-				
-				List<ContentHint> contentHints = new ArrayList<ContentHint>();
 			
-				int i = 0;
-				MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection(),searchHome);
-				
-				contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words, or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords())); 
-				
-				for(String queryWord : queryWords){
-					SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
-					Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,searchTransaction.getQuestion().getCollection());
-
-					
-					
-					long totalDocuments = bldInfoStats.getTotalDocuments();
-					//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
-	
-					for(Entry<String,Integer> metaFreqs : inDocFreqs.entrySet()) {
-						Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
-						Integer termFreq = frequencies.getCount(metaFreqs.getKey());
-						
-						ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
-								inDocFreq, termFreq, mf,
-								metaFreqs.getKey());
-						if(contentHint != null) {
-							if(termFreq != 0) contentHint.setBucket(0);
-							contentHints.add(contentHint);
-						}
-						
-					}
-					
-					contentHints.add(new ContentHint(queryWord,i++));
-				}
-				if(contentHints.size() != 0) {
-					comparison.getHintsByName().get("content").getHintTexts().clear();
-					Collections.sort(contentHints);
-					for(ContentHint hint : contentHints) {
-						if(hint.getScoreEstimate() > 0) 
-							comparison.getHintsByName().get("content").getHintTexts().add(hint.getHintText());
-					}
-				}
-				
+			BldInfoStats bldInfoStats = new BldInfoStats();
+			try {
+				bldInfoStats = bldInfoStatsFetcher.fetch(comparison, searchTransaction.getQuestion().getCollection());
 			} catch (IOException e1) {
-				comparison.getMessages().add(i18n.tr("error.readingStatisticsFromBldinfo"));
-				log.error("IOException when reading bldinfo file:", e1);
+				comparison.getMessages().add(i18n.tr("error.readingBldinfo"));
+				log.error("IOException when reading bldinfo file(s)",e1);
+			}
+							
+			content.setTotalWords(dwp.getTotalWords());
+			content.setUniqueWords(dwp.setUniqueWords());
+			content.setCommonWords(Arrays.toString(dwp.getCommonWords(searchTransaction.getResponse().getResultPacket().getStopWords(),"_")));
+			
+			List<ContentHint> contentHints = new ArrayList<ContentHint>();
+		
+			int i = 0;
+			MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection());
+			try {
+				mf.fetch(searchHome);
+			} catch (FileNotFoundException e) {
+				comparison.getMessages().add(i18n.tr("error.readingMetaInfo"));
+				log.error("IOException when reading a meta-names.xml file",e);				
+			}
+			
+			contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words, or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords())); 
+			
+			for(String queryWord : queryWords){
+				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
+				Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,anchors.getCollection());
+
+				
+				
+				long totalDocuments = bldInfoStats.getTotalDocuments();
+				//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
+
+				for(Entry<String,Integer> metaFreqs : inDocFreqs.entrySet()) {
+					Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
+					Integer termFreq = frequencies.getCount(metaFreqs.getKey());
+					
+					ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
+							inDocFreq, termFreq, mf,
+							metaFreqs.getKey());
+					if(contentHint != null) {
+						if(termFreq != 0) contentHint.setBucket(0);
+						contentHints.add(contentHint);
+					}
+					
+				}
+				
+				contentHints.add(new ContentHint(queryWord,i++));
+			}
+			boolean cleared = false;
+			if(contentHints.size() != 0) {
+			
+				Collections.sort(contentHints);
+				for(ContentHint hint : contentHints) {
+					if(hint.getScoreEstimate() > 0) {
+						if(! cleared)	comparison.getHintsByName().get("content").getHintTexts().clear();
+						
+						comparison.getHintsByName().get("content").getHintTexts().add(hint.getHintText());
+					}
+					
+				}
 			}
 
-			
 		} else {
 			// we didn't get a document back from cache
 		}

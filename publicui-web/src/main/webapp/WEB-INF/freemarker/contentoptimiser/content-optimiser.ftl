@@ -115,14 +115,22 @@
         </#if>
         <div class="summary">
         	<#if (response.urlComparison.urls?size > 0)>
-        		<p>Showing results 1-${response.urlComparison.urls?size} of ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;.
-        						<p>Top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}">${response.urlComparison.urls[0].title}</a>.
+        		<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents for the query &quot;<b><@s.QueryClean/></b>&quot;. The top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}">${response.urlComparison.urls[0].title}</a>.
 	        	<#if (response.urlComparison.importantOne??)>
-					<p>Selected document is at rank <span style="color: #ff0000;">${response.urlComparison.importantOne.rank}</span> and is titled <a href="${response.urlComparison.importantOne.liveUrl}">${response.urlComparison.importantOne.title}</a>. 
-					 You can view it in the cache <a href="${response.urlComparison.importantOne.cacheUrl}">here</a></p>
-	        	</#if> 
-	        		<p>Here is a breakdown of the ranking for the top ${response.urlComparison.urls?size} documents:</p>
+					<p>The selected document (<strong>${response.urlComparison.importantOne.displayUrl}</strong>):
+						<ul>
+							<li>is ranked <span class="highlight">${response.urlComparison.importantOne.rank}</span> in the results </li>
+							<li>is titled <a href="${response.urlComparison.importantOne.liveUrl}">${response.urlComparison.importantOne.title}</a>.</li>
+							<li>contains <span class="highlight">${response.urlComparison.content.totalWords?string.number}</span> total words, <span class="highlight">${response.urlComparison.content.uniqueWords?string.number}</span> of which are unique.</li>
+						</ul> 
+					 Funnelback's cached copy of the document is available <a href="${response.urlComparison.importantOne.cacheUrl}">here</a>.</p>
+					 <p>The most common words in the document are <span class="highlight">${response.urlComparison.content.commonWords}</span>. 
+					 <ul>
+					 	<li>These words should be an indicator of the subject of the document. If the words don't accurately reflect the subject of the document, consider re-wording the document, or preventing sections of the document from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags</li></ul> </p>
+	        	</#if>
+	        	<p>Here is a breakdown of the ranking scores of the top documents:</p> 
         	</#if>
+        	
         </div>   
            
         <script type="text/javascript">
