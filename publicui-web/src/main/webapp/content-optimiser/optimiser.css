@@ -1,0 +1,124 @@
+/* Main layout */
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #F0F0F0;
+}
+h3 {
+	color: #FF9F00;
+	text-shadow: #DDD 1px 1px 0px;
+	color: #FF9F00;
+	letter-spacing: .2em;
+	line-height: 30px;
+	font-size: 24px;
+	font-weight: normal;
+	margin: 0px;
+	padding-top: 0px;
+}
+h3.header {
+	position: relative; 
+	top: 34px; 
+	left: 195px; 
+	margin: 0px; 
+	padding: 0px;
+}
+#content-optimiser-pane {
+	padding: 10px; border: 1px solid #A0A0A4;
+	margin-bottom: 15px; width: 800px; position: relative; left: 50%; margin-left: -400px;
+	-moz-box-shadow: 2px 2px 8px #BBB;
+	-webkit-box-shadow: 2px 2px 8px #BBB;
+	box-shadow: 2px 2px 8px #BBB;
+	background-color: #FFFFFF;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
+}
+.section {
+	width: 780px; border-top: 1px solid; 
+	margin: 10px;
+}
+
+/* Summary related layout */
+
+.highlight {
+	font-weight: bold;
+}
+.messages {
+	background-color: #ffaaaa;
+	border: 1px solid #ff0000;
+}
+
+/* Table elements  */
+
+th {
+	color: #444444;
+	font-weight: normal;		
+}
+table {
+	margin-top: 10px;
+}
+td {
+	vertical-align: center;
+}
+
+/* Chart-related layout */
+
+#chartpseudotooltip {
+	padding: 1px; border: 1px solid #aaaaaa; background-color: #F6E3CE;
+}
+#legend {
+	padding: 7px;
+}
+.legend-block { 
+	display: inline-block; 
+	padding: 2px; 
+	padding-left: 5px; 
+	padding-right: 5px;
+}
+.legend-colour {
+	display: inline-block;  
+	width: 12px; 
+	height: 10px;
+} 
+.jqplot-xaxis-label {
+	padding-bottom: 20px;
+}
+
+/* Improvement suggestions related layout */
+
+li {
+	margin-left: 1em;
+	margin-top: 1em;
+	margin-right: 1em;
+	padding: 0;
+}		
+.tip {
+	color: #444444;
+	margin-bottom: 20px;
+}	
+		
+/* resubmit optimiser query form layout */
+
+input.query {
+	position: absolute;
+	left: 4em;
+	width: 645px; 
+}
+input.optimiser_url {
+	position: absolute;
+	left: 4em;
+	width: 645px;
+}
+.requery_line {
+	margin-top: 10px;
+	margin-bottom: 2px;
+	height: 21px;
+	position: relative;
+}
+label {
+	position: absolute;
+	bottom: -2px;
+}
+		
+			
