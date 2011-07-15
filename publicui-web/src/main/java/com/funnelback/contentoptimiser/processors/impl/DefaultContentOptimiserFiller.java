@@ -203,16 +203,28 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			comparison.getHintsByWin().add(h);			
 		}
 
-		
+		boolean seenEasterEgg = false;
 		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
 			if(comparison.getUrls().size() >= 10) break;
 	
-			for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
-				float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
-				//causes.add(new RankingScore(feature.getKey(), percentage));
-				RankingFeature hint = hintsByName.get(feature.getKey());
-				hint.rememberScore(percentage,"" +result.getRank());
+			if(result.getExplain() != null) {
+				if(seenEasterEgg) { 
+					result.setRank(result.getRank() + 1);
+				} 
+				for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
+					float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
+					//causes.add(new RankingScore(feature.getKey(), percentage));
+					RankingFeature hint = hintsByName.get(feature.getKey());
+					hint.rememberScore(percentage,"" +(result.getRank()));
+				}
+			} else {
+				// this is the easter egg query, produce null hints
+				for(Map.Entry<String,Float> feature : rp.getCoolerWeights().entrySet()) {
+					RankingFeature hint = hintsByName.get(feature.getKey());
+					hint.rememberScore(feature.getValue() * 100,"" +result.getRank());
+				}
+				seenEasterEgg = true;
 			}
 			comparison.getUrls().add(result);
 		}
@@ -283,7 +295,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		}
 
 		// now calculate the wins for each feature;
-		for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
+		if(importantResult.getExplain() != null) for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 			float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
 			RankingFeature hint = comparison.getHintsByName().get(feature.getKey());
 			hint.caculateWin(percentage, allRp.getCoolerWeights().get(feature.getKey())*100);
