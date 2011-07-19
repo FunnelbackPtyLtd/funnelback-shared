@@ -44,7 +44,7 @@ public class SearchController {
 	}
 	
 	private enum ViewTypes {
-		html, xml, json, legacy;
+		html, htm, xml, json, legacy;
 	}
 
 	@Autowired
@@ -107,7 +107,18 @@ public class SearchController {
 
 		// Put the relevant objects in the model, depending
 		// of the view requested
-		Map<String, Object> model = getModel(ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI())), request, transaction);
+		ViewTypes vt;
+		try {
+			vt = ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI()));
+		} catch (IllegalArgumentException iae) {
+			// Default to HTML in case of an unknown view type
+			log.warn("Search on collection '" + question.getCollection().getId()
+					+ "' called with an unknown extension '"+request.getRequestURI()+"'."
+					+ " Falling back to HTML.");
+			vt = ViewTypes.html;
+		}
+		
+		Map<String, Object> model = getModel(vt, request, transaction);
 
 		// Generate the view name, relative to the Funnelback home
 		String viewName = DefaultValues.FOLDER_CONF + "/"
@@ -125,6 +136,7 @@ public class SearchController {
 		switch (vt) {
 		case json:
 		case html:
+		case htm:
 			out.put(ModelAttributes.question.toString(), st.getQuestion());
 			out.put(ModelAttributes.response.toString(), st.getResponse());
 			out.put(ModelAttributes.error.toString(), st.getError());
