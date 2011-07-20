@@ -58,11 +58,16 @@ public class SearchController {
 		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
 	}
 	
+	@RequestMapping(value={"/"})
+	public String index() {
+		return "redirect:/search.html";
+	}
+	
 	/**
 	 * Called when no collection has been specified.
 	 * @return a list of all available collections.
 	 */
-	@RequestMapping(value={"/", "/search.*"},params="!"+RequestParameters.COLLECTION)
+	@RequestMapping(value={"/search.*"},params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollection() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());

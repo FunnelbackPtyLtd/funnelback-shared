@@ -5,7 +5,7 @@ import org.apache.commons.exec.Executor;
 
 /**
  * {@link Executor} for PADRE that considers all return codes
- * as being succesful. PADRE will return a non-zero code if an error
+ * as being successful. PADRE will return a non-zero code if an error
  * occured, but should still returns a valid XML packet in most cases.
  * 
  * We need this special {@link Executor} to avoid throwing an Exception
