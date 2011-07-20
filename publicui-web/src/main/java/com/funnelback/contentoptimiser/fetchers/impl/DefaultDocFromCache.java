@@ -100,11 +100,11 @@ public class DefaultDocFromCache implements DocFromCache {
 			getCache.setStreamHandler(new PumpStreamHandler(fos, null));
 			getCache.execute(clGetCache);
 		} catch (FileNotFoundException e1) {
-			log.error("File not found " + tempDir + File.pathSeparator + "cachefile");
+			log.error("File not found " + tempDir + File.pathSeparator + "cachefile",e1);
 			comparison.getMessages().add(i18n.tr("error.creatingCacheFile"));
 			return null;
 		} catch (IOException e) {
-			log.error("Failed to get document from cache with command line " + clGetCache.toString());
+			log.error("Failed to get document from cache with command line " + clGetCache.toString(),e);
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
 			return null;
 		} finally {
@@ -122,7 +122,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		try {
 			args = getArgsFromBldinfo(bldinfo);
 		} catch (IOException e1) {
-			log.error("Failed to read bldinfo file '" + bldinfo.toString() + "': " + e1.getMessage());
+			log.error("Failed to read bldinfo file '" + bldinfo.toString(),e1);
 			comparison.getMessages().add(i18n.tr("error.readingBldinfo"));
 			return null;
 		}
@@ -137,7 +137,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			indexDocument.setStreamHandler(new PumpStreamHandler(null, null)); // ignore all indexer output
 			indexDocument.execute(clIndexDocument);
 		} catch (IOException e) {
-			log.error("Failed to index document with command line " + clIndexDocument.toString());
+			log.error("Failed to index document with command line " + clIndexDocument.toString(),e);
 			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
 			return null;
 		}
@@ -148,7 +148,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
-			log.error("Failed to open words in doc file after indexing: " + e);
+			log.error("Failed to open words in doc file after indexing",e);
 			comparison.getMessages().add(i18n.tr("error.readingIndexedFile"));
 			return null;
 		}
