@@ -14,6 +14,8 @@ import com.funnelback.contentoptimiser.processors.impl.DefaultDocumentWordsProce
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 
 public class DefaultDocumentWordsProcessorTest {
@@ -44,7 +46,8 @@ public class DefaultDocumentWordsProcessorTest {
 		anchors.getAnchors().add(anchorDescription2);
 		anchors.getAnchors().add(anchorDescription3);
 		
-		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors);
+		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five five_t five_h six", anchors,emptyStemMatches);
 		
 		SingleTermFrequencies content = dwp.explainQueryTerm("five",new Collection("test1", null));
 		Assert.assertEquals(content.getCount(), 2);
@@ -60,7 +63,8 @@ public class DefaultDocumentWordsProcessorTest {
 	
 	@Test
 	public void testDocumentOverview() {
-		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors);
+		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors,emptyStemMatches);
 		String[] expectedFive =new String[] {"two","five","three","six","one"};
 		Assert.assertTrue("Top five words in document incorrect ", Arrays.equals(expectedFive, dwp.getCommonWords(new ArrayList<String>(),"_")));
 		Assert.assertEquals(9,dwp.getTotalWords());

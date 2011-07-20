@@ -6,6 +6,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.google.common.collect.SetMultimap;
 
 public interface ContentOptimiserFiller {
 	public void fillHintCollections(ContentOptimiserModel comparison);
@@ -16,5 +17,5 @@ public interface ContentOptimiserFiller {
 
 	void obtainContentBreakdown(ContentOptimiserModel comparison,
 			SearchTransaction searchTransaction, Result importantResult,
-			AnchorModel anchors);
+			AnchorModel anchors, SetMultimap<String, String> stemMatches);
 }

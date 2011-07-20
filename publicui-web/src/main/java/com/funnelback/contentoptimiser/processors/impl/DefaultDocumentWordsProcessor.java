@@ -15,6 +15,7 @@ import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
 import com.google.common.collect.TreeMultiset;
 
 
@@ -25,7 +26,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 	private final int totalWordCount;
 	
 
-	public DefaultDocumentWordsProcessor(String wordsInDocument, AnchorModel anchors) {
+	public DefaultDocumentWordsProcessor(String wordsInDocument, AnchorModel anchors, SetMultimap<String,String> stemMatches) {
 		countByTerms = new HashMap<String,Map<String,Integer>>(); 
 		int count = 0;
 		String[] words = wordsInDocument.split("\\s+");
@@ -37,10 +38,20 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 				String singleWord = wordAndFieldType[0];
 				
 				countWord(singleWord, fieldName);
+				if(stemMatches.containsKey(singleWord)) {
+					for(String equiv : stemMatches.get(singleWord)) {
+						countWord(equiv, fieldName);
+					}
+				}
 			} else {
 				String fieldName = "_";
 				countWord(word, fieldName);
 				count++;
+				if(stemMatches.containsKey(word)) {
+					for(String equiv : stemMatches.get(word)) {
+						countWord(equiv, fieldName);
+					}
+				}
 			}
 		}
 		

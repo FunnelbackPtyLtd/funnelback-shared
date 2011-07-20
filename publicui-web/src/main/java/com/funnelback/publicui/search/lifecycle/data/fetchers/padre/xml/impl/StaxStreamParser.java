@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.apachecommons.Log;
 
+import org.apache.commons.collections.MultiMap;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
@@ -37,6 +38,8 @@ import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 @Component("padreXmlParser")
 @Log
@@ -111,6 +114,23 @@ public class StaxStreamParser implements PadreXmlParser {
 						for(String word : stopWords){
 							if(!"".equals(word)) packet.getStopWords().add(word);
 						}
+					} else if (ResultPacket.Schema.STEM_EQUIV.equals(xmlStreamReader.getLocalName())) {
+						String[] A = xmlStreamReader.getElementText().split("\n"); 
+						for(String line : A) {
+							line = line.trim();
+							if("".equals(line)) continue;
+							String[] originalAndTarget = line.split(":");
+							if(originalAndTarget[1].indexOf("[") == -1) {
+								packet.getStemmedEquivs().put(originalAndTarget[1], originalAndTarget[0]);
+							} else {
+								originalAndTarget[1] = originalAndTarget[1].replaceAll("[\\[\\]]", "");
+								String[] targets =originalAndTarget[1].split("\\s+");
+								for(String target : targets) {
+									packet.getStemmedEquivs().put(target, originalAndTarget[0]);
+								}
+							}
+						}
+						
 					} else if (ResultPacket.Schema.EXPLAIN_TYPES.equals(xmlStreamReader.getLocalName())) {
 						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.EXPLAIN_TYPES, xmlStreamReader);
 						packet.getExplainTypes().putAll(stringFeatures);

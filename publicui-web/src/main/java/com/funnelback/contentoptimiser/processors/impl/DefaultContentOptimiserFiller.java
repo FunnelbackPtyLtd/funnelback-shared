@@ -37,6 +37,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
+import com.google.common.collect.SetMultimap;
 
 @Log
 @Component
@@ -306,12 +307,19 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
 	@Override
 	public void obtainContentBreakdown(ContentOptimiserModel comparison,
-			SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors) {
+			SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors, SetMultimap<String,String> stemMatches) {
 		DocumentContentModel content = new DocumentContentModel();
+		
+		for(Entry <String,String> stemMatch : stemMatches.entries()) {
+			if(! content.getTermsToStemEquivs().containsKey(stemMatch.getValue())) {
+				content.getTermsToStemEquivs().put(stemMatch.getValue(),new HashSet<String>());
+			}
+			content.getTermsToStemEquivs().get(stemMatch.getValue()).add(stemMatch.getKey());
+		}
 		
 		String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
 		if(documentContent != null) {
-			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors);
+			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
 	
 			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
 			

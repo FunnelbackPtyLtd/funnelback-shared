@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.Set;
+import java.util.Map.Entry;
+
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,7 @@ public class ContentOptimiser implements OutputProcessor {
 			log.info("Process output content optimiser has all data");
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
 			log.info("Done consuming result packet");
+			
 			SearchTransaction selectedDocument = searchTransaction.getExtraSearches().get(SearchTransaction.ExtraSearches.CONTENT_OPTIMISER_SELECT_DOCUMENT.toString());
 			if(selectedDocument != null && selectedDocument.hasResponse() && selectedDocument.getResponse().getResultPacket().hasResults()) {
 				if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL).equals("")) {
@@ -54,7 +58,7 @@ public class ContentOptimiser implements OutputProcessor {
 					log.info("Filling hint texts");
 					filler.fillHintCollections(comparison);
 					log.info("obtaining content");					
-					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors);
+					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
 				
 					log.info("done");
 				}
@@ -70,7 +74,7 @@ public class ContentOptimiser implements OutputProcessor {
 						log.info("Filling hint texts");
 						filler.fillHintCollections(comparison);
 						log.info("obtaining content");					
-						filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors);
+						filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
 					} else {
 						comparison.getMessages().add("The selected document '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL) + "' was not returned for the query.");
 						filler.fillHintCollections(comparison);
