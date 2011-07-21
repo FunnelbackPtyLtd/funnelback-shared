@@ -56,7 +56,8 @@
         	$(function() {
         		$("#barplot-cell").append('<div class="jqPlot" id="barplot" style="height:' + (50 * ${response.urlComparison.urls?size?c}) + 'px; width:435px;"></div>');
    
-	        	<#list response.urlComparison.hintsByWin as hint>
+	        	<#list response.urlComparison.hintsByName?keys as hintkey>
+	        			<#assign hint = response.urlComparison.hintsByName[hintkey] />
         				var ${hint.name} = new Array();
         				featureNames.push('${hint.longName}');
 						<#if response.urlComparison.importantOne?? > var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank?string]},1]]; </#if>
@@ -66,14 +67,14 @@
 	        	
 
         		<#list response.urlComparison.urls as urlinfo>
-        			<#list response.urlComparison.hintsByWin as hint>
-       					${hint.name}.push([${hint.scores[urlinfo.rank?string]},${response.urlComparison.urls?size?c} + 1 - ${urlinfo.rank}]);
+        			<#list response.urlComparison.hintsByName?keys as hintkey>
+       					${response.urlComparison.hintsByName[hintkey].name}.push([${response.urlComparison.hintsByName[hintkey].scores[urlinfo.rank?string]},${response.urlComparison.urls?size?c} + 1 - ${urlinfo.rank}]);
         			</#list>
         		</#list>
       	
 				var barplot = $.jqplot('barplot', [
-	        	<#list response.urlComparison.hintsByWin as hint>
-	        			${hint.name},
+	  			<#list response.urlComparison.hintsByName?keys as hintkey>
+	        			${response.urlComparison.hintsByName[hintkey].name},
 	        	</#list>
 				
 				], {
@@ -117,9 +118,9 @@
 							
 				<#if response.urlComparison.importantOne??> 
 					var barplotImportant = $.jqplot('barplot-important', [
-		        	<#list response.urlComparison.hintsByWin as hint>
-		        			important_${hint.name},
-		        	</#list>
+					<#list response.urlComparison.hintsByName?keys as hintkey>
+	        			important_${response.urlComparison.hintsByName[hintkey].name},
+	    	    	</#list>
 					
 					], {
 		    			stackSeries: true, 
@@ -145,37 +146,17 @@
 					
 				</#if>
 				
-/*				var barplotWeight = $.jqplot('barplot-weights', [
-	        	<#list response.urlComparison.hintsByWin as hint>
-	        			weight_${hint.name},
-	        	</#list>
-				
-				], {
-	    			stackSeries: true, 
-	    			legend: {show: false},
-	    			seriesDefaults: {
-	        			renderer: $.jqplot.BarRenderer, 
-	        			shadowAngle: 135, 
-	        			rendererOptions: {barDirection: 'horizontal', barWidth: 20}
-	    			}, 
-	    			axes: {
-	        			yaxis: {
-				            renderer: $.jqplot.CategoryAxisRenderer, 
-			    	        ticks: [' ']
-			        	},	
-			        	xaxis: {min: 0, max: 100, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
-			    	}
-				});				
-				$('#barplot-weights').bind('jqplotDataHighlight', showTip);
-		    	$('#barplot-weights').bind('jqplotDataUnhighlight', hideTip);*/
-
-				
-				<#list response.urlComparison.hintsByWin as hint>
-	        			$("#legend").append('<span class="legend-block"><span class="legend-colour" style="background-color: '+barplot.series[${hint_index}].color+' ">&nbsp;</span> <span>${hint.longName}</span>');
+				<#assign idx = 0 />
+				<#list response.urlComparison.hintsByName?keys as hintkey>
+	        			<#assign hint = response.urlComparison.hintsByName[hintkey] />
+	        			$("#legend").append('<span class="legend-block"><span class="legend-colour" style="background-color: '+barplot.series[${idx}].color+' ">&nbsp;</span> <span>${hint.longName}</span>');
+	        			<#assign idx = idx +1/>
 	        	</#list>
 	        	
 	        	
-				<#list response.urlComparison.hintsByWin as hint>
+				<#assign idx = 0 />
+				<#list response.urlComparison.hintsByName?keys as hintkey>
+	        		<#assign hint = response.urlComparison.hintsByName[hintkey] />
 	        		for(var i = 0; i < ${hint.name}.length;i++) {
 	        			${hint.name}[i] = [${response.urlComparison.urls?size?c}+1-${hint.name}[i][1],${hint.name}[i][0]/${response.urlComparison.weights[hint.name]}*100];
 	        		}
@@ -210,10 +191,11 @@
  							   }
        				 		},
         				series:[
-            				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${hint_index}].color},
+            				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
             				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}, </#if>
 		        		],
     				});
+    				<#assign idx = idx+1/>
 				</#list>
 				
 			
@@ -266,21 +248,6 @@
 			</div>
 		</#if>
 
-
-        <!--
-        <div class="section">
-	        <table>
-	                <tr>
-	                	<td>
-	                		<div style="text-align: right; overflow: hidden; white-space: nowrap; width: 340px; height: 43px; padding-top: 15px;">
-	                			Weighting of each score:
-	                		</div>
-	                	</td> 
-	                	<td><div class="jqPlot" id="barplot-weights" style="height:60px; width:435px;"></div></td>
-	                </tr>	
-			</table>
-		</div> 
-		-->
 		<div class="section">
 		    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 			<div id="legend"></div>
