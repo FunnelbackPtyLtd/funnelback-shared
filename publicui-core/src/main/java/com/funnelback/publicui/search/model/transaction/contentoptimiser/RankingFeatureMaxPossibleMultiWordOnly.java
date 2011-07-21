@@ -7,7 +7,7 @@ public class RankingFeatureMaxPossibleMultiWordOnly extends RankingFeature {
 	final boolean maybeMultiword;
 	
 	public RankingFeatureMaxPossibleMultiWordOnly(String name,String category,ResultPacket rp) {
-		super(name,category);
+		super(name,category,rp.getCoolerNames().get(name));
 		// IF there are no spaces in the query, it will be a single word query
 		maybeMultiword = rp.getQueryCleaned().indexOf(' ') != -1;
 	}

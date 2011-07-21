@@ -84,6 +84,7 @@ public class ResultPacket {
 	@Getter private final Map<String,String> explainTypes = new HashMap<String,String>();
 	@Getter private final List<String> stopWords = new ArrayList<String>();
 	@Getter private SetMultimap<String,String> StemmedEquivs = HashMultimap.create();
+	@Getter private Map<String,String> coolerNames = new HashMap<String,String>();
 	
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
@@ -152,6 +153,8 @@ public class ResultPacket {
 		public static final String STOP_WORDS = "stop_words";
 
 		public static final String STEM_EQUIV = "stem_equivs";
+
+		public static final String COOLER_NAMES = "cooler_names";
 		
 	}
 }

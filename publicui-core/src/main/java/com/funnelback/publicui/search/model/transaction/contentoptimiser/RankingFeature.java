@@ -6,15 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+
 public abstract class RankingFeature implements Comparable<RankingFeature> {
+
+	public RankingFeature(String name, String category, String longName) {
+		this.name = name;
+		this.category = category;
+		if(longName != null && !"".equals(longName)) {
+			this.longName = longName.trim().replaceAll(" weight$", " score");
+		} else {
+			this.longName = name;
+		}
+	}
 
 	@Getter private final String name;	
 	@Getter private final String category;
 	@Getter private final Map<String,Float> scores = new HashMap<String,Float>();
 	@Getter private final List<String> hintTexts = new ArrayList<String>();
+	@Getter private final String longName;
+	
 	
 	@Getter protected float win;
 	protected float maxScore;

@@ -58,7 +58,7 @@
    
 	        	<#list response.urlComparison.hintsByWin as hint>
         				var ${hint.name} = new Array();
-        				featureNames.push('${hint.name}');
+        				featureNames.push('${hint.longName}');
 						<#if response.urlComparison.importantOne?? > var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank?string]},1]]; </#if>
 		        		var weight_${hint.name} = [[${response.urlComparison.weights[hint.name]},1]]
        	    	</#list>
@@ -145,7 +145,7 @@
 					
 				</#if>
 				
-				var barplotWeight = $.jqplot('barplot-weights', [
+/*				var barplotWeight = $.jqplot('barplot-weights', [
 	        	<#list response.urlComparison.hintsByWin as hint>
 	        			weight_${hint.name},
 	        	</#list>
@@ -167,11 +167,11 @@
 			    	}
 				});				
 				$('#barplot-weights').bind('jqplotDataHighlight', showTip);
-		    	$('#barplot-weights').bind('jqplotDataUnhighlight', hideTip);
+		    	$('#barplot-weights').bind('jqplotDataUnhighlight', hideTip);*/
 
 				
 				<#list response.urlComparison.hintsByWin as hint>
-	        			$("#legend").append('<span class="legend-block"><span class="legend-colour" style="background-color: '+barplot.series[${hint_index}].color+' ">&nbsp;</span> <span>${hint.name}</span>');
+	        			$("#legend").append('<span class="legend-block"><span class="legend-colour" style="background-color: '+barplot.series[${hint_index}].color+' ">&nbsp;</span> <span>${hint.longName}</span>');
 	        	</#list>
 	        	
 	        	
@@ -190,7 +190,7 @@
 	        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},
 	        			<#if response.urlComparison.importantOne??> line_${hint.name} </#if>
 	        		], {
-	        			title: '${hint.name}',
+	        			title: '${hint.longName}',
 	    				axesDefaults: {       				 	
        				 			labelRenderer: $.jqplot.CanvasAxisLabelRenderer, 
        				 			tickRenderer: $.jqplot.CanvasAxisTickRenderer,
@@ -266,6 +266,8 @@
 			</div>
 		</#if>
 
+
+        <!--
         <div class="section">
 	        <table>
 	                <tr>
@@ -277,7 +279,8 @@
 	                	<td><div class="jqPlot" id="barplot-weights" style="height:60px; width:435px;"></div></td>
 	                </tr>	
 			</table>
-		</div>    	
+		</div> 
+		-->
 		<div class="section">
 		    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 			<div id="legend"></div>
@@ -297,7 +300,7 @@
 					    		<#if (hint.hintTexts?size > 0) && (hint.win > 0)>
 					    			<ul>
 							        	<#list hint.hintTexts as text>
-							        		<li><b>${hint.name}:</b> ${text}</li>
+							        		<li><b>${hint.longName}:</b> ${text}</li>
 							        	</#list>
 						        	</ul>
 					       		</#if>

@@ -22,8 +22,12 @@ import com.funnelback.publicui.xml.XmlParsingException;
 public class RankingFeatureTest {
 
 	@Test
-	public void testHintMaxOther() {
-		RankingFeature h = new RankingFeatureMaxOther("name","content");
+	public void testHintMaxOther() throws XmlParsingException, IOException {
+		StaxStreamParser parser = new StaxStreamParser();
+		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+		
+
+		RankingFeature h = new RankingFeatureMaxOther("name","content",rp);
 		
 		h.rememberScore(0.8f,""+1);
 		h.rememberScore(0.6f,""+2);
@@ -36,7 +40,7 @@ public class RankingFeatureTest {
 		assertEquals(0.2f,h.getWin(),0.00001f);
 
 		// All scores the same, but we could do better
-		h = new RankingFeatureMaxOther("name","content");
+		h = new RankingFeatureMaxOther("name","content",rp);
 		h.rememberScore(0.7f,""+1);
 		h.rememberScore(0.7f,""+2);
 		h.rememberScore(0.7f,""+3);
@@ -46,7 +50,7 @@ public class RankingFeatureTest {
 		assertTrue(h.isInteresting());
 
 		// All scores the same except our lower score
-		h = new RankingFeatureMaxOther("name","content");
+		h = new RankingFeatureMaxOther("name","content",rp);
 		h.rememberScore(0.7f,""+1);
 		h.rememberScore(0.7f,""+2);
 		h.rememberScore(0.7f,""+3);
@@ -56,7 +60,7 @@ public class RankingFeatureTest {
 		assertEquals(0.1f,h.getWin(),0.00001f);
 
 		// We're winning this feature, but we could be better
-		h = new RankingFeatureMaxOther("name","content");
+		h = new RankingFeatureMaxOther("name","content",rp);
 		h.rememberScore(0.6f,""+1);
 		h.rememberScore(0.6f,""+2);
 		h.rememberScore(0.6f,""+3);
@@ -65,7 +69,7 @@ public class RankingFeatureTest {
 		assertEquals(-0.1f,h.getWin(),0.00001f);
 		assertTrue(h.isInteresting());		
 
-		h = new RankingFeatureMaxOther("name","content");
+		h = new RankingFeatureMaxOther("name","content",rp);
 		assertFalse(h.isInteresting());
 	}
 
@@ -138,8 +142,12 @@ public class RankingFeatureTest {
 	}
 	
 	@Test
-	public void testHintMaxPossible() {
-		RankingFeature h = new RankingFeatureMaxPossible("name","content");
+	public void testHintMaxPossible() throws XmlParsingException, IOException {
+		StaxStreamParser parser = new StaxStreamParser();
+		ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+		
+		
+		RankingFeature h = new RankingFeatureMaxPossible("name","content",rp);
 		h.rememberScore(0.8f,""+1);
 		h.rememberScore(0.6f,""+2);
 		h.rememberScore(0.5f,""+3);
@@ -150,7 +158,7 @@ public class RankingFeatureTest {
 		assertEquals(0.3f,h.getWin(),0.00001f);
 		
 		// All scores the same, but we could do better
-		h = new RankingFeatureMaxPossible("name","content");
+		h = new RankingFeatureMaxPossible("name","content",rp);
 		h.rememberScore(0.7f,""+1);
 		h.rememberScore(0.7f,""+2);
 		h.rememberScore(0.7f,""+3);
@@ -160,7 +168,7 @@ public class RankingFeatureTest {
 		assertTrue(h.isInteresting());
 		
 		// We're winning this feature, but we could be better
-		h = new RankingFeatureMaxPossible("name","content");
+		h = new RankingFeatureMaxPossible("name","content",rp);
 		h.rememberScore(0.6f,""+1);
 		h.rememberScore(0.6f,""+2);
 		h.rememberScore(0.6f,""+3);
@@ -170,7 +178,7 @@ public class RankingFeatureTest {
 		assertTrue(h.isInteresting());
 
 		// all scores the same, and minimum score
-		h = new RankingFeatureMaxPossible("name","content");
+		h = new RankingFeatureMaxPossible("name","content",rp);
 		h.rememberScore(0.0f,""+1);
 		h.rememberScore(0.0f,""+2);
 		h.rememberScore(0.0f,""+3);
@@ -180,7 +188,7 @@ public class RankingFeatureTest {
 		assertTrue(h.isInteresting());
 
 		// all scores the same, and maximum score
-		h = new RankingFeatureMaxPossible("name","content");
+		h = new RankingFeatureMaxPossible("name","content",rp);
 		h.rememberScore(0.1f,""+1);
 		h.rememberScore(0.1f,""+2);
 		h.rememberScore(0.1f,""+3);
@@ -189,7 +197,7 @@ public class RankingFeatureTest {
 		assertEquals(0.0f,h.getWin(),0.00001f);
 		assertTrue(h.isInteresting());
 
-		h = new RankingFeatureMaxPossible("name","content");
+		h = new RankingFeatureMaxPossible("name","content",rp);
 		assertFalse(h.isInteresting());
 	}
 }

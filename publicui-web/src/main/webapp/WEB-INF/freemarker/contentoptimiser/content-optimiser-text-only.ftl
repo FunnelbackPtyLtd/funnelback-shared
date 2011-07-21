@@ -30,7 +30,7 @@
 			    	<#list response.urlComparison.hintsByWin as hint>
 			    		<#if (hint.hintTexts?size > 0) && (hint.win > 0)>
 					       	<#list hint.hintTexts as text>
-				        		<li><b>${hint.name}:</b> ${text}</li>
+				        		<li><b>${hint.longName}:</b> ${text}</li>
 				        	</#list>
 			      		</#if>
 					</#list>

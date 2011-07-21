@@ -109,6 +109,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						for (Map.Entry<String,String> feature : stringFeatures.entrySet()) {
 							packet.getCoolerWeights().put(feature.getKey(), Float.parseFloat(feature.getValue()));
 						}
+					} else if (ResultPacket.Schema.COOLER_NAMES.equals(xmlStreamReader.getLocalName())) {
+						packet.getCoolerNames().putAll(XmlStreamUtils.tagsToMap(ResultPacket.Schema.COOLER_NAMES, xmlStreamReader));
 					} else if (ResultPacket.Schema.STOP_WORDS.equals(xmlStreamReader.getLocalName())) {
 						String[] stopWords = xmlStreamReader.getElementText().split("\\s+");
 						for(String word : stopWords){
