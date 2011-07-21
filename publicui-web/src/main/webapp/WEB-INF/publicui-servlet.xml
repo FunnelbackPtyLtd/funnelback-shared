@@ -119,8 +119,8 @@
 						<constructor-arg ref="i18n"></constructor-arg>
 					</bean>
 				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IfAdminUIMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.IfAdminUIMethod" />
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IsAdminUIMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.IsAdminUIMethod" />
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
@@ -202,8 +202,6 @@
 					<property name="suffix" value=".ftl" />
 					<property name="contentType" value="text/html;charset=UTF-8" />
 					<property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
-					<property name="requestContextAttribute"  value="Request" />
-					<property name="exposeRequestAttributes" value="true" />
 				</bean>
 			</list>
 		</property>

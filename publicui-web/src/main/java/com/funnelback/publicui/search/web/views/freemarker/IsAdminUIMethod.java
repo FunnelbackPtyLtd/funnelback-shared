@@ -13,14 +13,14 @@ import freemarker.ext.servlet.HttpRequestHashModel;
 import freemarker.template.TemplateModelException;
 
 @Log
-public class IfAdminUIMethod extends AbstractTemplateMethod {
+public class IsAdminUIMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "isAdminUI"; 
 	
 	@Autowired
 	private ConfigRepository configRepository;
 	
-	public IfAdminUIMethod() {
+	public IsAdminUIMethod() {
 		super(1, 0);
 	}
 
