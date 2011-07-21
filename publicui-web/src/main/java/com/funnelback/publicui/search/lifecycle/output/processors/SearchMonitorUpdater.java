@@ -13,11 +13,14 @@ public class SearchMonitorUpdater implements OutputProcessor {
 
 	@Autowired
 	private SearchMonitor monitor;
-	
+
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		monitor.setNbQueries(monitor.getNbQueries()+1);
+		monitor.incrementQueryCount();
 
+		if (searchTransaction != null && searchTransaction.hasResponse()
+				&& searchTransaction.getResponse().hasResultPacket()) {
+			monitor.addResponseTime(searchTransaction.getResponse().getResultPacket().getPadreElapsedTime());
+		}
 	}
-
 }

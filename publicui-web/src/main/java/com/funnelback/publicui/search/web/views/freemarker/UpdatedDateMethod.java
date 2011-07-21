@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.IndexRepository;
 
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
@@ -17,7 +17,7 @@ public class UpdatedDateMethod extends AbstractTemplateMethod {
 	public static final String NAME = "updatedDate";
 	
 	@Autowired
-	private ConfigRepository configRepository;
+	private IndexRepository indexRepository;
 	
 	public UpdatedDateMethod() {
 		super(1, 0);
@@ -26,7 +26,7 @@ public class UpdatedDateMethod extends AbstractTemplateMethod {
 	@Override
 	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
 		String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		return configRepository.getLastUpdated(collectionId);
+		return indexRepository.getLastUpdated(collectionId);
 	}
 
 }

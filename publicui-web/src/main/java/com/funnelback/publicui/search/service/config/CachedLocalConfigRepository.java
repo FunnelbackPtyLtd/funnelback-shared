@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -110,24 +109,7 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		}
 		return globalConfiguration;
 	}
-	
-	@Override
-	public Date getLastUpdated(String collectionId) {
-		Cache cache = appCacheManager.getCache(CACHE);
-		String key = CacheKeys._CACHE_lastUpdated_.toString() + collectionId;
 		
-		Element elt = cache.get(key);
-		if (elt == null) {
-			Date lastUpdated =  loadLastUpdated(collectionId);
-			if (lastUpdated != null) {
-				cache.put(new Element(key, lastUpdated));
-			}
-			return lastUpdated;
-		} else {
-			return (Date) elt.getObjectValue();
-		}
-	}
-	
 	@Override
 	public String[] getForms(String collectionId, String profileId) {
 		Cache cache = appCacheManager.getCache(CACHE);
