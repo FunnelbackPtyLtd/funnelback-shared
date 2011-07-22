@@ -2,7 +2,10 @@ package com.funnelback.publicui.test.search.service.index;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.annotation.Resource;
 
@@ -73,7 +76,7 @@ public class AutoRefreshLocalIndexRepositoryTest {
 		c.set(Calendar.YEAR, 2011);
 		c.set(Calendar.MONTH, Calendar.JULY);
 		c.set(Calendar.DAY_OF_MONTH, 19);
-		c.set(Calendar.HOUR, 17);
+		c.set(Calendar.HOUR_OF_DAY, 17);
 		c.set(Calendar.MINUTE, 31);
 		c.set(Calendar.SECOND, 20);
 		c.set(Calendar.MILLISECOND, 0);
