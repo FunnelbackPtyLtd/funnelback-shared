@@ -91,7 +91,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 						indexerOptions.add(line);
 					}
 				}
-				out.put(BuildInfoKeys.indexer_options.toString(), StringUtils.join(indexerOptions, "\n"));
+				out.put(BuildInfoKeys.indexer_arguments.toString(), StringUtils.join(indexerOptions, "\n"));
 				return out;
 			}
 		} catch (IOException ioe) {

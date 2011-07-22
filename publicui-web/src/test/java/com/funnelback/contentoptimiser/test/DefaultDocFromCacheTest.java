@@ -3,9 +3,15 @@ package com.funnelback.contentoptimiser.test;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.exec.OS;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Keys;
@@ -15,10 +21,27 @@ import com.funnelback.contentoptimiser.fetchers.impl.DefaultDocFromCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository;
+import com.funnelback.publicui.test.mock.MockConfigRepository;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultDocFromCacheTest {
 
+	@Resource(name="autoRefreshLocalIndexRepository")
+	private AutoRefreshLocalIndexRepository indexRepository;
+
+	@Before
+	public void before() throws Exception {
+		MockConfigRepository configRepository = new MockConfigRepository();
+		configRepository.addCollection(
+				new Collection("data-repository",
+						new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "data-repository")
+							.setValue("collection_root",
+									new File("src/test/resources/dummy-search_home/data/data-repository/").getAbsolutePath() )));
+		indexRepository.setConfigRepository(configRepository);
+	}
+	
 	@Test
 	public void testOptionsFromFedGov() {
 		String[] originalArgs = {
@@ -61,6 +84,7 @@ public class DefaultDocFromCacheTest {
 		File searchHome = new File("src/test/resources/dummy-search_home");
 		DefaultDocFromCache dFromC = new DefaultDocFromCache();
 		dFromC.setSearchHome(searchHome);
+		dFromC.setIndexRepository(indexRepository);
 
 		
 		String ext = ".sh";

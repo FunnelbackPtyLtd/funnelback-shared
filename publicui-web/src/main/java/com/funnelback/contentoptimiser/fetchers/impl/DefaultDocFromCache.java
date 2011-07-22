@@ -1,10 +1,8 @@
 package com.funnelback.contentoptimiser.fetchers.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +27,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
@@ -41,6 +40,9 @@ public class DefaultDocFromCache implements DocFromCache {
 	
 	@Autowired
 	I18n i18n;
+	
+	@Autowired
+	@Setter private IndexRepository indexRepository;
 	
 	private final String ignoreIndexerOptionPrefixes[] = {
 			 "-forcexml",
@@ -113,19 +115,8 @@ public class DefaultDocFromCache implements DocFromCache {
 		log.info("....done");
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
-		File bldinfo = null;
-
-		log.info("reading bldinfo");
-		bldinfo = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionId + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX + ".bldinfo");
-
-		String[] args = new String[0];
-		try {
-			args = getArgsFromBldinfo(bldinfo);
-		} catch (IOException e1) {
-			log.error("Failed to read bldinfo file '" + bldinfo.toString(),e1);
-			comparison.getMessages().add(i18n.tr("error.readingBldinfo"));
-			return null;
-		}
+		String[] args = getArgsFromBldinfo(collectionId);
+		
 		log.info("....done");
 		try {
 			log.info("Indexing");
@@ -158,35 +149,21 @@ public class DefaultDocFromCache implements DocFromCache {
 	
 	/**
 	 * This function obtains the previous indexer options from the given bldinfo file.
-	 * @param bldinfo - the bldinfo file
+	 * @param collectionId
 	 * @return the indexer options in the bldinfo file
 	 * @throws IOException
 	 */
-	private String[] getArgsFromBldinfo(File bldinfo) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader(bldinfo));
-		String line;
+	private String[] getArgsFromBldinfo(String collectionId) {
+		String indexerOptions = indexRepository.getBuildInfoValue(collectionId, IndexRepository.BuildInfoKeys.indexer_arguments.toString());
+
+		// We're only interested in options starting with a dash
 		List<String> args = new ArrayList<String>();
-		// The first 5 or 6 lines are typically something like this:
-	    //   version FUNNELBACK_PADRE_9.0.0.30 64MDPLFS-VEC3-DNAMS2 (Web/Enterprise)
-	    //   index_format: Linux-8.2
-	    //   /home/dave/bin/padre-iw
-	    //   -f
-	    //   secondary_index.bundle
-	    //   junk                                           
-		// and can be safely ignored:
-		for(int i = 0; i < 5;i++) in.readLine();
-		
-		// now read in the arguments
-		while((line = in.readLine()) != null) {
-			if (line.startsWith("idxch_classes: ")) {
-				// This indicates the end of the args section
-				break;
-			}
+		for (String line: indexerOptions.split(IndexRepository.INDEXER_OPTIONS_SEPARATOR)) {
 		    if (line.length() > 0 && line.charAt(0) == '-') {
-		    	// this is an argument, so we should remember it
 			   args.add(line); 	
 		    }
 		}
+		
 		return args.toArray(new String[0]);
 		
 	}

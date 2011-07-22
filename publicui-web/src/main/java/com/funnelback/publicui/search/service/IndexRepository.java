@@ -14,8 +14,8 @@ public interface IndexRepository {
 	public enum BuildInfoKeys {
 		/** PADRE version string (Starting with 'version') */
 		version,
-		/** List of indexer options, separated by {@link #INDEXER_OPTIONS_SEPARATOR} */
-		indexer_options
+		/** List of indexer arguments, separated by {@link #INDEXER_OPTIONS_SEPARATOR} */
+		indexer_arguments
 	}
 	
 	/** Separator for the indexer options of the <code>.bldinfo</code> file */
