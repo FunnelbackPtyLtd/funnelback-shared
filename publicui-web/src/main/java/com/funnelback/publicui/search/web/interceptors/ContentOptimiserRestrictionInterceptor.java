@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -46,9 +47,9 @@ public class ContentOptimiserRestrictionInterceptor implements HandlerIntercepto
 			// if we're here, we're not on the admin port
 			String contentOptimiserValue = c.getConfiguration().value(Keys.CONTENT_OPTIMISER_NON_ADMIN_ACCESS );
 			if(contentOptimiserValue != null) {
-				if("yes".equals(contentOptimiserValue)) {
+				if(Config.isTrue(contentOptimiserValue)) {
 					return true;
-				} else if("no".equals(contentOptimiserValue)) {
+				} else if(Config.isFalse(contentOptimiserValue)) {
 						response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 						return false;						
 				} else if("textonly".equals(contentOptimiserValue)) {
@@ -59,6 +60,10 @@ public class ContentOptimiserRestrictionInterceptor implements HandlerIntercepto
 					} else {
 						return true;
 					}
+				} else {
+					// we don't recognise the setting, lets just disable it
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+					return false;																
 				}
 			} else {
 				// the setting isn't there, so deny by default
