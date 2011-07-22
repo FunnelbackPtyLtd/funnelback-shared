@@ -8,8 +8,29 @@ import java.util.Date;
 public interface IndexRepository {
 	
 	/**
+	 * Keys used to retrieve some special values
+	 * from the <code>.bldinfo</code> map.
+	 */
+	public enum BuildInfoKeys {
+		/** PADRE version string (Starting with 'version') */
+		version,
+		/** List of indexer options, separated by {@link #INDEXER_OPTIONS_SEPARATOR} */
+		indexer_options
+	}
+	
+	/** Separator for the indexer options of the <code>.bldinfo</code> file */
+	public static final String INDEXER_OPTIONS_SEPARATOR = "\n";
+	
+	/**
 	 * @param c
 	 * @return The last update date for the collection
 	 */
 	public Date getLastUpdated(String collectionId);
+	
+	/**
+	 * Retrieve a value from the <code>.bldinfo<code> file.
+	 * @param key
+	 * @return
+	 */
+	public String getBuildInfoValue(String collectionId, String key);
 }

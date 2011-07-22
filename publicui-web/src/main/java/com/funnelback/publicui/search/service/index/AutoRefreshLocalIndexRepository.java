@@ -34,6 +34,11 @@ public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository 
 	 */
 	private static final String LAST_UPDATED_STALE_KEY_PREFIX = "_LAST_UPDATED_DATE_";
 	
+	/** Prefix used to store the last time the <code>index.bldinfo</code> file
+	 * has been checked for a specific collection, in the {@link #staleChecks} map.
+	 */
+	private static final String BLDINFO_STALE_KEY_PREFIX = "_BLDINFO_";
+	
 	@Override
 	public Date getLastUpdated(String collectionId) {
 		Cache cache = appCacheManager.getCache(CACHE);
@@ -53,6 +58,28 @@ public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository 
 				cache.remove(elt.getKey());
 				return super.getLastUpdated(collectionId);
 			}		
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getBuildInfoValue(final String collectionId, final String key) {
+		Cache cache = appCacheManager.getCache(CACHE);
+		String cacheKey = CacheKeys._CACHE_bldinfo_.toString() + collectionId;
+		
+		Element elt = cache.get(cacheKey);
+		if (elt == null) {
+			return super.getBuildInfoValue(collectionId, key);
+		} else {
+			Long now = System.currentTimeMillis();
+			Long lastAccessTime = staleChecks.get(BLDINFO_STALE_KEY_PREFIX + collectionId);
+			staleChecks.put(BLDINFO_STALE_KEY_PREFIX+collectionId, now);
+			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
+				return ((Map<String, String>) elt.getObjectValue()).get(key); 
+			} else {
+				cache.remove(elt.getKey());
+				return super.getBuildInfoValue(collectionId, key);
+			}
 		}
 	}
 

@@ -57,7 +57,8 @@
 	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.config.AutoRefreshLocalConfigRepository" />
 	<util:properties id="appProperties" location="file:src/test/resources/spring/publicui.properties" />
 	
-	
+	<bean id="autoRefreshLocalIndexRepository" class="com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository" />
+
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
 
@@ -78,4 +79,5 @@
 		value-type="java.util.LinkedList" />
 
 	<bean class="com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser" />
+	
 </beans>
