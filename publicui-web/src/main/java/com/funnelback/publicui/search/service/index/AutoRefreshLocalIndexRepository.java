@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.index;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.service.IndexRepository;
 
 /**
@@ -55,8 +57,13 @@ public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository 
 			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
 				return (Date) elt.getObjectValue();
 			} else {
-				cache.remove(elt.getKey());
-				return super.getLastUpdated(collectionId);
+				// Has the file changed ?
+				if (isFileStale(getIndexFile(collectionId, Files.Index.INDEX_TIME), elt.getCreationTime())) {
+					cache.remove(elt.getKey());
+					return super.getLastUpdated(collectionId);
+				} else {
+					return (Date) elt.getObjectValue(); 
+				}
 			}		
 		}
 	}
@@ -77,11 +84,19 @@ public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository 
 			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
 				return ((Map<String, String>) elt.getObjectValue()).get(key); 
 			} else {
-				cache.remove(elt.getKey());
-				return super.getBuildInfoValue(collectionId, key);
+				// Has the file changed ?
+				if (isFileStale(getIndexFile(collectionId, Files.Index.BLDINFO), elt.getCreationTime())) {
+					cache.remove(elt.getKey());
+					return super.getBuildInfoValue(collectionId, key);
+				} else {
+					return ((Map<String, String>) elt.getObjectValue()).get(key);
+				}
 			}
 		}
 	}
 
+	private boolean isFileStale(File f, long timestamp) {
+		return f.lastModified() > timestamp;
+	}
 	
 }

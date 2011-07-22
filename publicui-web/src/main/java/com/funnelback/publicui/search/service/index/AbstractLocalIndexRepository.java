@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.service.index;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,10 +46,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 		}
 		
 		try {
-			File indexTimeFile = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX,
-					Files.Index.INDEX_TIME);
+			File indexTimeFile = getIndexFile(collectionId, Files.Index.INDEX_TIME);
 			if (indexTimeFile.canRead()) {
 				String time = FileUtils.readFileToString(indexTimeFile);
 				try {
@@ -72,10 +70,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 		}
 		
 		try {
-			File indexBldInfoFile = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX,
-					Files.Index.BLDINFO);
+			File indexBldInfoFile = getIndexFile(collectionId, Files.Index.BLDINFO);
 			if (indexBldInfoFile.canRead()) {
 				Map<String, String> out = new HashMap<String, String>();
 				List<String> indexerOptions = new ArrayList<String>();
@@ -104,6 +99,18 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 		}
 		
 		return null;
+	}
+	
+	protected File getIndexFile(String collectionId, String fileName) {
+		try {
+			return new File(configRepository.getCollection(collectionId).getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE
+					+ File.separator + DefaultValues.FOLDER_IDX,
+					fileName);
+		} catch (FileNotFoundException fnfe) {
+			log.error("Error while accessing index file '"+fileName+"' for collection '"+collectionId+"'", fnfe);
+			return null;
+		}
 	}
 
 
