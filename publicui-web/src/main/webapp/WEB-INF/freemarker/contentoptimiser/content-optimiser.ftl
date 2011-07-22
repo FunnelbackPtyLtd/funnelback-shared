@@ -2,6 +2,7 @@
 <#setting number_format="computer">
 <#import "/share/freemarker/funnelback_legacy.ftl" as s/>
 <#include "content-optimiser-common-macros.ftl"/>
+<#compress>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +32,8 @@
         <@content_optimiser_warnings/>
 
 		<@content_optimiser_summary/>
+		
+		<p>Here is a breakdown of the ranking scores of the top documents:</p>
            
         <script type="text/javascript">
 			var featureNames = new Array();
@@ -314,3 +317,4 @@
 </body>
 
 </html>
+</#compress>

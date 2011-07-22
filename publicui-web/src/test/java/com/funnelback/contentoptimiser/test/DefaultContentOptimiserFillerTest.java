@@ -39,7 +39,7 @@ public class DefaultContentOptimiserFillerTest {
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
 		SearchQuestion question = new SearchQuestion();
-		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");		
+		question.getInputParameterMap().put(RequestParameters.CONTENT_OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");		
 		SearchTransaction allTransaction = new SearchTransaction(question,response);
 		
 		f.consumeResultPacket(comparison, rp,hf);
@@ -85,7 +85,7 @@ public class DefaultContentOptimiserFillerTest {
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
 		SearchQuestion question = new SearchQuestion();
-		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");		
+		question.getInputParameterMap().put(RequestParameters.CONTENT_OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");		
 		SearchTransaction allTransaction = new SearchTransaction(question,response);
 
 		f.setImportantUrl(comparison, allTransaction);
@@ -111,7 +111,7 @@ public class DefaultContentOptimiserFillerTest {
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
 		SearchQuestion question = new SearchQuestion();
-		question.getInputParameterMap().put(RequestParameters.OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html");		
+		question.getInputParameterMap().put(RequestParameters.CONTENT_OPTIMISER_URL, "http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html");		
 		SearchTransaction allTransaction = new SearchTransaction(question,response);
 
 		f.setImportantUrl(comparison, allTransaction);

@@ -264,7 +264,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	public void setImportantUrl(ContentOptimiserModel comparison,SearchTransaction searchTransaction) {
 		
 		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
-		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.OPTIMISER_URL);
+		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL);
 
 		// See if the selected document appears for the long query
 		Result importantResult = null;

@@ -75,7 +75,7 @@
 				 	<p>Funnelback's <a href="${response.urlComparison.importantOne.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.urlComparison.importantOne.collection}&docnum=${response.urlComparison.importantOne.docNum}">anchors information for the document.</a></p>
 	        	</#if>
 	        	
-	        	<p>Here is a breakdown of the ranking scores of the top documents:</p> 
+	        	 
         	</#if>
         </div>   
 </#macro>
