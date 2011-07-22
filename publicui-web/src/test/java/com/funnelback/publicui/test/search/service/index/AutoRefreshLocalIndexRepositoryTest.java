@@ -2,10 +2,7 @@ package com.funnelback.publicui.test.search.service.index;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import javax.annotation.Resource;
 
@@ -32,7 +29,7 @@ public class AutoRefreshLocalIndexRepositoryTest {
 	private static final String[][] EXPECTED_BLDINFO = {
 		{"version", "version FUNNELBACK_PADRE_10.1.1.110 64MDPLFS (Web/Ent)"},
 		{"index_format", "Windows-10.2.DF7"},
-		{"indexer_options", "C:\\Data\\dev\\funnelback\\trunk\\funnelback\\bin\\padre-iw\n"
+		{"indexer_arguments", "C:\\Data\\dev\\funnelback\\trunk\\funnelback\\bin\\padre-iw\n"
 			+ "C:\\Data\\dev\\funnelback\\trunk\\funnelback\\data\\index-repository\\offline\\data\n"
 			+ "C:\\Data\\dev\\funnelback\\trunk\\funnelback\\data\\index-repository\\offline\\idx\\index\n"
 			+ "-XMFC:\\Data\\dev\\funnelback\\trunk\\funnelback\\conf\\index-repository\\xml.cfg\n"
@@ -85,7 +82,7 @@ public class AutoRefreshLocalIndexRepositoryTest {
 	}
 	
 	@Test
-	public void testFetBuildInfoValue() {
+	public void testGetBuildInfoValue() {
 		for (String[] expected: EXPECTED_BLDINFO) {
 			Assert.assertEquals("Build info value for '" + expected[0] + "'",
 					expected[1],

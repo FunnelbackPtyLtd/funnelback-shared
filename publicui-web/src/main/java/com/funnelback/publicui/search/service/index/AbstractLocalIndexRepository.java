@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Type;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
@@ -38,11 +39,16 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 	 * of the index.
 	 * @param collectionId
 	 * @return The updated Date, or null if the date is not available.
+	 * @throws UnsupportedOperationException If the collection doesn't have a
+	 * <code>index_time</code> parameter (such as meta collections)
 	 */
-	protected Date loadLastUpdated(String collectionId) {
+	protected Date loadLastUpdated(String collectionId) throws UnsupportedOperationException {
 		Collection c = configRepository.getCollection(collectionId);
 		if (c == null) {
 			return null;
+		}
+		if (Type.meta.equals(c.getType())) {
+			throw new UnsupportedOperationException("Meta collection don't have an updated time");
 		}
 		
 		try {
@@ -62,11 +68,22 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 		return null;
 	}
 	
+	/**
+	 * Loads the <code>.bldinfo</code> file of a collection and returns its
+	 * content as a Map.
+	 * @param collectionId
+	 * @return
+	 * @throws UnsupportedOperationException If the collection doesn't have a
+	 * <code>.bldinfo</code> parameter (such as meta collections)
+	 */
 	@SuppressWarnings("unchecked")
-	protected Map<String, String> loadBuildInfo(String collectionId) {
+	protected Map<String, String> loadBuildInfo(String collectionId) throws UnsupportedOperationException{
 		Collection c = configRepository.getCollection(collectionId);
 		if (c == null) {
 			return null;
+		}
+		if (Type.meta.equals(c.getType())) {
+			throw new UnsupportedOperationException("Meta collection don't have a build info file");
 		}
 		
 		try {
