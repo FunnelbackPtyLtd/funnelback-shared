@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.search.service.impl;
+package com.funnelback.publicui.test.search.service.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
