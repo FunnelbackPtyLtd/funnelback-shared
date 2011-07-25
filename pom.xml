@@ -140,6 +140,7 @@
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>0.10.0-BETA2</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.funnelback</groupId>
