@@ -1,17 +1,20 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
 @Controller
 @lombok.extern.apachecommons.Log
@@ -43,7 +47,7 @@ public class SearchController {
 		}
 	}
 	
-	private enum ViewTypes {
+	public enum ViewTypes {
 		html, htm, xml, json, legacy;
 	}
 
@@ -116,11 +120,9 @@ public class SearchController {
 		try {
 			vt = ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI()));
 		} catch (IllegalArgumentException iae) {
-			// Default to HTML in case of an unknown view type
 			log.warn("Search on collection '" + question.getCollection().getId()
-					+ "' called with an unknown extension '"+request.getRequestURI()+"'."
-					+ " Falling back to HTML.");
-			vt = ViewTypes.html;
+					+ "' called with an unknown extension '"+request.getRequestURI()+"'.");
+			throw new ViewTypeNotFoundException(FilenameUtils.getExtension(request.getRequestURI()));
 		}
 		
 		Map<String, Object> model = getModel(vt, request, transaction);
@@ -158,4 +160,10 @@ public class SearchController {
 		
 		return out;
 	}
+	
+	@ExceptionHandler(ViewTypeNotFoundException.class)
+	public void viewTypeNotFound(HttpServletResponse response) throws IOException {
+		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+	
 }
