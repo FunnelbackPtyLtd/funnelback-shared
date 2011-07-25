@@ -352,8 +352,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			for(String queryWord : queryWords){
 				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,anchors.getCollection());
-
-				
 				
 				long totalDocuments = bldInfoStats.getTotalDocuments();
 				//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
