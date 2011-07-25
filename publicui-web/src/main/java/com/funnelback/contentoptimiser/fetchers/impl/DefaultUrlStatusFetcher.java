@@ -36,9 +36,6 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 	@SuppressWarnings("unchecked")
 	@Override
 	public UrlStatus fetch(String optimiserUrl, String collection) {
-		String json = "{\"error\":\"Never seen\",\"message\":\"<p>No information available for URL: <a href=\\\"http://www.apsjobs.gov.au/\\\">http://www.apsjobs.gov.au/</a></p><p>http://www.apsjobs.gov.au/ passed the web crawler loading policy.</p>\",\"available\":\"false\"}";
-		
-
 		Executor getJson = new DefaultExecutor();			
 		CommandLine clJson = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + "admin"/* DefaultValues.FOLDER_ADMIN */ + File.separator + "url-status.cgi"));
 		ByteArrayOutputStream os = new ByteArrayOutputStream();

@@ -53,7 +53,7 @@ public class ContentOptimiser implements OutputProcessor {
 			if(!"".equals(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL))) {
 				// if there is an optimiser URL, look it up with the URL status tool
 				UrlStatus status = urlStatusFetcher.fetch(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL),searchTransaction.getQuestion().getCollection().getId());
-				if(! status.isAvailable()) {
+				if(status != null && ! status.isAvailable()) {
 					comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
 				}				
 				
