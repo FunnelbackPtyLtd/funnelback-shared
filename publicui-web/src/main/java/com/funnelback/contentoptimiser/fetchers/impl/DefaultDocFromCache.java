@@ -112,7 +112,7 @@ public class DefaultDocFromCache implements DocFromCache {
 						+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)),
 				perlBin);
 		try {
-			runner.setRequestUrl(cacheUrl).run(fos);
+			runner.setRequestUrl(cacheUrl).setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath()).run(fos);
 		} catch (CgiRunnerException e1) {
 			log.error("Failed to get document from cache",e1);
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));

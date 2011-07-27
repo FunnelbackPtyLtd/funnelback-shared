@@ -39,12 +39,13 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
 		CgiRunner runner = new DefaultCgiRunner(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"),
-				perlBin);
-		runner.addRequestParameter("u", optimiserUrl);
-		runner.addRequestParameter("c", collection);		
-		runner.addRequestParameter("f", "json");
-		runner.setTaint();
-		runner.setEnvironmentVariable("REMOTE_USER", "admin");
+				perlBin)
+			.addRequestParameter("u", optimiserUrl)
+			.addRequestParameter("c", collection)		
+			.addRequestParameter("f", "json")
+			.setTaint()
+			.setEnvironmentVariable("REMOTE_USER", "admin")
+			.setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath());
 		String json = "";
 		try {
 			json = runner.runToString();

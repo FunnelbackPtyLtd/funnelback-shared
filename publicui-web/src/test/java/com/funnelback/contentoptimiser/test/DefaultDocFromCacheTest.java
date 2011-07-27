@@ -21,6 +21,7 @@ import com.funnelback.contentoptimiser.fetchers.impl.DefaultDocFromCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
@@ -88,7 +89,7 @@ public class DefaultDocFromCacheTest {
 		DefaultDocFromCache dFromC = new DefaultDocFromCache();
 		dFromC.setSearchHome(searchHome);
 		dFromC.setIndexRepository(indexRepository);
-		dFromC.setConfigRepository(configRepository);
+		dFromC.setConfigRepository((ConfigRepository)configRepository);
 		
 		String ext = ".sh";
 		if (OS.isFamilyWindows()) {

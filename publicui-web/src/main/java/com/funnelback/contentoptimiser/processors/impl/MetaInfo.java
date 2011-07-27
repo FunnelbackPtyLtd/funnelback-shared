@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MetaInfo {
-
 		@Getter private final String shortTitle;
 		@Getter private final String longTitle;
 		@Getter private final String improvementSuggestion;
