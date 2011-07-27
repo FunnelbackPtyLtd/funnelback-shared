@@ -91,7 +91,7 @@
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
-		<ref bean="contentOptimiserSelectDocumentInputProcessor"/>
+		<!--   <ref bean="contentOptimiserSelectDocumentInputProcessor"/>  -->
 		<ref bean="extraSearchesInputProcessor" />
 		<ref bean="extraSearchesExecutor" />
 	</util:list>

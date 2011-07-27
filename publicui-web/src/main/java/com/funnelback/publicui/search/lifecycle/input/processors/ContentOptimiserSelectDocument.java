@@ -5,8 +5,6 @@ import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 
-import org.springframework.stereotype.Component;
-
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.ContentOptimiserSelectUrlQuestionFactory;
@@ -15,8 +13,11 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
+// This component has been temporarily disabled until the output from explain is 
+// accurate between queries (See FUN-3541). For now, url-status.cgi is called to  
+// determine whether or not a document appears in the results.
+//@Component("contentOptimiserSelectDocumentInputProcessor")
 @Log
-@Component("contentOptimiserSelectDocumentInputProcessor")
 public class ContentOptimiserSelectDocument implements InputProcessor {
 
 	@Override

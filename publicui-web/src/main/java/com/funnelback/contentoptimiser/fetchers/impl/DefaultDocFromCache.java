@@ -40,13 +40,13 @@ import com.google.common.io.Files;
 public class DefaultDocFromCache implements DocFromCache {
 	@Autowired
 	@Setter
-	File searchHome;
+	private File searchHome;
 	
 	@Autowired
-	I18n i18n;
+	private I18n i18n;
 	
-	@Autowired
-	ConfigRepository configRepository;
+	@Autowired @Setter
+	private ConfigRepository configRepository;
 	
 	@Autowired
 	@Setter private IndexRepository indexRepository;
@@ -95,7 +95,7 @@ public class DefaultDocFromCache implements DocFromCache {
 	public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config,String collectionId) {
 		// Create a temp directory to store the cache copy and the index
 		File tempDir = Files.createTempDir();
-		log.info("Created tempdir");
+		log.debug("Created tempdir");
 		File cacheFile = new File(tempDir,"cachefile");
 		FileOutputStream fos = null;
 		try {
@@ -104,12 +104,8 @@ public class DefaultDocFromCache implements DocFromCache {
 			log.error("Error creating cachefule in tempdir: " + tempDir + File.pathSeparator + "cachefile",e1);
 			comparison.getMessages().add(i18n.tr("error.creatingCacheFile"));
 		}		
-		log.info("Obtaining doc from cache");
+		log.debug("Obtaining doc from cache");
 		
-		Executor getCache = new DefaultExecutor();		
-		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
-				+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)));
-
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
 		CgiRunner runner = new DefaultCgiRunner(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
@@ -118,26 +114,25 @@ public class DefaultDocFromCache implements DocFromCache {
 		try {
 			runner.setRequestUrl(cacheUrl).run(fos);
 		} catch (CgiRunnerException e1) {
-			log.error("Failed to get document from cache with command line " + clGetCache.toString(),e1);
+			log.error("Failed to get document from cache",e1);
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
 		} 
 		IOUtils.closeQuietly(fos);
 		
 		
 
-		log.info("....done");
+		log.debug("....done");
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
 		String[] args = getArgsFromBldinfo(collectionId);
 		
-		log.info("....done");
+		log.debug("....done");
 		try {
-			log.info("Indexing");
+			log.debug("Indexing document");
 			clIndexDocument.addArgument("-f");
 			clIndexDocument.addArgument(cacheFile.getPath());
 			clIndexDocument.addArgument(tempDir + File.separator + "index-single");
 			clIndexDocument.addArguments(getArgsForSingleDocument(args));
-			log.info(clIndexDocument.toString());
 			indexDocument.setStreamHandler(new PumpStreamHandler(null, null)); // ignore all indexer output
 			indexDocument.execute(clIndexDocument);
 		} catch (IOException e) {
@@ -145,10 +140,10 @@ public class DefaultDocFromCache implements DocFromCache {
 			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
 			return null;
 		}
-		log.info("....done");
+		log.debug("....done");
 		String wordsInDoc;
 		try {
-			log.info("Reading words in doc");
+			log.debug("Reading words in doc");
 			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
@@ -156,7 +151,7 @@ public class DefaultDocFromCache implements DocFromCache {
 			comparison.getMessages().add(i18n.tr("error.readingIndexedFile"));
 			return null;
 		}
-		log.info("Done");
+		log.debug("Done");
 		return wordsInDoc;
 	}
 	

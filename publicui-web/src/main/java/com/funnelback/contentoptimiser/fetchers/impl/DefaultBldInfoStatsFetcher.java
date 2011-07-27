@@ -54,8 +54,6 @@ public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
 			log.error("Didn't find any documents reported in the bldinfo files. \".bldinfo\"s were: " + Arrays.toString(bldinfos.toArray(new File[0])) + " index stems examined were " + Arrays.toString(stemsSeen.toArray(new String[0])));
 			model.getMessages().add(i18n.tr("error.readingBldinfo"));
 		}
-
-		log.info(avgWordsInDoc);
 		return new BldInfoStats(totalDocs,avgWordsInDoc); 
 	}
 

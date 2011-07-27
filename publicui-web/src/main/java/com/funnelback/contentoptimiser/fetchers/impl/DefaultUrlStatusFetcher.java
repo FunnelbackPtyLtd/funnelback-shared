@@ -52,36 +52,8 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 			log.error("Unable to run the CGI command to get URL status ",e1);
 			return status;
 		}
-		ObjectMapper mapper = new ObjectMapper();		
-/*		Executor getJson = new DefaultExecutor();			
-		CommandLine clJson = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"));
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		getJson.setWorkingDirectory(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + "admin"));
-		ByteArrayOutputStream error = new ByteArrayOutputStream();
-		try {
-			optimiserUrl = URLEncoder.encode(optimiserUrl,"UTF-8");
-			collection = URLEncoder.encode(collection,"UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			log.error("UTF-8 is unsupported! This should never happen.",e1);
-		}
-		clJson.addArgument("?u=" + optimiserUrl + "&c=" + collection + "&f=json");
-		Map<String,String> env = null;
-		try {
-			env = (new DefaultProcessingEnvironment()).getProcEnvironment();
-			env.put("REMOTE_USER", "admin");
-		} catch (IOException e2) {
-			log.error("Unable to obtain the current environment",e2);
-		} 
-		getJson.setStreamHandler(new PumpStreamHandler(os, error));
-		try {
-			getJson.execute(clJson,env);
-		} catch (ExecuteException e1) {
-			log.error("Unable to execute UrlStatus with commandline '" + clJson + "'. Error was: '"+error.toString()+"'",e1);
-		} catch (IOException e1) {
-			log.error("IOException when executing UrlStatus with commandline " + clJson,e1);
-		}*/
 		
-
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			// strip header
 			json = json.replaceFirst("(?s).*Content-Type: application/json", "");

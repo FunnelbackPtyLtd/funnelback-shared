@@ -46,9 +46,9 @@ public class ContentOptimiser implements OutputProcessor {
 				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.EXPLAIN)
 				&& !searchTransaction.getQuestion().isExtraSearch()) {
 			ContentOptimiserModel comparison = new ContentOptimiserModel();
-			log.info("Process output content optimiser has all data");
+			log.debug("Process output content optimiser has all data");
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
-			log.info("Done consuming result packet");
+			log.debug("Done consuming result packet");
 			
 			if(!"".equals(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL))) {
 				// if there is an optimiser URL, look it up with the URL status tool
@@ -59,14 +59,14 @@ public class ContentOptimiser implements OutputProcessor {
 				
 				// if there was, we should try and find it anyway
 				filler.setImportantUrl(comparison,searchTransaction);
-				log.info("Filling hint texts");
+				log.debug("Filling hint texts");
 				filler.fillHintCollections(comparison);
 			
 				if(comparison.getImportantOne() != null){
-					log.info("obtaining anchors");		
+					log.debug("obtaining anchors");		
 					AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getImportantOne().getDocNum(),comparison.getImportantOne().getCollection());
 
-					log.info("obtaining content");					
+					log.debug("obtaining content");					
 					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
 				}
 			} else {
