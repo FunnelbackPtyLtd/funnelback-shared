@@ -50,7 +50,7 @@ public class ContentOptimiser implements OutputProcessor {
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
 			log.debug("Done consuming result packet");
 			
-			if(!"".equals(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL))) {
+			if(!"".equals(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL)) && searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL) != null) {
 				// if there is an optimiser URL, look it up with the URL status tool
 				UrlStatus status = urlStatusFetcher.fetch(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL),searchTransaction.getQuestion().getCollection().getId());
 				if(status != null && ! status.isAvailable() && ! status.getError().startsWith("Unsupported collection type")) {

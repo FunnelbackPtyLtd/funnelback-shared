@@ -42,7 +42,7 @@
         		for the query &quot;<b><@s.QueryClean/></b>&quot;. 
         		The top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}">${response.urlComparison.urls[0].title}</a>.
 	        	<#if (response.urlComparison.importantOne??)>
-					<p>The selected document (<strong>${response.urlComparison.importantOne.liveUrl}</strong>):
+					<p>The selected document (<strong style="word-break: break-all;">${response.urlComparison.importantOne.liveUrl}</strong>):
 						<ul>
 							<li>is ranked <span class="highlight">${response.urlComparison.importantOne.rank}</span> in the results </li>
 							<li>is titled <a href="${response.urlComparison.importantOne.liveUrl}">${response.urlComparison.importantOne.title}</a>.</li>
@@ -72,10 +72,16 @@
 						 	<li>These words should be an indicator of the subject of the document. If the words don't accurately reflect the subject of the document, consider re-wording the document, or preventing sections of the document from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags</li>
 						 </ul> 
 					 </p>
-				 	<p>Funnelback's <a href="${response.urlComparison.importantOne.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.urlComparison.importantOne.collection}&docnum=${response.urlComparison.importantOne.docNum}">anchors information for the document.</a></p>
+				 	<p>Funnelback's <a href="${response.urlComparison.importantOne.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.urlComparison.importantOne.collection}&docnum=${response.urlComparison.importantOne.docNum}">anchors information for the document.</a>
+				 	You can also <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
+		        <#else>
+		        	<#if (question.inputParameterMap["optimiser_url"]??)>
+		        		<p>The selected document (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
+		        	</#if>
+		        		<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
 	        	</#if>
-	        	
-	        	 
-        	</#if>
+	        
+	        </#if>
+      			
         </div>   
 </#macro>
