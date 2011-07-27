@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -33,7 +32,6 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 /**
  * Click tracking controller
  */
-@Controller
 @Log
 public class ClickController {
 
