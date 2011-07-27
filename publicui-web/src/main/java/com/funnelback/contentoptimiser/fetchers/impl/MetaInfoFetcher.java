@@ -26,7 +26,11 @@ public class MetaInfoFetcher {
 	public MetaInfoFetcher(Collection collection,String profileId) {
 		rankerOptions = new RankerOptions();
 		rankerOptions.consume(collection.getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
-		if(profileId != null)rankerOptions.consume(collection.getProfiles().get(profileId).getPadreOpts());
+
+		if(profileId != null) {
+			String padreOpts = collection.getProfiles().get(profileId).getPadreOpts();
+			if(padreOpts != null) rankerOptions.consume(padreOpts);
+		}
 		this.collection = collection;
 	}
 

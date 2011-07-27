@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -268,7 +269,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	}
 	
 	/**
-	 * Loads all the profile for a collection
+	 * Loads all the profiles for a collection
 	 * @param c
 	 * @return
 	 */
@@ -294,11 +295,8 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 					p.setPadreOpts(com.google.common.io.Files.toString(padreOptsFile, Charset.forName("UTF-8")));
 				} catch (IOException e) {
 					log.error("Error reading padre opts file",e);
-					p.setPadreOpts("");
 				}
-			} else {
-				p.setPadreOpts("");
-			}
+			} 
 			log.debug("Loaded profile from '" + profileDir.getAbsolutePath() + "' for collection '" + c.getId() + "'");
 		}
 		
@@ -355,7 +353,19 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		log.debug("Loading executables configuration data (executables.cfg)");
 		try {
 			File confDir = new File(searchHome, DefaultValues.FOLDER_CONF);
-			executablesMap = Config.readConfig(new File (confDir, Files.EXECUTABLES_CONFIG_FILENAME).getAbsolutePath(), searchHome.getAbsolutePath(), "");
+			Map<String,String> uncleanMap = Config.readConfig(new File (confDir, Files.EXECUTABLES_CONFIG_FILENAME).getAbsolutePath(), searchHome.getAbsolutePath(), "");
+			executablesMap = new HashMap<String,String>();
+			
+			// replace quotes at the ends of the executable names (if any)
+			for(Entry<String,String> entry : uncleanMap.entrySet()) {
+				String value = entry.getValue();
+				if(value != null) {
+					if((value.charAt(0) == '"' && value.charAt(value.length() -1) == '"' )|| (value.charAt(0) == '\'' && value.charAt(value.length() -1) == '\'' )) {
+						value = value.substring(1, value.length() -1);	
+					}
+				}
+				executablesMap.put(entry.getKey(), value);
+			}
 		} catch (FileNotFoundException e) {
 			log.error("Error while reading executables configuration",e);
 		}

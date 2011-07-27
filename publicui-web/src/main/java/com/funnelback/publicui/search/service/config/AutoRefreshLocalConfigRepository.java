@@ -145,20 +145,13 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 						loadExecutablesConfig();
 					}
 				} catch (FileNotFoundException e) {
+					log.error("Checking to see if we should update the executables config",e);
 				} catch (EnvironmentVariableException e) {
+					log.error("Checking to see if we should update the executables config",e);
 				}
 			}
 		}
-		String ret = executablesMap.get(exeName);
-		
-		if(ret != null) {
-			// replace quotes at the ends of the string (if any)
-			if((ret.charAt(0) == '"' && ret.charAt(ret.length() -1) == '"' )|| (ret.charAt(0) == '\'' && ret.charAt(ret.length() -1) == '\'' )) {
-				ret = ret.substring(1, ret.length() -1);
-			}
-		}
-		
-		return ret;
+		return executablesMap.get(exeName);
 	}
 
 	

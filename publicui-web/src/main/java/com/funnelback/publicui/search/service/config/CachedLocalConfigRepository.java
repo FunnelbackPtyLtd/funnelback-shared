@@ -115,16 +115,7 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		if(executablesMap == null) {
 			loadExecutablesConfig();
 		} 
-		String ret = executablesMap.get(exeName);
-		
-		if(ret != null) {
-			// replace quotes at the ends of the string (if any)
-			if((ret.charAt(0) == '"' && ret.charAt(ret.length() -1) == '"' )|| (ret.charAt(0) == '\'' && ret.charAt(ret.length() -1) == '\'' )) {
-				ret = ret.substring(1, ret.length() -1);
-			}
-		}
-		
-		return ret;
+		return executablesMap.get(exeName);
 	}
 	
 	@Override

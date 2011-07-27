@@ -9,8 +9,12 @@ public class RankerOptions {
 	
 	private final Map<String,Double> metaWeights = new HashMap<String,Double>();
 
-	public void consume(String optionsString) {
+	public RankerOptions() {
 		metaWeights.put("_", new Double(1));
+	}
+	
+	public void consume(String optionsString) {
+		
 		String [] A = optionsString.split("\\s+");
 		for(String option : A) {
 			if("-sco7".equals(option) || "-sco2".equals(option)) {
