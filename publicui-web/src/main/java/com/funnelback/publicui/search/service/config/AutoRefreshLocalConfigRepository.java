@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.service.config;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
@@ -124,6 +126,42 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		return globalConfiguration;
 	}
 
+
+	@Override
+	public String getExecutablePath(String exeName) {
+		if (executablesMap == null) {
+			loadExecutablesConfig();
+		} else {
+			Long now = System.currentTimeMillis();
+			Long lastAccessTime = staleChecks.get(Files.EXECUTABLES_CONFIG_FILENAME);
+			staleChecks.put(Files.EXECUTABLES_CONFIG_FILENAME, now);
+	
+			// Don't check again - exit if we've already checked recently
+			if (lastAccessTime == null || now > (lastAccessTime+checkingInterval)) {
+				try {
+					long lastUpdated = Config.getLastUpdated(searchHome,Files.Types.EXECUTABLES,"");
+					if (lastAccessTime == null || lastUpdated > lastAccessTime) {
+						log.info("Executables configuration data has changed and will be reloaded.");
+						loadExecutablesConfig();
+					}
+				} catch (FileNotFoundException e) {
+				} catch (EnvironmentVariableException e) {
+				}
+			}
+		}
+		String ret = executablesMap.get(exeName);
+		
+		if(ret != null) {
+			// replace quotes at the ends of the string (if any)
+			if((ret.charAt(0) == '"' && ret.charAt(ret.length() -1) == '"' )|| (ret.charAt(0) == '\'' && ret.charAt(ret.length() -1) == '\'' )) {
+				ret = ret.substring(1, ret.length() -1);
+			}
+		}
+		
+		return ret;
+	}
+
+	
 	/**
 	 * Checks if any of the source configuration files has changed since the element creation time.
 	 * Doesn't detect actual changes but relies on file lastModified().

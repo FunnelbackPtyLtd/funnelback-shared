@@ -56,6 +56,12 @@ public interface ConfigRepository {
 	public Config getGlobalConfiguration();
 	
 	/**
+	 * @param exeName The key used to store the executable location 
+	 * @return the path to the given executable, as stored in executables.cfg.
+	 */
+	public String getExecutablePath(String exeName);
+	
+	/**
 	 * @param collectionId
 	 * @param profileId
 	 * @return The list of available forms for a collection, for a given profile

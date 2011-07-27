@@ -60,5 +60,10 @@ public class MockConfigRepository implements ConfigRepository {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
+	@Override
+	public String getExecutablePath(String exeName) {
+		return null;
+	}
+
 }
 

@@ -109,7 +109,24 @@ public class CachedLocalConfigRepository extends AbstractLocalConfigRepository {
 		}
 		return globalConfiguration;
 	}
+
+	@Override
+	public String getExecutablePath(String exeName) {
+		if(executablesMap == null) {
+			loadExecutablesConfig();
+		} 
+		String ret = executablesMap.get(exeName);
 		
+		if(ret != null) {
+			// replace quotes at the ends of the string (if any)
+			if((ret.charAt(0) == '"' && ret.charAt(ret.length() -1) == '"' )|| (ret.charAt(0) == '\'' && ret.charAt(ret.length() -1) == '\'' )) {
+				ret = ret.substring(1, ret.length() -1);
+			}
+		}
+		
+		return ret;
+	}
+	
 	@Override
 	public String[] getForms(String collectionId, String profileId) {
 		Cache cache = appCacheManager.getCache(CACHE);

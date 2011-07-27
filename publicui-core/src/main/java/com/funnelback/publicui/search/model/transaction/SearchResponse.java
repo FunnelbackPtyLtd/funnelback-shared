@@ -27,7 +27,7 @@ public class SearchResponse {
 	@XStreamOmitField
 	@Getter @Setter private String rawPacket;
 	
-	/** PADRE return code (0 = SUCESS) */
+	/** PADRE return code (0 = SUCCESS) */
 	@Getter @Setter private int returnCode;
 	
 	/** Computed facets, never null */

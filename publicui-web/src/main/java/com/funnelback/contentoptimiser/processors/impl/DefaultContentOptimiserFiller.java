@@ -379,7 +379,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				for(ContentHint hint : contentHints) {
 					if(hint.getScoreEstimate() > 0) {
 						if(! cleared)	comparison.getHintsByName().get("content").getHintTexts().clear();
-						
 						comparison.getHintsByName().get("content").getHintTexts().add(hint.getHintText());
 					}
 					

@@ -1,20 +1,10 @@
 package com.funnelback.contentoptimiser.fetchers.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
 
 import lombok.extern.apachecommons.Log;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.exec.environment.DefaultProcessingEnvironment;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,8 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Keys;
+import com.funnelback.common.utils.cgirunner.CgiRunner;
+import com.funnelback.common.utils.cgirunner.CgiRunnerException;
+import com.funnelback.common.utils.cgirunner.DefaultCgiRunner;
 import com.funnelback.contentoptimiser.UrlStatus;
 import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
+import com.funnelback.publicui.search.service.ConfigRepository;
 
 @Log
 @Component
@@ -32,12 +27,34 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 	@Autowired
 	File searchHome;
 	
+	@Autowired
+	ConfigRepository configRepository;
+	
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public UrlStatus fetch(String optimiserUrl, String collection) {
-		Executor getJson = new DefaultExecutor();			
-		CommandLine clJson = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + "admin"/* DefaultValues.FOLDER_ADMIN */ + File.separator + "url-status.cgi"));
+
+		UrlStatus status = null;
+		
+		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
+		CgiRunner runner = new DefaultCgiRunner(
+				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"),
+				perlBin);
+		runner.addRequestParameter("u", optimiserUrl);
+		runner.addRequestParameter("c", collection);		
+		runner.addRequestParameter("f", "json");
+		runner.setTaint();
+		runner.setEnvironmentVariable("REMOTE_USER", "admin");
+		String json = "";
+		try {
+			json = runner.runToString();
+		} catch (CgiRunnerException e1) {
+			log.error("Unable to run the CGI command to get URL status ",e1);
+			return status;
+		}
+		ObjectMapper mapper = new ObjectMapper();		
+/*		Executor getJson = new DefaultExecutor();			
+		CommandLine clJson = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"));
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		getJson.setWorkingDirectory(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + "admin"));
 		ByteArrayOutputStream error = new ByteArrayOutputStream();
@@ -62,15 +79,13 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 			log.error("Unable to execute UrlStatus with commandline '" + clJson + "'. Error was: '"+error.toString()+"'",e1);
 		} catch (IOException e1) {
 			log.error("IOException when executing UrlStatus with commandline " + clJson,e1);
-		}
+		}*/
 		
-		ObjectMapper mapper = new ObjectMapper();
-		UrlStatus status = null;
+
 		try {
-			String string = os.toString();
 			// strip header
-			string = string.replaceFirst("(?s).*Content-Type: application/json", "");
-			status = mapper.readValue(string, UrlStatus.class);
+			json = json.replaceFirst("(?s).*Content-Type: application/json", "");
+			status = mapper.readValue(json, UrlStatus.class);
 		} catch (JsonParseException e) {
 			log.error("Error obtaining info about URL",e);
 		} catch (JsonMappingException e) {
@@ -83,3 +98,4 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 	}
 
 }
+

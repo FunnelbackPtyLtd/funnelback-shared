@@ -61,6 +61,8 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	
 	protected GlobalOnlyConfig globalConfiguration;
 	
+	protected Map<String,String> executablesMap;
+	
 	@Autowired
 	protected File searchHome;
 	
@@ -76,8 +78,6 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	@Override
 	public abstract Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf);
 	
-	@Override
-	public abstract Config getGlobalConfiguration();
 	
 	protected Collection loadCollection(String collectionId) {
 		log.info("Trying to load collection config for collection '" + collectionId + "'");
@@ -334,6 +334,21 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			log.error("Error while reading global configuration", fnfe);
 		}
 	}
+	
+	/**
+	 * Loads the executables config file
+	 */
+	
+	protected void loadExecutablesConfig() {
+		log.debug("Loading executables configuration data (executables.cfg)");
+		try {
+			File confDir = new File(searchHome, DefaultValues.FOLDER_CONF);
+			executablesMap = Config.readConfig(new File (confDir, Files.EXECUTABLES_CONFIG_FILENAME).getAbsolutePath(), searchHome.getAbsolutePath(), "");
+		} catch (FileNotFoundException e) {
+			log.error("Error while reading executables configuration",e);
+		}
+	}
+
 		
 	/**
 	 * Remove comments from config files

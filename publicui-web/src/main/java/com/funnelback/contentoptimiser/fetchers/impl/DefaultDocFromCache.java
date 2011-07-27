@@ -24,9 +24,13 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.utils.cgirunner.CgiRunner;
+import com.funnelback.common.utils.cgirunner.CgiRunnerException;
+import com.funnelback.common.utils.cgirunner.DefaultCgiRunner;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -40,6 +44,9 @@ public class DefaultDocFromCache implements DocFromCache {
 	
 	@Autowired
 	I18n i18n;
+	
+	@Autowired
+	ConfigRepository configRepository;
 	
 	@Autowired
 	@Setter private IndexRepository indexRepository;
@@ -89,29 +96,35 @@ public class DefaultDocFromCache implements DocFromCache {
 		// Create a temp directory to store the cache copy and the index
 		File tempDir = Files.createTempDir();
 		log.info("Created tempdir");
-
-		Executor getCache = new DefaultExecutor();			
-		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator + DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)));
 		File cacheFile = new File(tempDir,"cachefile");
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(cacheFile);
-			// Get this document from cache, and put it in <tempDir>/cachefile
-			log.info("Obtaining doc from cache");
-			clGetCache.addArgument(cacheUrl);
-			getCache.setStreamHandler(new PumpStreamHandler(fos, null));
-			getCache.execute(clGetCache);
-		} catch (FileNotFoundException e1) {
-			log.error("File not found " + tempDir + File.pathSeparator + "cachefile",e1);
+		} catch (FileNotFoundException e1) {		
+			log.error("Error creating cachefule in tempdir: " + tempDir + File.pathSeparator + "cachefile",e1);
 			comparison.getMessages().add(i18n.tr("error.creatingCacheFile"));
-			return null;
-		} catch (IOException e) {
-			log.error("Failed to get document from cache with command line " + clGetCache.toString(),e);
+		}		
+		log.info("Obtaining doc from cache");
+		
+		Executor getCache = new DefaultExecutor();		
+		CommandLine clGetCache = new CommandLine(new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
+				+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)));
+
+		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
+		CgiRunner runner = new DefaultCgiRunner(
+				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
+						+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)),
+				perlBin);
+		try {
+			runner.setRequestUrl(cacheUrl).run(fos);
+		} catch (CgiRunnerException e1) {
+			log.error("Failed to get document from cache with command line " + clGetCache.toString(),e1);
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
-			return null;
-		} finally {
-			IOUtils.closeQuietly(fos);
-		}
+		} 
+		IOUtils.closeQuietly(fos);
+		
+		
+
 		log.info("....done");
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
