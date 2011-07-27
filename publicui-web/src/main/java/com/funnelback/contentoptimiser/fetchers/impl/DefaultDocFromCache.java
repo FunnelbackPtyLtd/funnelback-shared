@@ -159,8 +159,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		
 		try {
 			log.debug("Reading words in doc");
-			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);
-			log.info(wordsInDoc);
+			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);	
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
 			log.error("Failed to open words in doc file after indexing",e);
