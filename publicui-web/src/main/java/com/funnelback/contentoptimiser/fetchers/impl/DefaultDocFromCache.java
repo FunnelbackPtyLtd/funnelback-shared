@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -101,11 +103,24 @@ public class DefaultDocFromCache implements DocFromCache {
 		try {
 			fos = new FileOutputStream(cacheFile);
 		} catch (FileNotFoundException e1) {		
-			log.error("Error creating cachefule in tempdir: " + tempDir + File.pathSeparator + "cachefile",e1);
+			log.error("Error creating cachefile in tempdir: " + tempDir + File.pathSeparator + "cachefile",e1);
 			comparison.getMessages().add(i18n.tr("error.creatingCacheFile"));
 		}		
 		log.debug("Obtaining doc from cache");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<DOCHDR>");
+		sb.append(System.getProperty("line.separator"));
+		sb.append("  <BASE HREF=\"");
+		sb.append(comparison.getImportantOne().getLiveUrl());
+		sb.append("\">");
+		sb.append(System.getProperty("line.separator"));
+		sb.append("</DOCHDR>");
 		
+		PrintWriter printWriter = new PrintWriter(fos);
+		printWriter.write(sb.toString());
+		printWriter.flush();
+
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
 		CgiRunner runner = new DefaultCgiRunner(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
@@ -116,11 +131,10 @@ public class DefaultDocFromCache implements DocFromCache {
 		} catch (CgiRunnerException e1) {
 			log.error("Failed to get document from cache",e1);
 			comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
-		} 
+		}
+		IOUtils.closeQuietly(printWriter);
 		IOUtils.closeQuietly(fos);
 		
-		
-
 		log.debug("....done");
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
@@ -142,9 +156,11 @@ public class DefaultDocFromCache implements DocFromCache {
 		}
 		log.debug("....done");
 		String wordsInDoc;
+		
 		try {
 			log.debug("Reading words in doc");
 			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);
+			log.info(wordsInDoc);
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
 			log.error("Failed to open words in doc file after indexing",e);
