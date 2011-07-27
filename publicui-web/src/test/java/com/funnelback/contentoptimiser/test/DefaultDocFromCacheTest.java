@@ -31,9 +31,12 @@ public class DefaultDocFromCacheTest {
 	@Resource(name="autoRefreshLocalIndexRepository")
 	private AutoRefreshLocalIndexRepository indexRepository;
 
+	@Resource(name="mockConfigRepository")
+	private MockConfigRepository configRepository;
+	
 	@Before
 	public void before() throws Exception {
-		MockConfigRepository configRepository = new MockConfigRepository();
+		configRepository = new MockConfigRepository();
 		configRepository.addCollection(
 				new Collection("data-repository",
 						new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "data-repository")
@@ -85,7 +88,7 @@ public class DefaultDocFromCacheTest {
 		DefaultDocFromCache dFromC = new DefaultDocFromCache();
 		dFromC.setSearchHome(searchHome);
 		dFromC.setIndexRepository(indexRepository);
-
+		dFromC.setConfigRepository(configRepository);
 		
 		String ext = ".sh";
 		if (OS.isFamilyWindows()) {

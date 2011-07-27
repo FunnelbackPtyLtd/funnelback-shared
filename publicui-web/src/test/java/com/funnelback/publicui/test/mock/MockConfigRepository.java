@@ -1,9 +1,14 @@
 package com.funnelback.publicui.test.mock;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.junit.Assume;
 
 import lombok.Getter;
 
@@ -60,9 +65,40 @@ public class MockConfigRepository implements ConfigRepository {
 		throw new IllegalStateException("Not yet implemented");
 	}
 
+	private final static Pattern WIN_PATH_PATTERN = Pattern.compile("([^;]*?Perl[^;]*?)[;$]");
 	@Override
 	public String getExecutablePath(String exeName) {
-		return null;
+		// always returns perl.
+		
+		File perlBin = null;
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			// Look in PATH for Perl
+			String path = System.getenv("PATH");
+			
+			// The folder containing Perl will be named something like
+			// C:\Perl\... or C:\funnelback\wbin\ActivePerl\...
+			if (path.contains("Perl")) {
+				// Try to extract it
+				Matcher m = WIN_PATH_PATTERN.matcher(path);
+				while (m.find()) {
+					// The PATH contains 2 entries for Perl, one in /site/bin
+					// and the other one in /bin
+					if (! m.group(1).contains("site")) {
+						perlBin = new File(m.group(1), "perl.exe");
+						break;
+					}
+				}
+			}
+		} else {
+			// Linux boxes always have Perl
+			perlBin = new File("/usr/bin/perl");
+		}
+		
+		// Skip the test if we haven't found a Perl interpreter
+		// of if it cannot be executed.
+		Assume.assumeTrue(perlBin != null && perlBin.canExecute());
+		System.out.println("Will use the following Perl binary: '"+perlBin.getAbsolutePath()+"'");
+		return perlBin.getAbsolutePath();
 	}
 
 }

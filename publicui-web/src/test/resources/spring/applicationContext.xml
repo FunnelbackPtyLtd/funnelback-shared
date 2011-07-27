@@ -58,6 +58,7 @@
 	<util:properties id="appProperties" location="file:src/test/resources/spring/publicui.properties" />
 	
 	<bean id="autoRefreshLocalIndexRepository" class="com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository" />
+		<bean id="mockConfigRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
 
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
