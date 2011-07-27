@@ -23,8 +23,10 @@ public class MetaInfoFetcher {
 	private final Map<String,MetaInfo> metaInfos = new HashMap<String,MetaInfo>();
 	private final Collection collection;
 		
-	public MetaInfoFetcher(Collection collection) {
-		rankerOptions = new RankerOptions(collection.getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
+	public MetaInfoFetcher(Collection collection,String profileId) {
+		rankerOptions = new RankerOptions();
+		rankerOptions.consume(collection.getConfiguration().value(Keys.QUERY_PROCESSOR_OPTIONS));
+		if(profileId != null)rankerOptions.consume(collection.getProfiles().get(profileId).getPadreOpts());
 		this.collection = collection;
 	}
 
@@ -33,15 +35,16 @@ public class MetaInfoFetcher {
 		else return new MetaInfo(metaClass,"metadata class '" + metaClass +"'","Try adding more occurrences of the query term to the metadata class",10);  
 	}
 
-	public void fetch(File searchHome) throws FileNotFoundException {
+	public void fetch(File searchHome,String profileName) throws FileNotFoundException {
 
 		MultipleConfigReader<MetaInfo> configReader = new DefaultMultipleConfigReader<MetaInfo>(new MetaInfoConfigReader());
 		
-		
+		if(profileName == null) profileName = DefaultValues.DEFAULT_PROFILE;
 		String[] fileNamesToRead = {
 				searchHome + File.separator + DefaultValues.FOLDER_CONF + File.separator + "meta-names.xml.default",
 				searchHome + File.separator + DefaultValues.FOLDER_CONF + File.separator + "meta-names.xml",		
 				collection.getConfiguration().getConfigDirectory() + File.separator + "meta-names.xml",
+				collection.getConfiguration().getConfigDirectory() + File.separator + profileName + File.separator + "meta-names.xml",
 		}; 
 		String[] fileNamesToExpect = {
 				fileNamesToRead[0],

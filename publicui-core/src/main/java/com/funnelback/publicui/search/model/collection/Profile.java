@@ -20,4 +20,6 @@ public class Profile {
 	/** Faceted navigation configuration, from the live/idx/ directory */
 	@Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
 	
+	@Getter @Setter private String padreOpts;
+	
 }

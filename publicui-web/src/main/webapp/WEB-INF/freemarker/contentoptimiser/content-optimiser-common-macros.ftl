@@ -78,7 +78,7 @@
 		        	<#if (question.inputParameterMap["optimiser_url"]??)>
 		        		<p>The selected document (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
 		        	</#if>
-		        		<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
+		        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
 	        	</#if>
 	        
 	        </#if>

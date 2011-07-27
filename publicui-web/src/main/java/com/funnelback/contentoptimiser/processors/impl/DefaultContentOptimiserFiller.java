@@ -339,9 +339,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			List<ContentHint> contentHints = new ArrayList<ContentHint>();
 		
 			int i = 0;
-			MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection());
+			MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection(),searchTransaction.getQuestion().getProfile());
 			try {
-				mf.fetch(searchHome);
+				mf.fetch(searchHome,searchTransaction.getQuestion().getProfile());
 			} catch (FileNotFoundException e) {
 				comparison.getMessages().add(i18n.tr("error.readingMetaInfo"));
 				log.error("IOException when reading a meta-names.xml file",e);				

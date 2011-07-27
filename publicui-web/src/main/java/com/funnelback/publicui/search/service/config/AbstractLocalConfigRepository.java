@@ -8,6 +8,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -287,6 +288,17 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			Profile p = new Profile(id);
 			loadFacetedNavigationConfig(c, p);
 			out.put(p.getId(), p);
+			File padreOptsFile = new File(profileDir + File.separator + Files.PADRE_OPTS);
+			if(padreOptsFile.exists()) {
+				try {
+					p.setPadreOpts(com.google.common.io.Files.toString(padreOptsFile, Charset.forName("UTF-8")));
+				} catch (IOException e) {
+					log.error("Error reading padre opts file",e);
+					p.setPadreOpts("");
+				}
+			} else {
+				p.setPadreOpts("");
+			}
 			log.debug("Loaded profile from '" + profileDir.getAbsolutePath() + "' for collection '" + c.getId() + "'");
 		}
 		
