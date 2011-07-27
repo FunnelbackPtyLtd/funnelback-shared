@@ -19,7 +19,8 @@ public class SearchMonitorUpdater implements OutputProcessor {
 		monitor.incrementQueryCount();
 
 		if (searchTransaction != null && searchTransaction.hasResponse()
-				&& searchTransaction.getResponse().hasResultPacket()) {
+				&& searchTransaction.getResponse().hasResultPacket()
+				&& searchTransaction.getResponse().getResultPacket().getPadreElapsedTime() != null) {
 			monitor.addResponseTime(searchTransaction.getResponse().getResultPacket().getPadreElapsedTime());
 		}
 	}
