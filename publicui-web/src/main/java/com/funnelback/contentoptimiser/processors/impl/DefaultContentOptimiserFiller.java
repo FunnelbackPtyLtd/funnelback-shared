@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,8 +44,8 @@ import com.google.common.collect.SetMultimap;
 @Component
 public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
-	private static final int FEW_OCCURRENCES_THRESHOLD = 10;
-
+	private static final char[] UNSUPPORTED_QUERY_OPTIONS = new char[] {'"',':','[',']','!','-','+','|','`','*','<','#'};
+	
 	@Autowired
 	DocFromCache docFromCache;
 	
@@ -320,9 +321,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
 		if(documentContent != null) {
 			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
-	
-			String[] queryWords = searchTransaction.getResponse().getResultPacket().getQueryCleaned().split("\\s+");
-			
 			
 			BldInfoStats bldInfoStats = new BldInfoStats();
 			try {
@@ -338,7 +336,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			
 			List<ContentHint> contentHints = new ArrayList<ContentHint>();
 		
-			int i = 0;
 			MetaInfoFetcher mf = new MetaInfoFetcher(searchTransaction.getQuestion().getCollection(),searchTransaction.getQuestion().getProfile());
 			try {
 				mf.fetch(searchHome,searchTransaction.getQuestion().getProfile());
@@ -349,6 +346,15 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			
 			contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words, or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords())); 
 			
+			String queryFromRp = searchTransaction.getResponse().getResultPacket().getQueryCleaned();
+			if(StringUtils.containsAny(queryFromRp, UNSUPPORTED_QUERY_OPTIONS)) {
+				for(char c : UNSUPPORTED_QUERY_OPTIONS) {
+					queryFromRp = queryFromRp.replace(c, ' ');
+				}
+				comparison.getMessages().add("The content optimiser does not support complex query options. For the purposes of generating content suggestions, the optimiser will interpret your query as \"" + queryFromRp + "\". This may result in inaccurate <strong>content</strong> suggestions.");
+			}
+			String[] queryWords = queryFromRp.split("\\s+");
+
 			for(String queryWord : queryWords){
 				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,anchors.getCollection());
@@ -367,10 +373,10 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 						if(termFreq != 0) contentHint.setBucket(0);
 						contentHints.add(contentHint);
 					}
-					
 				}
-				
-				contentHints.add(new ContentHint(queryWord,i++));
+				if(inDocFreqs.get("_") == null ) {
+					contentHints.add(new ContentHint("Query term '<strong>"+queryWord+"</strong>' does not appear in the document body for any documents in this collection.",10000));
+				}
 			}
 			boolean cleared = false;
 			if(contentHints.size() != 0) {
@@ -380,8 +386,8 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 					if(hint.getScoreEstimate() > 0) {
 						if(! cleared)	comparison.getHintsByName().get("content").getHintTexts().clear();
 						comparison.getHintsByName().get("content").getHintTexts().add(hint.getHintText());
-					}
-					
+						cleared = true;
+					} 
 				}
 			}
 
@@ -395,24 +401,26 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			Integer inDocFreq, Integer termFreq, MetaInfoFetcher mf,
 			String metaClass) {
 		double rawWeightForTerm = Math.log((double)totalDocuments / inDocFreq.doubleValue()) * mf.getRankerOptions().getMetaWeight(metaClass);
-		String metaTitle = mf.get(metaClass).getLongTitle();
-		String metaHelp = mf.get(metaClass).getImprovementSuggestion();
+		MetaInfo metaInfo = mf.get(metaClass);
+		String metaTitle = metaInfo.getLongTitle();
+		String metaHelp = metaInfo.getImprovementSuggestion();
+		int metaThresh = metaInfo.getThreshold();
 		
 		String occurs = null;
 		
 		if(termFreq == 0) {
 			occurs = "does not occur";
-		} else if(termFreq < FEW_OCCURRENCES_THRESHOLD) {
+		} else if(termFreq < metaThresh) {
 			occurs = "appears few times";
 		} else {
 			return null;
 		}
 		
 		return new ContentHint("Query term \"<strong>" + queryWord + 
-				"</strong>\" "+occurs+" in "+metaTitle+ 
-				". " +  metaHelp ,
-				(rawWeightForTerm * FEW_OCCURRENCES_THRESHOLD) - (rawWeightForTerm * termFreq),
-				inDocFreq.doubleValue()/totalDocuments);
+			"</strong>\" "+occurs+" in "+metaTitle+ 
+			". " +  metaHelp ,
+			(rawWeightForTerm * metaThresh) - (rawWeightForTerm * termFreq),
+			inDocFreq.doubleValue()/totalDocuments);
 	}
 
 }
