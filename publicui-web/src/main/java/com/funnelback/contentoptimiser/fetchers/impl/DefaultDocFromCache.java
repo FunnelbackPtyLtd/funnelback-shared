@@ -8,8 +8,10 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Setter;
 import lombok.extern.apachecommons.Log;
@@ -148,7 +150,9 @@ public class DefaultDocFromCache implements DocFromCache {
 			clIndexDocument.addArgument(tempDir + File.separator + "index-single");
 			clIndexDocument.addArguments(getArgsForSingleDocument(args));
 			indexDocument.setStreamHandler(new PumpStreamHandler(null, null)); // ignore all indexer output
-			indexDocument.execute(clIndexDocument);
+			Map<String,String> env = new HashMap<String,String>();
+			env.put("SEARCH_HOME",searchHome.getAbsolutePath());
+			indexDocument.execute(clIndexDocument,env);
 		} catch (IOException e) {
 			log.error("Failed to index document with command line " + clIndexDocument.toString(),e);
 			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
