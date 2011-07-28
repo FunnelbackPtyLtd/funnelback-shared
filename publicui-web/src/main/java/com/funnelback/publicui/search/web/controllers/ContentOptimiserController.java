@@ -68,6 +68,11 @@ public class ContentOptimiserController {
 	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
+		if("".equals(question.getQuery())) {
+			return kickoff(request);
+		}
+
+		
 		
 		return new ModelAndView(contentOptimiserView, searchController.search(request, question).getModel());
 	}
@@ -76,6 +81,10 @@ public class ContentOptimiserController {
 	public ModelAndView contentOptimiserTextOnly(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
+		if("".equals(question.getQuery())) {
+			return kickoff(request);
+		}
+		
 		
 		return new ModelAndView(contentOptimiserTextView, searchController.search(request, question).getModel());
 	}

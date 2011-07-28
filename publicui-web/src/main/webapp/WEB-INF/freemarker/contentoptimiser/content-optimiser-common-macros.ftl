@@ -24,15 +24,17 @@
 </#macro>
 
 <#macro content_optimiser_warnings>
-        <#if (response.urlComparison.messages?size > 0)>
-			<div class="messages">
-				<ul>
-				 	<#list response.urlComparison.messages as message>
-				 		<li>${message}</li>	
-				 	</#list>
-				</ul>
-			</div>        
-        </#if>
+		<#if response??>
+	        <#if (response.urlComparison.messages?size > 0)>
+				<div class="messages">
+					<ul>
+					 	<#list response.urlComparison.messages as message>
+					 		<li>${message}</li>	
+					 	</#list>
+					</ul>
+				</div>        
+	        </#if>
+	    </#if>
 </#macro>
 
 <#macro content_optimiser_summary>
