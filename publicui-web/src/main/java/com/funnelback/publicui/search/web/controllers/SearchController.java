@@ -35,7 +35,7 @@ import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 public class SearchController {
 
 	public enum ModelAttributes {
-		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath,
+		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
 		extra, question, response, error;
 		
 		public static Set<String> getNames() {

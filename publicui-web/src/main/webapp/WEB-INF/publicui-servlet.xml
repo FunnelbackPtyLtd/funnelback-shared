@@ -53,9 +53,6 @@
 		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
-	
-	<!-- bean id="ajaxProxyController" class="com.funnelback.publicui.search.web.controllers.AjaxProxyController" / -->
-
 	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL tempaltes -->
 	<bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
 	<bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
@@ -75,6 +72,12 @@
 		<property name="defaultEncoding" value="UTF-8" />
 		<property name="freemarkerVariables">
 			<map>
+				<!-- Provide a logger within form files -->
+				<entry key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).Log.toString()}">
+					<bean class="org.apache.commons.logging.LogFactory" factory-method="getLog">
+						<constructor-arg type="java.lang.String" value="com.funnelback.form" />
+					</bean>
+				</entry>
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchPrefix.toString()}"
 					value="#{appProperties['urls.search.prefix']}"
