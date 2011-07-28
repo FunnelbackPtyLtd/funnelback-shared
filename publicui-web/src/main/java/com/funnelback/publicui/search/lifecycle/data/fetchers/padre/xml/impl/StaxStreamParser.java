@@ -14,7 +14,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.apachecommons.Log;
 
-import org.apache.commons.collections.MultiMap;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
@@ -38,8 +37,6 @@ import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 @Component("padreXmlParser")
 @Log

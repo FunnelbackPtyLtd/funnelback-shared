@@ -8,13 +8,12 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -292,7 +291,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			File padreOptsFile = new File(profileDir + File.separator + Files.PADRE_OPTS);
 			if(padreOptsFile.exists()) {
 				try {
-					p.setPadreOpts(com.google.common.io.Files.toString(padreOptsFile, Charset.forName("UTF-8")));
+					p.setPadreOpts(FileUtils.readFileToString(padreOptsFile));
 				} catch (IOException e) {
 					log.error("Error reading padre opts file",e);
 				}
