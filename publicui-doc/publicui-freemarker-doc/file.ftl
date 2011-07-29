@@ -1,136 +1,138 @@
 <#import "ftl_highlight.ftl" as ftl>
 
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<title>
-ftldoc
-</title>
-<link rel="stylesheet" type="text/css" href="eclipse.css" />
-<style>
-table {
-    width: 100%;
-}
-td {
-    background-color: White;
-}
-td.heading {
-    padding: 3px;
-    font-weight: bold;
-    font-size: 18px;
-    background-color: #CCCCFF;
-}
-td.category {
-    padding: 3px;
-    font-weight: bold;
-    font-size: 14px;
-    background-color: #DDDDFF;
-}
-div.sourcecode {
-    display: none;
-    border : 1px solid Black;
-    background-color : #DDDDDD; /* #E8E8E8; */
-    padding : 3px;
-    margin-top : 8px;
-}
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="../help/style-v2.css" type="text/css" />
+
+    <title>Documentation for ${filename}</title>
+
+    <style>
+        div.sourcecode {
+            display: none;
+            border : 1px solid Black;
+            background-color : #DDDDDD; /* #E8E8E8; */
+            padding : 3px;
+            margin-top : 8px;
+        }
 
 
-span {font-family:Courier; font-size:12px}
-span.directive {color:blue}
-span.userdirective {color:red}
-span.interpolation {color:green}
-span.textblock {color:black}
-span.comment {color:brown}
+        span {font-family:Courier; font-size:12px}
+        span.directive {color:blue}
+        span.userdirective {color:red}
+        span.interpolation {color:green}
+        span.textblock {color:black}
+        span.comment {color:brown}
+    </style>
 
-</style>
-<script language="javascript">
-function toggle(id) {
-    elem = document.getElementById(id);
-    if(elem.style.display=="block") {
-        elem.style.display="none";
-    } else {
-        elem.style.display="block";
-    }
-}
+    <script language="javascript">
+        function toggle(id) {
+            elem = document.getElementById(id);
+            if(elem.style.display=="block") {
+                elem.style.display="none";
+            } else {
+                elem.style.display="block";
+            }
+        }
 
-function setTitle() {
-	parent.document.title="${filename}";
-}
-</script>
+        function setTitle() {
+            parent.document.title=document.title;
+        }
+    </script>
 </head>
-<body onLoad="setTitle();">
+
+<body class="ftldoc" onLoad="setTitle();">
+<div id="content">
+
 <#include "nav.ftl">
 
 <#-- start prolog -->
-<h3>${filename}</h3>
-<#if comment.comment?has_content>
-    ${comment.comment}<br>
-</#if>
-<dl>
-    <@printOptional comment.@author?if_exists, "Author" />
-    <@printOptional comment.@version?if_exists, "Version" />
-</dl>
+<h1>${filename}</h1>
+<div id="page-contents">
+    <h3>Description</h3><br />
+    <#if comment.comment?has_content>
+        ${comment.comment}
+    </#if>
+    <#if comment.@author?exists || comment.@version?exists>
+        <dl>
+            <@printOptional comment.@author?if_exists, "Author" />
+            <@printOptional comment.@version?if_exists, "Version" />
+        </dl>
+    </#if>
+</div>
 <#-- end prolog -->
 
 <#-- start summary -->
-<table border="1" cellpadding="4">
-    <tr><td colspan="2" class="heading">Macro and Function Summary</td></tr>
-        <#list categories?keys as category>
-            <#if categories[category]?has_content>
-                <tr><td colspan="2" class="category">
+<table border="1" cellspacing="0" cellpadding="4">
+    <tr>
+        <td colspan="2" class="heading">Macro and Function Summary</td>
+    </tr>
+
+    <#list categories?keys as category>
+        <#if categories[category]?has_content>
+            <tr>
+                <td colspan="2" class="category">
                 <#if category?has_content>
-                    Category ${category}
+                    Category <em>${category}</em>
                 <#else>
-                    no category
+                    Uncategorized
                 </#if>
-                </td></tr>
-                <#list categories[category] as macro>
-                    <tr>
-                        <td width="100px" valign="top">
-                            <code>${macro.type}</code>
-                        </td>
-                        <td>
-                            <dl>
-                                <dt>
-                                    <code>
-                                        <b><a href="#${macro.name}">
-                                            ${macro.name}</a>
-                                        </b>
-                                        <@signature macro />
-                                    </code>
-                                </dt>
-                                <dd>
-                                    ${macro.short_comment?if_exists}
-                                </dd>
-                            </dl>
-                        </td>
-                    </tr>
-                </#list>
+                </td>
+            </tr>
+
+            <#list categories[category] as macro>
+                <tr>
+                    <td>
+                        <code>${macro.type}</code>
+                    </td>
+                    <td>
+                        <dl>
+                            <dt>
+                                <code>
+                                    <strong><a href="#${macro.name}">${macro.name}</a></strong>
+                                    <@signature macro />
+                                </code>
+                            </dt>
+                            <dd>
+                                ${macro.short_comment?if_exists}
+                            </dd>
+                        </dl>
+                    </td>
+                </tr>
+            </#list>
             </#if>
         </#list>
 </table>
 
 <#-- end summary -->
-<br>
+<br />
 <#-- start details -->
 
-<table border="1" cellpadding="4">
+<table border="1" cellpadding="4" cellspacing="0">
     <tr><td colspan="2" class="heading">Macro and Function Detail</td></tr>
 </table>
+
 <#list macros as macro>
     <dl>
-        <dt><code>${macro.type} <b><a name="${macro.name}">${macro.name}</a></b>
-                <@signature macro />
-        </code></dt>
+        <dt>
+            <code>
+                ${macro.type} 
+                <strong><a name="${macro.name}">${macro.name}</a></strong>
+                <@signature macro /><br /><br />
+            </code>
+        </dt>
         <dd>
-            <br>
             <#if macro.comment?has_content>
-                ${macro.comment}<br><br>
+                ${macro.comment}
             </#if>
             <dl>
-                <@printOptional macro.category?if_exists, "Category" />
                 <@printParameters macro />
                 <@printOptional macro.@nested?if_exists, "Nested" />
                 <@printOptional macro.@return?if_exists, "Return value" />
+                <@printOptional macro.category?if_exists, "Category" />
                 <@printSourceCode macro />
             </dl>
         </dd>
@@ -140,6 +142,7 @@ function setTitle() {
 
 <#-- end details -->
 
+</div>
 </body>
 </html>
 

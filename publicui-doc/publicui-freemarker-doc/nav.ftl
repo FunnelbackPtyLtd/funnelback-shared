@@ -6,8 +6,11 @@
   -->
 
 
-<div style="padding: 3px; font-weight: bold; background-color: #DDDDFF;">
-<a href="overview.html">Overview</a>
-<a href="index-all-cat.html">Index (categorical)</a>
-<a href="index-all-alpha.html">Index (alphabetical)</a>
+<div id="categories">
+    <h3>NAVIGATION</h3>
+    <ul>
+        <li class="category"><a href="overview.html">Overview</a></li>
+        <li class="category"><a href="index-all-cat.html">Index (categories)</a></li>
+        <li class="category"><a href="index-all-alpha.html">Index (alphabetical)</a></li>
+    </ul>
 </div>
