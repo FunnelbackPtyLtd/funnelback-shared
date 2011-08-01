@@ -13,7 +13,7 @@
 		</div>	
 		
 		<div class="requery_line">
-			<label>URL</label> <input type="text" class="optimiser_url" name="optimiser_url" value="<#if (response.urlComparison.importantOne??)>${response.urlComparison.importantOne.liveUrl}</#if>"/>
+			<label>URL</label> <input type="text" class="optimiser_url" name="optimiser_url" value="${question.inputParameterMap["optimiser_url"]?html}"/>
 		</div>
 		<input type="hidden" name="collection" value="${question.inputParameterMap["collection"]}"/>
 		<input type="hidden" name="profile" value="${question.profile}"/>
@@ -67,7 +67,6 @@
 						</p>
 						
 					</#if>
-					
 					 <p>
 						 The most common words in the document are <span class="highlight">${response.urlComparison.content.commonWords}</span>. 
 						 <ul>
