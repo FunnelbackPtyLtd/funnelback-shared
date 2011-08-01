@@ -41,6 +41,7 @@
 			</#if>
 	
 		    <div style="clear: both; ">
+		    	<p style="margin-bottom: 2px;">Optimise another document or query:</p>
 		    	<@content_optimiser_requery/>
 		 	</div>
 		</div>

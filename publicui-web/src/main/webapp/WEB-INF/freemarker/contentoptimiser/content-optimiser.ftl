@@ -7,6 +7,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9">
 		
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
@@ -15,8 +16,12 @@
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
+	<!--[if IE]>
+   		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/excanvas.js"></script>
+	<![endif]-->
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
+	
 	<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
 	<title>Funnelback Content Optimiser</title>
 </head>
@@ -168,8 +173,8 @@
 	        		<#if response.urlComparison.importantOne??> 
 		        		var line_${hint.name} = [
 		        		  <#list 0..response.urlComparison.urls?size as x>
-		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
-		        		  	<#if x_has_next>,</#if>
+		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100],
+		        		  	
 		        		  </#list>
 		        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
 		        		];
@@ -184,7 +189,7 @@
 						},       				 	
        				 	axes:{
        				 		xaxis:{
-       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x} <#if x_has_next>,</#if> </#list> (${response.urlComparison.urls?size?c}+1) ],
+       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x},</#list> (${response.urlComparison.urls?size?c}+1) ],
        				 			tickOptions:{formatString:'%d'}, 
        				 			min:0, 
        				 			max:${response.urlComparison.urls?size?c} +1,
@@ -195,7 +200,7 @@
        				 	},
         				series:[
             				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
-            				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}, </#if>
+            				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}</#if>
 		        		]
     				});
     				<#assign idx = idx+1/>
@@ -309,6 +314,7 @@
 		   </#list>
         </#if>
         <div style="clear: both;">
+        		<p style="margin-bottom: 2px;">Optimise another document or query:</p>
                <@content_optimiser_requery/>
         </div>
 	</div>

@@ -3,28 +3,30 @@
 
 <#macro content_optimiser_requery>
 	<form method="GET" action="optimise.html">
-		<p style="margin-bottom: 2px;">Optimise another document or query:</p>
+		
 		
 		<div class="requery_line">
-			<label>Query</label> <input type="text"  class="query"  name="query" value="<@s.QueryClean/>"/>
+			<label>Query</label> <input type="text"  tabindex="1" class="query"  name="query" value="<@s.QueryClean/>"/>
 		</div>
-		<div style="position: absolute; left: 730px; margin-top: -12px; z-index: 100;">
-			<input style="height: 40px;" type="submit" value="optimise"/>					
+		<div style="position: absolute; left: 730px; margin-top: -16px; z-index: 100;">
+			<input tabindex="3" style="height: 45px;" type="submit" value="optimise"/>					
 		</div>	
 		
 		<div class="requery_line">
-			<label>URL</label> <input type="text" class="optimiser_url" name="optimiser_url" value="${question.inputParameterMap["optimiser_url"]?html}"/>
+			<label>URL</label> <input tabindex="2" type="text" class="optimiser_url" name="optimiser_url" value="<#if question??>${question.inputParameterMap["optimiser_url"]?html}</#if>"/>
 		</div>
-		<input type="hidden" name="collection" value="${question.inputParameterMap["collection"]}"/>
-		<input type="hidden" name="profile" value="${question.profile}"/>
-		<#if question.inputParameterMap["advanced"]??>
-			<input type="hidden" name="advanced" value="1"/>
+		<input type="hidden" name="collection" value="<#if question??>${question.inputParameterMap["collection"]!}<#else>${collection}</#if>"/>
+		<input type="hidden" name="profile" value="<#if question??>${question.profile}<#else>_default</#if>"/>
+		<#if question??>
+			<#if question.inputParameterMap["advanced"]??>
+				<input type="hidden" name="advanced" value="1"/>
+			</#if>
 		</#if>
 	</form>
 </#macro>
 
 <#macro content_optimiser_loading>
-	<div id="dialog-modal">
+	<div id="dialog-modal" style="height:200px;">
 		<img style="float: right; top: 25px; position: relative;" src="/search/optimiser-loading.gif" alt="loading">
 		<p>Please be patient - this can take some time.</p>
 	</div>
