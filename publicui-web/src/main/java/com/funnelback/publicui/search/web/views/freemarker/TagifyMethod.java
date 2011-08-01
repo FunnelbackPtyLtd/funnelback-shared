@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
@@ -19,7 +20,7 @@ public class TagifyMethod extends AbstractTemplateMethod {
 	public static final String NAME = "tagify";	
 	
 	public TagifyMethod() {
-		super(3, 0);
+		super(3, 1);
 	}
 	
 	@Override
@@ -28,16 +29,26 @@ public class TagifyMethod extends AbstractTemplateMethod {
 		String terms = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String content = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		
-		// First throw away any operators
-		terms = OPERATORS_PATTERN.matcher(terms).replaceAll("");
+		boolean isRegExp = false;
+		if (arguments.size() > 3) {
+			isRegExp = ((TemplateBooleanModel) arguments.get(3)).getAsBoolean();
+		}
 		
-		// Make the bold words unique
-		HashSet<String> termSet = new HashSet<String>(Arrays.asList(terms.split("\\s")));
-		// Don't allow 'b' as a word - it would highlight existing <b> tags
-		termSet.remove(tag);
-		
-		for (String word: termSet) {
-			content = Pattern.compile("\\b(\\Q" + word + "\\E)\\b", Pattern.CASE_INSENSITIVE).matcher(content).replaceAll("<"+tag+">$1</" +tag+">");
+		String replacement = "<"+tag+">$1</" +tag+">";
+		if (isRegExp) {
+			content = Pattern.compile("("+terms+")", Pattern.CASE_INSENSITIVE).matcher(content).replaceAll(replacement);
+		} else {
+			// First throw away any operators
+			terms = OPERATORS_PATTERN.matcher(terms).replaceAll("");
+			
+			// Make the bold words unique
+			HashSet<String> termSet = new HashSet<String>(Arrays.asList(terms.split("\\s")));
+			// Don't allow 'b' as a word - it would highlight existing <b> tags
+			termSet.remove(tag);
+
+			for (String word: termSet) {
+				content = Pattern.compile("\\b(\\Q" + word + "\\E)\\b", Pattern.CASE_INSENSITIVE).matcher(content).replaceAll("<"+tag+">$1</" +tag+">");
+			}
 		}
 		
 		return new SimpleScalar(content);
