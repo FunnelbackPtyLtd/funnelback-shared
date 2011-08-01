@@ -1,3 +1,4 @@
+<#include "content-optimiser-common-macros.ftl"/>
 <html lang="en"> 
 <head> 
 	<title> 
@@ -15,7 +16,7 @@
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
 </head> 
 <body> 
- 
+     <div id="content-optimiser-pane">
 		<div id="fb-initial"> 
 			<a href="http://funnelback.com/"><img src="/search/funnelback.png" alt="Funnelback logo"></a> 
 		</div> 
@@ -39,15 +40,12 @@
 				<input type="hidden" name="collection" value="${collection}"/>
 				
 				<input type="submit" value="Optimise">                         
-			<div id="dialog-modal">
-				<img style="float: right; top: 25px; position: relative;" src="/search/optimiser-loading.gif" alt="loading">
-				<p>Please be patient - this can take some time.</p>
-			</div>
 		</div> 
         	</form> 
 	</div> <!-- #fb-queryform -->  
  
 	<!-- SEARCH --> 
 
- 
+ 	</div>
+ 	<@content_optimiser_loading/>
 </body></html>

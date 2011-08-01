@@ -39,7 +39,6 @@ public class ContentOptimiserController {
 	
 	@Resource(name="contentOptimiserTextView")
 	private FreeMarkerView contentOptimiserTextView;
-
 	
 	@Autowired
 	private SearchController searchController;
@@ -84,8 +83,6 @@ public class ContentOptimiserController {
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
-		
-		
 		return new ModelAndView(contentOptimiserTextView, searchController.search(request, question).getModel());
 	}
 	

@@ -78,7 +78,8 @@
       	
 				var barplot = $.jqplot('barplot', [
 	  			<#list response.urlComparison.hintsByName?keys as hintkey>
-	        			${response.urlComparison.hintsByName[hintkey].name},
+	        			${response.urlComparison.hintsByName[hintkey].name}
+	        			<#if hintkey_has_next>,</#if>
 	        	</#list>
 				
 				], {
@@ -94,8 +95,7 @@
 	        			yaxis: {
 				            renderer: $.jqplot.CategoryAxisRenderer, 
 			    	        ticks: [
-        					<#list response.urlComparison.urls as urlinfo>' ' ,</#list>
-						    	        
+        					<#list response.urlComparison.urls as urlinfo>' ' <#if urlinfo_has_next>,</#if></#list>
 			    	        ]
 			        	},	
 			        	xaxis: {min: 0, max: 
@@ -123,7 +123,8 @@
 				<#if response.urlComparison.importantOne??> 
 					var barplotImportant = $.jqplot('barplot-important', [
 					<#list response.urlComparison.hintsByName?keys as hintkey>
-	        			important_${response.urlComparison.hintsByName[hintkey].name},
+	        			important_${response.urlComparison.hintsByName[hintkey].name}
+	        			<#if hintkey_has_next>,</#if>
 	    	    	</#list>
 					
 					], {
@@ -167,7 +168,8 @@
 	        		<#if response.urlComparison.importantOne??> 
 		        		var line_${hint.name} = [
 		        		  <#list 0..response.urlComparison.urls?size as x>
-		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100],
+		        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
+		        		  	<#if x_has_next>,</#if>
 		        		  </#list>
 		        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
 		        		];
@@ -178,26 +180,23 @@
 	        			title: '${hint.longName}',
 	    				axesDefaults: {       				 	
        				 			labelRenderer: $.jqplot.CanvasAxisLabelRenderer, 
-       				 			tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+       				 			tickRenderer: $.jqplot.CanvasAxisTickRenderer
 						},       				 	
        				 	axes:{
        				 		xaxis:{
-       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x}, </#list> (${response.urlComparison.urls?size?c}+1) ],
+       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x} <#if x_has_next>,</#if> </#list> (${response.urlComparison.urls?size?c}+1) ],
        				 			tickOptions:{formatString:'%d'}, 
        				 			min:0, 
        				 			max:${response.urlComparison.urls?size?c} +1,
        				 			label: "Rank", 
-       				 			pad: 1,
+       				 			pad: 1
        				 			},
-       				 		yaxis:{ 
-       				 			label:'Score',
- 
- 							   }
-       				 		},
+       				 		yaxis:{	label:'Score' } 
+       				 	},
         				series:[
             				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
             				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}, </#if>
-		        		],
+		        		]
     				});
     				<#assign idx = idx+1/>
 				</#list>
