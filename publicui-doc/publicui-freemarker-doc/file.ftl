@@ -132,6 +132,7 @@
                 <@printParameters macro />
                 <@printOptional macro.@nested?if_exists, "Nested" />
                 <@printOptional macro.@return?if_exists, "Return value" />
+                <@printOptional macro.@provides?if_exists, "Provides" />
                 <@printOptional macro.category?if_exists, "Category" />
                 <@printSourceCode macro />
             </dl>
@@ -167,10 +168,10 @@
 </#macro>
 
 <#macro printOptional value label>
-<#if value?has_content>
-<dt><b>${label}</b></dt>
-<dd>${value}</dd>
-</#if>
+    <#if value?has_content>
+        <dt><b>${label}</b></dt>
+        <dd>${value}</dd>
+    </#if>
 </#macro>
 
 <#macro signature macro>
@@ -185,5 +186,6 @@
         <#list macro.arguments as argument>
             <code>${argument}</code>
         </#list>
+        <#if macro.catchall?exists><code>${macro.catchall}</code></#if>
     </#if>
 </#macro>
