@@ -93,8 +93,9 @@
                             <dt>
                                 <code>
                                     <strong><a href="#${macro.name}">${macro.name}</a></strong>
-                                    <@signature macro />
                                 </code>
+                                <@signature macro />
+
                             </dt>
                             <dd>
                                 ${macro.short_comment?if_exists}
@@ -118,11 +119,10 @@
 <#list macros as macro>
     <dl>
         <dt>
-            <code>
-                ${macro.type} 
-                <strong><a name="${macro.name}">${macro.name}</a></strong>
-                <@signature macro /><br /><br />
-            </code>
+            ${macro.type} 
+            <tt><a name="${macro.name}">${macro.name}</a></tt>
+            <@signature macro />
+            <br /><br />
         </dt>
         <dd>
             <#if macro.comment?has_content>
@@ -177,13 +177,13 @@
     <#if macro.isfunction>
         (
         <#list macro.arguments as argument>
-            ${argument}
+            <code>${argument}</code>
             <#if argument_has_next>,</#if>
         </#list>
         )
     <#else>
         <#list macro.arguments as argument>
-            ${argument}
+            <code>${argument}</code>
         </#list>
     </#if>
 </#macro>
