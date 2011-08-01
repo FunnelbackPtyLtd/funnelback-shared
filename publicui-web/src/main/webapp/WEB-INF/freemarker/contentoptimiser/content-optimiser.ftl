@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
+	<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
 	<title>Funnelback Content Optimiser</title>
 </head>
 
@@ -313,6 +314,7 @@
         </div>
 	</div>
 </div>
+	<@content_optimiser_loading/>
 	<div id="chartpseudotooltip" style="display: none;"></div>               
 </body>
 

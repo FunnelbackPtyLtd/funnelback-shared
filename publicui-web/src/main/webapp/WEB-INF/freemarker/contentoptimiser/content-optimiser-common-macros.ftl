@@ -23,6 +23,27 @@
 	</form>
 </#macro>
 
+<#macro content_optimiser_loading>
+	<div id="dialog-modal">
+		<img style="float: right; top: 25px; position: relative;" src="/search/optimiser-loading.gif" alt="loading">
+		<p>Please be patient - this can take some time.</p>
+	</div>
+ 	<script>
+ 		$(function() {
+ 			$( "#dialog-modal" ).dialog({
+				title: "Examining the ranking....",
+				modal: true,
+				closeOnEscape: false,
+				resizeable: false,
+				autoOpen: false
+			});
+			$("form").submit(function() {
+				$( "#dialog-modal" ).dialog('open');
+			});
+		});		
+ 	</script>
+</#macro>
+
 <#macro content_optimiser_warnings>
 		<#if response??>
 	        <#if (response.urlComparison.messages?size > 0)>
