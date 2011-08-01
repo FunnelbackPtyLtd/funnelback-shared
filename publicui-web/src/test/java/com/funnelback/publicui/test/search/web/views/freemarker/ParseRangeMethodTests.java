@@ -54,7 +54,6 @@ public class ParseRangeMethodTests extends AbstractMethodTest {
 
 	@Override
 	protected int getOptionalArgumentsCount() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
