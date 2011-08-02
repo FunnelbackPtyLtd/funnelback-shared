@@ -1,5 +1,6 @@
 package com.funnelback.contentoptimiser.fetchers.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -140,7 +141,8 @@ public class DefaultDocFromCache implements DocFromCache {
 		Executor indexDocument = new DefaultExecutor();
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
 		String[] args = getArgsFromBldinfo(collectionId);
-		
+		ByteArrayOutputStream outstream = new ByteArrayOutputStream();
+		ByteArrayOutputStream errstream = new ByteArrayOutputStream();
 		log.debug("....done");
 		try {
 			log.debug("Indexing document");
@@ -148,12 +150,13 @@ public class DefaultDocFromCache implements DocFromCache {
 			clIndexDocument.addArgument(cacheFile.getPath());
 			clIndexDocument.addArgument(tempDir + File.separator + "index-single");
 			clIndexDocument.addArguments(getArgsForSingleDocument(args));
-			indexDocument.setStreamHandler(new PumpStreamHandler(null, null)); // ignore all indexer output
+			indexDocument.setStreamHandler(new PumpStreamHandler(outstream, errstream)); // record indexer output for debugging
 			Map<String,String> env = new HashMap<String,String>();
 			env.put("SEARCH_HOME",searchHome.getAbsolutePath());
 			indexDocument.execute(clIndexDocument,env);
 		} catch (IOException e) {
-			log.error("Failed to index document with command line " + clIndexDocument.toString(),e);
+			log.error("Failed to index document with command line " + clIndexDocument.toString()+ ". Standard output and standard err follow: \"" + outstream + "\" Standard error stream: \"" + errstream.toString(),e);
+		
 			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
 			return null;
 		}
