@@ -62,6 +62,41 @@ public class DefaultDocumentWordsProcessorTest {
 	}
 	
 	@Test
+	public void testNoContentDocument() {
+		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("",anchors,emptyStemMatches);
+		SingleTermFrequencies content = dwp.explainQueryTerm("five",new Collection("test1", null));
+		
+		Assert.assertEquals(0, content.getCount("x").intValue());
+		Assert.assertEquals(0,content.getCount());
+		Assert.assertEquals(0,content.getPercentageLess());
+	}
+	
+	@Test
+	public void testNoMatchQuery() {
+		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors,emptyStemMatches);
+		SingleTermFrequencies content = dwp.explainQueryTerm("seven",new Collection("test1", null));
+		
+		Assert.assertEquals(0, content.getCount("x").intValue());
+		Assert.assertEquals(0,content.getCount());
+		Assert.assertEquals(0,content.getPercentageLess());
+	}
+
+	@Test
+	public void testStemMatchQuery() {
+		SetMultimap<String, String> stemMatches = HashMultimap.create();
+		stemMatches.put("ones", "one");
+		stemMatches.put("twos", "two");
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two ones two one_t two ones_t three twos twos_t four five five six",anchors,stemMatches);
+		SingleTermFrequencies content = dwp.explainQueryTerm("one",new Collection("test1", null));
+		
+		Assert.assertEquals(2, content.getCount("t").intValue());
+		Assert.assertEquals(2,content.getCount());
+
+	}
+	
+	@Test
 	public void testDocumentOverview() {
 		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors,emptyStemMatches);
