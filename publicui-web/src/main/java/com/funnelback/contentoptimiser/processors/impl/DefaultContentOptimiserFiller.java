@@ -322,7 +322,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		if(documentContent != null) {
 			DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
 			
-			BldInfoStats bldInfoStats = new BldInfoStats();
+			BldInfoStats bldInfoStats = null;
 			try {
 				bldInfoStats = bldInfoStatsFetcher.fetch(comparison, searchTransaction.getQuestion().getCollection());
 			} catch (IOException e1) {
@@ -344,14 +344,18 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				log.error("IOException when reading a meta-names.xml file",e);				
 			}
 			
-			contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words, or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords())); 
+			if(bldInfoStats != null) {
+				contentHints.add(new ContentHint("The selected document is longer than the average document. Shorter documents are easier for users to digest. Try improving the clarity of the content by removing words,"+
+						" or consider splitting this document into several shorter documents",dwp.getTotalWords() - bldInfoStats.getAvgWords()));
+			}
 			
 			String queryFromRp = searchTransaction.getResponse().getResultPacket().getQueryCleaned();
 			if(StringUtils.containsAny(queryFromRp, UNSUPPORTED_QUERY_OPTIONS)) {
 				for(char c : UNSUPPORTED_QUERY_OPTIONS) {
 					queryFromRp = queryFromRp.replace(c, ' ');
 				}
-				comparison.getMessages().add("The content optimiser does not support complex query options. For the purposes of generating content suggestions, the optimiser will interpret your query as \"" + queryFromRp + "\". This may result in inaccurate <strong>content</strong> suggestions.");
+				comparison.getMessages().add("The content optimiser does not support complex query options. For the purposes of generating content suggestions, the optimiser will interpret your query as \"" 
+						+ queryFromRp + "\". This may result in inaccurate <strong>content</strong> suggestions.");
 			}
 			String[] queryWords = queryFromRp.split("\\s+");
 
@@ -359,8 +363,8 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
 				Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,anchors.getCollection());
 				
-				long totalDocuments = bldInfoStats.getTotalDocuments();
-				//			+ "It is more common than " + frequencies.getPercentageLess() + "% of other terms in the document, and appears in " + (inDocFreqs.get("_")-1) +  " other documents");
+				long totalDocuments = 0;
+				if(bldInfoStats != null) totalDocuments = bldInfoStats.getTotalDocuments();
 
 				for(Entry<String,Integer> metaFreqs : inDocFreqs.entrySet()) {
 					Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
@@ -390,9 +394,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 					} 
 				}
 			}
-
-		} else {
-			// we didn't get a document back from cache
 		}
 		comparison.setContent(content);
 	}
