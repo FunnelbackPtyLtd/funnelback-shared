@@ -54,6 +54,16 @@ public abstract class AbstractTemplateMethod implements TemplateMethodModel, Tem
 							requiredArgumentsCount,
 							StringUtils.join(getRequiredArgumentsNames(), ",")));
 			}
+		} else {
+			// Check that mandatory arguments are not null
+			for (int i=0; i<requiredArgumentsCount; i++) {
+				if (arguments.get(i) == null) {
+					throw new TemplateModelException(
+							i18n.tr("freemarker.method.arguments.value.null",
+									Integer.toString(i+1),
+									"freemarker.method."+this.getClass().getSimpleName()+".req."+(i+1)));
+				}
+			}
 		}
 		
 		try {

@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMetho
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
+import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -77,6 +78,24 @@ public abstract class AbstractMethodTest {
 				Assert.fail("Method should fail with 1 missing argument");
 			} catch (TemplateModelException tme) {
 			}
+		}
+	}
+	
+	@Test
+	public void testOneArgumentNull() {
+		List<TemplateModel> out = new ArrayList<TemplateModel>();
+		
+		// First argument is null
+		out.add(null);
+		for (int i=1; i<getRequiredArgumentsCount();i++) {
+			out.add(new SimpleScalar(Integer.toString(i)));
+		}
+		
+		try {
+			method.exec(out);
+			Assert.fail("An exception should have been thrown if one argument is null");
+		} catch (TemplateException te) {
+			System.out.println(te);
 		}
 	}
 	
