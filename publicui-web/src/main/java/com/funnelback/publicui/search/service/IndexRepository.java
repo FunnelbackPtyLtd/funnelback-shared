@@ -13,11 +13,25 @@ public interface IndexRepository {
 	 */
 	public enum BuildInfoKeys {
 		/** PADRE version string (Starting with 'version') */
-		version,
+		version("version"),
 		/** List of indexer arguments, separated by {@link #INDEXER_OPTIONS_SEPARATOR} */
-		indexer_arguments,
+		indexer_arguments("indexer_arguments"),
 		/** Numbers of documents in the collection */
-		Num_docs
+		Num_docs("Num_docs"),
+		/** Average length of documents in the collection */
+		Average_document_length("Average document length");
+		
+		BuildInfoKeys(String displayName) {
+			this.displayName = displayName;
+		}
+		
+		private String displayName = null;
+		
+		@Override
+		public String toString() {
+			if(displayName != null) return displayName;
+			return name();
+		}
 	}
 	
 	/** Separator for the indexer options of the <code>.bldinfo</code> file */
