@@ -35,6 +35,9 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 	public UrlStatus fetch(String optimiserUrl, String collection) {
 
 		UrlStatus status = null;
+		if(! optimiserUrl.contains("://")) {
+			optimiserUrl = "http://" + optimiserUrl; 
+		}
 		
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
 		CgiRunner runner = new DefaultCgiRunner(
