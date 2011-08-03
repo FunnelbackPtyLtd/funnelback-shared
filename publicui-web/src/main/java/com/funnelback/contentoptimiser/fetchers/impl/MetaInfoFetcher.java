@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -22,6 +23,7 @@ public class MetaInfoFetcher {
 	@Getter private final RankerOptions rankerOptions;
 	private final Map<String,MetaInfo> metaInfos = new HashMap<String,MetaInfo>();
 	private final Collection collection;
+	@Setter private MultipleConfigReader<MetaInfo> configReader;
 		
 	public MetaInfoFetcher(Collection collection,String profileId) {
 		rankerOptions = new RankerOptions();
@@ -32,6 +34,7 @@ public class MetaInfoFetcher {
 			if(padreOpts != null) rankerOptions.consume(padreOpts);
 		}
 		this.collection = collection;
+		configReader = new DefaultMultipleConfigReader<MetaInfo>(new MetaInfoConfigReader());
 	}
 
 	public MetaInfo get(String metaClass) {
@@ -40,9 +43,6 @@ public class MetaInfoFetcher {
 	}
 
 	public void fetch(File searchHome,String profileName) throws FileNotFoundException {
-
-		MultipleConfigReader<MetaInfo> configReader = new DefaultMultipleConfigReader<MetaInfo>(new MetaInfoConfigReader());
-		
 		if(profileName == null) profileName = DefaultValues.DEFAULT_PROFILE;
 		String[] fileNamesToRead = {
 				searchHome + File.separator + DefaultValues.FOLDER_CONF + File.separator + "meta-names.xml.default",
