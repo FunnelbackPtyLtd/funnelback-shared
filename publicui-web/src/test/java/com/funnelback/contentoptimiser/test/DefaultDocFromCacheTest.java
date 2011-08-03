@@ -98,7 +98,7 @@ public class DefaultDocFromCacheTest {
 		}		
 		String idx = "mock-padre-iw" + ext;
 		
-		String cacheCgi = "cache" + ((OS.isFamilyWindows()) ? ".bat" : ".cgi");		
+		String cacheCgi = "cache.cgi";		
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("testGetDocumentForks",
