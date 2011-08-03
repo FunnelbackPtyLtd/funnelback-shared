@@ -1,0 +1,183 @@
+<namesAndSuggestions>
+  <metadataClass>
+    <className>t</className>
+    <info>
+      <shortTitle>title</shortTitle>
+      <longTitle>the document title</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term to the document title.</improvementSuggestion>
+      <threshold>3</threshold>
+    </info>
+  </metadataClass>
+  <metadataClass>
+    <className>K</className>
+    <info>
+      <shortTitle>click associated queries</shortTitle>
+      <longTitle>click associated queries</longTitle>
+      <improvementSuggestion>The document would match the query better if it were clicked on for more queries that contain the query term. Try improving the attractiveness of the result - make sure the title is descripive, and that the document has appropriate meta description tags.</improvementSuggestion>
+      <threshold>5</threshold>
+    </info>
+  </metadataClass>
+  <metadataClass>
+    <className>_</className>
+    <info>
+      <shortTitle>content</shortTitle>
+      <longTitle>the document content</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term to the document.</improvementSuggestion>
+      <threshold>20</threshold>
+    </info>
+  </metadataClass>
+  <metadataClass>
+    <className>k</className>
+    <info>
+      <shortTitle>anchor text</shortTitle>
+      <longTitle>anchor text pointing to the document</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term in anchortext pointing to the document.</improvementSuggestion>
+      <threshold>100</threshold>
+    </info>
+  </metadataClass>
+  <metadataClass>
+    <className>c</className>
+    <info>
+      <shortTitle>description</shortTitle>
+      <longTitle>description and summary fields</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term in any summary or description meta tags.</improvementSuggestion>
+      <threshold>4</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>d</className>
+    <info>
+      <shortTitle>date</shortTitle>
+      <longTitle>date fields</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term in the date field.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>h</className>
+    <info>
+      <shortTitle>outgoing links</shortTitle>
+      <longTitle>the URLs of outgoing links on the page</longTitle>
+      <improvementSuggestion>Try adding links on this page to documents that contain the query term in the URL.</improvementSuggestion>
+      <threshold>5</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>i</className>
+    <info>
+      <shortTitle>image</shortTitle>
+      <longTitle>image tags</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term inside image tags in the document.</improvementSuggestion>
+      <threshold>4</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>m</className>
+    <info>
+      <shortTitle>mailto</shortTitle>
+      <longTitle>mailto links</longTitle>
+      <improvementSuggestion>Try adding more occurrences of the query term in mailto links within the document.</improvementSuggestion>
+      <threshold>4</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>u</className>
+    <info>
+      <shortTitle>URL host</shortTitle>
+      <longTitle>the hostname part of the URL</longTitle>
+      <improvementSuggestion>The ranking would improve if you are able to change the host name to contain the query term. It is a good idea to have URLs that describe the content - 
+  a human should be able to tell what the document contains just by looking at the URL.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>v</className>
+    <info>
+      <shortTitle>URL path</shortTitle>
+      <longTitle>the path part of the URL</longTitle>
+      <improvementSuggestion>The ranking would improve if you are able to change the path part of the URL to contain the query term. The path part of the URL is everything after the first slash (eg www.example.com/<strong>this/is/the/path/part</strong>) It is a good idea to have URLs that describe the content - a human should be able to tell what the document contains just by looking at the URL.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>a</className>
+    <info>
+      <shortTitle>author</shortTitle>
+      <longTitle>the author field</longTitle>
+      <improvementSuggestion>If it makes sense, try adding more occurrences of the query term in the author metadata field.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>e</className>
+    <info>
+      <shortTitle>genre</shortTitle>
+      <longTitle>the genre/type field</longTitle>
+      <improvementSuggestion>If it makes sense, try adding more occurrences of the query term in the genre metadata field.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>f</className>
+    <info>
+      <shortTitle>format</shortTitle>
+      <longTitle>the format field</longTitle>
+      <improvementSuggestion>If it makes sense, try adding more occurrences of the query term in the document format metadata field.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>j</className>
+    <info>
+      <shortTitle>identifier</shortTitle>
+      <longTitle>the document identifier fields</longTitle>
+      <improvementSuggestion>If the query term is a document identifier, ensure that the document metadata fields are correct.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>g</className>
+    <info>
+      <shortTitle>relation</shortTitle>
+      <longTitle>the relation field</longTitle>
+      <improvementSuggestion>If it makes sense, try ensuring the document relation metadata field contains the query term.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>n</className>
+    <info>
+      <shortTitle>source</shortTitle>
+      <longTitle>the document source field</longTitle>
+      <improvementSuggestion>If this document is derived from another document with an identifier that matches the query term, ensure that the document source metadata field is correct.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>q</className>
+    <info>
+      <shortTitle>function</shortTitle>
+      <longTitle>the business function of the agency this document is from</longTitle>
+      <improvementSuggestion>If it makes sense, ensure the business function metadata field contains the query term.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>r</className>
+    <info>
+      <shortTitle>audience</shortTitle>
+      <longTitle>the audience this document is for</longTitle>
+      <improvementSuggestion>If the query term is an appropriate value for the audience metadata field, ensure the audience field contains the query term.</improvementSuggestion>
+      <threshold>1</threshold>
+    </info>
+  </metadataClass>           
+  <metadataClass>
+    <className>w</className>
+    <info>
+      <shortTitle>mandate</shortTitle>
+      <longTitle>the mandate metadata field</longTitle>
+      <improvementSuggestion>If it makes sense, ensure the mandate metadata field contains the query term.</improvementSuggestion>
+      <threshold>2</threshold>
+    </info>
+  </metadataClass>           
+</namesAndSuggestions>

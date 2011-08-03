@@ -58,6 +58,13 @@ public class MetaInfoFetcherTest {
 		Assert.assertEquals(0.3,f.getRankerOptions().getMetaWeight("J"));
 	}
 	
+	@Test public void testDefaultMetaInfo() {
+		MetaInfoFetcher f = new MetaInfoFetcher(c,null);
+		MetaInfo m = f.get("X");
+		Assert.assertEquals("X",m.getShortTitle());
+		Assert.assertEquals("metadata class 'X'",m.getLongTitle());
+	}
+	
 	@Test
 	public void testMetaInfoWithProfile() throws FileNotFoundException {
 		String profileName = "profile";
@@ -79,7 +86,7 @@ public class MetaInfoFetcherTest {
 	public void testMetaInfoWithoutProfile() throws FileNotFoundException {
 		String profileName = "_default";
 		c.getProfiles().put(profileName, profile);
-		MetaInfoFetcher f = new MetaInfoFetcher(c,profileName);
+		MetaInfoFetcher f = new MetaInfoFetcher(c,null);
 		f.setConfigReader(reader);
 		f.fetch(searchHome, null);
 
