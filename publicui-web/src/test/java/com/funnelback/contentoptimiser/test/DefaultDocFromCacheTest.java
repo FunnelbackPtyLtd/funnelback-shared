@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
+import com.funnelback.utils.CgiRunnerFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -36,6 +37,9 @@ public class DefaultDocFromCacheTest {
 	@Resource(name="mockConfigRepository")
 	private MockConfigRepository configRepository;
 	
+	
+	private CgiRunnerFactory cgiRunnerFactory;
+	
 	@Before
 	public void before() throws Exception {
 		configRepository = new MockConfigRepository();
@@ -45,6 +49,7 @@ public class DefaultDocFromCacheTest {
 							.setValue("collection_root",
 									new File("src/test/resources/dummy-search_home/data/data-repository/").getAbsolutePath() )));
 		indexRepository.setConfigRepository(configRepository);
+		cgiRunnerFactory = new CgiRunnerFactory();
 	}
 	
 	@Test
@@ -91,7 +96,7 @@ public class DefaultDocFromCacheTest {
 		dFromC.setSearchHome(searchHome);
 		dFromC.setIndexRepository(indexRepository);
 		dFromC.setConfigRepository((ConfigRepository)configRepository);
-		
+		dFromC.setCgiRunnerFactory(cgiRunnerFactory);
 		String ext = ".sh";
 		if (OS.isFamilyWindows()) {
 			ext = ".bat";

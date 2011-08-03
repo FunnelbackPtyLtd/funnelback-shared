@@ -36,6 +36,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
+import com.funnelback.utils.CgiRunnerFactory;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
@@ -54,6 +55,9 @@ public class DefaultDocFromCache implements DocFromCache {
 	
 	@Autowired
 	@Setter private IndexRepository indexRepository;
+	
+	@Autowired @Setter
+	private CgiRunnerFactory cgiRunnerFactory;
 	
 	private final String ignoreIndexerOptionPrefixes[] = {
 			 "-forcexml",
@@ -124,7 +128,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		printWriter.flush();
 
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
-		CgiRunner runner = new DefaultCgiRunner(
+		CgiRunner runner = cgiRunnerFactory.create(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
 						+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)),
 				perlBin);

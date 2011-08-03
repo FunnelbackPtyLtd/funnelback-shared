@@ -3,6 +3,7 @@ package com.funnelback.contentoptimiser.fetchers.impl;
 import java.io.File;
 import java.io.IOException;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.codehaus.jackson.JsonParseException;
@@ -15,21 +16,20 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.utils.cgirunner.CgiRunner;
 import com.funnelback.common.utils.cgirunner.CgiRunnerException;
-import com.funnelback.common.utils.cgirunner.DefaultCgiRunner;
 import com.funnelback.contentoptimiser.UrlStatus;
 import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.utils.CgiRunnerFactory;
 
 @Log
 @Component
 public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 
-	@Autowired
-	File searchHome;
+	@Autowired @Setter File searchHome;
 	
-	@Autowired
-	ConfigRepository configRepository;
+	@Autowired @Setter ConfigRepository configRepository;
 	
+	@Autowired @Setter CgiRunnerFactory cgiRunnerFactory;
 
 	@Override
 	public UrlStatus fetch(String optimiserUrl, String collection) {
@@ -40,7 +40,7 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 		}
 		
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
-		CgiRunner runner = new DefaultCgiRunner(
+		CgiRunner runner = cgiRunnerFactory.create(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"),
 				perlBin)
 			.addRequestParameter("u", optimiserUrl)
