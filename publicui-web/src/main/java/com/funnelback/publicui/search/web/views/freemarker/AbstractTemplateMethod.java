@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.views.freemarker;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -26,8 +27,12 @@ public abstract class AbstractTemplateMethod implements TemplateMethodModel, Tem
 	@Autowired
 	@Setter protected I18n i18n;
 	
+	/** Number of required arguments */
 	private final int requiredArgumentsCount;
+	/** Number of optional arguments, excluding required ones */
 	private final int maxOptionalArgumentsCount;
+	/** Whether arguments can have a null value or not */
+	@Getter private final boolean nullArgsPermitted;
 	
 	@Override
 	public Object exec(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
@@ -55,13 +60,15 @@ public abstract class AbstractTemplateMethod implements TemplateMethodModel, Tem
 							StringUtils.join(getRequiredArgumentsNames(), ",")));
 			}
 		} else {
-			// Check that mandatory arguments are not null
-			for (int i=0; i<requiredArgumentsCount; i++) {
-				if (arguments.get(i) == null) {
-					throw new TemplateModelException(
-							i18n.tr("freemarker.method.arguments.value.null",
-									Integer.toString(i+1),
-									"freemarker.method."+this.getClass().getSimpleName()+".req."+(i+1)));
+			if (! nullArgsPermitted) {
+				// Check that mandatory arguments are not null
+				for (int i=0; i<requiredArgumentsCount; i++) {
+					if (arguments.get(i) == null) {
+						throw new TemplateModelException(
+								i18n.tr("freemarker.method.arguments.value.null",
+										Integer.toString(i+1),
+										"freemarker.method."+this.getClass().getSimpleName()+".req."+(i+1)));
+					}
 				}
 			}
 		}

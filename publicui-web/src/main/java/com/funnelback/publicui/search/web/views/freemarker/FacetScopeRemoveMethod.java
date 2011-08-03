@@ -25,7 +25,7 @@ public class FacetScopeRemoveMethod extends AbstractTemplateMethod {
 	private static final Pattern FACET_SCOPE_PATTERN = Pattern.compile("(^|[&\\?;])("+RequestParameters.FACET_SCOPE+"=)(.*?)(&|$)");
 	
 	public FacetScopeRemoveMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 
 	@Override

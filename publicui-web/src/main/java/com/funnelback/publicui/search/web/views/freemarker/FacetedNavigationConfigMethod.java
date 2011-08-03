@@ -22,7 +22,7 @@ public class FacetedNavigationConfigMethod extends AbstractTemplateMethod {
 	private ConfigRepository configRepository;
 	
 	public FacetedNavigationConfigMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 	
 	@Override

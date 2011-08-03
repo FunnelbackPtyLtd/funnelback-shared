@@ -30,7 +30,7 @@ public class ParseRelativeDateMethod extends AbstractTemplateMethod {
 	private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("ddMMMyyyy");
 	
 	public ParseRelativeDateMethod() {
-		super(1,0);
+		super(1, 0, false);
 	}
 	
 	@Override

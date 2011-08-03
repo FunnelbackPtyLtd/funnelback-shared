@@ -13,7 +13,7 @@ public class CurrentDateMethod extends AbstractTemplateMethod {
 	public static final String NAME = "currentDate";
 	
 	public CurrentDateMethod() {
-		super(0, 0);
+		super(0, 0, false);
 	}
 	
 	@Override

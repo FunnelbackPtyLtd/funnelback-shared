@@ -18,7 +18,7 @@ public class RemoveQSParamMethod extends AbstractTemplateMethod {
 	public static final String NAME = "removeParam"; 
 	
 	public RemoveQSParamMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ public class IsEnabledMethod extends AbstractTemplateMethod {
 	public static final String NAME = "is_enabled";
 	
 	public IsEnabledMethod() {
-		super(1, 0);
+		super(1, 0, true);
 	}
 	
 	@Override

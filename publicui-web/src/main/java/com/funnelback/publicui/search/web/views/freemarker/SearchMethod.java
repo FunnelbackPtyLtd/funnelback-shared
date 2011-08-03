@@ -35,7 +35,7 @@ public class SearchMethod extends AbstractTemplateMethod {
 	private SearchTransactionProcessor searchTransactionProcessor;
 	
 	public SearchMethod() {
-		super(3, 1);
+		super(3, 1, false);
 	}
 	
 	@Override

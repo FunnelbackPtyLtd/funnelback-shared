@@ -21,7 +21,7 @@ public class IsAdminUIMethod extends AbstractTemplateMethod {
 	private ConfigRepository configRepository;
 	
 	public IsAdminUIMethod() {
-		super(1, 0);
+		super(1, 0, false);
 	}
 
 	@Override

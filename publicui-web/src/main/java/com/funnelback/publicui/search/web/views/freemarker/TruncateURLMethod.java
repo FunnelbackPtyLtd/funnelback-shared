@@ -26,7 +26,7 @@ public class TruncateURLMethod extends AbstractTemplateMethod {
 	private static final String SPLIT = "<br/>";
 	
 	public TruncateURLMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 	
 	@Override

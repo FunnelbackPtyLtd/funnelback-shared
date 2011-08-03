@@ -28,7 +28,7 @@ public abstract class AbstractMethodTest {
 	@Autowired
 	private I18n i18n;
 	
-	protected TemplateMethodModel method;
+	protected AbstractTemplateMethod method;
 	
 	protected abstract AbstractTemplateMethod buildMethod();
 	protected abstract int getRequiredArgumentsCount();
@@ -93,9 +93,13 @@ public abstract class AbstractMethodTest {
 		
 		try {
 			method.exec(out);
-			Assert.fail("An exception should have been thrown if one argument is null");
+			if (! method.isNullArgsPermitted()) {
+				Assert.fail("An exception should have been thrown if one argument is null");
+			}
 		} catch (TemplateException te) {
-			System.out.println(te);
+			if (method.isNullArgsPermitted()) {
+				Assert.fail("No exception should have been thrown if one argument is null");
+			}
 		}
 	}
 	

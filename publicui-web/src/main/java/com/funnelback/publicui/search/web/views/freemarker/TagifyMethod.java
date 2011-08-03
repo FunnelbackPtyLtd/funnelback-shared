@@ -20,7 +20,7 @@ public class TagifyMethod extends AbstractTemplateMethod {
 	public static final String NAME = "tagify";	
 	
 	public TagifyMethod() {
-		super(3, 1);
+		super(3, 1, false);
 	}
 	
 	@Override

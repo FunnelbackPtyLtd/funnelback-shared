@@ -20,7 +20,7 @@ public class UpdatedDateMethod extends AbstractTemplateMethod {
 	private IndexRepository indexRepository;
 	
 	public UpdatedDateMethod() {
-		super(1, 0);
+		super(1, 0, false);
 	}
 	
 	@Override

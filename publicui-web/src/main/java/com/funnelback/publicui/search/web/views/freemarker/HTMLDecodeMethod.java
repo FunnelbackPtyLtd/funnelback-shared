@@ -15,7 +15,7 @@ public class HTMLDecodeMethod extends AbstractTemplateMethod {
 	public static final String NAME = "htmlDecode";
 	
 	public HTMLDecodeMethod() {
-		super(1, 0);
+		super(1, 0, false);
 	}
 	
 	@Override

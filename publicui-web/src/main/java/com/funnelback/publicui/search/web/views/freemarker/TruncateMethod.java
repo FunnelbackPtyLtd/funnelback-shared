@@ -20,7 +20,7 @@ public class TruncateMethod extends AbstractTemplateMethod {
 	private final Pattern LAST_WORD_PATTERN = Pattern.compile("(\\S+)\\s+(\\S+)$"); 
 	
 	public TruncateMethod() {
-		super(2, 1);
+		super(2, 1, false);
 	}
 	
 	@Override

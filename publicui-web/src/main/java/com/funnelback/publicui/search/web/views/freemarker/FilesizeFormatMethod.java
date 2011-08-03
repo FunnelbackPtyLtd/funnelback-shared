@@ -22,7 +22,7 @@ public class FilesizeFormatMethod extends AbstractTemplateMethod {
 	private String kbUnit = "k";
 
 	public FilesizeFormatMethod() {
-		super(1, 0);
+		super(1, 0, false);
 	}
 	
 	@SuppressWarnings("unused")

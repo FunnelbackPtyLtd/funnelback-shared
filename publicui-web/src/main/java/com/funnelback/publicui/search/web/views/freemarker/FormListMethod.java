@@ -20,7 +20,7 @@ public class FormListMethod extends AbstractTemplateMethod {
 	private ConfigRepository configRepository;
 	
 	public FormListMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 	
 	@Override

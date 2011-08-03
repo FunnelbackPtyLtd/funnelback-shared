@@ -17,7 +17,7 @@ public class TruncateHTMLMethod extends AbstractTemplateMethod {
 	public static final String NAME = "truncateHTML";
 	
 	public TruncateHTMLMethod() {
-		super(2, 0);
+		super(2, 0, false);
 	}
 	
 	@Override

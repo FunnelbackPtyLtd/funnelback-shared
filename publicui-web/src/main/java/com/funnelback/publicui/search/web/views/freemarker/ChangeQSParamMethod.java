@@ -18,7 +18,7 @@ import freemarker.template.TemplateScalarModel;
 public class ChangeQSParamMethod extends AbstractTemplateMethod {
 
 	public ChangeQSParamMethod() {
-		super(3, 0);
+		super(3, 0, false);
 	}
 
 	public static final String NAME = "changeParam"; 
