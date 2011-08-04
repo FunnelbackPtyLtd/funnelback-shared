@@ -141,8 +141,10 @@ public class DefaultDocFromCache implements DocFromCache {
 		IOUtils.closeQuietly(printWriter);
 		IOUtils.closeQuietly(fos);
 		
+		File wordsInDocFile = new File(tempDir, "index-single.words_in_docs");
 		log.debug("....done");
 		Executor indexDocument = new DefaultExecutor();
+		indexDocument.setWorkingDirectory(tempDir);
 		CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
 		String[] args = getArgsFromBldinfo(collectionId);
 		ByteArrayOutputStream outstream = new ByteArrayOutputStream();
@@ -150,7 +152,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		log.debug("....done");
 		try {
 			log.debug("Indexing document");
-			clIndexDocument.addArgument("-f");
+			clIndexDocument.addArgument("-f");			
 			clIndexDocument.addArgument(cacheFile.getPath());
 			clIndexDocument.addArgument(tempDir + File.separator + "index-single");
 			clIndexDocument.addArguments(getArgsForSingleDocument(args));
@@ -161,15 +163,17 @@ public class DefaultDocFromCache implements DocFromCache {
 		} catch (IOException e) {
 			log.error("Failed to index document with command line " + clIndexDocument.toString()+ ". Standard output and standard err follow: \"" + outstream + "\" Standard error stream: \"" + errstream.toString(),e);
 		
-			comparison.getMessages().add(i18n.tr("error.callingIndexer"));
-			return null;
+			if(! wordsInDocFile.exists()) {
+				comparison.getMessages().add(i18n.tr("error.callingIndexer"));
+				return null;
+			}
 		}
 		log.debug("....done");
 		String wordsInDoc;
 		
 		try {
 			log.debug("Reading words in doc");
-			wordsInDoc = Files.toString(new File(tempDir, "index-single.words_in_docs"), Charsets.UTF_8);	
+			wordsInDoc = Files.toString(wordsInDocFile, Charsets.UTF_8);	
 			FileUtils.deleteDirectory(tempDir);
 		} catch (IOException e) {		
 			log.error("Failed to open words in doc file after indexing",e);
