@@ -1,9 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.funnelback.publicui</groupId>
 	<artifactId>publicui-web</artifactId>
-	<version>10.2.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Java Public UI for Funnelback - Web</name>
 	<parent>
@@ -125,12 +123,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>2.2</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.mockito</groupId>
 	  		<artifactId>mockito-all</artifactId>
 		  	<version>1.9.0-rc1</version>
@@ -151,7 +143,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.4.2</version>
+			<version>2.4.3</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -200,26 +192,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>1.6.10</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>1.6.10</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
@@ -231,7 +203,7 @@
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
-			<version>2.3.17</version>
+			<version>2.3.18</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

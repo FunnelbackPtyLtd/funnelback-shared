@@ -37,7 +37,8 @@ public class ExecutionContextHolder implements ServletContextAware {
 		try {
 			this.executionContext = ExecutionContext.valueOf( servletExecutionContext );
 		} catch (Exception e) {
-			log.warn("Unknown execution context. Please set a valid '"+ExecutionContext.class.getSimpleName()+"' servlet attribute");
+			log.warn("Unknown execution context. Please set a valid '"+ExecutionContext.class.getSimpleName()+"' servlet attribute"
+					+ " in your application server config (This is only needed for JMX monitoring).");
 			this.executionContext = ExecutionContext.Unknown;
 		}
 		log.info("Context path is '" + contextPath + "', execution context is '"+executionContext+"'");
