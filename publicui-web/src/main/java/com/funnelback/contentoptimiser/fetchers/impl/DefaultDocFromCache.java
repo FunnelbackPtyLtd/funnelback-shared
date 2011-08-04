@@ -161,7 +161,9 @@ public class DefaultDocFromCache implements DocFromCache {
 			env.put("SEARCH_HOME",searchHome.getAbsolutePath());
 			indexDocument.execute(clIndexDocument,env);
 		} catch (IOException e) {
-			log.error("Failed to index document with command line " + clIndexDocument.toString()+ ". Standard output and standard err follow: \"" + outstream + "\" Standard error stream: \"" + errstream.toString(),e);
+			log.error("Failed to index document with command line " + clIndexDocument.toString(),e);
+			log.error("Failed indexer standard output was: " + outstream.toString());
+			log.error("Failed indexer standard error was: " + errstream.toString());
 		
 			if(! wordsInDocFile.exists()) {
 				comparison.getMessages().add(i18n.tr("error.callingIndexer"));
