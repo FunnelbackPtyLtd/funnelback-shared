@@ -24,6 +24,6 @@ public class SearchError {
 	}
 
 	@Getter	private final Reason reason;
-	@Getter @Setter private Object additionalData;
+	@Getter @Setter private Exception additionalData;
 	
 }
