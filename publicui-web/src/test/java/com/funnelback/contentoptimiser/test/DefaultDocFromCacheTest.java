@@ -81,6 +81,7 @@ public class DefaultDocFromCacheTest {
 				"-XMF/opt/funnelback/conf/fed-gov/xml.cfg",
 				"-small", 
 				"-show_each_word_to_file",
+				"-noank_record"
 		};
 		
 		DocFromCache dFromC = new DefaultDocFromCache();
