@@ -73,6 +73,7 @@ public class DefaultDocFromCache implements DocFromCache {
 	private final String provideOptionstoIndexer[] = {
 			  "-small",
 			  "-show_each_word_to_file",
+			  "-noank_record",
 			};  
 	
 	/**
