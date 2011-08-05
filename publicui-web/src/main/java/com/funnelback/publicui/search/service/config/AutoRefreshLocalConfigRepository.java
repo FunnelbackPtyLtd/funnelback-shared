@@ -50,14 +50,19 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		
 		if (elt == null) {
 			// Collection never loaded
+			log.debug("Collection '"+collectionId+"' not found in cache.");
 			return super.getCollection(collectionId); 
 		} else {
+			log.debug("Collection '"+collectionId+"' found in cache.");
 			// Collection in cache
 			Collection c = (Collection) elt.getObjectValue();
 			
 			if(isAnyConfigFileStale(c, elt.getCreationTime())) {
+				log.debug("Reloading stale collection '"+collectionId+"' config");
 				cache.remove(elt.getKey());
 				return super.getCollection(collectionId);
+			} else {
+				log.debug("Collection config for '"+collectionId+"' is up to date");
 			}
 			
 			return c;
