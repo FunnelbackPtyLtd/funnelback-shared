@@ -10,7 +10,6 @@
 
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9">
     <style>
-    
 /* QUERY FORM */
 
 #fb-initial { text-align: center; }
@@ -44,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
 	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
-		<!--[if IE]>
+	<!--[if IE]>
    		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/excanvas.js"></script>
 	<![endif]-->
 	

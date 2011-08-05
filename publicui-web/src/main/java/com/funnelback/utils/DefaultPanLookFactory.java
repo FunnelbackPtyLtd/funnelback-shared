@@ -15,7 +15,7 @@ public class DefaultPanLookFactory implements PanLookFactory{
 	
 	@Override
 	public PanLook getPanLook(File sortedFile,String prefix) throws IOException {
-		 return new MemoryMapperPanLook(new MemoryMappedLineSeeker(sortedFile), prefix);
+		 return new MemoryMapperPanLook(new MemoryMappedLineSeeker(sortedFile, System.getProperty("line.separator").getBytes()), prefix);
 	}
 
 }

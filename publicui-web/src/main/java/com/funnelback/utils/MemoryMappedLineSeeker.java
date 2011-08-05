@@ -10,14 +10,17 @@ import java.util.List;
 
 public class MemoryMappedLineSeeker implements PanLookSeeker {
 	private static final long PAGE_SIZE = Integer.MAX_VALUE;
-	private static final byte finalLineSep = System.getProperty("line.separator").getBytes()[ System.getProperty("line.separator").getBytes().length -1];
-	private static final byte startLineSep = System.getProperty("line.separator").getBytes()[0];
+	private final byte finalLineSep; 
+	private final byte startLineSep; 
 	
 	private final List<MappedByteBuffer> buffers = new ArrayList<MappedByteBuffer>();
 	private final long fileSize; 
     
 	
-	public MemoryMappedLineSeeker(File sortedFile) throws IOException {
+	public MemoryMappedLineSeeker(File sortedFile, byte [] lineSepBytes) throws IOException {
+		finalLineSep = lineSepBytes[lineSepBytes.length -1];
+		startLineSep = lineSepBytes[0];
+				
 		FileChannel channel = (new FileInputStream(sortedFile)).getChannel();
         long start = 0, length = 0;
         for (long index = 0; start + length < channel.size(); index++) {
@@ -29,7 +32,8 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
             
             buffers.add((int)index, channel.map(FileChannel.MapMode.READ_ONLY, start, length));
         }
-        fileSize = sortedFile.length();   
+        fileSize = sortedFile.length();
+        
 	}
 	
 	/**
