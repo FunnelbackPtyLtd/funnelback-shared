@@ -214,8 +214,9 @@
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				<bean id="jsonView" class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
 					<property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
+					<property name="callbackParameterName" value="callback" />
 				</bean>
 
 				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
