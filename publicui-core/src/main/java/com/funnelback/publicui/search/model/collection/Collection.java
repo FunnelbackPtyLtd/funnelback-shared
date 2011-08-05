@@ -40,7 +40,7 @@ public class Collection {
 	 * Hook scripts
 	 */
 	public static enum Hook {
-		pre_datafetch, post_datafetch;
+		pre_datafetch, post_datafetch, pre_process, post_process;
 		
 		/**
 		 * Name of the Groovy variable that will contain the search transaction

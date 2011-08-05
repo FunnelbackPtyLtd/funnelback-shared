@@ -81,6 +81,11 @@
 			required values for following processors -->
 		<ref bean="passThroughParametersInputProcessor" />
 		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
+		<bean id="preProcessHook"
+			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
+		</bean>		
 		<ref bean="userKeysInputProcessor" />
 		<ref bean="facetScopeInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
@@ -125,6 +130,11 @@
 		<ref bean="extraSearchesExecutor" />
 		<ref bean="contentOptimiserOutputProcessor" />
 		<ref bean="searchMonitorUpdaterOutputProcessor" />
+		<bean id="postProcessHook"
+			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
+			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Output }" />
+		</bean>		
 	</util:list>
 
 	<!-- ***** -->
