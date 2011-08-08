@@ -49,6 +49,7 @@ public class AccessRestrictionInterceptorTests {
 		
 		request = new MockHttpServletRequest();
 		request.setParameter(RequestParameters.COLLECTION, COLLECTION_ID);
+		request.setParameter(RequestParameters.QUERY, "dummy");
 		request.setQueryString(RequestParameters.COLLECTION + "=" + COLLECTION_ID + "&query=dummy");
 		request.setRemoteAddr("1.2.3.4");
 		request.setRemoteHost("remote.host.com");
