@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,10 @@ import com.funnelback.publicui.search.service.IndexRepository;
 @Component
 public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
 	
-	@Autowired
+	@Autowired @Setter
 	I18n i18n;
 	
-	@Autowired 
+	@Autowired @Setter
 	IndexRepository indexRepository;
 	
 	public BldInfoStats fetch(ContentOptimiserModel model, Collection collection) throws IOException {
