@@ -1,6 +1,6 @@
 <#ftl encoding="utf-8" />
-<#import "/share/freemarker/funnelback_legacy.ftl" as s/>
-<#import "/share/freemarker/funnelback.ftl" as fb/>
+<#import "/web/templates/publicui/funnelback_classic.ftl" as s/>
+<#import "/web/templates/publicui/funnelback.ftl" as fb/>
 
 <head>
 

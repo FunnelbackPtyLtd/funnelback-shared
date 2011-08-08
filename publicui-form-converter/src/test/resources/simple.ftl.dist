@@ -1,6 +1,6 @@
 <#ftl encoding="utf-8" />
-<#import "/share/freemarker/funnelback_legacy.ftl" as s/>
-<#import "/share/freemarker/funnelback.ftl" as fb/>
+<#import "/web/templates/publicui/funnelback_classic.ftl" as s/>
+<#import "/web/templates/publicui/funnelback.ftl" as fb/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                       "http://www.w3.org/TR/html4/strict.dtd">
