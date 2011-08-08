@@ -3,8 +3,6 @@
 
 <#macro content_optimiser_requery>
 	<form method="GET" action="optimise.html">
-		
-		
 		<div class="requery_line">
 			<label>Query</label> <input type="text"  tabindex="1" class="query"  name="query" value="<@s.QueryClean/>"/>
 		</div>
@@ -45,6 +43,15 @@
 		});		
  	</script>
 </#macro>
+
+<#macro content_optimiser_big_error>
+	<div class="messages">
+		<ul>
+			<li>An error has occured in the content optimiser. Refer to the logs for more information</li>
+		</ul>			
+	</div>
+</#macro>
+
 
 <#macro content_optimiser_warnings>
 		<#if response??>
