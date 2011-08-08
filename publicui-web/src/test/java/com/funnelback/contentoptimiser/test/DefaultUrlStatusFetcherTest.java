@@ -52,6 +52,14 @@ public class DefaultUrlStatusFetcherTest {
 		this.fetcher = fetcher;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testExplode() throws CgiRunnerException {
+		when(cgiRunner.runToString()).thenThrow(CgiRunnerException.class);
+		UrlStatus u = fetcher.fetch("www.place.com", "dummy-collection");
+		Assert.assertNull(u);
+	}
+	
 	@Test
 	public void testNoHttp() {
 		fetcher.fetch("www.place.com", "dummy-collection");

@@ -54,7 +54,7 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 			json = runner.runToString();
 		} catch (CgiRunnerException e1) {
 			log.error("Unable to run the CGI command to get URL status ",e1);
-			return status;
+			return null;
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();
