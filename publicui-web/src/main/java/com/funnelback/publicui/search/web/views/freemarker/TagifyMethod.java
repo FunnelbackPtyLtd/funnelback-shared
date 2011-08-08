@@ -29,6 +29,10 @@ public class TagifyMethod extends AbstractTemplateMethod {
 		String terms = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		String content = ((TemplateScalarModel) arguments.get(2)).getAsString();
 		
+		if ("".equals(terms)) {
+			return new SimpleScalar(content);
+		}
+		
 		boolean isRegExp = false;
 		if (arguments.size() > 3) {
 			isRegExp = ((TemplateBooleanModel) arguments.get(3)).getAsBoolean();
