@@ -48,7 +48,7 @@ public class SearchController {
 	}
 	
 	public enum ViewTypes {
-		html, htm, xml, json, legacy;
+		html, htm, xml, json, classic;
 	}
 
 	@Autowired
@@ -153,7 +153,7 @@ public class SearchController {
 			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
 			break;
 		case xml:
-		case legacy:
+		case classic:
 		default:
 			out.put(ModelAttributes.SearchTransaction.toString(), st);
 		}

@@ -20,11 +20,11 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
- * {@link View} that serialize the model using XStream, then
- * transforms it using a given XSL stylesheet.
+ * <p>{@link View} that serialize the model using XStream, then
+ * transforms it using a given XSL stylesheet.</p>
  * 
- * Used mainly to provide a compatible legacy XML format to mimic
- * the Perl UI xml.cgi
+ * <p>Used mainly to provide a compatible legacy XML format to mimic
+ * the Perl UI <tt>xml.cgi</tt></p>
  */
 @Log
 public class XSLTXStreamView extends AbstractView {

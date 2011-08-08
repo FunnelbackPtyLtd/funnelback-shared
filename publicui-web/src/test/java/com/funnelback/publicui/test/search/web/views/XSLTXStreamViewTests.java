@@ -31,7 +31,7 @@ public class XSLTXStreamViewTests {
 	
 	@Before
 	public void before() throws Exception {
-		view = new XSLTXStreamView(new ClassPathResource("funnelback-legacy.xsl"));
+		view = new XSLTXStreamView(new ClassPathResource("funnelback-classic.xsl"));
 		view.setModelKey(SearchController.ModelAttributes.SearchTransaction.toString());
 		SearchXStreamMarshaller marshaller = new SearchXStreamMarshaller();
 		marshaller.afterPropertiesSet();	// Required to apply XStream customisation (calls customiseXStream())

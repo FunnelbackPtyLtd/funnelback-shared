@@ -38,11 +38,11 @@
 		</para>
 	</chapter>
 	
-	<chapter xml:id="legacy-xml">
-		<title>Using legacy XML format</title>
+	<chapter xml:id="classic-xml">
+		<title>Using classic XML format</title>
 		
 		<para>
-			The Java Public UI is able to generate legacy <literal>xml.cgi</literal> format using an XSL transformation. Just use <literal>search.legacy</literal>
+			The Java Public UI is able to generate classic <literal>xml.cgi</literal> format using an XSL transformation. Just use <literal>search.classic</literal>
 			as URL controller to trigger the transformation.
 		</para>
 		
