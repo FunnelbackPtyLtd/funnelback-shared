@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.HtmlUtils;
 
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -28,8 +27,7 @@ public class HTMLEncodeSummaries implements OutputProcessor {
 		if (SearchTransactionUtils.hasResults(searchTransaction)) {
 			for(Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
 				if (r.getSummary() != null) {
-					r.setSummary(HtmlUtils.htmlEscape(r.getSummary()));
-					StringUtils.replaceEach(r.getSummary(), UNSAFE_CHARS, SAFE_REPLACEMENT);
+					r.setSummary(StringUtils.replaceEach(r.getSummary(), UNSAFE_CHARS, SAFE_REPLACEMENT));
 				}
 			}
 		}
