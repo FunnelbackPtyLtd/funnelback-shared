@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("htmlEncodeSummaries")
 public class HTMLEncodeSummaries implements OutputProcessor {
 	
-	private static final String[] UNSAFE_CHARS = {"\"", "\"", "'", "<", ">", "&"};
+	private static final String[] UNSAFE_CHARS = {"\\", "\"", "'", "<", ">", "&"};
 	private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&apos;", "&lt;", "&gt;", "&amp;"};
 
 	@Override
