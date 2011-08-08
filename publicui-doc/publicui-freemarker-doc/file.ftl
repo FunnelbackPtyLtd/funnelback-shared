@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
 
-    <link rel="stylesheet" href="../help/style-v2.css" type="text/css" />
+    <link rel="stylesheet" href="../style-v2.css" type="text/css" />
 
     <title>Documentation for ${filename}</title>
 
