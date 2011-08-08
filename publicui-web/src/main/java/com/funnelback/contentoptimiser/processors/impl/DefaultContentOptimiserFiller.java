@@ -393,7 +393,16 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 						cleared = true;
 					} 
 				}
+				
+				if(cleared == false) {
+					// we did generate some suggestions, but we decided they were all of no value
+					// so we display the generic help message
+					comparison.getHintsByName().get("content").getHintTexts().clear();
+					comparison.getHintsByName().get("content").getHintTexts().add("The content of the selected document appears well targetted to this query. " +
+							" Consider asking the administrator of your search service to add this query and URL as a tuning test case.");
+				}
 			}
+			
 		}
 		comparison.setContent(content);
 	}
@@ -401,7 +410,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	private ContentHint obtainContentHint(String queryWord, long totalDocuments,
 			Integer inDocFreq, Integer termFreq, MetaInfoFetcher mf,
 			String metaClass) {
-		double rawWeightForTerm = Math.log((double)totalDocuments / inDocFreq.doubleValue()) * mf.getRankerOptions().getMetaWeight(metaClass);
+		double rawWeightForTerm = (Math.log((double)totalDocuments / inDocFreq.doubleValue())+1) * mf.getRankerOptions().getMetaWeight(metaClass);
 		MetaInfo metaInfo = mf.get(metaClass);
 		String metaTitle = metaInfo.getLongTitle();
 		String metaHelp = metaInfo.getImprovementSuggestion();
