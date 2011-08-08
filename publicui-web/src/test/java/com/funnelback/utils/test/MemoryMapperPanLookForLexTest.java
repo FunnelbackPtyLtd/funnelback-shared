@@ -18,13 +18,7 @@ public class MemoryMapperPanLookForLexTest {
 	
 	@Before
 	public void setup() {
-
-		if(System.getProperty("os.name").contains("Windows")) {
-			testFile = new File("src/test/resources/utils/index.lex.windows.txt");
-		} else {
-			testFile = new File("src/test/resources/utils/index.lex");
-		}
-	
+		testFile = new File("src/test/resources/utils/index.lex");
 	}
 	
 	@Test
