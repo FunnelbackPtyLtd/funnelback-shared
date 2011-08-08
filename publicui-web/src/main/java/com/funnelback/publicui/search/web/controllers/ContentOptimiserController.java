@@ -52,7 +52,7 @@ public class ContentOptimiserController {
 	 * Called when no collection has been specified.
 	 * @return a list of all available collections.
 	 */
-	@RequestMapping(value="/",params="!"+RequestParameters.COLLECTION)
+	@RequestMapping(value={"/"},params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollectionKickoff() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
@@ -60,6 +60,11 @@ public class ContentOptimiserController {
 		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
 				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
+	}
+	
+	@RequestMapping(value="")
+	public String noSlash() {
+		return "redirect:content-optimiser/";
 	}
 	
 	
