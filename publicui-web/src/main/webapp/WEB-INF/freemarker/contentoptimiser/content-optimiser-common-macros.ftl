@@ -65,12 +65,12 @@
         	<#if (response.urlComparison.urls?size > 0)>
         		<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents 
         		for the query &quot;<b><@s.QueryClean/></b>&quot;. 
-        		The top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}">${response.urlComparison.urls[0].title}</a>.
+        		The top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}"><@s.boldicize>${response.urlComparison.urls[0].title}</@s.boldicize></a>.
 	        	<#if (response.urlComparison.importantOne??)>
 					<p>The selected document (<strong style="word-break: break-all;">${response.urlComparison.importantOne.liveUrl}</strong>):
 						<ul>
 							<li>is ranked <span class="highlight">${response.urlComparison.importantOne.rank}</span> in the results </li>
-							<li>is titled <a href="${response.urlComparison.importantOne.liveUrl}">${response.urlComparison.importantOne.title}</a>.</li>
+							<li>is titled <a href="${response.urlComparison.importantOne.liveUrl}"><@s.boldicize>${response.urlComparison.importantOne.title}</@s.boldicize></a>.</li>
 							<li>contains <span class="highlight">${response.urlComparison.content.totalWords?string.number}</span> total words, <span class="highlight">${response.urlComparison.content.uniqueWords?string.number}</span> of which are unique.</li>
 						</ul> 
 					</p>
