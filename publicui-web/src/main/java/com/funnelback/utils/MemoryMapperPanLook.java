@@ -10,8 +10,6 @@ public class MemoryMapperPanLook implements PanLook{
 
 	ArrayList<String> matches = new ArrayList<String>();
 	private final PanLookSeeker seeker;
-	private static final long sizeOfLineSep = System.getProperty("line.separator").getBytes().length;
-
 
 	public MemoryMapperPanLook(PanLookSeeker seeker, String prefix) throws IOException {
 		this.seeker = seeker;
@@ -24,7 +22,7 @@ public class MemoryMapperPanLook implements PanLook{
 	    if(aLineThatStartsWith != -1) {
 	    	// rewind til we find the first line that doesn't start with prefix;
 	    	while(pos != 0) {
-	    		pos = seeker.getStartOfLine(pos - sizeOfLineSep - 1);
+	    		pos = seeker.getStartOfLine(pos - seeker.getSizeOfLineSep() - 1);
 	    		if( ! seeker.getString(pos).startsWith(prefix)) break;
 	    		else firstLineThatStartsWith = pos;
 	    	}
@@ -33,7 +31,7 @@ public class MemoryMapperPanLook implements PanLook{
 	    	String line = seeker.getString(firstLineThatStartsWith + offset);
 	    	do {	
 	    		matches.add(line);
-	    		offset += line.getBytes().length  + sizeOfLineSep;
+	    		offset += line.getBytes().length  + seeker.getSizeOfLineSep();
 	    		line = seeker.getString(firstLineThatStartsWith + offset);
 	    	} while(line.startsWith(prefix) || line.startsWith(prefix.replaceAll(" ","_")));
 	    }

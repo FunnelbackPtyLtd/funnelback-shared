@@ -8,4 +8,6 @@ public interface PanLookSeeker {
 
 	long length();
 
+	long getSizeOfLineSep();
+
 }

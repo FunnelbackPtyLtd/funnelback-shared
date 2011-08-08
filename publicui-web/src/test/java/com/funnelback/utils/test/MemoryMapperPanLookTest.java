@@ -63,7 +63,8 @@ public class MemoryMapperPanLookTest {
 	
 	@Test
 	public void testEnd() throws IOException {
-		String[] expected = {"00000029 00000003 [k2]King Lear","00000029 00000005 [k2]King Lear"};
+		String[] expected = {"00000029 00000003 [k2]King Lear",
+				"00000029 00000005 [k2]King Lear"};
 		String prefix = "00000029";
 
 		checkPanLook(expected, prefix);	
@@ -71,7 +72,9 @@ public class MemoryMapperPanLookTest {
 
 	@Test
 	public void testThreeInTheMiddle() throws IOException {
-		String[] expected = {"00000021 00000020 [k2]Next scene","00000021 00000022 [k2]Previous scene","00000021 00000029 [k2]The French camp near Dover"};
+		String[] expected = {"00000021 00000020 [k2]Next scene",
+				"00000021 00000022 [k2]Previous scene",
+				"00000021 00000029 [k2]The French camp near Dover"};
 		String prefix = "00000021";
 
 		checkPanLook(expected, prefix);	

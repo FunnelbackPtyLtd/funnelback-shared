@@ -8,10 +8,13 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class MemoryMappedLineSeeker implements PanLookSeeker {
 	private static final long PAGE_SIZE = Integer.MAX_VALUE;
 	private final byte finalLineSep; 
 	private final byte startLineSep; 
+	@Getter private final long sizeOfLineSep;
 	
 	private final List<MappedByteBuffer> buffers = new ArrayList<MappedByteBuffer>();
 	private final long fileSize; 
@@ -20,6 +23,7 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
 	public MemoryMappedLineSeeker(File sortedFile, byte [] lineSepBytes) throws IOException {
 		finalLineSep = lineSepBytes[lineSepBytes.length -1];
 		startLineSep = lineSepBytes[0];
+		sizeOfLineSep = lineSepBytes.length;
 				
 		FileChannel channel = (new FileInputStream(sortedFile)).getChannel();
         long start = 0, length = 0;
@@ -82,7 +86,6 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
 	@Override
 	public long length() {
 		return fileSize;
-	}
-	   
+	}	   
 
 }
