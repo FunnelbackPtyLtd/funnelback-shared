@@ -38,33 +38,54 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 						getUrl().lastIndexOf('/')+1,
 						getUrl().lastIndexOf(AbstractLocalConfigRepository.FTL_SUFFIX));
 				
-				// Search for custom headers
-				String propertyPrefix = Keys.ModernUI.FORM_PREFIX+"."+name;
-				if (config.hasValue(propertyPrefix+"."+Keys.ModernUI.HEADERS_COUNT_SUFFIX)) {
-					int nbHeaders = config.valueAsInt(propertyPrefix+"."+Keys.ModernUI.HEADERS_COUNT_SUFFIX, 0);
-					int sent = 0;
-					for (int i=0; i<nbHeaders; i++) {
-						String header = config.value(propertyPrefix+"."+Keys.ModernUI.HEADERS_SUFFIX+"."+i, null);
-						if (header != null && header.contains(":")) {
-							String[] kv = header.split(":");
-							response.setHeader(kv[0], kv[1]);
-							sent++;
-						}
-					}
-					log.debug("Added " + sent + " custom headers for form '"+name+"'");
-				}
-				
-				// Search for a custom content type
-				if (config.hasValue(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)) {
-					// setContentType(config.value(propertyPrefix+".content_type"));
-					response.setContentType(config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX));
-					log.debug("Set custom Content Type '"
-							+ config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)
-							+ "' for form '"+name+"'");
-				}
+				setCustomHeaders(name, config, response);
+				setCustomContentType(name, config, response);				
 			}
 		}
 		
 		super.render(model, request, response);
-	}	
+	}
+	
+	/**
+	 * Sets custom HTTP headers, if configured in the collection's configuration.
+	 * @param tplName Name of the current form, without extension.
+	 * @param config Collection configuration.
+	 * @param response
+	 */
+	protected void setCustomHeaders(String tplName, Config config, HttpServletResponse response) {
+		// Search for custom headers
+		String propertyPrefix = Keys.ModernUI.FORM_PREFIX+"."+tplName;
+		if (config.hasValue(propertyPrefix+"."+Keys.ModernUI.HEADERS_COUNT_SUFFIX)) {
+			int nbHeaders = config.valueAsInt(propertyPrefix+"."+Keys.ModernUI.HEADERS_COUNT_SUFFIX, 0);
+			int sent = 0;
+			for (int i=0; i<nbHeaders; i++) {
+				String header = config.value(propertyPrefix+"."+Keys.ModernUI.HEADERS_SUFFIX+"."+(i+1), null);
+				if (header != null && header.contains(":")) {
+					String[] kv = header.split(":");
+					response.setHeader(kv[0].trim(), kv[1].trim());
+					sent++;
+				}
+			}
+			log.debug("Added " + sent + " custom headers for form '"+tplName+"'");
+		}
+	}
+	
+	/**
+	 * Sets a custom content type, if configured in the collection's configuration
+	 * @param tplName Name fo the current form, without extension.
+	 * @param config Collection configuration.
+	 * @param response
+	 */
+	protected void setCustomContentType(String tplName, Config config, HttpServletResponse response) {
+		// Search for a custom content type
+		String propertyPrefix = Keys.ModernUI.FORM_PREFIX+"."+tplName;
+		if (config.hasValue(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)) {
+			// setContentType(config.value(propertyPrefix+".content_type"));
+			response.setContentType(config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX));
+			log.debug("Set custom Content Type '"
+					+ config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)
+					+ "' for form '"+tplName+"'");
+		}
+
+	}
 }
