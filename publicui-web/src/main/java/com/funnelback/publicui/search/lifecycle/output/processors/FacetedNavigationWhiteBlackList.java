@@ -36,7 +36,7 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 			for (Facet f: searchTransaction.getResponse().getFacets()) {
 				if (config.hasValue(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())) {
 					applyWhiteList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName()).split(","));
+						config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName()).toLowerCase().split(","));
 					
 					log.debug("Applied white list '"+config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())+ "'"
 							+ " to facet '" + f.getName() + "'");
@@ -44,7 +44,7 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 			
 				if (config.hasValue(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())) {
 					applyBlackList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName()).split(","));
+						config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName()).toLowerCase().split(","));
 					
 					log.debug("Applied black list '"+config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())+"'"
 							+ " to facet '" + f.getName() + "'");
@@ -66,7 +66,7 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 				@Override
 				public boolean evaluate(Object object) {
 					CategoryValue cv = (CategoryValue) object;
-					return ArrayUtils.contains(whiteList, cv.getLabel());
+					return ArrayUtils.contains(whiteList, cv.getLabel().toLowerCase());
 				}
 			});
 			applyWhiteList(c.getCategories(), whiteList);
@@ -85,7 +85,7 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 				@Override
 				public boolean evaluate(Object object) {
 					CategoryValue cv = (CategoryValue) object;
-					return ! ArrayUtils.contains(blackList, cv.getLabel());
+					return ! ArrayUtils.contains(blackList, cv.getLabel().toLowerCase());
 				}
 			});
 			applyBlackList(c.getCategories(), blackList);
