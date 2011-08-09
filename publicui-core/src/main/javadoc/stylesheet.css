@@ -1,4 +1,43 @@
 body {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: small;
+	font-family: Calibri, Arial, sans-serif;		
+	background:  #FCFAEE;
+	color: #333;
 }
+
+tr.TableHeadingColor, td.NavBarCell1 {
+    background: #FFF8DC;
+    color: chocolate;
+}
+
+a:link,
+a:visited {
+	color: #0066CC;
+}
+
+/* EXTERNAL LINKS */
+a[href~="^http:\/\/"] {
+	padding-right: 16px;
+    /* Don't use relative URLs because the CSS is also included from search results */
+	background:	url('/search/admin/help/externallink.gif') no-repeat top left;
+}
+
+a[href~="http://"]:after {
+}
+
+dd code, dd tt {
+    border: solid 1px #dcdcdc;
+    background: ghostWhite;
+    padding: 2px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+
+table, table td, table th {
+	border: 1px solid #efefef;   
+}
+
+td table, td table td {
+    border-color: #FFF8DC;
+}
+
