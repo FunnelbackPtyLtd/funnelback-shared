@@ -14,21 +14,25 @@ import lombok.Setter;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
 /**
- * Facet, coming from results.
+ * <p>Facets, generated from the result data (Metadata counts,
+ * GScope counts, URL counts).</p>
  * 
- * For instance: "Location"
+ * @since 11.0
  */
 public class Facet {
 
-	/** Facet name */
+	/** Facet name, for example "Location" */
 	@Getter @Setter private String name;
 	
-	/** Category of this facet */
+	/**
+	 * Categories definitions of this facet, for example
+	 * a GScope category, or a Metadata field fill category.
+	 */
 	@Getter private final List<Category> categories = new ArrayList<Category>();
 	
 	/**
-	 * Custom data place holder for custom processors and
-	 * hooks. Anything can be put there by users.
+	 * Custom data placeholder allowing any arbitrary data to be
+	 * stored for this facet by hook scripts.
 	 */
 	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
@@ -42,8 +46,8 @@ public class Facet {
 	}
 	
 	/**
-	 * Recursively check if this facet has any value at all
-	 * @return
+	 * Recursively check if this facet has any value at all.
+	 * @return true if the facet possess at least one value.
 	 */
 	public boolean hasValues() {
 		for (Category category: categories) {
@@ -54,6 +58,11 @@ public class Facet {
 		return false;
 	}
 	
+	/**
+	 * Recursively finds the deepest category.
+	 * @param categoryParamNames
+	 * @return
+	 */
 	public Category findDeepestCategory(List<String> categoryParamNames) {
 		for (Category category: categories) {
 			Category deepest = category.findDeepest(categoryParamNames);
@@ -65,31 +74,34 @@ public class Facet {
 	}
 	
 	/**
-	 * Category of a facet.
-	 * Correspond to the <i>definition</i> of a category,
-	 * not the value itself.
+	 * <p>Category of a facet.</p>
+	 * 
+	 * <p>Correspond to the <i>definition</i> of a category,
+	 * not the value itself.</p>
 	 */
 	public static class Category {
 		
 		/**
-		 * Label for this category
+		 * Label for this category.
 		 */
 		@Getter @Setter private String label;
 		
 		/**
-		 * Name of the query string parameter for this category
+		 * Name of the query string parameter for this category.
+		 * (Ex: <code>f.Location|X).</code>
 		 */
 		@Getter @Setter private String queryStringParamName;
 		
 		/**
-		 * Values for this category. Either a single one for
-		 * item type {@link CategoryDefinition} or multiple for
-		 * fill type {@link CategoryDefinition}.
+		 * <p>Values for this category.</p>
+		 * 
+		 * <p>Either a single one for item type {@link CategoryDefinition}s
+		 * or multiple for fill type {@link CategoryDefinition}s.</p>
 		 */
 		@Getter private final List<CategoryValue> values = new ArrayList<CategoryValue>();
 		
 		/**
-		 * Sub categories, in case of a hierarchical definition
+		 * Sub categories, in case of a hierarchical definition.
 		 */
 		@Getter private final List<Category> categories = new ArrayList<Category>();
 		
@@ -116,6 +128,11 @@ public class Facet {
  			}
 		}
 		
+		/**
+		 * Recursively find the deepest category.
+		 * @param categoryParamNames
+		 * @return
+		 */
 		public Category findDeepest(List<String> categoryParamNames) {
 			Category out = null;
 			if (categoryParamNames.contains(this.queryStringParamName)) {
@@ -139,23 +156,27 @@ public class Facet {
 	}
 	
 	/**
-	 * Value of a category.
+	 * <p>Value of a category.</p>
 	 * 
-	 * Is either automatically generated (fill type {@link CategoryDefinition} or
-	 * manuall (item type {@link CategoryDefinition}
+	 * <p>Is either automatically generated (fill type {@link CategoryDefinition} or
+	 * manually created (item type {@link CategoryDefinition}</p>
 	 */
 	@AllArgsConstructor
 	public static class CategoryValue {
 		
+		/** Actual value of the category (Ex: "Sydney"). */
 		@Getter @Setter private String data;
 		
-		/** Label of the value */
+		/** Label of the value, usually the same as the data. */
 		@Getter @Setter private String label;
 		
-		/** Count of occurences for this value */
+		/** Count of occurrences for this value */
 		@Getter @Setter private int count;
 		
-		/** Query String parameters to use to select this value */
+		/**
+		 * Query String parameters to use to select this value
+		 * (Ex: <code>f.Location|X=Sydney</code>).
+		 **/
 		@Getter @Setter private String queryStringParam;
 
 		@Override
@@ -164,7 +185,7 @@ public class Facet {
 		}
 
 		/**
-		 * Compares by number of occurences
+		 * Compares by number of occurrences
 		 */
 		@RequiredArgsConstructor
 		public static class ByCountComparator implements Comparator<Facet.CategoryValue> {
@@ -179,7 +200,5 @@ public class Facet {
 				}
 			}
 		}
-		
 	}
-	
 }
