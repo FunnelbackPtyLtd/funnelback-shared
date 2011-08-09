@@ -16,35 +16,52 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+/**
+ * <p>This class contains all the output data related to a search.</p>
+ * 
+ * <p>Most of this data is coming from PADRE, but there is also data
+ * computed from the PADRE result set, such as facets.</p>
+ *
+ * @since 11.0
+ */
 @ToString
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"rawPacket"})
 public class SearchResponse {
 
+	/** The result packet coming from PADRE */
 	@Getter @Setter private ResultPacket resultPacket;
 	
-	/** Useful for debugging. */
+	/**
+	 * Raw XML packet as return by PADRE, for
+	 * debugging purposes
+	 */
 	@XStreamOmitField
 	@Getter @Setter private String rawPacket;
 	
-	/** PADRE return code (0 = SUCCESS) */
+	/** PADRE return code (0 = success) */
 	@Getter @Setter private int returnCode;
 	
-	/** Computed facets, never null */
+	/**
+	 * Computed facets based on the PADRE
+	 * result packet and collection configuration.
+	 **/
 	@Getter private final List<Facet> facets = new ArrayList<Facet>();
 	
 	/**
-	 * <p>Custom data place holder for custom processors and
-	 * hooks. Anything can be put there by users.</p>
-	 * <p>Never null</p>
+	 * Custom data placeholder allowing any arbitrary data to be
+	 * stored by hook scripts.
 	 */
 	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
 	/**
-	 * URL comparison data, for content optimiser.
+	 * Content Otpimiser: URL comparison data.
 	 */
 	@Getter @Setter private ContentOptimiserModel urlComparison;
 	
+	/**
+	 * @return true if the {@link #resultPacket} is not null.
+	 */
 	public boolean hasResultPacket() { return resultPacket != null; }
 	
 }

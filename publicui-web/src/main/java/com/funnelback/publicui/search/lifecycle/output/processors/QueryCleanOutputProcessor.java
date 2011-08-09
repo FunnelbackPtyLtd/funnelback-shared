@@ -17,7 +17,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * 	<li>Weighted query terns: term^1.234 => term</li>
  *  <li>Faceted navigation query cooking</li>
  * </ul>
- * @author Administrator
  *
  */
 @Component("queryCleanOutputProcessor")

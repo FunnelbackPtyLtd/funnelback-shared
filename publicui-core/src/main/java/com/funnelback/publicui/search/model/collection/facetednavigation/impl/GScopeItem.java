@@ -17,7 +17,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 
 /**
  * {@link CategoryDefinition} based on a GScope number
- * @author Administrator
  *
  */
 public class GScopeItem extends CategoryDefinition implements GScopeBasedCategory {

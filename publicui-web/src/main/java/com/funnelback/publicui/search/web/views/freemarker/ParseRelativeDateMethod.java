@@ -15,7 +15,6 @@ import freemarker.template.TemplateScalarModel;
 
 /**
  * Parses a relative date expression like &quot;CURRENT_DATE - 1D&quot;
- * @author Administrator
  *
  */
 @Log

@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Executes a PADRE binary and get the results
- * @author Administrator
- *
  */
 public interface PadreForker {
 

@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A quick link, associated to a result.
+ * Quick links, associated to a {@link Result}.
+ * 
+ * @since 11.0
  */
 @AllArgsConstructor
 public class QuickLinks {
@@ -19,20 +21,24 @@ public class QuickLinks {
 	 */
 	@Getter @Setter private String domain;
 
-	/**
-	 * List of quick links
-	 */
+	/** List of quick links */
 	@Getter
 	private final List<QuickLink> quickLinks = new ArrayList<QuickLink>();
 
+	/**
+	 * <p>A single quick link.</p>
+	 * 
+	 * <p>Belongs to a {@link QuickLinks} associated to a
+	 * search result.</p>
+	 */
 	@AllArgsConstructor
 	public static class QuickLink {
 		@Getter @Setter private String text;
 		@Getter @Setter private String url;
 	}
 
+	/** Constants for the PADRE XML result packet tags. */
 	public static final class Schema {
-
 		public static final String QUICKLINKS = "quicklinks";
 		public static final String DOMAIN = "domain";
 		

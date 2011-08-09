@@ -10,22 +10,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Contextual navigation
+ * Contextual navigation parent class.
+ * 
+ * @since 11.0
+ * @see {@link Category}
+ * @see {@link Cluster} 
+ * @see {@link ClusterNav}
  */
 @NoArgsConstructor
 public class ContextualNavigation {
 
+	/** Terms used within this contextual navigation object */
 	@Getter @Setter private String searchTerm;
+	
+	/** Navigation items */
 	@Getter @Setter private ClusterNav clusterNav;
 	
+	/** List of categories (type, topic, site). */
 	@Getter private final List<Category> categories = new ArrayList<Category>();
 	
 	/**
-	 * Custom data place holder for custom processors and
-	 * hooks. Anything can be put there by users.
+	 * Custom data placeholder allowing any arbitrary data to be
+	 * stored by hook scripts.
 	 */
 	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 
+	/** Constants for the PADRE XML result packet tags. */
 	public final static class Schema {
 		public static final String CONTEXTUAL_NAVIGATION = "contextual_navigation";
 		

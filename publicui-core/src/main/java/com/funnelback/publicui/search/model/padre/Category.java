@@ -8,17 +8,33 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Contextual navigation category (type, topic, site, ...)
+ * A contextual navigation category (type, topic, site).
+ * 
+ * @since 11.0
+ * @see {@link ContextualNavigation}
+ * @see {@link Cluster}
+ * @see {@link ClusterNav}
  */
 @AllArgsConstructor
 public class Category {
 
+	/**
+	 * Name of the category ("type", "topic" or "site").
+	 */
 	@Getter @Setter private String name;
+	
+	/**
+	 * Number of additional values of this categories,
+	 * if any.
+	 */
 	@Getter @Setter private Integer more;
 	
+	/** Link to get more values for this category. */
 	@Getter @Setter private String moreLink;
+	/** Link to get fewer values for this category. */
 	@Getter @Setter private String fewerLink;
 	
+	/** List of <em>clusters</em> (suggestions) for this category. */
 	@Getter private final List<Cluster> clusters = new ArrayList<Cluster>();
 	
 	public Category(String name, Integer more) {
@@ -26,7 +42,7 @@ public class Category {
 		this.more = more;
 	}
 	
-	
+	/** Constants for the PADRE XML result packet tags. */
 	public final static class Schema {
 		public static final String CATEGORY = "category";
 		
