@@ -44,9 +44,9 @@ public class ExtraSearches implements InputProcessor, ApplicationContextAware {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.PublicUI.EXTRA_SEARCHES)) {
+				&& searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.ModernUI.EXTRA_SEARCHES)) {
 			
-			String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.PublicUI.EXTRA_SEARCHES).split(",");
+			String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
 			
 			for (final String extraSearch: extraSearches) {
 				log.trace("Configuring extra search '" + extraSearch + "'");

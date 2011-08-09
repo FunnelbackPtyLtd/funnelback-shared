@@ -53,7 +53,7 @@ public class OpenSearchController {
 	
 	private String buildSearchUrl(HttpServletRequest request, Collection collection) {
 		return new StringBuffer()
-		.append(request.getRequestURL().toString().replace(URI, collection.getConfiguration().value(Keys.PublicUI.SEARCH_LINK)))
+		.append(request.getRequestURL().toString().replace(URI, collection.getConfiguration().value(Keys.ModernUI.SEARCH_LINK)))
 		.append("?collection=" + collection.getId())
 		.append("&amp;query={searchTerms}").toString();
 		
