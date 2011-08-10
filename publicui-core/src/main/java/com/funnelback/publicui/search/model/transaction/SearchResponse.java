@@ -55,7 +55,7 @@ public class SearchResponse {
 	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 	
 	/**
-	 * Content Otpimiser: URL comparison data.
+	 * Content Optimiser: URL comparison data.
 	 */
 	@Getter @Setter private ContentOptimiserModel urlComparison;
 	

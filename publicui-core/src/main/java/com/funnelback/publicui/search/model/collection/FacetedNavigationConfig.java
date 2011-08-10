@@ -11,20 +11,23 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 
 /**
- * Faceted navigation configuration.
+ * <p>Faceted navigation configuration.</p>
+ * 
  * @see <tt>faceted_navigation.cfg</tt>
+ * @since 11.0
  */
 @AllArgsConstructor
 public class FacetedNavigationConfig {
 	
-	/** Query processor options embedded in the config file */
+	/** Query processor options embedded in the configuration file */
 	@Getter private final String qpOptions;
 	
-	/** List of facets definitions */
+	/** List of facets definitions. */
 	@Getter private final List<FacetDefinition> facetDefinitions;
 	
 	/**
-	 * @return The list of metadata fields used in this config
+	 * Get the list of metadata fields used in this configuration.
+	 * @return The list of metadata fields used in this configuration.
 	 */
 	public List<String> getMetadataFieldsUsed() {
 		ArrayList<String> out = new ArrayList<String>();
@@ -41,9 +44,9 @@ public class FacetedNavigationConfig {
 	}
 	
 	/**
-	 * Recursively collect the metadata classes used for a specific {@link CategoryDefinition}
-	 * @param definition
-	 * @return
+	 * Recursively collect the metadata classes used for a specific {@link CategoryDefinition}.
+	 * @param definition The {@link CategoryDefinition} to search on.
+	 * @return The list of metadata classes (Single letters).
 	 */
 	private static List<String> collectMetadataFields(CategoryDefinition definition) {
 		ArrayList<String> out = new ArrayList<String>();

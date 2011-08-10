@@ -183,7 +183,7 @@ public class SearchQuestion {
 	@Getter @Setter private boolean extraSearch = false;
 
 	/**
-	 * Contains common query string parameters names.
+	 * Common query string parameters names.
 	 * 
 	 * @since 11.0
 	 */
@@ -277,7 +277,7 @@ public class SearchQuestion {
 		}
 
 		/**
-		 * Common request parameter names used in the <tt>serve-*</tt
+		 * Common request parameter names used in the <tt>serve-*</tt>
 		 * controllers
 		 * 
 		 * @since 11.0

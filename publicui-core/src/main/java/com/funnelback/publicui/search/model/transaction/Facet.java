@@ -74,7 +74,7 @@ public class Facet {
 	}
 	
 	/**
-	 * <p>Category of a facet.</p>
+	 * <p>Category of a facet, such as "Location, based on the metadata class X".</p>
 	 * 
 	 * <p>Correspond to the <i>definition</i> of a category,
 	 * not the value itself.</p>
@@ -156,7 +156,7 @@ public class Facet {
 	}
 	
 	/**
-	 * <p>Value of a category.</p>
+	 * <p>Value of a facet category, such as "Location = Sydney".</p>
 	 * 
 	 * <p>Is either automatically generated (fill type {@link CategoryDefinition} or
 	 * manually created (item type {@link CategoryDefinition}</p>
@@ -185,7 +185,7 @@ public class Facet {
 		}
 
 		/**
-		 * Compares by number of occurrences
+		 * Compares category values by number of occurrences
 		 */
 		@RequiredArgsConstructor
 		public static class ByCountComparator implements Comparator<Facet.CategoryValue> {
