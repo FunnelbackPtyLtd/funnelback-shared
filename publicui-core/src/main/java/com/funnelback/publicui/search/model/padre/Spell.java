@@ -6,7 +6,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * A spelling suggestion
+ * <p>A spelling suggestion</p>
+ * 
+ * @since 11.0
  */
 @AllArgsConstructor
 @ToString
@@ -15,6 +17,7 @@ public class Spell {
 	@Getter @Setter private String url;
 	@Getter @Setter private String text;
 
+	/** Constants for the PADRE XML result packet tags. */
 	public static final class Schema {
 
 		public static final String SPELL = "spell";

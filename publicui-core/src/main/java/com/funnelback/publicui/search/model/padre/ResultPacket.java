@@ -16,67 +16,139 @@ import lombok.Setter;
 
 /**
  * A PADRE result packet, containing search results.
+ * 
+ * @since 11.0
  */
 public class ResultPacket {
 
+	/** Details about the index and PADRE version. */
 	@Getter @Setter private Details details;
-	@Getter @Setter private String query;
-	@Getter @Setter private String queryAsProcessed;
-	@Getter @Setter private String queryCleaned;
-	@Getter @Setter private String collection;
 	
+	/** Original query terms */
+	@Getter @Setter private String query;
+	
+	/**
+	 * <p>Query terms as processed by PADRE.</p>
+	 * 
+	 * <p>This could be different from the {@link #query} if the
+	 * initial {@link #query} contained character that PADRE ignores
+	 * of if a query transformation was applied by PADRE.</p>
+	 */
+	@Getter @Setter private String queryAsProcessed;
+	
+	/**
+	 * The query, cleaned from any operator or constraint that was
+	 * automatically added by the faceted navigation system.
+	 */
+	@Getter @Setter private String queryCleaned;
+	
+	/** ID of the collection being searched. */
+	@Getter @Setter private String collection;
+
+	/**
+	 * List of additional queries for the Query Blending system.
+	 * 
+	 * @see <code>blending.cfg</code>
+	 */
 	@Getter private final List<QSup> qSups = new ArrayList<QSup>();
 	
+	/**
+	 * Summary counts and data about the results (How many documents
+	 * matched, which page is currently returned, etc.).
+	 */
 	@Getter @Setter private ResultsSummary resultsSummary;
+	
+	/** Spelling suggestions. */
 	@Getter @Setter private Spell spell;
+	
+	/** List of best bets matching the query. */
 	@Getter final private List<BestBet> bestBets = new ArrayList<BestBet>();
+	
+	/** List of results. */
 	@Getter final private List<Result> results = new ArrayList<Result>();
+	
+	/** List of tier bars */
 	@Getter final private List<TierBar> tierBars = new ArrayList<TierBar>();
 	
+	/** Error occured during the search, if any. */
 	@Getter @Setter private Error error;
 	
-	/** In ms */
+	/** Time spent by PADRE processing the query, in milliseconds */
 	@Getter @Setter private Integer padreElapsedTime;
 	
-	/** In seconds */
+	/**
+	 * Time spent by PADRE processing contextual navigation,
+	 * in seconds.
+	 */
 	@Getter @Setter private Float phlusterElapsedTime;
 	
 	/**
-	 * Indicates how the query was processed.
-	 * @see log_codes() in queries/cgi.c
+	 * Indicates how the query was internally processed
+	 * by PADRE.
 	 */
 	@Getter @Setter private String queryProcessorCodes;
-	
+
+	/** Contextual navigation suggestions. */
 	@Getter @Setter private ContextualNavigation contextualNavigation;
 	
 	/**
-	 * Metadata counts (Faceting)
+	 * <p>Metadata counts (Used in faceted navigation).</p>
+	 * 
+	 * <p>The key is the couple of <code>class:value</code> and the
+	 * value is the count.</p>
+	 * 
+	 * <p>
+	 * 	Examples:
+	 *  <ul>
+	 *  	<li>a:mozart => 12</li>
+	 *  	<li>a:beethoven => 6</li>
+	 *  </ul>
+	 * </p>
 	 */
 	@Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
 	
 	/**
-	 * URL counts (Faceting)
+	 * <p>URL counts (Used in faceted navigation).</p>
+	 * 
+	 * <p>The key is the URL itself and the value is the count.
+	 * If the URL starts with <code>http://</code>, it's omitted.</p>
+	 * 
+	 * <p>
+	 * Examples:
+	 * 	<ul>
+	 * 		<li>www.example.com/about => 12</li>
+	 * 		<li>www.example.com/contact => 6 </li>
+	 *  	<li>https://secure.example.com/login => 5</li>
+	 *  </ul>
+	 * </p>
 	 */
 	@Getter private final Map<String, Integer> urlCounts = new HashMap<String, Integer>();
 
 	/**
-	 * GScope counts (Faceting)
+	 * <p>GScope counts (Used in faceted navigation)</p>
+	 * 
+	 * <p>The key is the GScope number and the value is the count.</p>
 	 */
 	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
 	
 	/**
-	 * Regular expression to use to highlight query terms in titles,
-	 * summaries or metadata.
+	 * <p>Regular expression to use to highlight query terms in titles,
+	 * summaries or metadata.</p>
+	 * 
+	 * <p>PADRE provides the regular expression to use depending on the
+	 * query terms and other factors.</p>
 	 */
 	@Getter @Setter private String queryHighlightRegex;
 	
 	/**
-	 * Scopes (URL prefix, not gscope) included via the -scope parameter
+	 * Scopes (URL prefixes, not Gscope) included via the <code>scope</code> 
+	 * query processor option.
 	 */
 	@Getter private final List<String> includeScopes = new ArrayList<String>();
 	
 	/**
-	 * Scopes (URL prefix, not gscope) excluded via the -scope parameter
+	 * Scopes (URL prefixes, not Gscopes) excluded via the <code>scope</code>
+	 * query processor option.
 	 */
 	@Getter private final List<String> excludeScopes = new ArrayList<String>();
 	
@@ -86,8 +158,21 @@ public class ResultPacket {
 	@Getter private SetMultimap<String,String> StemmedEquivs = HashMultimap.create();
 	@Getter private Map<String,String> coolerNames = new HashMap<String,String>();
 	
+	/**
+	 * Test if the packet contains results.
+	 * @return true if the packet contains at least one {@link Result}.
+	 */
 	public boolean hasResults() { return results != null && results.size() > 0; }
 	
+	/**
+	 * <p>Get the results <em>and</em the tier bars mixed together.</p>
+	 * 
+	 * <p>This is a convenience method if you need to iterate over the result set
+	 * and display tier bars.</p>
+	 * 
+	 * @return A list containing both {@link Result} and {@link TierBar}, in
+	 * the order returned by PADRE.
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ResultType> getResultsWithTierBars() {
 		if (tierBars.size() > 0) {
@@ -109,10 +194,7 @@ public class ResultPacket {
 		}
 	}
 	
-	/**
-	 * Represents XML Schema
-	 *
-	 */
+	/** Constants for the PADRE XML result packet tags. */
 	public static final class Schema {
 		
 		public static final String PADRE_RESULT_PACKET = "PADRE_result_packet";
