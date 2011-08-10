@@ -187,11 +187,9 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		// List of files to check for an update
 		File[] files = new File[] {
 				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
-				new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 				new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME),
-				new File(c.getConfiguration().getConfigDirectory(), Files.QUERY_TRANSFORM_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.SYNONYMS_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory() + File.separator + DefaultValues.DEFAULT_PROFILE, Files.SYNONYMS_CONFIG_FILENAME)
@@ -214,7 +212,6 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 		for(Profile p: c.getProfiles().values()) {
 			files = new File[] {
 					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME),
-					new File(c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME),
 					new File(baseDataDir + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX + File.separator + p.getId(), Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME)
 			};
 

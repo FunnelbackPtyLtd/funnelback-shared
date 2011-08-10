@@ -1,13 +1,10 @@
 package com.funnelback.publicui.search.model.collection;
 
-import groovy.lang.Script;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -25,11 +22,6 @@ public class FacetedNavigationConfig {
 	
 	/** List of facets definitions */
 	@Getter private final List<FacetDefinition> facetDefinitions;
-	
-	/**
-	 * Groovy transform script
-	 */
-	@Getter @Setter private Class<Script> transformScriptClass;
 	
 	/**
 	 * @return The list of metadata fields used in this config

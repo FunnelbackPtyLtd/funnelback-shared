@@ -54,7 +54,7 @@ public class FacetedNavigationTests {
 		
 		// No QP Options
 		Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
-		c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null, null));
+		c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null));
 		question.setCollection(c);
 		st = new SearchTransaction(question, null);
 		processor.processInput(st);

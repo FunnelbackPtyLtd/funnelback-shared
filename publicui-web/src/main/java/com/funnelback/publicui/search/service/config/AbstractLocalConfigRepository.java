@@ -114,8 +114,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	private void loadFacetedNavigationConfig(Collection c) {
 		// Read global config in conf/
 		File fnConfig = new File (c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
-		File transformConfig = new File(c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME);
-		c.setFacetedNavigationConfConfig(readFacetedNavigationConfigs(fnConfig, transformConfig));
+		c.setFacetedNavigationConfConfig(readFacetedNavigationConfigs(fnConfig));
 		
 		// Read config in live/idx/
 		try {
@@ -123,7 +122,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 					+ File.separator + DefaultValues.VIEW_LIVE
 					+ File.separator + DefaultValues.FOLDER_IDX,
 					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-			c.setFacetedNavigationLiveConfig(readFacetedNavigationConfigs(fnConfig, transformConfig));
+			c.setFacetedNavigationLiveConfig(readFacetedNavigationConfigs(fnConfig));
 		} catch (FileNotFoundException fnfe) {
 			log.error("Error while loading live faceted navigation configuration", fnfe);
 		}
@@ -139,8 +138,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	private void loadFacetedNavigationConfig(Collection c, Profile p) {
 		// Read global config in conf/<profile>/
 		File fnConfig = new File (c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
-		File transformConfig = new File(c.getConfiguration().getConfigDirectory() + File.separator +p.getId(), Files.FACETED_NAVIGATION_TRANSFORM_CONFIG_FILENAME);
-		p.setFacetedNavConfConfig(readFacetedNavigationConfigs(fnConfig, transformConfig));
+		p.setFacetedNavConfConfig(readFacetedNavigationConfigs(fnConfig));
 		
 		// Read config in live/idx/<profile>/
 		try {
@@ -149,7 +147,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 					+ File.separator + DefaultValues.FOLDER_IDX
 					+ File.separator + p.getId(),
 					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-			p.setFacetedNavLiveConfig(readFacetedNavigationConfigs(fnConfig, transformConfig));
+			p.setFacetedNavLiveConfig(readFacetedNavigationConfigs(fnConfig));
 		} catch (FileNotFoundException fnfe) {
 			log.error("Error while loading live faceted navigation configuration", fnfe);
 		}
@@ -160,11 +158,11 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	 * @param fnConfig
 	 * @return
 	 */
-	private FacetedNavigationConfig readFacetedNavigationConfigs(File fnConfig, File fnTransformConfig) {
+	private FacetedNavigationConfig readFacetedNavigationConfigs(File fnConfig) {
 		if (fnConfig.canRead()) {
 			try {
 				Facets f = fnConfigParser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(fnConfig));
-				return new FacetedNavigationConfig(f.qpOptions,f.facetDefinitions, readGroovyScript(fnTransformConfig));
+				return new FacetedNavigationConfig(f.qpOptions,f.facetDefinitions);
 			} catch (IOException ioe) {
 				log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
 				return null;
@@ -197,7 +195,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	}
 	
 	/**
-	 * Loads query_transform.groovy
+	 * Loads Groovy hook scripts
 	 * @param c
 	 * @return
 	 */

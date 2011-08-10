@@ -88,8 +88,6 @@
 	<bean
 		class="com.funnelback.publicui.search.lifecycle.output.processors.FixDisplayUrls" />
 		
-	<bean class="com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigationTransform" />
-
 	<util:map id="profilingStats" key-type="java.lang.String"
 		value-type="java.util.LinkedList" />
 
