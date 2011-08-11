@@ -41,7 +41,12 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	 * Keep track of recent stale checks to avoid checking all
 	 * the files to often
 	 */
-	private Map<String, Long> staleChecks = new HashMap<String, Long>();
+	private Map<String, Long> staleChecks = Collections.synchronizedMap(new HashMap<String, Long>());
+	
+	/**
+	 * Keep track of files that existed and files that were deleted.
+	 */
+	private Map<String, Boolean> existingFiles = Collections.synchronizedMap(new HashMap<String, Boolean>());
 	
 	@Override
 	public Collection getCollection(String collectionId) {
@@ -226,7 +231,17 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	}
 
 	private boolean isFileStale(File f, long timestamp) {
-		return f.lastModified() > timestamp;
+		boolean existedPreviously = false;
+		if (existingFiles.containsKey(f.getAbsolutePath())) {
+			existedPreviously = existingFiles.get(f.getAbsolutePath());
+		}
+		
+		existingFiles.put(f.getAbsolutePath(), f.canRead());
+		if (existedPreviously != f.canRead()) {
+			return true;
+		} else {		
+			return f.lastModified() > timestamp;
+		}
 	}
 
 	

@@ -60,7 +60,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 			if (c != null) {
 				if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
 					String accessRestriction = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
-					log.debug(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
+					log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
 					if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
 						log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
 						return true;
