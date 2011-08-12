@@ -52,7 +52,7 @@
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
-	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/publicui/publicui.properties" />
+	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/modernui/modernui.properties" />
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
