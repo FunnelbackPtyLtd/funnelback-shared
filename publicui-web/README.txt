@@ -71,19 +71,10 @@ Jetty Rewrite
 TODO:
 -----
 
-* Check the status of submitted patches to see if we can use the latest version of these library instead of a custom one:
-  * JNA: https://jna.dev.java.net/issues/show_bug.cgi?id=169
-  * Waffle: http://waffle.codeplex.com/workitem/8559
-
-* Check license implications of re-using a Waffle ServletFilter
-
 * Waffle:
   * Impersonation using Basic method won't allow network access until the logon type is changed from LOGON_TYPE_NETWORK to LOGON_TYPE_NETWORK_CLEARTEXT
   * Test impersonation with delegation (Kerberos)
 
-* Remove test shorcuts
-  * /_/* request mapping on SearchController
- 
 * XML logging
   * Improve fault tolerance of writing an existing XML log (algorithm to search the closing </log> tag)
 
@@ -112,11 +103,7 @@ TODO:
   
 * Collection config reloading: Find a more clever mechanism for reloading only a specific config file and/or lazy loading.
 
-* Rename hooks (pre/post datafetch not very meaningfull)
-
 * Automated testing: Switch to "BasicSecurityFilterProvider" on autotest VMs
   * Check if impersonation is still working with basic (See previous point with LOGON_TYPE_NETWORK)
-  
-* Change i18n system ?
   
   

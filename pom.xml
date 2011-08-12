@@ -5,14 +5,14 @@
 	<artifactId>publicui-parent</artifactId>
 	<version>10.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Java Public UI for Funnelback - Parent</name>
+	<name>Modern UI for Funnelback - Parent</name>
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://jira.funnelback.com/browse/FUN</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Hudson</system>
-		<url>http://blue.funnelback.com/hudson/job/funnelback-publicui</url>
+		<system>Jenkins</system>
+		<url>http://jenkins.funnelback.com/job/funnelback-publicui</url>
 	</ciManagement>
 	<inceptionYear>2011</inceptionYear>
 	<scm>

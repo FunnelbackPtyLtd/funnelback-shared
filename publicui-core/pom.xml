@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>publicui-core</artifactId>
 	<packaging>jar</packaging>
-	<name>Java Public UI for Funnelback - Core</name>
+	<name>Modern UI for Funnelback - Core</name>
 	<parent>
 		<groupId>com.funnelback.publicui</groupId>
 		<artifactId>publicui-parent</artifactId>

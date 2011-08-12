@@ -4,7 +4,7 @@
 	<groupId>com.funnelback.publicui.doc</groupId>
 	<artifactId>publicui-doc-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>Java Public UI for Funnelback - Doco Parent</name>
+	<name>Modern UI for Funnelback - Doco Parent</name>
 	<parent>
 		<groupId>com.funnelback.publicui</groupId>
 		<artifactId>publicui-parent</artifactId>

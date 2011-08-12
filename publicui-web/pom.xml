@@ -3,32 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>publicui-web</artifactId>
 	<packaging>war</packaging>
-	<name>Java Public UI for Funnelback - Web</name>
+	<name>Modern UI for Funnelback - Web</name>
 	<parent>
 		<groupId>com.funnelback.publicui</groupId>
 		<artifactId>publicui-parent</artifactId>
 		<version>10.2.0-SNAPSHOT</version>
 	</parent>
-
-	<issueManagement>
-		<system>JIRA</system>
-		<url>https://jira.funnelback.com/browse/FUN</url>
-	</issueManagement>
-	<ciManagement>
-		<system>Hudson</system>
-		<url>http://blue.funnelback.com/hudson/job/funnelback-publicui/</url>
-	</ciManagement>
-	<inceptionYear>2011</inceptionYear>
-	<scm>
-		<connection>scm:svn:https://svn.funnelback.com/svn/enterprise-search/trunk/java/publicui</connection>
-		<developerConnection>scm:svn:https://svn.funnelback.com/svn/enterprise-search/trunk/java/publicui</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://svn.funnelback.com/websvn/listing.php?repname=enterprise-search&amp;path=/trunk/java/publicui/</url>
-	</scm>
-	<organization>
-		<name>Funnelback</name>
-		<url>http://www.funnelback.com/</url>
-	</organization>
 
 	<build>
 		<!-- No version in WAR filename as it's dropped in web/webapps/ and auto-deployed -->
