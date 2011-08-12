@@ -1,20 +1,19 @@
 # Timeout to wait for PADRE when forking natively (impersonation), in ms.
+# Used in DLS only.
 padre.fork.native.timeout=30000
 
-# Number of values to keep in memory for each profiled method
-profiling.history.size=500
-
 # Interval to check (ms) for any configuration update when using
-# the autorefreshable configuration repository implementation
+# the auto-refreshable configuration repository implementation
 config.repository.autorefresh.interval=250
 
-# Prefix to use for click / cache URLs
+# Prefix to use for click / cache URLs. Should
+# point to the Classic UI root.
 urls.search.prefix=/search/
 
 # Name of the per-collection web resources directory,
-# relative to profiles directory
+# relative to profiles directory.
 resources.web.directory.name=web
 
-# Wether to activate the security filter
-# for Windows authentication
+# Whether to activate the security filter
+# for Windows authentication (DLS)
 authentication=false
