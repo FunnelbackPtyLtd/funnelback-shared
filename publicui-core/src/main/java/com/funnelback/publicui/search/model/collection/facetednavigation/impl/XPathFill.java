@@ -17,18 +17,23 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * {@link CategoryDefinition} filled by an XPath expression.
- * Each different value of the XPath expression will generate a category.
- * Values are stored in an automatically assigned metadata class.
+ * <p>{@link CategoryDefinition} filled by an XPath expression.</p>
+ * 
+ * <p>Each different value of the XPath expression will generate a category.</p>
+ * 
+ * <p>Values are stored in an automatically assigned metadata class.</p>
+ * 
+ * @since 11.0
  */
 public class XPathFill extends CategoryDefinition implements MetadataBasedCategory {
 	
 	/**
-	 * Automatically assigned metadata class for the values
-	 * of the XPath expression.
+	 * <p>Automatically assigned metadata class for the values
+	 * of the XPath expression.</p>
 	 */
 	@Getter @Setter private String metafield;
 	
+	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
@@ -52,25 +57,29 @@ public class XPathFill extends CategoryDefinition implements MetadataBasedCatego
 		return categories;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
 		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + metafield;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
 		return metafield.equals(extraParams);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getMetadataClass() {
 		return metafield;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryConstraint(String value) {
-		return metafield + ":\"" + MetadataBasedCategory.INDEX_FIED_BOUNDARY + " "
+		return metafield + ":\"" + MetadataBasedCategory.INDEX_FIELD_BOUNDARY + " "
 				+ value
-				+ " " + MetadataBasedCategory.INDEX_FIED_BOUNDARY + "\"";
+				+ " " + MetadataBasedCategory.INDEX_FIELD_BOUNDARY + "\"";
 	}
 }

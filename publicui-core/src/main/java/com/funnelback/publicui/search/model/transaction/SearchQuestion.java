@@ -169,7 +169,7 @@ public class SearchQuestion {
 	/**
 	 * <p>Raw input parameters coming from the invocation endpoint.</p>
 	 * 
-	 * <p>In a web context will contain the raw {@link HttpServletRequest#getParameterMap()}</p>
+	 * <p>In a web context will contain the raw <tt>javax.servlet.http.HttpServletRequest#getParameterMap()</tt></p>
 	 */
 	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
 

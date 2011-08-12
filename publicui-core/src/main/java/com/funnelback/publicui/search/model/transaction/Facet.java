@@ -61,7 +61,7 @@ public class Facet {
 	/**
 	 * Recursively finds the deepest category.
 	 * @param categoryParamNames
-	 * @return
+	 * @return The deepest {@link Category} matching the parameter names.
 	 */
 	public Category findDeepestCategory(List<String> categoryParamNames) {
 		for (Category category: categories) {
@@ -113,7 +113,7 @@ public class Facet {
 		/**
 		 * Recursively check if this category or any of its sub-categories
 		 * has values.
-		 * @return
+		 * @return true if this category or a nested one has at least one value.
 		 */
 		public boolean hasValues() {
 			if (values.size() > 0) {
@@ -131,7 +131,7 @@ public class Facet {
 		/**
 		 * Recursively find the deepest category.
 		 * @param categoryParamNames
-		 * @return
+		 * @return @return The deepest {@link Category} matching the parameter names.
 		 */
 		public Category findDeepest(List<String> categoryParamNames) {
 			Category out = null;

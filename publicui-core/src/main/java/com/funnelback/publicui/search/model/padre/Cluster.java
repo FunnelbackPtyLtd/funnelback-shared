@@ -16,9 +16,9 @@ import lombok.SneakyThrows;
  * It's usually displayed "... Richard" on search results.</p>
  * 
  * @since 11.0
- * @see {@link ContextualNavigation}
- * @see {@link Category}
- * @see {@link ClusterNav}
+ * @see ContextualNavigation
+ * @see Category
+ * @see ClusterNav
  */
 public class Cluster {
 

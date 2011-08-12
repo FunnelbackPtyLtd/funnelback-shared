@@ -16,13 +16,16 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * {@link CategoryDefinition} based on a GScope number
- *
+ * {@link CategoryDefinition} based on a GScope number.
+ * 
+ * @since 11.0
  */
 public class GScopeItem extends CategoryDefinition implements GScopeBasedCategory {
+
 	/** GScope number */
 	@Getter @Setter private int userSetGScope;
 	
+	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
@@ -37,21 +40,25 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 		return categories;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
 		return RequestParameters.FACET_PREFIX + facetName;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
 		return data.equals(value);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getGScopeNumber() {
 		return userSetGScope;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getGScope1Constraint() {
 		return Integer.toString(userSetGScope);

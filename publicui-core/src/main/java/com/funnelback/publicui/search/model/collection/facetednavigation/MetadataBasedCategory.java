@@ -1,15 +1,18 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
 /**
- * A {@link CategoryDefinition} based on a metadata class
+ * A metadata class based {@link CategoryDefinition}.
+ * 
+ * @since 11.0
  */
 public interface MetadataBasedCategory {
 
 	/**
-	 * Special word indexed at the start and end of each metadata
-	 * @see padre-iw's <tt>-ifb</tt> option
+	 * <p>Special word indexed at the start and end of each metadata.</p>
+	 * 
+	 * <p>See: <tt>padre-iw</tt>'s <tt>-ifb</tt> option.</p>
 	 */
-	public static final String INDEX_FIED_BOUNDARY = "$++";
+	public static final String INDEX_FIELD_BOUNDARY = "$++";
 	
 	/**
 	 * @return The metadata class for this category type

@@ -13,9 +13,9 @@ import lombok.Setter;
  * Contextual navigation parent class.
  * 
  * @since 11.0
- * @see {@link Category}
- * @see {@link Cluster} 
- * @see {@link ClusterNav}
+ * @see Category
+ * @see Cluster
+ * @see ClusterNav
  */
 @NoArgsConstructor
 public class ContextualNavigation {

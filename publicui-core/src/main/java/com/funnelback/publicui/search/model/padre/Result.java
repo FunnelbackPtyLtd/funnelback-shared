@@ -82,7 +82,7 @@ public class Result implements ResultType {
 	/**
 	 * Tier number to which this search results belongs.
 	 * 
-	 * @see {@link ResultPacket#getResultsWithTierBars()}
+	 * @see ResultPacket#getResultsWithTierBars()
 	 */
 	@Getter @Setter private Integer tier;
 	

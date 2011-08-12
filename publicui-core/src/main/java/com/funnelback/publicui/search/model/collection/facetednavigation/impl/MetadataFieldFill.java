@@ -15,11 +15,15 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * {@link CategoryDefinition} based on a metadata class.
- * Will generate multiple values for each value of this metadata class.
+ * <p>{@link CategoryDefinition} based on a metadata class.</p>
+ * 
+ * <p>Will generate multiple values for each value of this metadata class.</p>
+ * 
+ * @since 11.0
  */
 public class MetadataFieldFill extends CategoryDefinition implements MetadataBasedCategory {
 
+	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
@@ -41,25 +45,29 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 		return categories;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
 		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
 		return data.equals(extraParams);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getMetadataClass() {
 		return data;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryConstraint(String value) {
-		return data + ":\""+ MetadataBasedCategory.INDEX_FIED_BOUNDARY + " "
+		return data + ":\""+ MetadataBasedCategory.INDEX_FIELD_BOUNDARY + " "
 				+ value + " "
-				+ MetadataBasedCategory.INDEX_FIED_BOUNDARY + "\"";
+				+ MetadataBasedCategory.INDEX_FIELD_BOUNDARY + "\"";
 	}
 }

@@ -11,9 +11,9 @@ import lombok.Setter;
  * A contextual navigation category (type, topic, site).
  * 
  * @since 11.0
- * @see {@link ContextualNavigation}
- * @see {@link Cluster}
- * @see {@link ClusterNav}
+ * @see ContextualNavigation
+ * @see Cluster
+ * @see ClusterNav
  */
 @AllArgsConstructor
 public class Category {

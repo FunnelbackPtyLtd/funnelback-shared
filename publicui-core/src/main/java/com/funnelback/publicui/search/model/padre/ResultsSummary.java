@@ -17,8 +17,9 @@ public class ResultsSummary {
 	@Getter @Setter private Integer fullyMatching;
 	
 	/**
-	 * Estimated number of hits in <code>daat</code> mode.
-	 * @see the <code>-daat</code> query processor option.
+	 * <p>Estimated number of hits in <code>daat</code> mode.</p>
+	 * 
+	 * <p>See: the <code>-daat</code> query processor option.</p>
 	 */
 	@Getter @Setter private Integer estimatedHits;
 	
@@ -42,8 +43,7 @@ public class ResultsSummary {
 	 * <p>For example if the second page of results were returned
 	 * and 10 results were requested, this will be set to 11.</p>
 	 * 
-	 * @see <code>start_rank</code> parameter.
-	 * @see <code>num_ranks</code> parameter.
+	 * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
 	 */
 	@Getter @Setter private Integer currStart;
 	
@@ -53,8 +53,7 @@ public class ResultsSummary {
 	 * <p>For example if the second page of results were returned
 	 * and 10 results were requested, this will be set to 20.</p>
 	 * 
-	 * @see <code>start_rank</code> parameter.
-	 * @see <code>num_ranks</code> parameter.
+	 * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
 	 */
 	@Getter @Setter private Integer currEnd;
 	
@@ -65,8 +64,7 @@ public class ResultsSummary {
 	 * <p>For example if the second page of results were returned
 	 * and 10 results were requested, this will be set to 1.</p>
 	 * 
- 	 * @see <code>start_rank</code> parameter.
-	 * @see <code>num_ranks</code> parameter.
+ 	 * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
 	 */
 	@Getter @Setter private Integer prevStart;
 
@@ -77,8 +75,7 @@ public class ResultsSummary {
 	 * <p>For example if the second page of results were returned
 	 * and 10 results were requested, this will be set to 21.</p>
 	 * 
- 	 * @see <code>start_rank</code> parameter.
-	 * @see <code>num_ranks</code> parameter.
+ 	 * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
 	 */
 	@Getter @Setter private Integer nextStart;
 

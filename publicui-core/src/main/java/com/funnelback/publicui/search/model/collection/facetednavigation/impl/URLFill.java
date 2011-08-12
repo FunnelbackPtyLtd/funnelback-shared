@@ -15,19 +15,21 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * {@link CategoryDefinition} based on an URL prefix. Every subsequent
- * URL will generate a new value.
+ * <p>{@link CategoryDefinition} based on an URL prefix.<p>
+ * 
+ * <p>Every different URL after the prefix will generate a new value.</p>
+ * 
+ * @since 11.0
  */
 public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
 
-	/**
-	 * Identifier used in query string parameter.
-	 */
+	/** Identifier used in query string parameter. */
 	private static final String TAG = "url";
 	
-	/** URLs are indexed in metadata field 'v' */
+	/** URLs are indexed in the metadata class <tt>v</tt> */
 	private static final String MD = "v";
 	
+	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
@@ -50,25 +52,36 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 		return categories;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>Note that this category definition will use a special
+	 * tag <tt>url</tt> instead of directly the metadata <tt>v</tt> on which
+	 * URLs are mapped internally. For example: <tt>f.Category|url</tt> instead
+	 * of <tt>f.Category|v</tt>.</p>
+	 * 
+	 * <p><tt>v</tt> can't be used otherwise we won't be able to distinguish
+	 * between an <em>URL</em> type category definition and a <em>Metadata field</em>
+	 * type definition.</p>
+	 */
 	@Override
 	public String getQueryStringParamName() {
-		// Use a special TAG instead of the metadata class 'v'.
-		// We can't really use 'v' here because we need to distinguish
-		// between an 'URL' type category, and a 'Metadata field' type
-		// category.
 		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + TAG;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
 		return TAG.equals(extraParams);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getMetadataClass() {
 		return MD;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryConstraint(String value) {
 		return  MD + ":" + value;

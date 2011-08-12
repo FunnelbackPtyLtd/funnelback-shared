@@ -20,9 +20,9 @@ import lombok.Setter;
  * </p>
  * 
  * @since 11.0
- * @see {@link ContextualNavigation}
- * @see {@link Category}
- * @see {@link Cluster} 
+ * @see ContextualNavigation
+ * @see Category
+ * @see Cluster
  */
 @AllArgsConstructor
 public class ClusterNav {

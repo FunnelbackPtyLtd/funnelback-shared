@@ -16,21 +16,21 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
- * {@link CategoryDefinition} based on a Query.
- * The query will automatically generate a gscope for the document matching it.
+ * <p>{@link CategoryDefinition} based on a query.</p>
+ * 
+ * <p>The query will automatically generate a GScope for the document matching it.</p>
+ * 
+ * @since 11.0
  */
 public class QueryItem extends CategoryDefinition implements GScopeBasedCategory {
 	
-	/**
-	 * Query expression for this category
-	 */
+	/** Query expression for this category */
 	@Getter @Setter private String query;
 	
-	/**
-	 * Automatically assigned GScope field.
-	 */
+	/** Automatically assigned GScope field. */
 	@Getter @Setter private int gscopefield;
 	
+	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final ResultPacket rp) {
@@ -45,21 +45,25 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
 		return categories;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
 		return RequestParameters.FACET_PREFIX + facetName;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
 		return data.equals(value);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public int getGScopeNumber() {
 		return gscopefield;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getGScope1Constraint() {
 		return Integer.toString(gscopefield);
