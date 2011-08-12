@@ -15,56 +15,23 @@
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils" />
-
-	<bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-		<property name="locateExistingServerIfPossible" value="true" />
-	</bean>
-
-	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
-		<property name="assembler" ref="assembler" />
-		<!-- property name="namingStrategy" ref="namingStrategy"/ -->
-		<property name="beans">
-			<map>
-				<entry key="Funnelback:type=SearchMonitor,name=#{contextHolder.executionContext}" value-ref="searchMonitor" />
-			</map>
-		</property>
-	</bean>
-
-	<bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" />
-
-    <!-- will create management interface using annotation metadata -->
-    <bean id="assembler"
-          class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
-        <property name="attributeSource" ref="jmxAttributeSource"/>
-    </bean>
-
-	<bean class="net.sf.ehcache.management.ManagementService" init-method="init">
-		<constructor-arg ref="appCacheManager" />
-		<constructor-arg ref="mbeanServer" />
-		<constructor-arg value="true" />
-		<constructor-arg value="true" />
-		<constructor-arg value="true" />
-		<constructor-arg value="true" />
-	</bean>
-
-	<bean id="searchMonitor" class="com.funnelback.publicui.search.jmx.SearchMonitor" />
+	<import resource="spring/jmx.xml"/>
 	
-	<bean id="contextHolder" class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />
-
+	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils" />
+	
 	<task:annotation-driven executor="taskExecutor" />
 	<task:executor id="taskExecutor" pool-size="100" rejection-policy="CALLER_RUNS" />
-	
-	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
-		<constructor-arg index="0" type="java.net.URL"
-			value="classpath:ehcache.xml" />
-	</bean>
 
+	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/modernui/modernui.properties" />
+	<bean id="contextHolder" class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />
 	<bean id="searchHome" class="java.io.File">
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
 
-	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/modernui/modernui.properties" />
+	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
+		<constructor-arg index="0" type="java.net.URL"
+			value="classpath:ehcache.xml" />
+	</bean>
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
@@ -86,82 +53,7 @@
 		</constructor-arg>
 	</bean>
 	
-	<!-- ***** List of processors to run ***** -->
-	
-	<util:list id="inputFlow">
-		<!-- passThroughParametersInputProcessor should be first as it populates 
-			required values for following processors -->
-		<ref bean="passThroughParametersInputProcessor" />
-		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
-		<bean id="preProcessHook"
-			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
-		</bean>		
-		<ref bean="userKeysInputProcessor" />
-		<ref bean="facetScopeInputProcessor" />
-		<ref bean="facetedNavigationInputProcessor" />
-		<ref bean="multiFacetedNavigationInputProcessor" />
-		<ref bean="metaParametersInputProcessor" />
-		<ref bean="metadataAliasesInputProcessor" />
-		<ref bean="metaDatesInputProcessor" />
-		<ref bean="cliveMappingInputProcessor" />
-		<ref bean="quickLinksInputProcessor" />
-		<ref bean="exploreQueryInputProcessor" />
-		<!--   <ref bean="contentOptimiserSelectDocumentInputProcessor"/>  -->
-		<ref bean="extraSearchesInputProcessor" />
-		<ref bean="extraSearchesExecutor" />
-	</util:list>
 
-	<util:list id="dataFetchers">
-		<bean id="PreDataFetchHook"
-			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
-		</bean>
-		<ref bean="defaultPadreForking" />
-		<!-- ref bean="padreForkingPooled" / -->
-		<bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
-		</bean>
-	</util:list>
 
-	<util:list id="outputFlow">
-		<ref bean="padreReturnCodeOutputProcessor" />
-		<ref bean="fixPseudoLiveLinksOutputProcessor" />
-		<ref bean="fixCacheAndClickLinks" />
-		<ref bean="fixDisplayUrlsOutputProcessor" />
-		<ref bean="htmlEncodeSummaries" />
-		<ref bean="facetedNavigationOutputProcessor" />
-		<ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
-		<ref bean="contextualNavigationOutputProcessor" />
-		<ref bean="quickLinksOutputProcessor" />
-		<ref bean="queryCleanOutputProcessor" />
-		<ref bean="extraSearchesExecutor" />
-		<ref bean="contentOptimiserOutputProcessor" />
-		<ref bean="searchMonitorUpdaterOutputProcessor" />
-		<bean id="postProcessHook"
-			class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Output }" />
-		</bean>		
-	</util:list>
-
-	<!-- ***** -->
-	
-	<util:map id="profilingStatsNotSynchronized" key-type="java.lang.String" value-type="com.funnelback.publicui.aop.ProfiledAspect.MethodStats" />
-	<bean id="profilingStats" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetClass"><value>java.util.Collections</value></property>
-		<property name="targetMethod"><value>synchronizedMap</value></property>
-		<property name="arguments"><ref bean="profilingStatsNotSynchronized" /></property>
-	</bean>
-	
-	<util:map id="searchStatsNotSynchronized" key-type="java.lang.String" value-type="java.lang.Long" />
-	<bean id="searchStats" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetClass"><value>java.util.Collections</value></property>
-		<property name="targetMethod"><value>synchronizedMap</value></property>
-		<property name="arguments"><ref bean="searchStatsNotSynchronized" /></property>
-	</bean>
 	
 </beans>

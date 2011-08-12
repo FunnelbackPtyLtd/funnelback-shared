@@ -6,8 +6,6 @@ import javax.annotation.Resource;
 
 import lombok.extern.apachecommons.Log;
 
-import org.springframework.stereotype.Component;
-
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -24,7 +22,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * that run the configured {@link InputProcessor}s, {@link DataFetcher}s
  * and {@link OutputProcessor}s.
  */
-@Component
 @Log
 public class DefaultSearchTransactionProcessor implements SearchTransactionProcessor {
 

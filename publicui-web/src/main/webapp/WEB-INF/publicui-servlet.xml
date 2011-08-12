@@ -11,8 +11,11 @@
 				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<import resource="spring/freemarker.xml"/>
+	<import resource="spring/search-lifecycle.xml"/>
 	
-	<context:component-scan base-package="com.funnelback.publicui.search.web" />
+	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle" />
 	<mvc:annotation-driven />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
@@ -51,138 +54,6 @@
 	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
 		<property name="encoding" value="UTF-8" />
 		<property name="autodetectAnnotations" value="true" />
-	</bean>
-
-	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL tempaltes -->
-	<bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
-	<bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
-
-	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-		<property name="templateLoaderPaths">
-			<list>
-				<value>file:#{searchHome.absolutePath}/</value>
-				<value>/WEB-INF/freemarker/</value>
-			</list>
-		</property>
-		<property name="freemarkerSettings">
-			<props>
-				<prop key="url_escaping_charset">UTF-8</prop>
-			</props>
-		</property>
-		<property name="defaultEncoding" value="UTF-8" />
-		<property name="freemarkerVariables">
-			<map>
-				<!-- Provide a logger within form files -->
-				<entry key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).Log.toString()}">
-					<bean class="org.apache.commons.logging.LogFactory" factory-method="getLog">
-						<constructor-arg type="java.lang.String" value="com.funnelback.form" />
-					</bean>
-				</entry>
-				<entry
-					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchPrefix.toString()}"
-					value="#{appProperties['urls.search.prefix']}"
-				/>
-				<entry
-					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
-					value="#{contextHolder.contextPath}"
-				/>
-				<entry
-					key="ExtraSearches">
-					<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-						<property name="targetObject"><ref local="freemarkerEnumModels" /></property>
-						<property name="targetMethod"><value>get</value></property>
-						<property name="arguments">
-							<list><value>com.funnelback.publicui.search.model.transaction.SearchTransaction$ExtraSearches</value></list>
-						</property>
-					</bean>
-				</entry>											
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.RemoveQSParamMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FacetScopeRemoveMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.FacetScopeRemoveMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.IsEnabledMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateHTMLMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateHTMLMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.TruncateURLMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.TagifyMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.TagifyMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective">
-						<constructor-arg ref="appCacheManager" />
-						<constructor-arg ref="i18n"></constructor-arg>
-					</bean>
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IsAdminUIMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.IsAdminUIMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRangeMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ParseRelativeDateMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.ParseRelativeDateMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SearchMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.SearchMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.UpdatedDateMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FormListMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.FormListMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FacetedNavigationConfigMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.FacetedNavigationConfigMethod" />
-				</entry>
-				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FilesizeFormatMethod).NAME}">
-					<bean class="com.funnelback.publicui.search.web.views.freemarker.FilesizeFormatMethod" />
-				</entry>
-			</map>
-		</property>
-	</bean>
-	
-	<!--
-		Specific view for OpenSearch controller.
-		It needs a specific configuration as it outputs XML and not HTML
-	-->
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="openSearchView">
-		<property name="url" value="open-search.ftl" />
-		<property name="contentType" value="text/xml;charset=UTF-8" /> 
-	</bean>
-
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserView">
-		<property name="url" value="contentoptimiser/content-optimiser.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" /> 
-	</bean>
-	
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserTextView">
-		<property name="url" value="contentoptimiser/content-optimiser-text-only.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" /> 
-	</bean>
-	
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserKickoffView">
-		<property name="url" value="contentoptimiser/content-optimiser-kickoff.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" /> 
 	</bean>
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -239,5 +110,5 @@
 	</bean>
 		
 	<mvc:resources mapping="/content-optimiser/**" location="/content-optimiser/" />
-	
+		
 </beans>
