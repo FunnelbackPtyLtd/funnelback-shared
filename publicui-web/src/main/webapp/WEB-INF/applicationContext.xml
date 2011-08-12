@@ -16,25 +16,37 @@
 				http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils" />
-  
- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
-        <property name="assembler" ref="assembler"/>
-        <!--  property name="namingStrategy" ref="namingStrategy"/ -->
-         <property name="beans">
-      <map>
-        <entry key="Funnelback:type=SearchMonitor,name=#{contextHolder.executionContext}" value-ref="searchMonitor"/>
-      </map>
-    </property>
-    </bean>
 
-    <bean id="jmxAttributeSource"
-          class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+	<bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+		<property name="locateExistingServerIfPossible" value="true" />
+	</bean>
+
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+		<property name="assembler" ref="assembler" />
+		<!-- property name="namingStrategy" ref="namingStrategy"/ -->
+		<property name="beans">
+			<map>
+				<entry key="Funnelback:type=SearchMonitor,name=#{contextHolder.executionContext}" value-ref="searchMonitor" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" />
 
     <!-- will create management interface using annotation metadata -->
     <bean id="assembler"
           class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
         <property name="attributeSource" ref="jmxAttributeSource"/>
     </bean>
+
+	<bean class="net.sf.ehcache.management.ManagementService" init-method="init">
+		<constructor-arg ref="appCacheManager" />
+		<constructor-arg ref="mbeanServer" />
+		<constructor-arg value="true" />
+		<constructor-arg value="true" />
+		<constructor-arg value="true" />
+		<constructor-arg value="true" />
+	</bean>
 
 	<bean id="searchMonitor" class="com.funnelback.publicui.search.jmx.SearchMonitor" />
 	

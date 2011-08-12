@@ -1,15 +1,15 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd"
 	updateCheck="false">
 	<diskStore path="java.io.tmpdir" />
-	<defaultCache maxElementsInMemory="100" eternal="true" overflowToDisk="false" />
+	<defaultCache maxElementsInMemory="100" eternal="true" overflowToDisk="false" statistics="true" />
 
 	<!-- Cache for collection configs -->
-	<cache name="localConfigRepository" maxElementsInMemory="100" eternal="true" overflowToDisk="false" />
+	<cache name="localConfigRepository" maxElementsInMemory="100" eternal="true" overflowToDisk="false" statistics="true" />
 
 	<!-- Cache for index data -->
-	<cache name="localIndexRepository" maxElementsInMemory="100" eternal="true" overflowToDisk="false" />
+	<cache name="localIndexRepository" maxElementsInMemory="100" eternal="true" overflowToDisk="false" statistics="true" />
 
 	<!-- Cache for IncludeUrl form directive -->
-	<cache name="IncludeUrl" eternal="true" maxElementsInMemory="100" overflowToDisk="true" />
+	<cache name="IncludeUrl" eternal="true" maxElementsInMemory="100" overflowToDisk="true" statistics="true" />
 
 </ehcache>
