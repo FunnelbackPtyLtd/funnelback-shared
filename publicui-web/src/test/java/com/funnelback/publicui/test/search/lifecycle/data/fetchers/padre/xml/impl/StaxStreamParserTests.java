@@ -154,6 +154,7 @@ public class StaxStreamParserTests {
 		assertEquals(10, rp.getResultsSummary().getNumRanks().intValue());
 		assertEquals(1, rp.getResultsSummary().getCurrStart().intValue());
 		assertEquals(10, rp.getResultsSummary().getCurrEnd().intValue());
+		assertEquals(2, rp.getResultsSummary().getPrevStart().intValue());
 		assertEquals(11, rp.getResultsSummary().getNextStart().intValue());
 	}
 	

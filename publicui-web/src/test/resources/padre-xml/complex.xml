@@ -22,6 +22,7 @@
   <num_ranks>10</num_ranks>
   <currstart>1</currstart>
   <currend>10</currend>
+  <prevstart>2</prevstart>
   <nextstart>11</nextstart>
 </results_summary>
 
