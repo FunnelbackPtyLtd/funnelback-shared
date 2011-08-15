@@ -106,6 +106,7 @@
 		<num_ranks><xsl:value-of select="numRanks" /></num_ranks>
 		<currstart><xsl:value-of select="currStart" /></currstart>
 		<currend><xsl:value-of select="currEnd" /></currend>
+		<prevstart><xsl:value-of select="prevStart" /></prevstart>
 		<nextstart><xsl:value-of select="nextStart" /></nextstart>
 	</results_summary>
 </xsl:template>
