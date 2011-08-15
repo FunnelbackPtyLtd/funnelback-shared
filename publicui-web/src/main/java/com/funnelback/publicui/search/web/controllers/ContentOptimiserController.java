@@ -59,7 +59,7 @@ public class ContentOptimiserController {
 
 		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
+				+DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
 	}
 	
 	@RequestMapping(value="")

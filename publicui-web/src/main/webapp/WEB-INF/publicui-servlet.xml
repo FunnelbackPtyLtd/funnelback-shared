@@ -72,7 +72,7 @@
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
 					<constructor-arg>
 						<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView">
-							<property name="url" value="web/templates/publicui/form-not-found.ftl" />
+							<property name="url" value="web/templates/modernui/form-not-found.ftl" />
 						</bean>
 					</constructor-arg>
 					<property name="cache" value="true" />

@@ -1,6 +1,6 @@
 <#ftl encoding="utf-8" />
 <#setting number_format="computer">
-<#import "/web/templates/publicui/funnelback_classic.ftl" as s/>
+<#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#include "content-optimiser-common-macros.ftl"/>
 <#compress>
 <!DOCTYPE html>

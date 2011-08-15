@@ -1,5 +1,5 @@
 <#ftl encoding="utf-8" />
-<#import "/web/templates/publicui/funnelback_classic.ftl" as s/>
+<#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 
 <#macro content_optimiser_requery>
 	<form method="GET" action="optimise.html">

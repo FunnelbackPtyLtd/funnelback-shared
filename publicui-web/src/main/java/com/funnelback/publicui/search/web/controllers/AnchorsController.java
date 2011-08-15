@@ -50,7 +50,7 @@ public class AnchorsController {
 		return new ModelAndView(
 				DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_PUBLICUI+"/anchors/anchors",model);
+				+DefaultValues.FOLDER_MODERNUI+"/anchors/anchors",model);
 	}
 
 	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","anchortext"})
@@ -72,7 +72,7 @@ public class AnchorsController {
 		return new ModelAndView(
 				DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_PUBLICUI+"/anchors/anchors-detail",model);
+				+DefaultValues.FOLDER_MODERNUI+"/anchors/anchors-detail",model);
 	}
 	
 	
@@ -89,7 +89,7 @@ public class AnchorsController {
 		return new ModelAndView(
 				DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_PUBLICUI+"/no-collection", model);
+				+DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
 	}
 	
 }
