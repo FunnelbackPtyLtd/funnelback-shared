@@ -135,6 +135,8 @@ public class XSLTXStreamViewTests {
 		oldXml = oldXml.replaceAll("(?s)<qsup.*?>.*?</qsup>\\n", "");
 		// As well as <km_from_origin> for geo-related features
 		oldXml = oldXml.replaceAll("(?s)<km_from_origin>.*?</km_from_origin>\\n", "");
+		// As well as <entitylist />
+		oldXml = oldXml.replaceAll("(?s)<entitylist>.*?</entitylist>\\n", "");
 		
 		// Remove <unexpected_tag> used for other tests
 		oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\\n", "");

@@ -60,9 +60,17 @@
 	  		<xsl:if test="response/resultPacket/queryHighlightRegex">
 	  			<qhlre><xsl:value-of select="response/resultPacket/queryHighlightRegex" /></qhlre>
 	  		</xsl:if>
+	  		<xsl:if test="response/resultPacket/origin">
+	  			<origin><xsl:value-of select="response/resultPacket/origin/float[1]" />,<xsl:value-of select="response/resultPacket/origin/float[2]" /></origin>
+	  		</xsl:if>
 	  		
 	  		<xsl:apply-templates select="response/resultPacket/results" />
 	  		
+	  		<xsl:apply-templates select="response/resultPacket/contextualNavigation" />
+	  			  		
+	  		<xsl:if test="response/resultPacket/phlusterElapsedTime">
+	  			<phluster_elapsed_time><xsl:value-of select="format-number(response/resultPacket/phlusterElapsedTime, '0.000')" /> sec.</phluster_elapsed_time>
+	  		</xsl:if>
 	  		<include_scope>
 	  			<xsl:for-each select="response/resultPacket/includeScopes/string">
 	  				<xsl:value-of select="." />
@@ -76,15 +84,9 @@
 	  				<xsl:if test="not(position() = last())">@</xsl:if>
 	  			</xsl:for-each>
 	  		</exclude_scope>
-	  		
 	  		<query_processor_codes><xsl:value-of select="response/resultPacket/queryProcessorCodes" /></query_processor_codes>
 	  		<padre_elapsed_time><xsl:value-of select="response/resultPacket/padreElapsedTime" /></padre_elapsed_time>
-	  		<xsl:apply-templates select="response/resultPacket/contextualNavigation" />
 	  		
-	  		
-	  		<xsl:if test="response/resultPacket/phlusterElapsedTime">
-	  			<phluster_elapsed_time><xsl:value-of select="format-number(response/resultPacket/phlusterElapsedTime, '0.000')" /> sec.</phluster_elapsed_time>
-	  		</xsl:if>
 	  	</xsl:if>
 	</PADRE_result_packet>
 </xsl:template>
@@ -202,6 +204,9 @@
 				<filetype><xsl:value-of select="fileType" /></filetype>
 				<tier><xsl:value-of select="tier" /></tier>
 				<docnum><xsl:value-of select="docNum" /></docnum>
+				<xsl:if test="exploreLink">
+					<explore_link><xsl:value-of select="exploreLink" /></explore_link>				
+				</xsl:if>
 				<xsl:apply-templates select="quickLinks" />
 			</result>
 		</xsl:for-each>
