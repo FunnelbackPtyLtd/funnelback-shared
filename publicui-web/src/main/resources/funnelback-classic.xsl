@@ -105,6 +105,12 @@
 		<estimated_hits><xsl:value-of select="estimatedHits" /></estimated_hits>
 		<partially_matching><xsl:value-of select="partiallyMatching" /></partially_matching>
 		<total_matching><xsl:value-of select="totalMatching" /></total_matching>
+		<xsl:if test="carriedOverFtd">
+			<carried_over_ftd><xsl:value-of select="carriedOverFtd" /></carried_over_ftd>
+		</xsl:if>
+		<xsl:if test="totalDistinctMatchingUrls">
+			<total_distinct_matching_urls><xsl:value-of select="totalDistinctMatchingUrls" /></total_distinct_matching_urls>
+		</xsl:if>
 		<num_ranks><xsl:value-of select="numRanks" /></num_ranks>
 		<currstart><xsl:value-of select="currStart" /></currstart>
 		<currend><xsl:value-of select="currEnd" /></currend>

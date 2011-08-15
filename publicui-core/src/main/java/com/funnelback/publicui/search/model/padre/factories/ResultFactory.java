@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import lombok.extern.apachecommons.Log;
+
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -18,6 +20,7 @@ import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
  * Builds {@link Result}s from various input sources.
  * 
  */
+@Log
 public class ResultFactory {
 
 	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
@@ -48,6 +51,7 @@ public class ResultFactory {
 			try {
 				date = getDateFormatter().parse(dateString);
 			} catch (Exception e) {
+				log.debug("Unparseable date: '" + dateString + "'");
 			}
 		}
 

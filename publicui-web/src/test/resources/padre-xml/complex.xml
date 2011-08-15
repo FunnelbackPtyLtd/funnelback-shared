@@ -19,6 +19,8 @@
   <estimated_hits>200</estimated_hits>
   <partially_matching>0</partially_matching>
   <total_matching>200</total_matching>
+  <carried_over_ftd>4</carried_over_ftd>
+  <total_distinct_matching_urls>57</total_distinct_matching_urls>
   <num_ranks>10</num_ranks>
   <currstart>1</currstart>
   <currend>10</currend>
@@ -631,6 +633,7 @@ you
   <tier_bar>
   <matched>2</matched>
   <outof>2</outof>
+  <event_date>20110717</event_date>
   </tier_bar>
 
   <result>

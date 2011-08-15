@@ -33,6 +33,20 @@ public class ResultsSummary {
 	 * <p>Should be {@link #fullyMatching} + {@link #partiallyMatching}.
 	 */
 	@Getter @Setter private Integer totalMatching;
+
+	/**
+	 * <p>Number of events continued from the day when using event search.</p>
+	 * 
+	 * <p>See the <tt>-events</tt> query processor options.</p>
+	 */
+	@Getter @Setter private Integer carriedOverFtd;
+	
+	/**
+	 * <p>Number of distinct URLs when using event search.</p>
+	 * 
+	 * <p>See the <tt>-events</tt> query processor options.</p>
+	 */
+	@Getter @Setter private Integer totalDistinctMatchingUrls;
 	
 	/** Number of results returned. */
 	@Getter @Setter private Integer numRanks;
@@ -88,6 +102,8 @@ public class ResultsSummary {
 		public static final String ESTIMATED_HITS = "estimated_hits";
 		public static final String PARTIALLY_MATCHING = "partially_matching";
 		public static final String TOTAL_MATCHING = "total_matching";
+		public static final String CARRIED_OVER_FTD = "carried_over_ftd";
+		public static final String TOTAL_DISTINCT_MATCHING_URLS = "total_distinct_matching_urls";
 		public static final String NUM_RANKS = "num_ranks";
 		public static final String CURRSTART = "currstart";
 		public static final String CURREND = "currend";

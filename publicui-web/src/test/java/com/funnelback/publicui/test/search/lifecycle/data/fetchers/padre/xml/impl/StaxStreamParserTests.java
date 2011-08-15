@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -23,10 +24,10 @@ import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Explain;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamParserTests {
@@ -151,6 +152,8 @@ public class StaxStreamParserTests {
 		assertEquals(200, rp.getResultsSummary().getEstimatedHits().intValue());
 		assertEquals(0, rp.getResultsSummary().getPartiallyMatching().intValue());
 		assertEquals(200, rp.getResultsSummary().getTotalMatching().intValue());
+		assertEquals(4, rp.getResultsSummary().getCarriedOverFtd().intValue());
+		assertEquals(57, rp.getResultsSummary().getTotalDistinctMatchingUrls().intValue());
 		assertEquals(10, rp.getResultsSummary().getNumRanks().intValue());
 		assertEquals(1, rp.getResultsSummary().getCurrStart().intValue());
 		assertEquals(10, rp.getResultsSummary().getCurrEnd().intValue());
@@ -243,12 +246,14 @@ public class StaxStreamParserTests {
 		Assert.assertEquals(8, tb.getLastRank());
 		Assert.assertEquals(2, tb.getMatched());
 		Assert.assertEquals(2, tb.getOutOf());
+		Assert.assertEquals("20110717", new SimpleDateFormat("yyyyMMdd").format(tb.getEventDate()));
 
 		tb = rp.getTierBars().get(1);
 		Assert.assertEquals(8, tb.getFirstRank());
 		Assert.assertEquals(10, tb.getLastRank());
 		Assert.assertEquals(1, tb.getMatched());
 		Assert.assertEquals(2, tb.getOutOf());
+		Assert.assertNull(null, tb.getEventDate());
 	}
 	
 	@Test

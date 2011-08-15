@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.padre;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,12 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class TierBar implements ResultType {
 
+	/**
+	 * Date format used in tier bar, when the <tt>-event</tt>
+	 * query processor option is used.
+	 */
+	public static final String DATE_PATTERN = "yyyyMMdd";
+	
 	/** Number of query terms matched by this tier bar */
 	@Getter @Setter private int matched;
 	
@@ -38,9 +46,16 @@ public class TierBar implements ResultType {
 	 */
 	@Getter @Setter private int lastRank;
 	
-	public TierBar(int matched, int outOf) {
+	/**
+	 * <p>Date of the events for this tier bar when the <tt>-events</tt>
+	 * query processor option is set.</p>
+	 */
+	@Getter @Setter private Date eventDate;
+	
+	public TierBar(int matched, int outOf, Date eventDate) {
 		this.matched = matched;
 		this.outOf = outOf;
+		this.eventDate = eventDate;
 	}
 
 	/** Constants for the PADRE XML result packet tags. */
@@ -49,6 +64,7 @@ public class TierBar implements ResultType {
 		
 		public static final String MATCHED = "matched";
 		public static final String OUTOF = "outof";
+		public static final String EVENT_DATE = "event_date";
 	}
 	
 }

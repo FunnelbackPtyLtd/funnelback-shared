@@ -18,6 +18,8 @@ public class ResultsSummaryFactory {
 				data.get(ResultsSummary.Schema.ESTIMATED_HITS),
 				data.get(ResultsSummary.Schema.PARTIALLY_MATCHING),
 				data.get(ResultsSummary.Schema.TOTAL_MATCHING),
+				data.get(ResultsSummary.Schema.CARRIED_OVER_FTD),
+				data.get(ResultsSummary.Schema.TOTAL_DISTINCT_MATCHING_URLS),
 				data.get(ResultsSummary.Schema.NUM_RANKS),
 				data.get(ResultsSummary.Schema.CURRSTART),
 				data.get(ResultsSummary.Schema.CURREND),
