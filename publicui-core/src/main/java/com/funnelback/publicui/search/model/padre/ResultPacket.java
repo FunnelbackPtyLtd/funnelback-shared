@@ -141,6 +141,21 @@ public class ResultPacket {
 	@Getter @Setter private String queryHighlightRegex;
 	
 	/**
+	 * <p>Origin of the search, for geographical searches.</p>
+	 * 
+	 * <p>The first slot contains the latitude, the second slot
+	 * contains the longitude.</p>
+	 */
+	@Getter @Setter private Float[] origin = new Float[0]; 
+	
+	/**
+	 * <p>List of prominent entities.</p>
+	 * 
+	 * <p>See the experimental <tt>-fluent</tt> query processor option.</p>
+	 */
+	@Getter private final Map<String, Integer> entityList = new HashMap<String, Integer>();
+	
+	/**
 	 * Scopes (URL prefixes, not Gscope) included via the <code>scope</code> 
 	 * query processor option.
 	 */
@@ -220,6 +235,7 @@ public class ResultPacket {
 		public static final String GSCOPE_VALUE = "value";
 		
 		public static final String QHLRE = "qhlre";
+		public static final String ORIGIN = "origin";
 		
 		public static final String PADRE_ELAPSED_TIME = "padre_elapsed_time";
 		public static final String QUERY_PROCESSOR_CODES = "query_processor_codes";
@@ -230,6 +246,10 @@ public class ResultPacket {
 		public static final String SCOPE_SEPARATOR = "@";
 		public static final String COOLER_WEIGHTINGS = "cooler_weightings";
 
+		public static final String ENTITYLIST = "entitylist";
+		public static final String ENTITY = "entity";
+		public static final String CNT = "cnt";
+		
 		public static final String EXPLAIN_TYPES = "explain_types";
 
 		public static final String STOP_WORDS = "stop_words";

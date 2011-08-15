@@ -95,6 +95,10 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
 					} else if (ResultPacket.Schema.QHLRE.equals(xmlStreamReader.getLocalName())) {
 						packet.setQueryHighlightRegex(xmlStreamReader.getElementText());
+					} else if (ResultPacket.Schema.ORIGIN.equals(xmlStreamReader.getLocalName())) {
+						packet.setOrigin(parseOrigin(xmlStreamReader.getElementText()));
+					} else if (ResultPacket.Schema.ENTITYLIST.equals(xmlStreamReader.getLocalName())) {
+						packet.getEntityList().putAll(parseEntityList(xmlStreamReader));
 					} else if (ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
 						packet.setContextualNavigation(ContextualNavigationFactory.fromXmlStreamReader(xmlStreamReader));
 					} else if (ResultPacket.Schema.INCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
@@ -227,6 +231,44 @@ public class StaxStreamParser implements PadreXmlParser {
 			}
 		}
 		return null;
+	}
+	
+	private Map<String, Integer> parseEntityList(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		if (!ResultPacket.Schema.ENTITYLIST.equals(xmlStreamReader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		Map<String, Integer> out = new HashMap<String, Integer>();
+		
+		int type;
+		do {
+			type = xmlStreamReader.nextTag();
+			
+			if ( type == XMLStreamReader.START_ELEMENT && ResultPacket.Schema.ENTITY.equals(xmlStreamReader.getLocalName())
+					&& xmlStreamReader.getAttributeCount() == 1
+					&& ResultPacket.Schema.CNT.equals(xmlStreamReader.getAttributeLocalName(0))) {
+				int cnt = Integer.parseInt(xmlStreamReader.getAttributeValue(0));
+				out.put(xmlStreamReader.getElementText(), cnt);
+			}
+			
+		} while(type != XMLStreamReader.END_ELEMENT || ( type == XMLStreamReader.END_ELEMENT && !ResultPacket.Schema.ENTITYLIST.equals(xmlStreamReader.getLocalName())));
+		
+		return out;
+		
+	}
+	
+	private Float[] parseOrigin(String originString) {
+		String[] origin = originString.split(",");
+		
+		if (origin.length != 2) {
+			throw new IllegalArgumentException("Invalid origin string: '" + originString +"'. It should be two floats separated by a comma");
+		}
+		
+		Float[] out = new Float[2];
+		out[0] = Float.parseFloat(origin[0]);
+		out[1] = Float.parseFloat(origin[1]);	
+		
+		return out;
 	}
 	
 	/**

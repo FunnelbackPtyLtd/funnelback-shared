@@ -183,6 +183,19 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
+	public void testEntityList() {
+		Map<String, Integer> entityList = rp.getEntityList();
+		assertNotNull(entityList);
+		assertEquals(5, entityList.size());
+		
+		assertEquals(39, entityList.get("GLOUCESTER").intValue());
+		assertEquals(36, entityList.get("LEAR").intValue());
+		assertEquals(34, entityList.get("KENT").intValue());
+		assertEquals(32, entityList.get("EDGAR").intValue());
+		assertEquals(25, entityList.get("EDMUND").intValue());
+	}
+	
+	@Test
 	public void testRMC() {
 		Map<String, Integer> rmcs = rp.getRmcs();
 		assertEquals(138, rmcs.size());
@@ -280,6 +293,7 @@ public class StaxStreamParserTests {
 		assertEquals("html", first.getFileType());
 		assertEquals(1, first.getTier().intValue());
 		assertEquals(2681, first.getDocNum().intValue());
+		assertEquals("/search/padre-rf.cgi?&profile=_default&xml=&fluent=5&collection=info-aus&query=visa&comp=0&dox=29&aoi=7&vsimple=on&daat=0&script=/search/search.cgi", first.getExploreLink());
 		
 		// Quick links
 		assertNotNull(first.getQuickLinks());
@@ -350,6 +364,10 @@ public class StaxStreamParserTests {
 		assertEquals("excludeB", rp.getExcludeScopes().get(1));
 		
 		assertEquals("\\bmanager\\b|\\bassistant\\b", rp.getQueryHighlightRegex());
+		
+		assertEquals(2, rp.getOrigin().length);
+		assertEquals(-42.43, rp.getOrigin()[0].floatValue(), .001);
+		assertEquals(83.49, rp.getOrigin()[1].floatValue(), .001);
 	}
 	
 	@Test

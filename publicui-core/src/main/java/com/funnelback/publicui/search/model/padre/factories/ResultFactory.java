@@ -40,6 +40,7 @@ public class ResultFactory {
 		String liveUrl = data.get(Result.Schema.LIVE_URL);
 		String summary = data.get(Result.Schema.SUMMARY);
 		String cacheUrl = data.get(Result.Schema.CACHE_URL);
+		String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
 
 		String dateString = data.get(Result.Schema.DATE);
 		Date date = null;
@@ -81,6 +82,7 @@ public class ResultFactory {
 				fileType,
 				tier,
 				documentNumber,
+				exploreLink,
 				kmFromOrigin,
 				metadataMap,
 				ql,

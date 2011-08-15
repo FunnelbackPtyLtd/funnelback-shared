@@ -467,7 +467,8 @@
   <gscope_matching value="1">54</gscope_matching>
   <gscope_matching value="2">6</gscope_matching>
 </gscope_counts>
-    <qhlre>\bmanager\b|\bassistant\b</qhlre>
+  <qhlre>\bmanager\b|\bassistant\b</qhlre>
+<origin>-42.43,83.49</origin>    
 
 <cooler_weightings>
         <content>0.41</content>
@@ -653,6 +654,7 @@ you
   <filetype>html</filetype>
   <tier>1</tier>
   <docnum>2681</docnum>
+  <explore_link>/search/padre-rf.cgi?&amp;profile=_default&amp;xml=&amp;fluent=5&amp;collection=info-aus&amp;query=visa&amp;comp=0&amp;dox=29&amp;aoi=7&amp;vsimple=on&amp;daat=0&amp;script=/search/search.cgi</explore_link>
   <explain>
   		<consat>2</consat>
     	<final_score>0.639</final_score>
@@ -880,10 +882,13 @@ you
 
 </results>
 
-  <include_scope>include1@include2</include_scope>
-  <exclude_scope>excludeA@excludeB</exclude_scope>
-  <query_processor_codes>2x</query_processor_codes>
-  <padre_elapsed_time>12</padre_elapsed_time>
+  <entitylist>
+    <entity cnt="39">GLOUCESTER</entity>
+    <entity cnt="36">LEAR</entity>
+    <entity cnt="34">KENT</entity>
+    <entity cnt="32">EDGAR</entity>
+    <entity cnt="25">EDMUND</entity>
+  </entitylist>
 
   <!-- Early termination code 2  count = 603 (0.030 sec.) -->
 <contextual_navigation>
@@ -927,4 +932,9 @@ you
 </contextual_navigation>
 
   <phluster_elapsed_time>0.020 sec.</phluster_elapsed_time>
+  <include_scope>include1@include2</include_scope>
+  <exclude_scope>excludeA@excludeB</exclude_scope>
+  <query_processor_codes>2x</query_processor_codes>
+  <padre_elapsed_time>12</padre_elapsed_time>
+  
 </PADRE_result_packet>

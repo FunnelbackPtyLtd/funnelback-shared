@@ -93,6 +93,11 @@ public class Result implements ResultType {
 	@Getter @Setter private Integer docNum;
 	
 	/**
+	 * Link to the <em>also of interest</em> CGI.
+	 */
+	@Getter @Setter private String exploreLink;
+	
+	/**
 	 * Distance in kilometres of this search result
 	 * from the origin set when the query is run.
 	 */
@@ -158,6 +163,7 @@ public class Result implements ResultType {
 		public static final String FILETYPE = "filetype";
 		public static final String TIER = "tier";
 		public static final String DOCNUM = "docnum";
+		public static final String EXPLORE_LINK = "explore_link";
 		public static final String KM_FROM_ORIGIN = "km_from_origin";
 		public static final String EXPLAIN = "explain";
 		public static final String METADATA = "md";
