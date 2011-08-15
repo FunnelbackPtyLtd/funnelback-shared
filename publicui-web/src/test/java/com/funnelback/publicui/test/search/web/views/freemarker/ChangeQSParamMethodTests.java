@@ -11,7 +11,6 @@ import com.funnelback.publicui.search.web.views.freemarker.ChangeQSParamMethod;
 
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
@@ -26,7 +25,7 @@ public class ChangeQSParamMethodTests extends AbstractMethodTest {
 	@Test
 	public void testInexistentParamShouldAddParam() throws TemplateModelException {
 		SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("key1=value1&key2=value2", "keyA", "valueA"));
-		Assert.assertEquals("key1=value1&key2=value2&amp;keyA=valueA", result.getAsString());
+		Assert.assertEquals("key1=value1&key2=value2&keyA=valueA", result.getAsString());
 	}
 
 	@Test

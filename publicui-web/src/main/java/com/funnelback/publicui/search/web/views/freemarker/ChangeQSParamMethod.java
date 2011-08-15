@@ -44,7 +44,7 @@ public class ChangeQSParamMethod extends AbstractTemplateMethod {
 
 			return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));
 		} else {
-			return new SimpleScalar(qs + "&amp;" + paramName + "=" + newValue);
+			return new SimpleScalar(qs + "&" + paramName + "=" + newValue);
 		}
 
 	}
