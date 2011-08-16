@@ -88,6 +88,7 @@
 				<bean id="jsonView" class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
 					<property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
 					<property name="callbackParameterName" value="callback" />
+					<property name="objectMapper" ref="jacksonObjectMapper" />
 				</bean>
 
 				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
@@ -108,7 +109,22 @@
 			</list>
 		</property>
 	</bean>
-		
+
+	<bean id="jacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
+	<bean id="jacksonSerializationConfig" class="org.codehaus.jackson.map.SerializationConfig"
+		factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
+	
+	<bean
+	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	    <property name="targetObject" ref="jacksonSerializationConfig" />
+	    <property name="targetMethod" value="setSerializationInclusion" />
+	    <property name="arguments">
+	        <list>
+	            <value type="org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion">#{ appProperties['json.inclusion'] }</value>
+	        </list>
+	    </property>
+	</bean>		
+			
 	<mvc:resources mapping="/content-optimiser/**" location="/content-optimiser/" />
 		
 </beans>

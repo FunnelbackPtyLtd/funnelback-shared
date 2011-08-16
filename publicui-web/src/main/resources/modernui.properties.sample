@@ -17,3 +17,11 @@ resources.web.directory.name=web
 # Whether to activate the security filter
 # for Windows authentication (DLS)
 authentication=false
+
+# Defines the serialization inclusion strategy
+# for the Jackson JSON serializer. The default value
+# NON_NULL doesn't serialize null fields
+#
+# See the JsonSerialize.Inclusion enum in Jackson
+# http://jackson.codehaus.org/
+json.jackson.inclusion=NON_NULL
