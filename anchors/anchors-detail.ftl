@@ -83,11 +83,11 @@
 			</div>     
        	<#else>
 	       	<ul>
-	       		<li><strong>Collection</strong>: ${anchors.collection}</li>
-	       		<li><strong>Document Number</strong>: ${anchors.docNum}</li>
-	       		<li><strong>Distilled File</strong>: '${anchors.distilledFileName}'</li> 
-	       		<li><strong>Anchor text</strong>: ${anchors.detail.linkAnchortext}</li>
-				<li>Showing documents <strong>${anchors.detail.start?string.number}-${anchors.detail.end?string.number}</strong> of ${anchors.detail.size?string.number} total documents linking to <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection with the anchor text <strong>${anchors.detail.anchortext}</strong></li>	 
+	       		<li><strong>Collection</strong>: <span>${anchors.collection}</span></li>
+	       		<li><strong>Document Number</strong>: <span>${anchors.docNum}</span></li>
+	       		<li><strong>Distilled File</strong>: <span>'${anchors.distilledFileName}'</span></li> 
+	       		<li><strong>Anchor text</strong>: <span>${anchors.detail.linkAnchortext}</span></li>
+				<li>Showing documents <strong>${anchors.detail.start?string.number}-${anchors.detail.end?string.number}</strong> of <span>${anchors.detail.size?string.number}</span> total documents linking to <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection with the anchor text <strong>${anchors.detail.anchortext}</strong></li>	 
 	       	</ul>
  
 			<@pageNumbers/>
