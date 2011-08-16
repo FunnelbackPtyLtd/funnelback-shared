@@ -61,10 +61,10 @@
 			</div>     
        	<#else>
 	       	<ul>
-	       		<li><strong>Collection</strong>: ${anchors.collection}</li>
-	       		<li><strong>Document Number</strong>: ${anchors.docNum}</li>
-	       		<li><strong>Distilled File</strong>: '${anchors.distilledFileName}'</li> 
-				<li><strong>Number of links to document <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection</strong>: ${anchors.totalLinks?string.number}</li> 
+	       		<li><strong>Collection</strong>: <span>${anchors.collection}</span></li>
+	       		<li><strong>Document Number</strong>: <span>${anchors.docNum}</span></li>
+	       		<li><strong>Distilled File</strong>: <span>'${anchors.distilledFileName}'</span></li> 
+				<li><strong>Number of links to document <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection</strong>: <span>${anchors.totalLinks?string.number}</span></li> 
 	       	</ul>
 	       	<table>
 	       			<th>Link type</th>
