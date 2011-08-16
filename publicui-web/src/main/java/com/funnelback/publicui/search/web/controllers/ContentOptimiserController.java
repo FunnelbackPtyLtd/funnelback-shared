@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.publicui.contentoptimiser.ContentOptimiserUserRestrictions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -69,16 +70,16 @@ public class ContentOptimiserController {
 	
 	
 	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,RequestParameters.CONTENT_OPTIMISER_ADVANCED})
-	public ModelAndView contentOptimiser(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+	public ModelAndView contentOptimiserAdvanced(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
-
 		
-		
-		return new ModelAndView(contentOptimiserView, searchController.search(request, question).getModel());
+		Map<String, Object> model = searchController.search(request, question).getModel();
+		model.put("nonAdminDisplay", ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminFullAccess());
+		return new ModelAndView(contentOptimiserView, model);
 	}
 	
 	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
@@ -88,7 +89,9 @@ public class ContentOptimiserController {
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
-		return new ModelAndView(contentOptimiserTextView, searchController.search(request, question).getModel());
+		Map<String, Object> model = searchController.search(request, question).getModel();
+		model.put("nonAdminDisplay", ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminTextAccess());
+		return new ModelAndView(contentOptimiserTextView, model);
 	}
 	
 
@@ -107,6 +110,7 @@ public class ContentOptimiserController {
 	public ModelAndView kickoff(HttpServletRequest request) {
 		Map<String,Object> m = new HashMap<String,Object>();
 		m.put("collection", request.getParameter(RequestParameters.COLLECTION));
+		if(request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) m.put("advanced", request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED));
 		return new ModelAndView(contentOptimiserKickoffView,m);
 	}
 	

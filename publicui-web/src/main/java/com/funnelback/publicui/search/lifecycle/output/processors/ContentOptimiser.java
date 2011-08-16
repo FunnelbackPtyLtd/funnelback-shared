@@ -46,7 +46,7 @@ public class ContentOptimiser implements OutputProcessor {
 			log.debug("Process output content optimiser has all data");
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
 			log.debug("Done consuming result packet");
-			
+
 			String optimiserUrl = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL);
 			if(!"".equals(optimiserUrl) && optimiserUrl != null) {
 				// if there is an optimiser URL, look it up with the URL status too

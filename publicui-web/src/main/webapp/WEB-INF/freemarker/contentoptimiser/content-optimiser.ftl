@@ -186,31 +186,34 @@
 				        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
 				        		];
 				        	</#if>
-			        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},
-			        			<#if response.urlComparison.importantOne??> line_${hint.name} </#if>
-			        		], {
-			        			title: '${hint.longName}',
-			    				axesDefaults: {       				 	
-		       				 			labelRenderer: $.jqplot.CanvasAxisLabelRenderer, 
-		       				 			tickRenderer: $.jqplot.CanvasAxisTickRenderer
-								},       				 	
-		       				 	axes:{
-		       				 		xaxis:{
-		       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x},</#list> (${response.urlComparison.urls?size?c}+1) ],
-		       				 			tickOptions:{formatString:'%d'}, 
-		       				 			min:0, 
-		       				 			max:${response.urlComparison.urls?size?c} +1,
-		       				 			label: "Rank", 
-		       				 			pad: 1
-		       				 			},
-		       				 		yaxis:{	label:'Score' } 
-		       				 	},
-		        				series:[
-		            				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
-		            				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}</#if>
-				        		]
-		    				});
-		    				<#assign idx = idx+1/>
+				        	<#if response.urlComparison.importantOne??> 
+				        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},
+				        			<#if response.urlComparison.importantOne??> line_${hint.name} </#if>
+				        		], {
+				        			title: '${hint.longName}',
+				    				axesDefaults: {       				 	
+			       				 			labelRenderer: $.jqplot.CanvasAxisLabelRenderer, 
+			       				 			tickRenderer: $.jqplot.CanvasAxisTickRenderer
+									},       				 	
+			       				 	axes:{
+			       				 		xaxis:{
+			       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x},</#list> (${response.urlComparison.urls?size?c}+1) ],
+			       				 			tickOptions:{formatString:'%d'}, 
+			       				 			min:0, 
+			       				 			max:${response.urlComparison.urls?size?c} +1,
+			       				 			label: "Rank", 
+			       				 			pad: 1
+			       				 			},
+			       				 		yaxis:{	label:'Score' } 
+			       				 	},
+			        				series:[
+			            				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
+			            				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}</#if>
+					        		]
+			    				});
+			    				
+			    			</#if>
+			    			<#assign idx = idx+1/>
 						</#list>
 						
 					

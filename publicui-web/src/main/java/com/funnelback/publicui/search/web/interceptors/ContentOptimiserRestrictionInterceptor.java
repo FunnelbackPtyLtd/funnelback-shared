@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.contentoptimiser.ContentOptimiserUserRestrictions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -42,7 +42,10 @@ public class ContentOptimiserRestrictionInterceptor implements
 					.getParameter(RequestParameters.COLLECTION));
 			if (c == null)
 				return true;
-
+			ContentOptimiserUserRestrictions restrictions = new ContentOptimiserUserRestrictions(c.getConfiguration().value(
+					Keys.CONTENT_OPTIMISER_NON_ADMIN_ACCESS));
+			request.setAttribute(ContentOptimiserUserRestrictions.class.getName(),restrictions);
+			
 			String adminPort = c.getConfiguration().value(Keys.Urls.ADMIN_PORT);
 			if (adminPort != null
 					&& (new Integer(request.getLocalPort()).toString())
@@ -50,32 +53,20 @@ public class ContentOptimiserRestrictionInterceptor implements
 				// always allow access on the admin port
 				return true;
 			}
-
+			
 			// if we're here, we're not on the admin port
-			String contentOptimiserValue = c.getConfiguration().value(
-					Keys.CONTENT_OPTIMISER_NON_ADMIN_ACCESS);
-			if (contentOptimiserValue != null) {
-				if (Config.isTrue(contentOptimiserValue)) {
-					return true;
-				} else if (Config.isFalse(contentOptimiserValue)) {
+			if (restrictions.isAllowNonAdminFullAccess()) {
+				return true;
+			} else if (restrictions.isAllowNonAdminTextAccess()) {
+				if (request
+						.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) {
+					// this is the advanced view, so say no
 					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 					return false;
-				} else if ("textonly".equals(contentOptimiserValue)) {
-					if (request
-							.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) {
-						// this is the advanced view, so say no
-						response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-						return false;
-					} else {
-						return true;
-					}
 				} else {
-					// we don't recognise the setting, lets just disable it
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-					return false;
+					return true;
 				}
-			} else {
-				// the setting isn't there, so deny by default
+			} else  {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				return false;
 			}

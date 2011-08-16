@@ -61,7 +61,9 @@
 			<a id="fb-logo" class="fb-initial" href="http://funnelback.com/"><img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a>
 		</div> 
 		<div class="section">
-			<h2 style="text-align: center;">Content Optimiser</h2> 
+			<h2 style="text-align: center;">Content Optimiser
+				<#if Request.advanced??>Advanced</#if>
+			</h2> 
 			<@content_optimiser_requery/>
 		</div>
  	</div>

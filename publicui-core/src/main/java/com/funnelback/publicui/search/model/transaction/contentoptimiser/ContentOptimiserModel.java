@@ -12,6 +12,7 @@ import lombok.Setter;
 
 public class ContentOptimiserModel {
 	
+	
 	@Getter private final List<Result> urls = new ArrayList<Result>();
 	
 	@Getter @Setter private Result importantOne;

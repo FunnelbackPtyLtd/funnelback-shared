@@ -14,6 +14,7 @@
 			<label>URL</label> <input tabindex="2" type="text" class="optimiser_url" name="optimiser_url" value="<#if question??>${question.inputParameterMap["optimiser_url"]?html}</#if>"/>
 		</div>
 		<input type="hidden" name="collection" value="<#if question??>${question.inputParameterMap["collection"]!}<#else>${collection}</#if>"/>
+		<#if Request.advanced??><input type="hidden" name="advanced" value="1"/></#if>
 		<input type="hidden" name="profile" value="<#if question??>${question.profile}<#else>_default</#if>"/>
 		<#if question??>
 			<#if question.inputParameterMap["advanced"]??>
@@ -116,6 +117,7 @@
 	        <#else>
 	        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.
         	</#if>
+
       			
         </div>   
 </#macro>
