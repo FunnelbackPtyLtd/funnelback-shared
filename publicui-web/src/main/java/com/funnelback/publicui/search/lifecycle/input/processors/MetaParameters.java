@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import lombok.extern.apachecommons.Log;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;

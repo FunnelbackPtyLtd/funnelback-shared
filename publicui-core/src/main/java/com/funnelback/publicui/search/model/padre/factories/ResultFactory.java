@@ -1,14 +1,19 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.apachecommons.Log;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
@@ -72,7 +77,7 @@ public class ResultFactory {
 			}
 		}
 
-		return new Result(
+		Result r = new Result(
 				rank,
 				score,
 				title,
@@ -88,12 +93,18 @@ public class ResultFactory {
 				documentNumber,
 				exploreLink,
 				kmFromOrigin,
-				metadataMap,
 				ql,
 				liveUrl,
 				liveUrl,
 				explain,
 				liveUrl);
+		
+		r.getMetaData().putAll(metadataMap);
+		if (data.get(Result.Schema.TAGS) != null) {
+			r.getTags().addAll(Arrays.asList(data.get(Result.Schema.TAGS).split(",")));
+		}
+		
+		return r;
 	}
 
 	/**
@@ -126,6 +137,8 @@ public class ResultFactory {
 					ql = QuickLinksFactory.fromXmlStreamReader(xmlStreamReader);
 				} else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName().toString())) {
 					explain = ExplainFactory.fromXmlStreamReader(xmlStreamReader);
+				} else if (Result.Schema.TAGS.equals(xmlStreamReader.getLocalName().toString())) {
+					data.put(Result.Schema.TAGS, parseTags(xmlStreamReader));
 				} else {
 					TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
 					data.put(tt.tag, tt.text);
@@ -134,6 +147,32 @@ public class ResultFactory {
 		}
 
 		return fromMap(data, ql,explain);
+	}
+	
+	/**
+	 * Parses tags associated with a results. <tt>href</tt> attributes are ignored because the URL
+	 * will be rebuilt manually if needed.
+	 * @param reader
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private static String parseTags(XMLStreamReader reader) throws XMLStreamException {
+		if (! Result.Schema.TAGS.equals(reader.getLocalName())) {
+			throw new IllegalArgumentException();
+		}
+		
+		List<String> tags = new ArrayList<String>();
+		
+		int type = reader.getEventType();
+		while (type != XMLStreamReader.END_ELEMENT || ! Result.Schema.TAGS.equals(reader.getLocalName())) {
+			type = reader.nextTag();
+			
+			if (type == XMLStreamReader.START_ELEMENT && Result.Schema.RQ.equals(reader.getLocalName())) {
+				tags.add(reader.getElementText());
+			}
+		}
+		
+		return StringUtils.join(tags, ",");
 	}
 	
 	private static SimpleDateFormat getDateFormatter() {

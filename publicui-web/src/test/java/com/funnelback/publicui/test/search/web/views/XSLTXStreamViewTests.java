@@ -100,6 +100,10 @@ public class XSLTXStreamViewTests {
 		p = Pattern.compile("<tier_bar>.*?</tier_bar>", Pattern.DOTALL);
 		oldXml = p.matcher(oldXml).replaceAll("");
 		
+		// Tags not supported in transformed XML
+		p = Pattern.compile("<tags>.*?</tags>\\r?\\n", Pattern.DOTALL);
+		oldXml = p.matcher(oldXml).replaceAll("");		
+		
 		// No click tracking URL
 		actual = actual.replaceAll("<click_tracking_url/>\\n", "");
 		

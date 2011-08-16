@@ -643,6 +643,11 @@ you
   <collection>info-aus</collection>
   <component>0</component>
   <live_url>http://www.immi.gov.au/e_visa/</live_url>
+<tags>
+  <rq href='?profile=_default&amp;SF=abcdt&amp;SM=both&amp;collection=funnelback_documentation&amp;query=cat'>cat</rq>
+  <rq href='?profile=_default&amp;SF=abcdt&amp;SM=both&amp;collection=funnelback_documentation&amp;query=dog'>dog</rq>
+  <rq href='?profile=_default&amp;SF=abcdt&amp;SM=both&amp;collection=funnelback_documentation&amp;query=kangaroo'>kangaroo</rq>
+</tags>
 <md f="a"><![CDATA[Department of Immigration and Citizenship]]></md>
 <md f="c"><![CDATA[List of services provided on the Internet by the Australian Department of Immigration and Citizenship. Includes eVisas, ETAs, RRVs, Electronic Travel Authority, working holidays, resident return visas and citizenship applications.]]></md>
 <md f="p"><![CDATA[Department of Immigration and Citizenship]]></md>

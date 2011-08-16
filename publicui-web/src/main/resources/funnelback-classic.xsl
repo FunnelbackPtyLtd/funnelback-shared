@@ -15,7 +15,7 @@
  -->
 
 <!--
-	By default don't copy unkown tags
+	By default don't copy unknown tags
 	Only expected tag will be processed by templates
 -->
 <xsl:template match="@*|node()" />

@@ -299,6 +299,10 @@ public class StaxStreamParserTests {
 		assertEquals(1, first.getTier().intValue());
 		assertEquals(2681, first.getDocNum().intValue());
 		assertEquals("/search/padre-rf.cgi?&profile=_default&xml=&fluent=5&collection=info-aus&query=visa&comp=0&dox=29&aoi=7&vsimple=on&daat=0&script=/search/search.cgi", first.getExploreLink());
+		assertEquals(3, first.getTags().size());
+		assertTrue(first.getTags().contains("cat"));
+		assertTrue(first.getTags().contains("dog"));
+		assertTrue(first.getTags().contains("kangaroo"));
 		
 		// Quick links
 		assertNotNull(first.getQuickLinks());

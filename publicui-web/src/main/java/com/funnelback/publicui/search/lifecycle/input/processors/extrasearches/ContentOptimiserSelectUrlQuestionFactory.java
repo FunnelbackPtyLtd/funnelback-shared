@@ -6,7 +6,6 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
-import com.funnelback.publicui.utils.MapKeyFilter;
 
 public class ContentOptimiserSelectUrlQuestionFactory implements
 		ExtraSearchQuestionFactory {

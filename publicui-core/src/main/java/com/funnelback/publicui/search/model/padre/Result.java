@@ -1,7 +1,9 @@
 package com.funnelback.publicui.search.model.padre;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -110,7 +112,14 @@ public class Result implements ResultType {
 	 * 
 	 * @see <code>metamap.cfg</code>, <code>xml.cfg</code>
 	 */
-	@Getter @Setter private Map<String, String> metaData;
+	@Getter private final Map<String, String> metaData = new HashMap<String, String>();
+	
+	/**
+	 * <p>Tags associated with a result.</p>
+	 * 
+	 * <p>See the <tt>url_tagger</tt> program.</p>
+	 */
+	@Getter private final List<String> tags = new ArrayList<String>();
 	
 	/** Quick links associated with the result. */
 	@Getter @Setter private QuickLinks quickLinks;
@@ -167,6 +176,8 @@ public class Result implements ResultType {
 		public static final String KM_FROM_ORIGIN = "km_from_origin";
 		public static final String EXPLAIN = "explain";
 		public static final String METADATA = "md";
+		public static final String TAGS = "tags";
+		public static final String RQ = "rq";
 		public static final String ATTR_METADATA_F = "f";
 	}
 }

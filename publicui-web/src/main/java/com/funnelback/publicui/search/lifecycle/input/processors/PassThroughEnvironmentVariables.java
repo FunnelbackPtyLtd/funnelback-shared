@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Will collect some environment variables from the request that will

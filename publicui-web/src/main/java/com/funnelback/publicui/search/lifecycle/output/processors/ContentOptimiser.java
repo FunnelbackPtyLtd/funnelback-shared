@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.util.Set;
-import java.util.Map.Entry;
-
 import lombok.extern.apachecommons.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +12,8 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
 
