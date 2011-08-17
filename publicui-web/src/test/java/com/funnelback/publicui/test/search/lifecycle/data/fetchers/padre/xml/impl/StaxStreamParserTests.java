@@ -8,8 +8,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -64,6 +68,29 @@ public class StaxStreamParserTests {
 		assertEquals(0.41,rp.getCoolerWeights().get("content"),0.0001);
 		assertEquals(0.14,rp.getCoolerWeights().get("offlink"),0.0001);
 		assertEquals(0.14,rp.getCoolerWeights().get("urllen"),0.0001);
+	}
+	
+	@Test
+	public void testCoolerNames() {
+		assertEquals("content weight",rp.getCoolerNames().get("content"));
+		assertEquals("onsite link weight",rp.getCoolerNames().get("onlink"));
+		assertEquals("offsite link weight",rp.getCoolerNames().get("offlink"));
+		assertEquals("URL length weight",rp.getCoolerNames().get("urllen"));
+		assertEquals("external evidence",rp.getCoolerNames().get("qie"));
+		assertEquals("recency weight",rp.getCoolerNames().get("recency"));
+		assertEquals("implicit phrase match score",rp.getCoolerNames().get("imp_phrase"));
+		assertEquals("component collection weighting",rp.getCoolerNames().get("comp_wt"));
+		assertEquals("document number in the crawl",rp.getCoolerNames().get("document_number"));
+		assertEquals("",rp.getCoolerNames().get("host_click_score"));
+		assertEquals("",rp.getCoolerNames().get("host_linked_hosts_score"));
+		assertEquals("",rp.getCoolerNames().get("host_rank_in_crawl_order_score"));
+	}
+
+	@Test
+	public void testStemEquivs() {
+		Set<String> expected = new HashSet<String>( Arrays.asList(new String[] {"visa"}));
+		assertEquals(expected,rp.getStemmedEquivs().get("visa"));
+		assertEquals(expected,rp.getStemmedEquivs().get("visas"));
 	}
 	
 	@Test

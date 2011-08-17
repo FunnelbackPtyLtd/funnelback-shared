@@ -477,7 +477,21 @@
         <offlink>0.14</offlink>
         <urllen>0.14</urllen>
 </cooler_weightings>
-
+<cooler_names>
+<content>content weight</content>
+<onlink>onsite link weight</onlink>
+<offlink>offsite link weight</offlink>
+<urllen>URL length weight</urllen>
+<qie>external evidence</qie>
+<recency>recency weight</recency>
+<imp_phrase>implicit phrase match score</imp_phrase>
+<an_okapi>absolute-normalised Okapi score</an_okapi>
+<comp_wt>component collection weighting</comp_wt>
+<document_number>document number in the crawl</document_number>
+<host_click_score/>
+<host_linked_hosts_score/>
+<host_rank_in_crawl_order_score/>
+</cooler_names>
 <explain_types>
 <content>max_other</content>
 <onlink>max_other</onlink>
@@ -627,6 +641,7 @@ with
 y
 you
 </stop_words> 
+<stem_equivs>visa:[visa visas]</stem_equivs>
 
 <results>
 
