@@ -16,7 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.publicui.contentoptimiser.ContentOptimiserUserRestrictions;
+import com.funnelback.common.config.Keys;
+import com.funnelback.contentoptimiser.ContentOptimiserUserRestrictions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -78,7 +79,11 @@ public class ContentOptimiserController {
 		}
 		
 		Map<String, Object> model = searchController.search(request, question).getModel();
-		model.put("nonAdminDisplay", ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminFullAccess());
+		boolean allowNonAdminFullAccess = ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminFullAccess();
+		if(allowNonAdminFullAccess) {
+ 			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI() + "?" + request.getQueryString();
+			model.put("nonAdminLink", nonAdminLink);
+		}
 		return new ModelAndView(contentOptimiserView, model);
 	}
 	
@@ -90,7 +95,12 @@ public class ContentOptimiserController {
 			return kickoff(request);
 		}
 		Map<String, Object> model = searchController.search(request, question).getModel();
-		model.put("nonAdminDisplay", ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminTextAccess());
+		
+		boolean allowNonAdminTextAccess = ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminTextAccess();
+		if(allowNonAdminTextAccess) {
+ 			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI() + "?" + request.getQueryString();
+			model.put("nonAdminLink", nonAdminLink);
+		}
 		return new ModelAndView(contentOptimiserTextView, model);
 	}
 	
