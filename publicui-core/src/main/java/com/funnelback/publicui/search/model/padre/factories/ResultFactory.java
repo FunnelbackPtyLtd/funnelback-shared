@@ -52,7 +52,7 @@ public class ResultFactory {
 
 		String dateString = data.get(Result.Schema.DATE);
 		Date date = null;
-		if (dateString != null && !"".equals(dateString)) {
+		if (dateString != null && !"".equals(dateString) && !Result.NO_DATE.equals(dateString)) {
 			try {
 				date = getDateFormatter().parse(dateString);
 			} catch (Exception e) {

@@ -24,6 +24,11 @@ public class Result implements ResultType {
 	 * Date format used in PADRE results.
 	 */
 	public static final String DATE_PATTERN = "d MMM yyyy";
+	
+	/**
+	 * String returned by PADRE when a result has no date.
+	 */
+	public static final String NO_DATE = "No Date";
 
 	/**
 	 * Prefix for Metadata fields in the MetaData Map.
