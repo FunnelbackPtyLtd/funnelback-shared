@@ -10,6 +10,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 
 public class StandaloneParserTest {
 
@@ -43,7 +44,11 @@ public class StandaloneParserTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		for (File f: files) {
 			try {
-				parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"));
+				ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"));
+				if (rp == null) {
+					errors++;
+					System.out.println("Parser result for file '" + f.getAbsolutePath() + "' is null");
+				}
 			} catch (Exception e) {
 				System.out.println("Error while parsing '" + f.getAbsolutePath() + "'");
 				e.printStackTrace();
