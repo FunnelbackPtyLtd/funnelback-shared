@@ -270,7 +270,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		// See if the selected document appears for the long query
 		Result importantResult = null;
 		for (Result result : allRp.getResults()) {
-			if(result.getDisplayUrl().equals(urlString) || result.getLiveUrl().equals(urlString) || result.getLiveUrl().equals("http://" + urlString) || result.getClickTrackingUrl().endsWith(urlString)) importantResult = result;
+			if(result.getDisplayUrl().equals(urlString) || result.getLiveUrl().equals(urlString) || result.getLiveUrl().equals("http://" + urlString) || urlString.endsWith(result.getClickTrackingUrl())) importantResult = result;
 		}	
 		
 		// If the selected document didn't appear in the long query, then terminate early

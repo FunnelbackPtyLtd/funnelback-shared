@@ -52,7 +52,7 @@ public class ContentOptimiser implements OutputProcessor {
 				// if there is an optimiser URL, look it up with the URL status too
 				
 				UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
-				if(status != null && ! status.isAvailable() && ! status.getError().startsWith("Unsupported collection type")) {
+				if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
 					comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
 				}				
 				
