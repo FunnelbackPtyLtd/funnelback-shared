@@ -57,7 +57,7 @@ public class SearchResponse {
 	/**
 	 * Content Optimiser: URL comparison data.
 	 */
-	@Getter @Setter private ContentOptimiserModel urlComparison;
+	@Getter @Setter private ContentOptimiserModel optimiserModel;
 	
 	/**
 	 * @return true if the {@link #resultPacket} is not null.

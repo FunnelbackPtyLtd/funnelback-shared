@@ -23,7 +23,7 @@
 	
 			<#if ! response??>
 				<@content_optimiser_big_error/>
-			<#elseif ! response.urlComparison??>
+			<#elseif ! response.optimiserModel??>
 				<@content_optimiser_big_error/>
 			<#else>
 				
@@ -31,12 +31,12 @@
 		               
 				<@content_optimiser_summary/>
 		           
-				<#if response.urlComparison.importantOne??>
+				<#if response.optimiserModel.selectedDocument??>
 					<div class="section">
 						<p>Here is a breakdown of the best ways to improve the ranking of the selected page. Improvement suggestions listed first will be the most effective. </p> 
 					</div>
 						<ul>
-					    	<#list response.urlComparison.hintsByWin as hint>
+					    	<#list response.optimiserModel.hintsByWin as hint>
 					    		<#if (hint.hintTexts?size > 0) && (hint.win > 0)>
 							       	<#list hint.hintTexts as text>
 						        		<li><b>${hint.longName}:</b> ${text}</li>

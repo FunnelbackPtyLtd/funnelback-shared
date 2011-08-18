@@ -80,7 +80,7 @@ public class DefaultContentOptimiserFillerTest {
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
-		assertNull(comparison.getImportantOne());
+		assertNull(comparison.getSelectedDocument());
 		
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
@@ -90,8 +90,8 @@ public class DefaultContentOptimiserFillerTest {
 
 		f.setImportantUrl(comparison, allTransaction);
 		
-		assertNotNull(comparison.getImportantOne());
-		assertEquals(new Integer(3),comparison.getImportantOne().getRank());
+		assertNotNull(comparison.getSelectedDocument());
+		assertEquals(new Integer(3),comparison.getSelectedDocument().getRank());
 		assertEquals(10.004,comparison.getHintsByName().get("content").getWin(),0.0001);
 		assertEquals(0,comparison.getHintsByName().get("offlink").getWin(),0.0001);
 		assertEquals(1.755,comparison.getHintsByName().get("urllen").getWin(),0.0001);
@@ -106,7 +106,7 @@ public class DefaultContentOptimiserFillerTest {
 		RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
 		f.consumeResultPacket(comparison, rp,hf);
-		assertNull(comparison.getImportantOne());
+		assertNull(comparison.getSelectedDocument());
 		
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(rp);
@@ -116,9 +116,9 @@ public class DefaultContentOptimiserFillerTest {
 
 		f.setImportantUrl(comparison, allTransaction);
 		
-		assertNotNull(comparison.getImportantOne());
+		assertNotNull(comparison.getSelectedDocument());
 
-		assertEquals(new Integer(18),comparison.getImportantOne().getRank());
+		assertEquals(new Integer(18),comparison.getSelectedDocument().getRank());
 		assertEquals(30.504,comparison.getHintsByName().get("content").getWin(),0.0001);
 		assertEquals(0,comparison.getHintsByName().get("offlink").getWin(),0.0001);
 		assertEquals(1.755,comparison.getHintsByName().get("urllen").getWin(),0.0001);

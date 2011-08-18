@@ -56,10 +56,10 @@
 
 <#macro content_optimiser_warnings>
 		<#if response??>
-	        <#if (response.urlComparison.messages?size > 0)>
+	        <#if (response.optimiserModel.messages?size > 0)>
 				<div class="messages">
 					<ul>
-					 	<#list response.urlComparison.messages as message>
+					 	<#list response.optimiserModel.messages as message>
 					 		<li>${message}</li>	
 					 	</#list>
 					</ul>
@@ -73,22 +73,22 @@
       
         		<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents 
         		for the query &quot;<b><@s.QueryClean/></b>&quot;. 
-				<#if (response.urlComparison.urls?size> 0)>        		
-		    		The top document (rank 1) is titled <a href="${response.urlComparison.urls[0].liveUrl}"><@s.boldicize>${response.urlComparison.urls[0].title}</@s.boldicize></a>.
-		        	<#if (response.urlComparison.importantOne??)>
-						<p>The selected document (<strong style="word-break: break-all;">${response.urlComparison.importantOne.liveUrl}</strong>):
+				<#if (response.optimiserModel.topResults?size> 0)>        		
+		    		The top document (rank 1) is titled <a href="${response.optimiserModel.topResults[0].liveUrl}"><@s.boldicize>${response.optimiserModel.topResults[0].title}</@s.boldicize></a>.
+		        	<#if (response.optimiserModel.selectedDocument??)>
+						<p>The selected document (<strong style="word-break: break-all;">${response.optimiserModel.selectedDocument.liveUrl}</strong>):
 							<ul>
-								<li>is ranked <span class="highlight">${response.urlComparison.importantOne.rank}</span> in the results </li>
-								<li>is titled <a href="${response.urlComparison.importantOne.liveUrl}"><@s.boldicize>${response.urlComparison.importantOne.title}</@s.boldicize></a>.</li>
-								<li>contains <span class="highlight">${response.urlComparison.content.totalWords?string.number}</span> total words, <span class="highlight">${response.urlComparison.content.uniqueWords?string.number}</span> of which are unique.</li>
+								<li>is ranked <span class="highlight">${response.optimiserModel.selectedDocument.rank}</span> in the results </li>
+								<li>is titled <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a>.</li>
+								<li>contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.</li>
 							</ul> 
 						</p>
-						<#if response.urlComparison.content.termsToStemEquivs?keys?size != 0>
+						<#if response.optimiserModel.content.termsToStemEquivs?keys?size != 0>
 							<p>Stemming is turned on in the query processor options, causing some of the query terms to match similar words. This means that:
 							<ul>
-								<#list response.urlComparison.content.termsToStemEquivs?keys as key>
+								<#list response.optimiserModel.content.termsToStemEquivs?keys as key>
 									<li>The terms [
-											<#list response.urlComparison.content.termsToStemEquivs[key] as word>
+											<#list response.optimiserModel.content.termsToStemEquivs[key] as word>
 												<span class="highlight">${word}</span> 
 											</#list> 
 											]
@@ -100,12 +100,12 @@
 							
 						</#if>
 						 <p>
-							 The most common words in the document are <span class="highlight">${response.urlComparison.content.commonWords}</span>. 
+							 The most common words in the document are <span class="highlight">${response.optimiserModel.content.commonWords}</span>. 
 							 <ul>
 							 	<li>These words should be an indicator of the subject of the document. If the words don't accurately reflect the subject of the document, consider re-wording the document, or preventing sections of the document from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags</li>
 							 </ul> 
 						 </p>
-					 	<p>Funnelback's <a href="${response.urlComparison.importantOne.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.urlComparison.importantOne.collection}&docnum=${response.urlComparison.importantOne.docNum}">anchors information for the document.</a>
+					 	<p>Funnelback's <a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">anchors information for the document.</a>
 					 
 					 	You can also <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
 			        <#else>

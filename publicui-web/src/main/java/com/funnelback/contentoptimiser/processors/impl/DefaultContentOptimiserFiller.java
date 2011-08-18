@@ -208,7 +208,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		boolean seenEasterEgg = false;
 		// Fill in results with re-weighted scores
 		for (Result result : rp.getResults()) {
-			if(comparison.getUrls().size() >= 10) break;
+			if(comparison.getTopResults().size() >= 10) break;
 	
 			if(result.getExplain() != null) {
 				if(seenEasterEgg) { 
@@ -228,7 +228,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				}
 				seenEasterEgg = true;
 			}
-			comparison.getUrls().add(result);
+			comparison.getTopResults().add(result);
 		}
 	}
 	
@@ -280,15 +280,15 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		}
 		
 		// First see if the model already contains the selected document (it will if it's in the top 10)
-		for (Result url : comparison.getUrls()) {
+		for (Result url : comparison.getTopResults()) {
 			if(url.getDisplayUrl().equals(importantResult.getDisplayUrl())) {
-				comparison.setImportantOne(url);
+				comparison.setSelectedDocument(url);
 			}
 		}
 		
 		// Otherwise we must create it ourselves
-		if(comparison.getImportantOne() == null) {
-			comparison.setImportantOne(importantResult);
+		if(comparison.getSelectedDocument() == null) {
+			comparison.setSelectedDocument(importantResult);
 			for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
 				RankingFeature hint = comparison.getHintsByName().get(feature.getKey());

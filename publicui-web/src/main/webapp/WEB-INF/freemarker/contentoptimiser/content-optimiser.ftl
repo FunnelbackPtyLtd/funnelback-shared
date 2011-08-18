@@ -37,7 +37,7 @@
         
         <#if ! response??>
 			<@content_optimiser_big_error/>
-		<#elseif ! response.urlComparison??>
+		<#elseif ! response.optimiserModel??>
 			<@content_optimiser_big_error/>
 		<#else>
 	        
@@ -45,7 +45,7 @@
 	        <@content_optimiser_warnings/>
 	
 			<@content_optimiser_summary/>
-			<#if (response.urlComparison.urls?size > 0)>
+			<#if (response.optimiserModel.topResults?size > 0)>
 				<p>Here is a breakdown of the ranking scores of the top documents:</p>
 		           
 		        <script type="text/javascript">
@@ -70,27 +70,27 @@
 			        }
 		
 		        	$(function() {
-		        		$("#barplot-cell").append('<div class="jqPlot" id="barplot" style="height:' + (50 * ${response.urlComparison.urls?size?c}) + 'px; width:435px;"></div>');
+		        		$("#barplot-cell").append('<div class="jqPlot" id="barplot" style="height:' + (50 * ${response.optimiserModel.topResults?size?c}) + 'px; width:435px;"></div>');
 		   
-			        	<#list response.urlComparison.hintsByName?keys as hintkey>
-			        			<#assign hint = response.urlComparison.hintsByName[hintkey] />
+			        	<#list response.optimiserModel.hintsByName?keys as hintkey>
+			        			<#assign hint = response.optimiserModel.hintsByName[hintkey] />
 		        				var ${hint.name} = new Array();
 		        				featureNames.push('${hint.longName}');
-								<#if response.urlComparison.importantOne?? > var important_${hint.name} = [[${hint.scores[response.urlComparison.importantOne.rank?string]},1]]; </#if>
-				        		var weight_${hint.name} = [[${response.urlComparison.weights[hint.name]},1]]
+								<#if response.optimiserModel.selectedDocument?? > var important_${hint.name} = [[${hint.scores[response.optimiserModel.selectedDocument.rank?string]},1]]; </#if>
+				        		var weight_${hint.name} = [[${response.optimiserModel.weights[hint.name]},1]]
 		       	    	</#list>
 			        	
 			        	
 		
-		        		<#list response.urlComparison.urls as urlinfo>
-		        			<#list response.urlComparison.hintsByName?keys as hintkey>
-		       					${response.urlComparison.hintsByName[hintkey].name}.push([${response.urlComparison.hintsByName[hintkey].scores[urlinfo.rank?string]},${response.urlComparison.urls?size?c} + 1 - ${urlinfo.rank}]);
+		        		<#list response.optimiserModel.topResults as urlinfo>
+		        			<#list response.optimiserModel.hintsByName?keys as hintkey>
+		       					${response.optimiserModel.hintsByName[hintkey].name}.push([${response.optimiserModel.hintsByName[hintkey].scores[urlinfo.rank?string]},${response.optimiserModel.topResults?size?c} + 1 - ${urlinfo.rank}]);
 		        			</#list>
 		        		</#list>
 		      	
 						var barplot = $.jqplot('barplot', [
-			  			<#list response.urlComparison.hintsByName?keys as hintkey>
-			        			${response.urlComparison.hintsByName[hintkey].name}
+			  			<#list response.optimiserModel.hintsByName?keys as hintkey>
+			        			${response.optimiserModel.hintsByName[hintkey].name}
 			        			<#if hintkey_has_next>,</#if>
 			        	</#list>
 						
@@ -107,11 +107,11 @@
 			        			yaxis: {
 						            renderer: $.jqplot.CategoryAxisRenderer, 
 					    	        ticks: [
-		        					<#list response.urlComparison.urls as urlinfo>' ' <#if urlinfo_has_next>,</#if></#list>
+		        					<#list response.optimiserModel.topResults as urlinfo>' ' <#if urlinfo_has_next>,</#if></#list>
 					    	        ]
 					        	},	
 					        	xaxis: {min: 0, max: 
-					        		<#list response.urlComparison.hintsByWin as hint>
+					        		<#list response.optimiserModel.hintsByWin as hint>
 						        			${hint.name}[0][0] +
 					        		</#list> 0
 			        	, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
@@ -132,10 +132,10 @@
 					        }
 					    );
 									
-						<#if response.urlComparison.importantOne??> 
+						<#if response.optimiserModel.selectedDocument??> 
 							var barplotImportant = $.jqplot('barplot-important', [
-							<#list response.urlComparison.hintsByName?keys as hintkey>
-			        			important_${response.urlComparison.hintsByName[hintkey].name}
+							<#list response.optimiserModel.hintsByName?keys as hintkey>
+			        			important_${response.optimiserModel.hintsByName[hintkey].name}
 			        			<#if hintkey_has_next>,</#if>
 			    	    	</#list>
 							
@@ -153,7 +153,7 @@
 						    	        ticks: [' ']
 						        	},	
 						        	xaxis: {min: 0, max: 
-						        		<#list response.urlComparison.hintsByWin as hint>
+						        		<#list response.optimiserModel.hintsByWin as hint>
 							        			${hint.name}[0][0] +
 						        		</#list> 0, numberTicks:5,  tickRenderer: $.jqplot.CanvasAxisTickRenderer}
 						    	}
@@ -164,31 +164,31 @@
 						</#if>
 						
 						<#assign idx = 0 />
-						<#list response.urlComparison.hintsByName?keys as hintkey>
-			        			<#assign hint = response.urlComparison.hintsByName[hintkey] />
+						<#list response.optimiserModel.hintsByName?keys as hintkey>
+			        			<#assign hint = response.optimiserModel.hintsByName[hintkey] />
 			        			$("#legend").append('<span class="legend-block"><span class="legend-colour" style="background-color: '+barplot.series[${idx}].color+' ">&nbsp;</span> <span>${hint.longName}</span>');
 			        			<#assign idx = idx +1/>
 			        	</#list>
 			        	
 			        	
 						<#assign idx = 0 />
-						<#list response.urlComparison.hintsByName?keys as hintkey>
-			        		<#assign hint = response.urlComparison.hintsByName[hintkey] />
+						<#list response.optimiserModel.hintsByName?keys as hintkey>
+			        		<#assign hint = response.optimiserModel.hintsByName[hintkey] />
 			        		for(var i = 0; i < ${hint.name}.length;i++) {
-			        			${hint.name}[i] = [${response.urlComparison.urls?size?c}+1-${hint.name}[i][1],${hint.name}[i][0]/${response.urlComparison.weights[hint.name]}*100];
+			        			${hint.name}[i] = [${response.optimiserModel.topResults?size?c}+1-${hint.name}[i][1],${hint.name}[i][0]/${response.optimiserModel.weights[hint.name]}*100];
 			        		}
-			        		<#if response.urlComparison.importantOne??> 
+			        		<#if response.optimiserModel.selectedDocument??> 
 				        		var line_${hint.name} = [
-				        		  <#list 0..response.urlComparison.urls?size as x>
-				        		  	[${x},${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100],
+				        		  <#list 0..response.optimiserModel.topResults?size as x>
+				        		  	[${x},${hint.scores[response.optimiserModel.selectedDocument.rank?string]}/${response.optimiserModel.weights[hint.name]}*100],
 				        		  	
 				        		  </#list>
-				        		  [${response.urlComparison.urls?size?c}+1, ${hint.scores[response.urlComparison.importantOne.rank?string]}/${response.urlComparison.weights[hint.name]}*100]
+				        		  [${response.optimiserModel.topResults?size?c}+1, ${hint.scores[response.optimiserModel.selectedDocument.rank?string]}/${response.optimiserModel.weights[hint.name]}*100]
 				        		];
 				        	</#if>
-				        	<#if response.urlComparison.importantOne??> 
+				        	<#if response.optimiserModel.selectedDocument??> 
 				        		var plot_${hint.name} = $.jqplot('plot-${hint.name}', [${hint.name},
-				        			<#if response.urlComparison.importantOne??> line_${hint.name} </#if>
+				        			<#if response.optimiserModel.selectedDocument??> line_${hint.name} </#if>
 				        		], {
 				        			title: '${hint.longName}',
 				    				axesDefaults: {       				 	
@@ -197,10 +197,10 @@
 									},       				 	
 			       				 	axes:{
 			       				 		xaxis:{
-			       				 			ticks: [ <#list 0..response.urlComparison.urls?size as x> ${x},</#list> (${response.urlComparison.urls?size?c}+1) ],
+			       				 			ticks: [ <#list 0..response.optimiserModel.topResults?size as x> ${x},</#list> (${response.optimiserModel.topResults?size?c}+1) ],
 			       				 			tickOptions:{formatString:'%d'}, 
 			       				 			min:0, 
-			       				 			max:${response.urlComparison.urls?size?c} +1,
+			       				 			max:${response.optimiserModel.topResults?size?c} +1,
 			       				 			label: "Rank", 
 			       				 			pad: 1
 			       				 			},
@@ -208,7 +208,7 @@
 			       				 	},
 			        				series:[
 			            				{showLine:false, markerOptions:{style:'x'},color: barplot.series[${idx}].color},
-			            				<#if response.urlComparison.importantOne??>  {showLine:true, color:'#ff9999', showMarker:false}</#if>
+			            				<#if response.optimiserModel.selectedDocument??>  {showLine:true, color:'#ff9999', showMarker:false}</#if>
 					        		]
 			    				});
 			    				
@@ -222,15 +222,15 @@
 		
 		        <table>
 		                <tr><th>Rank</th><th>Title</th><th>Ranking caused by</th></tr>
-		           		<#list response.urlComparison.urls as urlinfo>
+		           		<#list response.optimiserModel.topResults as urlinfo>
 			                <tr>
 			                	<td>
-			                		<div style="overflow: hidden; white-space: nowrap; height: 43px; <#if urlinfo_index == 0> padding-top: 20px; </#if> <#if response.urlComparison.importantOne?? && urlinfo.rank == response.urlComparison.importantOne.rank> background-color: #ffaaaa; </#if>">
+			                		<div style="overflow: hidden; white-space: nowrap; height: 43px; <#if urlinfo_index == 0> padding-top: 20px; </#if> <#if response.optimiserModel.selectedDocument?? && urlinfo.rank == response.optimiserModel.selectedDocument.rank> background-color: #ffaaaa; </#if>">
 			                			${urlinfo.rank}	                			
 			                		</div>
 			                	</td> 
 			                	<td>
-			                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.urlComparison.importantOne?? && urlinfo.rank == response.urlComparison.importantOne.rank> background-color: #ffaaaa; </#if> ">	                			
+			                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.optimiserModel.selectedDocument?? && urlinfo.rank == response.optimiserModel.selectedDocument.rank> background-color: #ffaaaa; </#if> ">	                			
 			                			<a href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
 				                			${urlinfo.title} 
 			                			</a>
@@ -238,26 +238,26 @@
 			                		</div>
 			                	</td> 
 			                	<#if urlinfo_index == 0> 
-			                		<td rowspan="${response.urlComparison.urls?size?c}" id="barplot-cell">
+			                		<td rowspan="${response.optimiserModel.topResults?size?c}" id="barplot-cell">
 			                		</td>
 			                	</#if>
 			                </tr>	
 		        	    </#list>
 		        
 		        </table>
-		   		<#if response.urlComparison.importantOne??> 
-			    	<div <#if ! (response.urlComparison.importantOne.rank?number > 10)> style="display: none;" </#if> >
+		   		<#if response.optimiserModel.selectedDocument??> 
+			    	<div <#if ! (response.optimiserModel.selectedDocument.rank?number > 10)> style="display: none;" </#if> >
 			    		<p>The document you selected was not in the top 10. It's rank and ranking scores were:</p>
 				        <table>
 				                <tr>
 				                	<td style="width: 38px;">
 				                		<div style="overflow: hidden; white-space: nowrap; height: 43px;padding-top: 20px;">
-				                				${response.urlComparison.importantOne.rank}
+				                				${response.optimiserModel.selectedDocument.rank}
 				                		</div>
 				                	</td> 
 				                	<td>
 				                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px; padding-top: 20px;">
-				                			<a href="${response.urlComparison.importantOne.liveUrl}"> ${response.urlComparison.importantOne.title} </a>
+				                			<a href="${response.optimiserModel.selectedDocument.liveUrl}"> ${response.optimiserModel.selectedDocument.title} </a>
 				                		</div>
 				                	</td> 
 				                	<td><div class="jqPlot" id="barplot-important" style="height:60px; width:435px;"></div></td>
@@ -270,11 +270,11 @@
 				    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 					<div id="legend"></div>
 				</div>
-				<#if response.urlComparison.importantOne??>
+				<#if response.optimiserModel.selectedDocument??>
 					<div class="section">
 						<p>Here is a breakdown of the best ways to improve the ranking of the selected page. Categories are sorted by the potential improvement to the ranking - so improvement suggestions listed first will be the most effective. Red lines in the graphs indicate the current score for the selected document.</p> 
 					</div>
-					<#list response.urlComparison.hintCollections as hc>
+					<#list response.optimiserModel.hintCollections as hc>
 					    <div class="section" style="clear: both;">
 					    	<div style="float: left; width:400px;">
 					    		<#if (hc.win <= 0)>

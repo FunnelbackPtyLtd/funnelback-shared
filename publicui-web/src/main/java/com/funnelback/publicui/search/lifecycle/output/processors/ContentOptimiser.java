@@ -61,19 +61,19 @@ public class ContentOptimiser implements OutputProcessor {
 				log.debug("Filling hint texts");
 				filler.fillHintCollections(comparison);
 			
-				if(comparison.getImportantOne() != null){
+				if(comparison.getSelectedDocument() != null){
 					log.debug("obtaining anchors");		
-					AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getImportantOne().getDocNum(),comparison.getImportantOne().getCollection());
+					AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getSelectedDocument().getDocNum(),comparison.getSelectedDocument().getCollection());
 
 					log.debug("obtaining content");					
-					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getImportantOne(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
+					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
 				}
 			} else {
 				// if there isn't an optimiser URL, note that we didn't find anything
 				comparison.getMessages().add("No document URL selected.");
 				filler.fillHintCollections(comparison);
 			}
-			searchTransaction.getResponse().setUrlComparison(comparison);
+			searchTransaction.getResponse().setOptimiserModel(comparison);
 		}
 	}
 

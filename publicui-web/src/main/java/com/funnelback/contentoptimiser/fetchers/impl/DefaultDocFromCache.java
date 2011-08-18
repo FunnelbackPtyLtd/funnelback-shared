@@ -119,7 +119,7 @@ public class DefaultDocFromCache implements DocFromCache {
 		sb.append("<DOCHDR>");
 		sb.append(System.getProperty("line.separator"));
 		sb.append("  <BASE HREF=\"");
-		sb.append(comparison.getImportantOne().getLiveUrl());
+		sb.append(comparison.getSelectedDocument().getLiveUrl());
 		sb.append("\">");
 		sb.append(System.getProperty("line.separator"));
 		sb.append("</DOCHDR>");
