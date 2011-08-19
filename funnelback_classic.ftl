@@ -5,7 +5,7 @@
     <p>This library <strong>must</strong> be imported under the <code>s</code> namespace.</p>
 
     <p>This documentation will give an overview of each tag. For a complete documentation
-    please refer to the main <a href="../help/">Funnelback documentation</a>.</p>
+    please refer to the main <a href="../">Funnelback documentation</a>.</p>
 
     <p>Some tags takes their parameters from the nested content to mimic the Classic UI
     tags, for example: <code>&lt;@IfDefCGI&gt;query&lt;/@IfDefCGI&gt;</code>.
