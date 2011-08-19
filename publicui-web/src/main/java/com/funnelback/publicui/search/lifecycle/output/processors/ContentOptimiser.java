@@ -49,12 +49,9 @@ public class ContentOptimiser implements OutputProcessor {
 
 			String optimiserUrl = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL);
 			if(!"".equals(optimiserUrl) && optimiserUrl != null) {
-				// if there is an optimiser URL, look it up with the URL status too
+			
 				
-				UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
-				if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
-					comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
-				}				
+
 				
 				// if there was, we should try and find it anyway
 				filler.setImportantUrl(comparison,searchTransaction);
@@ -67,7 +64,13 @@ public class ContentOptimiser implements OutputProcessor {
 
 					log.debug("obtaining content");					
 					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
+					optimiserUrl = comparison.getSelectedDocument().getDisplayUrl(); 
 				}
+				// if there is an optimiser URL, look it up with the URL status too 
+				UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
+				if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
+					comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
+				}				
 			} else {
 				// if there isn't an optimiser URL, note that we didn't find anything
 				comparison.getMessages().add("No document URL selected.");

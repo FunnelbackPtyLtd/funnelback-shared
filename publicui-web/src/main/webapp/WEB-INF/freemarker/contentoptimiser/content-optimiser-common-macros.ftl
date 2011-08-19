@@ -72,9 +72,9 @@
         <div class="summary">
       
         		<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents 
-        		for the query &quot;<b><@s.QueryClean/></b>&quot;. 
+        		for the query &quot;<b><@s.QueryClean/></b>&quot;: 
 				<#if (response.optimiserModel.topResults?size> 0)>        		
-		    		The top document (rank 1) is titled <a href="${response.optimiserModel.topResults[0].liveUrl}"><@s.boldicize>${response.optimiserModel.topResults[0].title}</@s.boldicize></a>.
+		    	
 		        	<#if (response.optimiserModel.selectedDocument??)>
 						<p>The selected document (<strong style="word-break: break-all;">${response.optimiserModel.selectedDocument.liveUrl}</strong>):
 							<ul>
@@ -109,7 +109,7 @@
 					 
 					 	You can also <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
 			        <#else>
-			        	<#if (question.inputParameterMap["optimiser_url"]??)>
+			        	<#if (question.inputParameterMap["optimiser_url"]?? && question.inputParameterMap["optimiser_url"] != "") >
 			        		<p>The selected document (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
 			        	</#if>
 			        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>

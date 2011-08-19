@@ -231,7 +231,7 @@
 			                	</td> 
 			                	<td>
 			                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.optimiserModel.selectedDocument?? && urlinfo.rank == response.optimiserModel.selectedDocument.rank> background-color: #ffaaaa; </#if> ">	                			
-			                			<a href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
+			                			<a onclick="$('#dialog-modal').dialog('open');" href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
 				                			${urlinfo.title} 
 			                			</a>
 			                			
@@ -269,9 +269,13 @@
 				<div class="section">
 				    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 					<div id="legend"></div>
+					
+					
 				</div>
+				
 				<#if response.optimiserModel.selectedDocument??>
 					<div class="section">
+						<p>The relative weights of the ranking features above are controlled by the administrator of your search system. If they appear to be incorrect, consider asking the search administrator to tune the ranking weightings.</p>
 						<p>Here is a breakdown of the best ways to improve the ranking of the selected page. Categories are sorted by the potential improvement to the ranking - so improvement suggestions listed first will be the most effective. Red lines in the graphs indicate the current score for the selected document.</p> 
 					</div>
 					<#list response.optimiserModel.hintCollections as hc>

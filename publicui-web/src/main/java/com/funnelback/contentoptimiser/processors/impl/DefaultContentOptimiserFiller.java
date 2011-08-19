@@ -270,7 +270,17 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		// See if the selected document appears for the long query
 		Result importantResult = null;
 		for (Result result : allRp.getResults()) {
-			if(result.getDisplayUrl().equals(urlString) || result.getLiveUrl().equals(urlString) || result.getLiveUrl().equals("http://" + urlString) || urlString.endsWith(result.getClickTrackingUrl())) importantResult = result;
+			Set<String> possibleUrls = new HashSet<String>();
+			possibleUrls.add(urlString);
+			possibleUrls.add(urlString + "/");
+			possibleUrls.add("http://" + urlString);
+			possibleUrls.add("http://"+ urlString + "/");
+			
+			if(possibleUrls.contains(result.getDisplayUrl())
+					|| possibleUrls.contains(result.getLiveUrl())
+					|| urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*",""))) {
+				importantResult = result;
+			}
 		}	
 		
 		// If the selected document didn't appear in the long query, then terminate early
@@ -311,12 +321,19 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors, SetMultimap<String,String> stemMatches) {
 		DocumentContentModel content = new DocumentContentModel();
 		
-		for(Entry <String,String> stemMatch : stemMatches.entries()) {
-			if(! content.getTermsToStemEquivs().containsKey(stemMatch.getValue())) {
-				content.getTermsToStemEquivs().put(stemMatch.getValue(),new HashSet<String>());
+		
+		if(stemMatches.entries().size() != 1) {
+			// describe the stem equiv matches only if there's more than one
+			// (a word will always stem to itself)
+			for(Entry <String,String> stemMatch : stemMatches.entries()) {
+				if(! content.getTermsToStemEquivs().containsKey(stemMatch.getValue())) {
+					content.getTermsToStemEquivs().put(stemMatch.getValue(),new HashSet<String>());
+				}
+				content.getTermsToStemEquivs().get(stemMatch.getValue()).add(stemMatch.getKey());
 			}
-			content.getTermsToStemEquivs().get(stemMatch.getValue()).add(stemMatch.getKey());
 		}
+		
+		
 		
 		String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
 		if(documentContent != null) {
@@ -434,5 +451,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	}
 
 }
+
 
 
