@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import lombok.extern.apachecommons.Log;
 
 import com.funnelback.publicui.search.model.padre.TierBar;
@@ -35,8 +37,8 @@ public class TierBarFactory {
 		}
 		
 		return new TierBar(
-				Integer.parseInt(data.get(TierBar.Schema.MATCHED)),
-				Integer.parseInt(data.get(TierBar.Schema.OUTOF)),
+				NumberUtils.toInt(data.get(TierBar.Schema.MATCHED), 0),
+				NumberUtils.toInt(data.get(TierBar.Schema.OUTOF), 0),
 				date);
 	}
 	

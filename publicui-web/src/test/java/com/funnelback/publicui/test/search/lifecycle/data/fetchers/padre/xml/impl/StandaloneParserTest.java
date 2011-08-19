@@ -44,6 +44,7 @@ public class StandaloneParserTest {
 		StaxStreamParser parser = new StaxStreamParser();
 		for (File f: files) {
 			try {
+				System.out.println("-- Parsing " + f.getAbsolutePath());
 				ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"));
 				if (rp == null) {
 					errors++;

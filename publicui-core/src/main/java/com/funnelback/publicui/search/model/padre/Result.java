@@ -21,9 +21,15 @@ import lombok.ToString;
 public class Result implements ResultType {
 
 	/**
-	 * Date format used in PADRE results.
+	 * Date formats used to parse dates in PADRE results.
 	 */
-	public static final String DATE_PATTERN = "d MMM yyyy";
+	public static final String[] DATE_PATTERNS_IN = {"d MMM yyyy", "MMM yyyy"};
+	
+	/**
+	 * Date format used to format a date when serialising
+	 * a result object.
+	 */
+	public static final String DATE_PATTERN_OUT = "d MMM yyyy";
 	
 	/**
 	 * String returned by PADRE when a result has no date.

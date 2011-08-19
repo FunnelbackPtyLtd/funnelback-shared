@@ -14,6 +14,8 @@ import javax.xml.stream.XMLStreamReader;
 import lombok.extern.apachecommons.Log;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
@@ -40,11 +42,11 @@ public class ResultFactory {
 	 * @return A result with populated values
 	 */
 	public static Result fromMap(Map<String, String> data, QuickLinks ql,Explain explain) {
-		Integer rank = Integer.valueOf(data.get(Result.Schema.RANK));
-		Integer score = Integer.valueOf(data.get(Result.Schema.SCORE));
+		Integer rank = NumberUtils.toInt(data.get(Result.Schema.RANK), 0);
+		Integer score = NumberUtils.toInt(data.get(Result.Schema.SCORE), 0);
 		String title = data.get(Result.Schema.TITLE);
 		String collection = data.get(Result.Schema.COLLECTION);
-		Integer component = Integer.valueOf(data.get(Result.Schema.COMPONENT));
+		Integer component = NumberUtils.toInt(data.get(Result.Schema.COMPONENT), 0);
 		String liveUrl = data.get(Result.Schema.LIVE_URL);
 		String summary = data.get(Result.Schema.SUMMARY);
 		String cacheUrl = data.get(Result.Schema.CACHE_URL);
@@ -54,16 +56,16 @@ public class ResultFactory {
 		Date date = null;
 		if (dateString != null && !"".equals(dateString) && !Result.NO_DATE.equals(dateString)) {
 			try {
-				date = getDateFormatter().parse(dateString);
+				date = DateUtils.parseDate(dateString, Result.DATE_PATTERNS_IN);
 			} catch (Exception e) {
 				log.debug("Unparseable date: '" + dateString + "'");
 			}
 		}
 
-		Integer fileSize = Integer.valueOf(data.get(Result.Schema.FILESIZE));
+		Integer fileSize = NumberUtils.toInt(data.get(Result.Schema.FILESIZE), 0);
 		String fileType = data.get(Result.Schema.FILETYPE);
-		Integer tier = Integer.valueOf(data.get(Result.Schema.TIER));
-		Integer documentNumber = Integer.valueOf(data.get(Result.Schema.DOCNUM));
+		Integer tier = NumberUtils.toInt(data.get(Result.Schema.TIER), 0);
+		Integer documentNumber = NumberUtils.toInt(data.get(Result.Schema.DOCNUM), 0);
 		
 		Float kmFromOrigin = null;
 		if (data.get(Result.Schema.KM_FROM_ORIGIN) != null) {
@@ -174,13 +176,5 @@ public class ResultFactory {
 		
 		return StringUtils.join(tags, ",");
 	}
-	
-	private static SimpleDateFormat getDateFormatter() {
-		SimpleDateFormat df = dateFormatters.get(Thread.currentThread().getId());
-		if (df == null) {
-			df = new SimpleDateFormat(Result.DATE_PATTERN);
-			dateFormatters.put(Thread.currentThread().getId(), df);
-		}
-		return df;
-	}
+
 }

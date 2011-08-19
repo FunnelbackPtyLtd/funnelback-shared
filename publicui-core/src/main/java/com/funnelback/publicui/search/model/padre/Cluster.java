@@ -63,10 +63,12 @@ public class Cluster {
 		this.href = href;
 		
 		// Extract the query from the query string parameters
-		Matcher m = QUERY_PATTERN.matcher(URLDecoder.decode(href, "UTF-8"));
-		if (m.find()) {
-			query = m.group(1);
-		}
+		if (href != null) {
+			Matcher m = QUERY_PATTERN.matcher(URLDecoder.decode(href, "UTF-8"));
+			if (m.find()) {
+				query = m.group(1);
+			}
+	}
 	}
 	
 	/** Constants for the PADRE XML result packet tags. */
