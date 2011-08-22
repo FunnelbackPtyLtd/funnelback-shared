@@ -41,12 +41,16 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 			String item = entry.getKey().replaceFirst("^http://", "");
 			int count = entry.getValue();
 			if (item.startsWith(url)) {
-				item = item.substring(url.length());
+				// 'v' metadata value is the URI only, without
+				// the host.
+				String vValue = item.replaceFirst("[^/]*/", "");
+				
+				item = item.substring(url.length());				
 				categories.add(new CategoryValue(
 						item,
 						item,
 						count,
-						getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8")));
+						getQueryStringParamName() + "=" + URLEncoder.encode(vValue, "UTF-8")));
 			}
 		}
 		return categories;
