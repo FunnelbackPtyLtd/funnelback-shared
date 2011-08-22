@@ -391,7 +391,7 @@
             <#if count &gt; max><#break></#if>
 
             <#local paramName = val.queryStringParam?split("=")[0] />
-            <#local paramValue = val.queryStringParam?split("=")[1] />
+            <#local paramValue = urlDecode(val.queryStringParam?split("=")[1]) />
             <#local checked = question.selectedCategoryValues[paramName]?exists && question.selectedCategoryValues[paramName]?seq_contains(paramValue) />
             <li>
                 <input type="checkbox" class="fb-facets-value"
