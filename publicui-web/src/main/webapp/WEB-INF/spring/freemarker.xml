@@ -92,6 +92,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.URLDecodeMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.URLDecodeMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod" />
 				</entry>
