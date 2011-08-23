@@ -42,14 +42,15 @@ public class ContentOptimiserRestrictionInterceptor implements
 					.getParameter(RequestParameters.COLLECTION));
 			if (c == null)
 				return true;
+			String adminPort = c.getConfiguration().value(Keys.Urls.ADMIN_PORT);
 			ContentOptimiserUserRestrictions restrictions = new ContentOptimiserUserRestrictions(c.getConfiguration().value(
-					Keys.CONTENT_OPTIMISER_NON_ADMIN_ACCESS));
+					Keys.CONTENT_OPTIMISER_NON_ADMIN_ACCESS),adminPort != null
+					&& (new Integer(request.getLocalPort()).toString())
+					.equals(adminPort));
 			request.setAttribute(ContentOptimiserUserRestrictions.class.getName(),restrictions);
 			
-			String adminPort = c.getConfiguration().value(Keys.Urls.ADMIN_PORT);
-			if (adminPort != null
-					&& (new Integer(request.getLocalPort()).toString())
-							.equals(adminPort)) {
+			
+			if (restrictions.isOnAdminPort()) {
 				// always allow access on the admin port
 				return true;
 			}

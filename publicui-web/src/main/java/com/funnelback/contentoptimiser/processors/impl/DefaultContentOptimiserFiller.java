@@ -104,7 +104,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		recency.add("Ensure that any dates in the page are accurate and that the content is up to date. The recency score for your document is low - this score is determined by date(s) available in your page content.");
 		m.put("recency", recency);
 		List<String> urltype = new ArrayList<String>();
-		urltype.add("The URL type score of your page is low:");
 		urltype.add("Ensure that your page URL does not contain excessive punctuation.");
 		urltype.add("Try moving your page to the sites home page (if it is not already).");
 		urltype.add("Ensure that your page does not contain copyright content.");

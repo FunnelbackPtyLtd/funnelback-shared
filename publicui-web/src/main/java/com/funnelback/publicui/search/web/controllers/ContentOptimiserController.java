@@ -77,13 +77,16 @@ public class ContentOptimiserController {
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
-		
+
+		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
 		Map<String, Object> model = searchController.search(request, question).getModel();
-		boolean allowNonAdminFullAccess = ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminFullAccess();
-		if(allowNonAdminFullAccess) {
+		
+		if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
  			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI() + "?" + request.getQueryString();
 			model.put("nonAdminLink", nonAdminLink);
 		}
+		if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
+		
 		return new ModelAndView(contentOptimiserView, model);
 	}
 	
@@ -96,11 +99,14 @@ public class ContentOptimiserController {
 		}
 		Map<String, Object> model = searchController.search(request, question).getModel();
 		
-		boolean allowNonAdminTextAccess = ((ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName())).isAllowNonAdminTextAccess();
-		if(allowNonAdminTextAccess) {
+		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
+	
+		if(contentOptimiserUserRestrictions.isAllowNonAdminTextAccess()) {
  			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI() + "?" + request.getQueryString();
 			model.put("nonAdminLink", nonAdminLink);
 		}
+		if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
+		
 		return new ModelAndView(contentOptimiserTextView, model);
 	}
 	

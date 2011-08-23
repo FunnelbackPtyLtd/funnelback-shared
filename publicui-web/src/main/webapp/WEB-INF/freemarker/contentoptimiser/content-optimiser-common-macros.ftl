@@ -117,9 +117,9 @@
 	        <#else>
 	        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.
         	</#if>
-        	<#if nonAdminLink??>
+        	<#if nonAdminLink?? && onAdminPort??>
         		You can use <a href="${nonAdminLink}">this link</a> to share this page with non-administrators.
-        	<#else>
+        	<#elseif onAdminPort??>
     			Non administrators cannot see this page.
         	</#if>
       			

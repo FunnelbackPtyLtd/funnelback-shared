@@ -8,7 +8,11 @@ public class ContentOptimiserUserRestrictions {
 	@Getter private final boolean allowNonAdminTextAccess;
 	@Getter private final boolean allowNonAdminFullAccess;
 	
-	public ContentOptimiserUserRestrictions(String nonAdminAccess) {
+	@Getter private final boolean onAdminPort;
+	
+	
+	public ContentOptimiserUserRestrictions(String nonAdminAccess, boolean onAdminPort) {
+		this.onAdminPort = onAdminPort;
 		// work out what level of access non admins have 
 		if (nonAdminAccess != null) {
 			if(Config.isTrue(nonAdminAccess)) {
