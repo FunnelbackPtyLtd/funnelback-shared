@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class ContentHint implements Comparable<ContentHint>{
 	@Getter private final String hintText;
-	@Getter private final double scoreEstimate;
+	@Getter @Setter private double scoreEstimate;
 	@Getter @Setter private int bucket;
 
 	public ContentHint(String hintText, double scoreEstimate, double percentOfDocuments) {

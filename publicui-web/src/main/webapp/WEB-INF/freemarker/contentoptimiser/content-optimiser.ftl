@@ -77,7 +77,6 @@
 		        				var ${hint.name} = new Array();
 		        				featureNames.push('${hint.longName}');
 								<#if response.optimiserModel.selectedDocument?? > var important_${hint.name} = [[${hint.scores[response.optimiserModel.selectedDocument.rank?string]},1]]; </#if>
-				        		var weight_${hint.name} = [[${response.optimiserModel.weights[hint.name]},1]]
 		       	    	</#list>
 			        	
 			        	

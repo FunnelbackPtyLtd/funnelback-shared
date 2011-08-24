@@ -22,6 +22,8 @@ public class DefaultRankingFeatureFactory implements RankingFeatureFactory {
 			return new RankingFeatureMaxPossible(name,category,rp);
 		} else if("max_possible_multiword_only".equals(type)) {
 			return new RankingFeatureMaxPossibleMultiWordOnly(name,category,rp);
+		} else if(RankingFeature.CONSAT.equals(type)) {
+			return new RankingFeatureConstraintsSatisfied(name,category,rp);
 		}
 		log.warn("Unknown feature type in content optimiser : '" + type + "'. Returning max_other");
 		return new RankingFeatureMaxOther(name,category,rp);

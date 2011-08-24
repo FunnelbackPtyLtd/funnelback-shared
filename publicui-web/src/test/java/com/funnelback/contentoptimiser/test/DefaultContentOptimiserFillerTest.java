@@ -49,7 +49,7 @@ public class DefaultContentOptimiserFillerTest {
 		assertNotNull(comparison.getHintsByName().get("urllen"));
 		assertNotNull(comparison.getHintsByName().get("content"));
 		assertNotNull(comparison.getHintsByName().get("imp_phrase"));
-		assertEquals(29,comparison.getHintsByWin().size());
+		assertEquals(30,comparison.getHintsByWin().size());
 		assertNotNull(comparison.getWeights().get("offlink"));
 		
 		f.fillHintCollections(comparison);

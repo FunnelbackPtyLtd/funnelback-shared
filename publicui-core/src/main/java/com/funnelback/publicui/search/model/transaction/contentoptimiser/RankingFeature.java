@@ -9,7 +9,8 @@ import lombok.Getter;
 
 
 public abstract class RankingFeature implements Comparable<RankingFeature> {
-
+	public static final String CONSAT = "zzz_consat";
+	
 	public RankingFeature(String name, String category, String longName) {
 		this.name = name;
 		this.category = category;
@@ -29,7 +30,7 @@ public abstract class RankingFeature implements Comparable<RankingFeature> {
 	
 	@Getter protected float win;
 	protected float maxScore;
-	protected float minScore = 101;
+	protected float minScore = Float.MAX_VALUE;
 
 	public void rememberScore(float score,String rank) {
 		// Set max and min scores for this feature in the hint object

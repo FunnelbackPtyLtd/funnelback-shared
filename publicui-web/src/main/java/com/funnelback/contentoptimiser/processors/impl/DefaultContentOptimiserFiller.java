@@ -32,6 +32,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
@@ -43,6 +44,8 @@ import com.google.common.collect.SetMultimap;
 @Log
 @Component
 public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
+
+
 
 	private static final char[] UNSUPPORTED_QUERY_OPTIONS = new char[] {'"',':','[',']','!','-','+','|','`','*','<','#'};
 	
@@ -62,7 +65,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	
 	// TODO replace with an implementation that gets this from padre's XML
 	private String getCategory(String key) {
-		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox"};
+		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT};
 		Set<String> contentSet = new HashSet<String>(Arrays.asList(content));
 		String[] link = {"offlink","onlink","host_linked_hosts_score","host_click_score","host_linking_hosts_score","host_incoming_link_score"};
 		Set<String> linkSet = new HashSet<String>(Arrays.asList(link));
@@ -183,8 +186,10 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		List<String> content = new ArrayList<String>();
 		content.add("<b class=\"warn\">Content score breakdown unavailable</b>");
 		m.put("content",content);
+		
+		m.put(RankingFeature.CONSAT, new ArrayList<String>());
 
-
+		
 		return m;
 	}
 	
@@ -203,6 +208,11 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			hintsByName.put(nameAndType.getKey(),h);
 			comparison.getHintsByWin().add(h);			
 		}
+		
+		// also include a "consat" ranking feature in case not all constraints were satisfied
+		RankingFeature h = hintFactory.create(RankingFeature.CONSAT,RankingFeature.CONSAT,getCategory(RankingFeature.CONSAT),rp);
+		hintsByName.put(RankingFeature.CONSAT,h);
+		comparison.getHintsByWin().add(h);	
 
 		boolean seenEasterEgg = false;
 		// Fill in results with re-weighted scores
@@ -304,6 +314,16 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				hint.rememberScore(percentage, "" +importantResult.getRank());
 			}
 		}
+		
+		if(importantResult.getTier() != 1) {
+			// this result didn't satisfy all the constraints, so we need to give the consat feature lots of score
+			comparison.getHintsByName().get(RankingFeature.CONSAT).rememberScore(100 * importantResult.getExplain().getConsat(), "" + importantResult.getRank());
+			for(Result r : comparison.getTopResults()) {
+				comparison.getHintsByName().get(RankingFeature.CONSAT).rememberScore(100 * r.getExplain().getConsat(),"" +r.getRank());
+			}
+			comparison.getHintsByName().get(RankingFeature.CONSAT).caculateWin(0, importantResult.getTier());
+			comparison.getWeights().put(RankingFeature.CONSAT, 1.0f);
+		}
 
 		// now calculate the wins for each feature;
 		if(importantResult.getExplain() != null) for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
@@ -391,6 +411,13 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 							metaFreqs.getKey());
 					if(contentHint != null) {
 						if(termFreq != 0) contentHint.setBucket(0);
+						
+						if(comparison.getSelectedDocument().getTier() != 1) {
+							// this document doesn't satisfy all of the constraints
+							if(termFreq == 0 && metaFreqs.getKey().equals("_")) {
+								comparison.getHintsByName().get(RankingFeature.CONSAT).getHintTexts().add(contentHint.getHintText());
+							}
+						}
 						contentHints.add(contentHint);
 					}
 				}
