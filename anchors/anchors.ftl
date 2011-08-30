@@ -41,6 +41,7 @@
 		table, td, th {
 			border: 1px solid #dddddd;
 			border-spacing: 0px;
+            padding: 5px;
 			border-collapse:collapse;
 		}
 		
@@ -60,24 +61,39 @@
 				</ul>
 			</div>     
        	<#else>
-	       	<ul>
-	       		<li><strong>Collection</strong>: <span>${anchors.collection}</span></li>
-	       		<li><strong>Document Number</strong>: <span>${anchors.docNum}</span></li>
-	       		<li><strong>Distilled File</strong>: <span>'${anchors.distilledFileName}'</span></li> 
-				<li><strong>Number of links to document <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection</strong>: <span>${anchors.totalLinks?string.number}</span></li> 
-	       	</ul>
+	    		<p>Showing links to document <a href="${anchors.url}">${anchors.url}</a> in 
+                collection <span>${anchors.collection}</span>:</p>
+  
+	  <!--  Document Number: {anchors.docNum} -->
+	  <!--  Distilled File: ${anchors.distilledFileName} -->
 	       	<table>
+                <thead>
 	       			<th>Link type</th>
 	       			<th>Anchor text</th>
-	       			<th>Number of instances (Internal/External)</th>
-	       		</tr>
+	       			<th>Same-site links</th>
+                    <th>Off-site links</th>
+	       		</thead>
 	       		<#list anchors.anchors as anchor>
 	       			<tr>
-	       				<td style="text-align: center;">${anchor.linkType}</td>
+	       				<td style="text-align: center;">
+                          <#if anchor.linkType == "2" || anchor.linkType == "3">
+                            within server 
+                          <#elseif anchor.linkType == "1">
+                            between related servers
+                          <#elseif anchor.linkType == "0">
+                            between unrelated servers
+                          <#else>
+                            ${anchor.linkType}
+                          </#if>
+                        </td>
 	       				<td><a href="?collection=${anchors.collection?url}&docnum=${anchors.docNum}&anchortext=${anchor.linkAnchorText?url}">${anchor.anchorText}</td>
-	       				<td style="text-align: center;">${anchor.internalLinkCount}/${anchor.externalLinkCount}</td>
+	       				<td style="text-align: center;">${anchor.internalLinkCount}</td>
+                        <td style="text-align: center;">${anchor.externalLinkCount}</td>
 	       			</tr>	
 	       		</#list>
+                    <tfoot>
+                        <td></td><td style="text-align: right;">Total:</td><td style="text-align: center;" colspan="2">${anchors.totalLinks?string.number}</td>
+                    </tfoot>
 	       	</table>
 	     </#if>
     </div>

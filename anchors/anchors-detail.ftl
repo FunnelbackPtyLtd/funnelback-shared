@@ -82,13 +82,10 @@
 				</ul>
 			</div>     
        	<#else>
-	       	<ul>
-	       		<li><strong>Collection</strong>: <span>${anchors.collection}</span></li>
-	       		<li><strong>Document Number</strong>: <span>${anchors.docNum}</span></li>
-	       		<li><strong>Distilled File</strong>: <span>'${anchors.distilledFileName}'</span></li> 
-	       		<li><strong>Anchor text</strong>: <span>${anchors.detail.linkAnchortext}</span></li>
-				<li>Showing documents <strong>${anchors.detail.start?string.number}-${anchors.detail.end?string.number}</strong> of <span>${anchors.detail.size?string.number}</span> total documents linking to <a href="${anchors.url}">${anchors.url}</a> in ${anchors.collection} collection with the anchor text <strong>${anchors.detail.anchortext}</strong></li>	 
-	       	</ul>
+				<p>Showing documents <strong>${anchors.detail.start?string.number}-${anchors.detail.end?string.number}</strong> of <b>${anchors.detail.size?string.number}</b> total documents linking to <a href="${anchors.url}">${anchors.url}</a> in 
+the <span>${anchors.collection}</span> collection with the link text <strong>${anchors.detail.anchortext}</strong></p>	 
+	       		<!-- Document Number: ${anchors.docNum} -->
+	       		<!-- Distilled File: ${anchors.distilledFileName} --> 
  
 			<@pageNumbers/>
 	       	<table style="width: 100%;">
