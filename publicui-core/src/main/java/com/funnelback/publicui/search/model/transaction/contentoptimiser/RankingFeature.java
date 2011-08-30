@@ -15,7 +15,11 @@ public abstract class RankingFeature implements Comparable<RankingFeature> {
 		this.name = name;
 		this.category = category;
 		if(longName != null && !"".equals(longName)) {
-			this.longName = longName.trim().replaceAll(" weight$", " score");
+			if(longName.trim().equals("content weight")) {
+				this.longName = "Funnelback quality score";
+			}else {
+				this.longName = longName.trim().replaceAll(" weight$", " score");
+			}
 		} else {
 			this.longName = name;
 		}

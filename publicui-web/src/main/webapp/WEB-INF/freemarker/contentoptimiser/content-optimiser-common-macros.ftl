@@ -26,13 +26,12 @@
 
 <#macro content_optimiser_loading>
 	<div id="dialog-modal" style="height:200px;">
-		<img style="float: right; top: 25px; position: relative;" src="/search/optimiser-loading.gif" alt="loading">
-		<p>Please be patient - this can take some time.</p>
+		<img style="top: 25px; position: relative; left: 50%; margin-left: -20px;" src="/search/optimiser-loading.gif" alt="loading"/>
 	</div>
  	<script>
  		$(function() {
  			$( "#dialog-modal" ).dialog({
-				title: "Examining the ranking....",
+				title: "Examining the ranking. This will take a few seconds",
 				modal: true,
 				closeOnEscape: false,
 				resizeable: false,
@@ -48,7 +47,9 @@
 <#macro content_optimiser_big_error>
 	<div class="messages">
 		<ul>
-			<li>An error has occured in the content optimiser. Refer to the logs for more information</li>
+			<#if response?? && response.resultPacket?? && response.resultPacket.error??><li>${response.resultPacket.error.userMsg}</li></#if>
+			<li>An error has occured in the content optimiser. 
+			Refer to the logs for more information</li>
 		</ul>			
 	</div>
 </#macro>
@@ -62,6 +63,9 @@
 					 	<#list response.optimiserModel.messages as message>
 					 		<li>${message}</li>	
 					 	</#list>
+					 	<#if response.resultPacket.queryAsProcessed == "">
+					 		<li>No query terms entered</li>
+					 	</#if>
 					</ul>
 				</div>        
 	        </#if>
@@ -70,18 +74,26 @@
 
 <#macro content_optimiser_summary>
         <div class="summary">
-      
-        		<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching documents 
-        		for the query &quot;<b><@s.QueryClean/></b>&quot;: 
-				<#if (response.optimiserModel.topResults?size> 0)>        		
-		    	
+      			<p>Ranking summary:</p>
+        		 
+				<#if (response.optimiserModel.topResults?size> 0) && response.resultPacket.queryAsProcessed != "">        				    	
 		        	<#if (response.optimiserModel.selectedDocument??)>
-						<p>The selected document (<strong style="word-break: break-all;">${response.optimiserModel.selectedDocument.liveUrl}</strong>):
-							<ul>
-								<li>is ranked <span class="highlight">${response.optimiserModel.selectedDocument.rank}</span> in the results </li>
-								<li>is titled <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a>.</li>
-								<li>contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.</li>
-							</ul> 
+						<div style="float: left; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; border: 1px solid; margin-right: 10px; text-align: center; 
+						<#if response.optimiserModel.selectedDocument.rank?number == 1>
+							background-color: #aaffaa; 
+						<#elseif response.optimiserModel.selectedDocument.rank?number < 11>
+							background-color: #ffffaa;
+						<#else>
+							background-color: #ffaaaa;
+						</#if>
+						">
+							<small>Rank</small>
+							<div style="font-size: 30px;">${response.optimiserModel.selectedDocument.rank}</div>
+						</div> 
+						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+        		for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
+						<p>The selected page <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a> 
+						contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.
 						</p>
 						<#if response.optimiserModel.content.termsToStemEquivs?keys?size != 0>
 							<p>Stemming is turned on in the query processor options, causing some of the query terms to match similar words. This means that:
@@ -99,23 +111,23 @@
 							</p>
 							
 						</#if>
-						 <p>
-							 The most common words in the document are <span class="highlight">${response.optimiserModel.content.commonWords}</span>. 
-							 <ul>
-							 	<li>These words should be an indicator of the subject of the document. If the words don't accurately reflect the subject of the document, consider re-wording the document, or preventing sections of the document from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags</li>
-							 </ul> 
-						 </p>
-					 	<p>Funnelback's <a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy of the document is available</a>, and you can also view the <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">anchors information for the document.</a>
+					 	<p><a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy</a> <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">link information</a>
 					 
-					 	You can also <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
+<a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
 			        <#else>
+						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+    		    		for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
 			        	<#if (question.inputParameterMap["optimiser_url"]?? && question.inputParameterMap["optimiser_url"] != "") >
-			        		<p>The selected document (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
+			        		<p>The selected page (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
 			        	</#if>
-			        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.</p>
+			        	<p><a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
 		        	</#if>
 	        <#else>
-	        	<p>You can <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">view the result page from this search</a>.
+				<p>
+					There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+	    			for the query &quot;<b><@s.QueryClean/></b>&quot;:
+	    		</p>
+	        	<p><a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
         	</#if>
         	<#if nonAdminLink?? && onAdminPort??>
         		You can use <a href="${nonAdminLink}">this link</a> to share this page with non-administrators.

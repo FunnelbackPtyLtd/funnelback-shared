@@ -101,10 +101,10 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		onlink.add("Try obtaining more links from within your site. Your site name is everything between the second and third slashes in the URL, so if your URL is http://<b>www.example.com</b>/somewhere/, then your site name is <b>www.example.com</b>. Add links to your content anywhere where the page URL has the same site name as your page.");
 		m.put("onlink",onlink);
 		List<String> qie = new ArrayList<String>();
-		qie.add("The Query Independent Evidence (QIE) score for your document is low. This score is configured by the administrator of your funnelback installation. Ask your administrator how the score is currently calculated and how you can improve it.");
+		qie.add("The Query Independent Evidence (QIE) score for your page is low. This score is configured by the administrator of your funnelback installation. Ask your administrator how the score is currently calculated and how you can improve it.");
 		m.put("qie", qie);
 		List<String> recency = new ArrayList<String>();
-		recency.add("Ensure that any dates in the page are accurate and that the content is up to date. The recency score for your document is low - this score is determined by date(s) available in your page content.");
+		recency.add("Ensure that any dates in the page are accurate and that the content is up to date. The recency score for your page is low - this score is determined by date(s) available in your page content.");
 		m.put("recency", recency);
 		List<String> urltype = new ArrayList<String>();
 		urltype.add("Ensure that your page URL does not contain excessive punctuation.");
@@ -112,7 +112,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		urltype.add("Ensure that your page does not contain copyright content.");
 		m.put("urltype", urltype);
 		List<String> annie = new ArrayList<String>();
-		annie.add("The annotation score for your document is low. This is calculated from features like the link text of links pointing to your page, and search queries where users clicked your page.");
+		annie.add("The annotation score for your page is low. This is calculated from features like the link text of links pointing to your page, and search queries where users clicked your page.");
 		annie.add("Ensure that links to your page contain descriptive link text (eg &quot;<a href=\"#\" onclick=\"return false;\">campus map</a>&quot; instead of &quot;click <a href=\"#\" onclick=\"return false;\">here</a> for the campus map</a>&quot;.");
 		annie.add("Perhaps users are not clicking on your page in response to the query. Ensure that the &lt;meta description&gt; tag and your page title both contain a good description of your page content. Ensure that both tags also contain the search terms that you expect users to be searching for when they want your page.");
 		m.put("annie", annie);
