@@ -73,29 +73,36 @@
 	       			<th>Same-site links</th>
                     <th>Off-site links</th>
 	       		</thead>
+                <#assign totalInternal = 0/>
+                <#assign totalExternal = 0/>
 	       		<#list anchors.anchors as anchor>
 	       			<tr>
 	       				<td style="text-align: center;">
                           <#if anchor.linkType == "2" || anchor.linkType == "3">
-                            within server 
+                            within site 
                           <#elseif anchor.linkType == "1">
-                            between related servers
+                            between related sites
                           <#elseif anchor.linkType == "0">
-                            between unrelated servers
+                            between unrelated sites
+                          <#elseif anchor.linkType == "K">
+                            click associated queries
                           <#else>
                             ${anchor.linkType}
                           </#if>
                         </td>
 	       				<td><a href="?collection=${anchors.collection?url}&docnum=${anchors.docNum}&anchortext=${anchor.linkAnchorText?url}">${anchor.anchorText}</td>
-	       				<td style="text-align: center;">${anchor.internalLinkCount}</td>
-                        <td style="text-align: center;">${anchor.externalLinkCount}</td>
+	       				<td style="text-align: right;">${anchor.internalLinkCount} <#assign totalInternal = totalInternal + anchor.internalLinkCount?number></td>
+                        <td style="text-align: right;">${anchor.externalLinkCount} <#assign totalExternal = totalExternal + anchor.externalLinkCount?number></td>
 	       			</tr>	
 	       		</#list>
                     <tfoot>
-                        <td></td><td style="text-align: right;">Total:</td><td style="text-align: center;" colspan="2">${anchors.totalLinks?string.number}</td>
+                        <td style="text-align: right;" colspan=2>Total:</td>
+                        <td style="text-align: right;">${totalInternal}</td>
+                        <td style="text-align: right;">${totalExternal}</td>
                     </tfoot>
 	       	</table>
 	     </#if>
+          <p><a href="javascript:history.go(-1);">return to previous page</a></p>
     </div>
 </body>
 </html>
