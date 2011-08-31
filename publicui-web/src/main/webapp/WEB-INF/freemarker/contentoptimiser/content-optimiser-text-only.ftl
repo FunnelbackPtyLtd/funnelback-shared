@@ -28,14 +28,13 @@
 			<#elseif response.resultPacket.queryAsProcessed == "">
 			    <@content_optimiser_warnings/>
 			<#else>
-				
 		        <@content_optimiser_warnings/>
 		               
 				<@content_optimiser_summary/>
 		           
 				<#if response.optimiserModel.selectedDocument??>
 					<div class="section">
-						<p>Consider the following steps to optimise the ranking of this page:</p> 
+						<h4>Step-by-step Guide to Optimise Ranking</h4> 
 					</div>
 						<ol>
 					    	<#list response.optimiserModel.hintsByWin as hint>
@@ -51,13 +50,14 @@
 						 	</li>
 						</ol>
 				</#if>
-		
+				<@content_optimiser_stemming/>
 			    <div style="clear: both;" class="section">
-			    	<p style="margin-bottom: 2px;">Optimise another page:</p>
+			    	<h4>Optimise Another Page</h4>
 			    	<@content_optimiser_requery/>
 			 	</div>
 			</#if>
 		</div>
+		
 		<@content_optimiser_loading/>	
 	</body>
 	

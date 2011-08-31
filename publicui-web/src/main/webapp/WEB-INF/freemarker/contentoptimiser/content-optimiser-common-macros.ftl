@@ -31,11 +31,13 @@
  	<script>
  		$(function() {
  			$( "#dialog-modal" ).dialog({
-				title: "Examining the ranking. This will take a few seconds",
+				title: "Examining the ranking. This will take several seconds...",
 				modal: true,
 				closeOnEscape: false,
 				resizeable: false,
-				autoOpen: false
+				autoOpen: false,
+				minWidth: 600
+				
 			});
 			$("form").submit(function() {
 				$( "#dialog-modal" ).dialog('open');
@@ -71,10 +73,30 @@
 	        </#if>
 	    </#if>
 </#macro>
+<#macro content_optimiser_stemming>
+	<#if response.optimiserModel.content.termsToStemEquivs?keys?size != 0>
+		<div class="section" style="clear: both;">
+			<h4>Note</h4>
+			<p>Stemming is enabled in the query processor options, causing some of the query terms to match similar words. This means that:
+			<ul>
+				<#list response.optimiserModel.content.termsToStemEquivs?keys as key>
+					<li>The terms [
+							<#list response.optimiserModel.content.termsToStemEquivs[key] as word>
+								<span class="highlight">${word}</span> 
+							</#list> 
+							]
+						are counted as matching <span class="highlight">${key}</span>
+					</li>
+				</#list>
+			</ul>
+			</p>				
+		</div>			
+	</#if>
+</#macro>
 
 <#macro content_optimiser_summary>
         <div class="summary">
-      			<p>Ranking summary:</p>
+      			<h4>Ranking Summary:</h4>
         		 
 				<#if (response.optimiserModel.topResults?size> 0) && response.resultPacket.queryAsProcessed != "">        				    	
 		        	<#if (response.optimiserModel.selectedDocument??)>
@@ -90,44 +112,31 @@
 							<small>Rank</small>
 							<div style="font-size: 30px;">${response.optimiserModel.selectedDocument.rank}</div>
 						</div> 
-						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
-        		for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
-						<p>The selected page <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a> 
+						<p>The selected page, <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a>, 
 						contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.
 						</p>
-						<#if response.optimiserModel.content.termsToStemEquivs?keys?size != 0>
-							<p>Stemming is turned on in the query processor options, causing some of the query terms to match similar words. This means that:
-							<ul>
-								<#list response.optimiserModel.content.termsToStemEquivs?keys as key>
-									<li>The terms [
-											<#list response.optimiserModel.content.termsToStemEquivs[key] as word>
-												<span class="highlight">${word}</span> 
-											</#list> 
-											]
-										are counted as matching <span class="highlight">${key}</span>
-									</li>
-								</#list>
-							</ul>
-							</p>
-							
-						</#if>
-					 	<p><a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy</a> <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">link information</a>
-					 
-<a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
+						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+        				for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
+					
+					 	<p>You can also view Funnelback's <a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy</a>,
+					 	view the <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">link information</a> for the page;
+					 	or view the 
+						<a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this query</p>
 			        <#else>
 						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
     		    		for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
 			        	<#if (question.inputParameterMap["optimiser_url"]?? && question.inputParameterMap["optimiser_url"] != "") >
 			        		<p>The selected page (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
 			        	</#if>
-			        	<p><a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
+			        	<p>
+			        	You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this search</p>
 		        	</#if>
 	        <#else>
 				<p>
 					There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
 	    			for the query &quot;<b><@s.QueryClean/></b>&quot;:
 	    		</p>
-	        	<p><a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a></p>
+	        	<p>You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this query</p>
         	</#if>
         	<#if nonAdminLink?? && onAdminPort??>
         		You can use <a href="${nonAdminLink}">this link</a> to share this page with non-administrators.

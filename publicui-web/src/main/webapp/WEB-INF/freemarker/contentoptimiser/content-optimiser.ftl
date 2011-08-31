@@ -42,15 +42,12 @@
 		<#elseif response.resultPacket.queryAsProcessed == "">
 		    <@content_optimiser_warnings/>
 		<#else>
-		
-	        
-	        
 	        <@content_optimiser_warnings/>
 	
 			<@content_optimiser_summary/>
 			<#if (response.optimiserModel.topResults?size > 0)>
 				<div class="section"">
-					<p>Top ranking breakdown:</p>
+					<h4>Top Ranking Breakdown</h4>
 			           
 			        <script type="text/javascript">
 						var featureNames = new Array();
@@ -280,10 +277,17 @@
 				<#if response.optimiserModel.selectedDocument??>
 					<div class="section">
 						<p>The relative weights of the ranking features above are controlled by the administrator of your search system. If they appear to be incorrect, consider asking the search administrator to tune the ranking weightings.</p>
-						<p>Here is a breakdown of the best ways to improve the ranking of the selected page. Categories are sorted by the potential improvement to the ranking - so improvement suggestions listed first will be the most effective. Red lines in the graphs indicate the current score for the selected document.</p> 
+ 
 					</div>
+					<#assign first=1/>
+					<#assign suggestionsStartAt=1/>
 					<#list response.optimiserModel.hintCollections as hc>
+						
 					    <div class="section" style="clear: both;">
+					    	<#if first ==1 >
+					    		<h4>Step-by-step Guide to Optimise Ranking</h4>
+					    		<#assign first=0/>
+					    	</#if> 
 					    	<div style="float: left; width:420px;">
 					    		<#if (hc.win <= 0) && hc.name != "content">
 					    			<p class="tip">The content optimiser can't see an easy way to improve the ${hc.name} features</p>
@@ -294,13 +298,15 @@
 								    		<#if (hint.hintTexts?size > 0) && (hint.win > 0)>
 								    			
 										        	<#list hint.hintTexts as text>
-										        		<li style="text-align: justify;">${text}</li>
+										        		<li style="text-align: justify;" value=${suggestionsStartAt}>${text}</li>
+										        		<#assign suggestionsStartAt = suggestionsStartAt+1/>
 										        	</#list>
-									        
+									        		
 								       		</#if>
 										</#list>
 										<#if hc.name == "content">
-									      	<li style="text-align: justify;">
+									      	<li style="text-align: justify;" value=${suggestionsStartAt}>
+									      	       		<#assign suggestionsStartAt = suggestionsStartAt+1/>
 											 The most common words in the page are <span class="highlight">${response.optimiserModel.content.commonWords}</span>.
 											 These words should be an indicator of the subject of the page. If the words don't accurately reflect the subject of the page, consider re-wording the page, or preventing sections of the page from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags.
 										 	</li>
@@ -309,9 +315,10 @@
 								</#if>
 							</div>   				
 					    	<div style="float: right; width:350px;">
-					    		<#assign shownHide = 0>
+					    		<#assign shownHide = 0/>
 					    		<h4 style="text-align: center;" <#if (hc.win <= 0)>class="tip"</#if>>Individual features</h4>
 							    <#list hc.hints as hint>
+
 							    	<#if (hint.win <= 0)>
 							    		<#if shownHide == 0>
 							    			<div class="boring-${hc_index} tip" style="display: none;">Several unimprovable features hidden. 
@@ -320,15 +327,18 @@
 							    			<div class="boring-${hc_index} tip">The features below are unimprovable. 
 							    				<a href="hide features" onclick="$('.boring-${hc_index}').toggle(); return false;">Hide features</a>
 							    			</div>
-							    			<#assign shownHide =1>
+							    			<#assign shownHide =1/>
 							    		</#if>
+							    		
 					    				<div class="boring-${hc_index}">
 					    			</#if>
 							    	<div class="jqPlot" id="plot-${hint.name}" style="height:300px; width:350px;"></div>
+						    		<p class="tip" style="padding-top: 0px; margin-top: 0px; padding-left: 70px;"><img src="${ContextPath}/content-optimiser/red-bar.png"/> Score of selected page</p>
 							    	<#if (hint.win <= 0)>
 							    		</div>
 							    	</#if>
 							    </#list>
+
 							    <script type="text/javascript">
 							    	// Start the features hidden.
 							    	$(function() {
@@ -340,8 +350,9 @@
 				   </#list>
 		        </#if>
 		    </#if>
+		    <@content_optimiser_stemming/>
 	     	<div style="clear: both;" class="section">
-	        		<p style="margin-bottom: 2px;">Optimise another page:</p>
+	        		<h4>Optimise Another Page</p>
 	               <@content_optimiser_requery/>
 	        </div>
 		</div>
