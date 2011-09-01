@@ -70,8 +70,8 @@
                 <thead>
 	       			<th>Link type</th>
 	       			<th>Anchor text</th>
-	       			<th>Same-site links</th>
-                    <th>Off-site links</th>
+	       			<th>Within-collection links</th>
+                    <th>External links</th>
 	       		</thead>
                 <#assign totalInternal = 0/>
                 <#assign totalExternal = 0/>
