@@ -1,11 +1,17 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.SneakyThrows;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +47,10 @@ public class ContentOptimiserController {
 	
 	@Resource(name="contentOptimiserTextView")
 	private FreeMarkerView contentOptimiserTextView;
+
+	@Resource(name="contentOptimiserLoadingView")
+	private FreeMarkerView contentOptimiserLoadingView;
+
 	
 	@Autowired
 	private SearchController searchController;
@@ -113,7 +123,7 @@ public class ContentOptimiserController {
 
 	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
 	public ModelAndView collectionNoQuery(HttpServletRequest request) {
-			return kickoff(request);
+		return kickoff(request);
 	}
 	
 	@RequestMapping(value="/optimise.html") 
@@ -130,5 +140,22 @@ public class ContentOptimiserController {
 		return new ModelAndView(contentOptimiserKickoffView,m);
 	}
 	
+	@RequestMapping(value="/runOptimiser.html")
+	@SneakyThrows(UnsupportedEncodingException.class)
+	public ModelAndView loadingScreen(HttpServletRequest request) {
+		Map<String, Object> model = new HashMap<String,Object>();
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("optimise.html?");
+	    for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
+	    	String key = e.nextElement();
+	        sb.append(key);
+	    	sb.append("=");
+	    	sb.append(URLEncoder.encode(request.getParameter(key),"UTF-8"));
+	    	sb.append("&");
+	    }
+	    model.put("urlToLoad", sb.toString());
+		return new ModelAndView(contentOptimiserLoadingView,model);
+	}
 
 }

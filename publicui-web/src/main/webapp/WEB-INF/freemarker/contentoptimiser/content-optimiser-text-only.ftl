@@ -12,9 +12,7 @@
 		<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
 		<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
 	</head>
-	
 	<body>
-		
 	    <div id="content-optimiser-pane">
 	        <div style="margin-bottom: 15px;">
 	        	<h3 class="header">	Content Optimiser</h3>
@@ -57,8 +55,6 @@
 			 	</div>
 			</#if>
 		</div>
-		
-		<@content_optimiser_loading/>	
 	</body>
 	
 </html>

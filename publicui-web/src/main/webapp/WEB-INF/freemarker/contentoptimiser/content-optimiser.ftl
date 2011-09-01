@@ -231,7 +231,7 @@
 				                	</td> 
 				                	<td>
 				                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.optimiserModel.selectedDocument?? && urlinfo.rank == response.optimiserModel.selectedDocument.rank> background-color: #ffaaaa; </#if> ">	                			
-				                			<a onclick="$('#dialog-modal').dialog('open');" href="?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
+				                			<a href="runOptimiser.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
 					                			${urlinfo.title} 
 				                			</a>
 				                			
@@ -267,7 +267,7 @@
 					</div>
 				</#if>
 		
-				<div class="section">
+				<div class="section">kickoff
 				    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 					<div id="legend"></div>
 					
@@ -352,13 +352,12 @@
 		    </#if>
 		    <@content_optimiser_stemming/>
 	     	<div style="clear: both;" class="section">
-	        		<h4>Optimise Another Page</p>
+	        		<h4>Optimise Another Page</h4>
 	               <@content_optimiser_requery/>
 	        </div>
 		</div>
 	</#if>
 	</div>
-	<@content_optimiser_loading/>
 	<div id="chartpseudotooltip" style="display: none;"></div>               
 </body>
 

@@ -2,7 +2,7 @@
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 
 <#macro content_optimiser_requery>
-	<form method="GET" action="optimise.html">
+	<form method="GET" action="runOptimiser.html">
 		<div class="requery_line">
 			<label>Query</label> <input type="text"  tabindex="1" class="query"  name="query" value="<@s.QueryClean/>"/>
 		</div>
@@ -24,28 +24,6 @@
 	</form>
 </#macro>
 
-<#macro content_optimiser_loading>
-	<div id="dialog-modal" style="height:200px;">
-		<img style="top: 25px; position: relative; left: 50%; margin-left: -20px;" src="/search/optimiser-loading.gif" alt="loading"/>
-	</div>
- 	<script>
- 		$(function() {
- 			$( "#dialog-modal" ).dialog({
-				title: "Examining the ranking. This will take several seconds...",
-				modal: true,
-				closeOnEscape: false,
-				resizeable: false,
-				autoOpen: false,
-				minWidth: 600
-				
-			});
-			$("form").submit(function() {
-				$( "#dialog-modal" ).dialog('open');
-			});
-		});		
- 	</script>
-</#macro>
-
 <#macro content_optimiser_big_error>
 	<div class="messages">
 		<ul>
@@ -55,7 +33,6 @@
 		</ul>			
 	</div>
 </#macro>
-
 
 <#macro content_optimiser_warnings>
 		<#if response??>
@@ -73,6 +50,7 @@
 	        </#if>
 	    </#if>
 </#macro>
+
 <#macro content_optimiser_stemming>
 	<#if response.optimiserModel.content.termsToStemEquivs?keys?size != 0>
 		<div class="section" style="clear: both;">

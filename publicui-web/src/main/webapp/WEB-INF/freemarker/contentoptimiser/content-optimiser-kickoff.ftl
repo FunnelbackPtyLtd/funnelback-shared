@@ -67,5 +67,4 @@
 			<@content_optimiser_requery/>
 		</div>
  	</div>
- 		<@content_optimiser_loading/> 
 </body></html>
