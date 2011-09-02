@@ -50,6 +50,7 @@
 					<h4>Top Ranking Breakdown</h4>
 			           
 			        <script type="text/javascript">
+			        	var graphsDone = 0;
 						var featureNames = new Array();
 			        	function showTip (ev, seriesIndex, pointIndex, data ) {
 						    mouseX = ev.pageX; //these are going to be how jquery knows where to put the div that will be our tooltip
@@ -216,8 +217,9 @@
 				    			<#assign idx = idx+1/>
 							</#list>
 							
-						
+								graphsDone = 1;
 							});
+							
 			        </script>
 			
 			        <table>
