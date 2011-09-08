@@ -56,17 +56,17 @@
 		<div class="section" style="clear: both;">
 			<h4>Note</h4>
 			<p>Stemming is enabled in the query processor options, causing some of the query terms to match similar words. This means that:
-			<ul>
-				<#list response.optimiserModel.content.termsToStemEquivs?keys as key>
-					<li>The terms [
-							<#list response.optimiserModel.content.termsToStemEquivs[key] as word>
-								<span class="highlight">${word}</span> 
-							</#list> 
-							]
-						are counted as matching <span class="highlight">${key}</span>
-					</li>
-				</#list>
-			</ul>
+				<ul>
+					<#list response.optimiserModel.content.termsToStemEquivs?keys as key>
+						<li>The terms [
+								<#list response.optimiserModel.content.termsToStemEquivs[key] as word>
+									<span class="highlight">${word}</span> 
+								</#list> 
+								]
+							are counted as matching <span class="highlight">${key}</span>
+						</li>
+					</#list>
+				</ul>
 			</p>				
 		</div>			
 	</#if>
@@ -107,14 +107,14 @@
 			        		<p>The selected page (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
 			        	</#if>
 			        	<p>
-			        	You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this search</p>
+			        	You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&amp;collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.profile?url}">result page</a> from this search</p>
 		        	</#if>
 	        <#else>
 				<p>
 					There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
 	    			for the query &quot;<b><@s.QueryClean/></b>&quot;:
 	    		</p>
-	        	<p>You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this query</p>
+	        	<p>You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&amp;collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.profile?url}">result page</a> from this query</p>
         	</#if>
         	<#if nonAdminLink?? && onAdminPort??>
         		You can use <a href="${nonAdminLink}">this link</a> to share this page with non-administrators.

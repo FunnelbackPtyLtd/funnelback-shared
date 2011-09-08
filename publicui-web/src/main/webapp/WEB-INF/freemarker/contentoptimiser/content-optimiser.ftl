@@ -9,17 +9,18 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9">
 		
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasTextRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.barRenderer.min.js"></script>
+
 	<!--[if IE]>
-   		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/excanvas.js"></script>
+   		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/excanvas.js"></script>
 	<![endif]-->
-	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
+	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
 	
 	<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
@@ -46,7 +47,7 @@
 	
 			<@content_optimiser_summary/>
 			<#if (response.optimiserModel.topResults?size > 0)>
-				<div class="section"">
+				<div class="section">
 					<h4>Top Ranking Breakdown</h4>
 			           
 			        <script type="text/javascript">
@@ -233,7 +234,7 @@
 				                	</td> 
 				                	<td>
 				                		<div style="overflow: hidden; white-space: nowrap; width: 300px; height: 43px;<#if urlinfo_index == 0> padding-top: 20px; </#if><#if response.optimiserModel.selectedDocument?? && urlinfo.rank == response.optimiserModel.selectedDocument.rank> background-color: #ffaaaa; </#if> ">	                			
-				                			<a href="runOptimiser.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}&optimiser_url=${urlinfo.liveUrl?url}&advanced=1"> 
+				                			<a href="runOptimiser.html?query=${question.inputParameterMap["query"]?url}&amp;collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.profile?url}&amp;optimiser_url=${urlinfo.liveUrl?url}&amp;advanced=1"> 
 					                			${urlinfo.title} 
 				                			</a>
 				                			
@@ -359,7 +360,7 @@
 	        </div>
 		</div>
 	</#if>
-	</div>
+
 	<div id="chartpseudotooltip" style="display: none;"></div>               
 </body>
 

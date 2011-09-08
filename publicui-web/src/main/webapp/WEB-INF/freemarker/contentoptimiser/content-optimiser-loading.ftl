@@ -9,17 +9,17 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9">
 		
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasTextRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/plugins/jqplot.barRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/plugins/jqplot.barRenderer.min.js"></script>
 	<!--[if IE]>
-   		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/excanvas.js"></script>
+   		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/excanvas.js"></script>
 	<![endif]-->
-	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0a/jquery.jqplot.min.css"/>
+	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
 	
 	<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
@@ -42,18 +42,8 @@
 		    	</div>
 		    </div>
         	<p id="error" style="color: #ff0000; text-align: center;"></p>
-        <script>
-        	$(function() {
-        		$("body").load("${urlToLoad}",
-        			function(response, status, xhr) {
-	  					if (status == "error") {
-	  						$("#loading").hide();
-	    					$("#error").html("The content optimiser encountered the following error: " + xhr.status + " " + xhr.statusText);
-	  					}
-  					}
-  				);
-			});
-        </script>
         </div>
+        <meta http-equiv="refresh" content="0; url=${urlToLoad}">
 </body>
+
 </#compress	>

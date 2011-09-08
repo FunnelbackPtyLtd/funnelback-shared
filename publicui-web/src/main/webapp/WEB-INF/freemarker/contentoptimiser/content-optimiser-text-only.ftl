@@ -9,8 +9,7 @@
 		<meta charset="utf-8" />
 		<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
 		<title>Funnelback Content Optimiser</title>
-		<script type="text/javascript" src="/search/js/jquery/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="/search/js/jquery/jquery-ui-1.8.14.dialog-only.min.js"></script>
+		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jquery-1.6.2.min.js"></script>
 	</head>
 	<body>
 	    <div id="content-optimiser-pane">

@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.web.controllers;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +88,10 @@ public class ContentOptimiserController {
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
+		long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
+		if(timeDiff < 0 ) {
+			return buildLoadingScreen(request);
+		}
 
 		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
 		Map<String, Object> model = searchController.search(request, question).getModel();
@@ -107,6 +112,11 @@ public class ContentOptimiserController {
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
+		long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
+		if(timeDiff < 0 ) {
+			return buildLoadingScreen(request);
+		}
+		
 		Map<String, Object> model = searchController.search(request, question).getModel();
 		
 		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
@@ -141,19 +151,31 @@ public class ContentOptimiserController {
 	}
 	
 	@RequestMapping(value="/runOptimiser.html")
-	@SneakyThrows(UnsupportedEncodingException.class)
+
 	public ModelAndView loadingScreen(HttpServletRequest request) {
+		return buildLoadingScreen(request);
+	}
+
+	@SneakyThrows(UnsupportedEncodingException.class)
+	public ModelAndView buildLoadingScreen(HttpServletRequest request) {
 		Map<String, Object> model = new HashMap<String,Object>();
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("optimise.html?");
 	    for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
 	    	String key = e.nextElement();
+	    	if(key.equals("optimiser_ts")) continue;
+	    	
 	        sb.append(key);
 	    	sb.append("=");
 	    	sb.append(URLEncoder.encode(request.getParameter(key),"UTF-8"));
 	    	sb.append("&");
 	    }
+	    
+	    sb.append("optimiser_ts=");
+	    sb.append(Calendar.getInstance().getTimeInMillis());
+	     
+	    	
 	    model.put("urlToLoad", sb.toString());
 		return new ModelAndView(contentOptimiserLoadingView,model);
 	}
