@@ -27,6 +27,8 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorDetail;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.utils.PanLook;
+import com.funnelback.utils.PanLookFactory;
 
 @Log
 @Component
@@ -35,6 +37,9 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 	@Autowired
 	File searchHome;
 
+	@Autowired 
+	public PanLookFactory panLookFactory;
+	
 	@Autowired @Setter
 	I18n i18n;
 	
@@ -97,32 +102,26 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 		File distilledFile = new File(indexStem.getAbsolutePath() + ".distilled");
 		model.setDistilledFileName(distilledFile.toString()); 
 		
-		ByteArrayOutputStream panLookOutput = new ByteArrayOutputStream(); 
-		callPanLook(model, formattedDocnum, distilledFile, panLookOutput);
+		PanLook panLookOutput = callPanLook(model, formattedDocnum, distilledFile);
 		model.setUrl(getUrlFromDocnum(model,formattedDocnum,indexStem));
-		return parseAnchorsToMap(model, panLookOutput);
+		if(panLookOutput != null) {
+			return parseAnchorsToMap(model, panLookOutput);
+		} else {
+			return new HashMap<String,AnchorDescription>();
+		}
 	}
 
-	private void callPanLook(AnchorModel model, String formattedDocnum,
-			File distilledFile, ByteArrayOutputStream anchorsOutput) {
-		Executor getAnchors = new DefaultExecutor();
-		File panlook = new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + DefaultValues.PANLOOK_BINARY);
-		CommandLine clAnchors = new CommandLine(panlook);
-		
-		clAnchors.addArgument(formattedDocnum);
-		clAnchors.addArgument(distilledFile.toString());
-		getAnchors.setStreamHandler(new PumpStreamHandler(anchorsOutput, null));
+	private PanLook callPanLook(AnchorModel model, String formattedDocnum,
+			File distilledFile) {
+		PanLook panLook = null;
 		try {
-			getAnchors.execute(clAnchors);
-		} catch (ExecuteException e) {
-			model.setError(i18n.tr("anchors.execute.panlook.failed"));
-			log.error("Execute exception when calling pan-look: ", e);
-			return;
-		} catch (IOException e) {
+			panLook = panLookFactory.getPanLook(distilledFile, formattedDocnum);
+		} catch (IOException e1) {
 			model.setError(i18n.tr("anchors.execute.panlook.io.exception"));
-			log.error("I/O exception when calling pan-look: ",e);
-			return;
+			log.error("I/O exception when calling pan-look: ",e1);
+			return null;
 		}
+		return panLook;
 	}
 	
 	private String getUrlFromDocnum(AnchorModel model, String formattedDocnum,File indexStem) {
@@ -152,16 +151,13 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 	}
 
 	public Map<String, AnchorDescription> parseAnchorsToMap(AnchorModel model,
-			ByteArrayOutputStream anchorsOutput) {
-		String[] A = anchorsOutput.toString().split(System.getProperty("line.separator")); // this is the part to change if this gets too slow - sometimes the output can be very large
+			Iterable<String> anchorsOutput) {
 		Pattern p = Pattern.compile("([\\d]+) ([-\\d]+) (.+)");
 		Map<String,AnchorDescription> anchors = new HashMap<String,AnchorDescription>();
-		
-		for(String line : A) {
+		for(String line : anchorsOutput) {
 			Matcher m = p.matcher(line);
 			if(m.matches()) {
 				String anchorText = AnchorDescription.cleanAnchorText(m.group(3));
-
 				if(! anchors.containsKey(anchorText)) {
 					anchors.put(anchorText, new AnchorDescription(anchorText));
 				}

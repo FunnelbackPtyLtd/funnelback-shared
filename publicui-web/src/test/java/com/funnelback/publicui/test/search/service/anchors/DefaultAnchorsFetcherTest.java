@@ -1,6 +1,5 @@
 package com.funnelback.publicui.test.search.service.anchors;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +24,6 @@ import com.funnelback.publicui.search.service.anchors.DefaultAnchorsFetcher;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultAnchorsFetcherTest {
 
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	
 	@Autowired
 	private I18n i18n;
 	
@@ -35,8 +32,8 @@ public class DefaultAnchorsFetcherTest {
 		AnchorModel model = new AnchorModel();
 		DefaultAnchorsFetcher fetcher = new DefaultAnchorsFetcher();
 		fetcher.setI18n(i18n);
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		stream.write(("this is a bad line"+LINE_SEPARATOR).getBytes());
+		ArrayList<String> stream = new ArrayList<String>();
+		stream.add(("this is a bad line"));
 		
 		fetcher.parseAnchorsToMap(model,stream);
 		Assert.assertEquals("anchors.parse.failed",model.getError());
@@ -47,14 +44,14 @@ public class DefaultAnchorsFetcherTest {
 		AnchorModel model = new AnchorModel();
 		DefaultAnchorsFetcher fetcher = new DefaultAnchorsFetcher();
 		fetcher.setI18n(i18n);
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		ArrayList<String> stream = new ArrayList<String>(); 
 	
-		stream.write(("00000001 00000002 [k0]three times anchortext"+LINE_SEPARATOR).getBytes());
-		stream.write(("00000001 00000003 [k0]three  times  anchortext"+LINE_SEPARATOR).getBytes());
-		stream.write(("00000001 00000004 [k0]three   times   anchortext   "+LINE_SEPARATOR).getBytes());
-		stream.write(("00000001 00000005 [k1]three   times   anchortext   "+LINE_SEPARATOR).getBytes());
-		stream.write(("00000001 -00000001 [K]click associated query"+LINE_SEPARATOR).getBytes());
-		stream.write(("00000001 00000000 [k1]one time anchortext"+LINE_SEPARATOR).getBytes());
+		stream.add("00000001 00000002 [k0]three times anchortext");
+		stream.add("00000001 00000003 [k0]three  times  anchortext");
+		stream.add("00000001 00000004 [k0]three   times   anchortext   ");
+		stream.add("00000001 00000005 [k1]three   times   anchortext   ");
+		stream.add("00000001 -00000001 [K]click associated query");
+		stream.add("00000001 00000000 [k1]one time anchortext");
 
 		
 		Map<String,AnchorDescription> m = fetcher.parseAnchorsToMap(model, stream);
