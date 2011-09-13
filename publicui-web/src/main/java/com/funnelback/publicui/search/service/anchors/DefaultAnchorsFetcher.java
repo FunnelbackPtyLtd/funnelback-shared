@@ -138,10 +138,10 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 			getUrl.execute(clAnchors);
 		} catch (ExecuteException e) {
 			model.setError(i18n.tr("anchors.execute.geturl.failed"));
-			log.error("Execute exception when calling pan-look: ", e);
+			log.error("Execute exception when calling get_url_from_docnum: ", e);
 		} catch (IOException e) {
 			model.setError(i18n.tr("anchors.execute.geturl.io.exception"));
-			log.error("I/O exception when calling pan-look: ",e);
+			log.error("I/O exception when calling get_url_from_docnum: ",e);
 		}
 		String url = getUrlOutput.toString();
 		if(url.indexOf("://") == -1) {
