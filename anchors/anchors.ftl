@@ -95,11 +95,13 @@
                         <td style="text-align: right;">${anchor.externalLinkCount} <#assign totalExternal = totalExternal + anchor.externalLinkCount?number></td>
 	       			</tr>	
 	       		</#list>
-                    <tfoot>
+                <tfoot>
+                    <tr>
                         <td style="text-align: right;" colspan=2>Total:</td>
                         <td style="text-align: right;">${totalInternal}</td>
                         <td style="text-align: right;">${totalExternal}</td>
-                    </tfoot>
+                    </tr>
+                </tfoot>
 	       	</table>
 	     </#if>
           <p><a href="javascript:history.go(-1);">return to previous page</a></p>
