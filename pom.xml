@@ -8,18 +8,18 @@
 	<name>Modern UI for Funnelback - Parent</name>
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://jira.funnelback.com/browse/FUN</url>
+		<url>https://jira.cbr.au.funnelback.com/browse/FUN</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>http://jenkins.funnelback.com/job/funnelback-publicui</url>
+		<url>http://jenkins.cbr.au.funnelback.com/job/funnelback-publicui</url>
 	</ciManagement>
 	<inceptionYear>2011</inceptionYear>
 	<scm>
-		<connection>scm:svn:https://svn.funnelback.com/svn/enterprise-search/trunk/java/publicui</connection>
-		<developerConnection>scm:svn:https://svn.funnelback.com/svn/enterprise-search/trunk/java/publicui</developerConnection>
+		<connection>scm:svn:https://svn.cbr.au.funnelback.com/svn/enterprise-search/trunk/java/publicui</connection>
+		<developerConnection>scm:svn:https://svn.cbr.au.funnelback.com/svn/enterprise-search/trunk/java/publicui</developerConnection>
 		<tag>HEAD</tag>
-		<url>http://svn.funnelback.com/websvn/listing.php?repname=enterprise-search&amp;path=/trunk/java/publicui/</url>
+		<url>http://svn.cbr.au.funnelback.com/websvn/listing.php?repname=enterprise-search&amp;path=/trunk/java/publicui/</url>
 	</scm>
 	<organization>
 		<name>Funnelback</name>
@@ -232,11 +232,11 @@
 	<distributionManagement>
 		<repository>
 			<id>funnelback-releases</id>
-			<url>http://maven-repo.funnelback.com:8081/nexus/content/repositories/releases</url>
+			<url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>funnelback-snapshots</id>
-			<url>http://maven-repo.funnelback.com:8081/nexus/content/repositories/snapshots</url>
+			<url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
