@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -28,10 +27,10 @@ import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.Explain;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamParserTests {

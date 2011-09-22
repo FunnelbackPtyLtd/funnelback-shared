@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -157,11 +156,13 @@ public class ContentOptimiserController {
 	}
 
 	@SneakyThrows(UnsupportedEncodingException.class)
+	@SuppressWarnings("unchecked") // because request.getParameterNames() returns Enumeration not Enumeration<String>
 	public ModelAndView buildLoadingScreen(HttpServletRequest request) {
 		Map<String, Object> model = new HashMap<String,Object>();
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("optimise.html?");
+
 	    for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
 	    	String key = e.nextElement();
 	    	if(key.equals("optimiser_ts")) continue;

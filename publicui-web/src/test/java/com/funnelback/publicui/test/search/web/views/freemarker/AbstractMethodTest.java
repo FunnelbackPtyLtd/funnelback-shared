@@ -17,7 +17,6 @@ import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMetho
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 

@@ -1,7 +1,5 @@
 package com.funnelback.publicui.test.mock;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -33,6 +33,7 @@ public class MetaInfoFetcherTest {
 	private Set<String> mustExist;
 	private Profile profile;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws FileNotFoundException {
 		c = new Collection("data-repository",

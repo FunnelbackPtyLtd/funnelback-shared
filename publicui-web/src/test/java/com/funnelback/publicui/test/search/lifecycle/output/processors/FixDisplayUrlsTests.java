@@ -1,15 +1,11 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixDisplayUrls;

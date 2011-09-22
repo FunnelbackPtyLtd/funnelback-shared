@@ -2,7 +2,6 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;

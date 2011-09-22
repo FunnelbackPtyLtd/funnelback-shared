@@ -3,8 +3,6 @@ package com.funnelback.publicui.test.mock;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.Getter;
 
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
