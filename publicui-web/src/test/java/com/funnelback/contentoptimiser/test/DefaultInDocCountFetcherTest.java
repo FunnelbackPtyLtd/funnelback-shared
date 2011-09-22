@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.PropertyConfigurator;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +35,13 @@ public class DefaultInDocCountFetcherTest {
 
 	@Autowired
 	private I18n i18n;
-	
+
 	@Test
 	public void testSeriousError() throws FileNotFoundException, EnvironmentVariableException {
+		Properties properties = new Properties();
+		properties.put("log4j.rootLogger","FATAL");
+		PropertyConfigurator.configure(properties);
+		
 		DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
 		ContentOptimiserModel comparison = new ContentOptimiserModel();
 		Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));
@@ -148,7 +155,7 @@ public class DefaultInDocCountFetcherTest {
 			@Override
 			public PanLook getPanLookForLex(File sortedFile, String word)
 					throws IOException {
-				throw new IOException("Kaboom!");
+				throw new IOException("This is an expected exception during the test!");
 			}
 			
 			@Override
