@@ -220,7 +220,7 @@ public class ResultPacket {
 				ArrayList<ResultType> out = new ArrayList<ResultType>();
 				for (TierBar tb: getTierBars()) {
 					out.add(tb);
-					for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank()-1)) {
+					for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
 						out.add(r);
 					}
 				}
