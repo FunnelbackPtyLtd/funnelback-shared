@@ -18,6 +18,7 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -56,7 +57,8 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	
 	@Override
 	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
+		if (SearchTransactionUtils.hasCollection(searchTransaction)
+				&& new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildQuery().length() > 0) {
 			
 			String commandLine = new File(searchHome,
 					DefaultValues.FOLDER_BIN 				

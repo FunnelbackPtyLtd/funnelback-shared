@@ -60,6 +60,15 @@ public class SearchTransactionUtils {
 	}
 	
 	/**
+	 * Checks that a transaction has a response which has a result packet
+	 * @param st
+	 * @return
+	 */
+	public static boolean hasResultPacket(SearchTransaction st) {
+		return hasResponse(st) && st.getResponse().getResultPacket() != null;
+	}
+	
+	/**
 	 * Checks that a transaction has a response which has results.
 	 * @param st
 	 * @return true if the {@link SearchTransaction} is non null and has a {@link SearchResponse} which

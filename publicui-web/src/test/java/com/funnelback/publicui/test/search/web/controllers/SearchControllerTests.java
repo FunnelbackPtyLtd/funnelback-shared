@@ -76,7 +76,7 @@ public class SearchControllerTests {
 	}
 	
 	@Test
-	public void testNoQueryShouldReturnSearchTransaction() {
+	public void testNoQueryShouldReturnSearchTransactionWithResponse() {
 		Collection col = new Collection("test", null);
 		SearchQuestion q = new SearchQuestion();
 		q.setCollection(col);
@@ -86,7 +86,8 @@ public class SearchControllerTests {
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st.getQuestion().getCollection());
 		Assert.assertEquals(col, st.getQuestion().getCollection());
-		Assert.assertNull(st.getResponse());
+		Assert.assertNotNull(st.getResponse());
+		Assert.assertNull(st.getResponse().getResultPacket());
 	}
 	
 	@Test
@@ -101,8 +102,8 @@ public class SearchControllerTests {
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st.getQuestion().getCollection());
-		Assert.assertEquals(col, st.getQuestion().getCollection());
-		Assert.assertNull(st.getResponse());
+		Assert.assertNotNull(st.getResponse());
+		Assert.assertNull(st.getResponse().getResultPacket());
 	}
 
 	@Test

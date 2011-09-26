@@ -100,12 +100,7 @@ public class SearchController {
 		SearchQuestionBinder.bind(request, question);
 		
 		if (question.getCollection() != null) {
-			if (question.getQuery() != null && ! "".equals(question.getQuery())) {
-				transaction = processor.process(question);
-			} else {
-				// Query is null
-				transaction = new SearchTransaction(question, null);
-			}
+			transaction = processor.process(question);
 		} else {
 			// Collection is null = non existent
 			if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
