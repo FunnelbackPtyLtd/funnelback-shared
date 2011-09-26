@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Transformer;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A PADRE result packet, containing search results.
@@ -215,22 +215,27 @@ public class ResultPacket {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ResultType> getResultsWithTierBars() {
-		if (tierBars.size() > 0) {
-			ArrayList<ResultType> out = new ArrayList<ResultType>();
-			for (TierBar tb: getTierBars()) {
-				out.add(tb);
-				for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank())) {
-					out.add(r);
+		try {
+			if (tierBars.size() > 0) {
+				ArrayList<ResultType> out = new ArrayList<ResultType>();
+				for (TierBar tb: getTierBars()) {
+					out.add(tb);
+					for (Result r: getResults().subList(tb.getFirstRank(), tb.getLastRank()-1)) {
+						out.add(r);
+					}
 				}
+				return out;			
+			} else {
+				return ListUtils.transformedList(getResults(), new Transformer() {
+					@Override
+					public Object transform(Object o) {
+						return (ResultType) o;
+					}
+				});
 			}
-			return out;			
-		} else {
-			return ListUtils.transformedList(getResults(), new Transformer() {
-				@Override
-				public Object transform(Object o) {
-					return (ResultType) o;
-				}
-			});
+		} catch (Throwable t) {
+			// Ignore errors
+			return new ArrayList<ResultType>();
 		}
 	}
 	
