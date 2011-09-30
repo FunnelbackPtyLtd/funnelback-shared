@@ -110,8 +110,12 @@ public class FacetedNavigation implements InputProcessor {
 								}
 							}
 							
-							gscope1Constraints.add(gscope1FacetConstraints);
-							queryConstraints.add(queryFacetConstraints);
+							if (gscope1FacetConstraints.size() > 0) {
+								gscope1Constraints.add(gscope1FacetConstraints);
+							}
+							if (queryConstraints.size() > 0 ) {
+								queryConstraints.add(queryFacetConstraints);
+							}
 						}
 						
 					}
@@ -143,7 +147,7 @@ public class FacetedNavigation implements InputProcessor {
 		String updated = "";
 		if (gscope1Constraints.size() > 0) {
 			Stack<String> out = new Stack<String>();
-			// Add each constraing, followed by corresponding numbers of OR operators
+			// Add each constraint, followed by corresponding numbers of OR operators
 			for (Set<String> constraints: gscope1Constraints) {
 				out.addAll(constraints);
 				if (constraints.size() > 1) {
