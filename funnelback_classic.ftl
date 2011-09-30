@@ -34,7 +34,7 @@
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.prevStart) />
 
-            ${next_prev_prefix}<a href="${url?html}" class="fb-previous-result-page fb-page-nav" <#nested>>Prev ${rs.numRanks}</a>${next_prev_suffix}
+            ${next_prev_prefix}<a href="${url?html}" rel="prev" class="fb-previous-result-page fb-page-nav" <#nested>>Prev ${rs.numRanks}</a>${next_prev_suffix}
         </#if>
 
         <#local pages = 0 />
@@ -74,7 +74,7 @@
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.nextStart) />
 
-            ${next_prev_prefix}<a href="${url?html}" class="fb-next-result-page fb-page-nav" <#nested>>Next ${rs.numRanks}</a>${next_prev_suffix}
+            ${next_prev_prefix}<a href="${url?html}" rel="next" class="fb-next-result-page fb-page-nav" <#nested>>Next ${rs.numRanks}</a>${next_prev_suffix}
         </#if>
 
         <#if label?exists>
