@@ -512,6 +512,9 @@
                 </a>
                 <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
             </#if>
+            <#-- We've displayed one step in the breadcrumb, no need to inspect
+                 other category definitions -->
+            <#break />
         </#if>
     </#list>
 </#macro>
