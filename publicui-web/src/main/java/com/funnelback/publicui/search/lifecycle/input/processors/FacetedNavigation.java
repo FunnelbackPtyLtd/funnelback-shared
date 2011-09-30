@@ -113,7 +113,7 @@ public class FacetedNavigation implements InputProcessor {
 							if (gscope1FacetConstraints.size() > 0) {
 								gscope1Constraints.add(gscope1FacetConstraints);
 							}
-							if (queryConstraints.size() > 0 ) {
+							if (queryFacetConstraints.size() > 0 ) {
 								queryConstraints.add(queryFacetConstraints);
 							}
 						}
