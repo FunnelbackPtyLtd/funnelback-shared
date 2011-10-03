@@ -3,7 +3,7 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -16,7 +16,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * 
  * <s:boldicize bold="${SearchTransaction...}">${...}</s:boldicize>
  */
-@Log
+@Slf4j
 public class BoldicizeConversion implements Operation {
 
 	@Override

@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool;
 
 import java.io.IOException;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreExecutor;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 /**
  * A pseudo connection to a resident PADRE binary.
  */
-@Log
+@CommonsLog
 public class PadreConnection {
 
 	/**

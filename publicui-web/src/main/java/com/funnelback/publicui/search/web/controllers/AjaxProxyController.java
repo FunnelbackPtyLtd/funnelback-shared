@@ -6,7 +6,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Basic proxy for Ajax services
  */
-@Log
+@CommonsLog
 public class AjaxProxyController {
 
 	@RequestMapping("/ajax-proxy.xml")

@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 /**
  * Builds {@link PadreConnection} by forking new padre-sw processes.
  */
-@Log
+@CommonsLog
 public class PadreConnectionFactory extends BaseKeyedPoolableObjectFactory {
 
 	@Autowired

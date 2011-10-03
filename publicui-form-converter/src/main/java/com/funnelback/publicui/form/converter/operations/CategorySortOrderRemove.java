@@ -3,14 +3,14 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * Removes <p>&lt;CategorySortOrder&gt;</p> tags.
  */
-@Log
+@Slf4j
 public class CategorySortOrderRemove implements Operation {
 
 	@Override

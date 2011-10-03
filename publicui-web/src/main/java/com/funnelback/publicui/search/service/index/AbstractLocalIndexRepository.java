@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
 /**
  * Implementation that assumes that the indexes are on the local disk.
  */
-@Log
+@CommonsLog
 public abstract class AbstractLocalIndexRepository implements IndexRepository {
 
 	@Autowired

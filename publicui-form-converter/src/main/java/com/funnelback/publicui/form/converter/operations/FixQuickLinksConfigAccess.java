@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -19,7 +19,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * is a {@link Map} and not a {@link com.funnelback.common.config.Config}</p>
  *
  */
-@Log
+@Slf4j
 public class FixQuickLinksConfigAccess implements Operation {
 
 	public static final Pattern CONFIG_PATTERN = Pattern.compile("question.collection.configuration.value\\(\"quicklinks\\.(.*?)\"\\)");

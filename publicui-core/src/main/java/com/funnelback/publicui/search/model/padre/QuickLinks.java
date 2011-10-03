@@ -5,7 +5,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
+
 
 /**
  * Quick links, associated to a {@link Result}.
@@ -44,5 +46,6 @@ public class QuickLinks {
 		
 		public static final String QUICKLINK = "quicklink";		
 		public static final String QLTEXT = "qltext";
-		public static final String QLURL = "qlurl";	}
+		public static final String QLURL = "qlurl";
+	}
 }

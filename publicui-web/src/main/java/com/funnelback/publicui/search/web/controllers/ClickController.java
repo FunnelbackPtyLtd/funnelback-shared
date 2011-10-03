@@ -9,7 +9,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.DataBinder;
@@ -32,7 +32,7 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 /**
  * Click tracking controller
  */
-@Log
+@CommonsLog
 public class ClickController {
 
 	@Autowired

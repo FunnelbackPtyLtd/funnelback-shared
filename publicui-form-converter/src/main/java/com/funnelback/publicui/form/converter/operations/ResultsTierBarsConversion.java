@@ -3,11 +3,11 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
-@Log
+@Slf4j
 public class ResultsTierBarsConversion implements Operation {
 
 	private static final String DEFAULT_TABLE_ATTR = "'bgcolor=\"#CCCCCC\" summary=\"Result header\" width=\"100%\" cellpadding=4 cellspacing=0";

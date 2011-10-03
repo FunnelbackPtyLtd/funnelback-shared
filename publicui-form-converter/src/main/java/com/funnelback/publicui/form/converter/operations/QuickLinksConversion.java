@@ -3,14 +3,14 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * Converts Quick Links data tags
  */
-@Log
+@Slf4j
 public class QuickLinksConversion implements Operation {
 	
 	@Override

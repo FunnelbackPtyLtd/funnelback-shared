@@ -3,7 +3,7 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -11,7 +11,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * Removes tagging plugins. Tagging is not supported (yet)
  * in the Java UI so tags are removed for now.
  */
-@Log
+@Slf4j
 public class RemoveTagPlugin implements Operation {
 
 	private static final Pattern TAG_LINK_PATTERN = Pattern.compile("([\\s\\t]*)?<s:ResPlugin\\s+name=['\"]ResultTagLink['\"]\\s*>.*?</s:ResPlugin>([\\s\\t]*)?", Pattern.DOTALL);

@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * to the live URL, but sometimes needs some processing.
  */
 @Component("fixDisplayUrlsOutputProcessor")
-@Log
+@CommonsLog
 public class FixDisplayUrls implements OutputProcessor {
 
 	@Autowired

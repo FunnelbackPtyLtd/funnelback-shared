@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.web.views.freemarker;
 
 import java.util.List;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,7 +12,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import freemarker.ext.servlet.HttpRequestHashModel;
 import freemarker.template.TemplateModelException;
 
-@Log
+@CommonsLog
 public class IsAdminUIMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "isAdminUI"; 

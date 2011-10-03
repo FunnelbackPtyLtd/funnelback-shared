@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.IndexRepository;
-@Log
+@CommonsLog
 @Component
 public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
 	

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -21,7 +21,7 @@ import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.utils.CgiRunnerFactory;
 
-@Log
+@CommonsLog
 @Component
 public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 

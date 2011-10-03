@@ -1,6 +1,6 @@
 package com.funnelback.publicui.form.converter.operations;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -8,7 +8,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * Converts <s:ResultData> tags
  *
  */
-@Log
+@Slf4j
 public class ResultDataConversion implements Operation {
 
 	private static final String MODEL_PREFIX = "response.resultPacket";

@@ -8,7 +8,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 /**
  * Parses a faceted navigation configuration using a Stax Stream parser.
  */
-@Log
+@CommonsLog
 @Component
 public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigationConfigParser {
 

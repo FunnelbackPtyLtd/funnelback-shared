@@ -3,14 +3,14 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * Convert Best Bets data tags (bbif, bbifnot bb)_...{})
  */
-@Log
+@Slf4j
 public class BestBetsConversion implements Operation {
 
 	private static final String DEFAULT_TABLE_ATTR = "'bgcolor=\"#CCCCCC\" summary=\"Result header\" width=\"100%\" cellpadding=4 cellspacing=0";

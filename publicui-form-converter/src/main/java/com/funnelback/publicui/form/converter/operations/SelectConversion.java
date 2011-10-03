@@ -3,14 +3,14 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * Converts <s:Select> ... </s:Select> tags
  */
-@Log
+@Slf4j
 public class SelectConversion implements Operation {
 
 	private final static Pattern SELECT_PATTERN = Pattern.compile("<s:Select>(.*?)</s:Select>", Pattern.MULTILINE | Pattern.DOTALL);

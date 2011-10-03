@@ -7,14 +7,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import lombok.Getter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 
 /**
  * Handles process streams for a resident PADRE instance.
  */
-@Log
+@CommonsLog
 public class PadreStreamHandler implements ExecuteStreamHandler {
 
 	private InputStream processErrorStream;

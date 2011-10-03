@@ -3,7 +3,7 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -11,7 +11,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * Basic 1 for 1 replacement of tags that have their exact
  * counter-part in new syntax.
  */
-@Log
+@Slf4j
 public class BasicTagConversion implements Operation {
 
 	private static final String[] TAGS = {

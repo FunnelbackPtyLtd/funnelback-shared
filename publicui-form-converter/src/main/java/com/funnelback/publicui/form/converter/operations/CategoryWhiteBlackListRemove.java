@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -14,7 +14,7 @@ import com.funnelback.publicui.form.converter.Operation;
 /**
  * Removes &lt;s:CategoryWhiteList&gt; and &lt;s:CategoryBlackList&gt; tags.
  */
-@Log
+@Slf4j
 public class CategoryWhiteBlackListRemove implements Operation {
 
 	@Override

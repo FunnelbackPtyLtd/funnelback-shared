@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * <p>Removes &lt;s:CategoryRename&gt; and child tags.</p>
  */
-@Log
+@Slf4j
 public class CategoryRenameRemove implements Operation {
 
 	@Override

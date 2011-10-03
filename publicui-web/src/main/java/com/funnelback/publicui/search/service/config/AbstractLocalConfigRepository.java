@@ -47,7 +47,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
  * implementation of "getting" the collection is abstract, allowing
  * sub classes to cache the data for example.
  */
-@lombok.extern.apachecommons.Log
+@lombok.extern.apachecommons.CommonsLog
 public abstract class AbstractLocalConfigRepository implements ConfigRepository {
 		
 	/** A comment line in a config file starts with a hash */

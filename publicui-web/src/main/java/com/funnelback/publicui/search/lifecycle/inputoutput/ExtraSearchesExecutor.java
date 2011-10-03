@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * <p>Wait for the extra searches to complete on the output phase.</p>
  */
 @Component
-@Log
+@CommonsLog
 public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
 	@Autowired

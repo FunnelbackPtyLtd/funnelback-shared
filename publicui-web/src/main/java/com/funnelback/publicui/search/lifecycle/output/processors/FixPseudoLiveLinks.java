@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.SneakyThrows;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  *
  */
 @Component("fixPseudoLiveLinksOutputProcessor")
-@Log
+@CommonsLog
 public class FixPseudoLiveLinks implements OutputProcessor {
 
 	@Autowired

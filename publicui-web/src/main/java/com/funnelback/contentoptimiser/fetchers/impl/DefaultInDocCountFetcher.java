@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.utils.PanLook;
 import com.funnelback.utils.PanLookFactory;
 
-@Log
+@CommonsLog
 @Component
 public class DefaultInDocCountFetcher implements InDocCountFetcher {
 

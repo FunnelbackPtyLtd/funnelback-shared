@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * that run the configured {@link InputProcessor}s, {@link DataFetcher}s
  * and {@link OutputProcessor}s.
  */
-@Log
+@CommonsLog
 public class DefaultSearchTransactionProcessor implements SearchTransactionProcessor {
 
 	// Can't use @Autowired for those 3 one otherwise

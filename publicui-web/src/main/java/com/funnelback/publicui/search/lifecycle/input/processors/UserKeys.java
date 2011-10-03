@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * Fetches user keys for early binding DLS
  */
 @Component("userKeysInputProcessor")
-@Log
+@CommonsLog
 public class UserKeys implements InputProcessor {
 	
 	@Autowired

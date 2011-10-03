@@ -1,6 +1,6 @@
 package com.funnelback.contentoptimiser;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossible;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureMaxPossibleMultiWordOnly;
 
-@Log
+@CommonsLog
 @Component
 public class DefaultRankingFeatureFactory implements RankingFeatureFactory {
 

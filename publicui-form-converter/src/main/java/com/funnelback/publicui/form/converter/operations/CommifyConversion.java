@@ -1,6 +1,6 @@
 package com.funnelback.publicui.form.converter.operations;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -14,7 +14,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * <s:commify>${response...}</s:commify>
  *
  */
-@Log
+@Slf4j
 public class CommifyConversion implements Operation {
 
 	@Override

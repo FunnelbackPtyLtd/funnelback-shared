@@ -31,7 +31,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
  * Will choose either to fork using a Java API or Native Windows API
  * depending of the "impersonation" status of the transaction.
  */
-@lombok.extern.apachecommons.Log
+@lombok.extern.apachecommons.CommonsLog
 public abstract class AbstractPadreForking implements DataFetcher {
 
 	public enum EnvironmentKeys {

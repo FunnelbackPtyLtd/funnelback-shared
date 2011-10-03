@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
  * Query completion / suggestion controller. Wrapper around 'padre-qs'
  */
 @Controller
-@Log
+@CommonsLog
 public class SuggestController extends AbstractRunPadreBinaryController {
 
 	private static final String PADRE_QS = "padre-qs";

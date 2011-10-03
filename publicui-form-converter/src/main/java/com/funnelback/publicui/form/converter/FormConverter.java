@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-@Log
+@Slf4j
 public class FormConverter {
 
 	@Resource(name="steps")

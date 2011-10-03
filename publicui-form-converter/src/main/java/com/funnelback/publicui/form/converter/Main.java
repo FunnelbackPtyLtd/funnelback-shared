@@ -1,6 +1,6 @@
 package com.funnelback.publicui.form.converter;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -10,7 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-@Log
+@Slf4j
 public class Main {
 
 	

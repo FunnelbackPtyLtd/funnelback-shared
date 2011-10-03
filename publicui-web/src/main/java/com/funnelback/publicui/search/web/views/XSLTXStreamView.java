@@ -12,7 +12,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
@@ -26,7 +26,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * <p>Used mainly to provide a compatible legacy XML format to mimic
  * the Perl UI <tt>xml.cgi</tt></p>
  */
-@Log
+@CommonsLog
 public class XSLTXStreamView extends AbstractView {
 
 	/**

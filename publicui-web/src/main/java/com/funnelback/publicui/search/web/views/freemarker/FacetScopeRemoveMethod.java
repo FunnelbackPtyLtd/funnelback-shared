@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.SneakyThrows;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
@@ -17,7 +17,7 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
-@Log
+@CommonsLog
 public class FacetScopeRemoveMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "facetScopeRemove"; 

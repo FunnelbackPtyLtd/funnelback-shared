@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -27,7 +27,7 @@ import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
  * Builds {@link Result}s from various input sources.
  * 
  */
-@Log
+@CommonsLog
 public class ResultFactory {
 
 	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();

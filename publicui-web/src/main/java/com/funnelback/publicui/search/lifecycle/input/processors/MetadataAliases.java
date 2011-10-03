@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import lombok.Getter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * link:, filetype: ... to the corresponding default metadata class.
  */
 @Component("metadataAliasesInputProcessor")
-@Log
+@CommonsLog
 public class MetadataAliases implements InputProcessor {
 
 	private static final String SEPARATOR = ":";

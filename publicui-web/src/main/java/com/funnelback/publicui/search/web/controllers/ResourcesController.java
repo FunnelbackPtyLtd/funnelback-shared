@@ -33,7 +33,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Controller("NicoController")
 @RequestMapping("/resources/{collectionId}")
-@lombok.extern.apachecommons.Log
+@lombok.extern.apachecommons.CommonsLog
 public class ResourcesController implements ApplicationContextAware {
 
 	private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");

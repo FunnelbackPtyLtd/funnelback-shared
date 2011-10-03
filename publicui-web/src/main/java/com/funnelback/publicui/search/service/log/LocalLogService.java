@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
  * Writes log files locally in the LIVE folder of each collection
  */
 @Service
-@Log
+@CommonsLog
 public class LocalLogService implements LogService {
 	
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

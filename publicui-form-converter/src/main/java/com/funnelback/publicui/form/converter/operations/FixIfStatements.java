@@ -3,7 +3,7 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
@@ -12,7 +12,7 @@ import com.funnelback.publicui.form.converter.Operation;
  * Try to fix some <#if /> statements
  *
  */
-@Log
+@Slf4j
 public class FixIfStatements implements Operation {
 
 	@Override

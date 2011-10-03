@@ -31,7 +31,7 @@ import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
 @Controller
-@lombok.extern.apachecommons.Log
+@lombok.extern.apachecommons.CommonsLog
 public class SearchController {
 
 	public enum ModelAttributes {

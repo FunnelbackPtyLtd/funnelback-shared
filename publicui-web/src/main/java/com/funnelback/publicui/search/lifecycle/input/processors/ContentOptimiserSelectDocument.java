@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -17,7 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 // accurate between queries (See FUN-3541). For now, url-status.cgi is called to  
 // determine whether or not a document appears in the results.
 //@Component("contentOptimiserSelectDocumentInputProcessor")
-@Log
+@CommonsLog
 public class ContentOptimiserSelectDocument implements InputProcessor {
 
 	@Override

@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
  * Process explain output from PADRE and generates relevant data model for the
  * content optimiser
  */
-@Log
+@CommonsLog
 @Component("contentOptimiserOutputProcessor")
 public class ContentOptimiser implements OutputProcessor {
 

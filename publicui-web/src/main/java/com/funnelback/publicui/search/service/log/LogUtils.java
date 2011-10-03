@@ -10,7 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.log.Log;
 
-@lombok.extern.apachecommons.Log
+@lombok.extern.apachecommons.CommonsLog
 public class LogUtils {
 	
 	/**

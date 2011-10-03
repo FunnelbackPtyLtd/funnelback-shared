@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateModelException;
@@ -16,7 +16,7 @@ import freemarker.template.TemplateScalarModel;
 /**
  * Parses a range expression (used to build <select>)
  */
-@Log
+@CommonsLog
 public class ParseRangeMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "parseRange";

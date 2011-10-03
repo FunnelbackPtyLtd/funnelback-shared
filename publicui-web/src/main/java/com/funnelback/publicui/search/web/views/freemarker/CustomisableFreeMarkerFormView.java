@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
  * <p>{@link FreeMarkerView} that allows Content Type and
  * Headers customisation based on the collection configuration.</p>
  */
-@Log
+@CommonsLog
 public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 
 	@Override

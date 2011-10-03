@@ -3,14 +3,14 @@ package com.funnelback.publicui.form.converter.operations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import com.funnelback.publicui.form.converter.Operation;
 
 /**
  * Converts &gt;s:cgi&lt; tags
  */
-@Log
+@Slf4j
 public class CGIConversion implements Operation {
 
 	private static final Pattern PATTERN = Pattern.compile("<s:cgi>(.*?)</s:cgi>", Pattern.CASE_INSENSITIVE);

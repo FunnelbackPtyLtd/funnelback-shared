@@ -3,7 +3,7 @@ package com.funnelback.publicui.utils.web;
 import javax.servlet.ServletContext;
 
 import lombok.Getter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.web.context.ServletContextAware;
 
@@ -12,7 +12,7 @@ import org.springframework.web.context.ServletContextAware;
  * context path ('/s') or if we're running as part of the
  * Public or Admin search interface
  */
-@Log
+@CommonsLog
 public class ExecutionContextHolder implements ServletContextAware {
 
 	private enum ExecutionContext {

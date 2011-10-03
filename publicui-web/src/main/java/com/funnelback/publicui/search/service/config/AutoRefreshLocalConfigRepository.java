@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
@@ -31,7 +31,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
  * data and will auto-refresh its cache if any of the underlying files has changed.
  */
 @Repository("configRepository")
-@Log
+@CommonsLog
 public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepository {
 
 	@Value("#{appProperties['config.repository.autorefresh.interval']}")

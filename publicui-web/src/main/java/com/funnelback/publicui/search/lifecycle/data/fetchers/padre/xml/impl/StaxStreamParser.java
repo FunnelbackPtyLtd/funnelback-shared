@@ -12,7 +12,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
 @Component("padreXmlParser")
-@Log
+@CommonsLog
 public class StaxStreamParser implements PadreXmlParser {
 
 	@Override

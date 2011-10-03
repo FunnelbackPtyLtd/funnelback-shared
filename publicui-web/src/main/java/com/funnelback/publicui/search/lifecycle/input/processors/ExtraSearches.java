@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Prepares extra searches configured in <code>collection.cfg</code>.
  */
 @Component("extraSearchesInputProcessor")
-@Log
+@CommonsLog
 public class ExtraSearches implements InputProcessor, ApplicationContextAware {
 
 	/**

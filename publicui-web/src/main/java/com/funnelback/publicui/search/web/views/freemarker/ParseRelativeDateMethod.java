@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
@@ -17,7 +17,7 @@ import freemarker.template.TemplateScalarModel;
  * Parses a relative date expression like &quot;CURRENT_DATE - 1D&quot;
  *
  */
-@Log
+@CommonsLog
 public class ParseRelativeDateMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "parseRelativeDate";

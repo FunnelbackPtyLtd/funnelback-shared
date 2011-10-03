@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * get query terms and replace the explore:... query with those.
  */
 @Component("exploreQueryInputProcessor")
-@Log
+@CommonsLog
 public class ExploreQuery implements InputProcessor {
 
 	private static final String OPT_VSIMPLE = "-vsimple";

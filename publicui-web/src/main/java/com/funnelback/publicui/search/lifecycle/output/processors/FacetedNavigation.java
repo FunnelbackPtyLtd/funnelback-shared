@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.extern.apachecommons.Log;
+import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
  * Transforms result metadata/url/gscope counts into proper facet hierarchy
  */
 @Component("facetedNavigationOutputProcessor")
-@Log
+@CommonsLog
 public class FacetedNavigation implements OutputProcessor {
 
 	@Override

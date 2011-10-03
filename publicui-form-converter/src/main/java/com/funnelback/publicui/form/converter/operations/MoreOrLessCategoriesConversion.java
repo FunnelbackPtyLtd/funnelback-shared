@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
 
@@ -13,7 +13,7 @@ import com.funnelback.publicui.form.converter.Operation;
 /**
  * Converts <s:MoreOrLessCategories> tags.
  */
-@Log
+@Slf4j
 public class MoreOrLessCategoriesConversion implements Operation {
 
 	private static final Pattern JQUERY_JS_PATTERN = Pattern.compile("src=['\"]?.*?jquery.*?\\.js", Pattern.CASE_INSENSITIVE);
