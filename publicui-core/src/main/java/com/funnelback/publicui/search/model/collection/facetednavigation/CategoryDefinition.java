@@ -125,6 +125,10 @@ public abstract class CategoryDefinition {
 	 * @return The metadata + value
 	 */
 	public static MetadataAndValue parseMetadata(String item) {
+		if (item == null || item.indexOf(MD_VALUE_SEPARATOR) < 0) {
+			return new MetadataAndValue(null, null);
+		}
+		
 		int colon = item.indexOf(MD_VALUE_SEPARATOR);
 		return new MetadataAndValue(item.substring(0, colon), item.substring(colon + 1));
 	}
