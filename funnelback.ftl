@@ -160,7 +160,7 @@
     @param name Name of the extra search results to process, as configured in <code>collection.cfg</code>.
 -->
 <#macro ExtraResults name>
-    <#if extra[name]?exists>
+    <#if extra?exists && extra[name]?exists>
         <#local questionBackup = question!"" />
         <#local responseBackup = response!"" />
         <#local errorBackup = error!"" />
