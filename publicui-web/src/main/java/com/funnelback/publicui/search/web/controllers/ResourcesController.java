@@ -44,8 +44,8 @@ public class ResourcesController implements ApplicationContextAware {
 	@Autowired
 	private ConfigRepository configRepository;
 	
-	@Value("#{appProperties['resources.web.directory.name=web']}")
-	private String collectionWebResourcesDirectoryName = "web";
+	@Value("#{appProperties['resources.web.directory.name']?:\"web\"}")
+	private String collectionWebResourcesDirectoryName;
 	
 	@RequestMapping("/test.html")
 	public void handleRequestDefaultProfile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

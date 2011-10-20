@@ -20,7 +20,7 @@
 	<context:component-scan base-package="com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils" />
 	
 	<task:annotation-driven executor="taskExecutor" />
-	<task:executor id="taskExecutor" pool-size="100" rejection-policy="CALLER_RUNS" />
+	<task:executor id="taskExecutor" pool-size="100" rejection-policy="DISCARD" />
 
 	<util:properties id="appProperties" location="file:${funnelback.installdir}/web/conf/modernui/modernui.properties" />
 	<bean id="contextHolder" class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />

@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
 @Repository("indexRepository")
 public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository {
 
-	@Value("#{appProperties['config.repository.autorefresh.interval']}")
+	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
 	private int checkingInterval = 0;
 	
 	/**

@@ -34,7 +34,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 @CommonsLog
 public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepository {
 
-	@Value("#{appProperties['config.repository.autorefresh.interval']}")
+	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
 	private int checkingInterval = 0;
 		
 	/**

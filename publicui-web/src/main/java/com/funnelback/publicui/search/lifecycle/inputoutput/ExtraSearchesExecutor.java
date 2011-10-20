@@ -3,11 +3,15 @@ package com.funnelback.publicui.search.lifecycle.inputoutput;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import lombok.Setter;
 import lombok.extern.apachecommons.CommonsLog;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +34,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @CommonsLog
 public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
+	@Value("#{appProperties['extra.searches.timeout']?:10000}")
+	@Setter
+	protected long extraSearchesWaitTimeout;
+	
 	@Autowired
 	private SearchTransactionProcessor transactionProcessor;
 
@@ -71,7 +79,10 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 			// and fill {@link #extraSearches}.
 			for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
 				try {
-					searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get());
+					searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
+				} catch (TimeoutException te) {
+					log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + entry.getKey() + "'."
+							+ "Consider raising 'extra.searches.timeout'.", te);
 				} catch (Exception e) {
 					log.error("Unable to wait results for extra search '" + entry.getKey() + "'", e);
 				}

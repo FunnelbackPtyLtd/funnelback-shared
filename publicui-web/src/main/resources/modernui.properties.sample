@@ -2,6 +2,9 @@
 # Used in DLS only.
 padre.fork.native.timeout=30000
 
+# Timeout to wait for processing extra searches
+extra.searches.timeout=10000
+
 # Interval to check (ms) for any configuration update when using
 # the auto-refreshable configuration repository implementation
 config.repository.autorefresh.interval=250

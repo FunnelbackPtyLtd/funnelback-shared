@@ -48,7 +48,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	@Setter
 	protected PadreXmlParser padreXmlParser;
 	
-	@Value("#{appProperties['padre.fork.native.timeout']}")
+	@Value("#{appProperties['padre.fork.native.timeout']?:30000}")
 	@Setter
 	protected int padreWaitTimeout;
 
