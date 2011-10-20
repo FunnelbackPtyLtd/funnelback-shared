@@ -161,19 +161,25 @@
 -->
 <#macro ExtraResults name>
     <#if extra?exists && extra[name]?exists>
-        <#local questionBackup = question!"" />
-        <#local responseBackup = response!"" />
-        <#local errorBackup = error!"" />
+        <#local questionBackup = question!{} />
+        <#local responseBackup = response!{} />
+        <#if error?exists>
+            <#local errorBackup = error />
+        </#if>
 
-        <#global question = extra[name].question!"" />
-        <#global response = extra[name].response!"" />
-        <#global error = extra[name].error!"" />
+        <#global question = extra[name].question!{} />
+        <#global response = extra[name].response!{} />
+        <#if extra[name].error?exists>
+            <#global error = extra[name].error />
+        </#if>
 
         <#nested>
 
         <#global question = questionBackup />
         <#global response = responseBackup />
-        <#global error = errorBackup />
+        <#if errorBackup?exists>
+            <#global error = errorBackup />
+        </#if>
     <#else>
         <!-- No extra results for '${name}' found -->
     </#if>
@@ -277,7 +283,7 @@
             <!-- ERROR cause: ${error.additionalData.cause!?html} --> 
             <@ErrorMessageJS message=error.additionalData.message! messageData=error.additionalData.cause! />
         <#else>
-            <p class="fb-error">An unknown error has occured. Please try again"</p>
+            <p class="fb-error">An unknown error has occured. Please try again</p>
         </#if>
     </#if>
 </#macro>
