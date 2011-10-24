@@ -70,7 +70,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		Set<String> linkSet = new HashSet<String>(Arrays.asList(link));
 		String[] url = {"urllen","mainhosts","host_domain_shallowness_score","urltype"};
 		Set<String> urlSet = new HashSet<String>(Arrays.asList(url));
-		String[] beyond = {"qie","document_number","host_rank_in_crawl_order_score","comp_wt","domain_weight"};
+		String[] beyond = {"qie","document_number","host_rank_in_crawl_order_score","comp_wt","domain_weight","doc_matches_regex","doc_does_not_match_regex"};
 		Set<String> beyondSet = new HashSet<String>(Arrays.asList(beyond));
 		String[] annie = {"annie_rank","log_annie","anlog_annie","annie_rank","consistency","annie"};
 		Set<String> annieSet = new HashSet<String>(Arrays.asList(annie));
@@ -81,7 +81,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		if(linkSet.contains(key)) return "link based";
 		if(annieSet.contains(key)) return "annotation";
 		
-		throw new RuntimeException(key + " is missing");
+		throw new RuntimeException("Category for ranking feature '" + key + "' is missing");
 	}
 
 	// TODO: take this out and have it read in by XML somewhere

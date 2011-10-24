@@ -270,7 +270,7 @@
 					</div>
 				</#if>
 		
-				<div class="section">kickoff
+				<div class="section">
 				    <h4 style="float: left; padding-right: 30px; padding-bottom: 0px; margin-bottom: 0px;">Key</h4>
 					<div id="legend"></div>
 					
