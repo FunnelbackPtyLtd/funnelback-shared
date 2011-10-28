@@ -68,7 +68,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 			
 			if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
 				commandLine += " " + OPT_USER_KEYS + "=\""
-				+ StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0])) + "\"";
+				+ StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), ",") + "\"";
 			}
 	
 			Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
