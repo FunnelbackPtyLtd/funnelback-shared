@@ -240,6 +240,33 @@ public class SearchQuestion {
 		public static final String EXPLAIN = "explain";		
 
 		/**
+		 * Common request header names
+		 * 
+		 * @since 11.1
+		 */
+		public static class Header {
+			/**
+			 * Header used to provide the originating user's IP address, which may differ from
+			 * the normal remote address if the request is forwarded by a proxy or wrapped by
+			 * a CMS.
+			 */
+			public static final String X_FORWARDED_FOR = "X-Forwarded-For";		
+
+			/**
+			 * Header used to provide the server hostname which was requested. Multiple
+			 * hostnames may be served by a single Funnelback server over a single IP 
+			 * address.
+			 */
+			public static final String HOST = "host";		
+
+			/**
+			 * Header used to provide the URL of the web page from which the user accessed
+			 * the search service.
+			 */
+			public static final String REFERRER = "Referrer";		
+		}
+
+		/**
 		 * Common request parameter names used in the cache
 		 * controller.
 		 * 

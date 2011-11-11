@@ -23,7 +23,7 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
 	// SITE_SEARCH_ROOT: Used for Matrix OEM
 	public enum Keys {
-		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER;
+		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
 	}
 
 

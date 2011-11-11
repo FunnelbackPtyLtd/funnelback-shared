@@ -21,6 +21,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
+import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.xml.XmlParsingException;
@@ -74,6 +75,11 @@ public abstract class AbstractPadreForking implements DataFetcher {
 			Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
 			env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
 			env.put(EnvironmentKeys.QUERY_STRING.toString(), getQueryString(searchTransaction));
+			
+			// Tell Padre the originating IP address rather than the forwarding one
+			if (env.containsKey(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString())) {
+				env.put(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), env.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString()));
+			}
 	
 			// SystemRoot environment variable is MANDATORY for TRIM DLS checks
 			// The TRIM SDK uses WinSock to connect to the remote server, and 
