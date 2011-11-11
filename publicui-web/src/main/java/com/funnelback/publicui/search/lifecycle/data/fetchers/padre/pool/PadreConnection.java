@@ -26,7 +26,7 @@ public class PadreConnection {
 	}
 	
 	/**
-	 * Sends the givent command to the STDIN of PADRE
+	 * Sends the given command to the STDIN of PADRE
 	 * @param cmd
 	 * @return
 	 * @throws IOException
