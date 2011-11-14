@@ -45,7 +45,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 		}
 	}
 	
-	@RequestMapping(value="/suggest-java.json",params={"collection","partial_query","show","sort","alpha","autoc","fmt"})
+	// @RequestMapping(value="/suggest-java.json",params={"collection","partial_query","show","sort","alpha","autoc","fmt"})
 	public String suggestJava(String collection,
 			String partial_query,
 			int show,
@@ -54,7 +54,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 			int autoc,
 			String fmt,
 			HttpServletResponse response) throws IOException {
-		// collection=funnelback_documentation&partial_query=que&show=10&sort=0&alpha=.5&autoc=0&fmt=json
+
 		List<Suggestion> suggestions = suggester.suggest(collection, partial_query, show, Sort.valueOf(sort), alpha, AutoCMode.valueOf(autoc));
 		
 		StringBuilder sb = new StringBuilder("[");
