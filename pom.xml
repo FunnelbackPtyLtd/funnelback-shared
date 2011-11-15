@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.funnelback.publicui</groupId>
 	<artifactId>publicui-parent</artifactId>
-	<version>11.0.0-SNAPSHOT</version>
+	<version>11.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Modern UI for Funnelback - Parent</name>
 	<issueManagement>
