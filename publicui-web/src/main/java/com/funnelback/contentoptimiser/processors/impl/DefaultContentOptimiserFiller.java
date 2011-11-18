@@ -286,6 +286,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 			
 			if(possibleUrls.contains(result.getDisplayUrl())
 					|| possibleUrls.contains(result.getLiveUrl())
+					|| possibleUrls.contains(result.getIndexUrl())
 					|| urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*",""))) {
 				importantResult = result;
 			}
