@@ -57,6 +57,15 @@ public class SearchControllerTests {
 	public void before() {
 		request = new MockHttpServletRequest();
 		request.setRequestURI("search.xml");
+		
+		((MockInputProcessor)inputFlow.get(0)).setThrowError(false);
+		((MockDataFetcher) dataFetchers.get(0)).setThrowError(false);
+		((MockOutputProcessor)outputFlow.get(0)).setThrowError(false);
+		
+		((MockInputProcessor)inputFlow.get(0)).setTraversed(false);
+		((MockDataFetcher) dataFetchers.get(0)).setTraversed(false);
+		((MockOutputProcessor) outputFlow.get(0)).setTraversed(false);
+
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -135,7 +144,7 @@ public class SearchControllerTests {
 		Assert.assertNotNull(st);
 		Assert.assertNotNull(st.getQuestion());
 		Assert.assertNotNull(st.getResponse());
-		Assert.assertNull(st.getError());
+		Assert.assertNull("Error should be null but was " + st.getError(), st.getError());
 		
 		Assert.assertEquals("test-collection", st.getQuestion().getCollection().getId());
 		Assert.assertEquals("test-query", st.getQuestion().getQuery());
