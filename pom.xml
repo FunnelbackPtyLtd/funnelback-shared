@@ -3,9 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.funnelback.publicui</groupId>
 	<artifactId>publicui-parent</artifactId>
-	<version>11.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Modern UI for Funnelback - Parent</name>
+	
+	<parent>
+		<groupId>com.funnelback</groupId>
+		<artifactId>parent</artifactId>
+		<version>11.1.0-SNAPSHOT</version>
+	</parent>
+	
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://jira.cbr.au.funnelback.com/browse/FUN</url>
@@ -39,51 +45,6 @@
 		<module>publicui-doc</module>
 		<module>publicui-form-converter</module>
 	</modules>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.7.2</version>
-					<configuration>
-						<environmentVariables>
-							<SEARCH_HOME>src/test/resources/dummy-search_home/</SEARCH_HOME>
-						</environmentVariables>
-						<includes>
-							<include>**/*Tests.java</include>
-							<include>**/*Test.java</include>
-						</includes>
-						<argLine>-Dfile.encoding=UTF-8</argLine>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-						<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.4</version>
-					<executions>
-						<execution>
-							<phase>clean</phase>
-							<goals>
-								<goal>clean</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 
 	<dependencyManagement>
 		<dependencies>
@@ -229,17 +190,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>funnelback-releases</id>
-			<url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>funnelback-snapshots</id>
-			<url>http://maven-repo.cbr.au.funnelback.com:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<profiles>
 		<profile>
 			<id>installers</id>
@@ -273,14 +223,5 @@
 		</profile>
 	</profiles>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-		</plugins>
-	</reporting>
 
 </project>
