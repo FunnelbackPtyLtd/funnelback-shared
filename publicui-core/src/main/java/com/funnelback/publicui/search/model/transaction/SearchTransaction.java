@@ -64,6 +64,12 @@ public class SearchTransaction {
 	@Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
 	
 	/**
+	 * Custom data placeholder allowing any arbitrary data to be
+	 * stored by hook scripts.
+	 */
+	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+	
+	/**
 	 * Adds an {@link SearchQuestion} to be processed as an extra search.
 	 * @param key Name of the extra source (see <code>ui.modern.extra_searches</code>).
 	 * @param q The {@link SearchQuestion}

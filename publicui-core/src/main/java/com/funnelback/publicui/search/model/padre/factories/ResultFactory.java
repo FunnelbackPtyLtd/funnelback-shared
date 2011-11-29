@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -30,8 +29,6 @@ import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
 @CommonsLog
 public class ResultFactory {
 
-	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
-	
 	/**
 	 * Builds a {@link Result} from a Map containing the values
 	 * 
