@@ -31,7 +31,6 @@ public class FixCacheAndClickLinksTests {
 	@Before
 	public void before() throws Exception{
 		processor = new FixCacheAndClickLinks();
-		processor.setSearchUrlPrefix("PREFIX");
 		
 		SearchQuestion question = new SearchQuestion();
 		question.setQuery("livelinks");
@@ -75,7 +74,7 @@ public class FixCacheAndClickLinksTests {
 		processor.processOutput(st);
 
 		for (Result r: st.getResponse().getResultPacket().getResults()) {
-			Assert.assertTrue(r.getCacheUrl().startsWith("PREFIX"));
+			Assert.assertTrue("".equals(r.getCacheUrl()) || r.getCacheUrl().startsWith("cache.cgi"));
 			Assert.assertEquals(r.getClickTrackingUrl(), r.getLiveUrl());
 		}
 	}
@@ -83,14 +82,14 @@ public class FixCacheAndClickLinksTests {
 	@Test
 	public void testClickTracking() throws OutputProcessorException, UnsupportedEncodingException {
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
-		st.getQuestion().getCollection().getConfiguration().setValue(Keys.UI_CLICK_LINK, "CLICK_LINK");
+		st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.CLICK_LINK, "CLICK_LINK");
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.SERVER_SECRET, "plop");
 		processor.processOutput(st);
 		
 		for (Result r: st.getResponse().getResultPacket().getResults()) {
 			Assert.assertFalse(r.getCacheUrl().contains("null"));
 			Assert.assertFalse(r.getClickTrackingUrl().contains("null"));
-			Assert.assertTrue(r.getCacheUrl().startsWith("PREFIX"));
+			Assert.assertTrue("".equals(r.getCacheUrl()) || r.getCacheUrl().startsWith("cache.cgi"));
 			String trackingUrl = r.getClickTrackingUrl();
 			Assert.assertTrue(trackingUrl.contains("CLICK_LINK?"));
 			
