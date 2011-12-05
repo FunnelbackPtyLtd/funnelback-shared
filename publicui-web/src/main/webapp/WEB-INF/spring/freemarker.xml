@@ -110,6 +110,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FilesizeFormatMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.FilesizeFormatMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ResolveUrlMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.ResolveUrlMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>
