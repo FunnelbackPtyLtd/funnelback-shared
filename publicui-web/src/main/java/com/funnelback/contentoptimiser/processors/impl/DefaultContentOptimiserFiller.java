@@ -64,8 +64,17 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	
 	// TODO replace with an implementation that gets this from padre's XML
 	private String getCategory(String key) {
-		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT};
-		Set<String> contentSet = new HashSet<String>(Arrays.asList(content));
+		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT,
+				"entropy","entropy_abs","entropy_abs_neg","entropy_neg",
+				"contentWords","contentWords_abs","contentWords_abs_neg","contentWords_neg",
+				"distinctWords","distinctWords_abs_neg","distinctWords_abs","distinctWords_neg",
+				"stopwordCover","stopwordCover_abs","stopwordCover_abs_neg","stopwordCover_neg",
+				"averageTermLen","averageTermLen_abs","averageTermLen_abs_neg","averageTermLen_neg",
+				"titleWords", "titleWords_abs",	"titleWords_abs_neg","titleWords_neg",
+				"stopwordFraction","stopwordFraction_abs","stopwordFraction_abs_neg","stopwordFraction_neg",
+				"maxFreq","maxFreq_abs","maxFreq_abs_neg","maxFreq_neg",
+				"compressionFactor","compressionFactor_abs","compressionFactor_abs_neg", "compressionFactor_neg",};
+		Set<String> contentSet = new HashSet<String>(Arrays.asList(content)); 
 		String[] link = {"offlink","onlink","host_linked_hosts_score","host_click_score","host_linking_hosts_score","host_incoming_link_score"};
 		Set<String> linkSet = new HashSet<String>(Arrays.asList(link));
 		String[] url = {"urllen","mainhosts","host_domain_shallowness_score","urltype"};
