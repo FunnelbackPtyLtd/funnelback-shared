@@ -27,6 +27,9 @@ public class OpenSearchController {
 
 	private static final String URI = "open-search.xml";
 	
+	private static final String HEADER_HOST = "Host";
+	private static final String HEADER_X_FORWARDED_HOST = "X-Forwarded-Host";
+	
 	@Autowired
 	private ConfigRepository configRepository;
 	
@@ -42,7 +45,7 @@ public class OpenSearchController {
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("serviceName", collection.getConfiguration().value(Keys.SERVICE_NAME));
 			model.put("name", collection.getId());
-			model.put("host", request.getHeader("Host"));
+			model.put("host", getHost(request));
 			model.put("searchUrl", buildSearchUrl(request, collection));
 			return new ModelAndView(openSearchView, model);
 		} else {
@@ -53,10 +56,19 @@ public class OpenSearchController {
 	
 	private String buildSearchUrl(HttpServletRequest request, Collection collection) {
 		return new StringBuffer()
-		.append(request.getRequestURL().toString().replace(URI, collection.getConfiguration().value(Keys.ModernUI.SEARCH_LINK)))
+		.append(request.getScheme()).append("://").append(getHost(request))
+		.append(request.getRequestURI().toString().replace(URI, collection.getConfiguration().value(Keys.ModernUI.SEARCH_LINK)))
 		.append("?collection=" + collection.getId())
 		.append("&amp;query={searchTerms}").toString();
-		
+	}
+	
+	private static String getHost(HttpServletRequest request) {
+		if ( request.getHeader(HEADER_X_FORWARDED_HOST) != null) {
+			// We're running behind a proxy
+			return request.getHeader(HEADER_X_FORWARDED_HOST);
+		} else {
+			return request.getHeader(HEADER_HOST);
+		}
 	}
 	
 }
