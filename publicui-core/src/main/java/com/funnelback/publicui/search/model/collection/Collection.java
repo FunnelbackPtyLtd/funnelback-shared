@@ -35,7 +35,7 @@ public class Collection {
 
 	/** Possible collection types. */
 	public static enum Type {
-		unknown,web,filecopy,local,database,meta,trim,connector,directory,push;
+		unknown,web,filecopy,local,database,meta,trim,trimpush,connector,directory,push;
 	}
 
 	/**
