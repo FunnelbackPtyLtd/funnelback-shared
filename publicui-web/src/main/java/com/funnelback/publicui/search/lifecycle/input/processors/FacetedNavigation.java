@@ -55,7 +55,9 @@ public class FacetedNavigation implements InputProcessor {
 				Set<Set<String>> gscope1Constraints = new HashSet<Set<String>>();
 				Set<Set<String>> queryConstraints = new HashSet<Set<String>>();
 				
-				MapKeyFilter filter = new MapKeyFilter(searchTransaction.getQuestion().getInputParameterMap());
+				// Read facet names from the 'raw' parameters since they can
+				// be multi-valued (Multiple categories selected for a single facet)
+				MapKeyFilter filter = new MapKeyFilter(searchTransaction.getQuestion().getRawInputParameters());
 				String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
 				
 				if (selectedFacetsParams.length > 0) {
