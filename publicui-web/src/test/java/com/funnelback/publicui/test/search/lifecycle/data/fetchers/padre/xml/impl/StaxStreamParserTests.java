@@ -35,7 +35,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
 
 public class StaxStreamParserTests {
 
-	private ResultPacket rp;
+	protected ResultPacket rp;
 	
 	@Before
 	public void before() throws XmlParsingException, IOException {

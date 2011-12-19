@@ -117,6 +117,10 @@ public class SearchControllerTests {
 
 	@Test
 	public void testInvalidCollectionShouldShowCollectionList() {
+		configRepository.removeAllCollections();
+		configRepository.addCollection(new Collection("test1", null));
+		configRepository.addCollection(new Collection("test2", null));
+
 		SearchQuestion sq = new SearchQuestion();
 		sq.setQuery("test");
 		

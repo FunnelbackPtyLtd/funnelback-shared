@@ -22,6 +22,7 @@ import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
+import com.funnelback.publicui.search.model.padre.RMCItemResult;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
@@ -31,6 +32,7 @@ import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
 import com.funnelback.publicui.search.model.padre.factories.ErrorFactory;
+import com.funnelback.publicui.search.model.padre.factories.RMCItemResultFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultFactory;
 import com.funnelback.publicui.search.model.padre.factories.ResultsSummaryFactory;
 import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
@@ -88,6 +90,10 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
 						RMC rmc = parseRmc(xmlStreamReader);
 						packet.getRmcs().put(rmc.item, rmc.count);
+					} else if (ResultPacket.Schema.RMC_ITEM_RESULTS.equals(xmlStreamReader.getLocalName())){
+						RMC rmc = parseRmcFromRmcItemResults(xmlStreamReader);
+						packet.getRmcs().put(rmc.item, rmc.count);
+						packet.getRmcItemResults().put(rmc.item, parseRmcItemResults(xmlStreamReader));
 					} else if (ResultPacket.Schema.URLCOUNT.equals(xmlStreamReader.getLocalName())) {
 						URLCount urlCount = parseURLCount(xmlStreamReader);
 						packet.getUrlCounts().put(urlCount.url, urlCount.count);
@@ -212,6 +218,44 @@ public class StaxStreamParser implements PadreXmlParser {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Parses an RMC from a &lt;rmc_item_results&gt; tag
+	 * @param xmlStreamReader
+	 * @return
+	 */
+	private RMC parseRmcFromRmcItemResults(XMLStreamReader xmlStreamReader) {
+		if (!ResultPacket.Schema.RMC_ITEM_RESULTS.equals(xmlStreamReader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		if ( xmlStreamReader.getAttributeCount() == 2
+				&& ResultPacket.Schema.RMC_ITEM.equals(xmlStreamReader.getAttributeLocalName(0))
+			&& ResultPacket.Schema.RMC_COUNT.equals(xmlStreamReader.getAttributeLocalName(1))) {
+				RMC rmc = new RMC();
+				rmc.item = xmlStreamReader.getAttributeValue(0);
+				rmc.count = Integer.parseInt(xmlStreamReader.getAttributeValue(1));
+				return rmc; 
+			}
+			
+			return null;
+	}
+	
+	private List<RMCItemResult> parseRmcItemResults(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		List<RMCItemResult> out = new ArrayList<RMCItemResult>();
+		
+		int type = xmlStreamReader.getEventType();
+		do {
+			type = xmlStreamReader.next();
+			
+			if (type == XMLStreamReader.START_ELEMENT
+				&& ResultPacket.Schema.RMC_ITEM_RESULT.equals(xmlStreamReader.getLocalName())) {
+				out.add(RMCItemResultFactory.fromXmlStreamReader(xmlStreamReader));
+			}
+		} while( type != XMLStreamReader.END_ELEMENT || !ResultPacket.Schema.RMC_ITEM_RESULTS.equals(xmlStreamReader.getLocalName()) );
+		
+		return out;	
 	}
 	
 	private QSup parseQSup(XMLStreamReader xmlStreamReader) throws XMLStreamException {

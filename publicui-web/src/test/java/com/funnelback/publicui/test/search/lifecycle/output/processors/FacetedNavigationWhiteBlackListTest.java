@@ -27,9 +27,9 @@ public class FacetedNavigationWhiteBlackListTest {
 	@Before
 	public void before() throws Exception {
 		Category ct = new Category("Category Type", "");
-		ct.getValues().add(new Facet.CategoryValue("value1", "category1", 5, "a=b"));
-		ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d"));
-		ct.getValues().add(new Facet.CategoryValue("value3", "category3", 13, "e=f"));
+		ct.getValues().add(new Facet.CategoryValue("value1", "category1", 5, "a=b", "a"));
+		ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d", "c"));
+		ct.getValues().add(new Facet.CategoryValue("value3", "category3", 13, "e=f", "e"));
 		
 		Facet f = new Facet("Test Facet");
 		f.getCategories().add(ct);

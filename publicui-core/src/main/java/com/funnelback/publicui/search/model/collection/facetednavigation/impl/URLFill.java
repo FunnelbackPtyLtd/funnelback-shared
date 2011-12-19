@@ -50,7 +50,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 						item,
 						item,
 						count,
-						getQueryStringParamName() + "=" + URLEncoder.encode(vValue, "UTF-8")));
+						getQueryStringParamName() + "=" + URLEncoder.encode(vValue, "UTF-8"),
+						getMetadataClass()));
 			}
 		}
 		return categories;

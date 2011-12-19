@@ -51,7 +51,8 @@ public class XPathFill extends CategoryDefinition implements MetadataBasedCatego
 						mdv.value,
 						mdv.value,
 						count,
-						getQueryStringParamName() + "=" + URLEncoder.encode(mdv.value, "UTF-8")));
+						getQueryStringParamName() + "=" + URLEncoder.encode(mdv.value, "UTF-8"),
+						getMetadataClass()));
 			}
 		}
 		return categories;

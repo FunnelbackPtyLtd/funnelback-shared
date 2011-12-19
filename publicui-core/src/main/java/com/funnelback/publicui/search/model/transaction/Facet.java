@@ -178,6 +178,14 @@ public class Facet {
 		 * (Ex: <code>f.Location|X=Sydney</code>).
 		 **/
 		@Getter @Setter private String queryStringParam;
+		
+		/**
+		 * Constraint used to get this value. Can be a metadata class
+		 * or a GScope number, depending of the facet type.
+		 * 
+		 * @since 11.2
+		 */
+		@Getter @Setter private String constraint;
 
 		@Override
 		public String toString() {

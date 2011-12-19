@@ -35,7 +35,8 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 					Integer.toString(userSetGScope),
 					data,
 					rp.getGScopeCounts().get(userSetGScope),
-					getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8")));
+					getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8"),
+					Integer.toString(getGScopeNumber())));
 		}
 		return categories;
 	}

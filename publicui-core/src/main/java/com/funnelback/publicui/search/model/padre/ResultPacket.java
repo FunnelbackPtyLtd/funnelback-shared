@@ -108,6 +108,38 @@ public class ResultPacket {
 	@Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
 	
 	/**
+	 * <p>Metadata counts (Used in faceted navigation) including top n results
+	 * for each count.</p>
+	 * 
+	 * <p>The key is the couple of <code>class:value</code>. The value is a list of
+	 * the first n results that would be returned if the metadata constraint was applied.</p>
+	 * 
+	 * <p>The key is the same one as the {@link ResultPacket#rmcs} map.</p>
+	 * 
+	 * <p>Examples:
+	 * 	<ul>
+	 * 		<li>a:shakespeare =>
+	 * 			<ul>
+	 * 				<li>Romeo and Juliet</li>
+	 * 				<li>Cleopatra</li>
+	 * 				<li>...</li>
+	 * 			</ul>
+	 * 		</li>
+	 * 
+	 * 		<li>a:voltaire =>
+	 * 			<ul>
+	 * 				<li>Zadig</li>
+	 * 				<li>...</li>
+	 * 			</ul>
+	 * 		</li>
+	 * 	</ul>
+	 * </p>
+	 * 
+	 * @since 11.2
+	 */
+	@Getter private final Map<String, List<RMCItemResult>> rmcItemResults = new HashMap<String, List<RMCItemResult>>();
+	
+	/**
 	 * <p>URL counts (Used in faceted navigation).</p>
 	 * 
 	 * <p>The key is the URL itself and the value is the count.
@@ -256,6 +288,10 @@ public class ResultPacket {
 		
 		public static final String RMC = "rmc";
 		public static final String RMC_ITEM = "item";
+		public static final String RMC_COUNT = "count";
+		
+		public static final String RMC_ITEM_RESULTS = "rmc_item_results";
+		public static final String RMC_ITEM_RESULT = "rmc_item_result";
 		
 		public static final String URLCOUNT = "urlcount";
 		public static final String URLCOUNT_ITEM = "item";
