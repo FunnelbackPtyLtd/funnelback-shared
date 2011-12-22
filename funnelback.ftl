@@ -160,7 +160,7 @@
     <p>An example configuration is:
         <ol>
             <li>
-                <strong>Create extra search config file (<code>$SEARCH_HOME/conf/$COLLECTION_NAME/extra_search.<extra search name>.cfg</code>)</strong><br />
+                <strong>Create extra search config file</strong> (<code>$SEARCH_HOME/conf/$COLLECTION_NAME/extra_search.<extra search name>.cfg</code>)<br />
                 <code>collection=&lt;collection name to search&gt;</code><br />
                 <code>query_processor_options=-num_ranks3</code>
             </li>
@@ -169,19 +169,19 @@
             </li>
             <li><strong>Add extra search form code to search template</strong><br />
                 <pre>
-                &lt;div id="extraSearch"&gt;
-                    &lt;@fb.ExtraResults name="&lt;extra search name&gt;"&gt;
-                        &lt;#if response.resultPacket.results?size &lt; 0&gt;
-                            &lt;h3>Related news&gt;/h3&gt;
-                                &lt;#list response.resultPacket.results as result&gt;
-                                    &lt;p class="fb-extra-result"&gt;
-                                        ${result.title}
-                                    &lt;/p&gt;
-                                &lt;/#list&gt;
-                            &lt;/div&gt;
-                        &lt;/#if&gt;
-                    &lt;/@fb.ExtraResults&gt;
-                &lt;/div&gt;
+                &lt;div id="extraSearch"&gt;<br />
+                    &lt;@fb.ExtraResults name="&lt;extra search name&gt;"&gt;<br />
+                        &lt;#if response.resultPacket.results?size &lt; 0&gt;<br />
+                            &lt;h3>Related news&gt;/h3&gt;<br />
+                                &lt;#list response.resultPacket.results as result&gt;<br />
+                                    &lt;p class="fb-extra-result"&gt;<br />
+                                        ${result.title}<br />
+                                    &lt;/p&gt;<br />
+                                &lt;/#list&gt;<br />
+                            &lt;/div&gt;<br />
+                        &lt;/#if&gt;<br />
+                    &lt;/@fb.ExtraResults&gt;<br />
+                &lt;/div&gt;<br />
                 </pre>
             </li>
         </ol>
