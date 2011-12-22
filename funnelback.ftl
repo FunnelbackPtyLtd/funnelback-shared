@@ -157,6 +157,34 @@
     <p>The extra search needs to be properly configured in
     <code>collection.cfg</code> for the results to be available.</p>
 
+    <p>An example configuration is:
+        <ol>
+            <li>
+                <strong>Create extra search config file (<code>$SEARCH_HOME/conf/$COLLECTION_NAME/extra_search.<extra search name>.cfg</code>)</strong><br />
+                <code>collection=<collection name to search></code><br />
+                <code>query_processor_options=-num_ranks3</code>
+            </li>
+            <li><strong>Reference extra search config in collection.cfg</strong><br />
+                <code>ui.modern.extra_searches=<extra search name></code>
+            </li>
+            <li><strong>Add extra search form code to search template</strong><br />
+                &lt;div id="extraSearch"&gt;
+                    &lt;@fb.ExtraResults name="&lt;extra search name&gt;"&gt;
+                        &lt;#if response.resultPacket.results?size &lt; 0&gt;
+                            &lt;h3>Related news&gt;/h3&gt;
+                                &lt;#list response.resultPacket.results as result&gt;
+                                    &lt;p class="fb-extra-result"&gt;
+                                        ${result.title}
+                                    &lt;/p&gt;
+                                &lt;/#list&gt;
+                            &lt;/div&gt;
+                        &lt;/#if&gt;
+                    &lt;/@fb.ExtraResults&gt;
+                &lt;/div&gt;
+            </li>
+        </ol>
+    </p>
+
     @param name Name of the extra search results to process, as configured in <code>collection.cfg</code>.
 -->
 <#macro ExtraResults name>
