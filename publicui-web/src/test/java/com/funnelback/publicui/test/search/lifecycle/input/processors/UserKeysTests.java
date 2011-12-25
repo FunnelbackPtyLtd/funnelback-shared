@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -29,12 +30,16 @@ public class UserKeysTests {
 	@Autowired
 	private I18n i18n;
 	
+	@Autowired
+	private AutowireCapableBeanFactory beanFactory;
+	
 	private UserKeys processor;
 	
 	@Before
 	public void before() {
 		processor = new UserKeys();
 		processor.setI18n(i18n);
+		processor.setBeanFactory(beanFactory);
 	}
 	
 	@Test
