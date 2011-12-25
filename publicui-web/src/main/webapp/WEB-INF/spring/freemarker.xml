@@ -1,11 +1,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL tempaltes -->
+	<!-- Access FreeMarker bean wrapper so that we can pass Enums to FTL templates -->
 	<bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
 	<bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
 
-	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+	<bean id="freemarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths">
 			<list>
 				<value>file:#{searchHome.absolutePath}/</value>
@@ -117,6 +119,19 @@
 		</property>
 	</bean>
 
+	<util:property-path id="freemarkerConfiguration" path="freemarkerConfigurer.configuration" />
+	
+	<!-- Customise FreeMarker Exception handling -->
+	<bean id="setTemplateExceptionHandler" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="freemarkerConfiguration" />
+		<property name="targetMethod" value="setTemplateExceptionHandler" />
+		<property name="arguments">
+			<array>
+				<ref bean="defaultTemplateExceptionHandler" />
+			</array>
+		</property>
+ 	</bean>
+	
 	<!-- Specific view for OpenSearch controller. It needs a specific configuration as it outputs XML and not HTML -->
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="openSearchView">
 		<property name="url" value="open-search.ftl" />

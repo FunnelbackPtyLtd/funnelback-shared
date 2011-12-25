@@ -93,4 +93,6 @@
 
 	<bean class="com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser" />
 	
+	<bean class="com.funnelback.publicui.search.web.exception.DefaultTemplateExceptionHandler" />
+	
 </beans>
