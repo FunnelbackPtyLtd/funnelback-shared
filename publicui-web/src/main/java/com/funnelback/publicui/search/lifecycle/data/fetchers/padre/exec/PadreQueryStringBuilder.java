@@ -76,7 +76,11 @@ public class PadreQueryStringBuilder {
 					}
 				}
 			} else {
-				out.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
+				if (entry.getValue() != null) {
+					out.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
+				} else {
+					out.append(entry.getKey() + "=");
+				}
 			}
 		
 			if (it.hasNext()) {
