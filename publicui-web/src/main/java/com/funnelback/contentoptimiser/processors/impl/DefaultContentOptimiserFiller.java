@@ -44,8 +44,6 @@ import com.google.common.collect.SetMultimap;
 @Component
 public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
-
-
 	private static final char[] UNSUPPORTED_QUERY_OPTIONS = new char[] {'"',':','[',']','!','-','+','|','`','*','<','#'};
 	
 	@Autowired
@@ -73,7 +71,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				"titleWords", "titleWords_abs",	"titleWords_abs_neg","titleWords_neg",
 				"stopwordFraction","stopwordFraction_abs","stopwordFraction_abs_neg","stopwordFraction_neg",
 				"maxFreq","maxFreq_abs","maxFreq_abs_neg","maxFreq_neg",
-				"compressionFactor","compressionFactor_abs","compressionFactor_abs_neg", "compressionFactor_neg",};
+				"compressionFactor","compressionFactor_abs","compressionFactor_abs_neg", "compressionFactor_neg","lexical_span_score"};
 		Set<String> contentSet = new HashSet<String>(Arrays.asList(content)); 
 		String[] link = {"offlink","onlink","host_linked_hosts_score","host_click_score","host_linking_hosts_score","host_incoming_link_score"};
 		Set<String> linkSet = new HashSet<String>(Arrays.asList(link));
