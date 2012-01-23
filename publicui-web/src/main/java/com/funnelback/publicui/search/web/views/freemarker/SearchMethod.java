@@ -53,8 +53,8 @@ public class SearchMethod extends AbstractTemplateMethod {
 		log.debug("Searching '" + query + "' on collection '" + collectionId);
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(collection);
-		sq.setOriginalQuery(q.getOriginalQuery());
-		sq.setQuery(q.getOriginalQuery());
+		sq.setOriginalQuery(query);
+		sq.setQuery(query);
 		sq.setProfile(q.getProfile());
 
 		if (arguments.size() == 4) {
