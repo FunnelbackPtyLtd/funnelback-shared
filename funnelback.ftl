@@ -138,13 +138,13 @@
     @param params Map of additional parameters (ex: <code>{"num_ranks" : "3"}</code>).
 -->
 <#macro ExtraSearch question collection query params={}>
-    <#local questionBackup = question!"" />
-    <#local responseBackup = response!"" />
-    <#local errorBackup = error!"" />
+    <#local questionBackup = question!{} />
+    <#local responseBackup = response!{} />
+    <#local errorBackup = error!{} />
     <#local extra = search(question, collection, query, params)>
-    <#global question = extra.question!"" />
-    <#global response = extra.response!"" />
-    <#global error = extra.error!"" />
+    <#global question = extra.question!{} />
+    <#global response = extra.response!{} />
+    <#global error = extra.error!{} />
     <#nested>
     <#global question = questionBackup />
     <#global response = responseBackup />
