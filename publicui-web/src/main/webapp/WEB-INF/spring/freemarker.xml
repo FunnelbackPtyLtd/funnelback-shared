@@ -7,14 +7,13 @@
 	<bean id="freemarkerWrapper" class="freemarker.ext.beans.BeansWrapper" factory-method="getDefaultInstance" />
 	<bean id="freemarkerEnumModels" factory-bean="freemarkerWrapper" factory-method="getEnumModels" />
 
-	<bean id="freemarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-		<property name="templateLoaderPaths">
+	<bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+ 		<property name="templateLoaderPaths">
 			<list>
 				<value>file:#{searchHome.absolutePath}/</value>
 				<value>/WEB-INF/freemarker/</value>
 			</list>
-		</property>
-		<property name="freemarkerSettings">
+		</property>		<property name="freemarkerSettings">
 			<props>
 				<prop key="url_escaping_charset">UTF-8</prop>
 			</props>
@@ -118,9 +117,11 @@
 			</map>
 		</property>
 	</bean>
-
-	<util:property-path id="freemarkerConfiguration" path="freemarkerConfigurer.configuration" />
 	
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+   		<property name="configuration" ref="freemarkerConfiguration" />
+	</bean>
+
 	<!-- Customise FreeMarker Exception handling -->
 	<bean id="setTemplateExceptionHandler" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject" ref="freemarkerConfiguration" />
