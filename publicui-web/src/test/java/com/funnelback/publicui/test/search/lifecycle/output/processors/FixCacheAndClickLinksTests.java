@@ -94,7 +94,7 @@ public class FixCacheAndClickLinksTests {
 			Assert.assertTrue(trackingUrl.contains("CLICK_LINK?"));
 			
 			Assert.assertTrue(trackingUrl.contains("rank=" + r.getRank()));
-			Assert.assertTrue(trackingUrl.contains("collection=" + r.getCollection()));
+			Assert.assertTrue(trackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
 			Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
 			Assert.assertTrue(trackingUrl.contains("index_url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
 			Assert.assertTrue(URLDecoder.decode(trackingUrl, "UTF-8").matches(".*auth=[a-zA-Z0-9+/]{22}.*"));
