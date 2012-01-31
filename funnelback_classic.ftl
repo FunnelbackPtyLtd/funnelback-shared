@@ -64,9 +64,9 @@
                 <#local url = url + changeParam(QueryString, "start_rank", (pg-1) * rs.numRanks+1) />
 
                 <a href="${url?html}" <#nested>>${pg}</a>
-                <#if pg_has_next> ${separator} </#if>
-
             </#if>
+
+            <#if pg_has_next> ${separator} </#if>
         </#list>
 
         <#-- NEXT link -->
