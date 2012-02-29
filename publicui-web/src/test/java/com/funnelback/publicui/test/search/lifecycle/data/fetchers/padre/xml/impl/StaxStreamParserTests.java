@@ -381,6 +381,10 @@ public class StaxStreamParserTests {
 		// Geo features
 		Result fifth = rp.getResults().get(4);
 		Assert.assertEquals(1295.8, fifth.getKmFromOrigin(), .001);
+		// Padre can return XML without <summary> tags on some conditions
+		Assert.assertNull(fifth.getSummary());
+		// And also without cache_url too
+		Assert.assertNull(fifth.getCacheUrl());
 
 	}
 	
