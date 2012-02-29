@@ -198,8 +198,12 @@
 					</md>
 					
 				</xsl:for-each>
-				<summary><xsl:value-of select="summary" /></summary>
-				<cache_url><xsl:value-of select="cacheUrl" /></cache_url>
+				<xsl:if test="summary">
+					<summary><xsl:value-of select="summary" /></summary>
+				</xsl:if>
+				<xsl:if test="cacheUrl">
+					<cache_url><xsl:value-of select="cacheUrl" /></cache_url>
+				</xsl:if>
 				<xsl:if test="date">
 					<date><xsl:value-of select="date" /></date>
 				</xsl:if>
