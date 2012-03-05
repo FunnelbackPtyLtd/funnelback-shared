@@ -45,7 +45,7 @@ public class Collection {
 	 * are run at various stages in a search lifecycle.</p>
 	 */
 	public static enum Hook {
-		pre_datafetch, post_datafetch, pre_process, post_process;
+		pre_datafetch, post_datafetch, pre_process, post_process, extra_searches;
 		
 		/**
 		 * <p>Name of the Groovy variable that will contain the search transaction,

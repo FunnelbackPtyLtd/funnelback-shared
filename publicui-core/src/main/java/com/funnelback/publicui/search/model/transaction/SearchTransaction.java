@@ -42,7 +42,7 @@ public class SearchTransaction {
 	/**
 	 * <p>Any additional extra search transactions performed during this transaction.<p>
 	 * 
-	 * <p>To access result data from an extra search source, use the nake
+	 * <p>To access result data from an extra search source, use the name
 	 * of this source as a key on this Map.</p>
 	 * 
 	 * @see <code>ui.modern.extra_searches</code>
