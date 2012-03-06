@@ -452,7 +452,7 @@
             <#if fdef.name == s.facet.name>
                 <div class="${class}"> ${s.facet.name}
                     <#if QueryString?contains("f." + fdef.name?url)>
-                        : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, fdef.allQueryStringParamNames), ["start_rank"] + fdef.allQueryStringParamNames)?html}">all</a>
+                        : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(urlDecode(QueryString), fdef.allQueryStringParamNames), ["start_rank"] + fdef.allQueryStringParamNames)?html}">all</a>
                     </#if>
                     <@FacetBreadCrumb categoryDefinitions=fdef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
                 </div>
