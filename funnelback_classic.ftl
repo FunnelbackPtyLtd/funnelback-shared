@@ -226,6 +226,11 @@
     <p>The content will be evaluated only if there are results,
     and once per result found.</p>
 
+    <p><strong>Note:</strong> This will loop over a list containing
+    a list of TierBar and Result objects, so you need to check the
+    object type in the loop before trying to access its fields like
+    title, etc.</p>
+
     @provides the search results as <code>${s.r}</code>.
 -->
 <#macro Results>
