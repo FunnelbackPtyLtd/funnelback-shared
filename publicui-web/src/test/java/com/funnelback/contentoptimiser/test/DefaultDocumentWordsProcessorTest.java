@@ -97,6 +97,19 @@ public class DefaultDocumentWordsProcessorTest {
 	}
 	
 	@Test
+	public void testNoContentWords() {
+		SetMultimap<String, String> stemMatches = HashMultimap.create();
+		stemMatches.put("ones", "one");
+		stemMatches.put("twos", "two");
+		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one_t  ones_t  twos_t",anchors,stemMatches);
+		SingleTermFrequencies content = dwp.explainQueryTerm("one",new Collection("test1", null));
+		
+		Assert.assertEquals(2, content.getCount("t").intValue());
+		Assert.assertEquals(0,content.getCount());
+
+	}
+	
+	@Test
 	public void testDocumentOverview() {
 		SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
 		DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors,emptyStemMatches);

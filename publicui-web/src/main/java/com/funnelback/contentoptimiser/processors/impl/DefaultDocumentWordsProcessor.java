@@ -80,8 +80,10 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
 			}
 		});
 		
-		for(Entry<String,Integer> e : countByTerms.get("_").entrySet()) {
-			termsSortedByFrequency.add(e);
+		if(countByTerms.get("_") != null) {
+			for(Entry<String,Integer> e : countByTerms.get("_").entrySet()) {
+				termsSortedByFrequency.add(e);
+			}
 		}
 	}
 
