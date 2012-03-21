@@ -83,7 +83,7 @@ public class FacetScopeRemoveMethodTest extends AbstractMethodTest {
 						buildSequenceStringArguments("f.Industry|Z", "f.Industry|Y")
 						)
 				);
-		Assert.assertEquals("key1=value1&facetScope=f.State%257CX%3Dqld&key2=value2", result);			
+		Assert.assertEquals("key1=value1&facetScope=%26f.State%257CX%3Dqld&key2=value2", result);			
 	}
 
 	
