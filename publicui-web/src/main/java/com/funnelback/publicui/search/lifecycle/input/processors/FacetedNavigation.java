@@ -79,7 +79,7 @@ public class FacetedNavigation implements InputProcessor {
 							}
 						});
 						
-						if (f != null) {
+						if (f != null && values != null) {
 							searchTransaction.getQuestion().getSelectedFacets().add(f.getName());
 							
 							// Set of constraints for this specific facet
