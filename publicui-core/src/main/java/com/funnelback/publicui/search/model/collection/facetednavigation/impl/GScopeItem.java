@@ -44,7 +44,7 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
-		return RequestParameters.FACET_PREFIX + facetName;
+		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + userSetGScope;
 	}
 	
 	/** {@inheritDoc} */

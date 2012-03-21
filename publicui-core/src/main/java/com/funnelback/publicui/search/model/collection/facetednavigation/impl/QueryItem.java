@@ -49,7 +49,7 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
 	/** {@inheritDoc} */
 	@Override
 	public String getQueryStringParamName() {
-		return RequestParameters.FACET_PREFIX + facetName;
+		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + gscopefield;
 	}
 	
 	/** {@inheritDoc} */

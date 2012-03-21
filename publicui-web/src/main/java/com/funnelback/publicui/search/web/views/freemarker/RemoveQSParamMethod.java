@@ -1,8 +1,12 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import lombok.SneakyThrows;
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -22,6 +26,7 @@ public class RemoveQSParamMethod extends AbstractTemplateMethod {
 	}
 	
 	@Override
+	@SneakyThrows(UnsupportedEncodingException.class)
 	public Object execMethod(@SuppressWarnings("rawtypes")List arguments) throws TemplateModelException {
 		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
 		TemplateSequenceModel paramNames;
@@ -40,10 +45,14 @@ public class RemoveQSParamMethod extends AbstractTemplateMethod {
 			qs = m.replaceAll("");			
 			
 			// Try with the same parameter, but with encoded spaces
-			// as it seems Chrome automatically encodes them (?!)
 			p = Pattern.compile("([&;]|^)\\Q" + paramNames.get(i).toString().replace(" ", "%20") + "\\E=[^&]*");
 			m = p.matcher(qs);
-			qs = m.replaceAll("");			
+			qs = m.replaceAll("");
+			
+			// And with encoded form
+			p = Pattern.compile("([&;]|^)\\Q" + URLEncoder.encode(paramNames.get(i).toString(), "UTF-8").replace("+", "%20") + "\\E=[^&]*");
+			m = p.matcher(qs);
+			qs = m.replaceAll("");
 
 		}
 		
