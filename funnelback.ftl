@@ -343,14 +343,22 @@
     <p>Equivalent of the <code><@Facet /></code> tag but allowing to select
     multiple categories using checkboxes.</p>
 
+    <p>If both <code>name</code> and <code>names</code> are not set
+    this tag iterates over all the facets.</p>
+
+    @param name Name of a specific facet to display, optional.
+    @param names A list of specific facets to display, optional.
+
     @provides The current facet being iterated as <code>${fb.facet}</code>.
 -->
-<#macro MultiFacet>
+<#macro MultiFacet name="" names=[]>
     <#if response?exists && response.facets?exists>
         <#-- We use checkboxes, so enclose them in a form tag -->
         <form class="fb-facets-multiple">
         <#list response.facets as f>
-            <#if f.hasValues() || question.selectedFacets?seq_contains(f.name)>
+            <#if ((f.name == name || names?seq_contains(f.name)) ||
+                    (name == "" && names?size == 0))
+                && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
                 <#assign facet = f in fb>
                 <#-- Do we have values for this facet in the extra searches ? -->
                 <#if question.selectedFacets?seq_contains(f.name) && extra?exists
