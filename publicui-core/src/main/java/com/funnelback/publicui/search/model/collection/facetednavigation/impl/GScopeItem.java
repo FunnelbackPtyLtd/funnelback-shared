@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
@@ -28,8 +29,9 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
-	public List<CategoryValue> computeValues(final ResultPacket rp) {
+	public List<CategoryValue> computeValues(final SearchTransaction st) {
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
+		ResultPacket rp = st.getResponse().getResultPacket();
 		if (rp.getGScopeCounts().get(userSetGScope) != null) {
 			categories.add(new CategoryValue(
 					Integer.toString(userSetGScope),

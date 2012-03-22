@@ -63,7 +63,7 @@ public class FacetedNavigation implements OutputProcessor {
 		
 		// Fill the values for this category
 		Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
-		category.getValues().addAll(cDef.computeValues(searchTransaction.getResponse().getResultPacket()));
+		category.getValues().addAll(cDef.computeValues(searchTransaction));
 		Collections.sort(category.getValues(), new CategoryValue.ByCountComparator(true));
 	
 		// Find out if this category is currently selected

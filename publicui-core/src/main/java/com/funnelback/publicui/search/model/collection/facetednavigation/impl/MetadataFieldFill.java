@@ -10,9 +10,9 @@ import lombok.SneakyThrows;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>{@link CategoryDefinition} based on a metadata class.</p>
@@ -26,11 +26,11 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 	/** {@inheritDoc} */
 	@Override
 	@SneakyThrows(UnsupportedEncodingException.class)
-	public List<CategoryValue> computeValues(final ResultPacket rp) {
+	public List<CategoryValue> computeValues(final SearchTransaction st) {
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		
 		// For each metadata count <rmc item="a:new south wales">42</rmc>
-		for (Entry<String, Integer> entry : rp.getRmcs().entrySet()) {
+		for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
 			String item = entry.getKey();
 			int count = entry.getValue();
 			MetadataAndValue mdv = parseMetadata(item);

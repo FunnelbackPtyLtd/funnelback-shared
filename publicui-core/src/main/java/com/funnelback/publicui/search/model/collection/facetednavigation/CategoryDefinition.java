@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -84,10 +85,10 @@ public abstract class CategoryDefinition {
 	 *	</ul>
 	 * </p>
 	 * 
-	 * @param rp Result packet to use to compute the values.
+	 * @param rp SearchTransaction to use to compute the values.
 	 * @return The computed values.
 	 */
-	public abstract List<CategoryValue> computeValues(final ResultPacket rp);
+	public abstract List<CategoryValue> computeValues(final SearchTransaction st);
 	
 	/**
 	 * Get the query string parameter name for this category.
