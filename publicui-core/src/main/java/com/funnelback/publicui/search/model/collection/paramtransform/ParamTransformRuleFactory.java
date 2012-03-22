@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.Criteria;
 import com.funnelback.publicui.search.model.collection.paramtransform.criteria.ParameterMatchesValueCriteria;
@@ -23,7 +23,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
  * 
  * @see TransformRule
  */
-@CommonsLog
+@Log4j
 public class ParamTransformRuleFactory {
 
 	/**

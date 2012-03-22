@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -26,7 +26,7 @@ import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
  * Builds {@link Result}s from various input sources.
  * 
  */
-@CommonsLog
+@Log4j
 public class ResultFactory {
 
 	/**

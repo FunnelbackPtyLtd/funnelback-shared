@@ -7,9 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
-@CommonsLog
+@Log4j
 public class AnchorDescription implements Comparable<AnchorDescription> {
 
 	@Getter private final String anchorText;

@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.SneakyThrows;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
@@ -26,7 +26,7 @@ import freemarker.template.TemplateSequenceModel;
  * the <tt>facetScope</tt> parameter of the query string.
  *
  */
-@CommonsLog
+@Log4j
 public class FacetScopeRemoveMethod extends AbstractTemplateMethod {
 
 	public static final String NAME = "facetScopeRemove"; 

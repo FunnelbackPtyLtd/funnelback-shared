@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.util.Date;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.log.LogService;
  *
  */
 @Component("padreReturnCodeOutputProcessor")
-@CommonsLog
+@Log4j
 public class PadreReturnCode implements OutputProcessor {
 
 	@Autowired

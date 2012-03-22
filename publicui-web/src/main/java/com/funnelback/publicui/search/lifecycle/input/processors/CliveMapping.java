@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.ArrayList;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  *
  */
 @Component("cliveMappingInputProcessor")
-@CommonsLog
+@Log4j
 public class CliveMapping implements InputProcessor {
 
 	@Override

@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 
  * @see Collection.Hook
  */
-@CommonsLog
+@Log4j
 public class GenericHookScriptRunner implements DataFetcher, InputProcessor, OutputProcessor {
 
 	public static enum Phase {

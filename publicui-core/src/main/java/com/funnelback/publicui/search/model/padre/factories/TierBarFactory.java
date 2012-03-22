@@ -9,12 +9,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
-@CommonsLog
+@Log4j
 public class TierBarFactory {
 
 	private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {

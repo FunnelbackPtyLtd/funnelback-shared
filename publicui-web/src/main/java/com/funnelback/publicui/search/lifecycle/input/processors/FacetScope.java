@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
  * "within the same category" checkox) to valid facet parameters
  */
 @Component("facetScopeInputProcessor")
-@CommonsLog
+@Log4j
 public class FacetScope implements InputProcessor {
 
 	@Override

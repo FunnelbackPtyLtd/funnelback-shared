@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +24,7 @@ import freemarker.template.TemplateScalarModel;
 /**
  * Performs an extra search.
  */
-@CommonsLog
+@Log4j
 public class SearchMethod extends AbstractTemplateMethod {
 
 	public final static String NAME = "search";

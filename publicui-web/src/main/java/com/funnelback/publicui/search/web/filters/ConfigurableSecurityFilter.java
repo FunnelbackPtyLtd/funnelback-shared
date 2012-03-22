@@ -14,7 +14,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ import waffle.servlet.NegotiateSecurityFilter;
  * Spring-specific parameter (As we use the {@link DelegatingFilterProxy} facility) and
  * it's passed along to WAFFLE, which don't recognize it and throws an exception.</p>
  */
-@CommonsLog
+@Log4j
 public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 
 	@Value("#{appProperties['authentication']?:false}")

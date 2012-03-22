@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -30,7 +30,7 @@ import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.utils.PanLook;
 import com.funnelback.utils.PanLookFactory;
 
-@CommonsLog
+@Log4j
 @Component
 public class DefaultAnchorsFetcher implements AnchorsFetcher {
 	

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -39,7 +39,7 @@ import com.funnelback.utils.CgiRunnerFactory;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-@CommonsLog
+@Log4j
 @Component
 public class DefaultDocFromCache implements DocFromCache {
 	@Autowired

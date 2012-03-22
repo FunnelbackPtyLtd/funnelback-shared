@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import com.funnelback.publicui.utils.MapKeyFilter;
  * {@link InputProcessor}
  *
  */
-@CommonsLog
+@Log4j
 @Component("metaParametersInputProcessor")
 public class MetaParameters implements InputProcessor {
 

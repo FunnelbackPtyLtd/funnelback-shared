@@ -8,14 +8,14 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
-@CommonsLog
+@Log4j
 public class DetailsFactory {
 																					
 	private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();

@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.IOException;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.pool.KeyedObjectPool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
 /**
  * Uses a pool of forked PADRE communicate with them using stdin/out/err
  */
-@CommonsLog
+@Log4j
 @Component("padreForkingPooled")
 public class PadreForkingPooled implements DataFetcher {
 

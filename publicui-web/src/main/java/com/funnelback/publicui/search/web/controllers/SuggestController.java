@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.Suggester.Sort;
  * Query completion / suggestion controller. Wrapper around 'padre-qs'
  */
 @Controller
-@CommonsLog
+@Log4j
 public class SuggestController extends AbstractRunPadreBinaryController {
 
 	private static final String PADRE_QS = "padre-qs";

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.OS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import com.funnelback.publicui.utils.web.CGIEnvironment;
  * 
  * Controllers can subclass it to easily map an URL to a PADRE binary.
  */
-@CommonsLog
+@Log4j
 public abstract class AbstractRunPadreBinaryController {
 
 	protected abstract File getSearchHome();

@@ -13,6 +13,7 @@ public class ContentOptimiserUserRestrictions {
 	
 	public ContentOptimiserUserRestrictions(String nonAdminAccess, boolean onAdminPort) {
 		this.onAdminPort = onAdminPort;
+
 		// work out what level of access non admins have 
 		if (nonAdminAccess != null) {
 			if(Config.isTrue(nonAdminAccess)) {

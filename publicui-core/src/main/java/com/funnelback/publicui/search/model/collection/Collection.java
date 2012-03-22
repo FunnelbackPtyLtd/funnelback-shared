@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @ToString
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses"})
-@CommonsLog
+@Log4j
 public class Collection {
 
 	/** Possible collection types. */

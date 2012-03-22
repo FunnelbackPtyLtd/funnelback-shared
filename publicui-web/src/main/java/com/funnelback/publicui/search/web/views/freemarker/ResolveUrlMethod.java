@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModelException;
@@ -23,7 +23,7 @@ import freemarker.template.TemplateScalarModel;
  * 
  * See http://docs.oracle.com/javase/6/docs/api/java/net/URL.html#URL(java.net.URL, java.lang.String)
  */
-@CommonsLog
+@Log4j
 public class ResolveUrlMethod extends AbstractTemplateMethod {
 
 	public ResolveUrlMethod() {

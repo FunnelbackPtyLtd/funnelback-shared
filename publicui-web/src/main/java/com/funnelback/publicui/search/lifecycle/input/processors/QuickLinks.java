@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * If the query_processor_option already contains quicklinks related
  * options their value takes precedence.
  */
-@CommonsLog
+@Log4j
 @Component("quickLinksInputProcessor")
 public class QuickLinks implements InputProcessor {
 

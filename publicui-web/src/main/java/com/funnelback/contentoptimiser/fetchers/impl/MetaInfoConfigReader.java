@@ -6,14 +6,14 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import com.funnelback.contentoptimiser.ConfigReader;
 import com.funnelback.contentoptimiser.processors.impl.MetaInfo;
 import com.google.common.io.Files;
 import com.thoughtworks.xstream.XStream;
 
-@CommonsLog
+@Log4j
 public class MetaInfoConfigReader implements ConfigReader<MetaInfo> {
 
 	@SuppressWarnings("unchecked")

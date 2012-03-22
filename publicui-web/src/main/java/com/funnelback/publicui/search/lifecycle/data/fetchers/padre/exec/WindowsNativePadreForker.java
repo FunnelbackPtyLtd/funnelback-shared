@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.sun.jna.Native;
@@ -23,7 +23,7 @@ import com.sun.jna.ptr.IntByReference;
 /**
  * Forks PADRE using Windows Native calls, in order to use impersonation.
  */
-@CommonsLog
+@Log4j
 @RequiredArgsConstructor
 public class WindowsNativePadreForker implements PadreForker {
 	

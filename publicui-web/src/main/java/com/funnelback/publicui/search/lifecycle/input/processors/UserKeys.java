@@ -5,7 +5,7 @@ import groovy.swing.factory.BeanFactory;
 import java.util.List;
 
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * Fetches user keys for early binding DLS
  */
 @Component("userKeysInputProcessor")
-@CommonsLog
+@Log4j
 public class UserKeys implements InputProcessor {
 	
 	@Autowired

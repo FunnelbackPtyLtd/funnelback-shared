@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Checks access restriction at a collection level and either grant access,
  * deny access, or redirects user to an alternate collection.
  */
-@CommonsLog
+@Log4j
 public class AccessRestrictionInterceptor implements HandlerInterceptor {
 
 	/**

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
 
 @Repository
-@CommonsLog
+@Log4j
 public class LocalDataRepository implements DataRepository {
 
 	private static final String[] FOLDERS = {
