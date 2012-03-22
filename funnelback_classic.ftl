@@ -499,27 +499,45 @@
 -->
 <#macro FacetBreadCrumb categoryDefinitions selectedCategoryValues separator>
     <#list categoryDefinitions as def>
-        <#if selectedCategoryValues?keys?seq_contains(def.queryStringParamName)>
-            <#-- Find if we are processing the last selected value (leaf node) -->
-            <#local last = true>
-            <#list def.allQueryStringParamNames as param>
-                <#if param != def.queryStringParamName && selectedCategoryValues?keys?seq_contains(param)>
-                    <#local last = false>
-                    <#break>
+        <#if def.class.simpleName == "URLFill" && selectedCategoryValues?keys?seq_contains(def.queryStringParamName)>
+            <#-- Special case for URLFill facets: Split on slashes -->
+            <#assign path = selectedCategoryValues[def.queryStringParamName][0]>
+            <#assign pathBuilding = "">
+            <#list path?split("/", "r") as part>
+                <#assign pathBuilding = pathBuilding + "/" + part>
+                <#-- Don't display bread crumb for parts that are part
+                     of the root URL -->
+                <#if ! def.data?contains(part+"/")>
+                    <#if part_has_next>
+                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${pathBuilding?url}">${part}</a>
+                    <#else>
+                        ${separator} ${part}
+                    </#if>
                 </#if>
             </#list>
+        <#else>
+            <#if selectedCategoryValues?keys?seq_contains(def.queryStringParamName)>
+                <#-- Find if we are processing the last selected value (leaf node) -->
+                <#local last = true>
+                <#list def.allQueryStringParamNames as param>
+                    <#if param != def.queryStringParamName && selectedCategoryValues?keys?seq_contains(param)>
+                        <#local last = false>
+                        <#break>
+                    </#if>
+                </#list>
 
-            <#if last == true>
-                ${separator} ${selectedCategoryValues[def.queryStringParamName][0]}
-            <#else>
-                ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
-                    ${selectedCategoryValues[def.queryStringParamName][0]}
-                </a>
-                <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
+                <#if last == true>
+                    ${separator} ${selectedCategoryValues[def.queryStringParamName][0]}
+                <#else>
+                    ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
+                        ${selectedCategoryValues[def.queryStringParamName][0]}
+                    </a>
+                    <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
+                </#if>
+                <#-- We've displayed one step in the breadcrumb, no need to inspect
+                     other category definitions -->
+                <#break />
             </#if>
-            <#-- We've displayed one step in the breadcrumb, no need to inspect
-                 other category definitions -->
-            <#break />
         </#if>
     </#list>
 </#macro>
@@ -538,8 +556,9 @@
 -->
 <#macro CategoryName class="categoryName">
     <#if s.categoryValue?exists>
+        <#assign paramName = s.categoryValue.queryStringParam?split("=")[0]>
         <span class="${class}">
-            <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(QueryString, "start_rank")?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label}</a>
+            <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label}</a>
         </span>
     </#if>
 </#macro>
@@ -704,8 +723,10 @@
                 <#assign category = c in s>
                 <#list c.values as cv>
                     <#-- Find if this category has been selected. If it's the case, don't display
-                         it in the list -->
-                    <#if ! question.selectedCategoryValues?keys?seq_contains(cv.queryStringParam?split("=")[0])>
+                         it in the list, except if it's an URL fill facet as we must display sub-folders
+                         of the currently selected folder -->
+                    <#if ! question.selectedCategoryValues?keys?seq_contains(cv.queryStringParam?split("=")[0])
+                        || c.queryStringParamName?contains("|url")>
                         <#assign categoryValue = cv in s>
                         <#local nbCategories = nbCategories+1 />
                         <#if nbCategories &gt; max><#return></#if>
