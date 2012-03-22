@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
@@ -26,6 +27,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Log4j
 public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 
+	private static final String SEP = ",";
+	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)
@@ -34,26 +37,43 @@ public class FacetedNavigationWhiteBlackList implements OutputProcessor {
 			
 			Config config = searchTransaction.getQuestion().getCollection().getConfiguration();
 			for (Facet f: searchTransaction.getResponse().getFacets()) {
-				if (config.hasValue(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())) {
-					applyWhiteList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName()).toLowerCase().split(","));
-					
-					log.debug("Applied white list '"+config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName())+ "'"
+				String[] whiteList = getCombinedList(
+						config.value(Keys.FacetedNavigation.WHITE_LIST+"."+f.getName()),
+						config.value(Keys.FacetedNavigation.WHITE_LIST));
+
+				if (whiteList.length > 0) {
+					applyWhiteList(f.getCategories(), whiteList);
+					log.debug("Applied white list '"+StringUtils.join(whiteList, SEP)+ "'"
 							+ " to facet '" + f.getName() + "'");
 				}
 			
-				if (config.hasValue(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())) {
-					applyBlackList(f.getCategories(),
-						config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName()).toLowerCase().split(","));
-					
-					log.debug("Applied black list '"+config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName())+"'"
+				String[] blackList = getCombinedList(
+						config.value(Keys.FacetedNavigation.BLACK_LIST+"."+f.getName()),
+						config.value(Keys.FacetedNavigation.BLACK_LIST));
+
+				if (blackList.length > 0) {
+					applyBlackList(f.getCategories(), blackList);
+					log.debug("Applied black list '"+StringUtils.join(blackList, SEP)+"'"
 							+ " to facet '" + f.getName() + "'");
-				}
-				
+				}				
 			}
 		}
 	}
 
+	private String[] getCombinedList(final String list1, final String list2) {
+		if (list1 == null && list2 == null) {
+			return new String[0];
+		} else if (list1 == null) {
+			return list2.toLowerCase().split(SEP);
+		} else if (list2 == null) {
+			return list1.toLowerCase().split(SEP);
+		} else {
+			return (String[]) ArrayUtils.addAll(
+					list1.toLowerCase().split(","),
+					list2.toLowerCase().split(","));
+		}
+	}
+ 	
 	/**
 	 * <p>Applies a white list recursively to facets categories values.</p>
 	 * <p>Remove any value not contained in the white list.</p>

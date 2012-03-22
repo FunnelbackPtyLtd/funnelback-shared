@@ -149,6 +149,76 @@ public class FacetedNavigationWhiteBlackListTest {
 				new CategoryValueLabelPredicate("category3")));
 		
 	}
+	
+	@Test
+	public void testGlobalBlackList() throws OutputProcessorException {
+		st.getQuestion().getCollection().getConfiguration()
+			.setValue(Keys.FacetedNavigation.BLACK_LIST, "cAteGory2,CategOry3");
+
+		processor.processOutput(st);
+		
+		Assert.assertEquals(1, st.getResponse().getFacets().size());
+		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
+		Assert.assertEquals(1, st.getResponse().getFacets().get(0).getCategories().size());
+		Assert.assertEquals(1, st.getResponse().getFacets().get(0).getCategories().get(0).getValues().size());
+		
+		Assert.assertEquals(1, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category1")));
+		Assert.assertEquals(0, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category2")));
+		Assert.assertEquals(0, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category3")));		
+	}
+
+	@Test
+	public void testGlobalWhiteList() throws OutputProcessorException {
+		st.getQuestion().getCollection().getConfiguration()
+			.setValue(Keys.FacetedNavigation.WHITE_LIST, "cAteGory2,CategOry3");
+
+		processor.processOutput(st);
+		
+		Assert.assertEquals(1, st.getResponse().getFacets().size());
+		Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
+		Assert.assertEquals(1, st.getResponse().getFacets().get(0).getCategories().size());
+		Assert.assertEquals(2, st.getResponse().getFacets().get(0).getCategories().get(0).getValues().size());
+		
+		Assert.assertEquals(0, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category1")));
+		Assert.assertEquals(1, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category2")));
+		Assert.assertEquals(1, CollectionUtils.countMatches(
+				st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+				new CategoryValueLabelPredicate("category3")));		
+	}
+	
+	@Test
+	public void testGlobalAndNonGlobal() throws OutputProcessorException {
+		st.getQuestion().getCollection().getConfiguration()
+		.setValue(Keys.FacetedNavigation.WHITE_LIST+".Test Facet", "cAteGory2")
+		.setValue(Keys.FacetedNavigation.WHITE_LIST, "CategOry3");
+
+	processor.processOutput(st);
+	
+	Assert.assertEquals(1, st.getResponse().getFacets().size());
+	Assert.assertEquals("Test Facet", st.getResponse().getFacets().get(0).getName());
+	Assert.assertEquals(1, st.getResponse().getFacets().get(0).getCategories().size());
+	Assert.assertEquals(2, st.getResponse().getFacets().get(0).getCategories().get(0).getValues().size());
+	
+	Assert.assertEquals(0, CollectionUtils.countMatches(
+			st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+			new CategoryValueLabelPredicate("category1")));
+	Assert.assertEquals(1, CollectionUtils.countMatches(
+			st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+			new CategoryValueLabelPredicate("category2")));
+	Assert.assertEquals(1, CollectionUtils.countMatches(
+			st.getResponse().getFacets().get(0).getCategories().get(0).getValues(),
+			new CategoryValueLabelPredicate("category3")));				
+	}
 
 	private class CategoryValueLabelPredicate implements Predicate {
 		
