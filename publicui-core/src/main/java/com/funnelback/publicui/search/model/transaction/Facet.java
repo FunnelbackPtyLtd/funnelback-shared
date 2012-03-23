@@ -153,6 +153,22 @@ public class Facet {
 		public String toString() {
 			return "Category '" + label + "' (" + values.size() + " values, " + categories.size() + " sub-categories)";
 		}
+		
+		@RequiredArgsConstructor
+		public static class ByFirstCategoryValueComparator implements Comparator<Facet.Category> {
+			
+			@Override
+			public int compare(Category c1, Category c2) {
+				if (c1.getValues().size() > 0 && c2.getValues().size() > 0) {
+					return c2.getValues().get(0).getCount() - c1.getValues().get(0).getCount();
+				} else if (c1.getValues().size() > 0) {
+					return 1;
+				} else {
+					return 2;
+				}
+			}
+		}
+
 	}
 	
 	/**

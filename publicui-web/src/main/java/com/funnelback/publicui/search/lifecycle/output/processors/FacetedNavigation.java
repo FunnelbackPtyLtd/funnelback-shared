@@ -42,6 +42,11 @@ public class FacetedNavigation implements OutputProcessor {
 					for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
 						facet.getCategories().add(fillCategories(ct, searchTransaction));
 					}
+					
+					// Sort all categories for this facet by the count of the first value of
+					// each category. This is useful for GScope based facets where there's only
+					// one category-value per category
+					Collections.sort(facet.getCategories(), new Category.ByFirstCategoryValueComparator());
 					searchTransaction.getResponse().getFacets().add(facet);
 				}
 			}
