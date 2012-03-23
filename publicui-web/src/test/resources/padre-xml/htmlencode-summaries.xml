@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version></padre_version>
+    <collection_size></collection_size>
+    <collection_updated></collection_updated>
+  </details>
+
+  <query>htmlencode</query>
+  <query_as_processed>htmlencode</query_as_processed>
+  <collection>htmlencode</collection>
+
+<results_summary>
+  <fully_matching>2</fully_matching>
+  <estimated_hits>2</estimated_hits>
+  <partially_matching>0</partially_matching>
+  <total_matching>2</total_matching>
+  <num_ranks>2</num_ranks>
+  <currstart>1</currstart>
+  <currend>1</currend>
+  <nextstart>0</nextstart>
+</results_summary>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>100</score>
+  <title><![CDATA[Result]]></title>
+  <collection>htmlencode</collection>
+  <component>0</component>
+  <live_url>http://australia.gov.au/index.html</live_url>
+  <summary><![CDATA[Summary 1 \"'<>& &amp; éô]]></summary>
+  <cache_url></cache_url>
+  <date>No Date</date>
+  <filesize>1</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>100</score>
+  <title><![CDATA[Result]]></title>
+  <collection>htmlencode</collection>
+  <component>0</component>
+  <live_url>http://australia.gov.au/index.html</live_url>
+  <summary><![CDATA[Summary 2 \"'<>& &amp; éô]]></summary>
+  <cache_url></cache_url>
+  <date>No Date</date>
+  <filesize>1</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>2</docnum>
+  </result>
+
+</results>
+
+</PADRE_result_packet>

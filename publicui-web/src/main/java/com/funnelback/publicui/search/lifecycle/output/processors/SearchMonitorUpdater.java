@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +14,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class SearchMonitorUpdater implements OutputProcessor {
 
 	@Autowired
-	private SearchMonitor monitor;
+	@Setter private SearchMonitor monitor;
 
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {

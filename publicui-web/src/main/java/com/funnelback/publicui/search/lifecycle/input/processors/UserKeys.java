@@ -1,13 +1,10 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import groovy.swing.factory.BeanFactory;
-
 import java.util.List;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;

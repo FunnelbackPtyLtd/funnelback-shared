@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.Sta
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -40,6 +41,8 @@ public class FixCacheAndClickLinksTests {
 		
 		SearchResponse response = new SearchResponse();
 		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
+		response.getResultPacket().getBestBets().add(
+				new BestBet("trigger", "http://www.url.com", "title", "description", "http://www.url.com"));
 		
 		st = new SearchTransaction(question, response);
 
@@ -102,5 +105,20 @@ public class FixCacheAndClickLinksTests {
 			Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
 			Assert.assertTrue(trackingUrl.contains("referer=REFERER"));
 		}
+		
+		BestBet bb = st.getResponse().getResultPacket().getBestBets().get(0);
+		Assert.assertFalse(bb.getClickTrackingUrl().contains("null"));
+		String trackingUrl = bb.getClickTrackingUrl();
+		Assert.assertTrue(trackingUrl.contains("CLICK_LINK?"));
+		Assert.assertTrue(trackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
+		Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
+		Assert.assertTrue(trackingUrl.contains("type=FP"));
+		Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
+
+	}
+	
+	@Test
+	public void testBestBets() throws OutputProcessorException {
+		
 	}
 }
