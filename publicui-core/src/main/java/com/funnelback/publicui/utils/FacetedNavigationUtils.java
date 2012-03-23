@@ -20,10 +20,14 @@ public class FacetedNavigationUtils {
 		// Default config from the live directory
 		FacetedNavigationConfig config = c.getFacetedNavigationLiveConfig();
 
-		// ...possibly overriden in collection config
-		String configLocationOverride = c.getConfiguration().value(Keys.FacetedNavigation.CONFIG_LOCATION, DefaultValues.VIEW_LIVE);
-		if (DefaultValues.FOLDER_CONF.equals(configLocationOverride)) {
-			config = c.getFacetedNavigationConfConfig();
+		String configLocationOverride = null;
+		
+		if (c.getConfiguration() != null) {
+			// ...possibly overriden in collection config
+			configLocationOverride = c.getConfiguration().value(Keys.FacetedNavigation.CONFIG_LOCATION, DefaultValues.VIEW_LIVE);
+			if (DefaultValues.FOLDER_CONF.equals(configLocationOverride)) {
+				config = c.getFacetedNavigationConfConfig();
+			}
 		}
 		
 		// If we have no config at this point, we can look at profiles

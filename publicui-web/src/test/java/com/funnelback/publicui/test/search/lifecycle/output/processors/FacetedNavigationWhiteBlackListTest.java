@@ -38,7 +38,7 @@ public class FacetedNavigationWhiteBlackListTest {
 		sr.getFacets().add(f);
 		
 		SearchQuestion sq = new SearchQuestion();
-		sq.setCollection(new Collection("faceted-navigation", new NoOptionsConfig("faceted-navigation")));
+		sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
 		st = new SearchTransaction(sq, sr);
 		
 		processor = new FacetedNavigationWhiteBlackList();
