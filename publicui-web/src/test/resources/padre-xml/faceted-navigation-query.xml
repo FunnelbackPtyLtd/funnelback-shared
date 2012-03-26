@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_11.5.0.46 64MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>C:\Data\dev\funnelback\trunk\funnelback/data/cone\live\idx\index: 11.0 MB, 5000 docs</collection_size>
+    <collection_updated>
+      Tue Mar 27 10:24:28 2012    </collection_updated>
+  </details>
+
+<!-- Spelling: query is not correctable -->
+  <query>!sdf</query>
+  <query_as_processed>!sdf</query_as_processed>
+  <collection>cone</collection>
+
+<results_summary>
+  <fully_matching>5000</fully_matching>
+  <estimated_hits>5000</estimated_hits>
+  <partially_matching>0</partially_matching>
+  <total_matching>5000</total_matching>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+<gscope_counts>
+  <gscope_matching value="1">27</gscope_matching>
+  <gscope_matching value="2">630</gscope_matching>
+</gscope_counts>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title><![CDATA[WAITER, CASUAL]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01000.xml</live_url>
+<summary><![CDATA[46fc62b648d2f0 427a850242a40 Classified Feed 2007-10-19 00: 00: 00 Quest Newspapers 2077716 DIVTemporary / ContractDIV Ormeau, QLD Australia 4208 DIVOrmeauDIV Ormeau QLD Australia 4208 WAITER Casual Experienced waiter required tor nights in an a la]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01000.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01000.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>0</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>1000</score>
+  <title><![CDATA[Excavator/Dozer operator]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01001.xml</live_url>
+<summary><![CDATA[46f798b948da0 000000000 Credit Card 2007-10-24 00: 00: 00 operator DIVPermanentDIV Melbourne, VIC Australia DIVMelbourneDIV Melbourne VIC Australia civil construction company requires operators Required for earthmoving plant excavator or dozer Melb]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01001.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01001.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1</docnum>
+  </result>
+
+  <result>
+  <rank>3</rank>
+  <score>1000</score>
+  <title><![CDATA[CLEANERS]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01002.xml</live_url>
+<summary><![CDATA[46fc8d9448d390 4705eb5c42a140 Classified Feed 2007-10-19 00: 00: 00 Gold Coast Bulletin I295917 DIVTemporary / ContractDIV Gold Coast, QLD Australia 4214 DIVGold CoastDIV Gold Coast QLD Australia 4214 CLEANERS wanted bond and domestic cleaning Must]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01002.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01002.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>2</docnum>
+  </result>
+
+  <result>
+  <rank>4</rank>
+  <score>1000</score>
+  <title><![CDATA[APPOINTMENT SETTERS]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01003.xml</live_url>
+<summary><![CDATA[46fc8d7848d8c0 427a859b42a40 Classified Feed 2007-10-19 00: 00: 00 Gold Coast Bulletin I2920700 DIVPart TimeDIV Gold Coast, QLD Australia 4214 DIVGold CoastDIV Gold Coast QLD Australia 4214 APPOINTMENT SETTERS NO COLD CALLS $17 80 Hour Plus Bonus]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01003.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01003.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>3</docnum>
+  </result>
+
+  <result>
+  <rank>5</rank>
+  <score>1000</score>
+  <title><![CDATA[WELDER/BOILERMAKER WHO]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01004.xml</live_url>
+<summary><![CDATA[470a648848d18eb0 4705f96042a04e Classified Feed 2007-10-30 00: 00: 00 The Courier-Mail 1046142 DIVPermanentDIV Bowen Hills, QLD Australia 4006 DIVBowen HillsDIV Bowen Hills QLD Australia 4006 WELDER BOILERMAKER who is competent in welding MIG]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01004.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01004.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>4</docnum>
+  </result>
+
+  <result>
+  <rank>6</rank>
+  <score>1000</score>
+  <title><![CDATA[TRAVEL CONSULTANT FULL]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01005.xml</live_url>
+<summary><![CDATA[46fc8d8548daa0 427a859b42a40 Classified Feed 2007-10-19 00: 00: 00 Gold Coast Bulletin I2940885 DIVPart TimeDIV Gold Coast, QLD Australia 4214 DIVGold CoastDIV Gold Coast QLD Australia 4214 TRAVEL CONSULTANT Full part time Must have experience and]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01005.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01005.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>5</docnum>
+  </result>
+
+  <result>
+  <rank>7</rank>
+  <score>1000</score>
+  <title><![CDATA[LABOURER/FACTORY HAND]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01006.xml</live_url>
+<summary><![CDATA[46fe4e9e48dd90 428b41d848dba0 Classified Feed 2007-10-20 00: 00: 00 The Sunday Times 2132952 DIVPermanentDIV Perth, WA Australia 6000 DIVPerthDIV Perth WA Australia 6000 LABOURER FACTORY HAND Junior experienced with power tools preferred but not]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01006.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01006.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>6</docnum>
+  </result>
+
+  <result>
+  <rank>8</rank>
+  <score>1000</score>
+  <title><![CDATA[BRICKLAYER NEAT]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01007.xml</live_url>
+<summary><![CDATA[46fbe6a148d39a0 428a554242a40 Classified Feed 2007-10-19 00: 00: 00 The Courier-Mail 1048767 DIVPermanentDIV Bowen Hills, QLD Australia 4006 DIVBowen HillsDIV Bowen Hills QLD Australia 4006 BRICKLAYER neat fast own tport 3207 7319 or 0418 722 525]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01007.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01007.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>7</docnum>
+  </result>
+
+  <result>
+  <rank>9</rank>
+  <score>1000</score>
+  <title><![CDATA[CASHIER / SHOP ASSISTANT]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01008.xml</live_url>
+<summary><![CDATA[46fa0f5448d5b0 428a55b542a40 Classified Feed 2007-10-17 00: 00: 00 Leader Newspapers 2140879 DIVPermanentDIV VIC Australia VIC Australia CASHIER SHOP ASSISTANT We have a vacancy for a Cashier Shop Assistant at Scicluna s Fruit and Vegetables Mentone]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01008.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01008.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>8</docnum>
+  </result>
+
+  <result>
+  <rank>10</rank>
+  <score>1000</score>
+  <title><![CDATA[LABOURERS REQUIRED]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01009.xml</live_url>
+<summary><![CDATA[46fc62b148d860 427a850242a40 Classified Feed 2007-10-19 00: 00: 00 Quest Newspapers 2051653 DIVTemporary / ContractDIV Aspley, QLD Australia 4034 DIVAspleyDIV Aspley QLD Australia 4034 LABOURERS required for immediate start Eagle Farm Afternoon]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01009.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01009.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>9</docnum>
+  </result>
+
+</results>
+
+  <!-- Fluster processing skipped as query '!sdf' is unsuitable -->
+  <phluster_elapsed_time>0.000 sec.</phluster_elapsed_time>
+  <include_scope></include_scope>
+  <exclude_scope></exclude_scope>
+  <query_processor_codes>2x</query_processor_codes>
+  <padre_elapsed_time>29</padre_elapsed_time>
+
+  <!-- Vbyte integers decoded:  this query: 0, this run: 0 -->
+  <!-- Vbyte bytes decoded: this query: 0, this run: 0 -->
+</PADRE_result_packet>

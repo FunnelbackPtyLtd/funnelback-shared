@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.service.config.AbstractLocalConfigReposito
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationMetadataTests {
+public class FacetedNavigationXPathFillTests {
 
 	@Resource(name="localConfigRepository")
 	private AbstractLocalConfigRepository configRepository;
@@ -33,7 +33,7 @@ public class FacetedNavigationMetadataTests {
 	@Before
 	public void before() {
 		SearchQuestion question = new SearchQuestion();
-		question.setCollection(configRepository.getCollection("faceted-navigation-metadata"));
+		question.setCollection(configRepository.getCollection("faceted-navigation-xpathfill"));
 		st = new SearchTransaction(question, null);
 		
 		processor = new FacetedNavigation();
