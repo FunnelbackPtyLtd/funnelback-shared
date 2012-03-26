@@ -40,7 +40,15 @@ public class FacetedNavigation implements OutputProcessor {
 					final Facet facet = new Facet(f.getName());
 					
 					for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
-						facet.getCategories().add(fillCategories(ct, searchTransaction));
+						Facet.Category c = fillCategories(ct, searchTransaction);
+						if (c != null) {
+							facet.getCategories().add(c);
+							if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())) {
+								// This category has been selected. Stop calculating other
+								// values for it (FUN-4462)
+								break;
+							}
+						}
 					}
 					
 					// Sort all categories for this facet by the count of the first value of
@@ -73,6 +81,7 @@ public class FacetedNavigation implements OutputProcessor {
 	
 		// Find out if this category is currently selected
 		if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(cDef.getQueryStringParamName())) {
+			
 			// Something has been selected (f.FacetName|extraparm=value)
 			String[] paramName = cDef.getQueryStringParamName().split("\\" + CategoryDefinition.QS_PARAM_SEPARATOR);
 			
@@ -97,11 +106,26 @@ public class FacetedNavigation implements OutputProcessor {
 			if (valueMatches) {
 				log.trace("Value has been selected.");
 				for (CategoryDefinition subCategoryDef: cDef.getSubCategories()) {
-					category.getCategories().add(fillCategories(subCategoryDef, searchTransaction));
+					Facet.Category c = fillCategories(subCategoryDef, searchTransaction);
+					if (c != null) {
+						category.getCategories().add(c);
+						if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())) {
+							// This category has been selected. Stop calculating other
+							// values for it (FUN-4462)
+							break;
+						}
+					}
 				}
 			}
-		}		
-		return category;
+		}
+		
+		if (category.hasValues() || category.getCategories().size() > 0) {
+			return category;
+		} else {
+			// No value and no nested category. This can happen for gscope facets.
+			// No need to return it.
+			return null;
+		}
 	}
 
 }

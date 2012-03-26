@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_11.5.0.46 64MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>C:\Data\dev\funnelback\trunk\funnelback/data/Shakespeare\live\idx\index: 28.6 MB, 868 docs</collection_size>
+    <collection_updated>
+      Fri Mar 23 11:05:57 2012    </collection_updated>
+  </details>
+
+<!-- Spelling: query is not correctable -->
+  <query>!null</query>
+  <query_as_processed>!null</query_as_processed>
+  <collection>Shakespeare</collection>
+
+<results_summary>
+  <fully_matching>868</fully_matching>
+  <estimated_hits>868</estimated_hits>
+  <partially_matching>0</partially_matching>
+  <total_matching>868</total_matching>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+<gscope_counts>
+  <gscope_matching value="1">22</gscope_matching>
+  <gscope_matching value="2">31</gscope_matching>
+  <gscope_matching value="3">24</gscope_matching>
+  <gscope_matching value="4">28</gscope_matching>
+  <gscope_matching value="5">26</gscope_matching>
+  <gscope_matching value="6">27</gscope_matching>
+  <gscope_matching value="7">26</gscope_matching>
+  <gscope_matching value="8">46</gscope_matching>
+  <gscope_matching value="9">15</gscope_matching>
+  <gscope_matching value="10">33</gscope_matching>
+  <gscope_matching value="11">24</gscope_matching>
+  <gscope_matching value="12">139</gscope_matching>
+  <gscope_matching value="13">22</gscope_matching>
+  <gscope_matching value="14">36</gscope_matching>
+  <gscope_matching value="15">20</gscope_matching>
+  <gscope_matching value="16">22</gscope_matching>
+  <gscope_matching value="17">30</gscope_matching>
+  <gscope_matching value="18">13</gscope_matching>
+  <gscope_matching value="19">32</gscope_matching>
+  <gscope_matching value="20">21</gscope_matching>
+  <gscope_matching value="21">23</gscope_matching>
+  <gscope_matching value="22">27</gscope_matching>
+  <gscope_matching value="23">13</gscope_matching>
+  <gscope_matching value="24">21</gscope_matching>
+  <gscope_matching value="25">1</gscope_matching>
+  <gscope_matching value="26">19</gscope_matching>
+  <gscope_matching value="27">24</gscope_matching>
+  <gscope_matching value="28">52</gscope_matching>
+  <gscope_matching value="29">29</gscope_matching>
+  <gscope_matching value="30">30</gscope_matching>
+  <gscope_matching value="32">18</gscope_matching>
+  <gscope_matching value="33">13</gscope_matching>
+  <gscope_matching value="34">21</gscope_matching>
+  <gscope_matching value="35">18</gscope_matching>
+  <gscope_matching value="36">29</gscope_matching>
+  <gscope_matching value="37">22</gscope_matching>
+  <gscope_matching value="38">24</gscope_matching>
+  <gscope_matching value="39">18</gscope_matching>
+  <gscope_matching value="40">108</gscope_matching>
+</gscope_counts>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title><![CDATA[The Complete Works of William Shakespeare  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/</live_url>
+<summary><![CDATA[The Complete Works of William Shakespeare. Welcome to the Web's first edition of the Complete Works of William Shakespeare. This site has offered Shakespeare's plays and poetry to the Internet community since 1993. Announcement: The restoration of]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2F_default.fun.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2F</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>4627</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>867</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>620</score>
+  <title><![CDATA[Shakespeare homepage news  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/news.html</live_url>
+<summary><![CDATA[Shakespeare homepage news. Oct. 16, 2000 -- The recovery from a catastrophic system failure began today. The static content is being restored first, followed by the search engine, then the discussion area. Oct. 4, 1999 -- Added some new entries to]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fnews.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fnews.html</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>3510</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>578</docnum>
+  </result>
+
+  <result>
+  <rank>3</rank>
+  <score>483</score>
+  <title><![CDATA[Reference Handbook Table of Contents Love’s Labour’s Lost: Entire ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/lll/full.pdf</live_url>
+<summary><![CDATA[Content-Length: 1441584. Reference Handbook Table of Contents Love s Labour s Lost: Entire Play.3 Index.112 Love s Labour s Lost: Entire Play Loves Labours Lost Shakespeare homepage1 | Love s Labour s Lost1 | Entire play ACT I SCENE I. The king of]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.pdf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.pdf</cache_url>
+  <date>11 Oct 2004</date>
+  <filesize>1441584</filesize>
+  <filetype>pdf</filetype>
+  <tier>1</tier>
+  <docnum>429</docnum>
+  </result>
+
+  <result>
+  <rank>4</rank>
+  <score>420</score>
+  <title><![CDATA[Reference Handbook Table of Contents Love's Labour's Lost: Entire ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/lll/full.rtf</live_url>
+<summary><![CDATA[Reference Handbook. Table of Contents.]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.rtf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.rtf</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>682478</filesize>
+  <filetype>rtf</filetype>
+  <tier>1</tier>
+  <docnum>430</docnum>
+  </result>
+
+  <result>
+  <rank>5</rank>
+  <score>368</score>
+  <title><![CDATA[Reference Handbook Table of Contents King John: Entire Play ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/john/full.pdf</live_url>
+<summary><![CDATA[Content-Length: 1102723. Reference Handbook Table of Contents King John: Entire Play.3 Index.88 King John: Entire Play The Life and Death of King John Shakespeare homepage1 | King John1 | Entire play ACT I SCENE I. KING JOHN S palace. Enter KING JOHN]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.pdf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.pdf</cache_url>
+  <date>11 Oct 2004</date>
+  <filesize>1102723</filesize>
+  <filetype>pdf</filetype>
+  <tier>1</tier>
+  <docnum>357</docnum>
+  </result>
+
+  <result>
+  <rank>6</rank>
+  <score>289</score>
+  <title><![CDATA[Reference Handbook Table of Contents King John: Entire Play ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/john/full.rtf</live_url>
+<summary><![CDATA[Reference Handbook. Table of Contents.]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.rtf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.rtf</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>575320</filesize>
+  <filetype>rtf</filetype>
+  <tier>1</tier>
+  <docnum>358</docnum>
+  </result>
+
+  <result>
+  <rank>7</rank>
+  <score>289</score>
+  <title><![CDATA[Reference Handbook Table of Contents King Lear: Entire Play ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/lear/full.pdf</live_url>
+<summary><![CDATA[Content-Length: 1668437. Reference Handbook Table of Contents King Lear: Entire Play.3 Index.132 King Lear: Entire Play King Lear Shakespeare homepage1 | King Lear1 | Entire play ACT I SCENE I. King Lear s palace. Enter KENT, GLOUCESTER, and]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flear%2Ffull.pdf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flear%2Ffull.pdf</cache_url>
+  <date>11 Oct 2004</date>
+  <filesize>1668437</filesize>
+  <filetype>pdf</filetype>
+  <tier>1</tier>
+  <docnum>399</docnum>
+  </result>
+
+  <result>
+  <rank>8</rank>
+  <score>289</score>
+  <title><![CDATA[Love's Labour's Lost: Entire Play  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/lll/full.html</live_url>
+<summary><![CDATA[Loves Labours Lost. Entire play. Enter FERDINAND king of Navarre, BIRON, LONGAVILLE and DUMAIN. Let fame, that all hunt after in their lives,. Live register'd upon our brazen tombs. And then grace us in the disgrace of death;. When, spite of]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flll%2Ffull.html</cache_url>
+  <date>1 Jan 1594</date>
+  <filesize>255034</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>428</docnum>
+  </result>
+
+  <result>
+  <rank>9</rank>
+  <score>286</score>
+  <title><![CDATA[King John: Entire Play  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/john/full.html</live_url>
+<summary><![CDATA[The Life and Death of King John. Entire play. Enter KING JOHN, QUEEN ELINOR, PEMBROKE, ESSEX, SALISBURY, and others, with CHATILLON. Now, say, Chatillon, what would France with us?. Thus, after greeting, speaks the King of France. In my behavior to]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fjohn%2Ffull.html</cache_url>
+  <date>1 Jan 1596</date>
+  <filesize>213556</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>356</docnum>
+  </result>
+
+  <result>
+  <rank>10</rank>
+  <score>286</score>
+  <title><![CDATA[King Lear: Entire Play  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/lear/full.html</live_url>
+<summary><![CDATA[King Lear. Entire play. Enter KENT, GLOUCESTER, and EDMUND. KENT. I thought the king had more affected the Duke of. Albany than Cornwall.. It did always seem so to us: but now, in the. division of the kingdom, it appears not which of. the dukes he]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flear%2Ffull.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Flear%2Ffull.html</cache_url>
+  <date>1 Jan 1605</date>
+  <filesize>297646</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>398</docnum>
+  </result>
+
+</results>
+
+  <!-- Fluster processing skipped as query '!null' is unsuitable -->
+  <phluster_elapsed_time>0.001 sec.</phluster_elapsed_time>
+  <include_scope></include_scope>
+  <exclude_scope></exclude_scope>
+  <query_processor_codes>SG2x</query_processor_codes>
+  <padre_elapsed_time>42</padre_elapsed_time>
+
+  <!-- Vbyte integers decoded:  this query: 0, this run: 0 -->
+  <!-- Vbyte bytes decoded: this query: 0, this run: 0 -->
+</PADRE_result_packet>

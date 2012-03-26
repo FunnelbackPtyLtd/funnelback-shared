@@ -63,4 +63,10 @@
 			<Data>http://example.com/jobs/new</Data>
 		</URLFill>
 	</Facet>
+	<Facet>
+		<Data>Old jobs</Data>
+		<URLFill>
+			<Data>http://example.com/jobs/old/</Data>
+		</URLFill>
+	</Facet>
 </Facets>

@@ -44,7 +44,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 	
 	@Test
 	public void testFacets() {
-		Assert.assertEquals(7, facets.facetDefinitions.size());
+		Assert.assertEquals(8, facets.facetDefinitions.size());
 	}
 	
 	@Test
@@ -133,14 +133,24 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 	}
 	
 	@Test
-	public void testFacet7() {
+	public void testFacet7And8() {
 		FacetDefinition facet = facets.facetDefinitions.get(6);
 		assertEquals("New jobs", facet.getName());
 		assertEquals(1, facet.getCategoryDefinitions().size());
 		
 		URLFill c1 = (URLFill) facet.getCategoryDefinitions().get(0);
-		assertEquals("http://example.com/jobs/new", c1.getData());
+		// Trailing slash must have been aded
+		assertEquals("http://example.com/jobs/new/", c1.getData());
 		assertEquals(0, c1.getSubCategories().size());
+		
+		facet = facets.facetDefinitions.get(7);
+		assertEquals("Old jobs", facet.getName());
+		assertEquals(1, facet.getCategoryDefinitions().size());
+		
+		c1 = (URLFill) facet.getCategoryDefinitions().get(0);
+		assertEquals("http://example.com/jobs/old/", c1.getData());
+		assertEquals(0, c1.getSubCategories().size());
+
 	}
 }
 

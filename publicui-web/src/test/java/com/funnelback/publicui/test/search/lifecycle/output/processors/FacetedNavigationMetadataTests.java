@@ -29,7 +29,7 @@ import com.funnelback.publicui.search.service.config.AbstractLocalConfigReposito
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationTests {
+public class FacetedNavigationMetadataTests {
 
 	@Resource(name="localConfigRepository")
 	private AbstractLocalConfigRepository configRepository;

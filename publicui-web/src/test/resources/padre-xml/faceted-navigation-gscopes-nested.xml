@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_11.5.0.46 64MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>C:\Data\dev\funnelback\trunk\funnelback/data/Shakespeare\live\idx\index: 28.6 MB, 868 docs</collection_size>
+    <collection_updated>
+      Fri Mar 23 11:05:57 2012    </collection_updated>
+  </details>
+
+<!-- Spelling: query is not correctable -->
+  <query>!null</query>
+  <query_as_processed>!null</query_as_processed>
+  <collection>Shakespeare</collection>
+
+<results_summary>
+  <fully_matching>33</fully_matching>
+  <estimated_hits>33</estimated_hits>
+  <partially_matching>0</partially_matching>
+  <total_matching>33</total_matching>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+<gscope_counts>
+  <gscope_matching value="10">33</gscope_matching>
+  <gscope_matching value="14">1</gscope_matching>
+  <gscope_matching value="40">3</gscope_matching>
+</gscope_counts>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title><![CDATA[Reference Handbook Table of Contents Coriolanus: Entire Play ........................................................................................................3 ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/full.pdf</live_url>
+<summary><![CDATA[Content-Length: 1735338. Reference Handbook Table of Contents Coriolanus: Entire Play.3 Index.137 Coriolanus: Entire Play The Tragedy of Coriolanus Shakespeare homepage1 | Coriolanus1 | Entire play ACT I SCENE I. Rome. A street. Enter a company of]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.pdf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.pdf</cache_url>
+  <date>11 Oct 2004</date>
+  <filesize>1735338</filesize>
+  <filetype>pdf</filetype>
+  <tier>1</tier>
+  <docnum>275</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>706</score>
+  <title><![CDATA[Reference Handbook Table of Contents Coriolanus: Entire Play 000 ...]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/full.rtf</live_url>
+<summary><![CDATA[Reference Handbook. Table of Contents.]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.rtf.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.rtf</cache_url>
+  <date>8 Apr 2009</date>
+  <filesize>856777</filesize>
+  <filetype>rtf</filetype>
+  <tier>1</tier>
+  <docnum>276</docnum>
+  </result>
+
+  <result>
+  <rank>3</rank>
+  <score>567</score>
+  <title><![CDATA[Coriolanus: Entire Play  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/full.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Entire play. Enter a company of mutinous Citizens, with staves, clubs, and other weapons. First Citizen. Before we proceed any further, hear me speak.. First Citizen. You are all resolved rather to die than to famish?.]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Ffull.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>315470</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>274</docnum>
+  </result>
+
+  <result>
+  <rank>4</rank>
+  <score>482</score>
+  <title><![CDATA[Coriolanus: List of Scenes  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/index.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus.  Shakespeare homepage | Coriolanus.  Entire play in one page.  Entire play as RTF. Act 1, Scene 1:  Rome. Act 1, Scene 2:  Corioli. The Senate-house.. Act 1, Scene 3:  Rome. A room in Marcius' house.. Act 1, Scene 4:]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Findex.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Findex.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>3280</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>277</docnum>
+  </result>
+
+  <result>
+  <rank>5</rank>
+  <score>358</score>
+  <title><![CDATA[SCENE I. Rome. A street.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.1.1.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 1, Scene 1. Enter a company of mutinous Citizens, with staves, clubs, and other weapons. First Citizen. Before we proceed any further, hear me speak.. First Citizen. You are all resolved rather to die than to famish?.]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.1.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.1.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>25299</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>245</docnum>
+  </result>
+
+  <result>
+  <rank>6</rank>
+  <score>328</score>
+  <title><![CDATA[SCENE II. Corioli. The Senate-house.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.1.2.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 1, Scene 2. Enter TULLUS AUFIDIUS and certain Senators. First Senator. So, your opinion is, Aufidius,. That they of Rome are entered in our counsels. And know how we proceed.. Is it not yours?. What ever have been]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.2.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.2.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>4654</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>247</docnum>
+  </result>
+
+  <result>
+  <rank>7</rank>
+  <score>303</score>
+  <title><![CDATA[SCENE III. Rome. A room in Marcius' house.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.1.3.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 1, Scene 3. Enter VOLUMNIA and VIRGILIA they set them down on two low stools, and sew. I pray you, daughter, sing; or express yourself in a. more comfortable sort: if my son were my husband, I. should freelier rejoice]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.3.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.3.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>11041</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>248</docnum>
+  </result>
+
+  <result>
+  <rank>8</rank>
+  <score>283</score>
+  <title><![CDATA[SCENE IV. Before Corioli.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.1.4.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 1, Scene 4. Enter, with drum and colours, MARCIUS, TITUS LARTIUS, Captains and Soldiers. To them a Messenger. MARCIUS. Yonder comes news. A wager they have met.. My horse to yours, no.. Say, has our general met the]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.4.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.1.4.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>8052</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>249</docnum>
+  </result>
+
+  <result>
+  <rank>9</rank>
+  <score>283</score>
+  <title><![CDATA[SCENE I. Rome. A street.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.3.1.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 3, Scene 1. Cornets. Enter CORIOLANUS, MENENIUS, all the Gentry, COMINIUS, TITUS LARTIUS, and other Senators. Tullus Aufidius then had made new head?. He had, my lord; and that it was which caused. Our swifter]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.3.1.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.3.1.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>34977</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>258</docnum>
+  </result>
+
+  <result>
+  <rank>10</rank>
+  <score>283</score>
+  <title><![CDATA[SCENE II. A room in CORIOLANUS'S house.  ]]></title>
+  <collection>Shakespeare</collection>
+  <component>0</component>
+  <live_url>http://test&#45;data.cbr.au.funnelback.com/Shakespeare/coriolanus/coriolanus.3.2.html</live_url>
+<summary><![CDATA[The Tragedy of Coriolanus. Act 3, Scene 2. Enter CORIOLANUS with Patricians. Let them puff all about mine ears, present me. Death on the wheel or at wild horses' heels,. Or pile ten hills on the Tarpeian rock,. That the precipitation might down]]></summary>
+  <cache_url>cache.cgi?collection=Shakespeare&amp;doc=http%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.3.2.html.pan.txt&amp;off=0&amp;len=-1&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2FShakespeare%2Fcoriolanus%2Fcoriolanus.3.2.html</cache_url>
+  <date>1 Jan 1607</date>
+  <filesize>14023</filesize>
+  <filetype>html</filetype>
+  <tier>1</tier>
+  <docnum>259</docnum>
+  </result>
+
+</results>
+
+  <!-- Fluster processing skipped as query '!null' is unsuitable -->
+  <phluster_elapsed_time>0.001 sec.</phluster_elapsed_time>
+  <include_scope>g"10"</include_scope>
+  <exclude_scope></exclude_scope>
+  <query_processor_codes>S2x</query_processor_codes>
+  <padre_elapsed_time>25</padre_elapsed_time>
+
+  <!-- Vbyte integers decoded:  this query: 0, this run: 0 -->
+  <!-- Vbyte bytes decoded: this query: 0, this run: 0 -->
+</PADRE_result_packet>

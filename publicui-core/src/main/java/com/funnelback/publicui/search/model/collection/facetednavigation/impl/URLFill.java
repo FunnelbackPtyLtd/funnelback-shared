@@ -38,10 +38,13 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public List<CategoryValue> computeValues(final SearchTransaction st) {
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
-		
+
+		// Strip 'http://' prefixes as PADRE strips them.
+		String url = data.replaceFirst("^http://", "");
+
 		// Find out which URL is currently selected. By default
 		// it's the root folder specified in the faceted nav. config.
-		String currentConstraint = data;
+		String currentConstraint = url;
 		List<String> currentConstraints = st.getQuestion().getSelectedCategoryValues().get(getQueryStringParamName());
 		if (currentConstraints != null) {
 			if (currentConstraints.size() > 1) {
@@ -51,8 +54,6 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 			currentConstraint = currentConstraints.get(0);
 		}
 			
-		// Strip 'http://' prefixes as PADRE strips them.
-		String url = data.replaceFirst("^http://", "");
 		for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
 			String item = entry.getKey().replaceFirst("^http://", "");
 			int count = entry.getValue();
@@ -134,5 +135,17 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 	@Override
 	public String getQueryConstraint(String value) {
 		return  MD + ":\"" + value + "\"";
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setData(String data) {
+		// Always ensure a trailing slash for the facet
+		// breadcrumb to work correctly
+		if (data.endsWith("/")) {
+			super.setData(data);
+		} else {
+			super.setData(data+"/");
+		}
 	}
 }
