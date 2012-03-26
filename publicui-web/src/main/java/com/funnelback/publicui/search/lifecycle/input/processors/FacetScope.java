@@ -25,7 +25,7 @@ public class FacetScope implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			if(searchTransaction.getQuestion().getAdditionalParameters().get(RequestParameters.FACET_SCOPE) != null) {
+			if(searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.FACET_SCOPE) != null) {
 
 				String facetScope = MapUtils.getString(searchTransaction.getQuestion().getInputParameterMap(),
 						RequestParameters.FACET_SCOPE, null);

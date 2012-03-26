@@ -68,7 +68,6 @@ public class FacetedNavigation implements InputProcessor {
 						
 						final String facetName = m.group(1);
 						final String extraParam = m.group(3);
-						final String values[] = searchTransaction.getQuestion().getRawInputParameters().get(selectedFacetParam);
 						log.debug("Found facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
 						
 						// Find corresponding facet in config
@@ -79,6 +78,8 @@ public class FacetedNavigation implements InputProcessor {
 							}
 						});
 						
+						final String values[] = searchTransaction.getQuestion().getRawInputParameters().get(selectedFacetParam);
+					
 						if (f != null && values != null) {
 							searchTransaction.getQuestion().getSelectedFacets().add(f.getName());
 							
