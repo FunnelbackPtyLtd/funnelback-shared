@@ -61,7 +61,7 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 
-		if (active) {
+		if (active && needsAuthentication((HttpServletRequest) request)) {
 			String collectionId = getCollectionId((HttpServletRequest) request);
 			
 			Collection collection = null;			
@@ -94,6 +94,23 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 		}
 		
 		return collectionId;
+	}
+	
+	/**
+	 * Checks if the current request needs authentication, based on the
+	 * URL. Some URLs are public, such as the collection list.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private boolean needsAuthentication(HttpServletRequest request) {
+		if (request.getPathInfo().equals("/")
+				|| (request.getPathInfo().startsWith("/search") && request.getParameter(RequestParameters.COLLECTION) == null)) {
+			// Collection list page
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
