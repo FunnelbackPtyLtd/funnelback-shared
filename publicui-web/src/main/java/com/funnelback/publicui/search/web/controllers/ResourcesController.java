@@ -31,11 +31,12 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 /**
  * Handles per-collection static resources
  */
-@Controller("NicoController")
+@Controller
 @RequestMapping("/resources/{collectionId}")
 @lombok.extern.apachecommons.CommonsLog
 public class ResourcesController implements ApplicationContextAware {
 
+	public static final String MAPPING_PATH = "/resources/";
 	private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");
 	
 	/** Needed to instantiate Spring resource request handler */
@@ -46,12 +47,6 @@ public class ResourcesController implements ApplicationContextAware {
 	
 	@Value("#{appProperties['resources.web.directory.name']?:\"web\"}")
 	private String collectionWebResourcesDirectoryName;
-	
-	@RequestMapping("/test.html")
-	public void handleRequestDefaultProfile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().write("hello");
-	}
 	
 	@RequestMapping("/{resource:.*}")
 	public void handleRequestDefaultProfile(@PathVariable String collectionId, @PathVariable String resource,

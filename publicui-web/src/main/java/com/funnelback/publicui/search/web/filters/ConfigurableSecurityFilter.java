@@ -12,15 +12,22 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
-import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.exec.OS;
 import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import waffle.servlet.NegotiateSecurityFilter;
+
+import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.web.controllers.ResourcesController;
 
 /**
  * <p>Wrapper around the WAFFLE filter so that it can be disabled
@@ -30,18 +37,22 @@ import waffle.servlet.NegotiateSecurityFilter;
  * <p>I was forced to write a wrapper for {@link FilterConfig} to remove
  * the <em>targetFilterLifecycle</em> <code>&lt;init-param&gt;</code>. This param is a
  * Spring-specific parameter (As we use the {@link DelegatingFilterProxy} facility) and
- * it's passed along to WAFFLE, which don't recognize it and throws an exception.</p>
+ * it's passed along to WAFFLE, which doesn't recognize it and throws an exception.</p>
  */
 @Log4j
 public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 
-	@Value("#{appProperties['authentication']?:false}")
-	@Setter private boolean active = false;
+	@Autowired
+	private ConfigRepository configRepository;
+	
+	private boolean active = false;
 	
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		super.init(new FilterConfigWrapper(config, new String[] {"targetFilterLifecycle"}));
-		if (active) {
+	
+		if (OS.isFamilyWindows()) {
+			active = true;
 			log.info("Windows authentication filter is enabled");
 		}
 	}
@@ -51,10 +62,38 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 			ServletException {
 
 		if (active) {
-			super.doFilter(request, response, chain);
-		} else {
-			chain.doFilter(request, response);
+			String collectionId = getCollectionId((HttpServletRequest) request);
+			
+			Collection collection = null;			
+			if (collectionId != null) {
+				collection = configRepository.getCollection(collectionId);
+			}
+			
+			if (collection == null || collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)) {
+				super.doFilter(request, response, chain);
+				return;
+			}
 		}
+		
+		chain.doFilter(request, response);
+	}
+	
+	/**
+	 * Look for the collection id in the query string as well
+	 * as in the Path part of the URI for static requests like
+	 * /resources/&lt;collection&gt;/&lt;profile&gt;/file.ext
+	 * @param request
+	 * @return
+	 */
+	private String getCollectionId(HttpServletRequest request) {
+		String collectionId = request.getParameter(RequestParameters.COLLECTION);
+		if (collectionId == null && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)) {
+			collectionId = request.getPathInfo().substring(
+					ResourcesController.MAPPING_PATH.length(),
+					request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));
+		}
+		
+		return collectionId;
 	}
 	
 	/**
