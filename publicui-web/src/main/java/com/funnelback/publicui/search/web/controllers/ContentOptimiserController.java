@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import lombok.SneakyThrows;
 
@@ -81,7 +82,10 @@ public class ContentOptimiserController {
 	
 	
 	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,RequestParameters.CONTENT_OPTIMISER_ADVANCED})
-	public ModelAndView contentOptimiserAdvanced(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+	public ModelAndView contentOptimiserAdvanced(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
 		if("".equals(question.getQuery())) {
@@ -93,7 +97,7 @@ public class ContentOptimiserController {
 		}
 
 		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-		Map<String, Object> model = searchController.search(request, question).getModel();
+		Map<String, Object> model = searchController.search(request, response, question).getModel();
 		
 		if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
  			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
@@ -105,7 +109,10 @@ public class ContentOptimiserController {
 	}
 	
 	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
-	public ModelAndView contentOptimiserTextOnly(HttpServletRequest request, SearchQuestion question) throws IOException, XmlParsingException {
+	public ModelAndView contentOptimiserTextOnly(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			SearchQuestion question) throws IOException, XmlParsingException {
 		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
 		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
 		if("".equals(question.getQuery())) {
@@ -116,7 +123,7 @@ public class ContentOptimiserController {
 			return buildLoadingScreen(request);
 		}
 		
-		Map<String, Object> model = searchController.search(request, question).getModel();
+		Map<String, Object> model = searchController.search(request, response, question).getModel();
 		
 		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
 	

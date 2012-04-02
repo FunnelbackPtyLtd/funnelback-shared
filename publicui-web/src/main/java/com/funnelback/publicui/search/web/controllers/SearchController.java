@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,7 +73,12 @@ public class SearchController {
 	 * @return a list of all available collections.
 	 */
 	@RequestMapping(value={"/search.*"},params="!"+RequestParameters.COLLECTION)
-	public ModelAndView noCollection() {
+	public ModelAndView noCollection(HttpServletResponse response, HttpStatus status) {
+		if (status != null) {
+			response.setStatus(status.value());
+		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
@@ -94,6 +100,7 @@ public class SearchController {
 	@RequestMapping(value="/search.*",params={RequestParameters.COLLECTION})
 	public ModelAndView search(
 			HttpServletRequest request,
+			HttpServletResponse response,
 			@Valid SearchQuestion question) {
 				
 		SearchTransaction transaction = null;
@@ -106,8 +113,15 @@ public class SearchController {
 			if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
 				log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
 			}
-			return noCollection();
+			return noCollection(response, HttpStatus.NOT_FOUND);
 		}
+		
+		if (transaction.getError() != null) {
+			// Error occured while processing the transaction, set the
+			// response status code accordingly
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+		
 
 		// Put the relevant objects in the model, depending
 		// of the view requested

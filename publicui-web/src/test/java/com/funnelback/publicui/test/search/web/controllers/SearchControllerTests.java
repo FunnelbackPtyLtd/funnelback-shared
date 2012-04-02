@@ -3,6 +3,7 @@ package com.funnelback.publicui.test.search.web.controllers;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.ModelAndViewAssert;
@@ -75,8 +77,10 @@ public class SearchControllerTests {
 		configRepository.addCollection(new Collection("test1", null));
 		configRepository.addCollection(new Collection("test2", null));
 		
-		ModelAndView mav = searchController.noCollection(); 
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		ModelAndView mav = searchController.noCollection(response, null); 
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.AllCollections.toString());
+		Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
 		
 		List<Collection> collections = (List<Collection>) mav.getModelMap().get(SearchController.ModelAttributes.AllCollections.toString());
 		Assert.assertEquals(2, collections.size());
@@ -89,7 +93,7 @@ public class SearchControllerTests {
 		Collection col = new Collection("test", null);
 		SearchQuestion q = new SearchQuestion();
 		q.setCollection(col);
-		ModelAndView mav = searchController.search(request, q);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), q);
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.SearchTransaction.toString());
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
@@ -106,7 +110,7 @@ public class SearchControllerTests {
 		sq.setCollection(col);
 		sq.setQuery("");
 		
-		ModelAndView mav = searchController.search(request, sq);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.SearchTransaction.toString());
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
@@ -124,7 +128,9 @@ public class SearchControllerTests {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setQuery("test");
 		
-		ModelAndView mav = searchController.search(request, sq);
+		MockHttpServletResponse response = new MockHttpServletResponse(); 
+		ModelAndView mav = searchController.search(request, response, sq);
+		Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
 		
 		List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(collections);
@@ -142,7 +148,7 @@ public class SearchControllerTests {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(new Collection("test-collection", null));
 		sq.setQuery("test-query");
-		ModelAndView mav = searchController.search(request, sq);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
 		
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st);
@@ -167,7 +173,7 @@ public class SearchControllerTests {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(new Collection("test-collection", null));
 		sq.setQuery("test-query");
-		ModelAndView mav = searchController.search(request, sq);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st);
@@ -187,7 +193,7 @@ public class SearchControllerTests {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(new Collection("test-collection", null));
 		sq.setQuery("test-query");
-		ModelAndView mav = searchController.search(request, sq);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st);
@@ -207,7 +213,7 @@ public class SearchControllerTests {
 		SearchQuestion sq = new SearchQuestion();
 		sq.setCollection(new Collection("test-collection", null));
 		sq.setQuery("test-query");
-		ModelAndView mav = searchController.search(request, sq);
+		ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
 
 		SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
 		Assert.assertNotNull(st);
