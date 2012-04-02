@@ -96,7 +96,13 @@ public class SearchQuestion {
 	@Getter final private List<String> metaParameters = new ArrayList<String>();
 	
 	/**
-	 * Additional parameters to pass as-is to PADRE.
+	 * <p>Additional parameters to pass as-is to PADRE.</p>
+	 * 
+	 * <p>The values of this map will be passed through to PADRE and won't be processed
+	 * at all by the Modern UI.</p>
+	 * 
+	 * <p>If you need to inject or manipulate Modern UI parameters {@link #inputParameterMap} or
+	 * {@link #rawInputParameters} should be used.</p>
 	 */
 	@Getter final private Map<String, String> additionalParameters = new HashMap<String, String>();
 	
@@ -160,15 +166,30 @@ public class SearchQuestion {
 	/**
 	 * <p>Input parameters map.</p>
 	 * 
-	 * <p>In a web context will contain the request parameters map, except that
-	 * only the first value of every parameter will be kept.</p>
+	 * <p>Contains all the input parameters (query string / request parameters) in a
+	 * convenient fashion: Only the first value of each parameter is returned to avoid
+	 * having to deal with arrays of Strings.</p>
+	 * 
+	 * <p>For example if the query string is <code>&amp;param=value1&amp;param=value2</code> 
+	 * then this map will contain only one key-value pair: <tt>param=value1</tt></p>
+	 * 
+	 * <p>Most parts of the system are using the first value for a parameter, except for Faceted
+	 * Navigation. If you need to inject additional parameters for Faceted Navigation please consider
+	 * using {@link #rawInputParameters} instead.</p> 
 	 */
 	@Getter private final Map<String, String> inputParameterMap = new HashMap<String, String>();
 	
 	/**
-	 * <p>Raw input parameters coming from the invocation endpoint.</p>
+	 * <p>Raw input parameters</p>
 	 * 
-	 * <p>In a web context will contain the raw <tt>javax.servlet.http.HttpServletRequest#getParameterMap()</tt></p>
+	 * <p>Contains all the input parameters (query string / request parameters). Each value
+	 * is an array of String has a parameter can have multiple values (e.g. <code>&amp;param=value1&amp;param=value2</code>)
+	 * as defined in Java servlets.</p>
+	 * 
+	 * <p>If you need to manipulate or inject parameters it's often simpler to use {@link #inputParameterMap}, except
+	 * if your parameters needs to affect Faceted Navigation. In Faceted Navigation a parameter can have
+	 * multiple values (i.e. multiple categories selected for a given facet) so the Faceted Navigation will use
+	 * this map, instead of {@link #inputParameterMap}</p>
 	 */
 	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
 
