@@ -450,3 +450,17 @@
 </#macro>
 
 <#-- @end -->
+
+<#---
+    Checks if a query blending occurred and provide a link to cancel it.
+
+    @param prefix : Prefix to blended query terms, defaults to &quot;Your query has been expanded to: &quot;.
+    @param linkText : Text for the link to cancel query blending, defaults to &quot;Click here to use verbatim query&quot;.
+-->
+<#macro CheckBlending prefix="Your query has been expanded to: " linkText="Click here to use verbatim query">
+    <#if response?? && response.resultPacket??
+        && response.resultPacket.QSups?? && response.resultPacket.QSups?size &gt; 0>
+        ${prefix} <span><#list response.resultPacket.QSups as qsup> ${qsup.query}<#if qsup_has_next>, </#if></#list></span>.
+        &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText}</a>
+    </#if>
+</#macro>
