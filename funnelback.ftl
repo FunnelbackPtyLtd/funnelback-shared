@@ -464,3 +464,30 @@
         &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText}</a>
     </#if>
 </#macro>
+
+<#---
+    Includes remote content from an URL.
+    
+    <p>Content is cached to avoid firing an HTTP request for each search results page.</p>
+
+    @param url : URL to request. This is the only mandatory parameter.
+    @param expiry : Cache time to live, in seconds (default = 3600).
+    @param start : Regular expression pattern marking the beginning of the content to include.
+    @param end : Regular expression pattern marking the end of the content to include.
+    @param username : Username if the remote server requires authentication.
+    @param password : Password if the remote server requires authentication.
+    @param useragent : User-Agent string to use.
+    @param timeout : Time to wait, in seconds, for the remote content to be returned.
+    @param convertrelative: Boolean, whether relative links in the included content should be converted to absolute ones.
+-->
+<#macro IncludeUrl url params...>
+    <@IncludeUrlInternal url=url
+        expiry=params.expiry
+        start=params.start
+        end=params.end
+        username=params.username
+        password=params.password
+        useragent=params.useragent
+        timeout=params.timeout
+        convertrelative=params.convertrelative />
+</#macro>
