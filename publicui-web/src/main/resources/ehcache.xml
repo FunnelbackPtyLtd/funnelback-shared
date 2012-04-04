@@ -10,6 +10,6 @@
 	<cache name="localIndexRepository" maxElementsInMemory="10000" eternal="true" overflowToDisk="false" statistics="true" />
 
 	<!-- Cache for IncludeUrl form directive -->
-	<cache name="IncludeUrl" eternal="true" maxElementsInMemory="5000" overflowToDisk="true" statistics="true" />
+	<cache name="IncludeUrlInternal" eternal="true" maxElementsInMemory="5000" overflowToDisk="true" statistics="true" />
 
 </ehcache>

@@ -53,7 +53,7 @@ import freemarker.template.TemplateScalarModel;
 @Log4j
 public class IncludeUrlDirective implements TemplateDirectiveModel {
 
-	public static final String NAME = "IncludeUrl";
+	public static final String NAME = "IncludeUrlInternal";
 	
 	public static final int DEFAULT_EXPIRY = 3600; 
 	
