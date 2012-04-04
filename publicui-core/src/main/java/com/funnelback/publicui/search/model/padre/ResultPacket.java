@@ -46,7 +46,11 @@ public class ResultPacket {
 	@Getter @Setter private String collection;
 
 	/**
-	 * List of additional queries for the Query Blending system.
+	 * <p>List of additional queries for the Query Blending system.</p>
+	 * 
+	 * <p><strong>Warning:</strong> When accessing this field from a template
+	 * or a hook script you must use the following syntax: <code>QSups</code>,
+	 * instead of <code>qSups</code> due to the Javabeans naming conventions.</p>
 	 * 
 	 * @see <code>blending.cfg</code>
 	 */
@@ -160,6 +164,10 @@ public class ResultPacket {
 	 * <p>GScope counts (Used in faceted navigation)</p>
 	 * 
 	 * <p>The key is the GScope number and the value is the count.</p>
+	 * 
+ 	 * <p><strong>Warning:</strong> When accessing this field from a template
+	 * or a hook script you must use the following syntax: <code>GScopeCounts</code>,
+	 * instead of <code>gScopeCounts</code> due to the Javabeans naming conventions.</p>
 	 */
 	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
 	
