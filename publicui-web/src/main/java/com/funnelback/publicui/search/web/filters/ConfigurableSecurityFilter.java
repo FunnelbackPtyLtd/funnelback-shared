@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.OS;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -29,8 +28,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.ResourcesController;
-import com.funnelback.publicui.search.web.controllers.SearchController;
-import com.funnelback.publicui.search.web.controllers.SearchController.ViewTypes;
 
 /**
  * <p>Wrapper around the WAFFLE filter so that it can be disabled
@@ -56,7 +53,7 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 	
 		if (OS.isFamilyWindows()) {
 			active = true;
-			log.info("Windows authentication filter is enabled");
+			log.info("Windows authentication filter is enabled. Use "+Keys.ModernUI.AUTHENTICATION+"=true to activate it on collections");
 		}
 	}
 	
@@ -64,17 +61,17 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 
-		if (active && needsAuthentication((HttpServletRequest) request)) {
+		if (active) {
 			String collectionId = getCollectionId((HttpServletRequest) request);
 			
 			Collection collection = null;			
 			if (collectionId != null) {
 				collection = configRepository.getCollection(collectionId);
-			}
-			
-			if (collection == null || collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)) {
-				super.doFilter(request, response, chain);
-				return;
+				if (collection != null && collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)) {
+					log.debug("Using Windows authentication filter for collection '"+collectionId+"'");
+					super.doFilter(request, response, chain);
+					return;
+				}
 			}
 		}
 		
@@ -98,46 +95,7 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 		
 		return collectionId;
 	}
-	
-	/**
-	 * <p>Checks if the current request needs authentication, based on the
-	 * URL. Some URLs are public, such as the collection list.</p>
-	 * 
-	 * <p>Static resources don't need authentication. It's the simplest way to
-	 * deal with it since we can't easily know which collection is related to the
-	 * static resource being requested.</p>
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private boolean needsAuthentication(HttpServletRequest request) {
-		if (request.getPathInfo().equals("/")
-				|| (request.getPathInfo().startsWith("/search") && request.getParameter(RequestParameters.COLLECTION) == null)) {
-			// Collection list page
-			log.trace("No auth. required for the collection list page");
-			return false;
-		} else {
-			// Find URL extension
-			final String ext = FilenameUtils.getExtension(request.getPathInfo());
-
-			// Only authenticate requests non-static files and root folders
-			if ("".equals(ext) || ext == null) {
-				log.trace("Auth. required for root folder access '"+request.getPathInfo()+"'");
-				return true;
-			}
-			
-			for (ViewTypes vt: SearchController.ViewTypes.values()) {
-				if (vt.toString().equals(ext)) {
-					log.trace("Auth. required for non static URL '"+request.getPathInfo()+"'");
-					return true;
-				}
-			}
-		}
 		
-		log.trace("No auth. required for URL '"+request.getPathInfo()+"'");
-		return false;
-	}
-	
 	/**
 	 * Wrapper around {@link FilterConfig} to allow customization
 	 * of init parameters.
