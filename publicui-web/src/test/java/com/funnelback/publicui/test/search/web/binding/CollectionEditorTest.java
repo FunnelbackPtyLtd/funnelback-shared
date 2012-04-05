@@ -30,7 +30,11 @@ public class CollectionEditorTest {
 		Assert.assertEquals(null, editor.getValue());
 		
 		editor.setAsText("invalid-collection");
-		Assert.assertEquals(null, editor.getValue());	
+		Assert.assertEquals(null, editor.getValue());
+		
+		editor.setAsText("test2,test1");
+		Assert.assertEquals(repository.getCollection("test2"), editor.getValue());
+		Assert.assertEquals("test2", editor.getAsText());		
 
 	}
 	
