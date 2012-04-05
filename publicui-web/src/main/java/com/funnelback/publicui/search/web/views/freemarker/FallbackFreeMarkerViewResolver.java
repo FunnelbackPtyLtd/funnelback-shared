@@ -16,20 +16,28 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  */
 public class FallbackFreeMarkerViewResolver extends FreeMarkerViewResolver {
 
-	private View fallbackView;
+	private final String fallbackViewUrl;
+	private final String defaultSuffix;
 	
-	public FallbackFreeMarkerViewResolver(View fallbackView) {
-		this.fallbackView = fallbackView;
+	public FallbackFreeMarkerViewResolver(String fallbackViewUrl, String defaultSuffix) {
+		this.fallbackViewUrl = fallbackViewUrl;
+		this.defaultSuffix = defaultSuffix;
 	}
 	
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
 		View v = super.resolveViewName(viewName, locale);
 		if (v == null) {
-			return fallbackView;
-		} else {
-			return v;
+			v = super.resolveViewName(viewName+defaultSuffix, locale);
+			if (v == null) {
+				v = super.resolveViewName(fallbackViewUrl, locale);
+				if (v == null) {
+					v = super.resolveViewName(fallbackViewUrl+defaultSuffix, locale);
+				}
+			}
 		}
+
+		return v;
 	}
 	
 }

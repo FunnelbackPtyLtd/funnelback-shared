@@ -70,11 +70,9 @@
 		<property name="viewResolvers">
 			<list>
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
-					<constructor-arg>
-						<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView">
-							<property name="url" value="web/templates/modernui/form-not-found.ftl" />
-						</bean>
-					</constructor-arg>
+					<constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
+					<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
+					
 					<property name="cache" value="true" />
 					<property name="prefix" value="" />
 					<property name="suffix" value=".ftl" />
