@@ -29,6 +29,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
 @Controller
@@ -61,6 +62,7 @@ public class SearchController {
 	@InitBinder
 	public void initBinder(DataBinder binder) {
 		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+		binder.registerCustomEditor(String.class, RequestParameters.PROFILE, new StringArrayFirstSlotEditor());
 	}
 	
 	@RequestMapping(value={"/"})

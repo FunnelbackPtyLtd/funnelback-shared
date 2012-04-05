@@ -15,7 +15,12 @@ public class CollectionEditor extends PropertyEditorSupport {
 	
 	@Override
 	public void setAsText(String text) throws IllegalArgumentException {
-		setValue(configRepository.getCollection(text));
+		// FUN-4279: Account for more than one values of 'collection'
+		if (text.contains(",")) {
+			setValue(configRepository.getCollection(text.split(",")[0]));
+		} else {
+			setValue(configRepository.getCollection(text));
+		}
 	}
 	
 	@Override
