@@ -50,15 +50,14 @@ public class WindowsNativePadreForker implements PadreForker {
 		int returnCode = -1;
 		
 		HANDLEByReference hToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
-		HANDLEByReference primaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
+		HANDLEByReference hPrimaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		try {
-			// Opening current thread token
-			if (! Advapi32.INSTANCE.OpenThreadToken(
-					Kernel32.INSTANCE.GetCurrentThread(),
+			// Opening current process token
+			if (! Advapi32.INSTANCE.OpenProcessToken(
+					Kernel32.INSTANCE.GetCurrentProcess(),
 					WinNT.TOKEN_ALL_ACCESS,
-					true,
 					hToken)) {
-				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenProcessToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			
 			// Duplicate token in order to obtain a primary token
@@ -69,7 +68,7 @@ public class WindowsNativePadreForker implements PadreForker {
 					null,
 					WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation,
 					WinNT.TOKEN_TYPE.TokenPrimary,
-					primaryToken)) {
+					hPrimaryToken)) {
 				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "DuplicateTokenEx()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 	
@@ -96,7 +95,7 @@ public class WindowsNativePadreForker implements PadreForker {
 			// Actually fork
 			log.debug("Calling CreateProcessAsUser() for command line '" + commandLine + "' with environment '" + environmnent + "'");
 			if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
-					primaryToken.getValue(),
+					hPrimaryToken.getValue(),
 					null,
 					commandLine,
 					null,
@@ -133,8 +132,8 @@ public class WindowsNativePadreForker implements PadreForker {
 			if(! WinBase.INVALID_HANDLE_VALUE.equals(hToken.getValue())) {
 				Kernel32.INSTANCE.CloseHandle(hToken.getValue());
 			}
-			if(! WinBase.INVALID_HANDLE_VALUE.equals(primaryToken.getValue())) {
-				Kernel32.INSTANCE.CloseHandle(primaryToken.getValue());
+			if(! WinBase.INVALID_HANDLE_VALUE.equals(hPrimaryToken.getValue())) {
+				Kernel32.INSTANCE.CloseHandle(hPrimaryToken.getValue());
 			}
 		}
 		
