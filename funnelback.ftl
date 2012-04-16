@@ -471,9 +471,9 @@
     <p>Content is cached to avoid firing an HTTP request for each search results page.</p>
 
     @param url : URL to request. This is the only mandatory parameter.
-    @param expiry : Cache time to live, in seconds (default = 3600).
-    @param start : Regular expression pattern marking the beginning of the content to include.
-    @param end : Regular expression pattern marking the end of the content to include.
+    @param expiry : Cache time to live, in seconds (default = 3600). This is a number so you must pass the parameters without quotes: <tt>expiry=3600</tt>.
+    @param start : Regular expression pattern (Java) marking the beginning of the content to include. Double quotes must be escaped: <tt>start="start \"pattern\""</tt>.
+    @param end : Regular expression pattern (Java) marking the end of the content to include. Double quotes must be escaped too.
     @param username : Username if the remote server requires authentication.
     @param password : Password if the remote server requires authentication.
     @param useragent : User-Agent string to use.
