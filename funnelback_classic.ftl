@@ -447,23 +447,38 @@
 
     @param class Optional class to affect to the div containing the facet and breadcrumb.
     @param separator Separator to use in the breadcrumb.
+    @param summary Set to true if you want this tag to display the summary + breadcrumb, otherwise use <code>&lt;@s.FacetSummary /&gt;</code>.
 -->
-<#macro FacetLabel class="facetLabel" separator="&rarr;">
+<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true>
     <#local fn = facetedNavigationConfig(question.collection.id, question.profile) >
     <#if fn?exists>
         <#-- Find facet definition in the configuration corresponding
              to the facet we're currently displaying -->
         <#list fn.facetDefinitions as fdef>
             <#if fdef.name == s.facet.name>
+                <#assign facetDef = fdef in s />
                 <div class="${class}"> ${s.facet.name}
-                    <#if QueryString?contains("f." + fdef.name?url) || urlDecode(QueryString)?contains("f." + fdef.name?url)>
-                        : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, fdef.allQueryStringParamNames), ["start_rank"] + fdef.allQueryStringParamNames)?html}">all</a>
-                    </#if>
-                    <@FacetBreadCrumb categoryDefinitions=fdef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
+                    <#if summary><@FacetSummary separator=separator alltext="all" /></#if>
                 </div>
             </#if>
         </#list> 
     </#if>
+</#macro>
+
+<#---
+    Displays The facet summary and breadcrumb.
+
+    <p>This tag is called by <code>&lt;@s.FacetLabel /&gt;</code> but this can be disabled
+    so that the summary and breadcrumb can be displayed separately using this tag for more flexibility.</p>
+
+    @param separator Separator to use in the breadcrumb.
+    @param alltext Text to use to completely remove the facet constraints. Defaults to &quot;all&quot;.
+-->
+<#macro FacetSummary separator="&rarr;" alltext="all">
+    <#if QueryString?contains("f." + facetDef.name?url) || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
+        : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank"] + facetDef.allQueryStringParamNames)?html}">${alltext}</a>
+    </#if>
+    <@FacetBreadCrumb categoryDefinitions=facetDef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
 </#macro>
 
 <#---
