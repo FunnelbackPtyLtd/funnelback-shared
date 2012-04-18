@@ -695,6 +695,10 @@
     <p>The <code>nbCategories</code> and <code>recursionCategories</code> parameters
     are internals and can be safely ignored when using this tag.</p>
 
+    <p>For faceted navigation the <tt>max</tt> parameter sets the maximum number of
+    categories to return. If you need to display only a few number of them with a <em>more...</em>
+    link for expansion, you'll need to use Javascript. See the default form file for an example.</p>
+
     @param name Name of the category for contextual navigation. Can be <code>type</code>, <code>type</code> or <code>topic</code>. Empty for a faceted navigation category.
     @param max Maximum number of categories to display, for faceted navigation.
     @param nbCategories (Internal parameter, do not use) Current number of categories displayed (used in recursion for faceted navigation).
