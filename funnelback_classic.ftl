@@ -697,8 +697,8 @@
 
     @param name Name of the category for contextual navigation. Can be <code>type</code>, <code>type</code> or <code>topic</code>. Empty for a faceted navigation category.
     @param max Maximum number of categories to display, for faceted navigation.
-    @param nbCategories Current number of categories displayed (used in recursion for faceted navigation).
-    @param recursionCategories List of categories to process when recursing for faceted navigation).
+    @param nbCategories (Internal parameter, do not use) Current number of categories displayed (used in recursion for faceted navigation).
+    @param recursionCategories (Internal parameter, do not use) List of categories to process when recursing for faceted navigation).
 
     @provides The category as <code>${s.category}</code>.
 -->
