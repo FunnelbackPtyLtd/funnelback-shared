@@ -13,7 +13,10 @@ public class MemoryMapperPanLook implements PanLook{
 
 	public MemoryMapperPanLook(PanLookSeeker seeker, String prefix) throws IOException {
 		this.seeker = seeker;
-
+		
+		// If the file is empty, there will be no matches
+		if(seeker.length() == 0) return; 
+		
 		// Get the first line that starts with prefix
 	    long aLineThatStartsWith = findStartOfLineThatBeginsWith(prefix,0,seeker.length()-1);
 	    

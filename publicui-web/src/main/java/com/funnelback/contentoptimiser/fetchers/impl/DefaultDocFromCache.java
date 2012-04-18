@@ -42,6 +42,8 @@ import com.google.common.io.Files;
 @Log4j
 @Component
 public class DefaultDocFromCache implements DocFromCache {
+	private static final String CACHE_CGI = "cache.cgi";
+
 	@Autowired
 	@Setter
 	private File searchHome;
@@ -126,11 +128,12 @@ public class DefaultDocFromCache implements DocFromCache {
 		PrintWriter printWriter = new PrintWriter(fos);
 		printWriter.write(sb.toString());
 		printWriter.flush();
-
+		
+		
 		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
 		CgiRunner runner = cgiRunnerFactory.create(
 				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
-						+ DefaultValues.FOLDER_PUBLIC + File.separator + config.value(Keys.UI_CACHE_LINK)),
+						+ DefaultValues.FOLDER_PUBLIC + File.separator + CACHE_CGI),
 				perlBin);
 		try {
 			runner.setRequestUrl(cacheUrl).setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath()).run(fos);
