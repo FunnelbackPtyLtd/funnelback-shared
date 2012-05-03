@@ -46,7 +46,7 @@ public class PassThroughParameters implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			searchTransaction.getQuestion().getAdditionalParameters().putAll(searchTransaction.getQuestion().getInputParameterMap());
+			searchTransaction.getQuestion().getAdditionalParameters().putAll(searchTransaction.getQuestion().getRawInputParameters());
 		
 			for (String ignored: IGNORED_NAMES) {
 				searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);

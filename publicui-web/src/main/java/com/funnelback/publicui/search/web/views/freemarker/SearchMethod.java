@@ -58,20 +58,20 @@ public class SearchMethod extends AbstractTemplateMethod {
 		sq.setProfile(q.getProfile());
 
 		if (arguments.size() == 4) {
-			sq.getInputParameterMap().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));
+			sq.getRawInputParameters().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));
 		}
 
 		return searchTransactionProcessor.process(sq);
 	}
 	
 	
-	private Map<String, String> convertSimpleHashToParmeterMap(TemplateHashModelEx hash) throws TemplateModelException {
-		Map<String, String> out = new HashMap<String, String>();
+	private Map<String, String[]> convertSimpleHashToParmeterMap(TemplateHashModelEx hash) throws TemplateModelException {
+		Map<String, String[]> out = new HashMap<String, String[]>();
 		
 		for (TemplateModelIterator it = hash.keys().iterator(); it.hasNext();) {
 			String key = ((SimpleScalar) it.next()).getAsString();
 			String value = hash.get(key).toString();
-			out.put(key, value);
+			out.put(key, new String[] {value});
 		}
 		
 		return out;

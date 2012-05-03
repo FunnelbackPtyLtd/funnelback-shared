@@ -19,6 +19,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.utils.SingleValueMapWrapper;
 
 /**
  * <p>This class contains all the input data related to a search.</p>
@@ -104,7 +105,7 @@ public class SearchQuestion {
 	 * <p>If you need to inject or manipulate Modern UI parameters {@link #inputParameterMap} or
 	 * {@link #rawInputParameters} should be used.</p>
 	 */
-	@Getter final private Map<String, String> additionalParameters = new HashMap<String, String>();
+	@Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
 	
 	/**
 	 * List of environment variables to pass to PADRE.
@@ -162,7 +163,16 @@ public class SearchQuestion {
 	 * it can be an IP address, an md5 hash of the address, nothing ("-") or null. 
 	 */
 	@Getter @Setter private String userId = Log.USERID_NOTHING;
-	
+
+	/**
+	 * <p>Raw input parameters</p>
+	 * 
+	 * <p>Contains all the input parameters (query string / request parameters). Each value
+	 * is an array of String has a parameter can have multiple values (e.g. <code>&amp;param=value1&amp;param=value2</code>)
+	 * as defined in Java servlets.</p>
+	 */
+	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
+
 	/**
 	 * <p>Input parameters map.</p>
 	 * 
@@ -177,22 +187,8 @@ public class SearchQuestion {
 	 * Navigation. If you need to inject additional parameters for Faceted Navigation please consider
 	 * using {@link #rawInputParameters} instead.</p> 
 	 */
-	@Getter private final Map<String, String> inputParameterMap = new HashMap<String, String>();
+	@Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
 	
-	/**
-	 * <p>Raw input parameters</p>
-	 * 
-	 * <p>Contains all the input parameters (query string / request parameters). Each value
-	 * is an array of String has a parameter can have multiple values (e.g. <code>&amp;param=value1&amp;param=value2</code>)
-	 * as defined in Java servlets.</p>
-	 * 
-	 * <p>If you need to manipulate or inject parameters it's often simpler to use {@link #inputParameterMap}, except
-	 * if your parameters needs to affect Faceted Navigation. In Faceted Navigation a parameter can have
-	 * multiple values (i.e. multiple categories selected for a given facet) so the Faceted Navigation will use
-	 * this map, instead of {@link #inputParameterMap}</p>
-	 */
-	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
-
 	/**
 	 * <p>Indicates if this question is part of the "main" search, or part of an "extra"
 	 * search.</p>

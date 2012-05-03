@@ -39,41 +39,35 @@ public class FacetScopeTests {
 	
 	@Test
 	public void testNoFacetScope() throws InputProcessorException {
-		Assert.assertEquals(0, st.getQuestion().getInputParameterMap().size());
 		Assert.assertEquals(0, st.getQuestion().getRawInputParameters().size());
 		
 		processor.processInput(st);
 
-		Assert.assertEquals(0, st.getQuestion().getInputParameterMap().size());
 		Assert.assertEquals(0, st.getQuestion().getRawInputParameters().size());
 	}
 	
 	@Test
 	public void test() throws Exception {
-		st.getQuestion().getInputParameterMap().put("facetScope",
+		st.getQuestion().getRawInputParameters().put("facetScope", new String[] {
 				//encode(
 						encode("f.Location|X") + "=" + encode("australia")
 						+ "&" + encode("f.Type|1") + "=" + encode("part time")
 						+ "&" + encode("f.Url|url") + "=" + encode("prospects & sales")	// With ampersand
-						+ "&" + encode("f.Type|1") + "=" + encode("full time"));//);			// Second value for same param
+						+ "&" + encode("f.Type|1") + "=" + encode("full time")});//);			// Second value for same param
 		
-		System.out.println(st.getQuestion().getInputParameterMap().get("facetScope"));
-
 		processor.processInput(st);
 
 		// 4 because "facetScope" is still in the Map
-		Assert.assertEquals(4, st.getQuestion().getInputParameterMap().size());
-		Assert.assertEquals(3, st.getQuestion().getRawInputParameters().size());
+		Assert.assertEquals(4, st.getQuestion().getRawInputParameters().size());
 		
 		for (String s: new String[] {"f.Location|X", "f.Type|1", "f.Url|url"}) {
-			Assert.assertTrue(st.getQuestion().getInputParameterMap().keySet().contains(s));
 			Assert.assertTrue(st.getQuestion().getRawInputParameters().keySet().contains(s));
 		}
 		
-		Assert.assertEquals(st.getQuestion().getInputParameterMap().get("f.Location|X"), "australia");
-		Assert.assertEquals(st.getQuestion().getInputParameterMap().get("f.Url|url"), "prospects & sales");
-		Assert.assertTrue(st.getQuestion().getInputParameterMap().get("f.Type|1").equals("part time")
-				|| st.getQuestion().getInputParameterMap().get("f.Type|1").equals("full time"));
+		Assert.assertEquals(st.getQuestion().getRawInputParameters().get("f.Location|X")[0], "australia");
+		Assert.assertEquals(st.getQuestion().getRawInputParameters().get("f.Url|url")[0], "prospects & sales");
+		Assert.assertTrue(st.getQuestion().getRawInputParameters().get("f.Type|1")[0].equals("part time")
+				|| st.getQuestion().getRawInputParameters().get("f.Type|1")[0].equals("full time"));
 		
 
 		Assert.assertEquals(st.getQuestion().getRawInputParameters().get("f.Location|X")[0], "australia");

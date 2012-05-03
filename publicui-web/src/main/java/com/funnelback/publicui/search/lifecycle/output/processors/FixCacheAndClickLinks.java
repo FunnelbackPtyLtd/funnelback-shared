@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.BestBet;
@@ -19,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Apply transformation to the cache and click URLs (Results, BestBets...)
@@ -74,8 +76,11 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
 		}
 		
-		if (question.getInputParameterMap().get("HTTP_REFERER") != null) {
-			out.append("&").append(RequestParameters.Click.SEARCH_REFERER).append("=").append(URLEncoder.encode(question.getInputParameterMap().get("HTTP_REFERER"), "UTF-8"));
+		if (question.getRawInputParameters().get(PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString()) != null) {
+			out.append("&")
+				.append(RequestParameters.Click.SEARCH_REFERER)
+				.append("=")
+				.append(URLEncoder.encode(MapUtils.getFirstString(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), null), "UTF-8"));
 		}
 		
 		return out.toString();

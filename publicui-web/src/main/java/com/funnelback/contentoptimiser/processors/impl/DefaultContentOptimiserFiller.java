@@ -38,6 +38,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
+import com.funnelback.publicui.utils.MapUtils;
 import com.google.common.collect.SetMultimap;
 
 @Log4j
@@ -280,7 +281,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	public void setImportantUrl(ContentOptimiserModel comparison,SearchTransaction searchTransaction) {
 		
 		ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
-		String urlString = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL);
+		String urlString = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null);
 
 		// See if the selected document appears for the long query
 		Result importantResult = null;

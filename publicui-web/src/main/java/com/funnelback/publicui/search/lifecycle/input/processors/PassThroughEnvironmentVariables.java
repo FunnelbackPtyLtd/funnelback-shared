@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Will collect some environment variables from the request that will
@@ -31,11 +32,11 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			Map<String, String> params = searchTransaction.getQuestion().getInputParameterMap();
+			Map<String, String[]> params = searchTransaction.getQuestion().getRawInputParameters();
 			HashMap<String, String> out = new HashMap<String, String>();
 			
 			for (Keys key: Keys.values()) {
-				setIfNotNull(out, key.toString(), params.get(key.toString()));
+				setIfNotNull(out, key.toString(), MapUtils.getFirstString(params, key.toString(), null));
 			}
 			
 			log.debug("Adding environment variables: " + out);

@@ -18,7 +18,7 @@ public class PadreQueryStringBuilderTest {
 		q = new SearchQuestion();
 		q.setCollection(new Collection("dummy", null));
 		q.setQuery("chocolate");
-		q.getAdditionalParameters().put("a", "1");
+		q.getAdditionalParameters().put("a", new String[] {"1"});
 	}
 	
 	@Test
@@ -28,16 +28,8 @@ public class PadreQueryStringBuilderTest {
 	}
 	
 	@Test
-	public void testClive() {
-		q.getAdditionalParameters().put(RequestParameters.CLIVE, "abc,def,ghi");
-		Assert.assertEquals(
-				"a=1&clive=abc&clive=def&clive=ghi&collection=dummy&profile=_default&query=chocolate",
-				new PadreQueryStringBuilder(q, false).buildQueryString());
-	}
-	
-	@Test
 	public void testEncoding() {
-		q.getAdditionalParameters().put("encoded", "a nice & encoded + string");
+		q.getAdditionalParameters().put("encoded", new String[] {"a nice & encoded + string"});
 
 		Assert.assertEquals(
 				"a=1&collection=dummy&encoded=a+nice+%26+encoded+%2B+string&profile=_default&query=chocolate",
@@ -48,7 +40,7 @@ public class PadreQueryStringBuilderTest {
 	public void testEnvironmentVariables() {
 		q.getEnvironmentVariables().put("ABC", "DEF");
 		q.getEnvironmentVariables().put("123", "456");
-		q.getAdditionalParameters().put("123", "456");
+		q.getAdditionalParameters().put("123", new String[] {"456"});
 		
 		Assert.assertFalse(new PadreQueryStringBuilder(q, false).buildQueryString().contains("ABC"));
 		Assert.assertFalse(new PadreQueryStringBuilder(q, false).buildQueryString().contains("123"));
@@ -101,13 +93,13 @@ public class PadreQueryStringBuilderTest {
 				"a=1&collection=dummy&gscope1=1%2C2%2B&profile=_default&query=chocolate",
 				new PadreQueryStringBuilder(q, true).buildQueryString());
 		
-		q.getAdditionalParameters().put("gscope1", "4,5+");
+		q.getAdditionalParameters().put("gscope1", new String[] {"4,5+"});
 
 		Assert.assertEquals(
 				"a=1&collection=dummy&gscope1=1%2C2%2B4%2C5%2B%2B&profile=_default&query=chocolate",
 				new PadreQueryStringBuilder(q, true).buildQueryString());
 
-		q.getAdditionalParameters().put("gscope1", "6");
+		q.getAdditionalParameters().put("gscope1", new String[] {"6"});
 
 		Assert.assertEquals(
 				"a=1&collection=dummy&gscope1=1%2C2%2B6%2B&profile=_default&query=chocolate",

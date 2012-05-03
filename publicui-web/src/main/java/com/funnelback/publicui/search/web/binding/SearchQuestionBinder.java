@@ -24,7 +24,6 @@ public class SearchQuestionBinder {
 	 * @param to
 	 */
 	public static void bind(SearchQuestion from, SearchQuestion to) {
-		to.getInputParameterMap().putAll(from.getInputParameterMap());
 		to.getRawInputParameters().putAll(from.getRawInputParameters());
 		to.setQuery(from.getQuery());
 		to.setOriginalQuery(from.getOriginalQuery());
@@ -40,27 +39,22 @@ public class SearchQuestionBinder {
 	 * @param request
 	 * @param question
 	 */
+	@SuppressWarnings("unchecked")
 	public static void bind(HttpServletRequest request, SearchQuestion question) {
 		question.getRawInputParameters().putAll(request.getParameterMap());
 		
-		for (@SuppressWarnings("unchecked")
-		Iterator<String> it = request.getParameterMap().keySet().iterator(); it.hasNext(); ) {
-			String key = it.next();
-			question.getInputParameterMap().put(key, request.getParameter(key));
-		}
-		
 		// Add any HTTP servlet specifics 
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
 		
 		// Originating IP address (prior to forwarding)
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
 
 		// Referer
-		MapUtils.putIfNotNull(question.getInputParameterMap(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.REFERRER));
+		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.REFERRER));
 				
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());

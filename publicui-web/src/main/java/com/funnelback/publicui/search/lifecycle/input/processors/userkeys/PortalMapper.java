@@ -19,10 +19,12 @@ public class PortalMapper implements UserKeysMapper {
 	
 	@Override
 	public List<String> getUserKeys(SearchTransaction transaction) {
-		String userKeys = transaction.getQuestion().getAdditionalParameters().get(PORTAL_PARAMETER_NAME);
+		String[] userKeys = transaction.getQuestion().getRawInputParameters().get(PORTAL_PARAMETER_NAME);
 		List<String> result = new ArrayList<String>();
 		if (userKeys != null) {
-			result = Arrays.asList(userKeys.split(","));
+			for (String key: userKeys) {
+				result.addAll(Arrays.asList(key.split(",")));
+			}
 		}
 		return result;
 	}

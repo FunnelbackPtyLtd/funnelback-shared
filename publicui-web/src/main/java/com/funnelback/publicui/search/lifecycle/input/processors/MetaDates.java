@@ -81,7 +81,7 @@ public class MetaDates implements InputProcessor {
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			Map<String, String> params = searchTransaction.getQuestion().getInputParameterMap();
+			Map<String, String[]> params = searchTransaction.getQuestion().getRawInputParameters();
 			MapKeyFilter filter = new MapKeyFilter(params);
 			if (filter.filter(PARAMETERS_PATTERN).length > 0) {
 				
@@ -90,13 +90,13 @@ public class MetaDates implements InputProcessor {
 					String date;
 					if (params.get(PREFIX + n.toString()) != null) {
 						// Direct date: meta_d1=20100101
-						date = params.get(PREFIX + n.toString()).trim();
+						date = MapUtils.getFirstString(params, PREFIX + n.toString(), "").trim();
 					} else {
 						// Y/M/D split in 3 different parameters
 						
-						String year = MapUtils.getString(params, PREFIX + n.toString() + YEAR, "");
-						String month = MapUtils.getString(params, PREFIX + n.toString() + MONTH, "");
-						String day = MapUtils.getString(params, PREFIX + n.toString() + DAY, "");
+						String year = MapUtils.getFirstString(params, PREFIX + n.toString() + YEAR, "");
+						String month = MapUtils.getFirstString(params, PREFIX + n.toString() + MONTH, "");
+						String day = MapUtils.getFirstString(params, PREFIX + n.toString() + DAY, "");
 						date = day + month + year;
 					}
 					
@@ -149,9 +149,9 @@ public class MetaDates implements InputProcessor {
 	 * @param request
 	 * @return
 	 */
-	private String processEventSearch(Map<String, String> params) {
-		String w1 = MapUtils.getString(params, PREFIX + EventSearch.w1, "");
-		String w2 = MapUtils.getString(params, PREFIX + EventSearch.w2, "");
+	private String processEventSearch(Map<String, String[]> params) {
+		String w1 = MapUtils.getFirstString(params, PREFIX + EventSearch.w1, "");
+		String w2 = MapUtils.getFirstString(params, PREFIX + EventSearch.w2, "");
 		
 		StringBuffer out = new StringBuffer();
 		if (!"".equals(w1+w2)) {

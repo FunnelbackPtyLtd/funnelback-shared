@@ -33,12 +33,12 @@ public class PassThroughParametersTests {
 	public void test() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put(RequestParameters.QUERY, "query");
-		st.getQuestion().getInputParameterMap().put(RequestParameters.COLLECTION, "collection");
-		st.getQuestion().getInputParameterMap().put("param1", "value1");
-		st.getQuestion().getInputParameterMap().put("param2", "value2a,value2b");
-		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_CLICKED, "abc");
-		st.getQuestion().getInputParameterMap().put(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", "def");
+		st.getQuestion().getRawInputParameters().put(RequestParameters.QUERY, new String[] {"query"});
+		st.getQuestion().getRawInputParameters().put(RequestParameters.COLLECTION, new String[] {"collection"});
+		st.getQuestion().getRawInputParameters().put("param1", new String[] {"value1"});
+		st.getQuestion().getRawInputParameters().put("param2", new String[] {"value2a,value2b"});
+		st.getQuestion().getRawInputParameters().put(RequestParameters.ContextualNavigation.CN_CLICKED, new String[] {"abc"});
+		st.getQuestion().getRawInputParameters().put(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"0", new String[] {"def"});
 		
 		PassThroughParameters processor = new PassThroughParameters();
 		processor.processInput(st);
@@ -57,8 +57,8 @@ public class PassThroughParametersTests {
 		}
 		
 		
-		Assert.assertEquals("value1", st.getQuestion().getAdditionalParameters().get("param1"));
-		Assert.assertEquals("value2a,value2b", st.getQuestion().getAdditionalParameters().get("param2"));
+		Assert.assertArrayEquals(new String[] {"value1"}, st.getQuestion().getAdditionalParameters().get("param1"));
+		Assert.assertArrayEquals(new String[] {"value2a,value2b"}, st.getQuestion().getAdditionalParameters().get("param2"));
 
 	}
 

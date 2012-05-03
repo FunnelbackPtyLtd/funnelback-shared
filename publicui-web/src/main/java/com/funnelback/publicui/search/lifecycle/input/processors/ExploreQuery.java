@@ -13,6 +13,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.explore.Explore
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Processes explore:... queries. Calls padre-rf to
@@ -35,11 +36,12 @@ public class ExploreQuery implements InputProcessor {
 		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
 			
 			Integer nbOfTerms = null;
-			if (searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP) != null) {
+			if (searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.EXP) != null) {
+				String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.EXP, null);
 				try {
-					nbOfTerms = Integer.parseInt((searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP)));
+					nbOfTerms = Integer.parseInt(exp);
 				} catch (Throwable t) {
-					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.EXP) + "'");
+					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + exp + "'");
 				}
 			}
 			

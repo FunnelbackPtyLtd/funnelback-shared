@@ -86,8 +86,8 @@ public class ContentOptimiserController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			SearchQuestion question) throws IOException, XmlParsingException {
-		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
-		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
+		question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
+		question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}
@@ -113,8 +113,8 @@ public class ContentOptimiserController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			SearchQuestion question) throws IOException, XmlParsingException {
-		question.getInputParameterMap().put(RequestParameters.EXPLAIN, "on");
-		question.getInputParameterMap().put(RequestParameters.NUM_RANKS, "999");
+		question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
+		question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
 		if("".equals(question.getQuery())) {
 			return kickoff(request);
 		}

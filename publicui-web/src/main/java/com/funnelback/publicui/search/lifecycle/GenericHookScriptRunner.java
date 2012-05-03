@@ -2,6 +2,13 @@ package com.funnelback.publicui.search.lifecycle;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -29,6 +36,12 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 	public static enum Phase {
 		Input, Data, Output;
 	}
+	
+	private static final String TYPE_ERROR_MSG = "The entry '%s' with value '%s' in the Map '%s' has an unexpected type. "
+			+ "It should be either "+String.class.getName()+"[] or "+List.class.getName()+"<"+String.class.getName()+"> "
+			+ "but was '%s'. "
+			+ "This value will be removed to prevent a failure at a later stage in the query lifecycle. "
+			+ "Please check that your hook script only uses supported types when updating this Map.";
 	
 	/**
 	 * Type of hook script to run
@@ -84,12 +97,63 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 					binding.setVariable(Hook.SEARCH_TRANSACTION_KEY, searchTransaction);
 					s.setBinding(binding);
 					s.run();
+					
+					fixMapsWithArrayLists(searchTransaction);
 				} catch (Throwable t) {
 					log.error("Error while running " + hookScriptToRun.toString() + " hook for collection '" + searchTransaction.getQuestion().getCollection().getId() + "'", t);
 				}
 			}
 		}
 	}
-
+	
+	/**
+	 * <p>Problem: Groovy arrays are internally implemented as {@link ArrayList}s. It means that when
+	 * someone do something like <code>transaction.question.rawInputParameters["key"] = ["value1", "value2"]</code>
+	 * the <code>rawInputParameters</code> map now contains a value which is of type <code>ArrayList</code>
+	 * instead of <code>String[]</code>.</p>
+	 * 
+	 * <p>That causes run-time errors when the Map is read by code expecting a <code>String[]</code>
+	 * 
+	 * <p>This is possible even if the {@link Map} is declared as <code>&lt;String, String[]&gt;</code>
+	 * because of the way generics are implemented in Java (type erasure). There's no run-time guarantee
+	 * that prevents anyone from putting arbitrary objects types in the map.</p>
+	 * 
+	 * <p>So we will iterate over the map, check for {@link ArrayList}s and replace them with String arrays.</p>
+	 * 
+	 * <p>That sucks :(</p>
+	 * 
+	 * @since v11.6
+	 */
+	private void fixMapsWithArrayLists(SearchTransaction transaction) {
+		fixMapWithArrayLists(transaction.getQuestion().getAdditionalParameters(), "additionalParameters");
+		fixMapWithArrayLists(transaction.getQuestion().getRawInputParameters(), "rawInputParameters");
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fixMapWithArrayLists(Map<String, String[]> map, String mapName) {
+		// Can't remove while iterating otherwise we get a ConcurrentModificationException
+		Set<String> keysToRemove = new HashSet<String>();
+		
+		for(String key: map.keySet()) {
+			Object value = map.get(key);
+			if (value instanceof List) {
+				try {
+					// Convert to String[]
+					map.put(key, (String[]) ((List) value).toArray(new String[0]));
+					log.debug("Converted entry '"+key+"' from List to String[]");
+				} catch (Exception e) {
+					log.warn(String.format(TYPE_ERROR_MSG, key, value, mapName, value.getClass().getName()));
+					keysToRemove.add(key);
+				}
+			} else if (! (value instanceof String[])) {
+				log.warn(String.format(TYPE_ERROR_MSG, key, value, mapName, value.getClass().getName()));
+				keysToRemove.add(key);
+			}
+		}
+		
+		for(String key: keysToRemove) {
+			map.remove(key);
+		}
+	}
 
 }

@@ -58,7 +58,7 @@ public class PortalMapperTests {
 	@Test
 	public void testHeader() throws InputProcessorException {
 		SearchQuestion question = new SearchQuestion();
-		question.getAdditionalParameters().put(PortalMapper.PORTAL_PARAMETER_NAME, "ab,cd,ef");
+		question.getRawInputParameters().put(PortalMapper.PORTAL_PARAMETER_NAME, new String[] {"ab,cd,ef"});
 		question.setCollection(c);
 		SearchTransaction st = new SearchTransaction(question, null);
 

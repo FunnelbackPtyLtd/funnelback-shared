@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
+import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Process explain output from PADRE and generates relevant data model for the
@@ -40,14 +41,14 @@ public class ContentOptimiser implements OutputProcessor {
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
-				&& searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.EXPLAIN)
+				&& searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
 				&& !searchTransaction.getQuestion().isExtraSearch()) {
 			ContentOptimiserModel comparison = new ContentOptimiserModel();
 			log.debug("Process output content optimiser has all data");
 			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
 			log.debug("Done consuming result packet");
 
-			String optimiserUrl = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.CONTENT_OPTIMISER_URL);
+			String optimiserUrl = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null);
 			if(!"".equals(optimiserUrl) && optimiserUrl != null) {
 			
 				

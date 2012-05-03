@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.utils.MapUtils;
 
 
 /**
@@ -34,20 +35,20 @@ public class PadreQueryStringBuilder {
 	private final boolean withFacetConstraints;
 	
 	public String buildQueryString() {
-		Map<String, String> qs = new TreeMap<String, String>();
+		Map<String, String[]> qs = new TreeMap<String, String[]>();
 		
 		// Add any additional parameter
 		qs.putAll(question.getAdditionalParameters());
 		
 		// Then craft our owns (Their value will overwrite any existing one in the additional set)
-		qs.put(Parameters.collection.toString(), question.getCollection().getId());
-		qs.put(Parameters.profile.toString(), question.getProfile());
+		qs.put(Parameters.collection.toString(), new String[] {question.getCollection().getId()});
+		qs.put(Parameters.profile.toString(), new String[] {question.getProfile()});
 
-		qs.put(Parameters.query.toString(), buildQuery());
+		qs.put(Parameters.query.toString(), new String[] {buildQuery()});
 		
 		String gscope1 = buildGScope1();
 		if (gscope1 != null && ! "".equals(gscope1)) {
-			qs.put(Parameters.gscope1.toString(), buildGScope1());
+			qs.put(Parameters.gscope1.toString(), new String[] {buildGScope1()});
 		}
 		
 		// Remove from query string any parameter that will be passed as an environment variable
@@ -60,27 +61,17 @@ public class PadreQueryStringBuilder {
 	}
 	
 	@SneakyThrows(UnsupportedEncodingException.class)
-	private static String toQueryString(Map<String, String> map) {
+	private static String toQueryString(Map<String, String[]> map) {
 		StringBuffer out = new StringBuffer();
-		for(Iterator<Entry<String, String>> it = map.entrySet().iterator(); it.hasNext();) {
+		for(Iterator<Entry<String, String[]>> it = map.entrySet().iterator(); it.hasNext();) {
 
-			Entry<String, String> entry = it.next();
-			if (entry.getKey().equals(RequestParameters.CLIVE) && entry.getValue() != null) {
-				// FIXME clive is the only multi-valued parameter in PADRE
-				// Maybe we should change that.
-				String[] clives = entry.getValue().split(",");
-				for (int i=0; i<clives.length; i++) {
-					out.append(entry.getKey()+"="+URLEncoder.encode(clives[i], "UTF-8"));
-					if (i+1 < clives.length) {
-						out.append(DELIMITER);
-					}
+			Entry<String, String[]> entry = it.next();
+			if (entry.getValue() != null) {
+				for (String value: entry.getValue()) {
+					out.append(entry.getKey() + "=" + URLEncoder.encode(value, "UTF-8"));
 				}
 			} else {
-				if (entry.getValue() != null) {
-					out.append(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
-				} else {
-					out.append(entry.getKey() + "=");
-				}
+				out.append(entry.getKey() + "=");
 			}
 		
 			if (it.hasNext()) {
@@ -143,14 +134,14 @@ public class PadreQueryStringBuilder {
 					+ (CharUtils.isAsciiNumeric(facetGscopeConstraints.charAt(facetGscopeConstraints.length()-1))
 							? ","
 							: "")
-					+ question.getAdditionalParameters().get(RequestParameters.GSCOPE1)
+					+ MapUtils.getFirstString(question.getAdditionalParameters(), RequestParameters.GSCOPE1, null)
 					+ "+";
 			} else {
 				return question.getFacetsGScopeConstraints();
 			}
 		} else {
 			if (question.getAdditionalParameters().get(RequestParameters.GSCOPE1) != null) {
-				return question.getAdditionalParameters().get(RequestParameters.GSCOPE1);
+				return MapUtils.getFirstString(question.getAdditionalParameters(), RequestParameters.GSCOPE1, null);
 			} else {
 				return null;
 			}

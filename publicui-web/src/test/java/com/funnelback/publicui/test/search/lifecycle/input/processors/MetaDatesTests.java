@@ -39,8 +39,8 @@ public class MetaDatesTests {
 	@Test
 	public void testNoDateParameters() throws InputProcessorException {
 		
-		st.getQuestion().getInputParameterMap().put("param1", "value1");
-		st.getQuestion().getInputParameterMap().put("meta_x", "y");
+		st.getQuestion().getRawInputParameters().put("param1", new String[] {"value1"});
+		st.getQuestion().getRawInputParameters().put("meta_x", new String[] {"y"});
 		
 		processor.processInput(st);
 		Assert.assertNull(st.getQuestion().getQuery());
@@ -54,7 +54,7 @@ public class MetaDatesTests {
 	
 	@Test
 	public void testQueryPreserved() throws InputProcessorException {
-		st.getQuestion().getInputParameterMap().put("meta_d", "01Jan2010");
+		st.getQuestion().getRawInputParameters().put("meta_d", new String[] {"01Jan2010"});
 		
 		st.getQuestion().setQuery("existing query");
 		processor.processInput(st);
@@ -66,25 +66,25 @@ public class MetaDatesTests {
 	@Test
 	public void testDateOnThreeComponents() throws InputProcessorException {
 
-		st.getQuestion().getInputParameterMap().put("meta_dyear", "1965");
-		st.getQuestion().getInputParameterMap().put("meta_dmonth", "Jan");
-		st.getQuestion().getInputParameterMap().put("meta_dday", "6");
+		st.getQuestion().getRawInputParameters().put("meta_dyear", new String[] {"1965"});
+		st.getQuestion().getRawInputParameters().put("meta_dmonth", new String[] {"Jan"});
+		st.getQuestion().getRawInputParameters().put("meta_dday", new String[] {"6"});
 		
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
 		Assert.assertEquals("d=6Jan1965", st.getQuestion().getQueryExpressions().get(0));
 		st.getQuestion().getQueryExpressions().clear();
 		
-		st.getQuestion().getInputParameterMap().put("meta_dday", null);
+		st.getQuestion().getRawInputParameters().put("meta_dday", null);
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
 		Assert.assertEquals("d=Jan1965", st.getQuestion().getQueryExpressions().get(0));
 		st.getQuestion().getQueryExpressions().clear();
 		
-		st.getQuestion().getInputParameterMap().clear();
-		st.getQuestion().getInputParameterMap().put("meta_d3year", "2011");
-		st.getQuestion().getInputParameterMap().put("meta_d3month", "03");
-		st.getQuestion().getInputParameterMap().put("meta_d3day", "06");
+		st.getQuestion().getRawInputParameters().clear();
+		st.getQuestion().getRawInputParameters().put("meta_d3year", new String[] {"2011"});
+		st.getQuestion().getRawInputParameters().put("meta_d3month", new String[] {"03"});
+		st.getQuestion().getRawInputParameters().put("meta_d3day", new String[] {"06"});
 		
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
@@ -94,7 +94,7 @@ public class MetaDatesTests {
 	
 	@Test
 	public void testD() throws InputProcessorException {
-		st.getQuestion().getInputParameterMap().put("meta_d", "01Jan2001");
+		st.getQuestion().getRawInputParameters().put("meta_d", new String[] {"01Jan2001"});
 
 		processor.processInput(st);	
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
@@ -103,8 +103,8 @@ public class MetaDatesTests {
 	
 	@Test
 	public void testD1D2() throws InputProcessorException {
-		st.getQuestion().getInputParameterMap().put("meta_d1", "01Jan2001");
-		st.getQuestion().getInputParameterMap().put("meta_d2", "05Mar2002");
+		st.getQuestion().getRawInputParameters().put("meta_d1", new String[] {"01Jan2001"});
+		st.getQuestion().getRawInputParameters().put("meta_d2", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
@@ -114,8 +114,8 @@ public class MetaDatesTests {
 	
 	@Test
 	public void testD3D4() throws InputProcessorException {
-		st.getQuestion().getInputParameterMap().put("meta_d3", "01Jan2001");
-		st.getQuestion().getInputParameterMap().put("meta_d4", "05Mar2002");
+		st.getQuestion().getRawInputParameters().put("meta_d3", new String[] {"01Jan2001"});
+		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
@@ -123,8 +123,8 @@ public class MetaDatesTests {
 		Assert.assertEquals("d<6Mar2002", st.getQuestion().getQueryExpressions().get(1));
 		st.getQuestion().getQueryExpressions().clear();
 		
-		st.getQuestion().getInputParameterMap().put("meta_d3", "2010-05-01");
-		st.getQuestion().getInputParameterMap().put("meta_d4", "2011-06-06");
+		st.getQuestion().getRawInputParameters().put("meta_d3", new String[] {"2010-05-01"});
+		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"2011-06-06"});
 
 		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
@@ -132,7 +132,7 @@ public class MetaDatesTests {
 		Assert.assertEquals("d<7Jun2011", st.getQuestion().getQueryExpressions().get(1));
 		st.getQuestion().getQueryExpressions().clear();
 		
-		st.getQuestion().getInputParameterMap().put("meta_d4", "invalid date");
+		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"invalid date"});
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
 		Assert.assertEquals("d>30Apr2010", st.getQuestion().getQueryExpressions().get(0));
@@ -141,8 +141,8 @@ public class MetaDatesTests {
 	@Test
 	public void testEventSearch() throws InputProcessorException {
 
-		st.getQuestion().getInputParameterMap().put("meta_w1", "01Jan2001");
-		st.getQuestion().getInputParameterMap().put("meta_w2", "05Mar2002");
+		st.getQuestion().getRawInputParameters().put("meta_w1", new String[] {"01Jan2001"});
+		st.getQuestion().getRawInputParameters().put("meta_w2", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
@@ -150,7 +150,7 @@ public class MetaDatesTests {
 		st.getQuestion().getQueryExpressions().clear();
 		
 		// Existing query + w2
-		st.getQuestion().getInputParameterMap().put("meta_w1", null);
+		st.getQuestion().getRawInputParameters().put("meta_w1", null);
 		st.getQuestion().setQuery("existing query");
 		processor.processInput(st);
 		Assert.assertEquals("existing query", st.getQuestion().getQuery());
@@ -159,8 +159,8 @@ public class MetaDatesTests {
 		st.getQuestion().getQueryExpressions().clear();
 		
 		// w1 only
-		st.getQuestion().getInputParameterMap().clear();
-		st.getQuestion().getInputParameterMap().put("meta_w1", "2002-01");
+		st.getQuestion().getRawInputParameters().clear();
+		st.getQuestion().getRawInputParameters().put("meta_w1", new String[] {"2002-01"});
 		st.getQuestion().setQuery(null);
 		processor.processInput(st);
 		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());

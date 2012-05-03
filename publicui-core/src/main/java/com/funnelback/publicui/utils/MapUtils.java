@@ -15,7 +15,6 @@ public class MapUtils {
 	 * @param defaultValue
 	 * @return
 	 */
-	@Deprecated
 	public static String getFirstString(Map<String, String[]> map, Object key, String defaultValue) {
 		if (map.get(key) != null && map.get(key).length > 0 ) {
 			return map.get(key)[0];
@@ -38,7 +37,7 @@ public class MapUtils {
 	 * @param key
 	 * @param data
 	 */
-	public static void __OLD__putIfNotNull(Map<String, String[]> out, String key, String data) {
+	public static void putAsStringArrayIfNotNull(Map<String, String[]> out, String key, String data) {
 		if (data != null) {
 			out.put(key, new String[] {data});
 		}

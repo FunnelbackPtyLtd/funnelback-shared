@@ -39,13 +39,13 @@ public class MetaParametersTests {
 	public void testNoParameterValue() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("meta_a", null);
-		st.getQuestion().getInputParameterMap().put("meta_c_or", "");
-		st.getQuestion().getInputParameterMap().put("meta_X_and", null);
-		st.getQuestion().getInputParameterMap().put("query_phrase", null);
-		st.getQuestion().getInputParameterMap().put("query_and", "");
-		st.getQuestion().getInputParameterMap().put("query_or", null);
-		st.getQuestion().getInputParameterMap().put("unrelated", null);
+		st.getQuestion().getRawInputParameters().put("meta_a", null);
+		st.getQuestion().getRawInputParameters().put("meta_c_or", new String[] {""});
+		st.getQuestion().getRawInputParameters().put("meta_X_and", null);
+		st.getQuestion().getRawInputParameters().put("query_phrase", null);
+		st.getQuestion().getRawInputParameters().put("query_and", new String[] {""});
+		st.getQuestion().getRawInputParameters().put("query_or", null);
+		st.getQuestion().getRawInputParameters().put("unrelated", null);
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -57,17 +57,17 @@ public class MetaParametersTests {
 	public void testMetaMultipleWords() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 
-		st.getQuestion().getInputParameterMap().put("meta_a", "simple operator");
-		st.getQuestion().getInputParameterMap().put("meta_b_trunc", "trunc operator");
-		st.getQuestion().getInputParameterMap().put("meta_c_orplus", "orplus operator");
-		st.getQuestion().getInputParameterMap().put("meta_d_orsand", "orsand operator");
-		st.getQuestion().getInputParameterMap().put("meta_e_or", "or operator");
-		st.getQuestion().getInputParameterMap().put("meta_f_phrase", "phrase \"operator\"");
-		st.getQuestion().getInputParameterMap().put("meta_g_prox", "prox operator");
-		st.getQuestion().getInputParameterMap().put("meta_h_and", "and operator");
-		st.getQuestion().getInputParameterMap().put("meta_I_sand", "sand operator");
-		st.getQuestion().getInputParameterMap().put("meta_j_not", "not operator");
-		st.getQuestion().getInputParameterMap().put("dummy", "value");
+		st.getQuestion().getRawInputParameters().put("meta_a", new String[] {"simple operator"});
+		st.getQuestion().getRawInputParameters().put("meta_b_trunc", new String[] {"trunc operator"});
+		st.getQuestion().getRawInputParameters().put("meta_c_orplus", new String[] {"orplus operator"});
+		st.getQuestion().getRawInputParameters().put("meta_d_orsand", new String[] {"orsand operator"});
+		st.getQuestion().getRawInputParameters().put("meta_e_or", new String[] {"or operator"});
+		st.getQuestion().getRawInputParameters().put("meta_f_phrase", new String[] {"phrase \"operator\""});
+		st.getQuestion().getRawInputParameters().put("meta_g_prox", new String[] {"prox operator"});
+		st.getQuestion().getRawInputParameters().put("meta_h_and", new String[] {"and operator"});
+		st.getQuestion().getRawInputParameters().put("meta_I_sand", new String[] {"sand operator"});
+		st.getQuestion().getRawInputParameters().put("meta_j_not", new String[] {"not operator"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value"});
 
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -89,17 +89,17 @@ public class MetaParametersTests {
 	public void testMetaSingleWord() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("meta_a", "simple");
-		st.getQuestion().getInputParameterMap().put("meta_b_trunc", "batman");
-		st.getQuestion().getInputParameterMap().put("meta_c_orplus", "spiderman");
-		st.getQuestion().getInputParameterMap().put("meta_d_orsand", "ironman");
-		st.getQuestion().getInputParameterMap().put("meta_e_or", "elephantman");
-		st.getQuestion().getInputParameterMap().put("meta_f_phrase", "stallman");		// Isn't he a super hero ? :)
-		st.getQuestion().getInputParameterMap().put("meta_g_prox", "superman");
-		st.getQuestion().getInputParameterMap().put("meta_h_and", "hulk");				// Ran out of *man
-		st.getQuestion().getInputParameterMap().put("meta_i_sand", "captainamerica");	// Ran out of single words
-		st.getQuestion().getInputParameterMap().put("meta_j_not", "silversurfer");
-		st.getQuestion().getInputParameterMap().put("dummy", "value");
+		st.getQuestion().getRawInputParameters().put("meta_a", new String[] {"simple"});
+		st.getQuestion().getRawInputParameters().put("meta_b_trunc", new String[] {"batman"});
+		st.getQuestion().getRawInputParameters().put("meta_c_orplus", new String[] {"spiderman"});
+		st.getQuestion().getRawInputParameters().put("meta_d_orsand", new String[] {"ironman"});
+		st.getQuestion().getRawInputParameters().put("meta_e_or", new String[] {"elephantman"});
+		st.getQuestion().getRawInputParameters().put("meta_f_phrase", new String[] {"stallman"});		// Isn't he a super hero ? :)
+		st.getQuestion().getRawInputParameters().put("meta_g_prox", new String[] {"superman"});
+		st.getQuestion().getRawInputParameters().put("meta_h_and", new String[] {"hulk"});				// Ran out of *man
+		st.getQuestion().getRawInputParameters().put("meta_i_sand", new String[] {"captainamerica"});	// Ran out of single words
+		st.getQuestion().getRawInputParameters().put("meta_j_not", new String[] {"silversurfer"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value"});
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -121,16 +121,16 @@ public class MetaParametersTests {
 	public void testQueryMultipleWords() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("query_trunc", "trunc operator");
-		st.getQuestion().getInputParameterMap().put("query_orplus", "orplus operator");
-		st.getQuestion().getInputParameterMap().put("query_orsand", "orsand operator");
-		st.getQuestion().getInputParameterMap().put("query_or", "or operator");
-		st.getQuestion().getInputParameterMap().put("query_phrase", "phrase operator");
-		st.getQuestion().getInputParameterMap().put("query_prox", "prox operator");
-		st.getQuestion().getInputParameterMap().put("query_and", "and operator");
-		st.getQuestion().getInputParameterMap().put("query_sand", "sand operator");
-		st.getQuestion().getInputParameterMap().put("query_not", "not operator");
-		st.getQuestion().getInputParameterMap().put("dummy", "value");
+		st.getQuestion().getRawInputParameters().put("query_trunc", new String[] {"trunc operator"});
+		st.getQuestion().getRawInputParameters().put("query_orplus", new String[] {"orplus operator"});
+		st.getQuestion().getRawInputParameters().put("query_orsand", new String[] {"orsand operator"});
+		st.getQuestion().getRawInputParameters().put("query_or", new String[] {"or operator"});
+		st.getQuestion().getRawInputParameters().put("query_phrase", new String[] {"phrase operator"});
+		st.getQuestion().getRawInputParameters().put("query_prox", new String[] {"prox operator"});
+		st.getQuestion().getRawInputParameters().put("query_and", new String[] {"and operator"});
+		st.getQuestion().getRawInputParameters().put("query_sand", new String[] {"sand operator"});
+		st.getQuestion().getRawInputParameters().put("query_not", new String[] {"not operator"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value"});
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -151,16 +151,16 @@ public class MetaParametersTests {
 	public void testQuerySingleWord() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("query_trunc", "batman");
-		st.getQuestion().getInputParameterMap().put("query_orplus", "spiderman");
-		st.getQuestion().getInputParameterMap().put("query_orsand", "ironman");
-		st.getQuestion().getInputParameterMap().put("query_or", "elephantman");
-		st.getQuestion().getInputParameterMap().put("query_phrase", "stallman");		// Isn't he a super hero ? :)
-		st.getQuestion().getInputParameterMap().put("query_prox", "superman");
-		st.getQuestion().getInputParameterMap().put("query_and", "hulk");				// Ran out of *man
-		st.getQuestion().getInputParameterMap().put("query_sand", "captainamerica");	// Ran out of single words
-		st.getQuestion().getInputParameterMap().put("query_not", "silversurfer");
-		st.getQuestion().getInputParameterMap().put("dummy", "value");
+		st.getQuestion().getRawInputParameters().put("query_trunc", new String[] {"batman"});
+		st.getQuestion().getRawInputParameters().put("query_orplus", new String[] {"spiderman"});
+		st.getQuestion().getRawInputParameters().put("query_orsand", new String[] {"ironman"});
+		st.getQuestion().getRawInputParameters().put("query_or", new String[] {"elephantman"});
+		st.getQuestion().getRawInputParameters().put("query_phrase", new String[] {"stallman"});		// Isn't he a super hero ? :)
+		st.getQuestion().getRawInputParameters().put("query_prox", new String[] {"superman"});
+		st.getQuestion().getRawInputParameters().put("query_and", new String[] {"hulk"});				// Ran out of *man
+		st.getQuestion().getRawInputParameters().put("query_sand", new String[] {"captainamerica"});	// Ran out of single words
+		st.getQuestion().getRawInputParameters().put("query_not", new String[] {"silversurfer"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value"});
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -181,13 +181,13 @@ public class MetaParametersTests {
 	public void testInvalidParameters() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 
-		st.getQuestion().getInputParameterMap().put("meta_", "incomplete");
-		st.getQuestion().getInputParameterMap().put("meta_x_invalid", "second bad");	
-		st.getQuestion().getInputParameterMap().put("meta_x_", "incomplete too");
-		st.getQuestion().getInputParameterMap().put("query_invalid", "first bad");
-		st.getQuestion().getInputParameterMap().put("query_", "incomplete");
-		st.getQuestion().getInputParameterMap().put("meta_invalid", "abc");
-		st.getQuestion().getInputParameterMap().put("meta_inv_or", "def");
+		st.getQuestion().getRawInputParameters().put("meta_", new String[] {"incomplete"});
+		st.getQuestion().getRawInputParameters().put("meta_x_invalid", new String[] {"second bad"});	
+		st.getQuestion().getRawInputParameters().put("meta_x_", new String[] {"incomplete too"});
+		st.getQuestion().getRawInputParameters().put("query_invalid", new String[] {"first bad"});
+		st.getQuestion().getRawInputParameters().put("query_", new String[] {"incomplete"});
+		st.getQuestion().getRawInputParameters().put("meta_invalid", new String[] {"abc"});
+		st.getQuestion().getRawInputParameters().put("meta_inv_or", new String[] {"def"});
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -206,7 +206,7 @@ public class MetaParametersTests {
 	public void testCombination() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 
-		st.getQuestion().getInputParameterMap().put("meta_Z_phrase_sand", "incomplete");
+		st.getQuestion().getRawInputParameters().put("meta_Z_phrase_sand", new String[] {"incomplete"});
 		
 		MetaParameters processor = new MetaParameters();
 		processor.processInput(st);
@@ -219,12 +219,12 @@ public class MetaParametersTests {
 	public void testMetaDatesAreSkipped() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
-		st.getQuestion().getInputParameterMap().put("meta_d1day", "1day");
-		st.getQuestion().getInputParameterMap().put("meta_d2month", "2month");
-		st.getQuestion().getInputParameterMap().put("meta_d3year", "3year");
-		st.getQuestion().getInputParameterMap().put("meta_wday", "wday");
-		st.getQuestion().getInputParameterMap().put("meta_xmonth", "xmonth");
-		st.getQuestion().getInputParameterMap().put("meta_yyear", "yyear");
+		st.getQuestion().getRawInputParameters().put("meta_d1day", new String[] {"1day"});
+		st.getQuestion().getRawInputParameters().put("meta_d2month", new String[] {"2month"});
+		st.getQuestion().getRawInputParameters().put("meta_d3year", new String[] {"3year"});
+		st.getQuestion().getRawInputParameters().put("meta_wday", new String[] {"wday"});
+		st.getQuestion().getRawInputParameters().put("meta_xmonth", new String[] {"xmonth"});
+		st.getQuestion().getRawInputParameters().put("meta_yyear", new String[] {"yyear"});
 		
 		new MetaParameters().processInput(st);
 		
