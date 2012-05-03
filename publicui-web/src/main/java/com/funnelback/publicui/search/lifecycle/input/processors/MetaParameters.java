@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
@@ -84,57 +85,57 @@ public class MetaParameters implements InputProcessor {
 				}
 				
 				if (params.get(name) != null) {				
-					for (String stringValue: params.get(name)) {
-						
-						if ("".equals(stringValue)) {
-							// No value for this parameter
-							continue;
-						}
-						
-						// Trunc operator (abc def => *abc* *def*)
-						if (Operators.trunc.isPresentIn(name)) {
-							stringValue = stringValue.replaceAll("(\\S+)", "*$1*");
-						}
-						
-						// Encapsulating operators (" ", [ ], ` `)
-						if (Operators.orplus.isPresentIn(name)) {
-							stringValue = "+[" + stringValue + "]";
-						} else if (Operators.orsand.isPresentIn(name)) {
-							stringValue = "|[" + stringValue + "]";
-						} else if (Operators.phrase.isPresentIn(name)) {
-							stringValue = stringValue.replace("\"", "");
-							stringValue = "\"" + stringValue + "\"";
-						} else if (Operators.prox.isPresentIn(name)) {
-							stringValue = "`" + stringValue + "`";
-						} else if (Operators.or.isPresentIn(name)) {
-							stringValue = "[" + stringValue + "]";
-						}
-						
-						// Add metadata class
-						Matcher m = META_CLASS_PATTERN.matcher(name);
-						if (m.find()) {
-							String metadataClass = m.group(1);
-							stringValue = ADD_META_CLASS_PATTERN.matcher(stringValue).replaceAll(metadataClass + ":$1");
-						}
-						
-						// Non encapsulating operators (+, |, -)
-						if (Operators.and.isPresentIn(name)) {
-							stringValue = addNonEncapsulatingOperator("+", stringValue);
-						} else if (Operators.sand.isPresentIn(name)) {
-							stringValue = addNonEncapsulatingOperator("|", stringValue);
-						} else if (Operators.not.isPresentIn(name)) {
-							stringValue = addNonEncapsulatingOperator("-", stringValue);
-						}
-						
-						searchTransaction.getQuestion().getMetaParameters().add(stringValue);
-	
-						// Remove the parameter from the list that will be passed to PADRE if
-						// we successfully processed it
-						searchTransaction.getQuestion().getAdditionalParameters().remove(name);
-						
-						log.debug("Processed parameter '" + name + "=" + params.get(name) + "' "
-								+ "Transformed as '" + stringValue + "'");
+					// Join all existing values, separated by spaces
+					String stringValue = StringUtils.join(params.get(name), " ");
+					
+					if ("".equals(stringValue)) {
+						// No value for this parameter
+						continue;
 					}
+					
+					// Trunc operator (abc def => *abc* *def*)
+					if (Operators.trunc.isPresentIn(name)) {
+						stringValue = stringValue.replaceAll("(\\S+)", "*$1*");
+					}
+					
+					// Encapsulating operators (" ", [ ], ` `)
+					if (Operators.orplus.isPresentIn(name)) {
+						stringValue = "+[" + stringValue + "]";
+					} else if (Operators.orsand.isPresentIn(name)) {
+						stringValue = "|[" + stringValue + "]";
+					} else if (Operators.phrase.isPresentIn(name)) {
+						stringValue = stringValue.replace("\"", "");
+						stringValue = "\"" + stringValue + "\"";
+					} else if (Operators.prox.isPresentIn(name)) {
+						stringValue = "`" + stringValue + "`";
+					} else if (Operators.or.isPresentIn(name)) {
+						stringValue = "[" + stringValue + "]";
+					}
+					
+					// Add metadata class
+					Matcher m = META_CLASS_PATTERN.matcher(name);
+					if (m.find()) {
+						String metadataClass = m.group(1);
+						stringValue = ADD_META_CLASS_PATTERN.matcher(stringValue).replaceAll(metadataClass + ":$1");
+					}
+					
+					// Non encapsulating operators (+, |, -)
+					if (Operators.and.isPresentIn(name)) {
+						stringValue = addNonEncapsulatingOperator("+", stringValue);
+					} else if (Operators.sand.isPresentIn(name)) {
+						stringValue = addNonEncapsulatingOperator("|", stringValue);
+					} else if (Operators.not.isPresentIn(name)) {
+						stringValue = addNonEncapsulatingOperator("-", stringValue);
+					}
+					
+					searchTransaction.getQuestion().getMetaParameters().add(stringValue);
+
+					// Remove the parameter from the list that will be passed to PADRE if
+					// we successfully processed it
+					searchTransaction.getQuestion().getAdditionalParameters().remove(name);
+					
+					log.debug("Processed parameter '" + name + "=" + params.get(name) + "' "
+							+ "Transformed as '" + stringValue + "'");
 				}
 			}
 		}

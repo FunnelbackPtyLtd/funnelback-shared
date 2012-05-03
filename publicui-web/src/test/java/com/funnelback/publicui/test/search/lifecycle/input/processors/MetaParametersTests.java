@@ -86,6 +86,38 @@ public class MetaParametersTests {
 	}
 	
 	@Test
+	public void testMetaMultipleValues() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+
+		st.getQuestion().getRawInputParameters().put("meta_a", new String[] {"simple operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_b_trunc", new String[] {"trunc operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_c_orplus", new String[] {"orplus operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_d_orsand", new String[] {"orsand operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_e_or", new String[] {"or operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_f_phrase", new String[] {"phrase \"operator\"", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_g_prox", new String[] {"prox operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_h_and", new String[] {"and operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_I_sand", new String[] {"sand operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("meta_j_not", new String[] {"not operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value", "multiple"});
+
+		MetaParameters processor = new MetaParameters();
+		processor.processInput(st);
+		
+		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:simple a:operator a:multiple"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("*b:trunc* *b:operator* *b:multiple*"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[c:orplus c:operator c:multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|[d:orsand d:operator d:multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[e:or e:operator e:multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("f:\"phrase operator multiple\""));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("g:`prox operator multiple`"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+h:and +h:operator +h:multiple"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|I:sand |I:operator |I:multiple"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("-j:not -j:operator -j:multiple"));
+	}
+	
+	@Test
 	public void testMetaSingleWord() {
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
 		
@@ -146,6 +178,37 @@ public class MetaParametersTests {
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|sand |operator"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("-not -operator"));
 	}
+	
+	@Test
+	public void testQueryMultipleValues() {
+		SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+		
+		st.getQuestion().getRawInputParameters().put("query_trunc", new String[] {"trunc operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_orplus", new String[] {"orplus operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_orsand", new String[] {"orsand operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_or", new String[] {"or operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_phrase", new String[] {"phrase operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_prox", new String[] {"prox operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_and", new String[] {"and operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_sand", new String[] {"sand operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("query_not", new String[] {"not operator", "multiple"});
+		st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value", "multiple"});
+		
+		MetaParameters processor = new MetaParameters();
+		processor.processInput(st);
+		
+		Assert.assertEquals(9, st.getQuestion().getMetaParameters().size());
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("*trunc* *operator* *multiple*"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[orplus operator multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|[orsand operator multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[or operator multiple]"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("\"phrase operator multiple\""));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("`prox operator multiple`"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+and +operator +multiple"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|sand |operator |multiple"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("-not -operator -multiple"));
+	}
+
 
 	@Test
 	public void testQuerySingleWord() {

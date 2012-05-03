@@ -102,8 +102,9 @@ public class SearchQuestion {
 	 * <p>The values of this map will be passed through to PADRE and won't be processed
 	 * at all by the Modern UI.</p>
 	 * 
-	 * <p>If you need to inject or manipulate Modern UI parameters {@link #inputParameterMap} or
-	 * {@link #rawInputParameters} should be used.</p>
+	 * <p>This map is not supposed to be changed. If you need to inject or manipulate Modern UI
+	 * parameters {@link #inputParameterMap} or {@link #rawInputParameters} is more suitable.</p>
+	 * 
 	 */
 	@Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
 	
@@ -167,9 +168,20 @@ public class SearchQuestion {
 	/**
 	 * <p>Raw input parameters</p>
 	 * 
-	 * <p>Contains all the input parameters (query string / request parameters). Each value
-	 * is an array of String has a parameter can have multiple values (e.g. <code>&amp;param=value1&amp;param=value2</code>)
-	 * as defined in Java servlets.</p>
+	 * <p>Contains all the input parameters (query string / request parameters).</p>
+	 * 
+	 * <p>Be aware that the value type is <code>String array</code>, allowing for multiple
+	 * value of the same parameter (e.g. <code>&amp;param=value1&amp;param=value2</code>).
+	 * Putting a single valued <code>String</code> in this Map will not work, it must be
+	 * an array of size one. Example in a Groovy hook script:
+	 * <pre>
+	 * transaction.question.rawInputParameters["param"] = [ "value" ]
+	 * </pre>
+	 * </p>
+	 * 
+	 * @see {@link inputParameterMap} provides a simpler way to inject or retrieve simple mono-valued
+	 * parameters. {@link inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any
+	 * change made in one will be reflected in the other.
 	 */
 	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
 
@@ -181,11 +193,12 @@ public class SearchQuestion {
 	 * having to deal with arrays of Strings.</p>
 	 * 
 	 * <p>For example if the query string is <code>&amp;param=value1&amp;param=value2</code> 
-	 * then this map will contain only one key-value pair: <tt>param=value1</tt></p>
+	 * then this map will contain only one key-value pair: <tt>param=value1</tt>. The <tt>value2</tt>
+	 * won't be available unless you use {@link #rawInputParameters}.</p>
 	 * 
-	 * <p>Most parts of the system are using the first value for a parameter, except for Faceted
-	 * Navigation. If you need to inject additional parameters for Faceted Navigation please consider
-	 * using {@link #rawInputParameters} instead.</p> 
+	 * @see {@link rawInputParameters} provides a way to inject or retrieve multi-valued parameters. Both
+	 * {@link inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any change made
+	 * in one will be reflected in the other.
 	 */
 	@Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
 	
