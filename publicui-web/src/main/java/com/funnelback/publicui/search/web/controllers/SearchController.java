@@ -74,7 +74,7 @@ public class SearchController {
 	 * Called when no collection has been specified.
 	 * @return a list of all available collections.
 	 */
-	@RequestMapping(value={"/search.*"},params="!"+RequestParameters.COLLECTION)
+	@RequestMapping(value={"/search.html"},params="!"+RequestParameters.COLLECTION)
 	public ModelAndView noCollection(HttpServletResponse response, HttpStatus status) {
 		if (status != null) {
 			response.setStatus(status.value());
@@ -83,9 +83,6 @@ public class SearchController {
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
-
-		// FIXME: Hack for the XML view that serialise only one item from the model
-		model.put(ModelAttributes.SearchTransaction.toString(), configRepository.getAllCollections());
 
 		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
 				+DefaultValues.FOLDER_TEMPLATES+"/"
