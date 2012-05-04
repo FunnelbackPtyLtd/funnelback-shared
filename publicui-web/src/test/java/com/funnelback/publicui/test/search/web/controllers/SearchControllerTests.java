@@ -132,7 +132,7 @@ public class SearchControllerTests {
 		ModelAndView mav = searchController.search(request, response, sq);
 		Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
 		
-		List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
+		List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.ModelAttributes.AllCollections.toString());
 		Assert.assertNotNull(collections);
 		Assert.assertEquals(2, collections.size());
 		Assert.assertEquals("test1", collections.get(0).getId());
