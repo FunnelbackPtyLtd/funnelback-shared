@@ -67,11 +67,15 @@ public class PadreQueryStringBuilder {
 
 			Entry<String, String[]> entry = it.next();
 			if (entry.getValue() != null) {
-				for (String value: entry.getValue()) {
-					out.append(entry.getKey() + "=" + URLEncoder.encode(value, "UTF-8"));
+				String[] values = entry.getValue();
+				for (int i=0; i<values.length; i++) {
+					out.append(entry.getKey()).append("=").append(URLEncoder.encode(values[i], "UTF-8"));
+					if (i+1<values.length) {
+						out.append("&");
+					}
 				}
 			} else {
-				out.append(entry.getKey() + "=");
+				out.append(entry.getKey()).append("=");
 			}
 		
 			if (it.hasNext()) {
@@ -96,20 +100,20 @@ public class PadreQueryStringBuilder {
 		
 		if (question.getQueryExpressions().size() > 0) {
 			// Add additional query expressions
-			query.append(" " + StringUtils.join(question.getQueryExpressions(), " "));
+			query.append(" ").append(StringUtils.join(question.getQueryExpressions(), " "));
 		}
 		
 		if (question.getMetaParameters().size() > 0) {
 			// Add meta_* parameters transformed as query expressions
 			for (String value : question.getMetaParameters()) {
-				query.append(" " + value);
+				query.append(" ").append(value);
 			}
 		}
 		
 		if (withFacetConstraints && question.getFacetsQueryConstraints().size() > 0) {
 			// Add query constraints for faceted navigation
 			for (String value: question.getFacetsQueryConstraints()) {
-				query.append(" " + value);
+				query.append(" ").append(value);
 			}
 		}
 		return query.toString();

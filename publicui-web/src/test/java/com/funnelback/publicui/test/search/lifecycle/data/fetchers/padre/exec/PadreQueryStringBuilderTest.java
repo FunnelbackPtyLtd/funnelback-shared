@@ -7,7 +7,6 @@ import org.junit.Test;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 public class PadreQueryStringBuilderTest {
 
@@ -110,6 +109,16 @@ public class PadreQueryStringBuilderTest {
 		Assert.assertEquals(
 				"a=1&collection=dummy&gscope1=6&profile=_default&query=chocolate",
 				new PadreQueryStringBuilder(q, true).buildQueryString());		
+	}
+	
+	@Test
+	public void testMultiValues() {
+		q.setQuery("multi");
+		q.getAdditionalParameters().put("scope", new String[] {"ab", "cd"});
+		
+		Assert.assertEquals(
+				"a=1&collection=dummy&profile=_default&query=multi&scope=ab&scope=cd",
+				new PadreQueryStringBuilder(q, true).buildQueryString());
 	}
 	
 }
