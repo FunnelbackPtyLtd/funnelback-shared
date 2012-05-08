@@ -269,6 +269,9 @@ public class SearchQuestion {
 		/** Content Optimiser: Activate explain mode on PADRE. */
 		public static final String EXPLAIN = "explain";		
 
+		/** Special parameter to redirect directly to the first result */
+		public static final String ONESHOT = "oneshot";
+		
 		/**
 		 * Common request header names
 		 * 

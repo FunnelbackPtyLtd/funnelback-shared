@@ -33,7 +33,8 @@ public class PassThroughParameters implements InputProcessor {
 	 */
 	public static final String[] IGNORED_NAMES = {
 		RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.PROFILE,
-		RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED
+		RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED,
+		RequestParameters.ONESHOT // FUN-4328: Ignore oneshot parameter
 		};
 	
 	/**
