@@ -231,7 +231,7 @@
     object type in the loop before trying to access its fields like
     title, etc.</p>
 
-    @provides the search results as <code>${s.r}</code>.
+    @provides the search results as <code>${s.result}</code>.
 -->
 <#macro Results>
     <#if response?exists
@@ -415,7 +415,7 @@
     @param names A list of specific facets to display, optional.
     @param class CSS class to use on the DIV containing each facet, defaults to <code>facet</code>.
 
-    @provides The facet as <code>${s.f}</code>.
+    @provides The facet as <code>${s.facet}</code>.
 -->
 <#macro Facet name="" names=[] class="facet">
     <#if response?exists && response.facets?exists>
