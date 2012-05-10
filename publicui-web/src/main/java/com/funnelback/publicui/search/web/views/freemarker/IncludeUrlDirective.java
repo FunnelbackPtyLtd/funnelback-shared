@@ -97,27 +97,28 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 				log.debug("Cache for URL '" + url + "' expired. Requesting content again");
 				try {
 					String content = getContent(env, url, params);
+					
 					if (content != null) {
 						cache.remove(elt);
 						elt = new Element(url, content);
 						cache.put(elt);
 						log.debug("Updated cached version of content for URL '" + url + "'");
 						
-						env.getOut().write(content);
+						env.getOut().write(transformContent(url, content, params));
 					} else {
 						// Unable to refresh content, return previous cached version
-						env.getOut().write((String) elt.getObjectValue());
+						env.getOut().write(transformContent(url, (String) elt.getObjectValue(), params));
 					}
 				} catch (Exception e) {
 					env.getOut().write("<!-- " + i18n.tr("freemarker.method.IncludeUrlDirective.refresh.error") + " -->");
 					log.error("Error while requesting request content from url '" + url + "'. Previous cached version will be returned.", e);
-					env.getOut().write((String) elt.getObjectValue());
+					env.getOut().write(transformContent(url, (String) elt.getObjectValue(), params));
 				}
 			} else {
 				// Cache not expired
 				log.debug("Returned cached version for URL '" + url + "'");
 				String content = (String) elt.getObjectValue();
-				env.getOut().write(content);
+				env.getOut().write(transformContent(url, content, params));
 			}
 			
 		} else {
@@ -130,7 +131,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 					elt.setEternal(true);
 					cache.put(elt);
 					
-					env.getOut().write(content);
+					env.getOut().write(transformContent(url, content, params));
 				} else {
 					env.getOut().write("<!-- No remote content returned -->");
 				}
@@ -198,7 +199,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 		if(response.getEntity() != null) {
 			InputStream is = response.getEntity().getContent();
 			try {
-				return transformContent(url, IOUtils.toString(is), params);
+				return IOUtils.toString(is);
 			} finally {
 				IOUtils.closeQuietly(is);
 			}
