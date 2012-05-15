@@ -62,7 +62,7 @@ public class SearchTransactionUtils {
 	/**
 	 * Checks that a transaction has a response which has a result packet
 	 * @param st
-	 * @return
+	 * @return true if the {@link SearchTransaction} has a result packet, false otherwise
 	 */
 	public static boolean hasResultPacket(SearchTransaction st) {
 		return hasResponse(st) && st.getResponse().getResultPacket() != null;

@@ -85,7 +85,7 @@ public abstract class CategoryDefinition {
 	 *	</ul>
 	 * </p>
 	 * 
-	 * @param rp SearchTransaction to use to compute the values.
+	 * @param st SearchTransaction to use to compute the values.
 	 * @return The computed values.
 	 */
 	public abstract List<CategoryValue> computeValues(final SearchTransaction st);

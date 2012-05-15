@@ -179,9 +179,11 @@ public class SearchQuestion {
 	 * </pre>
 	 * </p>
 	 * 
-	 * @see {@link inputParameterMap} provides a simpler way to inject or retrieve simple mono-valued
-	 * parameters. {@link inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any
-	 * change made in one will be reflected in the other.
+	 * <p>{@link #inputParameterMap} provides a simpler way to inject or retrieve simple mono-valued
+	 * parameters. {@link #inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any
+	 * change made in one will be reflected in the other.</p>
+	 * 
+	 * @see #inputParameterMap
 	 */
 	@Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
 
@@ -196,9 +198,11 @@ public class SearchQuestion {
 	 * then this map will contain only one key-value pair: <tt>param=value1</tt>. The <tt>value2</tt>
 	 * won't be available unless you use {@link #rawInputParameters}.</p>
 	 * 
-	 * @see {@link rawInputParameters} provides a way to inject or retrieve multi-valued parameters. Both
-	 * {@link inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any change made
-	 * in one will be reflected in the other.
+	 * <p>{@link #rawInputParameters} provides a way to inject or retrieve multi-valued parameters. Both
+	 * {@link #inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any change made
+	 * in one will be reflected in the other.</p>
+	 * 
+	 * @see #rawInputParameters
 	 */
 	@Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
 	

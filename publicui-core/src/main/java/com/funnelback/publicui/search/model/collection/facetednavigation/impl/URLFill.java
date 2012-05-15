@@ -82,9 +82,9 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 	 * Checks if an URL is contained in the current constraints and is only
 	 * one level deeper than the current constraints.
 	 *  
-	 * @param currentSonstraints Currently constraint URL, such as <tt>folder1/folder2/</tt>
+	 * @param currentConstraint Currently constraint URL, such as <tt>folder1/folder2/</tt>
 	 * @param checkUrl URL to check, absolute (Ex: <tt>smb://server/folder/folder2/file3.txt</tt>)
-	 * @return
+	 * @return true if the URL is in the current constraints, false otherwise
 	 */
 	private boolean isOneLevelDeeper(String currentConstraint, String checkUrl) {
 		if (currentConstraint == null || checkUrl == null) {
