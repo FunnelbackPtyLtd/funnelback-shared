@@ -38,9 +38,9 @@
     <p>Example:
 
         <pre>
-&lt;@Prev&gt;
+&lt;@Next&gt;
     &lt;a href="${nextUrl}"&gt;Next ${nextRanks} results&lt;/p&gt;
-&lt;/@Prev&gt;
+&lt;/@Next&gt;
         </pre>
     </p>
 
