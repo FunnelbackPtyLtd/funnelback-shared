@@ -12,4 +12,10 @@
 	<!-- Cache for IncludeUrl form directive -->
 	<cache name="IncludeUrlInternal" eternal="true" maxElementsInMemory="5000" overflowToDisk="true" statistics="true" />
 
+	<!-- Cache for ImageScaleController -->
+	<cache name="imageScaleRepository" eternal="true" maxElementsInMemory="100" overflowToDisk="true" statistics="true" />
+
+	<!-- Cache for PreviewController -->
+	<cache name="phantomPreviewRepository" eternal="true" maxElementsInMemory="100" overflowToDisk="true" statistics="true" />
+
 </ehcache>
