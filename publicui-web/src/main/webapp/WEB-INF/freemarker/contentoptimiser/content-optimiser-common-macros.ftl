@@ -88,7 +88,7 @@
 						</#if>
 						">
 							<small>Rank</small>
-							<div style="font-size: 30px;">${response.optimiserModel.selectedDocument.rank}</div>
+							<div style="font-size: 30px;" class="rank">${response.optimiserModel.selectedDocument.rank}</div>
 						</div> 
 						<p>The selected page, <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a>, 
 						contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.
@@ -111,7 +111,7 @@
 		        	</#if>
 	        <#else>
 				<p>
-					There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+					There are <span>${response.resultPacket.resultsSummary.fullyMatching?string.number}</span> fully matching pages 
 	    			for the query &quot;<b><@s.QueryClean/></b>&quot;:
 	    		</p>
 	        	<p>You can view the <a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&amp;collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.profile?url}">result page</a> from this query</p>
