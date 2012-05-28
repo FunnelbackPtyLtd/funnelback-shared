@@ -93,7 +93,7 @@
 						<p>The selected page, <a href="${response.optimiserModel.selectedDocument.liveUrl}"><@s.boldicize>${response.optimiserModel.selectedDocument.title}</@s.boldicize></a>, 
 						contains <span class="highlight">${response.optimiserModel.content.totalWords?string.number}</span> total words, <span class="highlight">${response.optimiserModel.content.uniqueWords?string.number}</span> of which are unique.
 						</p>
-						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+						<p>There are <span>${response.resultPacket.resultsSummary.fullyMatching?string.number}</span> fully matching pages 
         				for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
 					
 					 	<p>You can also view Funnelback's <a href="${response.optimiserModel.selectedDocument.cacheUrl}">cached copy</a>,
@@ -101,7 +101,7 @@
 					 	or view the 
 						<a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this query</p>
 			        <#else>
-						<p>There are ${response.resultPacket.resultsSummary.fullyMatching?string.number} fully matching pages 
+						<p>There are <span>${response.resultPacket.resultsSummary.fullyMatching?string.number}</span> fully matching pages 
     		    		for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
 			        	<#if (question.inputParameterMap["optimiser_url"]?? && question.inputParameterMap["optimiser_url"] != "") >
 			        		<p>The selected page (<strong style="word-break: break-all;">${question.inputParameterMap["optimiser_url"]?html}</strong>) was not found in the results.</p>
