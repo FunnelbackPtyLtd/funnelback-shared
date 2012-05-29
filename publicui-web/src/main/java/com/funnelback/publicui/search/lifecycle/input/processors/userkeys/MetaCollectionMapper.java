@@ -8,12 +8,12 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Collection.Type;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 

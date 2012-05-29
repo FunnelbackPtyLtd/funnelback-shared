@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.i18n.I18n;
@@ -20,7 +21,6 @@ import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MasterKeyMapper;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MetaCollectionMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Collection.Type;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;

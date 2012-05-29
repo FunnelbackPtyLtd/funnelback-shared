@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
@@ -56,23 +57,23 @@ public class FixPseudoLiveLinksTests {
 		// Fill repository with mock collections
 		configRepository.addCollection(new Collection("collection-db",
 				new NoOptionsConfig("collection-db")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.database.toString())));
+					.setValue(Keys.COLLECTION_TYPE, Type.database.toString())));
 		configRepository.addCollection(new Collection("collection-connector",
 				new NoOptionsConfig("collection-connector")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.connector.toString())));
+					.setValue(Keys.COLLECTION_TYPE, Type.connector.toString())));
 		configRepository.addCollection(new Collection("collection-trim",
 				new NoOptionsConfig("collection-trim")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.trim.toString())
+					.setValue(Keys.COLLECTION_TYPE, Type.trim.toString())
 					.setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
 		configRepository.addCollection(new Collection("collection-filecopy",
 				new NoOptionsConfig("collection-filecopy")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.filecopy.toString())));
+					.setValue(Keys.COLLECTION_TYPE, Type.filecopy.toString())));
 		configRepository.addCollection(new Collection("collection-local",
 				new NoOptionsConfig("collection-local")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.local.toString())));
+					.setValue(Keys.COLLECTION_TYPE, Type.local.toString())));
 		configRepository.addCollection(new Collection("collection-web",
 				new NoOptionsConfig("collection-web")
-					.setValue(Keys.COLLECTION_TYPE, Collection.Type.web.toString())));
+					.setValue(Keys.COLLECTION_TYPE, Type.web.toString())));
 
 	}
 	

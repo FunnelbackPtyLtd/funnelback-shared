@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
@@ -32,11 +33,6 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses"})
 @Log4j
 public class Collection {
-
-	/** Possible collection types. */
-	public static enum Type {
-		unknown,web,filecopy,local,database,meta,trim,trimpush,connector,directory,push;
-	}
 
 	/**
 	 * <p>Groovy Hook scripts names.</p>
