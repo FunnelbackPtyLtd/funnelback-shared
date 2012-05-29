@@ -7,6 +7,21 @@
       Thu Jan 27 01:40:23 2011    </collection_updated>
   </details>
 
+<svgs>
+<syntaxtree><![CDATA[
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="332">
+  <line x1="60" y1="25" x2="60" y2="108" style="stroke:rgb(0,0,0)"/>
+  <rect x="0" y="0" width="120" height="50" rx="4" ry="4" style="fill:rgb(191,20,20);stroke:rgb(0,0,0)"/>
+  <text x="3" y="25">The Query</text>
+  <line x1="60" y1="108" x2="60" y2="191" style="stroke:rgb(0,0,0)"/>
+  <rect x="0" y="83" width="120" height="50" rx="4" ry="4" style="fill:rgb(255,20,20);stroke:rgb(0,0,0)"/>
+  <text x="3" y="108">!</text>
+  <rect x="0" y="166" width="120" height="50" rx="4" ry="4" style="fill:rgb(20,191,20);stroke:rgb(0,0,0)"/>
+  <text x="3" y="191">sdf</text>
+  </svg>
+]]></syntaxtree>
+</svgs>
+
   <query>visa^0.345</query>
   <query_as_processed>visa</query_as_processed>
   <collection>gov_combined</collection>

@@ -143,6 +143,8 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.EXPLAIN_TYPES.equals(xmlStreamReader.getLocalName())) {
 						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.EXPLAIN_TYPES, xmlStreamReader);
 						packet.getExplainTypes().putAll(stringFeatures);
+					} else if (ResultPacket.Schema.SVGS.equals(xmlStreamReader.getLocalName())) {
+						packet.getSvgs().putAll(XmlStreamUtils.tagsToMap(ResultPacket.Schema.SVGS, xmlStreamReader));
 					} else {
 						log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
 					}

@@ -145,6 +145,8 @@ public class XSLTXStreamViewTests {
 		oldXml = oldXml.replaceAll("(?s)<km_from_origin>.*?</km_from_origin>\\n", "");
 		// As well as <entitylist />
 		oldXml = oldXml.replaceAll("(?s)<entitylist>.*?</entitylist>\\n", "");
+		// As well as <svgs />
+		oldXml = oldXml.replaceAll("(?s)<svgs>.*?</svgs>\\n", "");
 		
 		// Remove <unexpected_tag> used for other tests
 		oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\\n", "");

@@ -239,6 +239,17 @@ public class ResultPacket {
 	@Getter private Map<String,String> coolerNames = new HashMap<String,String>();
 	
 	/**
+	 * <p>Contains SVG data returned by PADRE, for example an SVG representation
+	 * of the syntax tree.</p>
+	 * 
+	 * <p>The value contains the actual SVG XML string which can be directly used
+	 * in an HTML source for browsers that supports it.</p>
+	 * 
+	 * @since 12.0
+	 */
+	@Getter private Map<String, String> svgs = new HashMap<String, String>();
+	
+	/**
 	 * Test if the packet contains results.
 	 * @return true if the packet contains at least one {@link Result}.
 	 */
@@ -325,12 +336,11 @@ public class ResultPacket {
 		public static final String CNT = "cnt";
 		
 		public static final String EXPLAIN_TYPES = "explain_types";
-
 		public static final String STOP_WORDS = "stop_words";
-
 		public static final String STEM_EQUIV = "stem_equivs";
-
 		public static final String COOLER_NAMES = "cooler_names";
+		
+		public static final String SVGS = "svgs";
 		
 	}
 }

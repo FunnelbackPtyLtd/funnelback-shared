@@ -173,6 +173,17 @@ public class StaxStreamParserTests {
 	}
 	
 	@Test
+	public void testSvgs() {
+		assertEquals(1, rp.getSvgs().size());
+		assertEquals("syntaxtree", rp.getSvgs().keySet().iterator().next());
+		
+		String svg = rp.getSvgs().values().iterator().next();
+		assertTrue(svg.contains("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"100%\" height=\"332\">"));
+		assertTrue(svg.contains("<rect x=\"0\" y=\"83\" width=\"120\" height=\"50\" rx=\"4\" ry=\"4\" style=\"fill:rgb(255,20,20);stroke:rgb(0,0,0)\"/>"));
+		assertTrue(svg.contains("</svg>"));
+	}
+	
+	@Test
 	public void testResultsSummary() {
 		assertEquals(200, rp.getResultsSummary().getFullyMatching().intValue());
 		assertEquals(200, rp.getResultsSummary().getEstimatedHits().intValue());
