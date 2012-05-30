@@ -64,7 +64,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -99,8 +99,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-exec</artifactId>
 			<version>1.0.1</version>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -131,15 +129,11 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.4</version>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
@@ -164,8 +158,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${spring.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -174,14 +166,11 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.18</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -191,15 +180,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.1.1</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.5.6</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -218,78 +203,5 @@
   			<version>0.4.2</version>
 		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<!--
-				Dev. profile:
-				- Packages dependencies into the WAR
-				- Installs the WAR in $SEARCH_HOME/web/webapps/
-			-->
-			<id>development</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<configuration>
-									<target name="install">
-										<property environment="env" />
-										<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" todir="${env.SEARCH_HOME}/web/webapps/" overwrite="true" />
-									</target>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>installers</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<version>2.1.1</version>
-						<configuration>
-							<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-							<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<includeScope>runtime</includeScope>
-							<excludeScope>provided</excludeScope>
-							<outputFile>${project.build.directory}/dependency/${project.artifactId}.classpath</outputFile>
-							<!-- Output a classpath string for Jetty: Separator is always a semi-colon
-							(or a comma) regardless of the OS. -->
-							<fileSeparator>/</fileSeparator>
-							<pathSeparator>;</pathSeparator>
-							<prefix>$SEARCH_HOME/lib/java/publicui</prefix>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>copy-dependencies</goal>
-									<goal>build-classpath</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>					
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>

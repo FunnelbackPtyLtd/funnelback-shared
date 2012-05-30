@@ -98,7 +98,7 @@ public class ResultPacket {
 	/**
 	 * <p>Metadata counts (Used in faceted navigation).</p>
 	 * 
-	 * <p>The key is the couple of <code>class:value</code> and the
+	 * <p>The key is the tuple <code>class:value</code> and the
 	 * value is the count.</p>
 	 * 
 	 * <p>
