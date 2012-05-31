@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
  * Will choose either to fork using a Java API or Native Windows API
  * depending of the "impersonation" status of the transaction.
  */
-@lombok.extern.apachecommons.CommonsLog
+@Log4j
 public abstract class AbstractPadreForking implements DataFetcher {
 
 	public enum EnvironmentKeys {

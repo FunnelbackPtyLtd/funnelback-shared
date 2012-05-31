@@ -5,12 +5,14 @@ import java.net.UnknownHostException;
 
 import javax.servlet.ServletRequest;
 
+import lombok.extern.log4j.Log4j;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.log.Log;
 
-@lombok.extern.apachecommons.CommonsLog
+@Log4j
 public class LogUtils {
 	
 	/**

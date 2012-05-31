@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Controller
 @RequestMapping("/resources/{collectionId}")
-@lombok.extern.apachecommons.CommonsLog
+@Log4j
 public class ResourcesController implements ApplicationContextAware {
 
 	public static final String MAPPING_PATH = "/resources/";

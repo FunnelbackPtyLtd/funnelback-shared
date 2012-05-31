@@ -16,6 +16,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import lombok.extern.log4j.Log4j;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
@@ -47,7 +49,7 @@ import com.funnelback.publicui.xml.XmlParsingException;
  * implementation of "getting" the collection is abstract, allowing
  * sub classes to cache the data for example.
  */
-@lombok.extern.apachecommons.CommonsLog
+@Log4j
 public abstract class AbstractLocalConfigRepository implements ConfigRepository {
 		
 	/** A comment line in a config file starts with a hash */
