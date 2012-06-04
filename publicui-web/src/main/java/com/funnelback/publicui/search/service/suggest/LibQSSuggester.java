@@ -36,7 +36,7 @@ public class LibQSSuggester implements Suggester {
 	public interface LibQS extends Library {
 		public LibQS INSTANCE = (LibQS) Native.loadLibrary("libqs", LibQS.class);
 		
-		NativeSuggestion generate_suggestions(String stem, String profile, int numToShow, int sortCode, int fmtCode, String partialQuery);
+		NativeSuggestion generate_suggestions(String stem, String profile, int numToShow, int sortCode, String partialQuery);
 		void free_suggestion_array(Pointer p);
 		void lqs_set_debug(int level);
 	}
@@ -56,7 +56,6 @@ public class LibQSSuggester implements Suggester {
 					profileId,
 					numSuggestions,
 					sort.value,
-					2,
 					partialQuery);
 			
 			List<Suggestion> suggestions = new ArrayList<Suggestion>();
