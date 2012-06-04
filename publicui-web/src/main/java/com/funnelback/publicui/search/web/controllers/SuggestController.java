@@ -2,8 +2,8 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,11 +13,13 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
-import com.funnelback.publicui.search.model.transaction.Suggestion;
 import com.funnelback.publicui.search.service.Suggester;
-import com.funnelback.publicui.search.service.Suggester.AutoCMode;
 import com.funnelback.publicui.search.service.Suggester.Sort;
 
 /**
@@ -28,14 +30,40 @@ import com.funnelback.publicui.search.service.Suggester.Sort;
 public class SuggestController extends AbstractRunPadreBinaryController {
 
 	private static final String PADRE_QS = "padre-qs";
+	
+	
+	private enum Format {
+		Json("json"), JsonPlus("json++"), JsonPlusBad("json  ");
+		
+		public final String value;
+		
+		private Format(String value) {
+			this.value = value;
+		}
+		
+		public static Format fromValue(String value) {
+			for (Format f: Format.values()) {
+				if (f.value.equals(value)) {
+					return f;
+				}
+			}
+			throw new IllegalArgumentException(value);
+		}
+	}
 
 	@Autowired
 	private File searchHome;
 	
 	@Autowired
 	private Suggester suggester;
+	
+	@Resource(name="suggestViewSimple")
+	private View simpleView;
+	
+	@Resource(name="suggestViewRich")
+	private View richView;
 
-	@RequestMapping("/suggest.json")
+	@RequestMapping("/padre-qs.cgi")
 	public void suggest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
 			runPadreBinary(PADRE_QS, null, request, response);
@@ -45,32 +73,32 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 		}
 	}
 	
-	// @RequestMapping(value="/suggest-java.json",params={"collection","partial_query","show","sort","alpha","autoc","fmt"})
-	public String suggestJava(String collection,
-			String partial_query,
+	@RequestMapping(value="/suggest.json")
+	public ModelAndView suggestJava(String collection,
+			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
+			@RequestParam("partial_query") String partialQuery,
 			int show,
 			int sort,
-			float alpha,
-			int autoc,
-			String fmt,
-			HttpServletResponse response) throws IOException {
-
-		List<Suggestion> suggestions = suggester.suggest(collection, partial_query, show, Sort.valueOf(sort), alpha, AutoCMode.valueOf(autoc));
+			@RequestParam("fmt") String format,
+			String callback) throws IOException {
 		
-		StringBuilder sb = new StringBuilder("[");
-		for (int i=0; i<suggestions.size() && i<10; i++) {
-			sb.append("\"").append(suggestions.get(i).suggestion).append("\"");
-			if (i+1 < suggestions.size() && i+1<10) {
-				sb.append(",");
-			}
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("suggestions", suggester.suggest(collection, profile, partialQuery, show, Sort.valueOf(sort)));
+		mav.addObject("callback", callback);
+		
+		switch(Format.fromValue(format)) {
+		case Json:
+			mav.setView(simpleView);
+			break;
+		case JsonPlus:
+		case JsonPlusBad:
+			mav.setView(richView);
+			break;
+		default:
+			throw new IllegalArgumentException("Unrecognized format " + format);
 		}
-		sb.append("]");
 		
-		response.getWriter().write(sb.toString());
-		
-		return null;
-		
-		
+		return mav;
 	}
 
 	@Override

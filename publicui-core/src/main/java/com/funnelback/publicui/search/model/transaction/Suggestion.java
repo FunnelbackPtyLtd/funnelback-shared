@@ -1,39 +1,95 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.nio.ByteBuffer;
 import java.util.Comparator;
 
-import com.funnelback.publicui.search.model.padre.PadreNative;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Suggestion {
-	public final float weight;
-	public final String suggestion;
-		
-	public Suggestion(float weight, String suggestion) {
-		this.weight = weight;
-		this.suggestion = suggestion;
-	}
 	
-	public static Suggestion fromBytes(ByteBuffer buf) {
-		float weight = buf.getFloat();
-		char length = (char) buf.get();
-		char[] letters = new char[length];
-		for (int i=0; i<length; i++) {
-			letters[i] = (char) buf.get();
+	@RequiredArgsConstructor
+	public enum DisplayType {
+		Unknown(""), Text("T"), HTML("H"), Javascript("C"), JSON("J");
+		
+		public final String value;
+		
+		public static DisplayType fromValue(String value) {
+			for(DisplayType dt: DisplayType.values()) {
+				if (dt.value.equals(value)) {
+					return dt;
+				}
+			}
+			throw new IllegalArgumentException(value);
 		}
-		buf.position(buf.position()+PadreNative.SizeOf.SUGGEST_T-(PadreNative.SizeOf.FLOAT + PadreNative.SizeOf.CHAR+length));
-
 		
-		return new Suggestion(weight, new String(letters));
+		@Override
+		public String toString() {
+			return value;
+		}
 	}
 	
+	@RequiredArgsConstructor
+	public enum CategoryType {
+		Unknown("");
+		
+		public final String value;
+		
+		public static CategoryType fromValue(String value) {
+			for(CategoryType ct: CategoryType.values()) {
+				if (ct.value.equals(value)) {
+					return ct;
+				}
+			}
+			throw new IllegalArgumentException(value);
+		}
+		
+		@Override
+		public String toString() {
+			return value;
+		}
+	}
+	
+	@RequiredArgsConstructor
+	public enum ActionType {
+		Unknown(""), Javascript("C"), URL("U"), Query("Q");
+		
+		public final String value;
+		
+		public static ActionType fromValue(String value) {
+			for(ActionType at: ActionType.values()) {
+				if (at.value.equals(value)) {
+					return at;
+				}
+			}
+			throw new IllegalArgumentException(value);
+		}
+		
+		@Override
+		public String toString() {
+			return value;
+		}
+	}
+	
+	@Getter @Setter private int length;
+	@Getter @Setter private String key;
+	@Getter @Setter private float weight;
+	@Getter @Setter private String display;
+	@Getter @Setter private DisplayType displayType;
+	@Getter @Setter private String category;
+	@Getter @Setter private CategoryType categoryType;
+	@Getter @Setter private String action;
+	@Getter @Setter private ActionType actionType;
+		
 	@Override
 	public String toString() {
-		return suggestion + " ("+weight+")";
+		return ToStringBuilder.reflectionToString(this);
 	}
 	
 	public double score(float alpha, int inputQueryLength) {
-		return (alpha*(double)weight) + (1.0-alpha) / ((double)suggestion.length()-inputQueryLength);
+		return (alpha*(double)weight) + (1.0-alpha) / ((double)display.length()-inputQueryLength);
 	}
 	
 	public static class ByWeightComparator implements Comparator<Suggestion> {
@@ -50,7 +106,7 @@ public class Suggestion {
 		public int compare(Suggestion s1, Suggestion s2) {
 			if (s2.score(alpha, inputQueryLength) < s1.score(alpha, inputQueryLength)) return -1;
 			if (s2.score(alpha, inputQueryLength) > s1.score(alpha, inputQueryLength)) return 1;
-			return s2.suggestion.compareTo(s1.suggestion);
+			return s2.display.compareTo(s1.display);
 		}		
 	}
 }

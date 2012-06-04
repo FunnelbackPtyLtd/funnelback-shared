@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service;
+package com.funnelback.publicui.search.service.suggest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,15 +15,22 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.PadreNative;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.Suggester;
 
-@Component
-public class DefaultSuggester implements Suggester {
+/**
+ * Prototype of Java suggester that read the <code>.autoc</code>
+ * files directly.
+ * 
+ * @deprecated Not compatible with scoped suggestions. Use {@link LibQSSuggester} instead.
+ */
+@Deprecated
+public class JavaSuggester implements Suggester {
 
 	private static final int SIZEOF_HEADER = PadreNative.SizeOf.INT*3 + PadreNative.SizeOf.DOUBLE;
 	
@@ -31,8 +38,8 @@ public class DefaultSuggester implements Suggester {
 	private ConfigRepository configRepository;
 	
 	@Override
-	public List<Suggestion> suggest(String collectionId, String partialQuery,
-			int numSuggestions, Sort sort, float alpha, AutoCMode autoCMode) {
+	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery,
+			int numSuggestions, Sort sort) {
 		
 		SortedSet<Suggestion> suggestions = new TreeSet<Suggestion>(new Suggestion.ByWeightComparator(.5f, partialQuery.length()));
 		FileInputStream fis = null;
@@ -104,12 +111,12 @@ public class DefaultSuggester implements Suggester {
 				suggestionsbuf.rewind();
 				
 				for (int i=0; i<numSuggestionsRead; i++) {
-					Suggestion s = Suggestion.fromBytes(suggestionsbuf);
-					char suggestionChar = s.suggestion.charAt(0);
+					Suggestion s = fromBytes(suggestionsbuf);
+					char suggestionChar = s.getDisplay().charAt(0);
 					if (suggestionChar > queryChar) {
 						reached = true;
 						break;
-					} else if ( suggestionChar == queryChar && s.suggestion.startsWith(partialQuery) && s.suggestion.length() > partialQuery.length()) {
+					} else if ( suggestionChar == queryChar && s.getDisplay().startsWith(partialQuery) && s.getDisplay().length() > partialQuery.length()) {
 						suggestions.add(s);	
 					}
 				}
@@ -121,6 +128,21 @@ public class DefaultSuggester implements Suggester {
 		}
 		
 		return new ArrayList<Suggestion>(suggestions);
+	}
+
+	private static Suggestion fromBytes(ByteBuffer buf) {
+		float weight = buf.getFloat();
+		char length = (char) buf.get();
+		char[] letters = new char[length];
+		for (int i=0; i<length; i++) {
+			letters[i] = (char) buf.get();
+		}
+		buf.position(buf.position()+PadreNative.SizeOf.SUGGEST_T-(PadreNative.SizeOf.FLOAT + PadreNative.SizeOf.CHAR+length));
+
+		Suggestion s = new Suggestion();
+		s.setWeight(weight);
+		s.setDisplay(new String(letters));
+		return s;
 	}
 	
 	@RequiredArgsConstructor

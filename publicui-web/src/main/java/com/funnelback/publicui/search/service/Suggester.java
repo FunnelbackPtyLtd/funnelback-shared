@@ -10,14 +10,10 @@ public interface Suggester {
 	public enum Sort {
 		Weight(0), Length(1), Alphabetic(2);
 		
-		private final int value;
+		public final int value;
 		
 		private Sort(int value) {
 			this.value = value;
-		}
-		
-		public int getValue() {
-			return value;
 		}
 		
 		public static Sort valueOf(int i) {
@@ -61,6 +57,6 @@ public interface Suggester {
 		}
 	}
 	
-	public List<Suggestion> suggest(String collectionId, String partialQuery, int numSuggestions, Sort sort, float alpha, AutoCMode autoCMode);
+	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery, int numSuggestions, Sort sort);
 	
 }
