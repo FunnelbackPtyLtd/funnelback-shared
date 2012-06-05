@@ -24,7 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.config.Config;
+import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
@@ -260,9 +260,9 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	 */
 	private Map<String, String> loadQuickLinksConfiguration(Collection c) {
 		File qlConfig = new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME);
-		try {
-			return Config.readConfig(qlConfig.getAbsolutePath(), searchHome.getAbsolutePath(), c.getId());
-		} catch (FileNotFoundException fnfe) {
+		if (qlConfig.canRead()) {
+			return ConfigReader.readConfig(qlConfig, searchHome, c.getId());
+		} else {
 			return new HashMap<String, String>(0);
 		}
 	}
@@ -322,13 +322,10 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	protected Map<String, String> loadGlobalConfigurationFile(GlobalConfiguration conf) {
 		File globalConfig = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, conf.getFileName());
 		if (globalConfig.canRead()) {
-			try {
-				return Config.readConfig(globalConfig.getAbsolutePath(), searchHome.getAbsolutePath(), "");
-			} catch (IOException ioe) {
-				log.error("Error while reading global configuration '" + globalConfig.getAbsolutePath() + "'", ioe);
-			}
+			return ConfigReader.readConfig(globalConfig, searchHome);
+		} else {
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -337,11 +334,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	 */
 	protected void loadGlobalConfiguration() {
 		log.debug("Loading global configuration data (global.cfg[.default])");
-		try {
-			globalConfiguration = new GlobalOnlyConfig(searchHome);
-		} catch (FileNotFoundException fnfe) {
-			log.error("Error while reading global configuration", fnfe);
-		}
+		globalConfiguration = new GlobalOnlyConfig(searchHome);
 	}
 	
 	/**
@@ -350,23 +343,19 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 	
 	protected void loadExecutablesConfig() {
 		log.debug("Loading executables configuration data (executables.cfg)");
-		try {
-			File confDir = new File(searchHome, DefaultValues.FOLDER_CONF);
-			Map<String,String> uncleanMap = Config.readConfig(new File (confDir, Files.EXECUTABLES_CONFIG_FILENAME).getAbsolutePath(), searchHome.getAbsolutePath(), "");
-			executablesMap = new HashMap<String,String>();
-			
-			// replace quotes at the ends of the executable names (if any)
-			for(Entry<String,String> entry : uncleanMap.entrySet()) {
-				String value = entry.getValue();
-				if(value != null) {
-					if((value.charAt(0) == '"' && value.charAt(value.length() -1) == '"' )|| (value.charAt(0) == '\'' && value.charAt(value.length() -1) == '\'' )) {
-						value = value.substring(1, value.length() -1);	
-					}
+		File confDir = new File(searchHome, DefaultValues.FOLDER_CONF);
+		Map<String,String> uncleanMap = ConfigReader.readConfig(new File(confDir, Files.EXECUTABLES_CONFIG_FILENAME), searchHome);
+		executablesMap = new HashMap<String,String>();
+		
+		// replace quotes at the ends of the executable names (if any)
+		for(Entry<String,String> entry : uncleanMap.entrySet()) {
+			String value = entry.getValue();
+			if(value != null) {
+				if((value.charAt(0) == '"' && value.charAt(value.length() -1) == '"' )|| (value.charAt(0) == '\'' && value.charAt(value.length() -1) == '\'' )) {
+					value = value.substring(1, value.length() -1);	
 				}
-				executablesMap.put(entry.getKey(), value);
 			}
-		} catch (FileNotFoundException e) {
-			log.error("Error while reading executables configuration",e);
+			executablesMap.put(entry.getKey(), value);
 		}
 	}
 
