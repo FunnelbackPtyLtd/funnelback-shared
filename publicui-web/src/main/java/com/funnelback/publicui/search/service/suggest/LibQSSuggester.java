@@ -33,8 +33,8 @@ public class LibQSSuggester implements Suggester {
 	@Autowired
 	private ConfigRepository configRepository;
 	
-	public interface LibQS extends Library {
-		public LibQS INSTANCE = (LibQS) Native.loadLibrary("libqs", LibQS.class);
+	public interface PadreQS extends Library {
+		public PadreQS INSTANCE = (PadreQS) Native.loadLibrary("qs", PadreQS.class);
 		
 		NativeSuggestion generate_suggestions(String stem, String profile, int numToShow, int sortCode, String partialQuery);
 		void free_suggestion_array(Pointer p);
@@ -51,7 +51,7 @@ public class LibQSSuggester implements Suggester {
 					+ File.separator + DefaultValues.FOLDER_IDX,
 					DefaultValues.INDEXFILES_PREFIX);				
 			
-			NativeSuggestion ns = LibQS.INSTANCE.generate_suggestions(
+			NativeSuggestion ns = PadreQS.INSTANCE.generate_suggestions(
 					indexStem.getAbsolutePath(),
 					profileId,
 					numSuggestions,
@@ -67,7 +67,7 @@ public class LibQSSuggester implements Suggester {
 					suggestions.add(nss[i].toSuggestion());
 				}
 				
-				LibQS.INSTANCE.free_suggestion_array(ns.getPointer());
+				PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
 				
 			}
 			

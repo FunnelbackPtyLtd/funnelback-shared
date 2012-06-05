@@ -77,9 +77,9 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 	public ModelAndView suggestJava(String collection,
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
 			@RequestParam("partial_query") String partialQuery,
-			int show,
-			int sort,
-			@RequestParam("fmt") String format,
+			@RequestParam(defaultValue="10") int show,
+			@RequestParam(defaultValue="0") int sort,
+			@RequestParam(value="fmt",defaultValue="json") String format,
 			String callback) throws IOException {
 		
 		ModelAndView mav = new ModelAndView();
