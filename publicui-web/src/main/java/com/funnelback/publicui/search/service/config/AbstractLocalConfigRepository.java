@@ -119,15 +119,11 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		c.setFacetedNavigationConfConfig(readFacetedNavigationConfigs(fnConfig));
 		
 		// Read config in live/idx/
-		try {
-			fnConfig = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX,
-					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-			c.setFacetedNavigationLiveConfig(readFacetedNavigationConfigs(fnConfig));
-		} catch (FileNotFoundException fnfe) {
-			log.error("Error while loading live faceted navigation configuration", fnfe);
-		}
+		fnConfig = new File(c.getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_IDX,
+				Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+		c.setFacetedNavigationLiveConfig(readFacetedNavigationConfigs(fnConfig));
 	}
 	
 	/**
@@ -143,16 +139,12 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		p.setFacetedNavConfConfig(readFacetedNavigationConfigs(fnConfig));
 		
 		// Read config in live/idx/<profile>/
-		try {
-			fnConfig = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX
-					+ File.separator + p.getId(),
-					Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-			p.setFacetedNavLiveConfig(readFacetedNavigationConfigs(fnConfig));
-		} catch (FileNotFoundException fnfe) {
-			log.error("Error while loading live faceted navigation configuration", fnfe);
-		}
+		fnConfig = new File(c.getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_IDX
+				+ File.separator + p.getId(),
+				Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+		p.setFacetedNavLiveConfig(readFacetedNavigationConfigs(fnConfig));
 	}
 	
 	/**

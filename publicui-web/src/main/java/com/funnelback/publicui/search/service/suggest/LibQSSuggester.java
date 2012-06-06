@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.service.suggest;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,36 +44,33 @@ public class LibQSSuggester implements Suggester {
 	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery, int numSuggestions, Sort sort) {
 		
 		Collection c = configRepository.getCollection(collectionId);
-		try {
-			File indexStem = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX,
-					DefaultValues.INDEXFILES_PREFIX);				
-			
-			NativeSuggestion ns = PadreQS.INSTANCE.generate_suggestions(
-					indexStem.getAbsolutePath(),
-					profileId,
-					numSuggestions,
-					sort.value,
-					partialQuery);
-			
-			List<Suggestion> suggestions = new ArrayList<Suggestion>();
-			if (ns != null) {
-				NativeSuggestion[] nss = (NativeSuggestion[]) ns.toArray(numSuggestions);
-				// LibQS returns an array with 'numSuggestions' slots. If there are less than
-				// numSuggestions the key will be the empty string
-				for (int i=0; i<nss.length && !"".equals(nss[i].key); i++) {
-					suggestions.add(nss[i].toSuggestion());
-				}
-				
-				PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
-				
+
+		File indexStem = new File(c.getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_IDX,
+				DefaultValues.INDEXFILES_PREFIX);				
+		
+		NativeSuggestion ns = PadreQS.INSTANCE.generate_suggestions(
+				indexStem.getAbsolutePath(),
+				profileId,
+				numSuggestions,
+				sort.value,
+				partialQuery);
+		
+		List<Suggestion> suggestions = new ArrayList<Suggestion>();
+		if (ns != null) {
+			NativeSuggestion[] nss = (NativeSuggestion[]) ns.toArray(numSuggestions);
+			// LibQS returns an array with 'numSuggestions' slots. If there are less than
+			// numSuggestions the key will be the empty string
+			for (int i=0; i<nss.length && !"".equals(nss[i].key); i++) {
+				suggestions.add(nss[i].toSuggestion());
 			}
 			
-			return suggestions;
-		} catch (FileNotFoundException fnfe) {
-			throw new RuntimeException(fnfe);
+			PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
+			
 		}
+		
+		return suggestions;
 	}
 	
 	/** A native suggestion as returned by <code>libqs</code> */

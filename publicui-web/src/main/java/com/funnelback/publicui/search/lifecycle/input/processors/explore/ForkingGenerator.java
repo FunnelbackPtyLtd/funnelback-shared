@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors.explore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,14 +36,10 @@ public class ForkingGenerator implements ExploreQueryGenerator {
 	public String getExploreQuery(Collection c, String url, Integer nbOfTerms) {
 		File padreRfBin = new File(searchHome + File.separator + DefaultValues.FOLDER_BIN, padreRfBinary);
 		File idxStem = null;
-		try {
-			idxStem = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX
-					+ File.separator + DefaultValues.INDEXFILES_PREFIX);
-		} catch (FileNotFoundException fnfe) {
-			return null;
-		}
+		idxStem = new File(c.getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_IDX
+				+ File.separator + DefaultValues.INDEXFILES_PREFIX);
 		
 		CommandLine cmdLine = CommandLine.parse(
 				padreRfBin.getAbsolutePath() + " "

@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.service.config;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
@@ -148,16 +146,10 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 	
 			// Don't check again - exit if we've already checked recently
 			if (lastAccessTime == null || now > (lastAccessTime+checkingInterval)) {
-				try {
-					long lastUpdated = Config.getLastUpdated(searchHome,Files.Types.EXECUTABLES,"");
-					if (lastAccessTime == null || lastUpdated > lastAccessTime) {
-						log.info("Executables configuration data has changed and will be reloaded.");
-						loadExecutablesConfig();
-					}
-				} catch (FileNotFoundException e) {
-					log.error("Checking to see if we should update the executables config",e);
-				} catch (EnvironmentVariableException e) {
-					log.error("Checking to see if we should update the executables config",e);
+				long lastUpdated = Config.getLastUpdated(searchHome,Files.Types.EXECUTABLES,"");
+				if (lastAccessTime == null || lastUpdated > lastAccessTime) {
+					log.info("Executables configuration data has changed and will be reloaded.");
+					loadExecutablesConfig();
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.service.index;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,15 +118,10 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 	}
 	
 	protected File getIndexFile(String collectionId, String fileName) {
-		try {
-			return new File(configRepository.getCollection(collectionId).getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_IDX,
-					fileName);
-		} catch (FileNotFoundException fnfe) {
-			log.error("Error while accessing index file '"+fileName+"' for collection '"+collectionId+"'", fnfe);
-			return null;
-		}
+		return new File(configRepository.getCollection(collectionId).getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_IDX,
+				fileName);
 	}
 
 

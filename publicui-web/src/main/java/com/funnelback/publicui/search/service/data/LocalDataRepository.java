@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.service.data;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
@@ -27,16 +26,12 @@ public class LocalDataRepository implements DataRepository {
 	public String getCachedDocument(Collection collection, String relativeUrl) {
 		File doc = null;
 		for (String folder: FOLDERS) {
-			try {
-				doc = new File(collection.getConfiguration().getCollectionRoot()
-					+ File.separator + folder, relativeUrl);
-				if (doc.exists()) {
-					break;
-				}
-				log.debug("Cached document '" + doc.getAbsolutePath() + "' doesn't exist.");
-			} catch (FileNotFoundException fnfe) {
-				log.warn("Error while trying to access cached document under the collecton_root at '" + folder + File.separator + relativeUrl, fnfe);
+			doc = new File(collection.getConfiguration().getCollectionRoot()
+				+ File.separator + folder, relativeUrl);
+			if (doc.exists()) {
+				break;
 			}
+			log.debug("Cached document '" + doc.getAbsolutePath() + "' doesn't exist.");
 		}
 		if (doc.exists()) {
 			try {
