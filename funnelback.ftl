@@ -13,9 +13,9 @@
     <p>Example:
 
         <pre>
-&lt;@Prev&gt;
-    &lt;a href="${prevUrl}"&gt;Previous ${prevRanks} results&lt;/p&gt;
-&lt;/@Prev&gt;
+&lt;@fb.Prev&gt;
+    &lt;a href="${fb.prevUrl}"&gt;Previous ${fb.prevRanks} results&lt;/p&gt;
+&lt;/@fb.Prev&gt;
         </pre>
     </p>
 
@@ -38,9 +38,9 @@
     <p>Example:
 
         <pre>
-&lt;@Next&gt;
-    &lt;a href="${nextUrl}"&gt;Next ${nextRanks} results&lt;/p&gt;
-&lt;/@Next&gt;
+&lt;@fb.Next&gt;
+    &lt;a href="${fb.nextUrl}"&gt;Next ${fb.nextRanks} results&lt;/p&gt;
+&lt;/@fb.Next&gt;
         </pre>
     </p>
 
@@ -65,22 +65,22 @@
     <p>
         Three variables will be set in the template:
         <ul>
-            <li><code>pageUrl</code>: Url of the page.</li>   
-            <li><code>pageCurrent</code>: boolean, whether the current page is the one currently displayed.</li>   
-            <li><code>pageNumber</code>: Number of the current page.</li>   
+            <li><code>fb.pageUrl</code>: Url of the page.</li>   
+            <li><code>fb.pageCurrent</code>: boolean, whether the current page is the one currently displayed.</li>   
+            <li><code>fb.pageNumber</code>: Number of the current page.</li>   
         </ul>
     </p>
 
     <p>Example:
 
         <pre>
-&lt;@Page&gt;
+&lt;@fb.Page&gt;
     &lt;#if fb.pageCurrent&gt;
-        ${pageNumber}
+        ${fb.pageNumber}
     &lt;#else&gt;
-        &lt;a href="${pageUrl}"&gt;${pageNumber}&lt;/a&gt;
+        &lt;a href="${fb.pageUrl}"&gt;${fb.pageNumber}&lt;/a&gt;
     &lt;/#if&gt;
-&lt;/@Page&gt;
+&lt;/@fb.Page&gt;
         </pre>
 
     </p>
@@ -130,7 +130,8 @@
     <code>response</code> and <code>error</code> objects from within the tag.</p>
 
     <p>Note that the search is run when the tag is actually evaluated. This
-    could impact the overall response time.</p>
+    could impact the overall response time. For this reason it's recommended
+    to use <code>@fb.ExtraResults</code>.</p>
 
     @param question Initial SearchQuestion, used as a base for parameters.
     @param collection Name of the collection to search on.
