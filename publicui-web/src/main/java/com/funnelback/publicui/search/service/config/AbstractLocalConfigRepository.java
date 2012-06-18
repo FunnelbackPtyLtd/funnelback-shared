@@ -5,7 +5,6 @@ import groovy.lang.Script;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 			c.getProfiles().putAll(loadProfiles(c));
 			c.getHookScriptsClasses().putAll(loadHookScriptsClasses(c));
 			return c;
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			
 			// TODO We must determine how to deal properly with config load error.
 			// Currently there is now way to distinguish a "real" error (Such as no conf/
