@@ -102,6 +102,7 @@
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy</artifactId>
+				<version>${version.groovy}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
