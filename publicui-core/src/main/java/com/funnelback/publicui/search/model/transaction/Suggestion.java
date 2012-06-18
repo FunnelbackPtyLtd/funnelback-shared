@@ -32,27 +32,6 @@ public class Suggestion {
 	}
 	
 	@RequiredArgsConstructor
-	public enum CategoryType {
-		Unknown("");
-		
-		public final String value;
-		
-		public static CategoryType fromValue(String value) {
-			for(CategoryType ct: CategoryType.values()) {
-				if (ct.value.equals(value)) {
-					return ct;
-				}
-			}
-			throw new IllegalArgumentException(value);
-		}
-		
-		@Override
-		public String toString() {
-			return value;
-		}
-	}
-	
-	@RequiredArgsConstructor
 	public enum ActionType {
 		Unknown(""), Javascript("C"), URL("U"), Query("Q");
 		
@@ -79,7 +58,7 @@ public class Suggestion {
 	@Getter @Setter private String display;
 	@Getter @Setter private DisplayType displayType;
 	@Getter @Setter private String category;
-	@Getter @Setter private CategoryType categoryType;
+	@Getter @Setter private String categoryType;
 	@Getter @Setter private String action;
 	@Getter @Setter private ActionType actionType;
 		

@@ -11,7 +11,6 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
 import com.funnelback.publicui.search.model.transaction.Suggestion.ActionType;
-import com.funnelback.publicui.search.model.transaction.Suggestion.CategoryType;
 import com.funnelback.publicui.search.model.transaction.Suggestion.DisplayType;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.Suggester;
@@ -97,7 +96,7 @@ public class LibQSSuggester implements Suggester {
 			s.setDisplay(display);
 			s.setDisplayType(DisplayType.fromValue(displayType));
 			s.setCategory(category);
-			s.setCategoryType(CategoryType.fromValue(categoryType));
+			s.setCategoryType(categoryType);
 			s.setAction(action);
 			s.setActionType(ActionType.fromValue(actionType));
 			
