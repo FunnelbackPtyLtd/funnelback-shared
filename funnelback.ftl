@@ -492,3 +492,12 @@
         timeout=params.timeout
         convertrelative=params.convertrelative />
 </#macro>
+
+<#---
+    Displays TextMiner suggestions (Entity, Definition, Source URL).
+-->
+<#macro TextMiner>
+    <#if response.entityDefinition?exists>
+        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> ${response.entityDefinition.definition?html}     
+    </#if>  
+</#macro>
