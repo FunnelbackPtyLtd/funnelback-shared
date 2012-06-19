@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
@@ -60,8 +60,13 @@ public class SearchResponse {
 	@Getter @Setter private ContentOptimiserModel optimiserModel;
 	
 	/**
+	 * TextMiner: Entity/Definition/URL data.
+	 */
+	
+	@Getter @Setter private EntityDefinition entityDefinition;
+	
+	/**
 	 * @return true if the {@link #resultPacket} is not null.
 	 */
 	public boolean hasResultPacket() { return resultPacket != null; }
-	
 }
