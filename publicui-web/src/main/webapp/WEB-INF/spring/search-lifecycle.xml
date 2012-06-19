@@ -56,6 +56,7 @@
 		<ref bean="queryCleanOutputProcessor" />
 		<ref bean="extraSearchesExecutor" />
 		<ref bean="contentOptimiserOutputProcessor" />
+		<ref bean="textMinerOutputProcessor" />
 		<ref bean="searchMonitorUpdaterOutputProcessor" />
 		<bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
