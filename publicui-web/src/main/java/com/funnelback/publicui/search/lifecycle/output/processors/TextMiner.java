@@ -31,49 +31,53 @@ public class TextMiner implements OutputProcessor {
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasResults(searchTransaction)) {
-			    File searchHome = Environment.getValidSearchHome();
-			    String collection_id = searchTransaction.getQuestion().getCollection().getConfiguration().value("collection");
-			    String collection_conf_dir = searchHome.toString() + File.separator + "conf" + File.separator + collection_id;
+		        boolean textMinerEnabled = searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean("text_miner_enabled");
+		        
+		        if (textMinerEnabled) {
+				    File searchHome = Environment.getValidSearchHome();
+				    String collection_id = searchTransaction.getQuestion().getCollection().getConfiguration().value("collection");
+				    String collection_conf_dir = searchHome.toString() + File.separator + "conf" + File.separator + collection_id;
 
-			    String query = searchTransaction.getQuestion().getQuery();
-			    log.debug("Received query: " + query);
-			    query = query.replaceAll("\"", "");
-			    query = WordUtils.capitalizeFully(query);
+				    String query = searchTransaction.getQuestion().getQuery();
+				    log.debug("Received query: " + query);
+				    query = query.replaceAll("\"", "");
+				    query = WordUtils.capitalizeFully(query);
 
-			    // Process black list file if it exists
-			    File black_list_file = new File(collection_conf_dir + File.separator + "text-miner-blacklist.cfg");
-			    HashMap<String, String> black_list = new HashMap<String, String>();
+				    // Process black list file if it exists
+				    File black_list_file = new File(collection_conf_dir + File.separator + "text-miner-blacklist.cfg");
+				    HashMap<String, String> black_list = new HashMap<String, String>();
 
-			    try {
-				    if (black_list_file.exists()) {
-				        BufferedReader br = new BufferedReader(new FileReader(black_list_file));
+				    try {
+					    if (black_list_file.exists()) {
+					        BufferedReader br = new BufferedReader(new FileReader(black_list_file));
 
-				        String line;
+					        String line;
 
-				        while (br.ready()) {
-				            line = br.readLine();
+					        while (br.ready()) {
+					            line = br.readLine();
 
-				            if (!line.startsWith("#")) {
-				                line = line.toLowerCase();
-				                black_list.put(line, "");
-				            }
-				        }
+					            if (!line.startsWith("#")) {
+					                line = line.toLowerCase();
+					                black_list.put(line, "");
+					            }
+					        }
 
-				        br.close();
-				    }	
-			    }
-			    catch (Exception exception) {
-			    	log.error(exception);
-			    }
+					        br.close();
+					    }	
+				    }
+				    catch (Exception exception) {
+				    	log.error(exception);
+				    }
 
-			    if (black_list.containsKey(query.toLowerCase())) {
-			        log.debug("TextMiner: Blacklisted query: " + query);
-			    }
-			    else {
-			        generateDefinition(query, searchTransaction);
-			        generateNounPhrases(searchTransaction);
-			        generateCustomData(query, searchTransaction);
-			    }		
+				    if (black_list.containsKey(query.toLowerCase())) {
+				        log.debug("TextMiner: Blacklisted query: " + query);
+				    }
+				    else {
+				        generateDefinition(query, searchTransaction);
+				        generateNounPhrases(searchTransaction);
+				        generateCustomData(query, searchTransaction);
+				    }			        	
+		        }
 		   }
 	}
 
