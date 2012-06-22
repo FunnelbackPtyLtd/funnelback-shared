@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.WordUtils;
@@ -25,7 +27,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Log4j
 public class TextMiner implements OutputProcessor {
 	
-	@Autowired
+	@Autowired @Getter @Setter
 	private com.funnelback.publicui.search.service.TextMiner textMiner;
 	
 	@Override
