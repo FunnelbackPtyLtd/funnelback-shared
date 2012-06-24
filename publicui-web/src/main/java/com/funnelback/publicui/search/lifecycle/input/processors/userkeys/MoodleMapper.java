@@ -29,7 +29,7 @@ public class MoodleMapper implements UserKeysMapper {
 	/**
 	 * Constant to get enrollments of a specific user
 	 */
-	private static final String MOODLE_PARAMETER_NAME = "username";
+	public static final String MOODLE_PARAMETER_NAME = "username";
 	/**
 	 * Constant to separate the strings
 	 */
@@ -38,12 +38,18 @@ public class MoodleMapper implements UserKeysMapper {
 	 * The query which gets the list of courses where each user is enrolled, and
 	 * his role for each course
 	 */
-	private static final String course = "SELECT mdl_user.username,  mdl_role.id as role,group_concat(mdl_course.id order by mdl_course.id asc) as courses FROM mdl_course INNER JOIN mdl_context ON mdl_context.instanceid = mdl_course.id INNER JOIN mdl_role_assignments ON mdl_context.id = mdl_role_assignments.contextid INNER JOIN mdl_role ON mdl_role.id = mdl_role_assignments.roleid INNER JOIN mdl_user ON mdl_user.id = mdl_role_assignments.userid group by username, role order by username ";
+	private static final String course = "SELECT mdl_user.username,  mdl_role.id as role,mdl_course.id as course FROM mdl_course, mdl_role_assignments, mdl_role, mdl_context, mdl_user where mdl_context.instanceid = mdl_course.id and mdl_context.id = mdl_role_assignments.contextid and mdl_role.id = mdl_role_assignments.roleid and mdl_user.id = mdl_role_assignments.userid order by username, role, course";
 	/**
 	 * The query which gets exception about specific role for each module
 	 */
-	private static final String module = "SELECT mdl_user.username,  mdl_role.id as role,group_concat(mdl_course_modules.id) as modules, mdl_course_modules.course FROM mdl_course_modules  INNER JOIN mdl_context ON mdl_context.instanceid = mdl_course_modules.id INNER JOIN mdl_role_assignments ON mdl_context.id = mdl_role_assignments.contextid INNER JOIN mdl_role ON mdl_role.id = mdl_role_assignments.roleid INNER JOIN mdl_user ON mdl_user.id = mdl_role_assignments.userid where mdl_context.contextlevel = '70' group by username, role, mdl_course_modules.course order by username";
-
+	private static final String module = "SELECT mdl_user.username,  mdl_role.id as role,mdl_course_modules.id as modules, mdl_course_modules.course FROM mdl_course_modules, mdl_context, mdl_role_assignments, mdl_role, mdl_user where mdl_context.instanceid = mdl_course_modules.id and mdl_context.id = mdl_role_assignments.contextid and mdl_role.id = mdl_role_assignments.roleid and mdl_user.id = mdl_role_assignments.userid and mdl_context.contextlevel = '70' order by username, role, course, modules";
+	
+	/**
+	 * Constructor empty
+	 */
+	public MoodleMapper() {
+	}
+	
 	/**
 	 * <p>
 	 * Method to get the userkeys for a Moodle user.
@@ -90,7 +96,7 @@ public class MoodleMapper implements UserKeysMapper {
 
 		} catch (Exception e) {
 			logger.error("Unknown error while getting the userkeys", e);
-			rc.add(MasterKeyMapper.MASTER_KEY);
+			e.printStackTrace();
 		} finally {
 			// Close the statements and the connection through the db
 			if (connection != null) {
@@ -181,67 +187,28 @@ public class MoodleMapper implements UserKeysMapper {
 	 */
 	public String makeUserkeys(String username, ResultSet queryCourse,
 			ResultSet queryModule) throws SQLException {
-		String s = "";
 		String rc = "";
 
 		// Get the targeted result of the query & put it in a string
+		// For the course only first
 		while (queryCourse.next()) {
 			if (queryCourse.getString("username").equals(username)) {
-				if (queryCourse.getString("courses").contains(",")) {
-					for (int i = 0; i < queryCourse.getString("courses")
-							.length(); i++) {
-						if (!queryCourse.getString("courses")
-								.substring(i, i + 1).equals(",")) {
-							s += queryCourse.getString("courses").substring(i,
-									i + 1);
-						} else {
-							rc += "C" + s + SEPARATOR + "R"
-									+ queryCourse.getString("role") + SEPARATOR;
-							s = "";
-						}
-					}
-					rc += "C" + s + SEPARATOR + "R"
-							+ queryCourse.getString("role") + SEPARATOR;
-				} else {
-					rc += "C" + queryCourse.getString("courses") + SEPARATOR
-							+ "R" + queryCourse.getString("role") + SEPARATOR;
-				}
+				rc += "C" + queryCourse.getString("course") + SEPARATOR + "R"
+						+ queryCourse.getString("role") + SEPARATOR;
 			}
 		}
-
-		s = "";
-
+		// Then for the modules exceptions
 		while (queryModule.next()) {
 			if (queryModule.getString("username").equals(username)) {
-				if (queryModule.getString("modules").contains(",")) {
-					for (int i = 0; i < queryModule.getString("modules")
-							.length(); i++) {
-						if (!queryModule.getString("modules")
-								.substring(i, i + 1).equals(",")) {
-							s += queryModule.getString("modules").substring(i,
-									i + 1);
-						} else {
-							rc += "C" + queryModule.getString("course")
-									+ SEPARATOR + "M" + s + SEPARATOR + "R"
-									+ queryModule.getString("role") + SEPARATOR;
-							s = "";
-						}
-					}
-					rc += "C" + queryModule.getString("course") + SEPARATOR
-							+ "M" + s + SEPARATOR + "R"
-							+ queryModule.getString("role") + SEPARATOR;
-				} else {
-					rc += "C" + queryModule.getString("course") + SEPARATOR
-							+ "M" + queryModule.getString("modules")
-							+ SEPARATOR + "R" + queryModule.getString("role")
-							+ SEPARATOR;
-				}
+				rc += "C" + queryModule.getString("course") + SEPARATOR + "M"
+						+ queryModule.getString("modules") + SEPARATOR + "R"
+						+ queryModule.getString("role") + SEPARATOR;
 			}
 		}
-		
+
 		// Log display
 		logger.debug("Keys for the user '" + username + "' = '" + rc + "'");
-		
+
 		return rc;
 	}
 }
