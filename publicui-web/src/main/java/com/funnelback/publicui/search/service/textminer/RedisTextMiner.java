@@ -9,11 +9,9 @@ import lombok.extern.log4j.Log4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Protocol;
-
-import com.funnelback.common.Security;
+import com.funnelback.common.config.Config;
+import com.funnelback.common.utils.ObjectCache;
+import com.funnelback.common.utils.RedisCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.TextMiner;
@@ -21,20 +19,6 @@ import com.funnelback.publicui.search.service.TextMiner;
 @Log4j
 @Component
 public class RedisTextMiner implements TextMiner {
-
-	private JedisPool getPool(Collection collection) {
-		JedisPool pool = null;
-
-		String redisHost = collection.getConfiguration().value("redis.master.host", "localhost");
-		int redisPort = collection.getConfiguration().valueAsInt("redis.master.port", 6379);
-		String serverSecret = collection.getConfiguration().value("server_secret");
-		pool = new JedisPool(new org.apache.commons.pool.impl.GenericObjectPool.Config(),
-				redisHost, redisPort, Protocol.DEFAULT_TIMEOUT,
-				Security.generateSystemPassword(Security.System.REDIS, serverSecret));
-
-		return pool;
-	}
-
 	public EntityDefinition getEntityDefinition(String entity, Collection collection) {
 		return getEntityDefinition(entity, collection, "noun-entities");
 	}
@@ -48,14 +32,13 @@ public class RedisTextMiner implements TextMiner {
 		EntityDefinition entityDefinition = null;
 	    Map<String, String> element_map = null;
 	    ObjectMapper mapper = new ObjectMapper();
+	    ObjectCache redis = null;
+	    
+	    Config config = collection.getConfiguration();
+		String collection_id = config.value("collection");
+		String collection_type = config.value("collection_type");
 
-		JedisPool pool = getPool(collection);
-		Jedis jedis = pool.getResource();
-
-		String collection_id = collection.getConfiguration().value("collection");
-		String collection_type = collection.getConfiguration().value("collection_type");
-
-		String redisKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + ":text-miner:" + hashName;
         String jsonString = "";
         
 		try {
@@ -63,18 +46,23 @@ public class RedisTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					redisKey = component + ":text-miner:" + hashName;		            
-					log.debug("Hash name: " + redisKey + " and field: " + entity);
+					hashKey = component + ":text-miner:" + hashName;		            
+					log.debug("Hash name: " + hashKey + " and field: " + entity);
 
-					jsonString = jedis.hget(redisKey, entity);
+		            redis = new RedisCache(hashKey, config);
+
+					jsonString = (String) redis.get(entity);
 					
 	                if (jsonString == null) {
 	                    // Try the variant cache
-	                    String variantKey = redisKey + ":variants";
-	                    String originalVariant = jedis.hget(variantKey, entity);
+	                    String variantKey = hashKey + ":variants";
+	                    redis.close();
+	                    redis = new RedisCache(variantKey, config);
+	                    
+	                    String originalVariant = (String) redis.get(entity);
 
 	                    if (originalVariant != null) {
-	                        jsonString = jedis.hget(redisKey, originalVariant);
+	                        jsonString = (String) redis.get(originalVariant);
 
 	                        if (jsonString != null) {
 	                            element_map = mapper.readValue(jsonString, Map.class);
@@ -90,16 +78,21 @@ public class RedisTextMiner implements TextMiner {
 				}
 			}
 			else {
-	            log.debug("Hash name: " + redisKey + " and field: " + entity);
-	            jsonString = jedis.hget(redisKey, entity);
+	            log.debug("Hash name: " + hashKey + " and field: " + entity);
+	            redis = new RedisCache(hashKey, config);
+
+	            jsonString = (String) redis.get(entity);
 
 	            if (jsonString == null) {
 	                // Try the variant cache
-	                String variantKey = redisKey + ":variants";
-	                String originalVariant = jedis.hget(variantKey, entity);
+	                String variantKey = hashKey + ":variants";
+                    redis.close();
+                    redis = new RedisCache(variantKey, config);
+                    
+	                String originalVariant =  (String) redis.get(entity);
 
 	                if (originalVariant != null) {
-	                    jsonString = jedis.hget(redisKey, originalVariant);
+	                    jsonString = (String) redis.get(originalVariant);
 	                    element_map = mapper.readValue(jsonString, Map.class);
 	                }
 	            }
@@ -112,8 +105,9 @@ public class RedisTextMiner implements TextMiner {
 			log.error(exception);
 		}
 		finally {
-			pool.returnResource(jedis);
-			pool.destroy();
+			if (redis != null) {
+				redis.close();
+			}
 		}
 
 		if (element_map != null) {
@@ -131,14 +125,13 @@ public class RedisTextMiner implements TextMiner {
 		List<String> nounPhrases = null;
 		String hashName = "url-noun-entities";
 	    ObjectMapper mapper = new ObjectMapper();
+	    ObjectCache redis = null;
 	    
-		JedisPool pool = getPool(collection);
-		Jedis jedis = pool.getResource();
+	    Config config = collection.getConfiguration();
+		String collection_id = config.value("collection");
+		String collection_type = config.value("collection_type");
 
-		String collection_id = collection.getConfiguration().value("collection");
-		String collection_type = collection.getConfiguration().value("collection_type");
-
-		String redisKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + ":text-miner:" + hashName;
         String jsonString = "";
         
 		try {
@@ -146,21 +139,23 @@ public class RedisTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					redisKey = component + ":text-miner:" + hashName;		            
-					log.debug("Hash name: " + redisKey + " and field: " + URL);
+					hashKey = component + ":text-miner:" + hashName;		            
+					log.debug("Hash name: " + hashKey + " and field: " + URL);
 
-					jsonString = jedis.hget(redisKey, URL);
+		            redis = new RedisCache(hashKey, config);
+		            jsonString = (String) redis.get(URL);
 					
 					if (jsonString != null) {
                         nounPhrases = mapper.readValue(jsonString, ArrayList.class);
                         break;
-                    }
+                    }					
 				}
 			}
 			else {
-	            log.debug("Hash name: " + redisKey + " and field: " + URL);
-	            jsonString = jedis.hget(redisKey, URL);
-
+	            log.debug("Hash name: " + hashKey + " and field: " + URL);
+	            redis = new RedisCache(hashKey, config);
+	            jsonString = (String) redis.get(URL);
+	            
 				if (jsonString != null) {
                     nounPhrases = mapper.readValue(jsonString, ArrayList.class);
                 }
@@ -170,8 +165,9 @@ public class RedisTextMiner implements TextMiner {
 			log.error(exception);
 		}
 		finally {
-			pool.returnResource(jedis);
-			pool.destroy();
+			if (redis != null) {
+				redis.close();
+			}
 		}
 		
 		return nounPhrases;
