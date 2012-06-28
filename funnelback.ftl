@@ -498,6 +498,6 @@
 -->
 <#macro TextMiner>
     <#if response.entityDefinition?exists>
-        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> ${response.entityDefinition.definition?html}     
+        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if><span id="entity-definition">${response.entityDefinition.definition?html}</span>     
     </#if>  
 </#macro>
