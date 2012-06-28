@@ -23,32 +23,31 @@ public class MoodleMapperTest {
 	public static void before() throws IOException {
 		c = new Collection("moodle", new NoOptionsConfig(new File(
 				"src/test/resources/dummy-search_home"), "moodle"));
-		PropertyConfigurator.configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
+		PropertyConfigurator
+				.configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
 	}
 
 	@Test
-	public void testNoHeader()  {
+	public void testNoHeader() {
 		SearchQuestion question = new SearchQuestion();
 		question.setCollection(c);
 		SearchTransaction st = new SearchTransaction(question, null);
 		MoodleMapper mm = new MoodleMapper();
 		Assert.assertEquals("", mm.getUserKeys(st).get(0));
 	}
-	
+
 	@Test
-	public void testWrongHeader()
-	{
+	public void testWrongHeader() {
 		MoodleMapper mm = new MoodleMapper();
 		SearchQuestion question = new SearchQuestion();
 		question.setCollection(c);
-		question.getRawInputParameters().put(
-				MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "Mad user" });
+		question.getRawInputParameters()
+				.put(MoodleMapper.MOODLE_PARAMETER_NAME,
+						new String[] { "Mad user" });
 		SearchTransaction st = new SearchTransaction(question, null);
-		Assert.assertEquals(
-				"",
-				mm.getUserKeys(st).get(0));
+		Assert.assertEquals("", mm.getUserKeys(st).get(0));
 	}
-	
+
 	@Test
 	public void testHeader() {
 		MoodleMapper mm = new MoodleMapper();
@@ -78,13 +77,13 @@ public class MoodleMapperTest {
 
 		question.getRawInputParameters().put(
 				MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "user4" });
-		Assert.assertEquals(new ArrayList<String>(Arrays
-				.asList("C1_R3_C3_R3_C4_R3_C5_R4_")), mm.getUserKeys(st));
+		Assert.assertEquals(
+				new ArrayList<String>(Arrays.asList("C1_R3_C3_R3_C4_R3_C5_R4_")),
+				mm.getUserKeys(st));
 	}
-	
+
 	@Test
-	public void testFormatUserkeys()
-	{
+	public void testFormatUserkeys() {
 		MoodleMapper mm = new MoodleMapper();
 		SearchQuestion question = new SearchQuestion();
 		question.setCollection(c);
