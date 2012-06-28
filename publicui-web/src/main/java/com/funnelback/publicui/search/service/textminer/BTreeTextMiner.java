@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.textminer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,17 +8,20 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.utils.BtreeCache;
 import com.funnelback.common.utils.ObjectCache;
-import com.funnelback.common.utils.RedisCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.TextMiner;
 
 @Log4j
-//@Component
-public class RedisTextMiner implements TextMiner {
+@Component
+public class BTreeTextMiner implements TextMiner {
+    public static final int MAX_CACHE_SIZE = 500000;
+
 	public EntityDefinition getEntityDefinition(String entity, Collection collection) {
 		return getEntityDefinition(entity, collection, "noun-entities");
 	}
@@ -31,12 +35,14 @@ public class RedisTextMiner implements TextMiner {
 		EntityDefinition entityDefinition = null;
 	    Map<String, String> element_map = null;
 	    ObjectMapper mapper = new ObjectMapper();
-	    ObjectCache redis = null;
+	    ObjectCache cache = null;
 	    
 	    Config config = collection.getConfiguration();
 		String collection_id = config.value("collection");
 		String collection_type = config.value("collection_type");
-
+        String collectionRoot = config.getCollectionRoot().toString();
+        String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
+        
 		String hashKey = collection_id + ":text-miner:" + hashName;
         String jsonString = "";
         
@@ -48,20 +54,20 @@ public class RedisTextMiner implements TextMiner {
 					hashKey = component + ":text-miner:" + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + entity);
 
-		            redis = new RedisCache(hashKey, config);
+		            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);
 
-					jsonString = (String) redis.get(entity);
+					jsonString = (String) cache.get(entity);
 					
 	                if (jsonString == null) {
 	                    // Try the variant cache
 	                    String variantKey = hashKey + ":variants";
-	                    redis.close();
-	                    redis = new RedisCache(variantKey, config);
-	                    
-	                    String originalVariant = (String) redis.get(entity);
+	                    cache.close();
+			            cache = new BtreeCache(checkpointDir + File.separator + variantKey, MAX_CACHE_SIZE, true);
+
+	                    String originalVariant = (String) cache.get(entity);
 
 	                    if (originalVariant != null) {
-	                        jsonString = (String) redis.get(originalVariant);
+	                        jsonString = (String) cache.get(originalVariant);
 
 	                        if (jsonString != null) {
 	                            element_map = mapper.readValue(jsonString, Map.class);
@@ -78,20 +84,20 @@ public class RedisTextMiner implements TextMiner {
 			}
 			else {
 	            log.debug("Hash name: " + hashKey + " and field: " + entity);
-	            redis = new RedisCache(hashKey, config);
+	            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);
 
-	            jsonString = (String) redis.get(entity);
+	            jsonString = (String) cache.get(entity);
 
 	            if (jsonString == null) {
 	                // Try the variant cache
 	                String variantKey = hashKey + ":variants";
-                    redis.close();
-                    redis = new RedisCache(variantKey, config);
+                    cache.close();
+		            cache = new BtreeCache(checkpointDir + File.separator + variantKey, MAX_CACHE_SIZE, true);
                     
-	                String originalVariant =  (String) redis.get(entity);
+	                String originalVariant =  (String) cache.get(entity);
 
 	                if (originalVariant != null) {
-	                    jsonString = (String) redis.get(originalVariant);
+	                    jsonString = (String) cache.get(originalVariant);
 	                    element_map = mapper.readValue(jsonString, Map.class);
 	                }
 	            }
@@ -104,8 +110,8 @@ public class RedisTextMiner implements TextMiner {
 			log.error(exception);
 		}
 		finally {
-			if (redis != null) {
-				redis.close();
+			if (cache != null) {
+				cache.close();
 			}
 		}
 
@@ -124,12 +130,14 @@ public class RedisTextMiner implements TextMiner {
 		List<String> nounPhrases = null;
 		String hashName = "url-noun-entities";
 	    ObjectMapper mapper = new ObjectMapper();
-	    ObjectCache redis = null;
+	    ObjectCache cache = null;
 	    
 	    Config config = collection.getConfiguration();
 		String collection_id = config.value("collection");
 		String collection_type = config.value("collection_type");
-
+        String collectionRoot = config.getCollectionRoot().toString();
+        String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
+        
 		String hashKey = collection_id + ":text-miner:" + hashName;
         String jsonString = "";
         
@@ -141,8 +149,8 @@ public class RedisTextMiner implements TextMiner {
 					hashKey = component + ":text-miner:" + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + URL);
 
-		            redis = new RedisCache(hashKey, config);
-		            jsonString = (String) redis.get(URL);
+		            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);
+		            jsonString = (String) cache.get(URL);
 					
 					if (jsonString != null) {
                         nounPhrases = mapper.readValue(jsonString, ArrayList.class);
@@ -152,8 +160,8 @@ public class RedisTextMiner implements TextMiner {
 			}
 			else {
 	            log.debug("Hash name: " + hashKey + " and field: " + URL);
-	            redis = new RedisCache(hashKey, config);
-	            jsonString = (String) redis.get(URL);
+	            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);
+	            jsonString = (String) cache.get(URL);
 	            
 				if (jsonString != null) {
                     nounPhrases = mapper.readValue(jsonString, ArrayList.class);
@@ -164,8 +172,8 @@ public class RedisTextMiner implements TextMiner {
 			log.error(exception);
 		}
 		finally {
-			if (redis != null) {
-				redis.close();
+			if (cache != null) {
+				cache.close();
 			}
 		}
 		

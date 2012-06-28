@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("textMinerOutputProcessor")
 @Log4j
 public class TextMiner implements OutputProcessor {
+	public static final String BLACKLIST_FILE = "text-miner-blacklist.cfg";
 	
 	@Autowired @Getter @Setter
 	private com.funnelback.publicui.search.service.TextMiner textMiner;
@@ -46,7 +47,7 @@ public class TextMiner implements OutputProcessor {
 				    query = WordUtils.capitalizeFully(query);
 
 				    // Process black list file if it exists
-				    File black_list_file = new File(collection_conf_dir + File.separator + "text-miner-blacklist.cfg");
+				    File black_list_file = new File(collection_conf_dir + File.separator + BLACKLIST_FILE);
 				    HashMap<String, String> black_list = new HashMap<String, String>();
 
 				    try {
@@ -88,8 +89,12 @@ public class TextMiner implements OutputProcessor {
 	 */
 	protected void generateDefinition(String query, SearchTransaction searchTransaction) {
 	    Collection collection = searchTransaction.getQuestion().getCollection();
+	    
+        long start_time = System.currentTimeMillis();
 	    EntityDefinition entityDefinition = textMiner.getEntityDefinition(query, collection);
-
+        long total_time = (System.currentTimeMillis() - start_time);
+        log.debug("Time to get entity and definition: " + total_time + "ms");
+       
 	    if (entityDefinition != null) {
 		    searchTransaction.getResponse().setEntityDefinition(entityDefinition);	    	
 	    }
