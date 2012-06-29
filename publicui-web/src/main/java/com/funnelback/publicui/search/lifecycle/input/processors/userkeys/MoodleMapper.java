@@ -192,14 +192,14 @@ public class MoodleMapper implements UserKeysMapper {
 		// Get the targeted result of the query & put it in a string
 		// For the course only first
 		while (queryCourse.next()) {
-			if (queryCourse.getString("username").equals(username)) {
+			if (queryCourse.getString("username").equalsIgnoreCase(username)) {
 				rc += "C" + queryCourse.getString("course") + SEPARATOR + "R"
 						+ queryCourse.getString("role") + SEPARATOR;
 			}
 		}
 		// Then for the modules exceptions
 		while (queryModule.next()) {
-			if (queryModule.getString("username").equals(username)) {
+			if (queryModule.getString("username").equalsIgnoreCase(username)) {
 				rc += "C" + queryModule.getString("course") + SEPARATOR + "M"
 						+ queryModule.getString("modules") + SEPARATOR + "R"
 						+ queryModule.getString("role") + SEPARATOR;
