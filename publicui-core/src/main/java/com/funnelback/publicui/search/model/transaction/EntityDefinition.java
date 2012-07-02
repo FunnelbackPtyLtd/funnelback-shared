@@ -1,47 +1,24 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * An entity, its definition and the URL it came from.
- * @author francis
- * @since 11.0
+ * An text mined entity, its definition and the URL it came from.
+ * 
+ * @since 12.0
  */
+@AllArgsConstructor
 public class EntityDefinition {
-	/** An entity e.g The ABC. */
-    private String entity;
+	
+	/** An entity e.g <em>"The ABC"</em>. */
+    @Getter @Setter private String entity;
     
-    /** A definition e.g. "The Australian Broadcasting Corporation" */
-    private String definition;
+    /** A definition e.g. <em>"The Australian Broadcasting Corporation"</em> */
+    @Getter @Setter private String definition;
     
-    /** A URL that the entity and definition came from e.g. http://www.abc.net.au/ */
-    private String url;
+    /** A URL that the entity and definition came from e.g. <em>http://www.abc.net.au/</em< */
+    @Getter @Setter private String url;
     
-    public EntityDefinition(String entity, String definition, String URL) {
-        this.entity = entity;
-        this.definition = definition;
-        this.url = URL;
-    }
-    
-    public void setEntity(String value) {
-        entity = value;	
-    }
-    
-    public String getEntity() {
-    	return entity;
-    }
-    
-    public void setDefinition(String value) {
-        definition = value;	
-    }
-    
-    public String getDefinition() {
-    	return definition;
-    }
-    
-    public void setUrl(String value) {
-        url = value;	
-    }
-    
-    public String getUrl() {
-    	return url;
-    }
 }

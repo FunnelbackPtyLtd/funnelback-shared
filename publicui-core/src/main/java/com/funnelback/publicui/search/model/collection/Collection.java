@@ -4,8 +4,10 @@ import groovy.lang.Script;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -87,6 +89,13 @@ public class Collection {
 	
 	/** Faceted navigation configuration in <code>data/[collection]/live/idx/faceted_navigation.cfg</code> */
 	@Getter @Setter private FacetedNavigationConfig facetedNavigationLiveConfig;
+	
+	/**
+	 * List of terms that the TextMiner system should not extract entities for.
+	 * 
+	 * @since 12.0
+	 */
+	@Getter private final Set<String> textMinerBlacklist = new HashSet<String>();
 	
 	/**
 	 * <p>On meta collections, list of sub collections IDs.<p>

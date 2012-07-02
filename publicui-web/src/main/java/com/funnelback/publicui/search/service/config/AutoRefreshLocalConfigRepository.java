@@ -188,6 +188,7 @@ public class AutoRefreshLocalConfigRepository extends CachedLocalConfigRepositor
 				new File(c.getConfiguration().getConfigDirectory(), Files.META_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.CGI_TRANSFORM_CONFIG_FILENAME),
 				new File(c.getConfiguration().getConfigDirectory(), Files.QUICKLINKS_CONFIG_FILENAME),
+				new File(c.getConfiguration().getConfigDirectory(), Files.TEXT_MINER_BLACKLIST)
 		};
 
 		// Hook scripts

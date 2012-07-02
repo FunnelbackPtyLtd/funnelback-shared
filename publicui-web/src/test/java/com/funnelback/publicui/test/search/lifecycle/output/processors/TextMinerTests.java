@@ -1,50 +1,40 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.TextMiner;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
 import com.funnelback.publicui.test.mock.MockTextMinerService;
 import com.funnelback.publicui.xml.XmlParsingException;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class TextMinerTests {
 
 	private TextMiner processor;	
 	private SearchTransaction st;
 	
-	@Resource(name="localConfigRepository")
-	private AbstractLocalConfigRepository configRepository;
-	
 	@Before
 	public void before() throws IOException, XmlParsingException {
+		Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+		c.getConfiguration().setValue("text_miner_enabled", "true");
+		
 		SearchQuestion question = new SearchQuestion();
 		question.setQuery("ABC");
-		question.setCollection(configRepository.getCollection("text-miner"));
+		question.setCollection(c);
 		
 		SearchResponse response = new SearchResponse();
-		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/htmlencode-summaries.xml"))));
 
 		st = new SearchTransaction(question, response);
 		processor = new TextMiner();
@@ -81,9 +71,34 @@ public class TextMinerTests {
 
 	}
 	
+	@Test
+	public void testBlacklistDoesntMatch() throws OutputProcessorException {
+		st.getQuestion().getCollection().getTextMinerBlacklist().add("DEF");
+		processor.processOutput(st);
+		
+		EntityDefinition entityDefinition = st.getResponse().getEntityDefinition();
+		Assert.assertEquals("Missing or incorrect definition", "is the Australian Broadcasting Corporation", entityDefinition.getDefinition());
+		Assert.assertEquals("Missing source URL", "http://www.abc.net.au/", entityDefinition.getUrl());
+	}
+	
+	@Test
+	public void testBlacklistMatches() throws OutputProcessorException {
+		st.getQuestion().getCollection().getTextMinerBlacklist().add("abc");
+		processor.processOutput(st);
+		
+		EntityDefinition entityDefinition = st.getResponse().getEntityDefinition();
+		Assert.assertNull(entityDefinition);
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testNounPhrases() throws OutputProcessorException {
+		ResultPacket rp = new ResultPacket();
+		rp.getResults().add(new Result(null, null, "", "", null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
+		rp.getResults().add(new Result(null, null, "", "", null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
+		st.getResponse().setResultPacket(rp);
+		
 		processor.processOutput(st);
 
 		for (Result result : st.getResponse().getResultPacket().getResults()) {

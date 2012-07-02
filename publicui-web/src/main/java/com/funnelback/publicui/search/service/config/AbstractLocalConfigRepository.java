@@ -9,10 +9,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
@@ -86,6 +88,7 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		try {
 			Collection c = new Collection(collectionId, new NoOptionsConfig(searchHome, collectionId));
 			loadFacetedNavigationConfig(c);
+			c.getTextMinerBlacklist().addAll(loadTextMinerBlacklist(c));
 			c.setMetaComponents(loadMetaComponents(c));
 			c.setParametersTransforms(loadParametersTransforms(c));
 			c.setQuickLinksConfiguration(loadQuickLinksConfiguration(c));
@@ -350,6 +353,32 @@ public abstract class AbstractLocalConfigRepository implements ConfigRepository 
 		}
 	}
 
+	protected Set<String> loadTextMinerBlacklist(Collection collection) {
+		File config = new File(collection.getConfiguration().getConfigDirectory(), Files.TEXT_MINER_BLACKLIST);
+		
+		Set<String> textMinerBlacklist = new HashSet<String>();
+		
+		if (config.canRead()) {
+			FileReader reader = null;
+			try {
+				reader = new FileReader(config);
+				@SuppressWarnings("unchecked")
+				List<String> lines = IOUtils.readLines(reader);
+				for (String line: lines) {
+					// Skip empty lines and comments
+					if (!line.matches("^\\s*#.*") && !line.matches("^\\s*$")) {
+						textMinerBlacklist.add(line.toLowerCase());
+					}
+				}
+			} catch (IOException ioe) {
+				log.error("Unable to load text miner black list", ioe);
+			} finally {
+				IOUtils.closeQuietly(reader);
+			}
+		}
+		
+		return textMinerBlacklist;		
+	}
 		
 	/**
 	 * Remove comments from config files
