@@ -21,7 +21,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("textMinerOutputProcessor")
 @Log4j
 public class TextMiner implements OutputProcessor {
-	public static final String BLACKLIST_FILE = "text-miner-blacklist.cfg";
+	
+	public static final String KEY_NOUN_PHRASES = "noun_phrases";
+	public static final String KEY_CUSTOM_DEFINITION = "entity.custom-definition";
 
 	@Autowired
 	@Setter
@@ -78,7 +80,7 @@ public class TextMiner implements OutputProcessor {
 				List<String> noun_phrase_list = textMiner.getURLNounPhrases(live_url, collection);
 
 				if (noun_phrase_list != null) {
-					result.getCustomData().put("noun_phrases", noun_phrase_list);
+					result.getCustomData().put(KEY_NOUN_PHRASES, noun_phrase_list);
 					log.debug("TextMiner: Inserted noun phrase data into data model: " + noun_phrase_list);
 				}
 			}
@@ -99,7 +101,7 @@ public class TextMiner implements OutputProcessor {
 
 		if (entityDefinition != null) {
 			String definition = entityDefinition.getDefinition();
-			searchTransaction.getResponse().getCustomData().put("CUSTOM", definition);
+			searchTransaction.getResponse().getCustomData().put(KEY_CUSTOM_DEFINITION, definition);
 		}
 	}
 }
