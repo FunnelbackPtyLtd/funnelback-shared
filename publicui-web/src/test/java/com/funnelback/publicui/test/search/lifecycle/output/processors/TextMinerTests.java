@@ -102,7 +102,7 @@ public class TextMinerTests {
 		processor.processOutput(st);
 
 		for (Result result : st.getResponse().getResultPacket().getResults()) {
-		    List<String> nounPhrases = (List<String>) result.getCustomData().get("noun_phrases");
+		    List<String> nounPhrases = (List<String>) result.getCustomData().get(TextMiner.KEY_NOUN_PHRASES);
 			Assert.assertEquals("Missing first noun phrase", "Noun One", nounPhrases.get(0));
 			Assert.assertEquals("Missing second noun phrase", "Noun Two", nounPhrases.get(1));			
 	    }				
@@ -112,7 +112,7 @@ public class TextMinerTests {
 	public void testCustomDefinitions() throws OutputProcessorException {
 		processor.processOutput(st);
 		
-        String definition = (String) st.getResponse().getCustomData().get("CUSTOM");
+        String definition = (String) st.getResponse().getCustomData().get(TextMiner.KEY_CUSTOM_DEFINITION);
 		Assert.assertEquals("Missing custom definition", "is a custom definition", definition);
 	}
 }

@@ -1,6 +1,9 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +93,29 @@ public abstract class AbstractPadreForking implements DataFetcher {
 			}
 	
 			PadreExecutionReturn padreOutput = null;
+			File indexUpdateLockFile = new File(searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
+					+ File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, "index_update.lock");
+			RandomAccessFile indexUpdateLockRandomFile = null;
+			FileLock indexUpdateLock = null;
+			
+			try {
+				indexUpdateLockRandomFile = new RandomAccessFile(indexUpdateLockFile, "rw");
+				// Ask for a shared lock as multiple queries can happen at the same time
+				indexUpdateLock = indexUpdateLockRandomFile.getChannel().lock(0, Long.MAX_VALUE, true);
+				if (indexUpdateLock == null || ! indexUpdateLock.isValid()) {
+					log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'");
+					throw new DataFetchException(i18n.tr("padre.forking.lock.error"), null);
+				}
+			} catch (IOException ioe) {
+				log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'", ioe);
+				throw new DataFetchException(i18n.tr("padre.forking.lock.error"), ioe);
+			} finally {
+				if (indexUpdateLockRandomFile != null) {
+					try { indexUpdateLockRandomFile.close(); }
+					catch (IOException ioe2) { }
+				}
+			}
+				
 			try {
 				if (searchTransaction.getQuestion().isImpersonated()) {
 					padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
@@ -110,6 +136,14 @@ public abstract class AbstractPadreForking implements DataFetcher {
 					log.error("PADRE response was: \n" + padreOutput.getOutput());
 				}
 				throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
+			} finally {
+				// Close locks and associated resources.
+				// At this point they're not supposed to be null
+				try { indexUpdateLock.close(); }
+				catch (IOException ioe) { }
+				
+				try { indexUpdateLockRandomFile.close(); }
+				catch (IOException ioe) { }
 			}
 		}
 	}
@@ -117,4 +151,5 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	protected abstract String getQueryString(SearchTransaction transaction);
 	
 	protected abstract void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException;
+	
 }
