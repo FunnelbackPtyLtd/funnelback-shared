@@ -8,7 +8,6 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.utils.BtreeCache;
@@ -18,7 +17,6 @@ import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.TextMiner;
 
 @Log4j
-@Component
 public class BTreeTextMiner implements TextMiner {
     public static final int MAX_CACHE_SIZE = 500000;
 
