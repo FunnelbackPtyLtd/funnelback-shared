@@ -49,24 +49,32 @@ public class LibQSSuggester implements Suggester {
 				+ File.separator + DefaultValues.FOLDER_IDX,
 				DefaultValues.INDEXFILES_PREFIX);				
 		
-		NativeSuggestion ns = PadreQS.INSTANCE.generate_suggestions(
-				indexStem.getAbsolutePath(),
-				profileId,
-				numSuggestions,
-				sort.value,
-				partialQuery);
-		
 		List<Suggestion> suggestions = new ArrayList<Suggestion>();
-		if (ns != null) {
-			NativeSuggestion[] nss = (NativeSuggestion[]) ns.toArray(numSuggestions);
-			// LibQS returns an array with 'numSuggestions' slots. If there are less than
-			// numSuggestions the key will be the empty string
-			for (int i=0; i<nss.length && !"".equals(nss[i].key); i++) {
-				suggestions.add(nss[i].toSuggestion());
+		
+		NativeSuggestion ns = null;
+		try {
+			ns = PadreQS.INSTANCE.generate_suggestions(
+					indexStem.getAbsolutePath(),
+					profileId,
+					numSuggestions,
+					sort.value,
+					partialQuery);
+			
+			if (ns != null) {
+				NativeSuggestion[] nss = (NativeSuggestion[]) ns.toArray(numSuggestions);
+				// LibQS returns an array with 'numSuggestions' slots. If there are less than
+				// numSuggestions the key will be the empty string
+				for (int i=0; i<nss.length && !"".equals(nss[i].key); i++) {
+					suggestions.add(nss[i].toSuggestion());
+				}
+				
+				
+				
 			}
-			
-			PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
-			
+		} finally {
+			if (ns != null && ns.getPointer() != null) {
+				PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
+			}
 		}
 		
 		return suggestions;
