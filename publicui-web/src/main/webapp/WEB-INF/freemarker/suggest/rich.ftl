@@ -2,7 +2,7 @@
 <#if callback??>${callback}(</#if>[
 <#list suggestions as s>{
   "key": "${s.key}",
-  "disp": "${s.display}",
+  "disp": <#if s.displayType.toString() != "J">"</#if>${s.display}<#if s.displayType.toString() != "J">"</#if>,
   "disp_t": "${s.displayType}",
   "wt": "${s.weight}",
   "cat": "${s.category}",
