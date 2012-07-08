@@ -41,7 +41,7 @@ public class BTreeTextMiner implements TextMiner {
         String collectionRoot = config.getCollectionRoot().toString();
         String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
         
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
@@ -49,7 +49,7 @@ public class BTreeTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + entity);
 
 		            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);
@@ -136,7 +136,7 @@ public class BTreeTextMiner implements TextMiner {
         String collectionRoot = config.getCollectionRoot().toString();
         String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
         
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
@@ -144,7 +144,7 @@ public class BTreeTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + URL);
 
 		            cache = new BtreeCache(checkpointDir + File.separator + hashKey, MAX_CACHE_SIZE, true);

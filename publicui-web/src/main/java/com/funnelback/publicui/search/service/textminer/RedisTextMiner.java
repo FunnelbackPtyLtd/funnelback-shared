@@ -36,7 +36,7 @@ public class RedisTextMiner implements TextMiner {
 		String collection_id = config.value("collection");
 		String collection_type = config.value("collection_type");
 
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
@@ -44,7 +44,7 @@ public class RedisTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + entity);
 
 		            redis = new RedisCache(hashKey, config);
@@ -129,7 +129,7 @@ public class RedisTextMiner implements TextMiner {
 		String collection_id = config.value("collection");
 		String collection_type = config.value("collection_type");
 
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection_id + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
@@ -137,7 +137,7 @@ public class RedisTextMiner implements TextMiner {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + URL);
 
 		            redis = new RedisCache(hashKey, config);

@@ -11,6 +11,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -36,23 +38,22 @@ public class SQLiteTextMiner implements TextMiner {
 	    ObjectCache cache = null;
 	    
 	    Config config = collection.getConfiguration();
-		String collection_id = config.value("collection");
-		String collection_type = config.value("collection_type");
-        String collectionRoot = config.getCollectionRoot().toString();
-        String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
+        File checkpointDir = new File(collection.getConfiguration().getCollectionRoot()
+        		+ File.separator + DefaultValues.VIEW_LIVE
+        		+ File.separator + DefaultValues.FOLDER_CHECKPOINT);
         
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection.getId() + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
-			if (collection_type.equals("meta")) {
+			if (Type.meta.equals(collection.getType())) {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + entity);
 
-		            cache = new SQLiteCache(checkpointDir + File.separator + hashKey + ".sqlitedb", config, false);
+		            cache = new SQLiteCache(new File(checkpointDir, hashKey + ".sqlitedb").getAbsolutePath(), config, false);
 
 					jsonString = (String) cache.get(entity);
 					
@@ -60,7 +61,7 @@ public class SQLiteTextMiner implements TextMiner {
 	                    // Try the variant cache
 	                    String variantKey = hashKey + ":variants";
 	                    cache.close();
-			            cache = new SQLiteCache(checkpointDir + File.separator + variantKey + ".sqlitedb", config, false);
+			            cache = new SQLiteCache(new File(checkpointDir, variantKey + ".sqlitedb").getAbsolutePath(), config, false);
 
 	                    String originalVariant = (String) cache.get(entity);
 
@@ -130,23 +131,22 @@ public class SQLiteTextMiner implements TextMiner {
 	    ObjectCache cache = null;
 	    
 	    Config config = collection.getConfiguration();
-		String collection_id = config.value("collection");
-		String collection_type = config.value("collection_type");
-        String collectionRoot = config.getCollectionRoot().toString();
-        String checkpointDir = collectionRoot + File.separator + "live" + File.separator + "checkpoint";
+        File checkpointDir = new File(collection.getConfiguration().getCollectionRoot()
+        		+ File.separator + DefaultValues.VIEW_LIVE
+        		+ File.separator + DefaultValues.FOLDER_CHECKPOINT);
         
-		String hashKey = collection_id + ":text-miner:" + hashName;
+		String hashKey = collection.getId() + TextMiner.TEXT_MINER_HASH + hashName;
         String jsonString = "";
         
 		try {
-			if (collection_type.equals("meta")) {
+			if (Type.meta.equals(collection.getType())) {
 				String[] components = collection.getMetaComponents();
 
 				for (String component : components) {
-					hashKey = component + ":text-miner:" + hashName;		            
+					hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;		            
 					log.debug("Hash name: " + hashKey + " and field: " + URL);
 
-		            cache = new SQLiteCache(checkpointDir + File.separator + hashKey + ".sqlitedb", config, false);
+		            cache = new SQLiteCache(new File(checkpointDir, hashKey + ".sqlitedb").getAbsolutePath(), config, false);
 		            jsonString = (String) cache.get(URL);
 					
 					if (jsonString != null) {
@@ -157,7 +157,7 @@ public class SQLiteTextMiner implements TextMiner {
 			}
 			else {
 	            log.debug("Hash name: " + hashKey + " and field: " + URL);
-	            cache = new SQLiteCache(checkpointDir + File.separator + hashKey + ".sqlitedb", config, false);
+	            cache = new SQLiteCache(new File(checkpointDir, hashKey + ".sqlitedb").getAbsolutePath(), config, false);
 	            jsonString = (String) cache.get(URL);
 	            
 				if (jsonString != null) {
