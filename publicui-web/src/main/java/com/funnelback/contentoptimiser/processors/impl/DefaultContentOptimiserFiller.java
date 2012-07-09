@@ -269,7 +269,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				comparison.getHintCollectionsByName().put(hint.getCategory(), hc);
 			}
 		
+			if (getHintTextMap().get(hint.getName()) != null) {
 				hint.getHintTexts().addAll(getHintTextMap().get(hint.getName()));
+			}
 		
 			comparison.getHintCollectionsByName().get(hint.getCategory()).getHints().add(hint);
 		}
