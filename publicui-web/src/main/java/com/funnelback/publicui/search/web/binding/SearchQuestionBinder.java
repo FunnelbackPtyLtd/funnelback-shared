@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 

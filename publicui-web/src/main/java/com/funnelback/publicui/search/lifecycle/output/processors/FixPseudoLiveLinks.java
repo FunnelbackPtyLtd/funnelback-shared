@@ -121,6 +121,8 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 						+ "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
 					
 					break;
+				default:
+					// Do nothing
 				}
 				
 				log.debug("Live URL transformed from '"+result.getLiveUrl()+"' to '"+transformedLiveUrl+"'");

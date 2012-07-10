@@ -44,6 +44,7 @@ public class RequestParametersTransformWrapper extends HttpServletRequestWrapper
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Map getParameterMap() {
 		return modifiedParameterMap;

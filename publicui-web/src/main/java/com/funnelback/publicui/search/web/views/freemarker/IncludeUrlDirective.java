@@ -69,7 +69,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 		this.i18n = i18n;
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
 			throws TemplateException, IOException {

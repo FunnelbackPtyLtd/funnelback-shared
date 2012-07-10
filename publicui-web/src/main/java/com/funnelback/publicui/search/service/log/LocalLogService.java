@@ -70,13 +70,11 @@ public class LocalLogService implements LogService {
 	 * @param xmlData
 	 */
 	private void logLiveXmlData(Collection c, String fileName, String xmlData) {		
-		File targetFile = null;
+		File targetFile = new File(c.getConfiguration().getCollectionRoot()
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_LOG,
+				fileName);
 		try {
-			targetFile = new File(c.getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_LOG,
-					fileName);
-			
 			if (targetFile.exists()) {
 				logXmlDataInExistingFile(targetFile, xmlData);
 			} else {
@@ -84,11 +82,7 @@ public class LocalLogService implements LogService {
 			}
 			
 		} catch (IOException ioe) {
-			if (targetFile != null) {
-				log.error("Error while writing to log file '" + targetFile.getAbsolutePath() + "'", ioe);
-			} else {
-				log.error(ioe);
-			}
+			log.error("Error while writing to log file '" + targetFile.getAbsolutePath() + "'", ioe);
 		}
 	}
 	

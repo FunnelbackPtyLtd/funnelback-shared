@@ -152,6 +152,7 @@ public class JavaSuggester implements Suggester {
 		public final int format;
 		public final int indexSize;
 		public final int suggestionElements;
+		@SuppressWarnings("unused")
 		public final double maximumWeight;
 		
 		public static SuggestHeader fromBytes(ByteBuffer buf) {

@@ -44,6 +44,8 @@ public class FixDisplayUrls implements OutputProcessor {
 				case connector:
 					displayUrl = VFSURLUtils.vfsUrlToSystemUrl(displayUrl);
 					break;
+				default:
+					// Do nothing
 				}
 				
 				log.debug("Display URL transformed from '"+result.getDisplayUrl()+"' to '"+displayUrl+"'");

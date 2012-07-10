@@ -48,7 +48,7 @@ public class TruncateURLMethod extends AbstractTemplateMethod {
 		if (str.length() > length*2) {
 			if (breakPoint < 0) {
 				// no usable breakpoint and too long, simple concat in the middle to fit on a single line
-				return fallBackTrunate(arguments);
+				return fallBackTruncate(arguments);
 			} else {
 				String left = str.substring(0, breakPoint);
 				String right = str.substring(breakPoint);
@@ -68,7 +68,7 @@ public class TruncateURLMethod extends AbstractTemplateMethod {
 				if ((left.length() + right.length()) <= length*2) {
 					return new SimpleScalar(left + SPLIT + right);
 				} else {
-					return fallBackTrunate(arguments);
+					return fallBackTruncate(arguments);
 				}				
 			}
 		} else {
@@ -76,7 +76,7 @@ public class TruncateURLMethod extends AbstractTemplateMethod {
 			if (breakPoint < 0 || str.substring(breakPoint).length() > length) {
 				// Could not break it nicely, or the second part will be too long
 				// Fall back to simple truncate
-				return fallBackTrunate(arguments);
+				return fallBackTruncate(arguments);
 			} else {
 				return new SimpleScalar(str.substring(0, breakPoint) + SPLIT + str.substring(breakPoint));
 			}
@@ -90,7 +90,8 @@ public class TruncateURLMethod extends AbstractTemplateMethod {
 	 * @return
 	 * @throws TemplateModelException
 	 */
-	private Object fallBackTrunate(List arguments) throws TemplateModelException {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Object fallBackTruncate(List arguments) throws TemplateModelException {
 		List<TemplateModel> truncateArgs = new ArrayList<TemplateModel>(arguments);
 		truncateArgs.add(TemplateBooleanModel.TRUE);
 		return truncateMethod.exec(truncateArgs);

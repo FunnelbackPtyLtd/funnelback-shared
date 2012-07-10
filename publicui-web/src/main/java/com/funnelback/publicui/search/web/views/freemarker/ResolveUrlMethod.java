@@ -3,14 +3,10 @@ package com.funnelback.publicui.search.web.views.freemarker;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 
 /**

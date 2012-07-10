@@ -24,6 +24,7 @@ public class IsAdminUIMethod extends AbstractTemplateMethod {
 		super(1, 0, false);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object execMethod(List arguments) throws TemplateModelException {
 		HttpRequestHashModel model = (HttpRequestHashModel) arguments.get(0);

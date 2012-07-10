@@ -25,7 +25,6 @@ public class FilesizeFormatMethod extends AbstractTemplateMethod {
 		super(1, 0, false);
 	}
 	
-	@SuppressWarnings("unused")
 	@PostConstruct
 	private void setI18nKbUnit() {
 		kbUnit = i18n.tr("freemarker.method.FilesizeFormatMethod.kilobyte");
