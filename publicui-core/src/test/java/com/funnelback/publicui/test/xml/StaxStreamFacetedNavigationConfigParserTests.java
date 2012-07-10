@@ -31,6 +31,12 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 		facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(new File("src/test/resources/faceted-navigation/sample-config.xml")));
 		Assert.assertNotNull(facets);
 	}
+
+	@Test(expected=XmlParsingException.class)
+	public void testSameName() throws IOException, XmlParsingException {
+		StaxStreamFacetedNavigationConfigParser parser = new StaxStreamFacetedNavigationConfigParser();
+		parser.parseFacetedNavigationConfiguration(FileUtils.readFileToString(new File("src/test/resources/faceted-navigation/same-name-facets.xml")));
+	}
 	
 	@Test(expected=XmlParsingException.class)
 	public void testInvalidXml() throws XmlParsingException {

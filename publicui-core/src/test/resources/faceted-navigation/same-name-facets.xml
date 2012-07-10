@@ -1,0 +1,21 @@
+<Facets qpoptions="-rmcfabcd">
+	<Data></Data>
+	<Facet>
+		<Data>Industry</Data>
+		<XPathFill>
+			<Data>/CATEGORY</Data>
+			<Metafield>Z</Metafield>
+			<XPathFill>
+				<Data>/SUBCATEGORY</Data>
+				<Metafield>Y</Metafield>
+			</XPathFill>
+		</XPathFill>
+	</Facet>
+	<Facet>
+		<Data>Industry</Data>
+		<QueryItem>
+			<Data>Writing Jobs</Data>
+			<Query>author writer journalist</Query>
+		</QueryItem>
+	</Facet>
+</Facets>

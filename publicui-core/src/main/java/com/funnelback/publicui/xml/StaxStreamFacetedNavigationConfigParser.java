@@ -2,7 +2,9 @@ package com.funnelback.publicui.xml;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -62,6 +64,8 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 			}
 
 			xmlStreamReader.close();
+			
+			validate(facets);
 			return facets;
 		} catch (XMLStreamException e) {
 			throw new XmlParsingException(e);
@@ -147,6 +151,22 @@ public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigatio
 			}
 		}
 		return c;
+	}
+	
+	/**
+	 * Validates a faceted navigation configuration
+	 * @param facets
+	 * @throws XmlParsingException 
+	 */
+	private void validate(Facets facets) throws XmlParsingException {
+		Set<String> uniqueNames = new HashSet<String>();
+		for(FacetDefinition fd: facets.facetDefinitions) {
+			if (uniqueNames.contains(fd.getName())) {
+				throw new XmlParsingException("More than one facet with name '"+fd.getName()+"'. Each name must be unique.");
+			} else {
+				uniqueNames.add(fd.getName());
+			}
+		}
 	}
 
 }

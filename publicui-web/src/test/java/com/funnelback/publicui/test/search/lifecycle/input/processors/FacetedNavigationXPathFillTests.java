@@ -128,5 +128,18 @@ public class FacetedNavigationXPathFillTests {
 		Assert.assertEquals("|[Y:\"$++ nsw $++\" Y:\"$++ tas $++\"]", st.getQuestion().getFacetsQueryConstraints().get(1));
 	}
 	
-	
+
+	@Test
+	public void testSameName() {
+		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+		
+		st.getQuestion().getRawInputParameters().put("f.Location|O", new String[] {"australia"});
+		processor.processInput(st);
+		
+		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+		Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
+		Assert.assertEquals("|O:\"$++ australia $++\"", st.getQuestion().getFacetsQueryConstraints().get(0));
+	}
+
 }

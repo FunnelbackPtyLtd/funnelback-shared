@@ -57,7 +57,7 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
 	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
-		return data.equals(value);
+		return data.equals(value) && Integer.parseInt(extraParams) == gscopefield;
 	}
 	
 	/** {@inheritDoc} */

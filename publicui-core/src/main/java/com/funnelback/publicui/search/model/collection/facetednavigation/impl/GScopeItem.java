@@ -52,7 +52,7 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String value, String extraParams) {
-		return data.equals(value);
+		return data.equals(value) && Integer.parseInt(extraParams) == userSetGScope;
 	}
 
 	/** {@inheritDoc} */
