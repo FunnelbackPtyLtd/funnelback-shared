@@ -88,7 +88,7 @@ public class FacetedNavigationGScopesTests {
 		
 		Facet f = st.getResponse().getFacets().get(0);
 		Assert.assertEquals("By Story", f.getName());
-		Assert.assertEquals(4, f.getCategories().size());
+		Assert.assertEquals(5, f.getCategories().size());
 
 		// First category: Full, gscope=40
 		Facet.Category c = f.getCategories().get(0);
@@ -107,7 +107,7 @@ public class FacetedNavigationGScopesTests {
 		// has been selected in the first level category
 		Assert.assertEquals(0, c.getCategories().size());
 		
-		// Last category: Hreny IV, gscope=1
+		// Last category: Henry IV, gscope=1
 		c = f.getCategories().get(3);
 		Assert.assertNull(c.getLabel());
 		Assert.assertEquals("f.By Story|1", c.getQueryStringParamName());
