@@ -53,11 +53,12 @@ public class WindowsNativePadreForker implements PadreForker {
 		HANDLEByReference hPrimaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		try {
 			// Opening current process token
-			if (! Advapi32.INSTANCE.OpenProcessToken(
+			if (! Advapi32.INSTANCE.OpenThreadToken(
 					Kernel32.INSTANCE.GetCurrentProcess(),
 					WinNT.TOKEN_ALL_ACCESS,
+					false,
 					hToken)) {
-				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenProcessToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			
 			// Duplicate token in order to obtain a primary token
