@@ -893,7 +893,7 @@
             + "?collection=" + question.collection.id
             + "&amp;profile=" + question.profile />
         <#list forms as form>
-            <#if form != question.form>
+            <#if form != question.form && !form?matches("^.*-\\d{12}$")>
                 <a href="${url}&amp;form=${form}">${form}</a>
             </#if>
         </#list>
