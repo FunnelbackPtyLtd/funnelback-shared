@@ -248,14 +248,14 @@
         <#if question.profile?ends_with("_preview")>
             <div id="funnelback_form_mode" style="background-color: lightblue; ${style}">
                 <span id="publish_link"></span>
-                &middot; <a href="${SearchPrefix}admin/edit-form.cgi?collection=${question.collection.id}&amp;profile=${question.profile}&amp;f=${question.form}&amp;return_to=${returnTo}" title="Edit this form">edit form</a>
+                &middot; <a href="${SearchPrefix}admin/edit-form.cgi?collection=${question.collection.id}&amp;profile=${question.profile}&amp;f=${question.form}.ftl&amp;return_to=${returnTo?url}" title="Edit this form">edit form</a>
                 &middot; <a href="?${changeParam(QueryString, 'profile', question.profile?replace("_preview", ""))}" title="View this search with the current live form">switch to live mode</a>
                 | <span title="This form file may be edited before publishing to external search users">preview mode</span> 
             </div>
             <script type="text/javascript">
                 function loadPublishLink() {
                     jQuery(function() {
-                        jQuery("#publish_link").load("${SearchPrefix}admin/ajax_publish_link.cgi?collection=${question.collection.id}&amp;dir=profile-folder-${question.profile}&amp;f=${question.form}.ftl&amp;mode=publish&amp;return_to=${returnTo}");
+                        jQuery("#publish_link").load("${SearchPrefix}admin/ajax_publish_link.cgi?collection=${question.collection.id}&amp;dir=profile-folder-${question.profile}&amp;f=${question.form}.ftl&amp;mode=publish&amp;return_to=${returnTo?url}");
                     });
                 }
 
