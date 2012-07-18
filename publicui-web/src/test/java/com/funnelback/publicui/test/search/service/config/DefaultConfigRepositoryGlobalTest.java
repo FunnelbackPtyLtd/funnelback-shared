@@ -41,7 +41,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/config-repository-2/collection.cfg"),
 				"service_name=Second collection");
 
-		sleep(5);
+		sleep();
 		ids = configRepository.getAllCollectionIds();
 		Assert.assertEquals(2, ids.size());
 		Assert.assertTrue(ids.contains("config-repository"));
@@ -74,7 +74,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		FileUtils.deleteDirectory(TEST_DIR);
 		FileUtils.deleteDirectory(new File(SEARCH_HOME, "data/config-repository"));
 
-		sleep(5);
+		sleep();
 		ids = configRepository.getAllCollectionIds();
 		Assert.assertEquals(1, ids.size());
 		Assert.assertEquals("config-repository-2", ids.get(0));
@@ -98,7 +98,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		content += "\n"+"new-key=New value";
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/global.cfg.default"), content);
 		
-		sleep(5);
+		sleep();
 		c = configRepository.getGlobalConfiguration();
 		Assert.assertEquals("Global value", c.value("global-key"));
 		Assert.assertEquals("New value", c.value("new-key"));
@@ -106,7 +106,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		
 		// Create a local customised global config
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/global.cfg"), "local-key=Local value");
-		sleep(5);
+		sleep();
 		c = configRepository.getGlobalConfiguration();
 		Assert.assertEquals("Global value", c.value("global-key"));
 		Assert.assertEquals("New value", c.value("new-key"));
@@ -114,7 +114,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		
 		// Change value in custom file
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/global.cfg"), "local-key=New local value");
-		sleep(5);
+		sleep();
 		c = configRepository.getGlobalConfiguration();
 		Assert.assertEquals("Global value", c.value("global-key"));
 		Assert.assertEquals("New value", c.value("new-key"));
@@ -122,7 +122,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		
 		// Delete value in custom file
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/global.cfg"), "another-key=Another value");
-		sleep(5);
+		sleep();
 		c = configRepository.getGlobalConfiguration();
 		Assert.assertEquals("Global value", c.value("global-key"));
 		Assert.assertEquals("New value", c.value("new-key"));
@@ -136,21 +136,21 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		
 		// Create file
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/"+Files.DNS_ALIASES_FILENAME), "key=value");
-		sleep(5);
+		sleep();
 		data = configRepository.getGlobalConfigurationFile(GlobalConfiguration.DNSAliases);
 		Assert.assertEquals("value", data.get("key"));
 		Assert.assertNull(data.get("second-key"));
 		
 		// Add value
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/"+Files.DNS_ALIASES_FILENAME), "key=value\nsecond-key=Second value");
-		sleep(5);
+		sleep();
 		data = configRepository.getGlobalConfigurationFile(GlobalConfiguration.DNSAliases);
 		Assert.assertEquals("value", data.get("key"));
 		Assert.assertEquals("Second value", data.get("second-key"));
 		
 		// Delete file
 		new File(SEARCH_HOME, "conf/"+Files.DNS_ALIASES_FILENAME).delete();
-		sleep(5);
+		sleep();
 		data = configRepository.getGlobalConfigurationFile(GlobalConfiguration.DNSAliases);
 		Assert.assertNull(data);		
 	}
@@ -167,14 +167,14 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 		
 		// Create file
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/"+Files.EXECUTABLES_CONFIG_FILENAME), "java=java.exe\nperl=/usr/bin/perl");
-		sleep(5);
+		sleep();
 		Assert.assertEquals("/usr/bin/perl", configRepository.getExecutablePath("perl"));
 		Assert.assertEquals("java.exe", configRepository.getExecutablePath("java"));
 		Assert.assertNull(configRepository.getExecutablePath("python"));
 		
 		// Change value
 		FileUtils.writeStringToFile(new File(SEARCH_HOME, "conf/"+Files.EXECUTABLES_CONFIG_FILENAME), "java=jvm.dll\nperl=/usr/bin/perl");
-		sleep(5);
+		sleep();
 		Assert.assertEquals("/usr/bin/perl", configRepository.getExecutablePath("perl"));
 		Assert.assertEquals("jvm.dll", configRepository.getExecutablePath("java"));
 		Assert.assertNull(configRepository.getExecutablePath("python"));
@@ -215,9 +215,5 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
 
 	}
 	
-	protected void sleep(long ms) {
-		try {Thread.sleep(ms);}
-		catch (InterruptedException ie) { }
-	}
 }
 

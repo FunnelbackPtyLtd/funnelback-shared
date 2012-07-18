@@ -46,8 +46,8 @@ public abstract class DefaultConfigRepositoryTestBase {
 		
 	}
 	
-	protected void sleep(long ms) {
-		try {Thread.sleep(ms);}
+	protected void sleep() {
+		try {Thread.sleep(50);}
 		catch (InterruptedException ie) { }
 	}
 }
