@@ -61,12 +61,19 @@ public class FixPseudoLiveLinks implements OutputProcessor {
 	@SneakyThrows(UnsupportedEncodingException.class)
 	public void processOutput(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
-		if (SearchTransactionUtils.hasResults(searchTransaction)) {
+		if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResults(searchTransaction)) {
 			
 			// 	Iterate over the results
 			for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
 				String transformedLiveUrl = result.getLiveUrl();
-				Collection resultCollection = configRepository.getCollection(result.getCollection());
+				
+				// Most of the time the result will be coming from the same collection as
+				// the question, except for meta collections
+				Collection resultCollection = searchTransaction.getQuestion().getCollection();
+				if (! searchTransaction.getQuestion().getCollection().getId().equals(result.getCollection())) {
+					resultCollection = configRepository.getCollection(result.getCollection());
+				}
+				
 				if ( resultCollection == null) {
 					log.warn("Invalid collection '" + result.getCollection() + "' for result '" + result + "'");
 					continue;

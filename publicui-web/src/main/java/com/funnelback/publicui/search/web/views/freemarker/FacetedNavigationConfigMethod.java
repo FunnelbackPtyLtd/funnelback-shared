@@ -4,9 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
+import freemarker.ext.beans.BeanModel;
+import freemarker.template.AdapterTemplateModel;
+import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
@@ -27,10 +31,19 @@ public class FacetedNavigationConfigMethod extends AbstractTemplateMethod {
 	
 	@Override
 	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
+		Object arg = arguments.get(0);
+		
+		Collection c = null;
+		if (arg instanceof SimpleScalar) {
+			String collectionId = ((TemplateScalarModel) arg).getAsString();
+			c = configRepository.getCollection(collectionId);
+		} else if (arg instanceof AdapterTemplateModel) {
+			c = (Collection) ((BeanModel) arg).getWrappedObject();
+		}
+	
 		String profileId = ((TemplateScalarModel) arguments.get(1)).getAsString();
 		
-		return FacetedNavigationUtils.selectConfiguration(configRepository.getCollection(collectionId), profileId);
+		return FacetedNavigationUtils.selectConfiguration(c, profileId);
 	}
 
 }

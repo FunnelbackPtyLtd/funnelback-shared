@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
@@ -27,10 +28,15 @@ public class ChangeCollectionQuestionFactory implements ExtraSearchQuestionFacto
 		SearchQuestionBinder.bind(originalQuestion, out);
 		
 		String collectionId = extraSearchConfiguration.get(Keys.COLLECTION);
-		if (collectionId != null && configRepository.getCollection(collectionId) != null) {
-			out.setCollection(configRepository.getCollection(collectionId));
+		if (collectionId != null) {
+			Collection c = configRepository.getCollection(collectionId);
+			if (c != null) {
+				out.setCollection(c);
+			} else {
+				throw new InputProcessorException("Invalid collection parameter '" + collectionId + "'");
+			}
 		} else {
-			throw new InputProcessorException("Invalid collection parameter '" + collectionId + "'");
+			throw new InputProcessorException("Collection parameter cannot be null");
 		}
 		
 		if (extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS) != null) {
