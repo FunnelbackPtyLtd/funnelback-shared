@@ -76,7 +76,10 @@ public class AutoRefreshResourceManagerTest {
 				"title=Updated title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"second.value=678" + System.getProperty("line.separator"));
-		
+
+		try { Thread.sleep(250); }
+		catch (InterruptedException ie) { }
+
 		Properties updated = manager.load(parser);
 		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
 		Assert.assertTrue(cache.get(testFile.getAbsolutePath()).getLatestOfCreationAndUpdateTime() > timestamp);
@@ -95,6 +98,9 @@ public class AutoRefreshResourceManagerTest {
 		File testFile = new File(TEST_DIR, "test.properties");
 		testFile.delete();
 		
+		try { Thread.sleep(250); }
+		catch (InterruptedException ie) { }
+		
 		PropertiesResource parser = new PropertiesResource(testFile);
 		Properties props = manager.load(parser);
 		
@@ -105,6 +111,9 @@ public class AutoRefreshResourceManagerTest {
 				"title=New title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"new.value=123" + System.getProperty("line.separator"));
+
+		try { Thread.sleep(250); }
+		catch (InterruptedException ie) { }
 		
 		Properties updated = manager.load(parser);
 		Assert.assertNotSame(props, updated);
