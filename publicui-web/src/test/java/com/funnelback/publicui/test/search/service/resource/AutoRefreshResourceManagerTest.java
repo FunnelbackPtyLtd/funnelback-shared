@@ -40,6 +40,7 @@ public class AutoRefreshResourceManagerTest {
 		
 		manager = new AutoRefreshResourceManager();
 		manager.setAppCacheManager(appCacheManager);
+		manager.setCheckingInterval(0);
 		
 		cache = appCacheManager.getCache("localConfigFilesRepository");
 		cache.removeAll();
@@ -60,6 +61,10 @@ public class AutoRefreshResourceManagerTest {
 		Element elt = cache.get(testFile.getAbsolutePath());
 		Assert.assertNotNull(elt);
 		long timestamp = elt.getLatestOfCreationAndUpdateTime();
+		
+		// Wait a bit for the timestamps to be different
+		try { Thread.sleep(250); }
+		catch (InterruptedException ie) { }
 		
 		// Second retrieval should yield the same object
 		// retrieved from the cache
@@ -116,5 +121,29 @@ public class AutoRefreshResourceManagerTest {
 		File testFile = new File("non", "existent");
 		Assert.assertNull(manager.load(new PropertiesResource(testFile)));
 	}
-
+	
+	@Test
+	public void testCreateFile() throws IOException {
+		File sourceFile = new File(TEST_DIR, "test.properties");
+		File testFile = new File(TEST_DIR, "test-new.properties");
+		
+		PropertiesResource parser = new PropertiesResource(testFile);
+		Properties props = manager.load(parser);
+		
+		Assert.assertNull(props);
+		Assert.assertEquals(0, cache.getSize());
+		
+		// Create the file
+		FileUtils.copyFile(sourceFile, testFile);
+		
+		props = manager.load(parser);
+		
+		Assert.assertNotNull(props);
+		Assert.assertEquals(2, props.size());
+		Assert.assertEquals("Test properties file", props.get("title"));
+		Assert.assertEquals("42", props.get("value"));
+		Assert.assertEquals(1, cache.getSize());
+		Element elt = cache.get(testFile.getAbsolutePath());
+		Assert.assertNotNull(elt);
+	}
 }

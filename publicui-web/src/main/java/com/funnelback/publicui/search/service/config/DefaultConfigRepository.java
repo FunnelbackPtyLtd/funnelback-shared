@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -22,8 +23,10 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
@@ -66,6 +69,10 @@ public class DefaultConfigRepository implements ConfigRepository {
 	
 	private static final String CACHE = "localConfigRepository";
 	
+	@Value("#{appProperties['config.repository.cache.ttl']?:1}")
+	@Setter
+	private int cacheTtlSeconds = 1;
+
 	@Autowired
 	protected CacheManager appCacheManager;
 	
@@ -73,6 +80,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 	protected ResourceManager resourceManager;
 	
 	@Autowired
+	@Setter
 	protected File searchHome;
 	
 	@Autowired
@@ -100,7 +108,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 				Element e = new Element(collectionId, c);
 				// Expire element after 1 second so that it's short-lived
 				// only for the current request.
-				e.setTimeToLive(1);
+				e.setTimeToLive(cacheTtlSeconds);
 				cache.put(e);
 				return c;
 			} catch (IOException ioe) {
@@ -131,16 +139,20 @@ public class DefaultConfigRepository implements ConfigRepository {
 		
 		loadFacetedNavigationConfig(c);
 		
+		if (Type.meta.equals(c.getType())) {
+			c.setMetaComponents(
+					resourceManager.load(
+							new SimpleFileResource(new File(configFolder, Files.META_CONFIG_FILENAME)),
+							new String[0]));
+		} else {
+			c.setMetaComponents(new String[0]);
+		}
+
 		c.getTextMinerBlacklist().addAll(
 				resourceManager.load(
 						new UniqueLinesResource(new File(configFolder, Files.TEXT_MINER_BLACKLIST)),
 						new HashSet<String>(0)));
-		
-		c.setMetaComponents(
-				resourceManager.load(
-					new SimpleFileResource(new File(configFolder, Files.META_CONFIG_FILENAME)),
-					new String[0]));
-		
+
 		c.getParametersTransforms().addAll(
 				resourceManager.load(
 						new ParameterTransformResource(new File(configFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
@@ -351,6 +363,10 @@ public class DefaultConfigRepository implements ConfigRepository {
 		
 		// Find form files, excluding backups (simple-20110101093000.ftl)
 		File profileDir = new File(c.getConfiguration().getConfigDirectory() + File.separator + profileId);
+		if (!profileDir.exists()) {
+			return new String[0];
+		}
+		
 		File[] formFiles = profileDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {

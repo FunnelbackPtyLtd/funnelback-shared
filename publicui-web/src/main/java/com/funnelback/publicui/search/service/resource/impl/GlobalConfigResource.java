@@ -52,12 +52,12 @@ public class GlobalConfigResource implements ParseableResource<GlobalOnlyConfig>
 	@Override
 	public boolean exists() {
 		for (File f: filesToCheck) {
-			if (!f.exists()) {
-				return false;
+			if (f.exists()) {
+				return true;
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	

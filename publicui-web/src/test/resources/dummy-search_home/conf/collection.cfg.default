@@ -1,1 +1,2 @@
 collection_root=$SEARCH_HOME/data/$COLLECTION_NAME
+collection-default-key=Collection default value

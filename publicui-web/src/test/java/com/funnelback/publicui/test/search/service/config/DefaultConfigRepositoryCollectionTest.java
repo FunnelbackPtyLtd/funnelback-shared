@@ -1,0 +1,365 @@
+package com.funnelback.publicui.test.search.service.config;
+
+import groovy.lang.Script;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.Files;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Hook;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
+public class DefaultConfigRepositoryCollectionTest extends DefaultConfigRepositoryTestBase {
+
+	@Test
+	public void testBasic() {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals("config-repository", coll.getId());
+		Assert.assertEquals("Test config repository", coll.getConfiguration().getServiceName());
+	}
+	
+	@Test
+	public void testTextMinerBlacklist() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getTextMinerBlacklist().isEmpty());
+		
+		// Create file
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST), "ab\ncd ef");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(2, coll.getTextMinerBlacklist().size());
+		Assert.assertTrue(coll.getTextMinerBlacklist().contains("ab"));
+		Assert.assertTrue(coll.getTextMinerBlacklist().contains("cd ef"));
+		
+		// Update value
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST), "ab\ngh-ij");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(2, coll.getTextMinerBlacklist().size());
+		Assert.assertTrue(coll.getTextMinerBlacklist().contains("ab"));
+		Assert.assertTrue(coll.getTextMinerBlacklist().contains("gh-ij"));
+		
+		// Delete file
+		new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getTextMinerBlacklist().isEmpty());
+	}
+	
+	@Test
+	public void testHookScripts() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getHookScriptsClasses().isEmpty());
+		
+		// Create hook script
+		FileUtils.writeStringToFile(new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy"), "print 'hello'");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(1, coll.getHookScriptsClasses().size());
+		Assert.assertTrue(coll.getHookScriptsClasses().containsKey(Hook.pre_datafetch));
+		Class<Script> clazz = coll.getHookScriptsClasses().get(Hook.pre_datafetch);
+		
+		// Second call should yield same object (cached)
+		coll = configRepository.getCollection("config-repository");
+		sleep(5);
+		Assert.assertEquals(clazz, coll.getHookScriptsClasses().get(Hook.pre_datafetch));
+		
+		// Update hook script
+		FileUtils.writeStringToFile(new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy"), "print 'world'");
+		coll = configRepository.getCollection("config-repository");
+		sleep(5);
+		Assert.assertEquals(1, coll.getHookScriptsClasses().size());
+		Assert.assertTrue(coll.getHookScriptsClasses().containsKey(Hook.pre_datafetch));
+		Assert.assertNotSame(clazz, coll.getHookScriptsClasses().get(Hook.pre_datafetch));
+		
+		// Delete hook script
+		new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy").delete();
+		coll = configRepository.getCollection("config-repository");
+		sleep(5);
+		Assert.assertTrue(coll.getHookScriptsClasses().isEmpty());
+	}
+	
+	@Test
+	public void testMeta() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(0, coll.getMetaComponents().length);
+		
+		// Create meta.cfg
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.META_CONFIG_FILENAME), "component-1\ncomponent-2");
+		// Still not a meta collection
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(0, coll.getMetaComponents().length);
+		
+		// Transform to meta
+		String content = FileUtils.readFileToString(new File(TEST_DIR, "collection.cfg"));
+		content += "\n"+"collection_type=meta";
+		FileUtils.writeStringToFile(new File(TEST_DIR, "collection.cfg"), content);
+
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(Type.meta, coll.getType());
+		Assert.assertEquals(2, coll.getMetaComponents().length);
+		Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-1"));
+		Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-2"));
+		
+		// Update meta.cfg
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.META_CONFIG_FILENAME), "component-3");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(1, coll.getMetaComponents().length);
+		Assert.assertTrue(ArrayUtils.contains(coll.getMetaComponents(), "component-3"));
+
+		// Delete meta.cfg
+		new File(TEST_DIR, Files.META_CONFIG_FILENAME).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(0, coll.getMetaComponents().length);
+	}
+	
+	@Test
+	public void testParametersTransform() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getParametersTransforms().isEmpty());
+		
+		// Create cgi_transforms.cfg
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.CGI_TRANSFORM_CONFIG_FILENAME), "a => b=c");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(1, coll.getParametersTransforms().size());
+		
+		// Update cgi_transforms.cfg
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.CGI_TRANSFORM_CONFIG_FILENAME), "a => b=c\nA => -B");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(2, coll.getParametersTransforms().size());
+		
+		// Delete cgi_transforms.cfg
+		new File(TEST_DIR, Files.CGI_TRANSFORM_CONFIG_FILENAME).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getParametersTransforms().isEmpty());		
+	}
+	
+	@Test
+	public void testProfiles() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getProfiles().isEmpty());
+		
+		// Create first profile
+		new File(TEST_DIR, "profile1").mkdirs();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(1, coll.getProfiles().size());
+		Assert.assertEquals("profile1", coll.getProfiles().get("profile1").getId());
+		
+		// Create second profile
+		new File(TEST_DIR, "profile2").mkdirs();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(2, coll.getProfiles().size());
+		Assert.assertEquals("profile1", coll.getProfiles().get("profile1").getId());
+		Assert.assertEquals("profile2", coll.getProfiles().get("profile2").getId());
+		
+		// Delete first profile
+		new File(TEST_DIR, "profile1").delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals(1, coll.getProfiles().size());
+		Assert.assertEquals("profile2", coll.getProfiles().get("profile2").getId());
+		
+		// Create padre-opts file
+		Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+		FileUtils.writeStringToFile(new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS), "-rmcfA");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals("-rmcfA", coll.getProfiles().get("profile2").getPadreOpts());
+		
+		// Update padre_opts
+		FileUtils.writeStringToFile(new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS), "-rmcfABC");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals("-rmcfABC", coll.getProfiles().get("profile2").getPadreOpts());
+		
+		// Delete padre-opts
+		new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+	}
+	
+	@Test
+	public void testProfilesFacetedNav() throws IOException {
+		new File(TEST_DIR, "profile2").mkdirs();
+		
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
+		
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), new File(TEST_DIR, "profile2/"+Files.FACETED_NAVIGATION_CONFIG_FILENAME));
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
+		Assert.assertEquals("-count_urls 0", coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions());
+		Assert.assertEquals(1, coll.getProfiles().get("profile2").getFacetedNavConfConfig().getFacetDefinitions().size());
+		
+		// Update faceted nav
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-md-url.cfg"), new File(TEST_DIR, "profile2/"+Files.FACETED_NAVIGATION_CONFIG_FILENAME));
+		// Force timestamp updated as copy preserve timestamps
+		new File(TEST_DIR, "profile2/"+Files.FACETED_NAVIGATION_CONFIG_FILENAME).setLastModified(System.currentTimeMillis());
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
+		Assert.assertEquals("-rmcfd -count_urls 0", coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions());
+		Assert.assertEquals(2, coll.getProfiles().get("profile2").getFacetedNavConfConfig().getFacetDefinitions().size());
+		
+		// Delete faceted nav
+		new File(TEST_DIR, "profile2/"+Files.FACETED_NAVIGATION_CONFIG_FILENAME).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
+
+		// Faceted nav LIVE config
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
+		
+		File fnConfig = new File(SEARCH_HOME, "data/config-repository/live/idx/profile2/"+Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), fnConfig);
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
+		Assert.assertEquals("-count_urls 0", coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getQpOptions());
+		Assert.assertEquals(1, coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getFacetDefinitions().size());
+		
+		// Update faceted nav
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-md-url.cfg"), fnConfig);
+		// Force timestamp updated as copy preserve timestamps
+		fnConfig.setLastModified(System.currentTimeMillis());
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
+		Assert.assertEquals("-rmcfd -count_urls 0", coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getQpOptions());
+		Assert.assertEquals(2, coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getFacetDefinitions().size());
+		
+		// Delete faceted nav
+		fnConfig.delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
+	}
+	
+	@Test
+	public void testQuicklinks() throws IOException {		
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getQuickLinksConfiguration().isEmpty());
+		
+		// Create quicklinks
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME), "key=value");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals("value", coll.getQuickLinksConfiguration().get("key"));
+		
+		// Update quicklinks
+		FileUtils.writeStringToFile(new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME), "key=value\nnew-key=New value");
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertEquals("value", coll.getQuickLinksConfiguration().get("key"));
+		Assert.assertEquals("New value", coll.getQuickLinksConfiguration().get("new-key"));
+		
+		// Delete quicklinks
+		new File(TEST_DIR, Files.QUICKLINKS_CONFIG_FILENAME).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertTrue(coll.getQuickLinksConfiguration().isEmpty());
+		
+	}
+	
+	@Test
+	public void testFacetedNav() throws IOException {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getFacetedNavigationConfConfig());
+		
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), new File(TEST_DIR,Files.FACETED_NAVIGATION_CONFIG_FILENAME));
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getFacetedNavigationConfConfig());
+		Assert.assertEquals("-count_urls 0", coll.getFacetedNavigationConfConfig().getQpOptions());
+		Assert.assertEquals(1, coll.getFacetedNavigationConfConfig().getFacetDefinitions().size());
+		
+		// Update faceted nav
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-md-url.cfg"), new File(TEST_DIR, Files.FACETED_NAVIGATION_CONFIG_FILENAME));
+		// Force timestamp updated as copy preserve timestamps
+		new File(TEST_DIR, Files.FACETED_NAVIGATION_CONFIG_FILENAME).setLastModified(System.currentTimeMillis());
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getFacetedNavigationConfConfig());
+		Assert.assertEquals("-rmcfd -count_urls 0", coll.getFacetedNavigationConfConfig().getQpOptions());
+		Assert.assertEquals(2, coll.getFacetedNavigationConfConfig().getFacetDefinitions().size());
+		
+		// Delete faceted nav
+		new File(TEST_DIR, Files.FACETED_NAVIGATION_CONFIG_FILENAME).delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getFacetedNavigationConfConfig());
+
+		// Faceted nav LIVE config
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getFacetedNavigationLiveConfig());
+		
+		File fnConfig = new File(SEARCH_HOME, "data/config-repository/live/idx/"+Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), fnConfig);
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
+		Assert.assertEquals("-count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+		Assert.assertEquals(1, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
+		
+		// Update faceted nav
+		FileUtils.copyFile(new File(TEST_DIR, "fnav-md-url.cfg"), fnConfig);
+		// Force timestamp updated as copy preserve timestamps
+		fnConfig.setLastModified(System.currentTimeMillis());
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
+		Assert.assertEquals("-rmcfd -count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+		Assert.assertEquals(2, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
+		
+		// Delete faceted nav
+		fnConfig.delete();
+		sleep(5);
+		coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(coll.getFacetedNavigationLiveConfig());	
+	}
+	
+	@Test
+	public void testExtraSearches() throws Exception {
+		Collection coll = configRepository.getCollection("config-repository");
+		Assert.assertNull(configRepository.getExtraSearchConfiguration(coll, "extra-test"));
+		
+		// Create config
+		FileUtils.writeStringToFile(new File(TEST_DIR, "extra_search.extra-test.cfg"), "collection=abc");
+		sleep(5);
+		Assert.assertEquals("abc", configRepository.getExtraSearchConfiguration(coll, "extra-test").get("collection"));
+		
+		// Update config
+		FileUtils.writeStringToFile(new File(TEST_DIR, "extra_search.extra-test.cfg"), "collection=abc\ntest=value");
+		sleep(5);
+		Assert.assertEquals("abc", configRepository.getExtraSearchConfiguration(coll, "extra-test").get("collection"));
+		Assert.assertEquals("value", configRepository.getExtraSearchConfiguration(coll, "extra-test").get("test"));
+		
+		// Delete config
+		new File(TEST_DIR, "extra_search.extra-test.cfg").delete();
+		sleep(5);
+		Assert.assertNull(configRepository.getExtraSearchConfiguration(coll, "extra-test"));
+	}
+}

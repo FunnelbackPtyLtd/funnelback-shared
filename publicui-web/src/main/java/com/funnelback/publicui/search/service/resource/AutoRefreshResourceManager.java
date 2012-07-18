@@ -26,6 +26,7 @@ public class AutoRefreshResourceManager implements ResourceManager {
 	private static final String CACHE = "localConfigFilesRepository";
 	
 	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
+	@Setter
 	private int checkingInterval = 0;
 
 	/**
