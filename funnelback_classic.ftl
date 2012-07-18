@@ -400,7 +400,7 @@
 -->
 <#macro FacetedSearch>
     <#if question?exists
-        && facetedNavigationConfig(question.collection.id, question.profile)?exists >
+        && facetedNavigationConfig(question.collection, question.profile)?exists >
         <#nested>
     </#if>
 </#macro>
@@ -450,7 +450,7 @@
     @param summary Set to true if you want this tag to display the summary + breadcrumb, otherwise use <code>&lt;@s.FacetSummary /&gt;</code>.
 -->
 <#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true>
-    <#local fn = facetedNavigationConfig(question.collection.id, question.profile) >
+    <#local fn = facetedNavigationConfig(question.collection, question.profile) >
     <#if fn?exists>
         <#-- Find facet definition in the configuration corresponding
              to the facet we're currently displaying -->
