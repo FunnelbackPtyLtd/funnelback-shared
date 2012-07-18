@@ -1,12 +1,12 @@
 package com.funnelback.publicui.test.search.service.resource;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
-import com.funnelback.publicui.search.service.resource.ResourceParser;
+import com.funnelback.publicui.search.service.resource.impl.PropertiesResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -42,28 +42,29 @@ public class AutoRefreshResourceManagerTest {
 		manager.setAppCacheManager(appCacheManager);
 		
 		cache = appCacheManager.getCache("localConfigFilesRepository");
+		cache.removeAll();
+		Assert.assertEquals(0, cache.getSize());
 	}
 	
 	@Test
 	public void test() throws IOException {
-		Assert.assertEquals(0, cache.getSize());
-		
 		File testFile = new File(TEST_DIR, "test.properties");
-		PropertiesResourceParser parser = new PropertiesResourceParser();
-		Properties props = manager.load(testFile, parser);
+		PropertiesResource parser = new PropertiesResource(testFile);
+		Properties props = manager.load(parser);
 		
 		Assert.assertNotNull(props);
 		Assert.assertEquals(2, props.size());
 		Assert.assertEquals("Test properties file", props.get("title"));
 		Assert.assertEquals("42", props.get("value"));
 		Assert.assertEquals(1, cache.getSize());
-		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
-		long timestamp = cache.get(testFile.getAbsolutePath()).getLatestOfCreationAndUpdateTime();
+		Element elt = cache.get(testFile.getAbsolutePath());
+		Assert.assertNotNull(elt);
+		long timestamp = elt.getLatestOfCreationAndUpdateTime();
 		
 		// Second retrieval should yield the same object
 		// retrieved from the cache
-		Properties same = manager.load(testFile, parser);
-		Assert.assertEquals(props, same);
+		manager.load(parser);
+		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
 		
 		// Modifying the properties
 		FileUtils.writeStringToFile(testFile,
@@ -71,32 +72,49 @@ public class AutoRefreshResourceManagerTest {
 				"value=42" + System.getProperty("line.separator") +
 				"second.value=678" + System.getProperty("line.separator"));
 		
-		Properties updated = manager.load(testFile, parser);
-		Assert.assertNotSame(props, updated);
+		Properties updated = manager.load(parser);
+		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
+		Assert.assertTrue(cache.get(testFile.getAbsolutePath()).getLatestOfCreationAndUpdateTime() > timestamp);
+		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
 		Assert.assertEquals(3, updated.size());
 		Assert.assertEquals("Updated title", updated.get("title"));
 		Assert.assertEquals("42", updated.get("value"));
 		Assert.assertEquals("678", updated.get("second.value"));
 		Assert.assertEquals(1, cache.getSize());
-		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
-		Assert.assertTrue(cache.get(testFile.getAbsolutePath()).getLatestOfCreationAndUpdateTime() > timestamp);
-
-
-	}
-
-	private class PropertiesResourceParser implements ResourceParser<Properties> {
-
-		@Override
-		public Properties parse(File f) throws IOException {
-			Properties props = new Properties();
-			
-			FileReader reader = new FileReader(f);
-			props.load(reader);
-			reader.close();
-			
-			return props;
-		}
-		
 	}
 	
+	@Test
+	public void testDeleteFile() throws IOException {
+		test();
+		
+		File testFile = new File(TEST_DIR, "test.properties");
+		testFile.delete();
+		
+		PropertiesResource parser = new PropertiesResource(testFile);
+		Properties props = manager.load(parser);
+		
+		Assert.assertNull(props);
+		Assert.assertEquals(0, cache.getSize());
+		
+		FileUtils.writeStringToFile(testFile,
+				"title=New title" + System.getProperty("line.separator") +
+				"value=42" + System.getProperty("line.separator") +
+				"new.value=123" + System.getProperty("line.separator"));
+		
+		Properties updated = manager.load(parser);
+		Assert.assertNotSame(props, updated);
+		Assert.assertEquals(3, updated.size());
+		Assert.assertEquals("New title", updated.get("title"));
+		Assert.assertEquals("42", updated.get("value"));
+		Assert.assertEquals("123", updated.get("new.value"));
+		Assert.assertEquals(1, cache.getSize());
+		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
+	}
+	
+	@Test
+	public void testNonExistentFile() throws IOException {
+		File testFile = new File("non", "existent");
+		Assert.assertNull(manager.load(new PropertiesResource(testFile)));
+	}
+
 }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
+import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 
 /**
@@ -36,7 +36,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 				// like 'csv' in 'conf/<collection/<profile/csv.ftl'
 				String name = getUrl().substring(
 						getUrl().lastIndexOf('/')+1,
-						getUrl().lastIndexOf(AbstractLocalConfigRepository.FTL_SUFFIX));
+						getUrl().lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 				
 				setCustomHeaders(name, config, response);
 				setCustomContentType(name, config, response);				

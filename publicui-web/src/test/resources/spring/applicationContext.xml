@@ -68,11 +68,13 @@
 	</util:list>
 
 	<bean id="configRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
-	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.config.AutoRefreshLocalConfigRepository" />
+	<bean id="localConfigRepository" class="com.funnelback.publicui.search.service.config.DefaultConfigRepository" />
 	<util:properties id="appProperties" location="file:src/test/resources/spring/modernui.properties" />
 	
 	<bean id="autoRefreshLocalIndexRepository" class="com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository" />
 		<bean id="mockConfigRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
+
+	<bean id="resourceManager" class="com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager" />
 
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />

@@ -18,14 +18,14 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
+import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationXPathFillTests {
 
 	@Resource(name="localConfigRepository")
-	private AbstractLocalConfigRepository configRepository;
+	private DefaultConfigRepository configRepository;
 	
 	private FacetedNavigation processor;
 	private SearchTransaction st;

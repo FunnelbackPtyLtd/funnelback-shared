@@ -24,14 +24,14 @@ import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.config.AbstractLocalConfigRepository;
+import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationURLTests {
 
 	@Resource(name="localConfigRepository")
-	private AbstractLocalConfigRepository configRepository;
+	private DefaultConfigRepository configRepository;
 
 	private SearchTransaction st;
 	private FacetedNavigation processor;

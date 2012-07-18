@@ -1,7 +1,9 @@
 package com.funnelback.publicui.search.service.resource;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -10,17 +12,27 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
  * Default resource manager that will cache parsed file and reloads them if the
- * corresponding file changes.
+ * corresponding file has changed or has been deleted / created.
  */
 @Component
 @Log4j
 public class AutoRefreshResourceManager implements ResourceManager {
 
 	private static final String CACHE = "localConfigFilesRepository";
+	
+	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
+	private int checkingInterval = 0;
+
+	/**
+	 * Keep track of recent stale checks to avoid checking all
+	 * the resources too often
+	 */
+	private Map<Object, Long> staleChecks = Collections.synchronizedMap(new HashMap<Object, Long>());
 
 	@Autowired
 	@Setter
@@ -28,23 +40,31 @@ public class AutoRefreshResourceManager implements ResourceManager {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T load(File f, ResourceParser<T> p) throws IOException {
+	public <T> T load(ParseableResource<T> p, T valueIfNonExistent) throws IOException {
 
 		Cache cache = appCacheManager.getCache(CACHE);
-		T object = null;
+		T object = valueIfNonExistent;
 
-		// Is the file in the cache ?
-		String key = f.getAbsolutePath();
+		// Is the resource in the cache ?
+		Object key = p.getCacheKey();
 		Element elt = cache.get(key);
+		
 		if (elt == null) {
-			log.debug("Java object for file '" + key + "' not found in cache");
-			object = p.parse(f);
-			cache.put(new Element(key, object));
+			if (p.exists()) {
+				log.debug("Java object for resource'" + key + "' not found in cache");
+				object = p.parse();
+				cache.put(new Element(key, object));
+			} else {
+				log.debug("Resource '"+key+"' doesn't exist, nothing to do.");
+			}
 		} else {
 			log.debug("Java object for file '" + key + "' found in cache");
-			if (f.lastModified() > elt.getLatestOfCreationAndUpdateTime()) {
+			if (!p.exists()) {
+				log.debug("Resource'"+key+"' has been deleted. Removing cache entry");
+				cache.remove(key);
+			} else if (shouldCheck(key) && p.isStale(elt.getLatestOfCreationAndUpdateTime())) {
 				log.debug("File '"+key+"' has changed, reloading it");
-				object = p.parse(f);
+				object = p.parse();
 				cache.put(new Element(key, object));
 			} else {
 				object = (T) elt.getObjectValue();
@@ -52,6 +72,28 @@ public class AutoRefreshResourceManager implements ResourceManager {
 		}
 		
 		return object;
+	}
+	
+	@Override
+	public <T> T load(ParseableResource<T> resource) throws IOException {
+		return load(resource, null);
+	}
+	
+	/**
+	 * Resources are not checked for staleness everytime, but
+	 * only once every N milliseconds to avoid checking too often.
+	 * @param key
+	 * @return
+	 */
+	private boolean shouldCheck(Object key) {
+		// Only check every 'checkingInterval' ms
+		Long lastTimeChecked = staleChecks.get(key);
+		if (lastTimeChecked == null || lastTimeChecked+checkingInterval < System.currentTimeMillis()) {
+			staleChecks.put(key, System.currentTimeMillis());
+			return true;
+		} else {	
+			return false;
+		}
 	}
 
 }
