@@ -97,4 +97,6 @@
 	
 	<bean class="com.funnelback.publicui.search.web.exception.DefaultTemplateExceptionHandler" />
 	
+	<bean class="org.springframework.web.servlet.i18n.FixedLocaleResolver" />
+	
 </beans>

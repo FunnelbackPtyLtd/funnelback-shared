@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @ToString
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"rawPacket"})
+@JsonIgnoreProperties({"rawPacket","translations"})
 public class SearchResponse {
 
 	/** The result packet coming from PADRE */
@@ -61,9 +61,20 @@ public class SearchResponse {
 	
 	/**
 	 * TextMiner: Entity/Definition/URL data.
-	 */
-	
+	 * 
+	 * @since 12.0
+	 */	
 	@Getter @Setter private EntityDefinition entityDefinition;
+	
+	/**
+	 * Contains translation messages for the UI, for the locale
+	 * given in the {@link SearchQuestion}.
+	 * 
+	 * @since 12.0
+	 */
+	@XStreamOmitField
+	@Getter
+	private final Map<String, String> translations = new HashMap<String, String>();
 	
 	/**
 	 * @return true if the {@link #resultPacket} is not null.

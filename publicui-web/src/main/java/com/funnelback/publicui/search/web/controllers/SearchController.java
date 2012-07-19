@@ -20,6 +20,7 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.DefaultValues;
@@ -60,6 +61,9 @@ public class SearchController {
 	
 	@Autowired
 	private ConfigRepository configRepository;
+	
+	@Autowired
+	private LocaleResolver localeResolver;
 
 	@InitBinder
 	public void initBinder(DataBinder binder) {
@@ -105,7 +109,7 @@ public class SearchController {
 			@Valid SearchQuestion question) {
 				
 		SearchTransaction transaction = null;
-		SearchQuestionBinder.bind(request, question);
+		SearchQuestionBinder.bind(request, question, localeResolver);
 		
 		if (question.getCollection() != null) {
 			transaction = processor.process(question);

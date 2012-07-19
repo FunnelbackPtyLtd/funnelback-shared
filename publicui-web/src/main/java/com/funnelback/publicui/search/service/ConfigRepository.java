@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import lombok.Getter;
@@ -74,5 +75,13 @@ public interface ConfigRepository {
 	 * @return The extra search configuration data for the given collection and extra search source.
 	 */
 	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId);
+	
+	/**
+	 * Gets the translations for a given collection and locale
+	 * @param collectionId
+	 * @param locale
+	 * @return
+	 */
+	public Map<String, String> getTranslations(String collectionId, Locale locale);
 
 }

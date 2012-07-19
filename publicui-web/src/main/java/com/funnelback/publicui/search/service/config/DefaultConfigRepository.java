@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -418,6 +419,44 @@ public class DefaultConfigRepository implements ConfigRepository {
 			log.fatal("Could not load global configuration", ioe);
 			throw new RuntimeException(ioe);
 		}
+	}
+	
+	@Override
+	public Map<String, String> getTranslations(String collectionId,	Locale locale) {
+		Map<String, String> out = new HashMap<String, String>();
+		Map<String, String> emptyMap = new HashMap<String, String>(0);
+		
+		// Possible files: Global config, language specific,
+		// language + country specific
+		List<String> filenames = new ArrayList<String>();
+		filenames.add(Files.UI_I18N);
+		if (locale.getLanguage() != null) {
+			filenames.add(Files.UI_I18N_PREFIX + "." + locale.getLanguage() + Files.UI_I18N_SUFFIX);
+			if (locale.getCountry() != null) {
+				filenames.add(Files.UI_I18N_PREFIX + "." + locale.getLanguage() + "_" + locale.getCountry() + Files.UI_I18N_SUFFIX);
+			}
+		}
+		
+		// Folders to look into
+		File[] folders = new File[] {
+				new File(searchHome, DefaultValues.FOLDER_CONF),
+				new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, collectionId)
+		};
+
+		// Lookup general files first, then more specific ones
+		for (String filename: filenames) {
+			for (File folder: folders) {
+				File f = new File(folder, filename);
+				try {
+					out.putAll(resourceManager.load(new ConfigMapResource(searchHome, f), emptyMap));
+				} catch (IOException ioe) {
+					log.error("Unable to load translation bundle from '"+f.getAbsolutePath()+"'", ioe);
+				}
+
+			}
+		}
+		
+		return out;
 	}
 	
 }

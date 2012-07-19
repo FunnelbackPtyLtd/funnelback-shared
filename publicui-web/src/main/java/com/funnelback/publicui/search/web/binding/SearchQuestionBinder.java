@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.servlet.LocaleResolver;
+
 import waffle.servlet.WindowsPrincipal;
 
 import com.funnelback.common.config.DefaultValues;
@@ -29,6 +31,7 @@ public class SearchQuestionBinder {
 		to.setCollection(from.getCollection());
 		to.setImpersonated(from.isImpersonated());
 		to.setUserId(from.getUserId());
+		to.setLocale(from.getLocale());
 		to.setCnClickedCluster(from.getCnClickedCluster());
 		to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
 	}
@@ -39,22 +42,35 @@ public class SearchQuestionBinder {
 	 * @param question
 	 */
 	@SuppressWarnings("unchecked")
-	public static void bind(HttpServletRequest request, SearchQuestion question) {
+	public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
 		question.getRawInputParameters().putAll(request.getParameterMap());
 		
 		// Add any HTTP servlet specifics 
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
 		
 		// Originating IP address (prior to forwarding)
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
+		MapUtils.putAsStringArrayIfNotNull(
+				question.getRawInputParameters(),
+				PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(),
+				request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
 
-		// Referer
-		MapUtils.putAsStringArrayIfNotNull(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.REFERRER));
-				
+		// Set locale
+		question.setLocale(localeResolver.resolveLocale(request));
+		
 		// Copy original query
 		question.setOriginalQuery(question.getQuery());
 		

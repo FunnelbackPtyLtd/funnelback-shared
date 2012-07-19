@@ -7,6 +7,7 @@
 		<!-- passThroughParametersInputProcessor should be first as it populates required values for following processors -->
 		<ref bean="passThroughParametersInputProcessor" />
 		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
+		<ref bean="localeOverrideInputProcessor" />
 		<bean id="preProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
@@ -57,6 +58,7 @@
 		<ref bean="extraSearchesExecutor" />
 		<ref bean="contentOptimiserOutputProcessor" />
 		<ref bean="textMinerOutputProcessor" />
+		<ref bean="getTranslationsOutputProcessor" />
 		<ref bean="searchMonitorUpdaterOutputProcessor" />
 		<bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />

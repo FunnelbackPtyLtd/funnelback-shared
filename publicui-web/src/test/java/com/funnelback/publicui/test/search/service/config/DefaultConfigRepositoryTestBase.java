@@ -35,6 +35,7 @@ public abstract class DefaultConfigRepositoryTestBase {
 		for (String s: new String[] {"conf/collection.cfg.default", "conf/global.cfg.default"}) {
 			FileUtils.copyFile(new File(DUMMY_SEARCH_HOME, s), new File(SEARCH_HOME, s));
 		}
+		DefaultConfigRepositoryTestBase.recursiveTouch(SEARCH_HOME);
 		
 		// Create data folders
 		new File(SEARCH_HOME ,"data/config-repository").mkdirs();
@@ -46,9 +47,22 @@ public abstract class DefaultConfigRepositoryTestBase {
 		
 	}
 	
-	protected void sleep() {
-		try {Thread.sleep(250);}
+	public static void sleep() {
+		try {Thread.sleep(5);}
 		catch (InterruptedException ie) { }
+	}
+	
+	/**
+	 * Recursively touches files to update their timestamp
+	 */
+	public static void recursiveTouch(File parent) {
+		for (File f: parent.listFiles()) {
+			if (f.isDirectory()) {
+				recursiveTouch(f);
+			} else {
+				f.setLastModified(System.currentTimeMillis());
+			}
+		}
 	}
 }
 

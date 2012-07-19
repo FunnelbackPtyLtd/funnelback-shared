@@ -51,7 +51,6 @@ public class ContentOptimiserController {
 
 	@Resource(name="contentOptimiserLoadingView")
 	private FreeMarkerView contentOptimiserLoadingView;
-
 	
 	@Autowired
 	private SearchController searchController;

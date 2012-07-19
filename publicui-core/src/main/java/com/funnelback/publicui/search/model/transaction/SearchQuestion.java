@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -214,6 +215,17 @@ public class SearchQuestion {
 	 * extra search.</p>
 	 */
 	@Getter @Setter private boolean extraSearch = false;
+	
+	/**
+	 * <p>{@link Locale} to use for the search.</p>
+	 * 
+	 * <p>This will affect the UI only, to configure the locale
+	 * for the query processor please refer to the corresponding option
+	 * <tt>-lang</tt>.</p>
+	 * 
+	 * @since 12.0
+	 */
+	@Getter @Setter private Locale locale = Locale.getDefault();
 
 	/**
 	 * Common query string parameters names.
@@ -277,6 +289,16 @@ public class SearchQuestion {
 		public static final String ONESHOT = "oneshot";
 		
 		/**
+		 * <p>Parameter to specify the locale of the search query</p>
+		 * 
+		 * <p>Will affect the UI as well as the query processor.</p>
+		 */
+		public static final String LANG = "lang";
+		
+		/** Parameter to specify the locale of the UI only */
+		public static final String LANG_UI = "lang.ui";
+		
+		/**
 		 * Common request header names
 		 * 
 		 * @since 11.1
@@ -300,7 +322,7 @@ public class SearchQuestion {
 			 * Header used to provide the URL of the web page from which the user accessed
 			 * the search service.
 			 */
-			public static final String REFERRER = "Referrer";		
+			public static final String REFERRER = "Referrer";
 		}
 
 		/**

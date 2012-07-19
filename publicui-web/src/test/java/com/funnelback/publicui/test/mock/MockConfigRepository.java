@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,6 +100,12 @@ public class MockConfigRepository implements ConfigRepository {
 		Assume.assumeTrue(perlBin != null && perlBin.canExecute());
 		System.out.println("Will use the following Perl binary: '"+perlBin.getAbsolutePath()+"'");
 		return perlBin.getAbsolutePath();
+	}
+
+	@Override
+	public Map<String, String> getTranslations(String collectionId,
+			Locale locale) {
+		return new HashMap<String, String>();
 	}
 
 }
