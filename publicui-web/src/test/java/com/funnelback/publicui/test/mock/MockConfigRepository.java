@@ -21,6 +21,7 @@ public class MockConfigRepository implements ConfigRepository {
 
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	@Getter private Map<GlobalConfiguration, Map<String, String>> globalConfigs = new HashMap<GlobalConfiguration, Map<String, String>>();
+	@Getter private final Map<String, String> translations = new HashMap<String, String>();
 	
 	@Getter private Config globalConfiguration;
 		
@@ -105,7 +106,7 @@ public class MockConfigRepository implements ConfigRepository {
 	@Override
 	public Map<String, String> getTranslations(String collectionId,
 			Locale locale) {
-		return new HashMap<String, String>();
+		return translations;
 	}
 
 }

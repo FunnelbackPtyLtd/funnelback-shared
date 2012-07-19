@@ -1,8 +1,11 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -19,6 +22,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 public class GetTranslations implements OutputProcessor {
 
 	@Autowired
+	@Setter
 	private ConfigRepository configRepository;
 	
 	@Override
@@ -26,7 +30,9 @@ public class GetTranslations implements OutputProcessor {
 			throws OutputProcessorException {
 		if (SearchTransactionUtils.hasQuestion(searchTransaction)
 				&& SearchTransactionUtils.hasCollection(searchTransaction)
-				&& SearchTransactionUtils.hasResponse(searchTransaction)) {
+				&& searchTransaction.getQuestion().getLocale() != null
+				&& SearchTransactionUtils.hasResponse(searchTransaction)
+				&& searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.ModernUI.I18N)) {
 			searchTransaction.getResponse().getTranslations().putAll(
 					configRepository.getTranslations(searchTransaction.getQuestion().getCollection().getId(),
 					searchTransaction.getQuestion().getLocale()));
