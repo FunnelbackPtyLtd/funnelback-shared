@@ -110,10 +110,10 @@ public abstract class AbstractMethodTest {
 		return out;
 	}
 	
-	public static SimpleSequence buildSequenceStringArguments(String... str) {
+	public static SimpleSequence buildSequenceArguments(Object... objs) {
 		SimpleSequence out = new SimpleSequence();
-		for (String s: str) {
-			out.add(s);
+		for (Object o: objs) {
+			out.add(o);
 		}
 		return out;
 	}

@@ -45,7 +45,7 @@ public class FacetScopeRemoveMethodTest extends AbstractMethodTest {
 						new SimpleScalar("key1=value1"
 								+ "&facetScope=f.Industry%257CZ%3Ddivtrades%2520%2526%2520servicesdiv%26f.Industry%257CY%3Dcourier"
 								+ "&key2=value2"),
-						buildSequenceStringArguments("f.Industry|Z", "f.Industry|Y")
+						buildSequenceArguments("f.Industry|Z", "f.Industry|Y")
 						)
 				);
 		Assert.assertEquals("key1=value1&facetScope=&key2=value2", result);			
@@ -57,7 +57,7 @@ public class FacetScopeRemoveMethodTest extends AbstractMethodTest {
 				buildArguments(
 						new SimpleScalar("facetScope=f.Industry%257CZ%3Ddivtrades%2520%2526%2520servicesdiv%26f.Industry%257CY%3Dcourier"
 								+ "&key1=value1&key2=value2"),
-						buildSequenceStringArguments("f.Industry|Z", "f.Industry|Y")
+						buildSequenceArguments("f.Industry|Z", "f.Industry|Y")
 						)
 				);
 		Assert.assertEquals("facetScope=&key1=value1&key2=value2", result);
@@ -66,7 +66,7 @@ public class FacetScopeRemoveMethodTest extends AbstractMethodTest {
 				buildArguments(
 						new SimpleScalar("key1=value1&key2=value2"
 								+ "&facetScope=f.Industry%257CZ%3Ddivtrades%2520%2526%2520servicesdiv%26f.Industry%257CY%3Dcourier"),
-						buildSequenceStringArguments("f.Industry|Z", "f.Industry|Y")
+						buildSequenceArguments("f.Industry|Z", "f.Industry|Y")
 						)
 				);
 		Assert.assertEquals("key1=value1&key2=value2&facetScope=", result);			
@@ -80,7 +80,7 @@ public class FacetScopeRemoveMethodTest extends AbstractMethodTest {
 						new SimpleScalar("key1=value1"
 								+ "&facetScope=f.Industry%257CZ%3Ddivtrades%2520%2526%2520servicesdiv%26f.Industry%257CY%3Dcourier%26f.State%257CX%3Dqld"
 								+ "&key2=value2"),
-						buildSequenceStringArguments("f.Industry|Z", "f.Industry|Y")
+						buildSequenceArguments("f.Industry|Z", "f.Industry|Y")
 						)
 				);
 		Assert.assertEquals("key1=value1&facetScope=%26f.State%257CX%3Dqld&key2=value2", result);			

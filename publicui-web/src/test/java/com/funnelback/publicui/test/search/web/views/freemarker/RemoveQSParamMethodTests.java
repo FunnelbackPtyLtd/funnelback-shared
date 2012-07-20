@@ -27,7 +27,7 @@ public class RemoveQSParamMethodTests extends AbstractMethodTest {
 		String result = (String) method.exec(
 				buildArguments(
 						new SimpleScalar("key1=value1&key2=value2&key3=value3"),
-						buildSequenceStringArguments("key1", "key3")
+						buildSequenceArguments("key1", "key3")
 						)
 				);
 		Assert.assertEquals("key2=value2", result);
@@ -38,7 +38,7 @@ public class RemoveQSParamMethodTests extends AbstractMethodTest {
 		String result = (String) method.exec(
 				buildArguments(
 						new SimpleScalar("key1=value1&key2=value2&key3=value3"),
-						buildSequenceStringArguments("key5", "key6")
+						buildSequenceArguments("key5", "key6")
 						)
 				);
 		Assert.assertEquals("key1=value1&key2=value2&key3=value3", result);

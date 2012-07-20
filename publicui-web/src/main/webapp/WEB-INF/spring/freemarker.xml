@@ -114,6 +114,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ResolveUrlMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ResolveUrlMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FormatMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.FormatMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.publicui.i18n.I18n;
 
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
@@ -22,7 +21,7 @@ import freemarker.template.TemplateModelException;
  *
  */
 @RequiredArgsConstructor
-public abstract class AbstractTemplateMethod implements TemplateMethodModel, TemplateMethodModelEx {
+public abstract class AbstractTemplateMethod implements TemplateMethodModelEx {
 
 	@Autowired
 	@Setter protected I18n i18n;
