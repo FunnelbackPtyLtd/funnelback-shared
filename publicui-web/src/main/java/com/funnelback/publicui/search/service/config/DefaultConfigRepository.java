@@ -99,12 +99,6 @@ public class DefaultConfigRepository implements ConfigRepository {
 	 */
 	@Override
 	public Collection getCollection(String collectionId) {
-		StringBuilder sb = new StringBuilder();
-		for (StackTraceElement se: Thread.currentThread().getStackTrace()) {
-			sb.append("\t"+se.toString()+"\n");
-		}
-		log.debug(sb.toString());
-		
 		// Cache will never be null
 		Cache cache = appCacheManager.getCache(CACHE);
 		Element elt = cache.get(collectionId);
