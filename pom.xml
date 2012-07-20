@@ -80,7 +80,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>0.10.1</version>
+				<version>${version.lombok}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.funnelback</groupId>
