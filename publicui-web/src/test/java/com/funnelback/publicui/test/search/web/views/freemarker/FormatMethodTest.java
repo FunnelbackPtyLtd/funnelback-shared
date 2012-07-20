@@ -57,13 +57,13 @@ public class FormatMethodTest extends AbstractMethodTest {
 		
 		ArrayList<TemplateModel> arguments = new ArrayList<TemplateModel>();
 		arguments.add(new BeanModel(new Locale("en", "GB"), new DefaultObjectWrapper()));
-		arguments.add(new SimpleScalar("String: %s, Number: %x, Boolean: %b, Date: %s"));
+		arguments.add(new SimpleScalar("String: %s, Number: %x, Boolean: %b, Date: %4$tD %4$tT"));
 		arguments.add(buildSequenceArguments(
 				new SimpleScalar("Hello"),
 				new SimpleNumber(255),
 				new BooleanModel(true, wrapper),
 				new DateModel(cal.getTime(), wrapper)));
-		Assert.assertEquals("String: Hello, Number: ff, Boolean: true, Date: Sun Jan 01 01:42:59 EST 2012", method.exec(arguments));	
+		Assert.assertEquals("String: Hello, Number: ff, Boolean: true, Date: 01/01/12 01:42:59", method.exec(arguments));	
 	}
 	
 	@Test
