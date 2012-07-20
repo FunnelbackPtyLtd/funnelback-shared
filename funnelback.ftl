@@ -501,3 +501,36 @@
         <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> <span id="entity-definition">${response.entityDefinition.definition?html}</span>     
     </#if>  
 </#macro>
+
+<#---
+    Formats a string according to a Locale.
+
+    <p>This tag is usually used with internationalisation.</p>
+    <p>Either <tt>key</tt> or <tt>str</tt> must be provided. Using <tt>key</tt> will
+    lookup the corresponding translation key in the data model. Using <tt>str</tt> will
+    format the <tt>str</tt> string directly.</p>
+    <p>When <tt>key</tt> is used, <tt>str</tt> can be used with it as a fallback value if
+    the key is not found in the data model. For example <code>&lt;@fb.Format key="results" str="Results for %s" args=[question.query] /&gt;</code>
+    will lookup the key <em>results</em> in the translations. If the key is not present,
+    then the literal string <em>Results for %s</em> will be used instead.</p>
+
+    <p>See the <em>Modern UI localisation guidelines</em> for more information and examples.</p>
+
+    @param locale The <tt>java.util.Locale</tt> to use, defaults to the current Locale in the <tt>question</tt>.
+    @param key Takes the string to format from the translations in the data model (<tt>response.translations</tt>).
+    @param str Use a literal string instead of a translation key. For example <em>"%d results match the query %s"</em>. See <tt>java.util.Formatter</tt> for the format specifier documentation.
+    @param args Array of arguments to be formatted, for example <tt>[42, "funnelback"]</tt>.
+-->
+<#macro Format str args key="" locale=question.locale>
+    <#if key != "">
+        <#local s = response.translations[key]!str />
+    <#else>
+        <#local s = str />
+    </#if>
+
+    <#if args??>
+        ${format(locale, s, args)}
+    <#else>
+        ${format(locale, s)}
+    </#if>
+</#macro>
