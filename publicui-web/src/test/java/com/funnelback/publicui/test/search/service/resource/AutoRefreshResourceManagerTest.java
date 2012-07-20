@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.PropertiesResource;
+import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -63,7 +64,8 @@ public class AutoRefreshResourceManagerTest {
 		long timestamp = elt.getLatestOfCreationAndUpdateTime();
 		
 		// Wait a bit for the timestamps to be different
-		try { Thread.sleep(250); }
+		// Need to wait more than 1s for ext3 filesystems
+		try { Thread.sleep(1500); }
 		catch (InterruptedException ie) { }
 		
 		// Second retrieval should yield the same object
@@ -72,13 +74,10 @@ public class AutoRefreshResourceManagerTest {
 		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
 		
 		// Modifying the properties
-		FileUtils.writeStringToFile(testFile,
+		DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
 				"title=Updated title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"second.value=678" + System.getProperty("line.separator"));
-
-		try { Thread.sleep(250); }
-		catch (InterruptedException ie) { }
 
 		Properties updated = manager.load(parser);
 		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
@@ -107,13 +106,10 @@ public class AutoRefreshResourceManagerTest {
 		Assert.assertNull(props);
 		Assert.assertEquals(0, cache.getSize());
 		
-		FileUtils.writeStringToFile(testFile,
+		DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
 				"title=New title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"new.value=123" + System.getProperty("line.separator"));
-
-		try { Thread.sleep(250); }
-		catch (InterruptedException ie) { }
 		
 		Properties updated = manager.load(parser);
 		Assert.assertNotSame(props, updated);

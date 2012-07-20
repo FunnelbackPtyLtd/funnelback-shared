@@ -34,8 +34,9 @@ public abstract class AbstractSingleFileResource<T> implements ParseableResource
 	
 	@Override
 	public boolean isStale(long timestamp) {
-		log.debug("Checking if resource '"+file.getAbsolutePath()+"' is stale");
-		return file.lastModified() > timestamp;
+		boolean stale = file.lastModified() > timestamp;
+		log.debug("Stale check for file '"+file.getAbsolutePath()+"' returned '"+stale+"' (lastModified="+file.lastModified()+",timestamp="+timestamp+")");
+		return stale;
 	}
 	
 	@Override

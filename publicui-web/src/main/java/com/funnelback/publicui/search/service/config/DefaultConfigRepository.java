@@ -70,14 +70,20 @@ public class DefaultConfigRepository implements ConfigRepository {
 	
 	private static final String CACHE = "localConfigRepository";
 	
+	/**
+	 * <p>Cache TTL. No need to set it to less than 1s because
+	 * ext3 time resolution is 1s anyway.</p>
+	 */
 	@Value("#{appProperties['config.repository.cache.ttl']?:1}")
 	@Setter
 	private int cacheTtlSeconds = 1;
-
+	
 	@Autowired
+	@Setter
 	protected CacheManager appCacheManager;
 	
 	@Autowired
+	@Setter
 	protected ResourceManager resourceManager;
 	
 	@Autowired
@@ -85,6 +91,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 	protected File searchHome;
 	
 	@Autowired
+	@Setter
 	private FacetedNavigationConfigParser fnConfigParser;
 	
 	/**

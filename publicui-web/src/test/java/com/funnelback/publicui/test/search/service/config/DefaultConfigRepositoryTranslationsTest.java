@@ -7,6 +7,8 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import net.sf.ehcache.CacheManager;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
+import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -26,11 +29,11 @@ public class DefaultConfigRepositoryTranslationsTest {
 	private File SEARCH_HOME = new File("target/test-output/config-i18n");
 	private File TEST_DIR = new File(SEARCH_HOME, "conf/i18n-collection");
 	
-	@Autowired
 	private DefaultConfigRepository configRepository;
+	private AutoRefreshResourceManager resourceManager;
 	
 	@Autowired
-	private AutoRefreshResourceManager resourceManager;
+	private CacheManager appCacheManager;
 	
 
 	/**
@@ -42,12 +45,19 @@ public class DefaultConfigRepositoryTranslationsTest {
 		FileUtils.deleteDirectory(SEARCH_HOME);
 		TEST_DIR.mkdirs();
 		FileUtils.copyDirectory(DUMMY_SEARCH_HOME, SEARCH_HOME);
-		DefaultConfigRepositoryTestBase.recursiveTouch(SEARCH_HOME);
+		DefaultConfigRepositoryTestBase.recursiveTouchFuture(SEARCH_HOME);
 		
+		// Disable cache on resource manager
+		resourceManager = new AutoRefreshResourceManager();
+		resourceManager.setAppCacheManager(appCacheManager);
+		resourceManager.setCheckingInterval(0);
+		
+		configRepository = new DefaultConfigRepository();
+		configRepository.setAppCacheManager(appCacheManager);
+		configRepository.setResourceManager(resourceManager);
+		configRepository.setFnConfigParser(new StaxStreamFacetedNavigationConfigParser());
 		configRepository.setSearchHome(SEARCH_HOME);
 		configRepository.setCacheTtlSeconds(0);
-		// Disable cache on resource manager
-		resourceManager.setCheckingInterval(0);
 		
 	}
 	
@@ -71,8 +81,7 @@ public class DefaultConfigRepositoryTranslationsTest {
 		Map<String, String> translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Collection fr_BE)", translations.get("search"));
 		
-		FileUtils.writeStringToFile(new File(TEST_DIR, "ui.fr_BE.cfg"), "search=New translation");
-		DefaultConfigRepositoryTestBase.sleep();
+		DefaultConfigRepositoryTestBase.writeAndTouchFuture(new File(TEST_DIR, "ui.fr_BE.cfg"), "search=New translation");
 		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
 		Assert.assertEquals("New translation", translations.get("search"));
 		

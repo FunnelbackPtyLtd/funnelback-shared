@@ -28,7 +28,7 @@ public class AutoRefreshResourceManager implements ResourceManager {
 	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
 	@Setter
 	private int checkingInterval = 0;
-
+	
 	/**
 	 * Keep track of recent stale checks to avoid checking all
 	 * the resources too often
@@ -42,9 +42,10 @@ public class AutoRefreshResourceManager implements ResourceManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T load(ParseableResource<T> p, T valueIfNonExistent) throws IOException {
-
-		Cache cache = appCacheManager.getCache(CACHE);
 		T object = valueIfNonExistent;
+		
+		Cache cache = appCacheManager.getCache(CACHE);
+		
 
 		// Is the resource in the cache ?
 		Object key = p.getCacheKey();

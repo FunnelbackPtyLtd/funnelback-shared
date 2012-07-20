@@ -37,7 +37,10 @@ public class GlobalConfigResource implements ParseableResource<GlobalOnlyConfig>
 	public boolean isStale(long timestamp) {
 		for (File f: filesToCheck) {
 			if (f.lastModified() > timestamp) {
+				log.debug("Stale check for file '"+f.getAbsolutePath()+"' returned true (lastModified="+f.lastModified()+",timestamp="+timestamp+")");
 				return true;
+			} else {
+				log.debug("Stale check for file '"+f.getAbsolutePath()+"' returned false (lastModified="+f.lastModified()+",timestamp="+timestamp+")");
 			}
 		}
 		
