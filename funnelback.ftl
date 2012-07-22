@@ -521,7 +521,7 @@
     @param str Use a literal string instead of a translation key. For example <em>"%d results match the query %s"</em>. See <tt>java.util.Formatter</tt> for the format specifier documentation.
     @param args Array of arguments to be formatted, for example <tt>[42, "funnelback"]</tt>.
 -->
-<#macro Format str args key="" locale=question.locale>
+<#macro Format args str="" key="" locale=question.locale>
     <#if key != "">
         <#local s = response.translations[key]!str />
     <#else>
