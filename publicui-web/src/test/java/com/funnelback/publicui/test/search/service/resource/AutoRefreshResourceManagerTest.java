@@ -9,6 +9,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.PropertiesResource;
 import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
@@ -35,13 +37,16 @@ public class AutoRefreshResourceManagerTest {
 
 	@Before
 	public void before() throws Exception {
+		PropertyConfigurator.configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
+		
 		FileUtils.deleteDirectory(TEST_DIR);
 		TEST_DIR.mkdirs();
 		FileUtils.copyDirectory(new File("src/test/resources/resource-manager/"), TEST_DIR);
 		
 		manager = new AutoRefreshResourceManager();
 		manager.setAppCacheManager(appCacheManager);
-		manager.setCheckingInterval(0);
+		// Ensure files are checked for freshness at every access
+		manager.setCheckingInterval(-1);
 		
 		cache = appCacheManager.getCache("localConfigFilesRepository");
 		cache.removeAll();
@@ -74,15 +79,17 @@ public class AutoRefreshResourceManagerTest {
 		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
 		
 		// Modifying the properties
+		System.out.println("BEFORE: " + testFile.lastModified());
 		DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
 				"title=Updated title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"second.value=678" + System.getProperty("line.separator"));
-
+		System.out.println("AFTER: " + testFile.lastModified());
+		
 		Properties updated = manager.load(parser);
 		Element newElt = cache.get(testFile.getAbsolutePath());
 		Assert.assertNotNull(newElt);
-		Assert.assertTrue(newElt.getLatestOfCreationAndUpdateTime() > timestamp);
+		Assert.assertTrue(newElt.getLatestOfCreationAndUpdateTime() + " should be > " + timestamp, newElt.getLatestOfCreationAndUpdateTime() > timestamp);
 		Assert.assertEquals(elt,  newElt);
 		Assert.assertEquals(3, updated.size());
 		Assert.assertEquals("Updated title", updated.get("title"));

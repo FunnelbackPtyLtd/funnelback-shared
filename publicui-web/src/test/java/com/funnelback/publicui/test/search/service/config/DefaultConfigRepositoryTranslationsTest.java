@@ -47,10 +47,10 @@ public class DefaultConfigRepositoryTranslationsTest {
 		FileUtils.copyDirectory(DUMMY_SEARCH_HOME, SEARCH_HOME);
 		DefaultConfigRepositoryTestBase.recursiveTouchFuture(SEARCH_HOME);
 		
-		// Disable cache on resource manager
 		resourceManager = new AutoRefreshResourceManager();
 		resourceManager.setAppCacheManager(appCacheManager);
-		resourceManager.setCheckingInterval(0);
+		// Ensure files are checked for freshness at every access
+		resourceManager.setCheckingInterval(-1);
 		
 		configRepository = new DefaultConfigRepository();
 		configRepository.setAppCacheManager(appCacheManager);

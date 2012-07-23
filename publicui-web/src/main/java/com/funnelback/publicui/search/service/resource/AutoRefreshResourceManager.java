@@ -25,6 +25,13 @@ public class AutoRefreshResourceManager implements ResourceManager {
 
 	private static final String CACHE = "localConfigFilesRepository";
 	
+	/**
+	 * <p>How often should we check files for freshness ?</p>
+	 * 
+	 * <p>That's especially useful in the context of a single HTTP request
+	 * when we want to check only once per request (no need checking if a
+	 * file has changed during the request processing.</p>
+	 */
 	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
 	@Setter
 	private int checkingInterval = 0;

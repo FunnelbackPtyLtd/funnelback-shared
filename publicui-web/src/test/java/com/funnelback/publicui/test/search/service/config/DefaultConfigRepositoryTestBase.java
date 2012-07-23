@@ -48,11 +48,10 @@ public abstract class DefaultConfigRepositoryTestBase {
 		// Create data folders
 		new File(SEARCH_HOME ,"data/config-repository").mkdirs();
 
-		// Disable cache on resource manager
 		resourceManager = new AutoRefreshResourceManager();
 		resourceManager.setAppCacheManager(appCacheManager);
-		resourceManager.setCheckingInterval(0);
-
+		// Ensure files are checked for freshness at every access
+		resourceManager.setCheckingInterval(-1);
 		
 		configRepository = new WaitConfigRepository();
 		configRepository.setAppCacheManager(appCacheManager);
@@ -82,7 +81,7 @@ public abstract class DefaultConfigRepositoryTestBase {
 	 * @param f
 	 */
 	public static void touchFuture(File f) {
-		long ts = System.currentTimeMillis() + 1000;
+		long ts = System.currentTimeMillis() + 2000;
 		f.setLastModified(ts);
 	}
 	
