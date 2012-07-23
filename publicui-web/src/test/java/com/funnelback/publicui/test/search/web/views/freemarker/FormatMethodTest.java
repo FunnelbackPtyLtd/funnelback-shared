@@ -50,20 +50,17 @@ public class FormatMethodTest extends AbstractMethodTest {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, 2012);
 		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DAY_OF_MONTH, 0);
-		cal.set(Calendar.HOUR, 13);
-		cal.set(Calendar.MINUTE, 42);
-		cal.set(Calendar.SECOND, 59);
+		cal.set(Calendar.DAY_OF_MONTH, 15);
 		
 		ArrayList<TemplateModel> arguments = new ArrayList<TemplateModel>();
 		arguments.add(new BeanModel(new Locale("en", "GB"), new DefaultObjectWrapper()));
-		arguments.add(new SimpleScalar("String: %s, Number: %x, Boolean: %b, Date: %4$tD %4$tT"));
+		arguments.add(new SimpleScalar("String: %s, Number: %x, Boolean: %b, Date: %4$tb %4$tB"));
 		arguments.add(buildSequenceArguments(
 				new SimpleScalar("Hello"),
 				new SimpleNumber(255),
 				new BooleanModel(true, wrapper),
 				new DateModel(cal.getTime(), wrapper)));
-		Assert.assertEquals("String: Hello, Number: ff, Boolean: true, Date: 01/01/12 01:42:59", method.exec(arguments));	
+		Assert.assertEquals("String: Hello, Number: ff, Boolean: true, Date: Jan January", method.exec(arguments));	
 	}
 	
 	@Test
