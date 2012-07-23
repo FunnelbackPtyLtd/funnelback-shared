@@ -80,9 +80,10 @@ public class AutoRefreshResourceManagerTest {
 				"second.value=678" + System.getProperty("line.separator"));
 
 		Properties updated = manager.load(parser);
-		Assert.assertNotNull(cache.get(testFile.getAbsolutePath()));
-		Assert.assertTrue(cache.get(testFile.getAbsolutePath()).getLatestOfCreationAndUpdateTime() > timestamp);
-		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
+		Element newElt = cache.get(testFile.getAbsolutePath());
+		Assert.assertNotNull(newElt);
+		Assert.assertTrue(newElt.getLatestOfCreationAndUpdateTime() > timestamp);
+		Assert.assertEquals(elt,  newElt);
 		Assert.assertEquals(3, updated.size());
 		Assert.assertEquals("Updated title", updated.get("title"));
 		Assert.assertEquals("42", updated.get("value"));
@@ -92,16 +93,21 @@ public class AutoRefreshResourceManagerTest {
 	
 	@Test
 	public void testDeleteFile() throws IOException {
-		test();
-		
 		File testFile = new File(TEST_DIR, "test.properties");
-		testFile.delete();
-		
-		try { Thread.sleep(250); }
-		catch (InterruptedException ie) { }
-		
 		PropertiesResource parser = new PropertiesResource(testFile);
 		Properties props = manager.load(parser);
+		
+		Assert.assertNotNull(props);
+		Assert.assertEquals(2, props.size());
+		Assert.assertEquals("Test properties file", props.get("title"));
+		Assert.assertEquals("42", props.get("value"));
+		
+		testFile.delete();
+		
+		try { Thread.sleep(25); }
+		catch (InterruptedException ie) { }
+		
+		props = manager.load(parser);
 		
 		Assert.assertNull(props);
 		Assert.assertEquals(0, cache.getSize());
