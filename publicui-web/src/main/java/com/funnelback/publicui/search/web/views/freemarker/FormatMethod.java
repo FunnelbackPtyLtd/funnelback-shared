@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,13 +25,8 @@ public class FormatMethod extends AbstractTemplateMethod {
 		
 		if (arguments.size() > 2) {
 			if (arguments.get(2) instanceof SimpleSequence) {
-				// Unwrap arguments
-				List<Object> args = new ArrayList<Object>();
 				SimpleSequence seq = (SimpleSequence) arguments.get(2);
-				for (int i=0; i<seq.size(); i++) {
-					args.add(DeepUnwrap.permissiveUnwrap((TemplateModel) seq.get(i)));
-				}
-				return String.format(l, str, args.toArray());
+				return String.format(l, str, seq.toList().toArray());				
 			} else {
 				// Single argument
 				return String.format(l, str, DeepUnwrap.permissiveUnwrap((TemplateModel) arguments.get(2)));

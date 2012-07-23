@@ -13,7 +13,8 @@
 				<value>file:#{searchHome.absolutePath}/</value>
 				<value>/WEB-INF/freemarker/</value>
 			</list>
-		</property>		<property name="freemarkerSettings">
+		</property>
+		<property name="freemarkerSettings">
 			<props>
 				<prop key="url_escaping_charset">UTF-8</prop>
 			</props>
@@ -126,7 +127,7 @@
 	</bean>
 
 	<!-- Customise FreeMarker Exception handling -->
-	<bean id="setTemplateExceptionHandler" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject" ref="freemarkerConfiguration" />
 		<property name="targetMethod" value="setTemplateExceptionHandler" />
 		<property name="arguments">
@@ -134,6 +135,15 @@
 				<ref bean="defaultTemplateExceptionHandler" />
 			</array>
 		</property>
+ 	</bean>
+ 	
+ 	<!-- Customise arithmetic engine so that numbers expressed in the templates are converted
+ 	     into their smallest possible representation instead of BigDecimal. This is needed because
+ 	     otherwise the @fb.Format tag doesn't know how to format BigDecimals -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="freemarkerConfiguration" />
+		<property name="targetMethod" value="setArithmeticEngine" />
+		<property name="arguments" value="#{T(freemarker.core.ArithmeticEngine).CONSERVATIVE_ENGINE}" />
  	</bean>
 	
 	<!-- Specific view for OpenSearch controller. It needs a specific configuration as it outputs XML and not HTML -->
