@@ -43,7 +43,7 @@ public class ExtraSearches implements InputProcessor, ApplicationContextAware {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
+		if (SearchTransactionUtils.hasCollection(searchTransaction)
 				&& searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.ModernUI.EXTRA_SEARCHES)
 				&& ! searchTransaction.getQuestion().isExtraSearch() ) {
 			
