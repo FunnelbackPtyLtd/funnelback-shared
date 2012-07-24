@@ -1,0 +1,253 @@
+package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
+
+import org.apache.commons.exec.OS;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.DefaultPadreForking;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
+public class DefaultPadreForkingLockTests {
+
+	@Autowired
+	private I18n i18n;
+	
+	@Autowired
+	private File searchHome;
+	
+	private DefaultPadreForking forking;
+	
+	@Before
+	public void before() {
+		forking = new DefaultPadreForking();
+		forking.setI18n(i18n);
+		forking.setPadreWaitTimeout(30);
+		forking.setPadreXmlParser(new StaxStreamParser());
+		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
+	}
+	
+	/**
+	 * Should not throw exception
+	 * @throws Exception
+	 */
+	@Test
+	public void testLockTwoSearches() throws Exception {
+		File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+		lockFile.delete();
+		Assert.assertFalse(lockFile.exists());
+		
+		String qp = "mock-padre-wait.sh 2 src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		
+		if (OS.isFamilyWindows()) {
+			// Can't sleep/wait in a batch script except when using PING or TIMEOUT,
+			// but those weren't working when forked from Java for some reason (error code 9009).
+			// I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.eEXE
+			// interpreter.
+			forking.setAbsoluteQueryProcessorPath(true);
+			
+			qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe /NoLogo "
+					+ new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath()
+					+ " 2 "
+					+ new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath();
+		}
+
+		
+		SearchQuestion qs = new SearchQuestion();
+		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+		qs.setQuery("test");
+				
+		final SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+		final DefaultPadreForking forker = forking;
+
+		// Start search in separate thread
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				try {
+					forker.fetchData(st);
+				} catch (DataFetchException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+		t.start();
+		
+		// Wait a bit so the main search acquire the lock
+		Thread.sleep(50);
+		
+		// Run a second forker with a differnt query processor, but on the
+		// same collection
+		DefaultPadreForking forking2 = new DefaultPadreForking();
+		forking2.setI18n(i18n);
+		forking2.setPadreWaitTimeout(30);
+		forking2.setPadreXmlParser(new StaxStreamParser());
+		forking2.setSearchHome(new File("src/test/resources/dummy-search_home"));
+
+		qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		qs = new SearchQuestion();
+		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+		qs.setQuery("test");
+		
+		SearchTransaction st2 = null;
+		try {
+			// Run a second search in the main thread
+			st2 = new SearchTransaction(qs, new SearchResponse());
+			long start = System.currentTimeMillis();
+			forking2.fetchData(st2);
+			long elapsed = System.currentTimeMillis()-start;
+			
+			Assert.assertTrue("We should not have waited at all, but we waited: " + elapsed, elapsed < 1000);
+		} finally {
+			// Ensure the lock is released for subsequent tests
+			t.join();
+		}
+		
+		assertResults(st);
+		assertResults(st2);
+		
+		Assert.assertTrue(lockFile.exists());
+		ensureLockReleased(lockFile);		
+	}
+
+	@Test
+	public void testLockCreated() throws DataFetchException, EnvironmentVariableException, IOException {
+		File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+		
+		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		
+		SearchQuestion qs = new SearchQuestion();
+		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+		qs.setQuery("test");
+		SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+		
+		forking.fetchData(st);
+		assertResults(st);
+		
+		Assert.assertTrue(lockFile.exists());
+		ensureLockReleased(lockFile);
+	}
+
+	@Test
+	public void testLockWaits() throws Exception {
+		File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+		
+		String qp = "mock-padre-wait.sh 2 src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		
+		if (OS.isFamilyWindows()) {
+			// Can't sleep/wait in a batch script except when using PING or TIMEOUT,
+			// but those weren't working when forked from Java for some reason (error code 9009).
+			// I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.eEXE
+			// interpreter.
+			forking.setAbsoluteQueryProcessorPath(true);
+			
+			qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe /NoLogo "
+					+ new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath()
+					+ " 2 "
+					+ new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath();
+		}
+
+		SearchQuestion qs = new SearchQuestion();
+		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+		qs.setQuery("test");
+				
+		final SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+		final DefaultPadreForking forker = forking;
+
+		// Start search in separate thread
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				try {
+					forker.fetchData(st);
+				} catch (DataFetchException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+		t.start();
+		
+		// Wait a bit so the main search acquire the lock
+		Thread.sleep(100);
+
+		RandomAccessFile raf = new RandomAccessFile(lockFile, "rw");
+		FileChannel channel = raf.getChannel();
+		FileLock fl = null;
+		try {
+			fl = channel.tryLock();
+			Assert.fail("Lock should not have been acquired" + fl);
+		} catch (OverlappingFileLockException ofle) {
+		} finally {
+			// Ensure the lock is released for subsequent tests
+			t.join();
+			if (fl != null) {
+				fl.close();
+			}
+			channel.close();
+			raf.close();
+		}
+		
+		assertResults(st);
+		Assert.assertTrue(lockFile.exists());
+		ensureLockReleased(lockFile);		
+	}
+
+	private void assertResults(SearchTransaction st) throws IOException {
+		Assert.assertNotNull(st.getResponse());
+		if (! OS.isFamilyWindows()) {
+			// Can't compare results on Windows as the Mock VBS padre
+			// doesn't support reading UTF-8
+			Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
+		}
+		Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
+		Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());	
+	}
+	
+	private void ensureLockReleased(File lockFile) throws IOException {
+		RandomAccessFile raf = new RandomAccessFile(lockFile, "rw");
+		FileChannel channel = raf.getChannel();
+		
+		try {
+			FileLock fl = channel.tryLock();
+			Assert.assertNotNull(fl);
+			fl.close();
+			Assert.assertFalse(fl.isValid());
+		} finally {
+			channel.close();
+			raf.close();
+		}
+		
+	}
+	
+	private String getExtension() {
+		String ext = ".sh";
+		if (OS.isFamilyWindows()) {
+			ext = ".bat";
+		}
+		
+		return ext;
+	}
+	
+}

@@ -79,12 +79,10 @@ public class AutoRefreshResourceManagerTest {
 		Assert.assertEquals(elt,  cache.get(testFile.getAbsolutePath()));
 		
 		// Modifying the properties
-		System.out.println("BEFORE: " + testFile.lastModified());
 		DefaultConfigRepositoryTestBase.writeAndTouchFuture(testFile,
 				"title=Updated title" + System.getProperty("line.separator") +
 				"value=42" + System.getProperty("line.separator") +
 				"second.value=678" + System.getProperty("line.separator"));
-		System.out.println("AFTER: " + testFile.lastModified());
 		
 		Properties updated = manager.load(parser);
 		Element newElt = cache.get(testFile.getAbsolutePath());

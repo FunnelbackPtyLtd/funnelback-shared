@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,13 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	}
 	
 	private static final String OPT_USER_KEYS = "-userkeys";
+
+	/**
+	 * Whereas to use an absolute path when invoking the query
+	 * processor or a relative (from bin/) one. 
+	 */
+	@Setter
+	private boolean absoluteQueryProcessorPath = false;
 	
 	@Autowired
 	@Setter
@@ -70,6 +78,11 @@ public abstract class AbstractPadreForking implements DataFetcher {
 					+ File.separator
 					+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
 					+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+			
+			if (absoluteQueryProcessorPath) {
+				commandLine = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)
+					+ " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+			}
 			
 			if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
 				commandLine += " " + OPT_USER_KEYS + "=\""
@@ -102,20 +115,21 @@ public abstract class AbstractPadreForking implements DataFetcher {
 				indexUpdateLockRandomFile = new RandomAccessFile(indexUpdateLockFile, "rw");
 				// Ask for a shared lock as multiple queries can happen at the same time
 				indexUpdateLock = indexUpdateLockRandomFile.getChannel().lock(0, Long.MAX_VALUE, true);
+				
 				if (indexUpdateLock == null || ! indexUpdateLock.isValid()) {
 					log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'");
+					indexUpdateLockRandomFile.close();
 					throw new DataFetchException(i18n.tr("padre.forking.lock.error"), null);
 				}
 			} catch (IOException ioe) {
 				log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'", ioe);
 				throw new DataFetchException(i18n.tr("padre.forking.lock.error"), ioe);
-			} finally {
-				if (indexUpdateLockRandomFile != null) {
-					try { indexUpdateLockRandomFile.close(); }
-					catch (IOException ioe2) { }
-				}
+			} catch (OverlappingFileLockException ofle) {
+				// This can happen if the lock for this collection has already been acquired
+				// by another thread or an extra search
+				log.trace("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"' because it's already acquired", ofle);
 			}
-				
+			
 			try {
 				if (searchTransaction.getQuestion().isImpersonated()) {
 					padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
@@ -138,10 +152,15 @@ public abstract class AbstractPadreForking implements DataFetcher {
 				throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
 			} finally {
 				// Close locks and associated resources.
-				// At this point they're not supposed to be null
-				try { indexUpdateLock.close(); }
-				catch (IOException ioe) { }
 				
+				// indexUpdateLock might be null if we encountered an
+				// OverlappingFileLockException earlier
+				if (indexUpdateLock != null) {
+					try { indexUpdateLock.close(); }
+					catch (IOException ioe) { }
+				}
+				
+				// But indexUpdateLockRandomFile is not supposed to be 
 				try { indexUpdateLockRandomFile.close(); }
 				catch (IOException ioe) { }
 			}

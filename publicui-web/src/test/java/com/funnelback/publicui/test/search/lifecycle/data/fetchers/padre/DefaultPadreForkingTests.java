@@ -73,11 +73,7 @@ public class DefaultPadreForkingTests {
 	
 	@Test
 	public void testNoExplicitQueryShouldReturnResults() throws Exception {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
 		
 		SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
 		st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -91,12 +87,7 @@ public class DefaultPadreForkingTests {
 	
 	@Test
 	public void test() throws DataFetchException, EnvironmentVariableException, IOException {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		
-		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -114,12 +105,7 @@ public class DefaultPadreForkingTests {
 	
 	@Test
 	public void testInvalidPacket() throws Exception {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		
-		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
+		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -153,12 +139,7 @@ public class DefaultPadreForkingTests {
 	
 	@Test
 	public void testErrorReturn() throws Exception {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		
-		String qp = "mock-padre-error"+ext;
+		String qp = "mock-padre-error"+getExtension();
 
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -175,12 +156,7 @@ public class DefaultPadreForkingTests {
 	public void testWindowsNative() throws Exception {
 		Assume.assumeTrue(OS.isFamilyWindows());
 		
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		
-		String qp = "mock-padre"+ext+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
 		
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
@@ -196,6 +172,15 @@ public class DefaultPadreForkingTests {
 		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
 		Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
 		Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
+	}
+	
+	private String getExtension() {
+		String ext = ".sh";
+		if (OS.isFamilyWindows()) {
+			ext = ".bat";
+		}
+		
+		return ext;
 	}
 	
 }
