@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -8,7 +9,6 @@ import org.junit.Test;
 
 import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.FormatMethod;
-import com.ibm.icu.util.Calendar;
 
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.BooleanModel;
