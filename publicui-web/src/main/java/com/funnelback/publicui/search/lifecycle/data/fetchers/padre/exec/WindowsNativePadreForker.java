@@ -13,6 +13,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Secur32;
 import com.sun.jna.platform.win32.Secur32Util;
+import com.sun.jna.platform.win32.W32Errors;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
@@ -26,7 +27,7 @@ import com.sun.jna.ptr.IntByReference;
 @Log4j
 @RequiredArgsConstructor
 public class WindowsNativePadreForker implements PadreForker {
-	
+
 	/**
 	 * Size of the buffer used to read PADRE stdout
 	 */
@@ -43,30 +44,59 @@ public class WindowsNativePadreForker implements PadreForker {
 	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
 
 		if (log.isDebugEnabled()) {
-			log.debug("Native user name is '" + Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameSamCompatible) + "'");
+			log.debug("Native user name is '" + Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameSamCompatible) + "', "
+					+ "Current Process ID is: " + Kernel32.INSTANCE.GetCurrentProcessId() + ", "
+					+ "Current Thread ID is: " + Kernel32.INSTANCE.GetCurrentThreadId());
 		}
 		
 		String result = null;
 		int returnCode = -1;
-		
+
+		final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
 		HANDLEByReference hToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
 		HANDLEByReference hPrimaryToken = new HANDLEByReference(WinBase.INVALID_HANDLE_VALUE);
+		boolean impersonateSelf = false;
+		
 		try {
-			// Opening current process token
+			// Opening current thread token
 			if (! Advapi32.INSTANCE.OpenThreadToken(
-					Kernel32.INSTANCE.GetCurrentProcess(),
+					Kernel32.INSTANCE.GetCurrentThread(),
 					WinNT.TOKEN_ALL_ACCESS,
 					false,
 					hToken)) {
-				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				
+				int errno = Kernel32.INSTANCE.GetLastError();
+				if (W32Errors.ERROR_NO_TOKEN == errno) {
+					// Can happen in case of extra searches: The thread is coming from
+					// an executor pool and is not impersonated. Impersonate it now
+					if (! Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation)) {
+						throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "ImpersonateSelf()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+					}
+					
+					// Try to open the token again
+					if (! Advapi32.INSTANCE.OpenThreadToken(
+							Kernel32.INSTANCE.GetCurrentThread(),
+							WinNT.TOKEN_ALL_ACCESS,
+							false,
+							hToken)) {
+						throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken() after ImpersonateSelf()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+					}
+					impersonateSelf = true;
+				} else {
+					throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "OpenThreadToken()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				}
 			}
 			
+			WinBase.SECURITY_ATTRIBUTES sa = new WinBase.SECURITY_ATTRIBUTES();
+			sa.bInheritHandle = true;
+			sa.lpSecurityDescriptor = null;
+
 			// Duplicate token in order to obtain a primary token
 			// required to create a new process
 			if ( ! Advapi32.INSTANCE.DuplicateTokenEx(
 					hToken.getValue(),
 					WinNT.TOKEN_ALL_ACCESS,
-					null,
+					sa,
 					WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation,
 					WinNT.TOKEN_TYPE.TokenPrimary,
 					hPrimaryToken)) {
@@ -74,33 +104,28 @@ public class WindowsNativePadreForker implements PadreForker {
 			}
 	
 			// Create Pipes for STDOUT
-			WinBase.SECURITY_ATTRIBUTES saPipes = new WinBase.SECURITY_ATTRIBUTES();
-			saPipes.bInheritHandle = true;
-			saPipes.lpSecurityDescriptor = null;
-		
 			HANDLEByReference hChildOutRead = new HANDLEByReference();
 			HANDLEByReference hChildOutWrite = new HANDLEByReference();
-			if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, saPipes, 0) ) {
-				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreatePipe(stdin)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+			if ( ! Kernel32.INSTANCE.CreatePipe(hChildOutRead, hChildOutWrite, sa, 0) ) {
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreatePipe()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			if (! Kernel32.INSTANCE.SetHandleInformation(hChildOutRead.getValue(), WinBase.HANDLE_FLAG_INHERIT, 0)) {
-				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreatePipe(stdout)"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "SetHandleInformation()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
 			
 			WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
-			final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
 			si.hStdError = hChildOutWrite.getValue();
 			si.hStdOutput = hChildOutWrite.getValue();
 			si.dwFlags = WinBase.STARTF_USESTDHANDLES;
-						
+
 			// Actually fork
-			log.debug("Calling CreateProcessAsUser() for command line '" + commandLine + "' with environment '" + environmnent + "'");
+			log.debug("Calling CreateProcessAsUser() for command line '" + commandLine.trim() + "' with environment '" + environmnent + "'");
 			if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
 					hPrimaryToken.getValue(),
 					null,
-					commandLine,
-					null,
-					null,
+					commandLine.trim(),
+					sa,
+					sa,
 					true,
 					WinBase.CREATE_UNICODE_ENVIRONMENT | WinBase.CREATE_NO_WINDOW,
 					Advapi32Util.getEnvironmentBlock(environmnent),
@@ -109,7 +134,7 @@ public class WindowsNativePadreForker implements PadreForker {
 					pi)) {
 				throw new PadreForkingException(i18n.tr("padre.forking.native.function.failed", "CreateProcessAsUser()"), new Win32Exception(Kernel32.INSTANCE.GetLastError()));
 			}
-			log.debug("Created process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
+			log.trace("Created PADRE process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
 			
 			// Read PADRE stdout
 			result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
@@ -122,14 +147,33 @@ public class WindowsNativePadreForker implements PadreForker {
 				Kernel32.INSTANCE.TerminateProcess(pi.hProcess, -1);
 			}
 
-			IntByReference rc = new IntByReference();
+			IntByReference rc = new IntByReference(0);
 			if( ! Kernel32.INSTANCE.GetExitCodeProcess(pi.hProcess, rc)) {
 				throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
 			}
 			
 			returnCode = rc.getValue();
-			log.debug("PADRE exited successfuly");
+			if (returnCode < 0) {
+				log.error(String.format("PADRE exited abnormally (Exit code: 0x%X)", returnCode));
+			} else {
+				log.debug("PADRE exited successfuly (NTSTATUS exit code: "+returnCode+")");
+			}
 		} finally {
+			if (impersonateSelf) {
+				if (! Advapi32.INSTANCE.RevertToSelf()) {
+					log.warn("Could not RevertToSelf(). LastError is: " + Kernel32.INSTANCE.GetLastError());
+				}
+			}
+			
+			// Close child thread & process handle
+			if(! WinBase.INVALID_HANDLE_VALUE.equals(pi.hThread)) {
+				Kernel32.INSTANCE.CloseHandle(pi.hThread);
+			}
+			if(! WinBase.INVALID_HANDLE_VALUE.equals(pi.hProcess)) {
+				Kernel32.INSTANCE.CloseHandle(pi.hProcess);
+			}
+			
+			// Close tokens
 			if(! WinBase.INVALID_HANDLE_VALUE.equals(hToken.getValue())) {
 				Kernel32.INSTANCE.CloseHandle(hToken.getValue());
 			}
