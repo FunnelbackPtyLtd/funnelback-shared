@@ -266,12 +266,30 @@ public class StaxStreamParserTests {
 		assertEquals(10, urls.get("australia.gov.au/services").intValue());
 	}
 
+	@Test
 	public void testGScopeCount() {
 		Map<Integer, Integer> gscopes = rp.getGScopeCounts();
 		assertEquals(2, gscopes.size());
 		
 		assertEquals(54, gscopes.get(1).intValue());
-		assertEquals(6, gscopes.get(54).intValue());		
+		assertEquals(6, gscopes.get(2).intValue());		
+	}
+	
+	@Test
+	public void testDateCount() {
+		Map<String, Integer> dcs = rp.getDateCounts();
+		Assert.assertEquals(10, dcs.size());
+		
+		assertEquals(2935, dcs.get("Missing date").intValue());
+		assertEquals(1, dcs.get("1997").intValue());
+		assertEquals(1, dcs.get("1996").intValue());
+		assertEquals(4, dcs.get("1999").intValue());
+		assertEquals(2, dcs.get("1998").intValue());
+		assertEquals(1, dcs.get("1984").intValue());
+		assertEquals(1, dcs.get("1967").intValue());
+		assertEquals(1489, dcs.get("Last year").intValue());
+		assertEquals(2, dcs.get("Next week").intValue());
+		assertEquals(2, dcs.get("Tomorrow").intValue());
 	}
 	
 	@Test

@@ -172,6 +172,16 @@ public class ResultPacket {
 	@Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
 	
 	/**
+	 * <p>Date counts (Used in faceted navigation)</p>
+	 * 
+	 * <p>The key is either the 4 digit year or a label like <em>This year</em>,
+	 * <em>Last 6 months</em>, <em>Next month</em>, etc.</p>
+	 * 
+	 * @since 12.0
+	 */
+	@Getter private final Map<String, Integer> dateCounts = new HashMap<String, Integer>();
+	
+	/**
 	 * <p>Regular expression to use to highlight query terms in titles,
 	 * summaries or metadata.</p>
 	 * 
@@ -318,6 +328,9 @@ public class ResultPacket {
 		public static final String GSCOPE_COUNTS = "gscope_counts";
 		public static final String GSCOPE_MATCHING = "gscope_matching";
 		public static final String GSCOPE_VALUE = "value";
+		
+		public static final String DATECOUNT = "datecount";
+		public static final String DATECOUNT_ITEM = "item";
 		
 		public static final String QHLRE = "qhlre";
 		public static final String ORIGIN = "origin";

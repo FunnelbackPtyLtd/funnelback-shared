@@ -99,6 +99,9 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getUrlCounts().put(urlCount.url, urlCount.count);
 					} else if (ResultPacket.Schema.GSCOPE_COUNTS.equals(xmlStreamReader.getLocalName())) {
 						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
+					} else if (ResultPacket.Schema.DATECOUNT.equals(xmlStreamReader.getLocalName())) {
+						DateCount dateCount = parseDateCount(xmlStreamReader);
+						packet.getDateCounts().put(dateCount.label, dateCount.count);
 					} else if (ResultPacket.Schema.QHLRE.equals(xmlStreamReader.getLocalName())) {
 						packet.setQueryHighlightRegex(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.ORIGIN.equals(xmlStreamReader.getLocalName())) {
@@ -318,7 +321,7 @@ public class StaxStreamParser implements PadreXmlParser {
 	}
 	
 	/**
-	 * Parses a single <urlcount> tag
+	 * Parses a single &lt;urlcount&gt; tag
 	 * @param reader
 	 * @return
 	 * @throws NumberFormatException
@@ -338,6 +341,29 @@ public class StaxStreamParser implements PadreXmlParser {
 			}
 			
 			return null;
+	}
+
+	/**
+	 * Parses a single &lt;datecount&gt; tag
+	 * @param reader
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws XMLStreamException
+	 */
+	private DateCount parseDateCount(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+		if (!ResultPacket.Schema.DATECOUNT.equals(reader.getLocalName())) {
+			throw new InvalidParameterException();
+		}
+		
+		if (reader.getAttributeCount() == 1
+				&& ResultPacket.Schema.DATECOUNT_ITEM.equals(reader.getAttributeLocalName(0))) {
+			DateCount dc = new DateCount();
+			dc.label = reader.getAttributeValue(0);
+			dc.count = Integer.parseInt(reader.getElementText());
+			return dc;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -402,6 +428,11 @@ public class StaxStreamParser implements PadreXmlParser {
 	
 	private class URLCount {
 		public String url;
+		public int count;
+	}
+	
+	private class DateCount {
+		public String label;
 		public int count;
 	}
 	
