@@ -42,7 +42,7 @@
     </style>
     <link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery.jqplot.min.css"/>
 	<link rel="stylesheet" type="text/css" href="${ContextPath}/content-optimiser/optimiser.css"/>
-	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jquery-1.6.2.min.js"></script>
 	<!--[if IE]>
    		<script type="text/javascript" src="${ContextPath}/content-optimiser/js/jqPlot-1.0.0b/excanvas.js"></script>
 	<![endif]-->

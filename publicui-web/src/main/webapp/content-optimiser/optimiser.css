@@ -22,6 +22,11 @@ h3.header {
 	margin: 0px; 
 	padding: 0px;
 }
+
+#fb-initial a img {
+	border: 0;
+}
+
 #content-optimiser-pane {
 	padding: 10px; border: 1px solid #A0A0A4;
 	margin-bottom: 15px; width: 800px; position: relative; left: 50%; margin-left: -400px;
