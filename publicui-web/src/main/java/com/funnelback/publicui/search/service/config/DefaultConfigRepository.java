@@ -423,7 +423,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 	}
 	
 	@Override
-	public Map<String, String> getTranslations(String collectionId,	Locale locale) {
+	public Map<String, String> getTranslations(String collectionId,	String profileId, Locale locale) {
 		Map<String, String> out = new HashMap<String, String>();
 		Map<String, String> emptyMap = new HashMap<String, String>(0);
 		
@@ -437,11 +437,15 @@ public class DefaultConfigRepository implements ConfigRepository {
 				filenames.add(Files.UI_I18N_PREFIX + "." + locale.getLanguage() + "_" + locale.getCountry() + Files.UI_I18N_SUFFIX);
 			}
 		}
-		
+
 		// Folders to look into
-		File[] folders = new File[] {
-				new File(searchHome, DefaultValues.FOLDER_CONF),
-				new File(searchHome + File.separator + DefaultValues.FOLDER_CONF, collectionId)
+		List<File> folders = new ArrayList<File>();
+		folders.add(new File(searchHome, DefaultValues.FOLDER_CONF));
+		if (profileId != null && ! "".equals(profileId)) {
+				folders.add(new File(searchHome
+						+ File.separator + DefaultValues.FOLDER_CONF
+						+ File.separator + collectionId,
+						profileId));
 		};
 
 		// Lookup general files first, then more specific ones

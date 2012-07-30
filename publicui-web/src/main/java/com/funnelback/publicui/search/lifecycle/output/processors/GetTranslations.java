@@ -34,8 +34,10 @@ public class GetTranslations implements OutputProcessor {
 				&& SearchTransactionUtils.hasResponse(searchTransaction)
 				&& searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.ModernUI.I18N)) {
 			searchTransaction.getResponse().getTranslations().putAll(
-					configRepository.getTranslations(searchTransaction.getQuestion().getCollection().getId(),
-					searchTransaction.getQuestion().getLocale()));
+					configRepository.getTranslations(
+							searchTransaction.getQuestion().getCollection().getId(),
+							searchTransaction.getQuestion().getProfile(),
+							searchTransaction.getQuestion().getLocale()));
 		}
 
 	}

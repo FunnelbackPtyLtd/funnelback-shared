@@ -105,7 +105,7 @@ public class MockConfigRepository implements ConfigRepository {
 
 	@Override
 	public Map<String, String> getTranslations(String collectionId,
-			Locale locale) {
+			String profileId, Locale locale) {
 		return translations;
 	}
 

@@ -63,7 +63,7 @@ public class DefaultConfigRepositoryTranslationsTest {
 	
 	@Test
 	public void testBasic() {
-		Map<String, String> translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		Map<String, String> translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		
 		Assert.assertNull(translations.get("non-existent"));
 		Assert.assertEquals("Collection+locale should take precedence", "Search (Collection fr_BE)", translations.get("search"));
@@ -72,17 +72,29 @@ public class DefaultConfigRepositoryTranslationsTest {
 		Assert.assertEquals("Global fr_BE", translations.get("global.fr_BE"));
 		Assert.assertEquals("Collection", translations.get("collection"));
 		Assert.assertEquals("Collection fr", translations.get("collection.fr"));
-		Assert.assertEquals("Collection fr_BE", translations.get("collection.fr_BE"));		
+		Assert.assertEquals("Collection fr_BE", translations.get("collection.fr_BE"));
+		
+		translations = configRepository.getTranslations("i18n-collection", "_default_preview", new Locale("fr", "BE"));
+		
+		Assert.assertNull(translations.get("non-existent"));
+		Assert.assertEquals("Collection+locale should take precedence", "Search (Collection fr_BE / _default_preview)", translations.get("search"));
+		Assert.assertEquals("Global", translations.get("global"));
+		Assert.assertEquals("Global fr", translations.get("global.fr"));
+		Assert.assertEquals("Global fr_BE", translations.get("global.fr_BE"));
+		Assert.assertEquals("Collection _default_preview", translations.get("collection"));
+		Assert.assertEquals("Collection fr _default_preview", translations.get("collection.fr"));
+		Assert.assertEquals("Collection fr_BE _default_preview", translations.get("collection.fr_BE"));		
+
 	}
 	
 
 	@Test
 	public void testReloading() throws IOException {
-		Map<String, String> translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		Map<String, String> translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Collection fr_BE)", translations.get("search"));
 		
-		DefaultConfigRepositoryTestBase.writeAndTouchFuture(new File(TEST_DIR, "ui.fr_BE.cfg"), "search=New translation");
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		DefaultConfigRepositoryTestBase.writeAndTouchFuture(new File(TEST_DIR, "_default/ui.fr_BE.cfg"), "search=New translation");
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("New translation", translations.get("search"));
 		
 
@@ -90,7 +102,7 @@ public class DefaultConfigRepositoryTranslationsTest {
 
 	@Test
 	public void testNonAscii() {
-		Map<String, String> translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		Map<String, String> translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		
 		Assert.assertEquals("\u4E2D\u56FD", translations.get("china"));
 		Assert.assertEquals("Accentu\u00E9", translations.get("french"));
@@ -103,31 +115,31 @@ public class DefaultConfigRepositoryTranslationsTest {
 	 */
 	@Test
 	public void testHierarchy() {
-		Map<String, String> translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		Map<String, String> translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Collection fr_BE)", translations.get("search"));
 		
-		new File(TEST_DIR, "ui.fr_BE.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		new File(TEST_DIR, "_default/ui.fr_BE.cfg").delete();
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Global fr_BE)", translations.get("search"));
 
 		new File(SEARCH_HOME, "conf/ui.fr_BE.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Collection fr)", translations.get("search"));
 
-		new File(TEST_DIR, "ui.fr.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		new File(TEST_DIR, "_default/ui.fr.cfg").delete();
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Global fr)", translations.get("search"));
 
 		new File(SEARCH_HOME, "conf/ui.fr.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Collection)", translations.get("search"));
 
-		new File(TEST_DIR, "ui.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		new File(TEST_DIR, "_default/ui.cfg").delete();
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertEquals("Search (Global)", translations.get("search"));
 		
 		new File(SEARCH_HOME, "conf/ui.cfg").delete();
-		translations = configRepository.getTranslations("i18n-collection", new Locale("fr", "BE"));
+		translations = configRepository.getTranslations("i18n-collection", "_default", new Locale("fr", "BE"));
 		Assert.assertNull(translations.get("search"));
 	}
 	

@@ -77,11 +77,12 @@ public interface ConfigRepository {
 	public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId);
 	
 	/**
-	 * Gets the translations for a given collection and locale
+	 * Gets the translations for a given collection, profile and locale
 	 * @param collectionId
+	 * @param profileId
 	 * @param locale
 	 * @return
 	 */
-	public Map<String, String> getTranslations(String collectionId, Locale locale);
+	public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
 
 }
