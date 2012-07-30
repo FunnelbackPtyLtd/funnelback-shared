@@ -30,27 +30,12 @@ public class DefaultUrlRenderer implements UrlRenderer {
 	@Autowired
 	private File searchHome;
 
-	public byte[] fetch(String url) throws IOException {
-		
-		Cache cache = appCacheManager.getCache(CACHE);
-
-		if (! cache.isKeyInCache(url)) {
-			log.trace("Fetching " + url + " to cache");
-
-			URL imageUrl = new URL(url);
-			@Cleanup InputStream imageStream = imageUrl.openStream();
-			cache.put(new Element(url, IOUtils.toByteArray(imageStream)));
-		}
-
-		return (byte[])cache.get(url).getValue();
-	}
-
 	@Override
 	public byte[] renderUrl(String url, int width, int height)
 			throws IOException {
 		Cache cache = appCacheManager.getCache(CACHE);
 
-		String key = url;
+		String key = url + "|" + width + "|" + height;
 		
 		if (! cache.isKeyInCache(key)) {
 			File phantomBinary;

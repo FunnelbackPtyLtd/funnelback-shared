@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.service.image.ImageScaler;
@@ -39,11 +40,23 @@ public class PreviewController {
 	ImageScaler scaler;
 
 	@RequestMapping(value="/preview", method=RequestMethod.GET)
-	public ModelAndView preview(HttpServletRequest request,
+	public ModelAndView preview(
+			HttpServletRequest request,
 			HttpServletResponse response,
-			String url, ImageScalerSettings ss) throws Exception {
+			String url,
+			ImageScalerSettings ss,
+			@RequestParam(value = "render_width", required = false) Integer renderWidth,
+			@RequestParam(value = "render_height", required = false) Integer renderHeight)
+			throws Exception {
 		
-		byte[] unscaledImage = renderer.renderUrl(url, 1024, 768);
+		if (renderWidth == null) {
+			renderWidth = 1024;
+		}
+		if (renderHeight == null) {
+			renderHeight = 1024;
+		}
+
+		byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
 		byte[] scaledImage = scaler.scaleImage(
 				PreviewController.class.getCanonicalName() + "|" + url,
 				unscaledImage, ss);
