@@ -37,39 +37,40 @@ public class DefaultImageScaler implements ImageScaler {
 				+ "|" + settings.getHeight() + "|"
 				+ settings.getType() + "|" + settings.getFormat();
 
-		log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + processedKey);
-
-		
-		@Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
-		Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
-		
-		thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
-
-		if (settings.getFormat() != null) {
-			thumbnailor = thumbnailor.outputFormat(settings.getFormat());
-		}		
-
-		if (settings.getType() == null) {
-			thumbnailor = thumbnailor.keepAspectRatio(true);
-		} else if (settings.getType() == ScaleType.keep_aspect) {
-			thumbnailor = thumbnailor.keepAspectRatio(true);
-		} else if (settings.getType() == ScaleType.ignore_aspect) {
-			thumbnailor = thumbnailor.keepAspectRatio(false);
-		} else {
-			String cropName = settings.getType().name();
-			// Strip prefix to match position names
-			String positionName = cropName.substring("crop_".length());
-			thumbnailor = thumbnailor.crop(Positions.valueOf(positionName.toUpperCase()));
+		if (! cache.isKeyInCache(processedKey)) {
+			log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + processedKey);
+			
+			@Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
+			Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
+			
+			thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
+	
+			if (settings.getFormat() != null) {
+				thumbnailor = thumbnailor.outputFormat(settings.getFormat());
+			}		
+	
+			if (settings.getType() == null) {
+				thumbnailor = thumbnailor.keepAspectRatio(true);
+			} else if (settings.getType() == ScaleType.keep_aspect) {
+				thumbnailor = thumbnailor.keepAspectRatio(true);
+			} else if (settings.getType() == ScaleType.ignore_aspect) {
+				thumbnailor = thumbnailor.keepAspectRatio(false);
+			} else {
+				String cropName = settings.getType().name();
+				// Strip prefix to match position names
+				String positionName = cropName.substring("crop_".length());
+				thumbnailor = thumbnailor.crop(Positions.valueOf(positionName.toUpperCase()));
+			}
+	
+			@Cleanup ByteArrayOutputStream scaledImageBytes = new ByteArrayOutputStream();
+			try {
+				thumbnailor.toOutputStream(scaledImageBytes);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			
+			cache.put(new Element(processedKey, scaledImageBytes.toByteArray()));
 		}
-
-		@Cleanup ByteArrayOutputStream scaledImageBytes = new ByteArrayOutputStream();
-		try {
-			thumbnailor.toOutputStream(scaledImageBytes);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		cache.put(new Element(processedKey, scaledImageBytes.toByteArray()));
 
 		return (byte[])cache.get(processedKey).getValue();
 	}

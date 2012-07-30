@@ -2,10 +2,7 @@ package com.funnelback.publicui.search.service.image;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
-import lombok.Cleanup;
 import lombok.extern.log4j.Log4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -14,7 +11,6 @@ import net.sf.ehcache.Element;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,8 +32,10 @@ public class DefaultUrlRenderer implements UrlRenderer {
 		Cache cache = appCacheManager.getCache(CACHE);
 
 		String key = url + "|" + width + "|" + height;
-		
+
 		if (! cache.isKeyInCache(key)) {
+			log.trace("Rendering " + url + " to cache with key " + key);
+
 			File phantomBinary;
 			
 			boolean isWindows = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;

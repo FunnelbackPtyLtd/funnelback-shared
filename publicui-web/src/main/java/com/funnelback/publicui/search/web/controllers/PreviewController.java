@@ -1,21 +1,13 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Cleanup;
-import net.coobird.thumbnailator.Thumbnails;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +45,7 @@ public class PreviewController {
 			renderWidth = 1024;
 		}
 		if (renderHeight == null) {
-			renderHeight = 1024;
+			renderHeight = 768;
 		}
 
 		byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
