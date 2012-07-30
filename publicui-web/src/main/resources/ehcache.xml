@@ -22,6 +22,6 @@
 	<cache name="DefaultImageScalerRepository" eternal="true" maxElementsInMemory="50" overflowToDisk="true" statistics="true" />
 
 	<!-- Cache for PreviewController -->
-	<cache name="phantomPreviewRepository" eternal="true" maxElementsInMemory="100" overflowToDisk="true" statistics="true" />
+	<cache name="DefaultUrlRendererRepository" eternal="true" maxElementsInMemory="100" overflowToDisk="true" statistics="true" />
 
 </ehcache>
