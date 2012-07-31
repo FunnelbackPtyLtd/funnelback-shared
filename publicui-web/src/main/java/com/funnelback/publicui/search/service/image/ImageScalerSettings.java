@@ -1,12 +1,19 @@
 package com.funnelback.publicui.search.service.image;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
 public class ImageScalerSettings {
 
+	@NotNull
+	@Min(value=1)
 	@Getter @Setter private Integer width;
 	
+	@NotNull
+	@Min(value=1)
 	@Getter @Setter private Integer height;
 	
 	/**

@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import lombok.Cleanup;
 
@@ -36,7 +37,7 @@ public class PreviewController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			String url,
-			ImageScalerSettings ss,
+			@Valid ImageScalerSettings ss,
 			@RequestParam(value = "render_width", required = false) Integer renderWidth,
 			@RequestParam(value = "render_height", required = false) Integer renderHeight)
 			throws Exception {

@@ -7,6 +7,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import lombok.Cleanup;
 import net.coobird.thumbnailator.Thumbnails;
@@ -44,7 +45,7 @@ public class ImageScaleController {
 
 	@RequestMapping(value="/scale", method=RequestMethod.GET)
 	public ModelAndView scale(HttpServletRequest request,
-			HttpServletResponse response, String url, ImageScalerSettings ss)
+			HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
 			throws Exception {
 		
 		byte[] unscaledImage = fetcher.fetch(url);
