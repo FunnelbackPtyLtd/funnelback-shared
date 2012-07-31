@@ -23,12 +23,7 @@ public class GroovyScriptResource extends AbstractSingleFileResource<Class<Scrip
 	@Override
 	public Class<Script> parse() throws IOException {
 		log.debug("Loading Groovy script from '"+file.getAbsolutePath()+"'");
-		GroovyClassLoader classLoader = new GroovyClassLoader();
-		try {
-			return classLoader.parseClass(file);
-		} finally {
-			classLoader.close();
-		}
+		return new GroovyClassLoader().parseClass(file);
 	}
 
 }

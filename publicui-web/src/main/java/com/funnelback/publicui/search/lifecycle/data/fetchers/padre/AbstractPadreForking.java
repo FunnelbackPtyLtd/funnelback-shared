@@ -156,7 +156,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 				// indexUpdateLock might be null if we encountered an
 				// OverlappingFileLockException earlier
 				if (indexUpdateLock != null) {
-					try { indexUpdateLock.close(); }
+					try { indexUpdateLock.release(); }
 					catch (IOException ioe) { }
 				}
 				

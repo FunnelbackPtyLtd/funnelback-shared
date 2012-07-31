@@ -203,7 +203,7 @@ public class DefaultPadreForkingLockTests {
 			// Ensure the lock is released for subsequent tests
 			t.join();
 			if (fl != null) {
-				fl.close();
+				fl.release();
 			}
 			channel.close();
 			raf.close();
@@ -232,7 +232,7 @@ public class DefaultPadreForkingLockTests {
 		try {
 			FileLock fl = channel.tryLock();
 			Assert.assertNotNull(fl);
-			fl.close();
+			fl.release();
 			Assert.assertFalse(fl.isValid());
 		} finally {
 			channel.close();
