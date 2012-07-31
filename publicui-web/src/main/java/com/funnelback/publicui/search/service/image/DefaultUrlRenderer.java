@@ -1,7 +1,11 @@
 package com.funnelback.publicui.search.service.image;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.PostConstruct;
 
 import lombok.extern.log4j.Log4j;
 import net.sf.ehcache.Cache;
@@ -10,6 +14,8 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +37,51 @@ public class DefaultUrlRenderer implements UrlRenderer {
 
 	@Autowired
 	private ConfigRepository configRepository;
+	
+	private File phantomBinary;
+	@PostConstruct
+	public void setupPhantomBinary() throws IOException {
+		boolean isWindows = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
+		boolean isMac = System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
+		boolean is64Bit = (Integer.parseInt(System.getProperty("sun.arch.data.model")) > 32);
+		
+		if (isMac) {
+			phantomBinary = new File(searchHome, "mbin" + File.separator + "phantomjs" + File.separator + "bin" + File.separator + "phantomjs");
+		} else if (isWindows) {
+			phantomBinary = new File(searchHome, "wbin" + File.separator + "phantomjs" + File.separator + "phantomjs.exe");
+		} else {
+			String[] customPhantomDirectories = new String[]{"centos6", "centos5", "local"};
+			String bitDirectory = is64Bit ? "64" : "32";
+			
+			for (String directory : customPhantomDirectories) {
+				phantomBinary = new File(searchHome, "linbin" + File.separator + "phantomjs" + File.separator + directory + File.separator + bitDirectory + File.separator + "bin" + File.separator + "phantomjs");
+				
+				if (doesPhantomBinaryWork(phantomBinary)) {
+					break;
+				}
+			}
+		}
+	}
+
+	private boolean doesPhantomBinaryWork(File phantomBinaryToTest) throws IOException {
+		CommandLine cmdLine = new CommandLine(phantomBinary.getAbsolutePath());
+		cmdLine.addArgument("--version");
+		
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.setExitValues(null); // executor should not check exit codes itself
+
+		// capture the command's output
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+		executor.setStreamHandler(streamHandler);
+
+		int result = executor.execute(cmdLine);
+		
+		log.trace(cmdLine.toString() + " exited with code " + result);
+		log.trace(cmdLine.toString() + " output " + outputStream.toString());
+
+		return (result == 0);
+	}
 
 	@Override
 	public byte[] renderUrl(String url, int width, int height)
@@ -50,25 +101,7 @@ public class DefaultUrlRenderer implements UrlRenderer {
 
 		if (! cache.isKeyInCache(key)) {
 			log.trace("Rendering " + url + " to cache with key " + key);
-
-			File phantomBinary;
 			
-			boolean isWindows = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
-			boolean isMac = System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
-			boolean is64Bit = false;
-			
-			if (isMac) {
-				phantomBinary = new File(searchHome, "mbin" + File.separator + "phantomjs" + File.separator + "bin" + File.separator + "phantomjs");
-			} else if (isWindows) {
-				phantomBinary = new File(searchHome, "wbin" + File.separator + "phantomjs" + File.separator + "phantomjs.exe");
-			} else {
-				if (is64Bit) {
-					phantomBinary = new File(searchHome, "linbin" + File.separator + "phantomjs" + File.separator + "64" + File.separator + "bin" + File.separator + "phantomjs");
-				} else {
-					phantomBinary = new File(searchHome, "linbin" + File.separator + "phantomjs" + File.separator + "32" + File.separator + "bin" + File.separator + "phantomjs");					
-				}
-			}
-
 			File phantomPreview = new File(searchHome, "bin" + File.separator + "phantom_preview.js");
 
 			File tempFile = null;
