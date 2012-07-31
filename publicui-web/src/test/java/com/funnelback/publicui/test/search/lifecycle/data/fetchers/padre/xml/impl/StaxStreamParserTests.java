@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.model.padre.Category;
 import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -277,19 +278,18 @@ public class StaxStreamParserTests {
 	
 	@Test
 	public void testDateCount() {
-		Map<String, Integer> dcs = rp.getDateCounts();
-		Assert.assertEquals(10, dcs.size());
+		Map<String, DateCount> dcs = rp.getDateCounts();
+		Assert.assertEquals(8, dcs.size());
 		
-		assertEquals(2935, dcs.get("Missing date").intValue());
-		assertEquals(1, dcs.get("1997").intValue());
-		assertEquals(1, dcs.get("1996").intValue());
-		assertEquals(4, dcs.get("1999").intValue());
-		assertEquals(2, dcs.get("1998").intValue());
-		assertEquals(1, dcs.get("1984").intValue());
-		assertEquals(1, dcs.get("1967").intValue());
-		assertEquals(1489, dcs.get("Last year").intValue());
-		assertEquals(2, dcs.get("Next week").intValue());
-		assertEquals(2, dcs.get("Tomorrow").intValue());
+		assertEquals(1, dcs.get("d:In the past 3 months").getCount());
+		assertEquals("d<25Jun2003>24Mar2003", dcs.get("d:In the past 3 months").getQueryTerm());
+		
+		assertEquals(2, dcs.get("d:2003").getCount());
+		assertEquals("d=2003", dcs.get("d:2003").getQueryTerm());
+
+		assertEquals(8, dcs.get("d:Today").getCount());
+		assertEquals("d=24Jun2003", dcs.get("d:Today").getQueryTerm());
+
 	}
 	
 	@Test

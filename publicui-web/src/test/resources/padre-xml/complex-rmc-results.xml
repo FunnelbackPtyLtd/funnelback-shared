@@ -375,16 +375,14 @@
 <urlcount item="www.immi.gov.au/living-in-australia/settle-in-australia/beginning-life/_pdf">1</urlcount>
 <urlcount item="www.centrelink.gov.au/internet/internet.nsf/services">1</urlcount>
 <urlcount item="www.workliveplay.qld.gov.au">1</urlcount>
-<datecount item="Missing date">2935</datecount>
-<datecount item="1997">1</datecount>
-<datecount item="1996">1</datecount>
-<datecount item="1999">4</datecount>
-<datecount item="1998">2</datecount>
-<datecount item="1984">1</datecount>
-<datecount item="1967">1</datecount>
-<datecount item="Last year">1489</datecount>
-<datecount item="Next week">2</datecount>
-<datecount item="Tomorrow">2</datecount>
+<datecount item="d:In the past 3 months" qterm="d&lt;25Jun2003&gt;24Mar2003">1</datecount>
+<datecount item="d:2003" qterm="d=2003">2</datecount>
+<datecount item="d:Yesterday" qterm="d=23Jun2003">3</datecount>
+<datecount item="d:In the past year" qterm="d&lt;25Jun2003&gt;29Jun2002">4</datecount>
+<datecount item="d:In the past month" qterm="d&lt;25Jun2003&gt;23May2003">5</datecount>
+<datecount item="d:In the past 7 days" qterm="d&lt;25Jun2003&gt;16Jun2003">6</datecount>
+<datecount item="d:In the past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">7</datecount>
+<datecount item="d:Today" qterm="d=24Jun2003">8</datecount>
 
 <gscope_counts>
   <gscope_matching value="1">54</gscope_matching>

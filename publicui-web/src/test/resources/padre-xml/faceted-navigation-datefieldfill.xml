@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_11.5.0.46 64MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>C:\Data\dev\funnelback\trunk\funnelback/data/cone\live\idx\index: 11.0 MB, 5000 docs</collection_size>
+    <collection_updated>
+      Wed Mar  7 15:27:53 2012    </collection_updated>
+  </details>
+
+  <query>plumber</query>
+  <query_as_processed>plumber</query_as_processed>
+  <collection>cone</collection>
+
+<results_summary>
+  <fully_matching>27</fully_matching>
+  <estimated_hits>27</estimated_hits>
+  <partially_matching>0</partially_matching>
+  <total_matching>27</total_matching>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+  <qhlre>(?i)\bplumber\b</qhlre>
+<rmc item="U:divpermanentdiv">27</rmc>
+<rmc item="V:courier">4</rmc>
+<rmc item="V:fitting/welding">3</rmc>
+<rmc item="V:plumbing">2</rmc>
+<rmc item="V:apprentice">1</rmc>
+<rmc item="W:divtrades &amp; servicesdiv">26</rmc>
+<rmc item="W:divconstruction, architecture &amp; interiorsdiv">1</rmc>
+<rmc item="X:melbourne">5</rmc>
+<rmc item="X:surry hills">4</rmc>
+<rmc item="X:bowen hills">4</rmc>
+<rmc item="X:adelaide">3</rmc>
+<rmc item="X:gold coast">2</rmc>
+<rmc item="X:townsville">1</rmc>
+<rmc item="X:olinda">1</rmc>
+<rmc item="X:prospect">1</rmc>
+<rmc item="X:alice springs">1</rmc>
+<rmc item="X:cairns">1</rmc>
+<rmc item="X:darwin">1</rmc>
+<rmc item="X:holland park">1</rmc>
+<rmc item="X:sydney">1</rmc>
+<rmc item="X:diamond creek">1</rmc>
+<rmc item="Y:qld">9</rmc>
+<rmc item="Y:vic">7</rmc>
+<rmc item="Y:nsw">5</rmc>
+<rmc item="Y:sa">4</rmc>
+<rmc item="Y:nt">2</rmc>
+<rmc item="Z:australia">27</rmc>
+<datecount item="d:In the past 3 months" qterm="d&lt;25Jun2003&gt;24Mar2003">1</datecount>
+<datecount item="d:2003" qterm="d=2003">2</datecount>
+<datecount item="d:Yesterday" qterm="d=23Jun2003">3</datecount>
+<datecount item="d:In the past year" qterm="d&lt;25Jun2003&gt;29Jun2002">4</datecount>
+<datecount item="d:In the past month" qterm="d&lt;25Jun2003&gt;23May2003">5</datecount>
+<datecount item="d:In the past 7 days" qterm="d&lt;25Jun2003&gt;16Jun2003">6</datecount>
+<datecount item="d:In the past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">7</datecount>
+<datecount item="d:Today" qterm="d=24Jun2003">8</datecount>
+<datecount item="X:In the past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">2137</datecount>
+<datecount item="X:Today" qterm="d=24Jun2003">85</datecount>
+<datecount item="O:2005" qterm="O=2005">12</datecount>
+<datecount item="O:2006" qterm="O=2006">52</datecount>
+
+<gscope_counts>
+  <gscope_matching value="1">27</gscope_matching>
+</gscope_counts>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title><![CDATA[DUCT FIXER/PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01766.xml</live_url>
+<summary><![CDATA[470406ac48d580 427a839042a40 Classified Feed 2007-10-25 00: 00: 00 Herald Sun 2340485 Melbourne, VIC Australia 3000 DIVMelbourneDIV 3000 DUCT FIXER PLUMBER We require a duct fixer plumber to join our ... team Please phone 335 2844 This ad appeared in the]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01766.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01766.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>766</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>985</score>
+  <title><![CDATA[PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/3/job03434.xml</live_url>
+<summary><![CDATA[46fa0f5748df80 428a55b542a40 Classified Feed 2007-10-17 00: 00: 00 Leader Newspapers 2159911 Melbourne, VIC Australia DIVMelbourneDIV PLUMBER Experienced plumber required for heating co Exp required in hydronic heating as well ... as licences in gas]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=3%2Fjob03434.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F3%2Fjob03434.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>2434</docnum>
+  </result>
+
+  <result>
+  <rank>3</rank>
+  <score>347</score>
+  <title><![CDATA[PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/2/job02953.xml</live_url>
+<summary><![CDATA[4703436948d580 428a55b542a40 Classified Feed 2007-10-24 00: 00: 00 Leader Newspapers 2159872 Melbourne, VIC Australia DIVMelbourneDIV PLUMBER Experienced Plumber required for heating co Exp required in hydronic heating as well ... as licences in gas]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=2%2Fjob02953.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F2%2Fjob02953.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1953</docnum>
+  </result>
+
+  <result>
+  <rank>4</rank>
+  <score>279</score>
+  <title><![CDATA[PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/2/job02929.xml</live_url>
+<summary><![CDATA[46f0a3ef48d3430 428a55b542a40 Classified Feed 2007-10-10 00: 00: 00 Leader Newspapers 2040621 Melbourne, VIC Australia DIVMelbourneDIV PLUMBER Experienced in Ducted Air Conditioning Installations Phone 9377 7700 PLUMBER Experienced in Ducted]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=2%2Fjob02929.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F2%2Fjob02929.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1929</docnum>
+  </result>
+
+  <result>
+  <rank>5</rank>
+  <score>273</score>
+  <title><![CDATA[TRADESPERSON/ PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/1/job01348.xml</live_url>
+<summary><![CDATA[46f08ae448d4650 427a84d042a40 Classified Feed 2007-10-10 00: 00: 00 Northern Territory News 1044061 Darwin, NT Australia 0801 DIVDarwinDIV 0801 TRADESPERSON PLUMBER to start new work in Emerald Central QLD Accommodation ... available PH 0438 770 320]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=1%2Fjob01348.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F1%2Fjob01348.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>348</docnum>
+  </result>
+
+  <result>
+  <rank>6</rank>
+  <score>270</score>
+  <title><![CDATA[EXPERIENCED PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/5/job05783.xml</live_url>
+<summary><![CDATA[4707366848d1c40 4705e79942a041 Classified Feed 2007-10-27 00: 00: 00 Centralian Advocate 1032541 Alice Springs, NT Australia 0870 DIVAlice SpringsDIV 0870 Selter Shaw Plumbing Pty Ltd EXPERIENCED PLUMBER Required for immediate ... start Phone Tim 0418]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=5%2Fjob05783.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F5%2Fjob05783.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>4783</docnum>
+  </result>
+
+  <result>
+  <rank>7</rank>
+  <score>233</score>
+  <title><![CDATA[PLUMBER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/4/job04468.xml</live_url>
+<summary><![CDATA[46fd6e3848d60 427a851f42a40 Classified Feed 2007-10-20 00: 00: 00 The Advertiser 3059592 Adelaide, SA Australia 5000 DIVAdelaideDIV 5000 PLUMBER Based in the Elizabeth area Contact Flinders Personnel on 8254 3100 ... This ad appeared in The Adelaide]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=4%2Fjob04468.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F4%2Fjob04468.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>3468</docnum>
+  </result>
+
+  <result>
+  <rank>8</rank>
+  <score>232</score>
+  <title><![CDATA[PLUMBER, EXPERIENCED TRADESPERSON]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/2/job02898.xml</live_url>
+<summary><![CDATA[46f1c97d48d1220 427a83d042a40 Classified Feed 2007-10-11 00: 00: 00 Messenger Newspapers 4176622 Prospect, SA Australia 5082 DIVProspectDIV 5082 PLUMBER experienced tradesperson required maintenance breakdown and water filtration works central and]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=2%2Fjob02898.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F2%2Fjob02898.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1898</docnum>
+  </result>
+
+  <result>
+  <rank>9</rank>
+  <score>232</score>
+  <title><![CDATA[PLUMBER, DRAINER & GAS FITTER]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/3/job03263.xml</live_url>
+<summary><![CDATA[46f8b6c848d1070 427a82fd42a40 Classified Feed 2007-10-16 00: 00: 00 Cumberland Newspapers 2223047 Sydney, NSW Australia DIVSydneyDIV Plumber Drainer Gas Fitter Req Experience in Industrial domestic and commercial areas Good wages ... uniform and van]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=3%2Fjob03263.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F3%2Fjob03263.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>2263</docnum>
+  </result>
+
+  <result>
+  <rank>10</rank>
+  <score>232</score>
+  <title><![CDATA[PLUMBER REQUIRED OWN]]></title>
+  <collection>cone</collection>
+  <component>0</component>
+  <live_url>file:///C:/Data/dev/funnelback/trunk/funnelback/data/cone/xml_data/3/job03350.xml</live_url>
+<summary><![CDATA[46faa08648db1f0 427a867f42a40 Classified Feed 2007-10-18 00: 00: 00 The Townsville Bulletin 1029756 Townsville, QLD Australia 4810 DIVTownsvilleDIV 4810 PLUMBER REQUIRED Own tools transport Work in local area 0412 652 ... 395 This ad appeared in the]]></summary>
+  <cache_url>cache.cgi?collection=cone&amp;doc=3%2Fjob03350.xml&amp;off=0&amp;len=-1&amp;url=file%3A%2F%2F%2FC%3A%2FData%2Fdev%2Ffunnelback%2Ftrunk%2Ffunnelback%2Fdata%2Fcone%2Fxml_data%2F3%2Fjob03350.xml</cache_url>
+  <date>No Date</date>
+  <filesize>0</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>2350</docnum>
+  </result>
+
+</results>
+
+<contextual_navigation>
+  <search_terms>plumber</search_terms>
+<cluster_nav level="0" url="profile=_default&amp;xml=&amp;collection=cone&amp;query=plumber">plumber</cluster_nav>
+  <category name="type" more="0">
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60HillsDIV%204006%20PLUMBER%60" count="4">HillsDIV 4006...</cluster>
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60Australia%20DIVMelbourneDIV%20PLUMBER%60" count="3">Australia DIVMelbourneDIV...</cluster>
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60HillsDIV%202010%20Plumber%60" count="3">HillsDIV 2010...</cluster>
+  </category>
+  <category name="topic" more="0">
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60PLUMBER%20Experienced%60" count="5">...Experienced</cluster>
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60PLUMBER%20Required%60" count="3">...Required</cluster>
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=%60Plumber%20Drainer%60" count="3">...Drainer</cluster>
+  </category>
+  <category name="site" more="0">
+<cluster href="?profile=_default&amp;xml=&amp;collection=cone&amp;query=plumber%20%7Cu%3A" count="27"></cluster>
+  </category>
+</contextual_navigation>
+
+  <phluster_elapsed_time>0.008 sec.</phluster_elapsed_time>
+  <include_scope></include_scope>
+  <exclude_scope></exclude_scope>
+  <query_processor_codes>2x</query_processor_codes>
+  <padre_elapsed_time>32</padre_elapsed_time>
+
+  <!-- Vbyte integers decoded:  this query: 212, this run: 212 -->
+  <!-- Vbyte bytes decoded: this query: 239, this run: 239 -->
+</PADRE_result_packet>

@@ -98,7 +98,7 @@ public class ResultPacket {
 	/**
 	 * <p>Metadata counts (Used in faceted navigation).</p>
 	 * 
-	 * <p>The key is the tuple <code>class:value</code> and the
+	 * <p>The key is the tuple <code>metadata_class:value</code> and the
 	 * value is the count.</p>
 	 * 
 	 * <p>
@@ -115,7 +115,7 @@ public class ResultPacket {
 	 * <p>Metadata counts (Used in faceted navigation) including top n results
 	 * for each count.</p>
 	 * 
-	 * <p>The key is the couple of <code>class:value</code>. The value is a list of
+	 * <p>The key is the couple of <code>metadata_class:value</code>. The value is a list of
 	 * the first n results that would be returned if the metadata constraint was applied.</p>
 	 * 
 	 * <p>The key is the same one as the {@link ResultPacket#rmcs} map.</p>
@@ -174,12 +174,12 @@ public class ResultPacket {
 	/**
 	 * <p>Date counts (Used in faceted navigation)</p>
 	 * 
-	 * <p>The key is either the 4 digit year or a label like <em>This year</em>,
-	 * <em>Last 6 months</em>, <em>Next month</em>, etc.</p>
+	 * <p>The key is a tuple <code>metadata_class:value</code>, with the value
+	 * being a year or a label, e.g. <code>d:2003</code> or <code>d:Yesterday</code>.</p>
 	 * 
 	 * @since 12.0
 	 */
-	@Getter private final Map<String, Integer> dateCounts = new HashMap<String, Integer>();
+	@Getter private final Map<String, DateCount> dateCounts = new HashMap<String, DateCount>();
 	
 	/**
 	 * <p>Regular expression to use to highlight query terms in titles,
@@ -331,6 +331,7 @@ public class ResultPacket {
 		
 		public static final String DATECOUNT = "datecount";
 		public static final String DATECOUNT_ITEM = "item";
+		public static final String DATECOUNT_QTERM = "qterm";
 		
 		public static final String QHLRE = "qhlre";
 		public static final String ORIGIN = "origin";

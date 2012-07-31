@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataTypeFill;
@@ -50,7 +51,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 	
 	@Test
 	public void testFacets() {
-		Assert.assertEquals(8, facets.facetDefinitions.size());
+		Assert.assertEquals(9, facets.facetDefinitions.size());
 	}
 	
 	@Test
@@ -156,7 +157,16 @@ public class StaxStreamFacetedNavigationConfigParserTests {
 		c1 = (URLFill) facet.getCategoryDefinitions().get(0);
 		assertEquals("http://example.com/jobs/old/", c1.getData());
 		assertEquals(0, c1.getSubCategories().size());
-
+	}
+	
+	@Test
+	public void testFacet9() {
+		FacetDefinition facet = facets.facetDefinitions.get(8);
+		assertEquals("Date-based facet", facet.getName());
+		assertEquals(1, facet.getCategoryDefinitions().size());
+		
+		DateFieldFill dff = (DateFieldFill) facet.getCategoryDefinitions().get(0);
+		assertEquals("d", dff.getData());
 	}
 }
 

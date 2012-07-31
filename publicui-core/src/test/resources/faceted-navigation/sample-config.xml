@@ -69,4 +69,10 @@
 			<Data>http://example.com/jobs/old/</Data>
 		</URLFill>
 	</Facet>
+	<Facet>
+		<Data>Date-based facet</Data>
+		<DateFieldFill>
+			<Data>d</Data>
+		</DateFieldFill>
+	</Facet>
 </Facets>

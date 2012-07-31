@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -31,17 +32,18 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 		List<CategoryValue> categories = new ArrayList<CategoryValue>();
 		
 		// For each metadata count <rmc item="a:new south wales">42</rmc>
-		for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getDateCounts().entrySet()) {
+		for (Entry<String, DateCount> entry : st.getResponse().getResultPacket().getDateCounts().entrySet()) {
 			String item = entry.getKey();
-			int count = entry.getValue();
-			// FIXME We assume there's only the 'd' metadata class
-			// used here
-			categories.add(new CategoryValue(
-					"d",
-					item,
-					count,
-					getQueryStringParamName() + "=" + URLEncoder.encode(item, "UTF-8"),
-					getMetadataClass()));
+			DateCount dc = entry.getValue();
+			MetadataAndValue mdv = parseMetadata(item);
+			if (this.data.equals(mdv.metadata)) {
+				categories.add(new CategoryValue(
+						mdv.metadata,
+						mdv.value,
+						dc.getCount(),
+						getQueryStringParamName() + "=" + URLEncoder.encode(dc.getQueryTerm(), "UTF-8"),
+						getMetadataClass()));
+			}
 		}
 		return categories;
 	}
@@ -67,14 +69,6 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 	/** {@inheritDoc} */
 	@Override
 	public String getQueryConstraint(String value) {
-		try {
-			// Year type value
-			int year = Integer.parseInt(value);
-			return data + "=" + year;
-		} catch (Exception e) {
-			// Label value "last year", "last week", etc.
-			// TODO
-			return data + ":" + value;
-		}
+		return value;
 	}
 }

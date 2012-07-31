@@ -101,7 +101,8 @@ public class StaxStreamParser implements PadreXmlParser {
 						packet.getGScopeCounts().putAll(parseGScopeCounts(xmlStreamReader));
 					} else if (ResultPacket.Schema.DATECOUNT.equals(xmlStreamReader.getLocalName())) {
 						DateCount dateCount = parseDateCount(xmlStreamReader);
-						packet.getDateCounts().put(dateCount.label, dateCount.count);
+						packet.getDateCounts().put(dateCount.item,
+								new com.funnelback.publicui.search.model.padre.DateCount(dateCount.qTerm, dateCount.count));
 					} else if (ResultPacket.Schema.QHLRE.equals(xmlStreamReader.getLocalName())) {
 						packet.setQueryHighlightRegex(xmlStreamReader.getElementText());
 					} else if (ResultPacket.Schema.ORIGIN.equals(xmlStreamReader.getLocalName())) {
@@ -355,10 +356,12 @@ public class StaxStreamParser implements PadreXmlParser {
 			throw new InvalidParameterException();
 		}
 		
-		if (reader.getAttributeCount() == 1
-				&& ResultPacket.Schema.DATECOUNT_ITEM.equals(reader.getAttributeLocalName(0))) {
+		if (reader.getAttributeCount() == 2
+				&& ResultPacket.Schema.DATECOUNT_ITEM.equals(reader.getAttributeLocalName(0))
+				&& ResultPacket.Schema.DATECOUNT_QTERM.equals(reader.getAttributeLocalName(1))) {
 			DateCount dc = new DateCount();
-			dc.label = reader.getAttributeValue(0);
+			dc.item = reader.getAttributeValue(0);
+			dc.qTerm = reader.getAttributeValue(1);
 			dc.count = Integer.parseInt(reader.getElementText());
 			return dc;
 		}
@@ -432,7 +435,8 @@ public class StaxStreamParser implements PadreXmlParser {
 	}
 	
 	private class DateCount {
-		public String label;
+		public String item;
+		public String qTerm;
 		public int count;
 	}
 	
