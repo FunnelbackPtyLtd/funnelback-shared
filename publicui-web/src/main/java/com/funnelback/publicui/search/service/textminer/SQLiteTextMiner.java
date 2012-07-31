@@ -10,8 +10,8 @@ import lombok.extern.log4j.Log4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
@@ -59,7 +59,7 @@ public class SQLiteTextMiner implements TextMiner {
 					
 	                if (jsonString == null) {
 	                    // Try the variant cache
-	                    String variantKey = hashKey + ":variants";
+	                    String variantKey = hashKey + "_variants";
 	                    cache.close();
 			            cache = new SQLiteCache(new File(checkpointDir, variantKey + ".sqlitedb").getAbsolutePath(), config, false);
 
@@ -88,7 +88,7 @@ public class SQLiteTextMiner implements TextMiner {
 
 	            if (jsonString == null) {
 	                // Try the variant cache
-	                String variantKey = hashKey + ":variants";
+	                String variantKey = hashKey + "_variants";
                     cache.close();
     	            cache = new SQLiteCache(checkpointDir + File.separator + variantKey + ".sqlitedb", config, false);
                     
