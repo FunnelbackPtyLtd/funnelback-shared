@@ -66,9 +66,9 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 	@RequestMapping("/padre-qs.cgi")
 	public void suggest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			runPadreBinary(PADRE_QS, null, request, response);
+			runPadreBinary(PADRE_QS, null, request, response, false);
 		} catch (PadreForkingException e) {
-			log.error("Unable to run " + PADRE_QS, e);
+			SuggestController.log.error("Unable to run " + PADRE_QS, e);
 			throw new ServletException(e);
 		}
 	}
