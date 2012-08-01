@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.service.image;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class DefaultUrlRenderer implements UrlRenderer {
 	
 	private File phantomBinary;
 	@PostConstruct
-	public void setupPhantomBinary() throws IOException {
+	public void setupPhantomBinary() {
 		boolean isWindows = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
 		boolean isMac = System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0;
 		boolean is64Bit = (Integer.parseInt(System.getProperty("sun.arch.data.model")) > 32);
@@ -54,31 +52,49 @@ public class DefaultUrlRenderer implements UrlRenderer {
 			String bitDirectory = is64Bit ? "64" : "32";
 			
 			for (String directory : customPhantomDirectories) {
-				phantomBinary = new File(searchHome, "linbin" + File.separator + "phantomjs" + File.separator + directory + File.separator + bitDirectory + File.separator + "bin" + File.separator + "phantomjs");
+				File phantomBinaryToTest = new File(searchHome, "linbin" + File.separator + "phantomjs" + File.separator + directory + File.separator + bitDirectory + File.separator + "bin" + File.separator + "phantomjs");
 				
-				if (doesPhantomBinaryWork(phantomBinary)) {
+				phantomBinary = phantomBinaryToTest;
+				if (doesPhantomBinaryWork(phantomBinaryToTest)) {
 					break;
 				}
 			}
 		}
 	}
 
-	private boolean doesPhantomBinaryWork(File phantomBinaryToTest) throws IOException {
-		CommandLine cmdLine = new CommandLine(phantomBinary.getAbsolutePath());
-		cmdLine.addArgument("--version");
-		
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setExitValues(null); // executor should not check exit codes itself
+	private static boolean doesPhantomBinaryWork(File phantomBinaryToTest) {
+		int result = -1;
+		try {
+			CommandLine cmdLine = new CommandLine(phantomBinaryToTest.getAbsolutePath());
+			cmdLine.addArgument("--version");
+			
+			DefaultExecutor executor = new DefaultExecutor();
+			executor.setExitValues(null); // executor should not check exit codes itself
 
-		// capture the command's output
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-		executor.setStreamHandler(streamHandler);
+			// capture the command's output
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+			executor.setStreamHandler(streamHandler);
 
-		int result = executor.execute(cmdLine);
-		
-		log.trace(cmdLine.toString() + " exited with code " + result);
-		log.trace(cmdLine.toString() + " output " + outputStream.toString());
+			try {
+				result = executor.execute(cmdLine);
+			} catch (Exception e) {
+				result = -2;
+			}
+			
+			if (result != 0) {
+				log.error(cmdLine.toString() + " exited with code " + result);
+				log.error(cmdLine.toString() + " output " + outputStream.toString());
+			} else {
+				log.trace(cmdLine.toString() + " exited with code " + result);
+				log.trace(cmdLine.toString() + " output " + outputStream.toString());				
+			}
+
+		} catch (Exception e) {
+			log.error(phantomBinaryToTest + " does not work", e);
+			// Assume any exception means it does not work
+			return false;
+		}
 
 		return (result == 0);
 	}
