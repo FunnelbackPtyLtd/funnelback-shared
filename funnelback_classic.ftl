@@ -514,6 +514,7 @@
 -->
 <#macro FacetBreadCrumb categoryDefinitions selectedCategoryValues separator>
     <#list categoryDefinitions as def>
+
         <#if def.class.simpleName == "URLFill" && selectedCategoryValues?keys?seq_contains(def.queryStringParamName)>
             <#-- Special case for URLFill facets: Split on slashes -->
             <#assign path = selectedCategoryValues[def.queryStringParamName][0]>
@@ -532,6 +533,29 @@
             </#list>
         <#else>
             <#if selectedCategoryValues?keys?seq_contains(def.queryStringParamName)>
+                <#-- Find the label for this category. For nearly all categories the label is equal
+                     to the value returned by the query processor, but not for date counts for example.
+                     With date counts the label is the actual year "2003" or a "past 3 weeks" but the
+                     value is the constraint to apply like "d=2003" or "d>12Jun2012" -->
+                <#-- Use value by default if we can't find a label -->
+                <#local valueLabel = selectedCategoryValues[def.queryStringParamName][0] />
+
+                <#-- Iterate over generated facets -->
+                <#list response.facets as facet>
+                    <#if def.facetName == facet.name>
+                        <#-- Facet located, find current working category -->
+                        <#assign fCat = facet.findDeepestCategory([def.queryStringParamName]) />
+                        <#list fCat.values as catValue>
+                            <#-- Find the category value for which the query string param
+                                 matches the currently selected value -->
+                            <#local kv = catValue.queryStringParam?split("=") />
+                            <#if valueLabel == urlDecode(kv[1])>
+                                <#local valueLabel = catValue.label />
+                            </#if>
+                        </#list>
+                    </#if>
+                </#list> 
+
                 <#-- Find if we are processing the last selected value (leaf node) -->
                 <#local last = true>
                 <#list def.allQueryStringParamNames as param>
@@ -542,10 +566,10 @@
                 </#list>
 
                 <#if last == true>
-                    ${separator} ${selectedCategoryValues[def.queryStringParamName][0]}
+                    ${separator} ${valueLabel}
                 <#else>
                     ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
-                        ${selectedCategoryValues[def.queryStringParamName][0]}
+                        ${valueLabel}
                     </a>
                     <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
                 </#if>
