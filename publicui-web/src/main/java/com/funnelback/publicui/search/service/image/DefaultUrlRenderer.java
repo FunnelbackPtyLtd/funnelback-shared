@@ -3,6 +3,8 @@ package com.funnelback.publicui.search.service.image;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -76,8 +78,13 @@ public class DefaultUrlRenderer implements UrlRenderer {
 			PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
 			executor.setStreamHandler(streamHandler);
 
+			// We need to force the phantomBinary to check the right lib path on linux
+			Map<String, String> environment = new HashMap<String, String>(System.getenv());
+			File libraryDirectory = new File(phantomBinaryToTest.getParentFile().getParentFile(), "lib");
+			environment.put("LD_LIBRARY_PATH", libraryDirectory.getAbsolutePath());
+			
 			try {
-				result = executor.execute(cmdLine);
+				result = executor.execute(cmdLine, environment);
 			} catch (Exception e) {
 				result = -2;
 			}
@@ -131,8 +138,13 @@ public class DefaultUrlRenderer implements UrlRenderer {
 				cmdLine.addArgument(Integer.toString(height));
 				cmdLine.addArgument(tempFile.getCanonicalPath());
 				DefaultExecutor executor = new DefaultExecutor();
-	
-				int result = executor.execute(cmdLine);
+				
+				// We need to force the phantomBinary to check the right lib path on linux
+				Map<String, String> environment = new HashMap<String, String>(System.getenv());
+				File libraryDirectory = new File(phantomBinary.getParentFile().getParentFile(), "lib");
+				environment.put("LD_LIBRARY_PATH", libraryDirectory.getAbsolutePath());
+				
+				int result = executor.execute(cmdLine, environment);
 				if (result != 0) {
 					throw new RuntimeException(cmdLine.toString() + " failed with code " + result);
 				}
