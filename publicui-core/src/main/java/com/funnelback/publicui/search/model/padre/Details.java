@@ -4,6 +4,7 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,6 +18,7 @@ import lombok.ToString;
  */
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Details {
 
 	/** Pattern to use to parse the updated date of the index. */

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -18,6 +19,7 @@ import lombok.ToString;
  */
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Result implements ResultType {
 
 	/**
@@ -157,7 +159,7 @@ public class Result implements ResultType {
 	/**
 	 * Original URL from the index, taken from indexUrl before any transformation.
 	 */
-	@Getter final private String indexUrl;
+	@Getter private String indexUrl;
 
 	/**
 	 * Custom data placeholder allowing any arbitrary data to be

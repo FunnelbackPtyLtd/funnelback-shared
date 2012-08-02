@@ -2,8 +2,9 @@ package com.funnelback.publicui.search.model.padre;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -16,7 +17,8 @@ import lombok.Setter;
  * 
  * @since 11.0
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class TierBar implements ResultType {
 
 	/**

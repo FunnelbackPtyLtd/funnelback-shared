@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.padre;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -25,6 +26,7 @@ import lombok.Setter;
  * @see Cluster
  */
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClusterNav {
 
 	/**

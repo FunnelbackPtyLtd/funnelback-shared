@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.padre;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,6 +15,7 @@ import lombok.Setter;
  * @since 11.2
  */
 @AllArgsConstructor
+@NoArgsConstructor
 public class RMCItemResult {
 
 	/** Title of the result */

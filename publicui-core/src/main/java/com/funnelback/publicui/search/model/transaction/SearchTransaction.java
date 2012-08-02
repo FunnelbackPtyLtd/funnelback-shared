@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.FutureTask;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * 
  * @since 11.0
  */
-@RequiredArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions"})
 public class SearchTransaction {
 
@@ -33,12 +33,17 @@ public class SearchTransaction {
 	}
 	
 	/** The question containing the input parameters. */
-	@Getter private final SearchQuestion question;
+	@Getter private SearchQuestion question;
 	/** The response containing result data. */
-	@Getter private final SearchResponse response;
+	@Getter private SearchResponse response;
 	/** Any error if the search wasn't successful. */
 	@Getter @Setter private SearchError error;
 
+	public SearchTransaction(SearchQuestion sq, SearchResponse sr) {
+		this.question = sq;
+		this.response = sr;
+	}
+	
 	/**
 	 * <p>Any additional extra search transactions performed during this transaction.<p>
 	 * 

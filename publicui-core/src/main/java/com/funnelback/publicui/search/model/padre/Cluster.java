@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
@@ -20,6 +21,7 @@ import lombok.SneakyThrows;
  * @see Category
  * @see ClusterNav
  */
+@NoArgsConstructor
 public class Cluster {
 
 	/**

@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.padre;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -11,6 +12,7 @@ import lombok.ToString;
  * @since 11.0
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Spell {
 

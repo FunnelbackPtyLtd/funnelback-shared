@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.commons.collections.ListUtils;
@@ -19,6 +20,7 @@ import com.google.common.collect.SetMultimap;
  * 
  * @since 11.0
  */
+@NoArgsConstructor
 public class ResultPacket {
 
 	/** Details about the index and PADRE version. */

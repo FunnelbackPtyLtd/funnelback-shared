@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.padre;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -9,15 +10,16 @@ import lombok.ToString;
  * 
  * @since 11.0
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Error {
 
 	/** User-friendly message. */
-	@Getter final private String userMsg;
+	@Getter private String userMsg;
 	
 	/** Technical message for the administrator. */
-	@Getter final private String adminMsg;
+	@Getter private String adminMsg;
 	
 	/** Constants for the PADRE XML result packet tags. */
 	public static final class Schema {

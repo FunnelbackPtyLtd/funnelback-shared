@@ -6,12 +6,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class SingleValueMapWrapper implements Map<String, String>{
 
-	private final Map<String, String[]> map;
+	private Map<String, String[]> map;
+	
+	public SingleValueMapWrapper(Map<String, String[]> map) {
+		this.map = map;
+	}
 	
 	@Override
 	public int size() {

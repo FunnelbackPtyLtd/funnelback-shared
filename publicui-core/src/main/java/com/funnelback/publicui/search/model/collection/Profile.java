@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.collection;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -18,14 +19,14 @@ import lombok.Setter;
  * 
  * @since 11.0
  */
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Profile {
 
 	/**
 	 * Profile id, identical to the name of the folder containing the
 	 * profile configuration under <code>conf/[collection]/[profile]/</code>.
 	 */
-	@Getter private final String id;
+	@Getter private String id;
 	
 	/**
 	 * Faceted navigation configuration in
@@ -45,5 +46,9 @@ public class Profile {
 	 * <p>Read from <code>conf/[collection]/[profile]/padre_opts.cfg</code>.</p>
 	 */
 	@Getter @Setter private String padreOpts;
+	
+	public Profile(String id) {
+		this.id = id;
+	}
 	
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
@@ -30,8 +30,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * 
  * @since 11.0
  */
+@NoArgsConstructor
 @ToString
-@RequiredArgsConstructor
 @JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses"})
 @Log4j
 public class Collection {
@@ -59,7 +59,7 @@ public class Collection {
 	 * under <code>$SEARCH_HOME/conf/</code> or <code>$SEARCH_HOME/data/</code></p>
 	 */
 	@javax.validation.constraints.Pattern(regexp="[\\w-_]+")
-	@Getter final private String id;
+	@Getter private String id;
 	
 	/**
 	 * <p>Collection configuration data.</p>
@@ -69,7 +69,7 @@ public class Collection {
 	 * <code>configuration.value("query_processor_options")</code>.</p>
 	 **/
 	@XStreamOmitField
-	@Getter final private Config configuration;
+	@Getter private Config configuration;
 	
 	/** Quick Links configuration (<code>quicklinks.cfg</code>) */
 	@XStreamOmitField
@@ -136,6 +136,11 @@ public class Collection {
 			}
 		}
 		return out;
+	}
+	
+	public Collection(String id, Config config) {
+		this.id = id;
+		this.configuration = config;
 	}
 	
 }
