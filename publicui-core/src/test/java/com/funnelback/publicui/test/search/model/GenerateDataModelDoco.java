@@ -1,16 +1,13 @@
 package com.funnelback.publicui.test.search.model;
 
 import java.beans.PropertyDescriptor;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.stream.StreamSource;
-
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -23,7 +20,6 @@ import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
-import com.funnelback.publicui.xml.SearchXStreamMarshaller;
 
 /**
  * <p>Generates a sample data model tree doco by requesting a running
@@ -60,22 +56,20 @@ public class GenerateDataModelDoco {
 	public static void main(String[] args) throws Exception {
 		
 		if (args.length != 1) {
-			System.out.println("Usage: " + GenerateDataModelDoco.class.getName() + " <url_to_search.xml>");
+			System.out.println("Usage: " + GenerateDataModelDoco.class.getName() + " /path/to/overview-summary.html");
 			System.exit(1);
 		}
 
-		SearchXStreamMarshaller marshaller = new SearchXStreamMarshaller();
-		marshaller.afterPropertiesSet();
-
-		URLConnection cnx = new URL(args[0]).openConnection();
-		InputStream is = cnx.getInputStream();
-		SearchTransaction st = (SearchTransaction) marshaller.unmarshal(new StreamSource(is));
-		is.close();
-		
 		StringBuilder sb = new StringBuilder();
-		recurse(st.getClass(), SearchTransaction.class, "", "transaction", sb);
+		recurse(SearchTransaction.class, SearchTransaction.class, "", "transaction", sb);
 		
-		System.out.println(sb.toString());
+		File target = new File(args[0]);
+		
+		System.out.println("Writing data model tree to " + target.getAbsolutePath());
+		
+		FileUtils.writeStringToFile(
+				target,
+				FileUtils.readFileToString(target).replace("__DATAMODEL_TREE__", sb.toString()));
 	}
 	
 	/**
