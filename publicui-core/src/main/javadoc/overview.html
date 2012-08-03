@@ -1,18 +1,40 @@
 <html>
 <body>
-	<h1>Funnelback's data model documentation.</h1>
-	
-	<p>The data model is the in-memory structure holding the information about a search being performed.</p>
-	
-	<p>
-		It contains 3 main objects which can be found under the <a href="com/funnelback/publicui/search/model/transaction/SearchTransaction.html">SearchTransaction</a> class:
-		<ul>
-			<li>A <a href="com/funnelback/publicui/search/model/transaction/SearchQuestion.html">question</a> containing the input parameters,</li>
-			<li>A <a href="com/funnelback/publicui/search/model/transaction/SearchResponse.html">response</a> containing the results,</li>
-			<li>An <a href="com/funnelback/publicui/search/model/transaction/SearchError.html">error</a>, if the search was unsuccessful.</li>
-		</ul>
-	</p> 
-	
-	<p>Please consult the main documentation <a href="../data_model.html">page about the Data Model</a> for more information.</p>
+
+<h1>Funnelback data model documentation.</h1>
+
+<p>The data model is the in-memory structure holding the information about a search being performed.</p>
+
+<p>It contains 3 main objects which can be found under the <a href="com/funnelback/publicui/search/model/transaction/SearchTransaction.html">SearchTransaction</a> class:</p>
+<ul>
+	<li>A <a href="com/funnelback/publicui/search/model/transaction/SearchQuestion.html">question</a> containing the input parameters,</li>
+	<li>A <a href="com/funnelback/publicui/search/model/transaction/SearchResponse.html">response</a> containing the results,</li>
+	<li>An <a href="com/funnelback/publicui/search/model/transaction/SearchError.html">error</a>, if the search was unsuccessful.</li>
+</ul>
+
+
+<p>
+	Note that this documentation is organised by Java packages which may differ from the actual data model tree.
+	Please find below an example data model tree with links to the relevant classes.
+
+	<pre>
+@DATAMODEL_TREE@
+	</pre>
+</p>
+ 
+
+<p>Please consult the main documentation <a href="../data_model.html">page about the Data Model</a> for more information.</p>
+
+<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready( function () {
+  jQuery('a').mouseover( function() {
+    jQuery(this).next('span.path').text(jQuery(this).attr('data-path')).fadeIn();
+  }).mouseout( function() {
+  jQuery(this).next('span.path').text('').fadeOut();
+  });
+});
+</script>
+
 </body>
 </html>

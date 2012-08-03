@@ -25,6 +25,13 @@ table tr td dt code {
     vertical-align:top;
 }
 
+span.path {
+    font-weight: bold;
+    color: ;
+    padding-left: 1em;
+}
+
+
 /*
 Document title and Copyright styles
 */
