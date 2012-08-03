@@ -23,6 +23,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -175,8 +176,12 @@ public class DefaultConfigRepository implements ConfigRepository {
 		for (Hook hook: Hook.values()) {
 			File hookScriptFile = new File(configFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
 			if (hookScriptFile.exists()) {
-				Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile));
-				c.getHookScriptsClasses().put(hook, hookScript);
+				try {
+					Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile));
+					c.getHookScriptsClasses().put(hook, hookScript);
+				} catch (CompilationFailedException cfe) {
+					log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
+				}
 			}
 		}
 		
