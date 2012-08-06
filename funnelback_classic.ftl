@@ -475,7 +475,12 @@
     @param alltext Text to use to completely remove the facet constraints. Defaults to &quot;all&quot;.
 -->
 <#macro FacetSummary separator="&rarr;" alltext="all">
-    <#if QueryString?contains("f." + facetDef.name?url) || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
+    <#-- We must test various combinations here as different browsers will encode
+         some characters differently (i.e. '/' will sometimes be preserved, sometimes
+         encoded as '%2F' -->
+    <#if QueryString?contains("f." + facetDef.name?url)
+        || urlDecode(QueryString)?contains("f." + facetDef.name)
+        || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
         : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank"] + facetDef.allQueryStringParamNames)?html}">${alltext}</a>
     </#if>
     <@FacetBreadCrumb categoryDefinitions=facetDef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
