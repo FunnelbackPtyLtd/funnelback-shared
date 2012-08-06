@@ -29,7 +29,7 @@
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>javadoc</goal>
-							<goal>jar</goal>
+                            <goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -47,7 +47,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
