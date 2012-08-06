@@ -549,15 +549,17 @@
                 <#list response.facets as facet>
                     <#if def.facetName == facet.name>
                         <#-- Facet located, find current working category -->
-                        <#assign fCat = facet.findDeepestCategory([def.queryStringParamName]) />
-                        <#list fCat.values as catValue>
-                            <#-- Find the category value for which the query string param
-                                 matches the currently selected value -->
-                            <#local kv = catValue.queryStringParam?split("=") />
-                            <#if valueLabel == urlDecode(kv[1])>
-                                <#local valueLabel = catValue.label />
-                            </#if>
-                        </#list>
+                        <#assign fCat = facet.findDeepestCategory([def.queryStringParamName])!"" />
+                        <#if fCat != "">
+                            <#list fCat.values as catValue>
+                                <#-- Find the category value for which the query string param
+                                     matches the currently selected value -->
+                                <#local kv = catValue.queryStringParam?split("=") />
+                                <#if valueLabel == urlDecode(kv[1])>
+                                    <#local valueLabel = catValue.label />
+                                </#if>
+                            </#list>
+                        </#if>
                     </#if>
                 </#list> 
 
