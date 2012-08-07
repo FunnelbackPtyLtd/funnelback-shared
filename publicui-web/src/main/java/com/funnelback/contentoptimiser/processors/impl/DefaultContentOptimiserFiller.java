@@ -78,7 +78,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		Set<String> linkSet = new HashSet<String>(Arrays.asList(link));
 		String[] url = {"urllen","mainhosts","host_domain_shallowness_score","urltype"};
 		Set<String> urlSet = new HashSet<String>(Arrays.asList(url));
-		String[] beyond = {"qie","document_number","host_rank_in_crawl_order_score","comp_wt","domain_weight","doc_matches_regex","doc_does_not_match_regex"};
+		String[] beyond = {"qie","document_number","host_rank_in_crawl_order_score","comp_wt","domain_weight","doc_matches_regex","doc_does_not_match_regex","doc_matches_cgscope1","doc_matches_cgscope2","doc_does_not_match_cgscope1","doc_does_not_match_cgscope2"};
 		Set<String> beyondSet = new HashSet<String>(Arrays.asList(beyond));
 		String[] annie = {"annie_rank","log_annie","anlog_annie","annie_rank","consistency","annie"};
 		Set<String> annieSet = new HashSet<String>(Arrays.asList(annie));
