@@ -534,3 +534,12 @@
         ${format(locale, s)}
     </#if>
 </#macro>
+
+<#---
+    Generates an "optimise" link to the content optimiser (From the admin side only)
+-->
+<#macro Optimise>
+    <@AdminUIOnly>
+        <a class="fb-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">Optimise</a>
+    </@AdminUIOnly>
+</#macro>
