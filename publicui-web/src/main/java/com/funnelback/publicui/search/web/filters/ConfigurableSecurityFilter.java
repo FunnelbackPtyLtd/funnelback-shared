@@ -87,7 +87,9 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 	 */
 	private String getCollectionId(HttpServletRequest request) {
 		String collectionId = request.getParameter(RequestParameters.COLLECTION);
-		if (collectionId == null && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)) {
+		if (collectionId == null
+				&& request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
+				&& request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
 			collectionId = request.getPathInfo().substring(
 					ResourcesController.MAPPING_PATH.length(),
 					request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));

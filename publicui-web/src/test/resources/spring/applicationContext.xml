@@ -79,6 +79,11 @@
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
 
+	<bean id="resourcesController"
+		class="com.funnelback.publicui.search.web.controllers.ResourcesController">
+		<property name="contextPath" value=""/>
+		</bean>
+
 	<bean
 		class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 	<bean
