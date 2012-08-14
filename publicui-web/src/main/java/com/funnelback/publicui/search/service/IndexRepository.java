@@ -19,7 +19,7 @@ public interface IndexRepository {
 		/** Numbers of documents in the collection */
 		Num_docs("Num_docs"),
 		/** Average length of documents in the collection */
-		Average_document_length("Average document length");
+		Average_document_length("Average_document_length");
 		
 		BuildInfoKeys(String displayName) {
 			this.displayName = displayName;
