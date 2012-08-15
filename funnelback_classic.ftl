@@ -25,9 +25,7 @@
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#local rs = response.resultPacket.resultsSummary />
 
-        <#if label?exists>
-            <span <#nested>>
-        </#if>
+        ${label!""}
 
         <#-- PREVIOUS link -->
         <#if rs.prevStart?exists>
@@ -77,9 +75,6 @@
             ${next_prev_prefix}<a href="${url?html}" rel="next" class="fb-next-result-page fb-page-nav" <#nested>>Next ${rs.numRanks}</a>${next_prev_suffix}
         </#if>
 
-        <#if label?exists>
-            </span>
-        </#if>
     </#if>
 </#macro>
 
