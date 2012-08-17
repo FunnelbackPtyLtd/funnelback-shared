@@ -523,7 +523,7 @@
                 <#assign pathBuilding = pathBuilding + "/" + part>
                 <#-- Don't display bread crumb for parts that are part
                      of the root URL -->
-                <#if ! def.data?contains(part+"/")>
+                <#if ! def.data?lower_case?contains(part?lower_case+"/")>
                     <#if part_has_next>
                         ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${pathBuilding?url}">${part}</a>
                     <#else>
