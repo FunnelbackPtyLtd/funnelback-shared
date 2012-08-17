@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -53,12 +54,29 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 			}
 			currentConstraint = currentConstraints.get(0);
 		}
-			
+		
+		if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
+			// Windows style url \\server\share\folder\file.ext
+			// Convert to smb://... so that URLs returned by PADRE will match
+			url = VFSURLUtils.SystemUrlToVFSUrl(url);
+		}
+		
+		if (currentConstraint.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
+			currentConstraint = VFSURLUtils.SystemUrlToVFSUrl(currentConstraint);
+		}
+		
+		// Comparisons are case-insensitive
+		url = url.toLowerCase();
+		currentConstraint = currentConstraint.toLowerCase();
+		
 		for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
+			// Do not toLowerCase() here, we still want the original data from Padre
+			// with the correct case to display
 			String item = entry.getKey().replaceFirst("^http://", "");
 			int count = entry.getValue();
 			
-			if (item.startsWith(url) && isOneLevelDeeper(currentConstraint, item)) {
+			if (item.toLowerCase().startsWith(url)
+					&& isOneLevelDeeper(currentConstraint, item.toLowerCase())) {
 				// 'v' metadata value is the URI only, without
 				// the host or protocol.
 				String vValue = item.replaceFirst("(\\w+://)?[^/]*/", "");
