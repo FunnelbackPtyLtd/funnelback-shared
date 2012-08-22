@@ -16,12 +16,14 @@
     Generates previous / next navigation links, and page shortcuts.
 
     @param label Label to be placed at the beginning of the page list.
-    @param separator: Text to placed between the page links.
-    @param next_prev_prefix : Text placed before the Next and Previous links.
-    @param next_prev_suffix : Text placed after the Next and Previous links.
+    @param separator Text to placed between the page links.
+    @param next_prev_prefix Text placed before the Next and Previous links.
+    @param next_prev_suffix Text placed after the Next and Previous links.
+    @param prevLabel Label to use for "previous"
+    @param nextLabel Label to use for "next"
     @nested Any HTML attributes to include in the a tag.
 -->
-<#macro PrevNext label="" separator=" " next_prev_prefix=" [ " next_prev_suffix=" ] ">
+<#macro PrevNext label="" separator=" " next_prev_prefix=" [ " next_prev_suffix=" ] " prevLabel="Prev" nextLabel="Next">
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#local rs = response.resultPacket.resultsSummary />
 
@@ -32,7 +34,7 @@
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.prevStart) />
 
-            ${next_prev_prefix}<a href="${url?html}" rel="prev" class="fb-previous-result-page fb-page-nav" <#nested>>Prev ${rs.numRanks}</a>${next_prev_suffix}
+            ${next_prev_prefix}<a href="${url?html}" rel="prev" class="fb-previous-result-page fb-page-nav" <#nested>>${prevLabel} ${rs.numRanks}</a>${next_prev_suffix}
         </#if>
 
         <#local pages = 0 />
@@ -72,7 +74,7 @@
             <#local url = question.collection.configuration.value("ui.modern.search_link") + "?" />
             <#local url = url + changeParam(QueryString, "start_rank", rs.nextStart) />
 
-            ${next_prev_prefix}<a href="${url?html}" rel="next" class="fb-next-result-page fb-page-nav" <#nested>>Next ${rs.numRanks}</a>${next_prev_suffix}
+            ${next_prev_prefix}<a href="${url?html}" rel="next" class="fb-next-result-page fb-page-nav" <#nested>>${nextLabel} ${rs.numRanks}</a>${next_prev_suffix}
         </#if>
 
     </#if>
@@ -180,8 +182,10 @@
 
 <#---
     Displays spelling suggestions.
+
+    @param prefix Prefix to display before the suggestion, usually "Did you mean ?".
 -->
-<#macro CheckSpelling>
+<#macro CheckSpelling prefix="Did you mean:">
     <#if question?exists
         && question.collection?exists
         && question.collection.configuration.value("spelling_enabled")?exists
@@ -189,7 +193,7 @@
         && response?exists
         && response.resultPacket?exists
         && response.resultPacket.spell?exists>
-        Did you mean: <a href="${question.collection.configuration.value("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
+        ${prefix} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
             <span class="funnelback-highlight">${response.resultPacket.spell.text}</span>
         </a>
     </#if>
@@ -288,9 +292,11 @@
 
 <#---
     Generates an "explore" link for a search result.
+
+    @param label Label to use for the link.
 -->
-<#macro Explore>
-    <a class="fb-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl)?html}">Explore</a>
+<#macro Explore label="Explore">
+    <a class="fb-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl)?html}">${label}</a>
 </#macro>
 
 <#---

@@ -297,12 +297,14 @@
     Displays search error message.
 
     <p>Displays the error to the user and the technical message in an <code>HTML</code> comment + JS console.</p>
+
+    @param defaultMessage Default message to use if there's no detailed error message.
 -->
-<#macro ErrorMessage>
+<#macro ErrorMessage defaultMessage="An unkown error has occured. Please try again">
     <#-- PADRE error -->
     <#if response?exists && response.resultPacket?exists
         && response.resultPacket.error?exists>
-        <p class="fb-error">${response.resultPacket.error.userMsg!"An unkown error has occured. Please try again"?html}</p>
+        <p class="fb-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
         <!-- PADRE return code: [${response.returnCode!"Unkown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
         <@ErrorMessageJS message="PADRE return code: "+response.returnCode!"Unknown" messageData=response.resultPacket.error.adminMsg! />
     </#if>
@@ -310,11 +312,11 @@
     <#if error?exists>
         <!-- ERROR status: ${error.reason!?html} -->
         <#if error.additionalData?exists>
-            <p class="fb-error">${error.additionalData.message!"An unknown error has occured. Please try again"?html}</p>
+            <p class="fb-error">${error.additionalData.message!defaultMessage?html}</p>
             <!-- ERROR cause: ${error.additionalData.cause!?html} --> 
             <@ErrorMessageJS message=error.additionalData.message! messageData=error.additionalData.cause! />
         <#else>
-            <p class="fb-error">An unknown error has occured. Please try again</p>
+            <p class="fb-error">${defaultMessage}</p>
         </#if>
     </#if>
 </#macro>
@@ -537,9 +539,11 @@
 
 <#---
     Generates an "optimise" link to the content optimiser (From the admin side only)
+
+    @param label Text to use for the link.
 -->
-<#macro Optimise>
+<#macro Optimise label="Optimise">
     <@AdminUIOnly>
-        <a class="fb-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">Optimise</a>
+        <a class="fb-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">${label}</a>
     </@AdminUIOnly>
 </#macro>
