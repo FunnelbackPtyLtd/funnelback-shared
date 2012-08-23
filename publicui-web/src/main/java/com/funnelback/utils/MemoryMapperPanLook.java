@@ -77,6 +77,11 @@ public class MemoryMapperPanLook implements PanLook{
 	public Iterator<String> iterator() {
 		return matches.iterator();
 	}
+
+	@Override
+	public void close() throws IOException {
+		seeker.close();
+	}
 	
 }
 

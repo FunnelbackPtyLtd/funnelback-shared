@@ -54,6 +54,7 @@ public class DefaultInDocCountFetcher implements InDocCountFetcher {
 					log.error("Content optimiser was unable to parse line from the lex file: '" + line +"'",e);
 				}
 			}
+			lexSearch.close();
 		} catch (IOException e) {
 			comparison.getMessages().add(i18n.tr("error.obtainingTermWeights"));
 			log.error("IOException when obtaining term weights from Java PanLook",e);

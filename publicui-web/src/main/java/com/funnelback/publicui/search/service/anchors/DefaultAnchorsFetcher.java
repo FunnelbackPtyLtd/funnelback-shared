@@ -105,7 +105,13 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 		PanLook panLookOutput = callPanLook(model, formattedDocnum, distilledFile);
 		model.setUrl(getUrlFromDocnum(model,formattedDocnum,indexStem));
 		if(panLookOutput != null) {
-			return parseAnchorsToMap(model, panLookOutput);
+			Map<String,AnchorDescription> ret = parseAnchorsToMap(model, panLookOutput);
+			try {
+				panLookOutput.close();
+			} catch (IOException e) {
+				
+			}
+			return ret;
 		} else {
 			return new HashMap<String,AnchorDescription>();
 		}

@@ -17,7 +17,11 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
 	@Getter private final long sizeOfLineSep;
 	
 	private final List<MappedByteBuffer> buffers = new ArrayList<MappedByteBuffer>();
-	private final long fileSize; 
+	private final long fileSize;
+	
+	// Hold these so that they can be closed.
+	private final FileChannel channel;
+	private final FileInputStream fileInputStream; 
     
 	
 	public MemoryMappedLineSeeker(File sortedFile, byte [] lineSepBytes) throws IOException {
@@ -25,7 +29,8 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
 		startLineSep = lineSepBytes[0];
 		sizeOfLineSep = lineSepBytes.length;
 				
-		FileChannel channel = (new FileInputStream(sortedFile)).getChannel();
+		fileInputStream = new FileInputStream(sortedFile);
+		channel = fileInputStream.getChannel();
         long start = 0, length = 0;
         for (long index = 0; start + length < channel.size(); index++) {
             if ((channel.size() / PAGE_SIZE) == index)
@@ -86,6 +91,12 @@ public class MemoryMappedLineSeeker implements PanLookSeeker {
 	@Override
 	public long length() {
 		return fileSize;
+	}
+
+	@Override
+	public void close() throws IOException {
+		channel.close();
+		fileInputStream.close();
 	}	   
 
 }

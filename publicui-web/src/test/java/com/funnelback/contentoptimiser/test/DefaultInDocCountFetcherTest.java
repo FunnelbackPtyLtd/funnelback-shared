@@ -103,6 +103,11 @@ public class DefaultInDocCountFetcherTest {
 						
 						return (Arrays.asList(array)).iterator();
 					}
+
+					@Override
+					public void close() throws IOException {
+						// Nothing to close
+					}
 				};
 			}
 			
@@ -133,6 +138,11 @@ public class DefaultInDocCountFetcherTest {
 										"thislinewon'tparseeither",};
 						
 						return (Arrays.asList(array)).iterator();
+					}
+
+					@Override
+					public void close() throws IOException {
+						// Nothing to close
 					}
 				};
 			}

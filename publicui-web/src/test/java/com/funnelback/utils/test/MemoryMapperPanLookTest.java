@@ -88,6 +88,7 @@ public class MemoryMapperPanLookTest {
 			Assert.assertEquals("pan-look should return the correct line(s) for prefix '" + prefix +"'",expected[count], line);
 			count++;
 		}
+		panlook.close();
 		Assert.assertEquals("pan-look should return the expected number of lines",expected.length, count);
 	}
 	
