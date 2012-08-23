@@ -130,6 +130,8 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 		} else {
 			// No access_alternate. Simply deny access
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setContentType("text/plain");
+			response.getWriter().write(i18n.tr("access.collection.denied", collection.getId()));
 		}
 	}
 

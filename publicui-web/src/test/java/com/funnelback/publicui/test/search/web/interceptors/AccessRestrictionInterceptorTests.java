@@ -72,6 +72,7 @@ public class AccessRestrictionInterceptorTests {
 		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 	
@@ -89,16 +90,19 @@ public class AccessRestrictionInterceptorTests {
 		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
 		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+		response = new MockHttpServletResponse();
 		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "10.9");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-		response.setStatus(-1);		
+		response = new MockHttpServletResponse();		
 		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "3.4");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 	
@@ -108,16 +112,19 @@ public class AccessRestrictionInterceptorTests {
 		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
 		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-
+		response = new MockHttpServletResponse();
+		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "bad.com");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-		response.setStatus(-1);
+		response = new MockHttpServletResponse();
 		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "remote");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 	
