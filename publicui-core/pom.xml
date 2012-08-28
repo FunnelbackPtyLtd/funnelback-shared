@@ -26,10 +26,9 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>javadoc</goal>
-                            <goal>jar</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -42,18 +41,35 @@
 					<classpathScope>test</classpathScope>
 					<mainClass>com.funnelback.publicui.test.search.model.GenerateDataModelDoco</mainClass>
 					<arguments>
-						<argument>${project.build.directory}/site/apidocs/overview-summary.html</argument>
+						<argument>${project.basedir}/src/main/javadoc/overview.html</argument>
 					</arguments>
 				</configuration>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<tasks>
+						<delete file="${project.basedir}/src/main/javadoc/overview.html" />
+					</tasks>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 

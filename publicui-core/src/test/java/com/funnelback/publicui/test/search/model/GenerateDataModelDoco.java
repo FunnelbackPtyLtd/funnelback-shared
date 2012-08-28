@@ -56,7 +56,7 @@ public class GenerateDataModelDoco {
 	public static void main(String[] args) throws Exception {
 		
 		if (args.length != 1) {
-			System.out.println("Usage: " + GenerateDataModelDoco.class.getName() + " /path/to/overview-summary.html");
+			System.out.println("Usage: " + GenerateDataModelDoco.class.getName() + " /path/to/overview.html");
 			System.exit(1);
 		}
 
@@ -65,11 +65,23 @@ public class GenerateDataModelDoco {
 		
 		File target = new File(args[0]);
 		
+		File header = new File(target.getParentFile(), target.getName().replace(".html", "-header.html"));
+		File footer = new File(target.getParentFile(), target.getName().replace(".html", "-footer.html"));
+		
 		System.out.println("Writing data model tree to " + target.getAbsolutePath());
 		
-		FileUtils.writeStringToFile(
-				target,
-				FileUtils.readFileToString(target).replace("__DATAMODEL_TREE__", sb.toString()));
+		StringBuilder out = new StringBuilder();
+		if (header.canRead()) {
+			out.append(FileUtils.readFileToString(header));
+		}
+		
+		out.append(sb);
+		
+		if (footer.canRead()) {
+			out.append(FileUtils.readFileToString(footer));
+		}
+		
+		FileUtils.writeStringToFile(target, out.toString());
 	}
 	
 	/**
