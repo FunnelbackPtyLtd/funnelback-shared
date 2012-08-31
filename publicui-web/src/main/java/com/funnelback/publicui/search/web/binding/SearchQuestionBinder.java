@@ -29,11 +29,13 @@ public class SearchQuestionBinder {
 		to.setQuery(from.getQuery());
 		to.setOriginalQuery(from.getOriginalQuery());
 		to.setCollection(from.getCollection());
+		to.setProfile(from.getProfile());
 		to.setImpersonated(from.isImpersonated());
 		to.setUserId(from.getUserId());
 		to.setLocale(from.getLocale());
 		to.setCnClickedCluster(from.getCnClickedCluster());
 		to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
+		to.setClive(from.getClive());
 	}
 	
 	/**
