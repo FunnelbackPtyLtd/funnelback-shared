@@ -112,7 +112,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 	 */
 	private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
 		if (collection.getConfiguration().hasValue(Keys.ACCESS_ALTERNATE)) {
-			StringBuffer out = request.getRequestURL();
+			StringBuffer out = new StringBuffer(request.getContextPath()).append(request.getPathInfo());
 			
 			Matcher m = QUERY_STRING_COLLECTION_PATTERN.matcher(request.getQueryString());
 			if (m.find()) {

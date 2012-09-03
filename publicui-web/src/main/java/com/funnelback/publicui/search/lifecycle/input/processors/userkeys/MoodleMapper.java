@@ -96,7 +96,6 @@ public class MoodleMapper implements UserKeysMapper {
 
 		} catch (Exception e) {
 			logger.error("Unknown error while getting the userkeys", e);
-			e.printStackTrace();
 		} finally {
 			// Close the statements and the connection through the db
 			if (connection != null) {
@@ -141,9 +140,7 @@ public class MoodleMapper implements UserKeysMapper {
 		String username = configData.value(Keys.Database.JDBC_USERNAME);
 		String password = configData.value(Keys.Database.JDBC_PASSWORD);
 
-		Connection conn = DriverManager.getConnection(jdbc_url, username,
-				password);
-		return conn;
+		return DriverManager.getConnection(jdbc_url, username, password);
 	}
 
 	/**
@@ -193,16 +190,26 @@ public class MoodleMapper implements UserKeysMapper {
 		// For the course only first
 		while (queryCourse.next()) {
 			if (queryCourse.getString("username").equalsIgnoreCase(username)) {
-				rc += "C" + queryCourse.getString("course") + SEPARATOR + "R"
-						+ queryCourse.getString("role") + SEPARATOR;
+				try {
+					// Ensure course IDs are number
+					rc += "C" + Integer.parseInt(queryCourse.getString("course")) + SEPARATOR + "R"
+							+ queryCourse.getString("role") + SEPARATOR;
+				} catch (NumberFormatException nfe) {
+					logger.warn("Failed to parse courseId '"+queryCourse.getString("course")+"'", nfe);
+				}
 			}
 		}
 		// Then for the modules exceptions
 		while (queryModule.next()) {
 			if (queryModule.getString("username").equalsIgnoreCase(username)) {
-				rc += "C" + queryModule.getString("course") + SEPARATOR + "M"
-						+ queryModule.getString("modules") + SEPARATOR + "R"
+				try {
+					// Ensure course and modules IDs are numbers
+					rc += "C" + Integer.parseInt(queryModule.getString("course")) + SEPARATOR + "M"
+						+ Integer.parseInt(queryModule.getString("modules")) + SEPARATOR + "R"
 						+ queryModule.getString("role") + SEPARATOR;
+				} catch (NumberFormatException nfe) {
+					logger.warn("Failed to parse courseId '"+queryModule.getString("course")+"' or moduleId '"+queryModule.getString("modules")+"'");
+				}
 			}
 		}
 
