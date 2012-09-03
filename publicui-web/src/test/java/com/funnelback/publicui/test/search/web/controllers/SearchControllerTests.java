@@ -78,7 +78,7 @@ public class SearchControllerTests {
 		configRepository.addCollection(new Collection("test2", null));
 		
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		ModelAndView mav = searchController.noCollection(response, null); 
+		ModelAndView mav = searchController.noCollection(response); 
 		ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.AllCollections.toString());
 		Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
 		

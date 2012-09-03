@@ -249,6 +249,9 @@ public class SearchQuestion {
 		/** Gscope constraint */
 		public static final String GSCOPE1 = "gscope1";
 		
+		/** Name of the form (template) to use to display results */
+		public static final String FORM = "form";
+		
 		/** Number of results per page */
 		public static final String NUM_RANKS = "num_ranks";
 		

@@ -55,7 +55,8 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		if (request.getParameter(RequestParameters.COLLECTION) != null) {
+		if (request.getParameter(RequestParameters.COLLECTION) != null
+				&& request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
 			Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
 			if (c != null) {
 				if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {

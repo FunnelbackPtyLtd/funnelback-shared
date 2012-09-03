@@ -36,6 +36,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @Log4j
 public class Collection {
 
+	public static final String COLLECTION_ID_PATTERN = "[\\w-]+"; 
+	
 	/**
 	 * <p>Groovy Hook scripts names.</p>
 	 * 
@@ -58,7 +60,7 @@ public class Collection {
 	 * <p>Identical to the name of the collection folder
 	 * under <code>$SEARCH_HOME/conf/</code> or <code>$SEARCH_HOME/data/</code></p>
 	 */
-	@javax.validation.constraints.Pattern(regexp="[\\w-_]+")
+	@javax.validation.constraints.Pattern(regexp=COLLECTION_ID_PATTERN)
 	@Getter private String id;
 	
 	/**

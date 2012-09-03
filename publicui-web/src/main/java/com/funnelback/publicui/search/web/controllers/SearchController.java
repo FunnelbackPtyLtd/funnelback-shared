@@ -67,6 +67,14 @@ public class SearchController {
 
 	@InitBinder
 	public void initBinder(DataBinder binder) {
+		// For security reasons, only allow specific fields for
+		// data binding
+		binder.setAllowedFields(
+				RequestParameters.CLIVE,
+				RequestParameters.COLLECTION,
+				RequestParameters.FORM,
+				RequestParameters.PROFILE,
+				RequestParameters.QUERY	);
 		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
 		binder.registerCustomEditor(String.class, RequestParameters.PROFILE, new StringArrayFirstSlotEditor());
 	}
@@ -81,11 +89,19 @@ public class SearchController {
 	 * @return a list of all available collections.
 	 */
 	@RequestMapping(value={"/search.html"},params="!"+RequestParameters.COLLECTION)
-	public ModelAndView noCollection(HttpServletResponse response, HttpStatus status) {
+	public ModelAndView noCollection(HttpServletResponse response) {
+		return noCollection(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	/**
+	 * Helper method to return the collection list with a given status
+	 * @param response 
+	 * @param status Status code to return
+	 * @return
+	 */
+	private ModelAndView noCollection(HttpServletResponse response, HttpStatus status) {
 		if (status != null) {
 			response.setStatus(status.value());
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
