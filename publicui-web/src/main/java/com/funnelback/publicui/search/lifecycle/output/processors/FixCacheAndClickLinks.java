@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -35,21 +36,28 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
+		if (SearchTransactionUtils.hasCollection(searchTransaction)
 				&& SearchTransactionUtils.hasResults(searchTransaction)) {
-			for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
-				r.setCacheUrl(r.getCacheUrl());
-				if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
-					r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), r));
-				} else {
-					r.setClickTrackingUrl(r.getLiveUrl());
-				}
-			}
 			
-			if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
-				// Apply click tracking to best bets links
-				for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
-					bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
+			// FUN-5038: We must use the full query expression here, not just
+			// the user-entered one
+			String q = new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildQuery();
+			if (q.length() > 0) {
+			
+				for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
+					r.setCacheUrl(r.getCacheUrl());
+					if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+						r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
+					} else {
+						r.setClickTrackingUrl(r.getLiveUrl());
+					}
+				}
+				
+				if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+					// Apply click tracking to best bets links
+					for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
+						bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
+					}
 				}
 			}
 		}
@@ -62,7 +70,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 	 * @return
 	 */
 	@SneakyThrows(UnsupportedEncodingException.class)
-	private String buildClickTrackingUrl(SearchQuestion question, Result r) {
+	private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, Result r) {
 		StringBuffer out = new StringBuffer()
 			.append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
 			.append("rank=").append(r.getRank().toString())
@@ -70,7 +78,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
 			.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
 			.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(getAuth(r.getLiveUrl(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
-			.append("&").append(RequestParameters.QUERY).append("=").append(question.getQuery());
+			.append("&").append(RequestParameters.QUERY).append("=").append(queryExpr);
 		
 		if (question.getProfile() != null) {
 			out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());

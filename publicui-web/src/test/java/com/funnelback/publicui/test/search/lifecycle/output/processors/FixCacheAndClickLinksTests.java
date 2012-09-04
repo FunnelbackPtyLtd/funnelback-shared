@@ -101,7 +101,7 @@ public class FixCacheAndClickLinksTests {
 			Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
 			Assert.assertTrue(trackingUrl.contains("index_url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
 			Assert.assertTrue(URLDecoder.decode(trackingUrl, "UTF-8").matches(".*auth=[a-zA-Z0-9+/]{22}.*"));
-			Assert.assertTrue(trackingUrl.contains("query=" + st.getQuestion().getQuery()));
+			Assert.assertTrue(trackingUrl.contains("query=livelinks"));
 			Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
 			Assert.assertTrue(trackingUrl.contains("referer=REFERER"));
 		}
@@ -118,7 +118,9 @@ public class FixCacheAndClickLinksTests {
 	}
 	
 	@Test
-	public void testBestBets() throws OutputProcessorException {
-		
+	public void testNoUserEnteredQuery() throws OutputProcessorException, UnsupportedEncodingException {
+		st.getQuestion().setQuery(null);
+		st.getQuestion().getQueryExpressions().add("livelinks");
+		testClickTracking();
 	}
 }

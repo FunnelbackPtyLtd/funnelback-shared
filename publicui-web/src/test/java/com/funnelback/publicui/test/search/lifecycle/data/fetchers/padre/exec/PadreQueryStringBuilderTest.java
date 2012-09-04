@@ -21,9 +21,19 @@ public class PadreQueryStringBuilderTest {
 	}
 	
 	@Test
+	public void testNoUserEnteredQuery() {
+		SearchQuestion qs = new SearchQuestion();
+		qs.setCollection(new Collection("dummy", null));
+		qs.setQuery(null);
+		qs.getQueryExpressions().add("additional expr");
+		
+		Assert.assertEquals("additional expr", new PadreQueryStringBuilder(qs, true).buildQuery());
+	}
+	
+	@Test
 	public void test() {
 		PadreQueryStringBuilder builder = new PadreQueryStringBuilder(q, false);
-		builder.buildQueryString();
+		Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", builder.buildQueryString());
 	}
 	
 	@Test

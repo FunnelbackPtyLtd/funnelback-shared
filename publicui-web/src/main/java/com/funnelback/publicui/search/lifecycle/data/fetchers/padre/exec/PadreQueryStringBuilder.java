@@ -116,7 +116,7 @@ public class PadreQueryStringBuilder {
 				query.append(" ").append(value);
 			}
 		}
-		return query.toString();
+		return query.toString().trim();
 	}
 	
 	/**
