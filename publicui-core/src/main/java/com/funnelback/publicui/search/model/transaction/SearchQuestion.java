@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.transaction;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +24,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * <p>This class contains all the input data related to a search.</p>
@@ -34,6 +38,7 @@ import com.funnelback.publicui.utils.SingleValueMapWrapper;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"principal"})
 public class SearchQuestion {
 		
 	/**
@@ -226,6 +231,16 @@ public class SearchQuestion {
 	 * @since 12.0
 	 */
 	@Getter @Setter private Locale locale = Locale.getDefault();
+	
+	/**
+	 * <p>Principal representing the remote user for the current request.</p>
+	 * 
+	 * <p>Will be NULL if the user isn't authenticated.</p>
+	 * 
+	 * @since 12.2
+	 */
+	@XStreamOmitField
+	@Getter @Setter private Principal principal;
 
 	/**
 	 * Common query string parameters names.

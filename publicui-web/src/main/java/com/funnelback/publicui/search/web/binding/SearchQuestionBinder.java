@@ -99,6 +99,10 @@ public class SearchQuestionBinder {
 				question.getCnPreviousClusters().add(value);
 			}
 		}
+		
+		// Security Principal
+		question.setPrincipal(request.getUserPrincipal());
+		
 	}
 
 	/**
