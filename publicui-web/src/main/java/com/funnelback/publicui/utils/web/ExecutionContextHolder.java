@@ -5,6 +5,7 @@ import javax.servlet.ServletContext;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.web.context.ServletContextAware;
  * Public or Admin search interface
  */
 @Log4j
+@Component
 public class ExecutionContextHolder implements ServletContextAware {
 
 	private enum ExecutionContext {

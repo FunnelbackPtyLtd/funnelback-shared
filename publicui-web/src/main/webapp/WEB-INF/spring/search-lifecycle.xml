@@ -22,6 +22,7 @@
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
+		<ref bean="hostnameInLogFilename" />
 		<!-- <ref bean="contentOptimiserSelectDocumentInputProcessor"/> -->
 		<ref bean="extraSearchesInputProcessor" />
 			<bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">

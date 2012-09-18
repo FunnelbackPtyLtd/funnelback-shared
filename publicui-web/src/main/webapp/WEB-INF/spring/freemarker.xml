@@ -33,7 +33,7 @@
 					value="#{appProperties['urls.search.prefix']}" />
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
-					value="#{contextHolder.contextPath}" />
+					value="#{executionContextHolder.contextPath}" />
 				<entry key="ExtraSearches">
 					<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 						<property name="targetObject">

@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
+import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
 /**
  * Writes log files locally in the LIVE folder of each collection
@@ -35,16 +37,22 @@ public class LocalLogService implements LogService {
 	@Autowired
 	@Setter private File searchHome;
 	
+	@Autowired
+	@Setter private LocalHostnameHolder localHostnameHolder;
+	
 	@Override
 	public void logClick(ClickLog cl) {
-		log.debug("NOT YET IMPLEMENTED");
+		throw new RuntimeException("NOT YET IMPLEMENTED");
 	}
 
 	@Override
 	@Async
 	public void logContextualNavigation(ContextualNavigationLog cnl) {
 		if (cnl.getCollection() != null) {
-			logLiveXmlData(cnl.getCollection(), Files.Log.CONTEXTUAL_NAVIGATION_LOG_FILENAME, cnl.toXml());
+			logLiveXmlData(cnl.getCollection(),
+					Files.Log.CONTEXTUAL_NAVIGATION_LOG_PREFIX,
+					Files.Log.CONTEXTUAL_NAVIGATION_LOG_EXT,
+					cnl.toXml());
 		}
 	}
 	
@@ -66,14 +74,27 @@ public class LocalLogService implements LogService {
 	/**
 	 * Update an XML log for the specified collection
 	 * @param c
-	 * @param fileName Relative to the live folder
+	 * @param fileName Relative to the live folder, without the extension
+	 * @param extension File extension, with the leading dot
 	 * @param xmlData
 	 */
-	private void logLiveXmlData(Collection c, String fileName, String xmlData) {		
-		File targetFile = new File(c.getConfiguration().getCollectionRoot()
+	private void logLiveXmlData(Collection c, String fileName, String extension, String xmlData) {
+
+		File targetFolder = new File(c.getConfiguration().getCollectionRoot()
 				+ File.separator + DefaultValues.VIEW_LIVE
-				+ File.separator + DefaultValues.FOLDER_LOG,
-				fileName);
+				+ File.separator + DefaultValues.FOLDER_LOG);
+		
+		File targetFile = new File(targetFolder, fileName + extension);
+		
+		if (localHostnameHolder.getHostname() != null
+				&& ! localHostnameHolder.isLocalhost()
+				&& c.getConfiguration().valueAsBoolean(
+						Keys.Logging.HOSTNAME_IN_FILENAME,
+						DefaultValues.Logging.HOSTNAME_IN_FILENAME)) {
+			// Use hostname in filename
+			targetFile = new File(targetFolder, fileName + "-" + localHostnameHolder.getShortHostname() + extension);
+		}
+		
 		try {
 			if (targetFile.exists()) {
 				logXmlDataInExistingFile(targetFile, xmlData);

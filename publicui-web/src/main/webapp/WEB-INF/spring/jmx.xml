@@ -9,7 +9,7 @@
 		<property name="assembler" ref="assembler" />
 		<property name="beans">
 			<map>
-				<entry key="Funnelback:type=SearchMonitor,name=#{contextHolder.executionContext}" value-ref="searchMonitor" />
+				<entry key="Funnelback:type=SearchMonitor,name=#{executionContextHolder.executionContext}" value-ref="searchMonitor" />
 			</map>
 		</property>
 	</bean>

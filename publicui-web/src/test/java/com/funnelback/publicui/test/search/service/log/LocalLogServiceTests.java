@@ -15,14 +15,17 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.search.service.log.LocalLogService;
+import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
 public class LocalLogServiceTests {
 
@@ -44,6 +47,7 @@ public class LocalLogServiceTests {
 			Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
 	
 	private LocalLogService logService;
+	private LocalHostnameHolder localHostnameHolder;
 	
 	@BeforeClass
 	public static void beforeClass() throws IOException {
@@ -54,7 +58,9 @@ public class LocalLogServiceTests {
 	
 	@Before
 	public void before() {
+		localHostnameHolder = new LocalHostnameHolder(); 
 		logService = new LocalLogService();
+		logService.setLocalHostnameHolder(localHostnameHolder);
 		if (contextualNavLogFile.exists()) {
 			Assert.assertTrue(contextualNavLogFile.delete());
 		}
@@ -64,7 +70,8 @@ public class LocalLogServiceTests {
 	public void testLogContextualNavigation() throws Exception {
 		Date now = new Date();
 		
-		NoOptionsConfig config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
+		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
 		Collection c = new Collection(COLLECTION_NAME, config);
 		Profile p = new Profile("profile");
 		
@@ -91,7 +98,8 @@ public class LocalLogServiceTests {
 	
 	@Test
 	public void testLogContextualNavigationThreadSafe() throws Exception {
-		NoOptionsConfig config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
+		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
 		final Collection c = new Collection(COLLECTION_NAME, config);
 		final Profile p = new Profile("profile");
 		final ContextualNavigationLog log = new ContextualNavigationLog(
@@ -141,7 +149,8 @@ public class LocalLogServiceTests {
 	public void testLogFileWithTrailingNewLine() throws Exception {
 		Date now = new Date();
 		
-		NoOptionsConfig config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
+		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
 		Collection c = new Collection(COLLECTION_NAME, config);
 		Profile p = new Profile("profile");
 		
@@ -231,6 +240,49 @@ public class LocalLogServiceTests {
 		
 		Assert.assertEquals(expected, actual);
 		
+	}
+
+	@Test
+	public void testHostnameInFilename() throws IOException {
+
+		File contextualNavLogFile = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
+				+ File.separator + COLLECTION_NAME
+				+ File.separator + DefaultValues.VIEW_LIVE
+				+ File.separator + DefaultValues.FOLDER_LOG,
+				Files.Log.CONTEXTUAL_NAVIGATION_LOG_PREFIX + "-"
+				+ localHostnameHolder.getShortHostname()
+				+ Files.Log.CONTEXTUAL_NAVIGATION_LOG_EXT);
+		
+		if (contextualNavLogFile.exists()) {
+			Assert.assertTrue(contextualNavLogFile.delete());
+		}
+
+		Date now = new Date();
+			
+		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
+		Collection c = new Collection(COLLECTION_NAME, config);
+		Profile p = new Profile("profile");
+		
+		ContextualNavigationLog log = new ContextualNavigationLog(
+				now,
+				c,
+				p,
+				"userId",
+				"cluster",
+				Arrays.asList(new String[] {"previousClusters"}));
+		
+			
+		logService.logContextualNavigation(log);
+
+		Assert.assertTrue("Log file should have been created", contextualNavLogFile.exists());
+		
+		String actual = FileUtils.readFileToString(contextualNavLogFile).replace("\r", "");
+		String expected = FileUtils.readFileToString(new File(TEST_IN_ROOT, "expected-cn-log.xml")).replace("\r", "");
+		
+		expected = expected.replace("{DATE}", ContextualNavigationLog.DATE_FORMAT.format(now));
+		
+		Assert.assertEquals(expected, actual);
 	}
 	
 }
