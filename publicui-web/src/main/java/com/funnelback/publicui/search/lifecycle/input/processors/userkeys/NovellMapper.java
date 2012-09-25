@@ -23,6 +23,9 @@ import org.eclipse.jetty.plus.jaas.JAASUserPrincipal;
  */
 public class NovellMapper implements UserKeysMapper {
     
+    public NovellMapper() {
+    }
+    
     /**
      * Get Novell eDirectory user and group keys for current transaction.
      * 
@@ -51,6 +54,14 @@ public class NovellMapper implements UserKeysMapper {
                 keys.addAll(((UserKeys) keyLists.next()).getKeys());
             }   
         }
+        
+        /*
+         * uncomment to confirm correct user id and groups supplied
+         */
+//        Iterator key = keys.iterator();
+//        while( key.hasNext()) {
+//            System.out.println("Novell user key: "+key.next());
+//        }
 
         return keys;
     }
