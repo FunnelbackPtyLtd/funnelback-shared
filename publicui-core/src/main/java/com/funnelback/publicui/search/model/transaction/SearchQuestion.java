@@ -106,11 +106,15 @@ public class SearchQuestion {
 	 * <p>Additional parameters to pass as-is to PADRE.</p>
 	 * 
 	 * <p>The values of this map will be passed through to PADRE and won't be processed
-	 * at all by the Modern UI.</p>
+	 * at all by the Modern UI. Only parameters relevant to PADRE should be injected here.</p>
 	 * 
-	 * <p>This map is not supposed to be changed. If you need to inject or manipulate Modern UI
-	 * parameters {@link #inputParameterMap} or {@link #rawInputParameters} is more suitable.</p>
+	 * <p>Depending on the parameters you want to inject or manipulate, consider using
+	 * {@link #inputParameterMap} or {@link #rawInputParameters}. Those parameters will be
+	 * processed by the Modern UI (For example to inject faceted navigation constraints).</p> 
 	 * 
+	 * <p>Note that this map is populated <strong>before</strong> the first hook script is run: Any
+	 * additional parameter injected in {@link #inputParameterMap} or {@link #rawInputParameters}
+	 * in a hook script won't be copied to this map.</p> 
 	 */
 	@Getter final private Map<String, String[]> additionalParameters = new HashMap<String, String[]>();
 	
