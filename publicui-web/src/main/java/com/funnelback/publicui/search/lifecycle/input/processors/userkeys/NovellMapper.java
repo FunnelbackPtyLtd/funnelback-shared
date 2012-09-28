@@ -58,9 +58,10 @@ public class NovellMapper implements UserKeysMapper {
         /*
          * uncomment to confirm correct user id and groups supplied
          */
+//        String userid = principal.getName();
 //        Iterator key = keys.iterator();
 //        while( key.hasNext()) {
-//            System.out.println("Novell user key: "+key.next());
+//            System.out.println("Mapping novell user: "+userid+" with key: "+key.next());
 //        }
 
         return keys;
