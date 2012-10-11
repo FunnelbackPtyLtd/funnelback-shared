@@ -89,7 +89,11 @@
 				<exclusions>
 					<exclusion>
 						<groupId>org.apache.tika</groupId>
-						<artifactId>tika-app</artifactId>
+						<artifactId>tika-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.tika</groupId>
+						<artifactId>tika-parsers</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
