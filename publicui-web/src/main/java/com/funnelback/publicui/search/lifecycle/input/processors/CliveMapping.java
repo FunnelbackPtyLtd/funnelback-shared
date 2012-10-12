@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.extern.log4j.Log4j;
 
@@ -29,12 +30,18 @@ public class CliveMapping implements InputProcessor {
 				&& searchTransaction.getQuestion().getClive() != null
 				&& searchTransaction.getQuestion().getClive().length > 0) {
 			
-			ArrayList<String> clives = new ArrayList<String>();
+			SortedSet<String> clives = new TreeSet<String>();
 			for (String clive: searchTransaction.getQuestion().getClive()) {
-				for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
-					if (clive.equals(searchTransaction.getQuestion().getCollection().getMetaComponents()[i])) {
-						clives.add(Integer.toString(i));
-						break;
+				if (clive.matches("\\d+")) {
+					// Already a number, pass it through
+					// That can happen with links build by PADRE (Contextual Nav. links)
+					clives.add(clive);
+				} else {
+					for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
+						if (clive.equals(searchTransaction.getQuestion().getCollection().getMetaComponents()[i])) {
+							clives.add(Integer.toString(i));
+							break;
+						}
 					}
 				}
 			}

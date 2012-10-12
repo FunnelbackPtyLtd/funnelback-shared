@@ -77,11 +77,20 @@ public class CliveMappingTests {
 	@Test
 	public void testInvalidCliveParameter2() throws InputProcessorException {
 		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-		st.getQuestion().setClive(new String[] {"invalid", "2", "component1"});
+		st.getQuestion().setClive(new String[] {"invalid", "component1"});
 
 		processor.processInput(st);
 		Assert.assertArrayEquals(new String[]  {"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 		
+	}
+	
+	@Test
+	public void testWithNumbers() throws InputProcessorException {
+		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
+		st.getQuestion().setClive(new String[] {"component1", "component2", "1", "42"});
+		
+		processor.processInput(st);
+		Assert.assertArrayEquals(new String[]  {"0", "1", "42"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
 	}
 	
 }
