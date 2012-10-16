@@ -185,7 +185,7 @@
 
     @param prefix Prefix to display before the suggestion, usually "Did you mean ?".
 -->
-<#macro CheckSpelling prefix="Did you mean:">
+<#macro CheckSpelling prefix="Did you mean:" suffix="?">
     <#if question?exists
         && question.collection?exists
         && question.collection.configuration.value("spelling_enabled")?exists
@@ -194,8 +194,7 @@
         && response.resultPacket?exists
         && response.resultPacket.spell?exists>
         ${prefix} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${changeParam(QueryString, "query", response.resultPacket.spell.text?url)?html}">
-            <span class="funnelback-highlight">${response.resultPacket.spell.text}</span>
-        </a>
+            <span class="funnelback-highlight">${response.resultPacket.spell.text}</span></a>${suffix}
     </#if>
 </#macro>
 
