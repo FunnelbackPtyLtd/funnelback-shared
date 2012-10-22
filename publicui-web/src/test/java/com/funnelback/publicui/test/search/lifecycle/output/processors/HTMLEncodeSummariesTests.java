@@ -60,9 +60,9 @@ public class HTMLEncodeSummariesTests {
 		processor.processOutput(st);
 		
 		Assert.assertEquals(2, st.getResponse().getResultPacket().getResults().size());
-		Assert.assertEquals("Summary 1 &#92;&quot;&apos;&lt;&gt;&amp; &amp;amp; éô",
+		Assert.assertEquals("Summary 1 &#92;&quot;&#39;&lt;&gt;&amp; &amp;amp; éô",
 				st.getResponse().getResultPacket().getResults().get(0).getSummary());
-		Assert.assertEquals("Summary 2 &#92;&quot;&apos;&lt;&gt;&amp; &amp;amp; éô",
+		Assert.assertEquals("Summary 2 &#92;&quot;&#39;&lt;&gt;&amp; &amp;amp; éô",
 				st.getResponse().getResultPacket().getResults().get(1).getSummary());
 	}
 

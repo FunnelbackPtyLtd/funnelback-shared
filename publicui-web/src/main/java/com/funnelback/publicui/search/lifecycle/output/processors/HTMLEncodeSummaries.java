@@ -20,7 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 public class HTMLEncodeSummaries implements OutputProcessor {
 	
 	private static final String[] UNSAFE_CHARS = {"\\", "\"", "'", "<", ">", "&"};
-	private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&apos;", "&lt;", "&gt;", "&amp;"};
+	private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&#39;", "&lt;", "&gt;", "&amp;"};
 
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
