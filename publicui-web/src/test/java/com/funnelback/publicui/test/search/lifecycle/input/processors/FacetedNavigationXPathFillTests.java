@@ -78,7 +78,7 @@ public class FacetedNavigationXPathFillTests {
 		processor.processInput(st);
 		
 		Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-		Assert.assertEquals("-rmcfZWXYUV", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+		Assert.assertEquals("-rmcf=ZWXYUV", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
 	}
 	
 	@Test

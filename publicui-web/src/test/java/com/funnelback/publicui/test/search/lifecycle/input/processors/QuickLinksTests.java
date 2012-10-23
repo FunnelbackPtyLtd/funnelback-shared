@@ -75,13 +75,13 @@ public class QuickLinksTests {
 		
 		// Try with conflicting query processor options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
-		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -QL=4 -res=xml -QL_rank=all -something");
+		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem=2 -QL=4 -res=xml -QL_rank=all -something");
 		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// Try with non-conflicting QP options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
-		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -res=xml -something");
+		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem=2 -res=xml -something");
 		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=42"));
@@ -109,13 +109,13 @@ public class QuickLinksTests {
 		
 		// Try with conflicting query processor options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
-		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -QL=4 -res=xml -QL_rank=all -something");
+		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem=2 -QL=4 -res=xml -QL_rank=all -something");
 		processor.processInput(st);
 		Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
 
 		// Try with non-conflicting QP options
 		st.getQuestion().getDynamicQueryProcessorOptions().clear();
-		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem2 -res=xml -something");
+		c.getConfiguration().setValue(Keys.QUERY_PROCESSOR_OPTIONS, "-stem=2 -res=xml -something");
 		processor.processInput(st);
 		Assert.assertEquals(2, st.getQuestion().getDynamicQueryProcessorOptions().size());
 		Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-QL=1"));

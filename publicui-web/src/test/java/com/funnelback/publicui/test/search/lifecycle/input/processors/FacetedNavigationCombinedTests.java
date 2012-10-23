@@ -38,7 +38,7 @@ public class FacetedNavigationCombinedTests {
 		processor.processInput(st);
 		
 		Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-		Assert.assertEquals("-rmcfd -count_urls 0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+		Assert.assertEquals("-rmcf=d -count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
 	}
 	
 	@Test

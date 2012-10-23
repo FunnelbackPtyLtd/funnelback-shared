@@ -23,8 +23,8 @@ import com.funnelback.publicui.utils.MapUtils;
 @Log4j
 public class ExploreQuery implements InputProcessor {
 
-	private static final String OPT_VSIMPLE = "-vsimple";
-	private static final String OPT_DAAT0 = "-daat0";
+	private static final String OPT_VSIMPLE = "-vsimple=on";
+	private static final String OPT_DAAT0 = "-daat=0";
 	
 	private final String EXPLORE_PREFIX = "explore:";
 	
