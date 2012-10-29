@@ -310,6 +310,9 @@ public class SearchQuestion {
 		/** Special parameter to redirect directly to the first result */
 		public static final String ONESHOT = "oneshot";
 		
+		/** Encoding of the input parameters (query ...) */
+		public static final String ENC = "enc";
+		
 		/**
 		 * <p>Parameter to specify the locale of the search query</p>
 		 * 
