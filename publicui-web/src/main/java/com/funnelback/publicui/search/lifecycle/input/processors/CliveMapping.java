@@ -34,7 +34,7 @@ public class CliveMapping implements InputProcessor {
 			for (String clive: searchTransaction.getQuestion().getClive()) {
 				if (clive.matches("\\d+")) {
 					// Already a number, pass it through
-					// That can happen with links build by PADRE (Contextual Nav. links)
+					// That can happen with links built by PADRE (Contextual Nav. links)
 					clives.add(clive);
 				} else {
 					for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
