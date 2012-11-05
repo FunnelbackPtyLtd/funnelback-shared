@@ -39,6 +39,7 @@ public class DefaultUrlRenderer implements UrlRenderer {
 	private ConfigRepository configRepository;
 	
 	private File phantomBinary;
+	
 	@PostConstruct
 	public void setupPhantomBinary() {
 		boolean isWindows = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
@@ -58,6 +59,7 @@ public class DefaultUrlRenderer implements UrlRenderer {
 				
 				phantomBinary = phantomBinaryToTest;
 				if (doesPhantomBinaryWork(phantomBinaryToTest)) {
+					log.info("Selected PhantomJS binary: " + phantomBinary.getAbsolutePath());
 					break;
 				}
 			}
@@ -89,13 +91,8 @@ public class DefaultUrlRenderer implements UrlRenderer {
 				result = -2;
 			}
 			
-			if (result != 0) {
-				log.error(cmdLine.toString() + " exited with code " + result);
-				log.error(cmdLine.toString() + " output " + outputStream.toString());
-			} else {
-				log.trace(cmdLine.toString() + " exited with code " + result);
-				log.trace(cmdLine.toString() + " output " + outputStream.toString());				
-			}
+			log.debug(cmdLine.toString() + " exited with code " + result);
+			log.debug(cmdLine.toString() + " output " + outputStream.toString());
 
 		} catch (Exception e) {
 			log.error(phantomBinaryToTest + " does not work", e);
