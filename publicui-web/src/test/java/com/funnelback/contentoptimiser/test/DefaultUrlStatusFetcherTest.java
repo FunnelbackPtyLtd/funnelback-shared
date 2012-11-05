@@ -40,7 +40,7 @@ public class DefaultUrlStatusFetcherTest {
 		when(cgiRunner.setEnvironmentVariable(Mockito.anyString(), Mockito.anyString())).thenReturn(cgiRunner);
 		when(cgiRunner.runToString()).thenReturn("Expires: Wed, 03 Aug 2011 05:42:27 GMT\n" +
 				"Date: Wed, 03 Aug 2011 05:37:27 GMT\n" +
-				"Content-Type: application/json\n" +
+				"Content-Type: application/json; charset=UTF-8\n" +
 				"\n" +
 				"{\"error\":\"Unsupported collection type: local\",\"message\":\"<p> URL status information not available for collection type: local\"}\"");
 		

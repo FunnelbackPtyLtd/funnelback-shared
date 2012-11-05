@@ -59,8 +59,8 @@ public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			// strip header
-			json = json.replaceFirst("(?s).*Content-Type: application/json", "");
+			// strip headers
+			json = json.replaceAll("(?m)^[A-Z][^:]+:\\s.+$", "");
 			status = mapper.readValue(json, UrlStatus.class);
 		} catch (JsonParseException e) {
 			log.error("Error obtaining info about URL",e);
