@@ -89,6 +89,11 @@ public class FacetedNavigation implements InputProcessor {
 						
 							// Find corresponding category type, for each value
 							for(final String value: values) {
+								if ("".equals(value)) {
+									// Skip empty strings
+									continue;
+								}
+								
 								// Find category or subcategory
 								CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, extraParam);
 								

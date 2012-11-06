@@ -42,6 +42,17 @@ public class FacetedNavigationURLTests {
 	}
 	
 	@Test
+	public void testEmpty() {
+		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[0]);
+		processor.processInput(st);
+		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+
+		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {""});
+		processor.processInput(st);
+		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+	}
+	
+	@Test
 	public void testFacetSelected() {
 		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
 		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());

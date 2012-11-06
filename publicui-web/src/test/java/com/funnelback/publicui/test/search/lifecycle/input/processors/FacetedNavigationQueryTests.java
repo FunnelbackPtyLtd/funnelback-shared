@@ -41,6 +41,17 @@ public class FacetedNavigationQueryTests {
 	}
 	
 	@Test
+	public void testEmpty() {
+		st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[0]);
+		processor.processInput(st);
+		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+
+		st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[] {""});
+		processor.processInput(st);
+		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+	}
+	
+	@Test
 	public void testFacetSelected() {
 		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
 		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
