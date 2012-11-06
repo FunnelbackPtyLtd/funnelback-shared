@@ -24,6 +24,10 @@
             </plugin>
         </plugins>
     </build>
+    
+    <properties>
+    	<m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
+    </properties>
 
     <dependencies>
         <dependency>
