@@ -19,11 +19,12 @@ import org.springframework.web.servlet.View;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.service.Suggester.Sort;
 
 /**
- * Query completion / suggestion controller. Wrapper around 'padre-qs'
+ * Query completion / suggestion controller.
  */
 @Controller
 @Log4j
@@ -63,16 +64,38 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 	@Resource(name="suggestViewRich")
 	private View richView;
 
-	@RequestMapping("/padre-qs.cgi")
+	/**
+	 * Simple Wrapper around <code>padre-qs.cgi</code>
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 * @deprecated Use {@link #suggestJava(String, String, String, int, int, String, String)} instead
+	 */
+	@Deprecated
+	@RequestMapping(value="/padre-qs.cgi", params=RequestParameters.COLLECTION)
 	public void suggest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			runPadreBinary(PADRE_QS, null, request, response, false);
+			runPadreBinary(PADRE_QS, null, request, response, true);
 		} catch (PadreForkingException e) {
 			SuggestController.log.error("Unable to run " + PADRE_QS, e);
 			throw new ServletException(e);
 		}
 	}
 	
+	/**
+	 * Use the default suggester service, usually backed by LibQS.
+	 * 
+	 * @param collection
+	 * @param profile
+	 * @param partialQuery First letters of a query
+	 * @param show Number of items to show
+	 * @param sort Order for suggestions (See LibQS code for possible values)
+	 * @param format JSON or XML
+	 * @param callback Name of a JSONP callback if needed
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/suggest.json")
 	public ModelAndView suggestJava(String collection,
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
