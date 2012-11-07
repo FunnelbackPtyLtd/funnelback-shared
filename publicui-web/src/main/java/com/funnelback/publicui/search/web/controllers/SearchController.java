@@ -35,6 +35,17 @@ import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
+/**
+ * <p>Main controller for the Modern UI.</p>
+ * 
+ * <ul>
+ * 	<li>Deal with special cases like the collection list page</li>
+ *  <li>Processes input parameters</li>
+ *  <li>Call the transaction processor to process the search</li>
+ *  <li>Select the correct view (HTML, JSON, XML ...)</li>
+ * </ul>
+ *
+ */
 @Controller
 @Log4j
 public class SearchController {
@@ -65,6 +76,16 @@ public class SearchController {
 	@Autowired
 	private LocaleResolver localeResolver;
 
+	/**
+	 * <p>Configures the binder to:
+	 * <ul>
+	 * 	<li>Restrict which URL parameters can be mapped to Java objects</li>
+	 * 	<li>Convert a collection ID into a proper collection object</li>
+	 * </ul>
+	 * </p>
+	 * @param binder
+	 * @see http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-webdatabinder
+	 */
 	@InitBinder
 	public void initBinder(DataBinder binder) {
 		// For security reasons, only allow specific fields for
@@ -128,6 +149,8 @@ public class SearchController {
 		SearchQuestionBinder.bind(request, question, localeResolver);
 		
 		if (question.getCollection() != null) {
+			// This is were the magic happens. The TransactionProcessor
+			// will take care of processing the search request.
 			transaction = processor.process(question);
 		} else {
 			// Collection is null = non existent
