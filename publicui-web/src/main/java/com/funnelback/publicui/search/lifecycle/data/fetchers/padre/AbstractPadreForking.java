@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
@@ -107,7 +108,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	
 			PadreExecutionReturn padreOutput = null;
 			File indexUpdateLockFile = new File(searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, "index_update.lock");
+					+ File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.Index.UPDATE_LOCK);
 			RandomAccessFile indexUpdateLockRandomFile = null;
 			FileLock indexUpdateLock = null;
 			
