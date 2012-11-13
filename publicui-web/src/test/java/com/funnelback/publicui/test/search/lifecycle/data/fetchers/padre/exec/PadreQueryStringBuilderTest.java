@@ -21,13 +21,32 @@ public class PadreQueryStringBuilderTest {
 	}
 	
 	@Test
+	public void testBuildCompleteQuery() {
+		SearchQuestion qs = new SearchQuestion();
+		Assert.assertEquals("", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
+		
+		qs.setQuery("user query");
+		Assert.assertEquals("user query", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
+		
+		qs.setQuery(null);
+		qs.getQueryExpressions().add("additional");
+		qs.getQueryExpressions().add("expr");
+		Assert.assertEquals("additional expr", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
+
+		qs.setQuery("user query");
+		Assert.assertEquals("user query additional expr", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
+
+	}
+	
+	@Test
 	public void testNoUserEnteredQuery() {
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("dummy", null));
 		qs.setQuery(null);
 		qs.getQueryExpressions().add("additional expr");
 		
-		Assert.assertEquals("additional expr", new PadreQueryStringBuilder(qs, true).buildQuery());
+		Assert.assertEquals("collection=dummy&profile=_default&s=additional+expr",
+				new PadreQueryStringBuilder(qs, true).buildQueryString());
 	}
 	
 	@Test
@@ -61,7 +80,7 @@ public class PadreQueryStringBuilderTest {
 		q.getQueryExpressions().add("good");
 		
 		Assert.assertEquals(
-				"a=1&collection=dummy&profile=_default&query=chocolate+is+good",
+				"a=1&collection=dummy&profile=_default&query=chocolate&s=is+good",
 				new PadreQueryStringBuilder(q, false).buildQueryString());
 	}
 	
@@ -71,7 +90,7 @@ public class PadreQueryStringBuilderTest {
 		q.getMetaParameters().add("rules");
 		
 		Assert.assertEquals(
-				"a=1&collection=dummy&profile=_default&query=chocolate+really+rules",
+				"a=1&collection=dummy&profile=_default&query=chocolate&s=really+rules",
 				new PadreQueryStringBuilder(q, false).buildQueryString());
 	}
 
@@ -85,7 +104,7 @@ public class PadreQueryStringBuilderTest {
 				new PadreQueryStringBuilder(q, false).buildQueryString());
 
 		Assert.assertEquals(
-				"a=1&collection=dummy&profile=_default&query=chocolate+or+coffee",
+				"a=1&collection=dummy&profile=_default&query=chocolate&s=or+coffee",
 				new PadreQueryStringBuilder(q, true).buildQueryString());
 
 	}

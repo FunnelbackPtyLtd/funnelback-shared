@@ -44,7 +44,17 @@ public class PadreQueryStringBuilder {
 		qs.put(Parameters.collection.toString(), new String[] {question.getCollection().getId()});
 		qs.put(Parameters.profile.toString(), new String[] {question.getProfile()});
 
-		qs.put(Parameters.query.toString(), new String[] {buildQuery()});
+		// User entered query
+		String q = buildUserQuery();
+		if (! q.isEmpty()) {
+			qs.put(Parameters.query.toString(), new String[] {buildUserQuery()});
+		}
+		
+		// System generated query
+		String s = buildGeneratedQuery();
+		if (! s.isEmpty()) {
+			qs.put(Parameters.s.toString(), new String[] {s});
+		}
 		
 		String gscope1 = buildGScope1();
 		if (gscope1 != null && ! "".equals(gscope1)) {
@@ -86,17 +96,63 @@ public class PadreQueryStringBuilder {
 	}
 	
 	/**
-	 * Builds query expression from the various question parameters
-	 * (original query, <code>meta_</code> parameters, faceted navigation constraints, etc.)
-	 * @param transaction
+	 * @return Whether there is a query expression or not (either
+	 * the user entered query, or the generated query constraints due
+	 * to faceted nav., etc.) 
+	 */
+	public boolean hasQuery() {
+		return buildUserQuery().length() > 0
+				|| buildGeneratedQuery().length() > 0;
+	}
+	
+	/**
+	 * Builds the complete query expression, both from the user entered
+	 * query and the system generated query
 	 * @return
 	 */
-	public String buildQuery() {
-		// Build query
+	public String buildCompleteQuery() {
+		String userQuery = buildUserQuery();
+		String generatedQuery = buildGeneratedQuery();
+		StringBuilder out = new StringBuilder();
+		if (! userQuery.isEmpty()) {
+			out.append(userQuery);
+		}
+		
+		if (! userQuery.isEmpty() && ! generatedQuery.isEmpty()) {
+			out.append(" ");
+		}
+		
+		if (!generatedQuery.isEmpty()) {
+			out.append(generatedQuery);
+		}
+		
+		return out.toString();
+	}
+	
+	/**
+	 * Builds the user entered query
+	 * 
+	 * @return
+	 */
+	public String buildUserQuery() {
 		StringBuffer query = new StringBuffer();
+		
+		// Only consider user entered query
 		if (question.getQuery() != null) {
 			query.append(question.getQuery());
 		}
+		
+		return query.toString().trim();
+	}
+	
+	/**
+	 * Builds the automatically generated query from various sources
+	 * like <code>meta_</code> parameters, faceted navigation constraints, etc.
+	 * 
+	 * @return
+	 */
+	public String buildGeneratedQuery() {
+		StringBuffer query = new StringBuffer();
 		
 		if (question.getQueryExpressions().size() > 0) {
 			// Add additional query expressions
@@ -153,7 +209,7 @@ public class PadreQueryStringBuilder {
 	}
 	
 	public static enum Parameters {
-		collection,query,profile,gscope1;
+		collection,query,profile,gscope1,s;
 	}
 	
 }

@@ -41,7 +41,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			
 			// FUN-5038: We must use the full query expression here, not just
 			// the user-entered one
-			String q = new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildQuery();
+			String q = new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery();
 			if (q.length() > 0) {
 			
 				for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {

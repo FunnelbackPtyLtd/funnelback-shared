@@ -72,7 +72,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	@Override
 	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)
-				&& new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildQuery().length() > 0) {
+				&& new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).hasQuery()) {
 			
 			String commandLine = new File(searchHome,
 					DefaultValues.FOLDER_BIN 				
