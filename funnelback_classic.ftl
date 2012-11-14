@@ -213,6 +213,8 @@
         && response.resultPacket.bestBets?size &gt; 0>
         <#list response.resultPacket.bestBets as bestBet>
             <#assign bb = bestBet in s />
+            <#assign bb_index = bestBet_index in s />
+            <#assign bb_has_next = bestBet_has_next in s />
             <#nested>
         </#list>
     </#if>
@@ -237,6 +239,8 @@
         && response.resultPacket.resultsWithTierBars?exists>
         <#list response.resultPacket.resultsWithTierBars as r>
             <#assign result = r in s />
+            <#assign result_has_next = r_has_next in s />
+            <#assign result_index = r_index in s />
             <#nested>
         </#list>
     </#if>
@@ -321,6 +325,8 @@
     <#if s.result.quickLinks?exists && s.result.quickLinks.quickLinks?exists>
         <#list s.result.quickLinks.quickLinks as quickLink>
             <#assign ql = quickLink in s />
+            <#assign ql_index = quickLink_index in s />
+            <#assign ql_has_next = quickLink_has_next in s />
             <#nested>
         </#list>
     </#if>
@@ -424,6 +430,8 @@
             <#list response.facets as f>
                 <#if f.hasValues() || question.selectedFacets?seq_contains(f.name)>
                     <#assign facet = f in s>
+                    <#assign facet_index = f_index in s>
+                    <#assign facet_has_next = f_has_next in s>
                     <div class="${class}">
                         <#nested>
                     </div>
@@ -433,6 +441,8 @@
             <#list response.facets as f>
                 <#if (f.name == name || names?seq_contains(f.name) ) && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
                     <#assign facet = f in s>
+                    <#assign facet_index = f_index in s>
+                    <#assign facet_has_next = f_has_next in s>
                     <div class="${class}">
                         <#nested>
                     </div>
@@ -457,6 +467,8 @@
         <#list fn.facetDefinitions as fdef>
             <#if fdef.name == s.facet.name>
                 <#assign facetDef = fdef in s />
+                <#assign facetDef_index = fdef_index in s />
+                <#assign facetDef_has_next = fdef_has_next in s />
                 <div class="${class}"> ${s.facet.name}
                     <#if summary><@FacetSummary separator=separator alltext="all" /></#if>
                 </div>
@@ -690,6 +702,8 @@
     <#if question?exists && question.cnPreviousClusters?size &gt; 0>
         <#list question.cnPreviousClusters as cluster>
             <#assign previousCluster = cluster in s>
+            <#assign previousCluster_index = cluster_index in s>
+            <#assign previousCluster_has_next = cluster_has_next in s>
             <#nested>
         </#list>
     </#if>
@@ -749,6 +763,8 @@
         <#list response.resultPacket.contextualNavigation.categories as c>
             <#if c.name?exists && c.name == name["name"]>
                 <#assign category = c in s />
+                <#assign category_hax_next = c_has_next in s />
+                <#assign category_index = c_index in s />
                 <#if c.name != "site" || c.clusters?size &gt; 1>
                     <#nested>
                 </#if>
@@ -771,6 +787,8 @@
 
             <#list categories as c>
                 <#assign category = c in s>
+                <#assign category_hax_next = c_has_next in s />
+                <#assign category_index = c_index in s />
                 <#list c.values as cv>
                     <#-- Find if this category has been selected. If it's the case, don't display
                          it in the list, except if it's an URL fill facet as we must display sub-folders
@@ -778,6 +796,9 @@
                     <#if ! question.selectedCategoryValues?keys?seq_contains(cv.queryStringParam?split("=")[0])
                         || c.queryStringParamName?contains("|url")>
                         <#assign categoryValue = cv in s>
+                        <#assign categoryValue_has_next = cv_has_next in s>
+                        <#assign categoryValue_index = cv_index in s>
+
                         <#local nbCategories = nbCategories+1 />
                         <#if nbCategories &gt; max><#return></#if>
 
@@ -805,6 +826,8 @@
     <#if s.category?exists>
         <#list s.category.clusters as c>
             <#assign cluster = c in s />
+            <#assign cluster_has_next = c_has_next in s />
+            <#assign cluster_index = c_index in s />
             <#nested>
         </#list>
     </#if>

@@ -363,6 +363,8 @@
                     (name == "" && names?size == 0))
                 && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
                 <#assign facet = f in fb>
+                <#assign facet_has_next = f_has_next in fb>
+                <#assign facet_index = f_index in fb>
                 <#-- Do we have values for this facet in the extra searches ? -->
                 <#if question.selectedFacets?seq_contains(f.name) && extra?exists
                     && extra[ExtraSearches.FACETED_NAVIGATION]?exists
@@ -371,6 +373,8 @@
                     <#list extra[ExtraSearches.FACETED_NAVIGATION].response.facets as extraFacet>
                         <#if extraFacet.name == f.name>
                             <#assign facet = extraFacet in fb>
+                            <#assign facet_has_next = extraFacet_has_next in fb>
+                            <#assign facet_index = extraFacet_index in fb>
                             <#break>
                         </#if>
                     </#list>
