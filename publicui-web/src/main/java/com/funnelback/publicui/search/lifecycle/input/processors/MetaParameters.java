@@ -51,14 +51,17 @@ public class MetaParameters implements InputProcessor {
 	private static final Pattern META_CLASS_PATTERN = Pattern.compile("^" + META_PREFIX + "(.)($|_)");
 	
 	/**
-	 * Pattern used to prefix a value with the metadata class. Taken from the Perl UI:
-	 * # This regex has 3 parts.  The first one turns "qwer qwer"
-	 * # into a:"qwer qwer".  The second one turns `qwer qwer` into
-     * # a:`qwer qwer`.  The third turns qwer into a:qwer
-     * # (i.e. single words).
-     * # Convert "qwer qwer" to a:"qwer qwer"
+	 * <p>Pattern used to prefix a value with the metadata class. Taken from the Perl UI:<br />
+	 * This regex has 4 parts:
+	 * <ul>
+	 * 	<li>The first one turns <code>"qwer qwer"</code> into <code>a:"qwer qwer"</code>.</li>
+	 * 	<li>The second one turns <code>`qwer qwer`</code> into <code>a:`qwer qwer`</code>.</li>
+	 *  <li>The third one turns <code>*qwer qwer*</code> into <code>a:*qwer qwer*</code>.</li>
+	 *  <li> The fourth turns <code>qwer</code> into <code>a:qwer</code> (i.e. single words).</li>
+	 * </ul>
+	 * </p>
 	 */
-	private static final Pattern ADD_META_CLASS_PATTERN = Pattern.compile("(\"[^\"]*\"?|`[^`]+`?|[a-z0-9\\$]\\S*)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern ADD_META_CLASS_PATTERN = Pattern.compile("(\"[^\"]*\"?|`[^`]+`?|\\*[^\\*]+\\*?|[a-z0-9\\$]\\S*)", Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * Used to add non encapsulating type operators (+, |, -)

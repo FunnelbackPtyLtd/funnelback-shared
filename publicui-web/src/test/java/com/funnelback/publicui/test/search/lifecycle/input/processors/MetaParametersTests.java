@@ -74,7 +74,7 @@ public class MetaParametersTests {
 		
 		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:simple a:operator"));
-		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("*b:trunc* *b:operator*"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("b:*trunc* b:*operator*"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[c:orplus c:operator]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|[d:orsand d:operator]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[e:or e:operator]"));
@@ -106,7 +106,7 @@ public class MetaParametersTests {
 		
 		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:simple a:operator a:multiple"));
-		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("*b:trunc* *b:operator* *b:multiple*"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("b:*trunc* b:*operator* b:*multiple*"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[c:orplus c:operator c:multiple]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|[d:orsand d:operator d:multiple]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[e:or e:operator e:multiple]"));
@@ -138,7 +138,7 @@ public class MetaParametersTests {
 		
 		Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:simple"));
-		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("*b:batman*"));
+		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("b:*batman*"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[c:spiderman]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|[d:ironman]"));
 		Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[e:elephantman]"));
