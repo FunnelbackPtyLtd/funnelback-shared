@@ -120,7 +120,7 @@ public class FixCacheAndClickLinksTests {
 	@Test
 	public void testNoUserEnteredQuery() throws OutputProcessorException, UnsupportedEncodingException {
 		st.getQuestion().setQuery(null);
-		st.getQuestion().getQueryExpressions().add("livelinks");
+		st.getQuestion().getMetaParameters().add("livelinks");
 		testClickTracking();
 	}
 }

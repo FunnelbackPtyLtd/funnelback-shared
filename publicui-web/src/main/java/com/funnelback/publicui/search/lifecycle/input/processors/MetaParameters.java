@@ -35,10 +35,17 @@ public class MetaParameters implements InputProcessor {
 		}
 	}
 	
-	/** Prefix for meta_* parameters */
-	private static final String META_PREFIX = "meta_";
-	/** Prefix for query_* parameters */
-	private static final String QUERY_PREFIX = "query_";
+	/**
+	 * Prefix for &quot;system&quot; parameters, i.e. parameters
+	 * injected for technical reasons (as opposite to user-entered
+	 * parameters).
+	 */
+	private static final String SYSTEM_PREFIX = "s";
+	
+	/** Prefix for (s)meta_* parameters */
+	private static final String META_PREFIX = SYSTEM_PREFIX + "?meta_";
+	/** Prefix for (s)query_* parameters */
+	private static final String QUERY_PREFIX = SYSTEM_PREFIX + "?query_";
 	
 	private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").*");
 
@@ -131,7 +138,11 @@ public class MetaParameters implements InputProcessor {
 						stringValue = addNonEncapsulatingOperator("-", stringValue);
 					}
 					
-					searchTransaction.getQuestion().getMetaParameters().add(stringValue);
+					if (name.startsWith(SYSTEM_PREFIX)) {
+						searchTransaction.getQuestion().getSystemMetaParameters().add(stringValue);
+					} else {
+						searchTransaction.getQuestion().getMetaParameters().add(stringValue);
+					}
 
 					// Remove the parameter from the list that will be passed to PADRE if
 					// we successfully processed it

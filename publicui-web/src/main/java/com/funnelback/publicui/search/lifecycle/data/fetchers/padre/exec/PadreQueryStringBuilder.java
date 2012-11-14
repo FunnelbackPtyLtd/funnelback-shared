@@ -130,38 +130,41 @@ public class PadreQueryStringBuilder {
 	}
 	
 	/**
-	 * Builds the user entered query
+	 * Builds the user entered query terms, coming either from
+	 * <code>meta_*</code>, <code>query_*</code> parameters.
 	 * 
 	 * @return
 	 */
 	public String buildUserQuery() {
 		StringBuffer query = new StringBuffer();
 		
-		// Only consider user entered query
 		if (question.getQuery() != null) {
 			query.append(question.getQuery());
-		}
-		
-		return query.toString().trim();
-	}
-	
-	/**
-	 * Builds the automatically generated query from various sources
-	 * like <code>meta_</code> parameters, faceted navigation constraints, etc.
-	 * 
-	 * @return
-	 */
-	public String buildGeneratedQuery() {
-		StringBuffer query = new StringBuffer();
-		
-		if (question.getQueryExpressions().size() > 0) {
-			// Add additional query expressions
-			query.append(" ").append(StringUtils.join(question.getQueryExpressions(), " "));
 		}
 		
 		if (question.getMetaParameters().size() > 0) {
 			// Add meta_* parameters transformed as query expressions
 			for (String value : question.getMetaParameters()) {
+				query.append(" ").append(value);
+			}
+		}
+
+		return query.toString().trim();
+	}
+	
+	/**
+	 * Builds the automatically generated query from various sources
+	 * like <code>smeta_</code> / <code>squery_*</code> parameters,
+	 * faceted navigation constraints, etc.
+	 * 
+	 * @return
+	 */
+	public String buildGeneratedQuery() {
+		StringBuffer query = new StringBuffer();
+
+		if (question.getSystemMetaParameters().size() > 0) {
+			// Add smeta_* parameters transformed as query expressions
+			for (String value : question.getSystemMetaParameters()) {
 				query.append(" ").append(value);
 			}
 		}

@@ -130,13 +130,13 @@ public class MetaDates implements InputProcessor {
 					}
 					
 					if (extra.length() > 0) {
-						searchTransaction.getQuestion().getQueryExpressions().add(extra.toString());
+						searchTransaction.getQuestion().getMetaParameters().add(extra.toString());
 						log.debug("Added additional date query '" + extra.toString() + "'");
 					}
 				}
 				String eventSearchQueries = processEventSearch(params);
 				if ( eventSearchQueries.length() > 0) {
-					searchTransaction.getQuestion().getQueryExpressions().add(eventSearchQueries);
+					searchTransaction.getQuestion().getMetaParameters().add(eventSearchQueries);
 					log.debug("Added additional event search query '" + eventSearchQueries + "'");
 				}
 			}

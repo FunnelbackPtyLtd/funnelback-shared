@@ -27,10 +27,10 @@ public class MetaDatesTests {
 			processor.processInput(null);
 			processor.processInput(new SearchTransaction(null, null));
 			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
-			Assert.assertEquals(0, st.getQuestion().getQueryExpressions().size());
+			Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 			
 			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
-			Assert.assertEquals(0, st.getQuestion().getQueryExpressions().size());
+			Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 		} catch (Exception e) {
 			Assert.fail();
 		}
@@ -44,12 +44,12 @@ public class MetaDatesTests {
 		
 		processor.processInput(st);
 		Assert.assertNull(st.getQuestion().getQuery());
-		Assert.assertEquals(0, st.getQuestion().getQueryExpressions().size());
+		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 		
 		st.getQuestion().setQuery("existing query");
 		processor.processInput(st);
 		Assert.assertEquals("existing query", st.getQuestion().getQuery());
-		Assert.assertEquals(0, st.getQuestion().getQueryExpressions().size());
+		Assert.assertEquals(0, st.getQuestion().getMetaParameters().size());
 	}
 	
 	@Test
@@ -59,8 +59,8 @@ public class MetaDatesTests {
 		st.getQuestion().setQuery("existing query");
 		processor.processInput(st);
 		Assert.assertEquals("existing query", st.getQuestion().getQuery());
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d=01Jan2010", st.getQuestion().getQueryExpressions().get(0));
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d=01Jan2010", st.getQuestion().getMetaParameters().get(0));
 	}
 	
 	@Test
@@ -71,15 +71,15 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_dday", new String[] {"6"});
 		
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d=6Jan1965", st.getQuestion().getQueryExpressions().get(0));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d=6Jan1965", st.getQuestion().getMetaParameters().get(0));
+		st.getQuestion().getMetaParameters().clear();
 		
 		st.getQuestion().getRawInputParameters().put("meta_dday", null);
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d=Jan1965", st.getQuestion().getQueryExpressions().get(0));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d=Jan1965", st.getQuestion().getMetaParameters().get(0));
+		st.getQuestion().getMetaParameters().clear();
 		
 		st.getQuestion().getRawInputParameters().clear();
 		st.getQuestion().getRawInputParameters().put("meta_d3year", new String[] {"2011"});
@@ -87,8 +87,8 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_d3day", new String[] {"06"});
 		
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d>5Mar2011", st.getQuestion().getQueryExpressions().get(0));
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d>5Mar2011", st.getQuestion().getMetaParameters().get(0));
 		
 	}
 	
@@ -97,8 +97,8 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_d", new String[] {"01Jan2001"});
 
 		processor.processInput(st);	
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d=01Jan2001", st.getQuestion().getQueryExpressions().get(0));
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d=01Jan2001", st.getQuestion().getMetaParameters().get(0));
 	}
 	
 	@Test
@@ -107,9 +107,9 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_d2", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
-		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d>01Jan2001", st.getQuestion().getQueryExpressions().get(0));
-		Assert.assertEquals("d<05Mar2002", st.getQuestion().getQueryExpressions().get(1));
+		Assert.assertEquals(2, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d>01Jan2001", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("d<05Mar2002", st.getQuestion().getMetaParameters().get(1));
 	}
 	
 	@Test
@@ -118,24 +118,24 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
-		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d>31Dec2000", st.getQuestion().getQueryExpressions().get(0));
-		Assert.assertEquals("d<6Mar2002", st.getQuestion().getQueryExpressions().get(1));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(2, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d>31Dec2000", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("d<6Mar2002", st.getQuestion().getMetaParameters().get(1));
+		st.getQuestion().getMetaParameters().clear();
 		
 		st.getQuestion().getRawInputParameters().put("meta_d3", new String[] {"2010-05-01"});
 		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"2011-06-06"});
 
 		processor.processInput(st);
-		Assert.assertEquals(2, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d>30Apr2010", st.getQuestion().getQueryExpressions().get(0));
-		Assert.assertEquals("d<7Jun2011", st.getQuestion().getQueryExpressions().get(1));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(2, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d>30Apr2010", st.getQuestion().getMetaParameters().get(0));
+		Assert.assertEquals("d<7Jun2011", st.getQuestion().getMetaParameters().get(1));
+		st.getQuestion().getMetaParameters().clear();
 		
 		st.getQuestion().getRawInputParameters().put("meta_d4", new String[] {"invalid date"});
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("d>30Apr2010", st.getQuestion().getQueryExpressions().get(0));
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("d>30Apr2010", st.getQuestion().getMetaParameters().get(0));
 	}
 	
 	@Test
@@ -145,26 +145,26 @@ public class MetaDatesTests {
 		st.getQuestion().getRawInputParameters().put("meta_w2", new String[] {"05Mar2002"});
 
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("% w>01Jan2001<05Mar2002", st.getQuestion().getQueryExpressions().get(0));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("% w>01Jan2001<05Mar2002", st.getQuestion().getMetaParameters().get(0));
+		st.getQuestion().getMetaParameters().clear();
 		
 		// Existing query + w2
 		st.getQuestion().getRawInputParameters().put("meta_w1", null);
 		st.getQuestion().setQuery("existing query");
 		processor.processInput(st);
 		Assert.assertEquals("existing query", st.getQuestion().getQuery());
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("% w<05Mar2002", st.getQuestion().getQueryExpressions().get(0));
-		st.getQuestion().getQueryExpressions().clear();
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("% w<05Mar2002", st.getQuestion().getMetaParameters().get(0));
+		st.getQuestion().getMetaParameters().clear();
 		
 		// w1 only
 		st.getQuestion().getRawInputParameters().clear();
 		st.getQuestion().getRawInputParameters().put("meta_w1", new String[] {"2002-01"});
 		st.getQuestion().setQuery(null);
 		processor.processInput(st);
-		Assert.assertEquals(1, st.getQuestion().getQueryExpressions().size());
-		Assert.assertEquals("% w>2002-01", st.getQuestion().getQueryExpressions().get(0));
+		Assert.assertEquals(1, st.getQuestion().getMetaParameters().size());
+		Assert.assertEquals("% w>2002-01", st.getQuestion().getMetaParameters().get(0));
 
 	}
 	

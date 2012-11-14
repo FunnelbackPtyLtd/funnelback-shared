@@ -87,20 +87,29 @@ public class SearchQuestion {
 	 * Contextual Navigation: Previous clicked clusters
 	 */
 	@Getter private final List<String> cnPreviousClusters = new ArrayList<String>();
-	
+
 	/**
-	 * <p>Query expressions, will be passed to PADRE.</p>
+	 * <p><tt>meta_*</tt> / <tt>query_*</tt> input parameters, transformed in query expressions.</p>
 	 * 
-	 * <p>This list will contain the original query entered by the user
-	 * but also any other expression calculated for other reasons (faceted
-	 * navigation constraints, etc.).</p>
-	 */
-	@Getter final private List<String> queryExpressions = new ArrayList<String>();
-	
-	/**
-	 * <tt>meta_*</tt> / <tt>query_*</tt> input parameters, transformed as query expressions.
+	 * <p>Those parameters are supposed to be specified by the user, usually
+	 * in an advanced search form. If you need to inject parameters for technical / behind-the-scene
+	 * reasons, consider using {@link #systemMetaParameters}.</p>
+	 * 
+	 * @see #systemMetaParameters
 	 */
 	@Getter final private List<String> metaParameters = new ArrayList<String>();
+	
+	/**
+	 * <p><tt>smeta_*</tt> / <tt>squery_*</tt> input parameters, transformed in query expressions.</p>
+	 * 
+	 * <p>Those parameters are supposed to be &quot;technical&quot; parameters,
+	 * usually injected through a hook script. If you want the user to specify parameters,
+	 * consider using {@link #metaParameters}.</p>
+	 * 
+	 * @see #metaParameters
+	 * @since 12.2
+	 */
+	@Getter final private List<String> systemMetaParameters = new ArrayList<String>();
 	
 	/**
 	 * <p>Additional parameters to pass as-is to PADRE.</p>

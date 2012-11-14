@@ -29,8 +29,8 @@ public class PadreQueryStringBuilderTest {
 		Assert.assertEquals("user query", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
 		
 		qs.setQuery(null);
-		qs.getQueryExpressions().add("additional");
-		qs.getQueryExpressions().add("expr");
+		qs.getMetaParameters().add("additional");
+		qs.getMetaParameters().add("expr");
 		Assert.assertEquals("additional expr", new PadreQueryStringBuilder(qs, true).buildCompleteQuery());
 
 		qs.setQuery("user query");
@@ -43,9 +43,21 @@ public class PadreQueryStringBuilderTest {
 		SearchQuestion qs = new SearchQuestion();
 		qs.setCollection(new Collection("dummy", null));
 		qs.setQuery(null);
-		qs.getQueryExpressions().add("additional expr");
+		qs.getMetaParameters().add("additional expr");
 		
-		Assert.assertEquals("collection=dummy&profile=_default&s=additional+expr",
+		Assert.assertEquals("collection=dummy&profile=_default&query=additional+expr",
+				new PadreQueryStringBuilder(qs, true).buildQueryString());
+	}
+	
+	@Test
+	public void testSystemMetaParametersOnly() {
+		SearchQuestion qs = new SearchQuestion();
+		qs.setCollection(new Collection("dummy", null));
+		qs.setQuery(null);
+		qs.getSystemMetaParameters().add("additional");
+		qs.getSystemMetaParameters().add("meta expr");
+		
+		Assert.assertEquals("collection=dummy&profile=_default&s=additional+meta+expr",
 				new PadreQueryStringBuilder(qs, true).buildQueryString());
 	}
 	
@@ -75,22 +87,14 @@ public class PadreQueryStringBuilderTest {
 	}
 	
 	@Test
-	public void testQueryExpressions() {
-		q.getQueryExpressions().add("is");
-		q.getQueryExpressions().add("good");
-		
-		Assert.assertEquals(
-				"a=1&collection=dummy&profile=_default&query=chocolate&s=is+good",
-				new PadreQueryStringBuilder(q, false).buildQueryString());
-	}
-	
-	@Test
 	public void testMetaParameters() {
 		q.getMetaParameters().add("really");
 		q.getMetaParameters().add("rules");
+		q.getSystemMetaParameters().add("of");
+		q.getSystemMetaParameters().add("course");
 		
 		Assert.assertEquals(
-				"a=1&collection=dummy&profile=_default&query=chocolate&s=really+rules",
+				"a=1&collection=dummy&profile=_default&query=chocolate+really+rules&s=of+course",
 				new PadreQueryStringBuilder(q, false).buildQueryString());
 	}
 
