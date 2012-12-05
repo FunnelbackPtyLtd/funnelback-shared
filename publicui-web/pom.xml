@@ -209,7 +209,6 @@
             <groupId>com.funnelback</groupId>
             <artifactId>jetty-funnelback-extras</artifactId>
             <version>${project.version}</version>
-            <classifier>funnelback-session</classifier>
             <scope>provided</scope>
         </dependency>
     </dependencies>
