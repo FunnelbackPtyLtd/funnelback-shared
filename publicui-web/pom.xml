@@ -206,7 +206,7 @@
             <version>8.1.5.v20120716</version>
         </dependency>
         <dependency>
-            <groupId>testing</groupId>
+            <groupId>com.funnelback</groupId>
             <artifactId>jetty-funnelback-extras</artifactId>
             <version>${project.version}</version>
             <classifier>funnelback-session</classifier>
