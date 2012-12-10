@@ -22,12 +22,13 @@
 				<plugin>
 					<groupId>com.agilejava.docbkx</groupId>
 					<artifactId>docbkx-maven-plugin</artifactId>
-					<version>2.0.11</version>
+					<version>2.0.14</version>
 					<configuration>
 						<htmlStylesheet>style.css</htmlStylesheet>
 						<highlightSource>true</highlightSource>
 						<chunkedOutput>true</chunkedOutput>
 						<xincludeSupported>true</xincludeSupported>
+						<htmlStylesheet>../style.css</htmlStylesheet>
 						<postProcess>
 							<copy todir="target/docbkx/xhtml">
 								<fileset dir="src/docbkx/style/" includes="*" />

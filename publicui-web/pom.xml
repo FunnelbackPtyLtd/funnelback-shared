@@ -40,6 +40,11 @@
             <artifactId>funnelback-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-store</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>

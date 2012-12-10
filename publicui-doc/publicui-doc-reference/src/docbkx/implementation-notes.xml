@@ -73,7 +73,7 @@
 			</para>
 			
 			<para>
-				Unfortunately nobody was able to figure out what that was supposed to do (Check <link xlink:href="https://jira.funnelback.com/browse/FUN-65">FUN-65</link>)
+				Unfortunately nobody was able to figure out what that was supposed to do (Check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-65">FUN-65</link>)
 				so it has NOT been re-implemented.
 			</para>
 		</section>
@@ -199,7 +199,7 @@ fileshare]]>
 		
 		<para>
 			It has been decided that the synonyms feature will be implemented in PADRE, instead of re-implemting it in the Java UI.
-			Please check <link xlink:href="https://jira.funnelback.com/browse/FUN-3368">FUN-3368</link> for the details.
+			Please check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-3368">FUN-3368</link> for the details.
 		</para>
 	</chapter>
 	
@@ -451,10 +451,14 @@ abc.com.au=abc-news,abc-shop]]>
 	</chapter>
 	
 	<chapter xml:id="i18n">
-		<title>Internationalisation</title>
+		<title>Internationalisation (Deprecated)</title>
 		
 		<section xml:id="i18n-overview">
 			<title>Overview</title>
+			<para>
+				!!! This has been deprecated in favor of standard Java resource files !!!
+			</para>
+			
 			<para>
 				The new UI supports localisation using the <link xlink:href="http://www.gnu.org/software/gettext/">GNU gettext</link> library. This solution has been chosen over a pure
 				Java (Spring) solution because:
@@ -506,6 +510,90 @@ abc.com.au=abc-news,abc-shop]]>
 					</member>
 				</simplelist>
 			</para>
+		</section>
+	</chapter>
+	
+	<chapter xml:id="cache-cgi">
+		<title>cache.cgi</title>
+		
+		<section xml:id="cache-cgi-overview">
+			<title>Overview</title>
+			
+			<para>
+				<literal>cache.cgi</literal> is in charge of serving the cached copy of a document from the collection.
+				It's accessed via the <emphasis>Cached copy</emphasis> or <emphasis>View as HTML</emphasis> links from the search results page.
+			</para>
+			
+			<para>
+				Features:
+				<simplelist>
+					<member>Needs <literal>collection</literal>, <literal>doc</literal>, <literal>url</literal> parameters</member>
+					<member>Is disablable via <literal>ui_cache_disabled</literal></member>
+					<member>Is disabled if DLS is used (Early or late binding), except for Novell collections</member>
+					<member>On Novell collections, mounts the fileshare first and unmount it in the end</member>
+					<member>Highlights the query terms in the cached document (if a referrer is available)), including query words within links</member>
+					<member>Can highlight PDF documents by generating an XML overlay file when <literal>filter.pdf.cache</literal> is set</member>
+					<member>For each highlighted term provide &quot;previous&quot; and &quot;next&quot; links to the navigate between highlighted terms</member>
+					<member>Can deal with different store types to find the document on disk (WARC, MirrorStore, FlatFileStore, Push, ...), and pick the filtered file for binary documents</member>
+					<member>Has a <literal>view_source</literal> parameter to see the document source</member>
+					<member>Strips <emphasis>refresh</emphasis> meta tags</member>
+					<member>Does XSL transformation for database collections, with a per-collection XSL template</member>
+					<member>Sets up a <literal>&lt;base href=&quot;...&quot; /&gt;</literal> to have all the page resources load correctly</member>
+				</simplelist>
+			</para>
+			
+			<para>
+				<literal>cache.cgi</literal> needs to retrieve the document from the store using an identifier, primary key or URL. This identifier will
+				be different for each collection type:
+				
+				<simplelist>
+					<member>Web: The URL of the document.</member>
+					<member>Filecopy: The URL of the file.</member>
+					<member>Local: The URL of the file.</member>
+					<member>
+						Database: The primary key of the database record (usually a number).
+						Can be extracted from the <literal>record_id</literal> parameter of the record URL.
+					</member>
+					<member>Meta: N/A (No cached copies on meta collection, the store of the underlying component collection must be used).</member>
+					<member>
+						Trim: Pseudo-URL of the record or file, e.g. <literal>trim://45/225/225-0.html</literal>.
+						<emphasis>45</emphasis> will be the database ID, <emphasis>225</emphasis> the record ID, and <emphasis>225-0.html</emphasis>
+						the name of the attachement (if any).
+					</member>
+					<member>Trimpush: Pseudo-URL of the record or file, e.g. <literal>trim://45/1355/file.doc</literal>.</member>
+					<member>Connector: The URL of the item, as returned by the EntropySoft connector.</member>
+					<member>
+						Directory: CN to the LDAP entry.
+						Can be extracted from the <literal>record_id</literal> parameter of the record URL.
+					</member>
+					<member>Push: URL of the document.</member>
+					<member>Matrix: URL of the document.</member>
+				</simplelist>
+			</para>
+		</section>
+		
+		<section xml:id="cache-cgi-implementation">
+			<title>Implementation</title>
+		
+			<para>
+				Some features are not really used anymore and will be dropped:
+				<simplelist>
+					<member>Specific case of Novell collections: We'll just disable cached copy when DLS is enabled, regardless of the collection type</member>
+					<member>PDF highlighting seems unused and in fact doesn't seem to work at all</member>
+				</simplelist>
+				
+				Some feature might be re-implemented in a better way:
+				<simplelist>
+					<member>Query highlighting could be done in Javascript instead of server-side (<link xlink:href="https://jira.funnelback.com/browse/FUN-5058">FUN-5058</link>)</member>
+				</simplelist>
+			</para>
+			
+			<para>
+				Ideally we'd like to provide some way for users to customise the output as it has been requested multiple times. The best way to do so
+				is probably to have a controller build the data, then pass it to a FreeMarker template. We can ship a default template and let users use
+				a customised one from the collection configuration files.
+			</para>
+			
 		</section>
 	</chapter>
 
