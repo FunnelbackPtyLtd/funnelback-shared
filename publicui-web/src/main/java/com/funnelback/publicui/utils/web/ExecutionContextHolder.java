@@ -18,7 +18,11 @@ import org.springframework.web.context.ServletContextAware;
 public class ExecutionContextHolder implements ServletContextAware {
 
 	private enum ExecutionContext {
-		Admin,Public,Unknown
+		Admin,
+		Public,
+		/** Used for special instance of Public UI for Novell OES 2 DLS */
+		Novell,
+		Unknown;
 	}
 	
 	/**
@@ -39,8 +43,8 @@ public class ExecutionContextHolder implements ServletContextAware {
 		try {
 			this.executionContext = ExecutionContext.valueOf( servletExecutionContext );
 		} catch (Exception e) {
-			log.warn("Unknown execution context. Please set a valid '"+ExecutionContext.class.getSimpleName()+"' servlet attribute"
-					+ " in your application server config (This is only needed for JMX monitoring).");
+			log.warn("Unknown execution context '"+servletExecutionContext+"'. Please set a valid '"+ExecutionContext.class.getSimpleName()+"' "
+					+ "servlet attribute in your application server config (This is only needed for JMX monitoring).");
 			this.executionContext = ExecutionContext.Unknown;
 		}
 		log.info("Context path is '" + contextPath + "', execution context is '"+executionContext+"'");
