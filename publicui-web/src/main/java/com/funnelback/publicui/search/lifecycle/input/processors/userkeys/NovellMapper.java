@@ -49,9 +49,9 @@ public class NovellMapper implements UserKeysMapper {
                             + principal.getName());
                 }
 
-                Iterator keyLists = subject.getPrivateCredentials(UserKeys.class).iterator();
+                Iterator<UserKeys> keyLists = subject.getPrivateCredentials(UserKeys.class).iterator();
                 while (keyLists.hasNext()) {
-                    keys.addAll(((UserKeys) keyLists.next()).getKeys());
+                    keys.addAll(keyLists.next().getKeys());
                 }
             }
 
