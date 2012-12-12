@@ -325,4 +325,23 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
 		new File(TEST_DIR, "extra_search.extra-test.cfg").delete();
 		Assert.assertNull(configRepository.getExtraSearchConfiguration(coll, "extra-test"));
 	}
+	
+	@Test
+	public void testGetXmlTemplate() throws IOException {
+		// No template at the beginning
+		Assert.assertNull(configRepository.getXslTemplate("config-repository", "_default"));
+		
+		File createdXsl = new File(TEST_DIR, "_default/template.xsl");
+		createdXsl.mkdirs();
+		createdXsl.createNewFile();
+		File xsl = configRepository.getXslTemplate("config-repository", "_default");
+		Assert.assertNotNull(xsl);
+		Assert.assertEquals(createdXsl, xsl);
+		Assert.assertNull(configRepository.getXslTemplate("config-repository", "_default_preview"));
+		
+		createdXsl.delete();
+		Assert.assertNull(configRepository.getXslTemplate("config-repository", "_default"));
+		Assert.assertNull(configRepository.getXslTemplate("config-repository", "_default_preview"));
+		
+	}
 }

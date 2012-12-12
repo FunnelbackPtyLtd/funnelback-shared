@@ -1,14 +1,18 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import groovy.xml.XmlUtil;
-
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import lombok.extern.log4j.Log4j;
-
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -24,10 +28,9 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store;
-import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
-import com.funnelback.common.io.store.StoreType;
+import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -38,9 +41,22 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
  * Deal with cached copies
  */
 @Controller
-@Log4j
 public class CacheController {
 
+	/** Default FTL file to use when cached copies are not available */
+	private static final String CACHED_COPY_UNAVAILABLE_VIEW = DefaultValues.FOLDER_WEB+"/"
+			+ DefaultValues.FOLDER_TEMPLATES + "/"
+			+ DefaultValues.FOLDER_MODERNUI + "/cached-copy-unavailable";
+	
+	/** Model attribute key containing document's metadata */
+	private final static String MODEL_METADATA = "metaData";
+	
+	/** Model attribute key containing the Jsoup document tree */
+	private final static String MODEL_DOCUMENT = "doc";
+	
+	/** Used for XSL transformations */
+	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	
 	@Autowired
 	private DataRepository dataRepository;
 	
@@ -56,41 +72,68 @@ public class CacheController {
 	public ModelAndView cache(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(RequestParameters.COLLECTION) Collection collection,
+			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
+			@RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
 			@RequestParam String url) throws Exception {
 		
 		if (cachedCopiesDisabled(collection.getConfiguration()) || url == null) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			
-			return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
-					+DefaultValues.FOLDER_TEMPLATES+"/"
-					+DefaultValues.FOLDER_MODERNUI+"/cached-copy-unavailable",
-					new HashMap<String, Object>());
+			return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, new HashMap<String, Object>());
 		} else {
-			Store<? extends Record> store = StoreType.getStore(collection.getConfiguration(), View.live);
-			try {
-				store.open();
-				Record r = store.get(url);
+			RecordAndMetadata<? extends Record> rmd = dataRepository.getCachedDocument(collection, View.live, url);
 				
-				if (r != null) {
-					if (r instanceof RawBytesRecord) {
-						RawBytesRecord bytesRecord = (RawBytesRecord) r;
-						response.getOutputStream().write(bytesRecord.getContent());
-						return null;
-					} else if (r instanceof XmlRecord) {
-						XmlRecord xmlRecord = (XmlRecord) r;
-						response.getWriter().write(Xml.toString(xmlRecord.getContent()));
-						return null;
+			if (rmd != null && rmd.record != null) {
+				
+				if (rmd.record instanceof RawBytesRecord) {
+					RawBytesRecord bytesRecord = (RawBytesRecord) rmd.record;
+					
+					Map<String, Object> model = new HashMap<String, Object>();
+					model.put(RequestParameters.Cache.URL, url);
+					model.put(RequestParameters.COLLECTION, collection);
+					model.put(RequestParameters.PROFILE, profile);
+					model.put(RequestParameters.FORM, form);
+					model.put(MODEL_METADATA, rmd.metadata);
+					
+					// FIXME: Assumes UTF-8 here
+					model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent())));
+					
+					String view = DefaultValues.FOLDER_CONF
+							+ "/" + collection.getId()
+							+ "/" + profile
+							+ "/" + form + DefaultValues.CACHE_FORM_SUFFIX;
+					
+					return new ModelAndView(view, model);
+					
+				} else if (rmd.record instanceof XmlRecord) {
+					XmlRecord xmlRecord = (XmlRecord) rmd.record;
+
+					// Set custom content-type if any
+					response.setContentType(
+							collection.getConfiguration().value(
+									Keys.ModernUI.Cache.FORM_PREFIX
+									+ "." + form + "." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX,
+							"text/xml"));
+					
+					// XSL Transform if there's an XSL template
+					File xslTemplate = configRepository.getXslTemplate(collection.getId(), profile);
+					if (xslTemplate != null) {
+						Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslTemplate));
+						DOMSource xmlSource = new DOMSource(xmlRecord.getContent());
+						transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
 					} else {
-						throw new UnsupportedOperationException("Unknown record type '"+r.getClass()+"'");
+						response.getWriter().write(Xml.toString(xmlRecord.getContent()));
 					}
 					
-				} else {
-					// Record not found
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 					return null;
+				} else {
+					throw new UnsupportedOperationException("Unknown record type '"+rmd.record.getClass()+"'");
 				}
-			} finally {
-				store.close();
+				
+			} else {
+				// Record not found
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, new HashMap<String, Object>());
 			}
 		}
 	}

@@ -377,6 +377,9 @@ public class SearchQuestion {
 			 * Used in click tracking. Target URL to redirect to.
 			 */
 			public static final String INDEX_URL = "index_url";
+			
+			/** URL of the original document */
+			public static final String URL = "url";
 		}
 		
 		/**

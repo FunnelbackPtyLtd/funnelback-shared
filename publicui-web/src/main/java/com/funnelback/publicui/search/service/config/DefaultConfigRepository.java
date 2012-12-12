@@ -469,4 +469,19 @@ public class DefaultConfigRepository implements ConfigRepository {
 		return out;
 	}
 	
+	@Override
+	public File getXslTemplate(String collectionId, String profileId) {
+		File template = new File(searchHome
+				+ File.separator + DefaultValues.FOLDER_CONF
+				+ File.separator + collectionId
+				+ File.separator + profileId,
+				Files.XSL_TEMPLATE);
+		
+		if (template.exists()) {
+			return template;
+		} else {
+			return null;
+		}
+	}
+	
 }

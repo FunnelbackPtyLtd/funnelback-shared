@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.junit.Assume;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -22,6 +23,7 @@ public class MockConfigRepository implements ConfigRepository {
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	@Getter private Map<GlobalConfiguration, Map<String, String>> globalConfigs = new HashMap<GlobalConfiguration, Map<String, String>>();
 	@Getter private final Map<String, String> translations = new HashMap<String, String>();
+	@Getter @Setter private File xslTemplate;
 	
 	@Getter private Config globalConfiguration;
 		
@@ -109,5 +111,10 @@ public class MockConfigRepository implements ConfigRepository {
 		return translations;
 	}
 
+	@Override
+	public File getXslTemplate(String collectionId, String profileId) {
+		return xslTemplate;
+	}
+	
 }
 

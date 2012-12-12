@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -68,6 +69,13 @@ public interface ConfigRepository {
 	 * @return The list of available forms for a collection, for a given profile
 	 */
 	public String[] getForms(String collectionId, String profileId);
+	
+	/**
+	 * @param collectionId
+	 * @param profileId
+	 * @return The XSL template for a collection, for a given profile, or null if not set 
+	 */
+	public File getXslTemplate(String collectionId, String profileId);
 	
 	/**
 	 * @param collection

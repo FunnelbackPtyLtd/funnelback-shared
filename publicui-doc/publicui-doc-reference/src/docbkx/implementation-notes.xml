@@ -539,6 +539,7 @@ abc.com.au=abc-news,abc-shop]]>
 					<member>Strips <emphasis>refresh</emphasis> meta tags</member>
 					<member>Does XSL transformation for database collections, with a per-collection XSL template</member>
 					<member>Sets up a <literal>&lt;base href=&quot;...&quot; /&gt;</literal> to have all the page resources load correctly</member>
+					<member>Works with instant updates by looking up content in the secondary store</member>
 				</simplelist>
 			</para>
 			

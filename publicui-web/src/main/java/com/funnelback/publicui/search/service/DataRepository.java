@@ -1,20 +1,22 @@
 package com.funnelback.publicui.search.service;
 
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 /**
- * Interface to access collection data, such as files in
- * the live/offline view, index files, etc. *
+ * Interface to access collection data (stores)
  */
 public interface DataRepository {
 
 	/**
 	 * Gets a cached document.
-	 * @param collection
-	 * @param relativeUrl relative URL of the document such as
-	 * http/server/folder/doc.html.pan.txt, or 7/w/3/0/7w3043...html.pan.txt
-	 * @return Content of the cache document
+	 * @param collection Collection to lookup the document from
+	 * @param view View to lookup the document from (Usually the live view)
+	 * @param url URL of the document
+	 * @return Cached document + metadata, or null on both fields if not found
 	 */
-	public String getCachedDocument(Collection collection, String relativeUrl);
+	public RecordAndMetadata<? extends Record> getCachedDocument(Collection collection, Store.View view, String url);
 	
 }
