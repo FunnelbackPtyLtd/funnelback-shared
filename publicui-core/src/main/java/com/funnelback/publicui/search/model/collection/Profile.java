@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.model.collection;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
