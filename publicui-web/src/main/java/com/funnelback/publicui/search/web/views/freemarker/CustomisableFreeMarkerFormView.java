@@ -71,7 +71,9 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
 				config = c.getConfiguration();
 				settingPrefix = Keys.ModernUI.Cache.FORM_PREFIX;
 				// Strip off ".cache" suffix from form name
-				name = name.substring(0, name.lastIndexOf(DefaultValues.CACHE_FORM_SUFFIX));
+				if (name.endsWith(DefaultValues.CACHE_FORM_SUFFIX)) {
+					name = name.substring(0, name.lastIndexOf(DefaultValues.CACHE_FORM_SUFFIX));
+				}
 			}
 		}
 		
