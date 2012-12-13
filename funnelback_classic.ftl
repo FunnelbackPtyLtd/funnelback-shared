@@ -863,9 +863,14 @@
     @param name Name of the select.
     @param options List of option, either single strings that will be used as the name and value, or <code>value=label</code> strings.
     @param range Optional range expression to generate options.
+    @param defaultValue Default value to set when there's no CGI value.
     @param additional : Any additional HTML attributes to set to the select tag.
 -->
-<#macro Select name options=[] range="" additional...>
+<#macro Select name options=[] range="" defaultValue="" additional...>
+    <#assign selectedValue = defaultValue />
+    <#if question.inputParameterMap[name]?? && question.inputParameterMap[name] != "">
+        <#assign selectedValue = question.inputParameterMap[name] />
+    </#if>
     <select name="${name}" <#compress>
         <#if additional?exists && additional?is_hash>
             <#list additional?keys as key>${key}="${additional[key]}" </#list>
@@ -875,11 +880,9 @@
             <#list options as opt>
                 <#if opt?contains("=")>
                     <#assign valueAndLabel = opt?split("=")>
-                    <option value="${parseRelativeDate(valueAndLabel[0])}" <#if question.inputParameterMap[name]?exists
-                        && question.inputParameterMap[name] == valueAndLabel[0]>selected="selected"</#if>>${valueAndLabel[1]}</option>
+                    <option value="${parseRelativeDate(valueAndLabel[0])}" <#if selectedValue == valueAndLabel[0]>selected="selected"</#if>>${valueAndLabel[1]}</option>
                 <#else>
-                    <option value="${parseRelativeDate(opt)}" <#if question.inputParameterMap[name]?exists
-                        && question.inputParameterMap[name] == opt>selected="selected"</#if>>${parseRelativeDate(opt)}</option>
+                    <option value="${parseRelativeDate(opt)}" <#if selectedValue == opt>selected="selected"</#if>>${parseRelativeDate(opt)}</option>
                 </#if>
             </#list>
         </#if>
