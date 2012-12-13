@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,11 +49,14 @@ public class CacheController {
 			+ DefaultValues.FOLDER_TEMPLATES + "/"
 			+ DefaultValues.FOLDER_MODERNUI + "/cached-copy-unavailable";
 	
-	/** Model attribute key containing document's metadata */
+	/** Model attribute containing document's metadata */
 	private final static String MODEL_METADATA = "metaData";
 	
-	/** Model attribute key containing the Jsoup document tree */
+	/** Model attribute containing the Jsoup document tree */
 	private final static String MODEL_DOCUMENT = "doc";
+	
+	/** Model attribute containing the request URL, needed to build an URL to the Funnelback server */
+	private final static String MODEL_REQUEST_URL = "requestURL";
 	
 	/** Used for XSL transformations */
 	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -93,6 +97,7 @@ public class CacheController {
 					model.put(RequestParameters.COLLECTION, collection);
 					model.put(RequestParameters.PROFILE, profile);
 					model.put(RequestParameters.FORM, form);
+					model.put(MODEL_REQUEST_URL, new URL(request.getRequestURL().toString()));
 					model.put(MODEL_METADATA, rmd.metadata);
 					
 					// FIXME: Assumes UTF-8 here
