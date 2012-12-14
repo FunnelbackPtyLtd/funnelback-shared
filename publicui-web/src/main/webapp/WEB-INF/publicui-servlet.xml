@@ -72,7 +72,6 @@
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
 					<constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
 					<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
-					<constructor-arg name="globalPath"><value>conf</value></constructor-arg>
 					
 					<property name="cache" value="true" />
 					<property name="prefix" value="" />

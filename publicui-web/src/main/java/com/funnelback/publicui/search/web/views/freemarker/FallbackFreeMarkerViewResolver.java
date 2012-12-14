@@ -26,30 +26,32 @@ public class FallbackFreeMarkerViewResolver extends FreeMarkerViewResolver {
 	/** Default suffix to try to fallback to */
 	private final String defaultSuffix;
 	
-	/** A global path to search, before falling back to the default view */
-	private final String globalPath;
-	
-	public FallbackFreeMarkerViewResolver(String fallbackViewUrl, String defaultSuffix, String globalPath) {
+	public FallbackFreeMarkerViewResolver(String fallbackViewUrl, String defaultSuffix) {
 		this.fallbackViewUrl = fallbackViewUrl;
 		this.defaultSuffix = defaultSuffix;
-		this.globalPath = globalPath;
 	}
 	
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		View v = super.resolveViewName(viewName, locale);
-		if (v == null) {
-			v = super.resolveViewName(viewName+defaultSuffix, locale);
+		String folder = viewName.substring(0, viewName.lastIndexOf('/'));
+		String view = viewName.substring(viewName.lastIndexOf('/'));
+		
+		View v = super.resolveViewName(folder+view, locale);
+		
+		while (v == null && folder.contains("/")) {
+			v = super.resolveViewName(folder+view+defaultSuffix, locale);
 			if (v == null) {
-				// Try to resolve under the global path
-				String inConfUrl = globalPath + viewName.substring(viewName.lastIndexOf('/'));
-				v = super.resolveViewName(inConfUrl, locale);
-				if (v == null) {
-					v = super.resolveViewName(fallbackViewUrl, locale);
-					if (v == null) {
-						v = super.resolveViewName(fallbackViewUrl+defaultSuffix, locale);
-					}
-				}
+				folder = folder.substring(0, folder.lastIndexOf('/'));
+			}
+			
+			v = super.resolveViewName(folder+view, locale);
+		}
+
+		// Fall back view
+		if (v == null) {
+			v = super.resolveViewName(fallbackViewUrl, locale);
+			if (v == null) {
+				v = super.resolveViewName(fallbackViewUrl+defaultSuffix, locale);
 			}
 		}
 
