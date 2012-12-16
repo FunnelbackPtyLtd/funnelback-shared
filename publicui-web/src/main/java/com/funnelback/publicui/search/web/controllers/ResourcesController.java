@@ -16,8 +16,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -36,13 +34,10 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Controller
 @Log4j
-public class ResourcesController implements ApplicationContextAware, ServletContextAware {
+public class ResourcesController implements ServletContextAware {
 
 	public static final String MAPPING_PATH = "/resources/";
 	private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");
-	
-	/** Needed to instantiate Spring resource request handler */
-	@Setter private ApplicationContext applicationContext;
 	
 	@Autowired
 	private ConfigRepository configRepository;
@@ -95,7 +90,7 @@ public class ResourcesController implements ApplicationContextAware, ServletCont
 						
 						request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, resource);
 					
-						ResourceHttpRequestHandler handler = applicationContext.getAutowireCapableBeanFactory().createBean(ResourceHttpRequestHandler.class);
+						ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
 						handler.setLocations(locations);
 					
 						handler.handleRequest(request, response);

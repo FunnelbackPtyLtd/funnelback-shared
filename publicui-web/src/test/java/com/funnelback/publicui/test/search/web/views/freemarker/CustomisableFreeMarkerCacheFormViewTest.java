@@ -38,7 +38,8 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
 		customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 		
 		Assert.assertEquals("text/html", response.getContentType());
-		Assert.assertEquals(0, response.getHeaderNames().size());
+		Assert.assertEquals(1, response.getHeaderNames().size());
+		Assert.assertEquals("Content-Type", response.getHeaderNames().iterator().next());
 	}
 	
 	@Test
@@ -47,7 +48,8 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
 		customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 
 		Assert.assertEquals("test/junit", response.getContentType());
-		Assert.assertEquals(0, response.getHeaderNames().size());
+		Assert.assertEquals(1, response.getHeaderNames().size());
+		Assert.assertEquals("Content-Type", response.getHeaderNames().iterator().next());
 	}
 	
 	@Test
@@ -61,7 +63,8 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
 		customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 
 		Assert.assertEquals("text/html", response.getContentType());
-		Assert.assertEquals(2, response.getHeaderNames().size());
+		Assert.assertEquals(3, response.getHeaderNames().size());
+		Assert.assertEquals("text/html", response.getHeader("Content-Type"));
 		Assert.assertEquals("Value 1", response.getHeader("First-Header"));
 		Assert.assertEquals("second value...", response.getHeader("Second-Header"));
 	}
@@ -75,7 +78,8 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
 		customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 
 		Assert.assertEquals("text/csv", response.getContentType());
-		Assert.assertEquals(1, response.getHeaderNames().size());
+		Assert.assertEquals(2, response.getHeaderNames().size());
+		Assert.assertEquals("text/csv", response.getHeader("Content-Type"));
 		Assert.assertEquals("attachment", response.getHeader("Content-Disposition"));
 		
 	}
