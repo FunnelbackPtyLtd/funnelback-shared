@@ -56,7 +56,7 @@
 		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	<bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
 		<property name="favorPathExtension" value="true" />
 		<property name="ignoreAcceptHeader" value="true" />
 		<property name="defaultContentType" value="text/html" />
@@ -67,6 +67,9 @@
 				<entry key="classic" value="text/xml-classic" />
 			</map>
 		</property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="viewResolvers">
 			<list>
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">

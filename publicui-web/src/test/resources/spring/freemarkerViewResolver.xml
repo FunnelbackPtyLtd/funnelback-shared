@@ -15,13 +15,29 @@
 				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<bean id="freemarkerConfig"
-		class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-		<property name="templateLoaderPath" value="target/test-output/freemarker-view-resolver/dummy-search_home" />
+	<bean id="tmpFile" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"><value>java.io.File</value></property>
+		<property name="targetMethod"><value>createTempFile</value></property>
+		<property name="arguments">
+			<list>
+				<value>publicui-freemarker</value>
+				<value>.test</value>
+			</list>
+		</property>
 	</bean>
 	
+	<bean id="searchHome" class="java.io.File">
+		<constructor-arg><value>#{tmpFile.parentFile}</value></constructor-arg>
+		<constructor-arg><value>freemarker-dummy-search_home</value></constructor-arg>
+	</bean>
+	
+	<bean id="createSearchHome" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject"><ref local="searchHome"></ref></property>
+		<property name="targetMethod"><value>mkdirs</value></property>		
+	</bean>
+
 	<bean id="freemarkerConfiguration" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-   		<property name="configuration" ref="freemarkerConfig" />
+   		<property name="templateLoaderPath" value="file:#{searchHome.absolutePath}" />
 	</bean>
 	
 	<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">

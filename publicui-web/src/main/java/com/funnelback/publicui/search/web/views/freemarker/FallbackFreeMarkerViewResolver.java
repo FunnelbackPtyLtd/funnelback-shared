@@ -33,8 +33,12 @@ public class FallbackFreeMarkerViewResolver extends FreeMarkerViewResolver {
 	
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		String folder = viewName.substring(0, viewName.lastIndexOf('/'));
-		String view = viewName.substring(viewName.lastIndexOf('/'));
+		String folder = "";
+		String view = viewName;
+		if (viewName.contains("/")) {
+			folder = viewName.substring(0, viewName.lastIndexOf('/'));
+			view = viewName.substring(viewName.lastIndexOf('/'));
+		}		
 		
 		View v = super.resolveViewName(folder+view, locale);
 		
