@@ -41,8 +41,13 @@
 
 	<bean id="searchHome" class="java.io.File">
 		<constructor-arg index="0" type="java.lang.String"
-			value="#{ T(java.lang.System).getenv('SEARCH_HOME') }" />
+			value="src/test/resources/dummy-search_home" />
 	</bean>
+	
+	<bean id="freemarkerConfiguration" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+   		<property name="templateLoaderPath" value="file:#{searchHome.absolutePath}" />
+	</bean>
+	
 	
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserView">
 		<property name="url" value="contentoptimiser/content-optimiser.ftl" />
@@ -76,6 +81,8 @@
 
 	<bean id="resourceManager" class="com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager" />
 
+	<bean id="localDataRepository" class="com.funnelback.publicui.search.service.data.LocalDataRepository" />
+
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
 
@@ -83,6 +90,9 @@
 		class="com.funnelback.publicui.search.web.controllers.ResourcesController">
 		<property name="contextPath" value=""/>
 		</bean>
+
+	<bean id="cacheController"
+		class="com.funnelback.publicui.search.web.controllers.CacheController" />
 
 	<bean
 		class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />

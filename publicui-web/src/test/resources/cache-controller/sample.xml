@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<db_record>
+    <id>10000</id>
+    <username>admin</username>
+    <password_hash>EupfT5Jp2+RHWKDJOb4B+QnNOkMywtX10OQMIXM+mFERyYEkLaFJHE4bBVO3FQv+5yIedTats6L9TIpqYfslXw==</password_hash>
+    
+    <service_name>Default Database</service_name>
+</db_record>

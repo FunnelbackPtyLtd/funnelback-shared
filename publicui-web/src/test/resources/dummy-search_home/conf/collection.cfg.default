@@ -1,2 +1,3 @@
 collection_root=$SEARCH_HOME/data/$COLLECTION_NAME
 collection-default-key=Collection default value
+crawler.secondary_store_root=$SEARCH_HOME/data/$COLLECTION_NAME/live/data

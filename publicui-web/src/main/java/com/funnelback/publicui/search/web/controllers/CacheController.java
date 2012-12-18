@@ -13,6 +13,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.Setter;
+
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,27 +47,27 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 public class CacheController {
 
 	/** Default FTL file to use when cached copies are not available */
-	private static final String CACHED_COPY_UNAVAILABLE_VIEW = DefaultValues.FOLDER_WEB+"/"
+	public static final String CACHED_COPY_UNAVAILABLE_VIEW = DefaultValues.FOLDER_WEB+"/"
 			+ DefaultValues.FOLDER_TEMPLATES + "/"
 			+ DefaultValues.FOLDER_MODERNUI + "/cached-copy-unavailable";
 	
 	/** Model attribute containing document's metadata */
-	private final static String MODEL_METADATA = "metaData";
+	public final static String MODEL_METADATA = "metaData";
 	
 	/** Model attribute containing the Jsoup document tree */
-	private final static String MODEL_DOCUMENT = "doc";
+	public final static String MODEL_DOCUMENT = "doc";
 	
 	/** Model attribute containing the request URL, needed to build an URL to the Funnelback server */
-	private final static String MODEL_REQUEST_URL = "requestURL";
+	public final static String MODEL_REQUEST_URL = "requestURL";
 	
 	/** Used for XSL transformations */
 	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	
 	@Autowired
-	private DataRepository dataRepository;
+	@Setter private DataRepository dataRepository;
 	
 	@Autowired
-	private ConfigRepository configRepository;
+	@Setter private ConfigRepository configRepository;
 	
 	@InitBinder
 	public void initBinder(DataBinder binder) {
@@ -75,10 +77,10 @@ public class CacheController {
 	@RequestMapping(value="/cache", method=RequestMethod.GET)
 	public ModelAndView cache(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(RequestParameters.COLLECTION) Collection collection,
+			@RequestParam(value=RequestParameters.COLLECTION,required=true) Collection collection,
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
-			@RequestParam String url) throws Exception {
+			@RequestParam(required=true) String url) throws Exception {
 		
 		if (cachedCopiesDisabled(collection.getConfiguration()) || url == null) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
