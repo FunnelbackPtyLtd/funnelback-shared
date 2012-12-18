@@ -130,7 +130,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
 	 * retrieved by the cache controller
 	 * @return
 	 */
-	private RecordAndMetadata<RawBytesRecord> buildRecordAndMetadata() throws IOException {
+	protected RecordAndMetadata<RawBytesRecord> buildRecordAndMetadata() throws IOException {
 		return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(
 				FileUtils.readFileToByteArray(TEST_DOCUMENT),
 				getPrimaryKey()),
@@ -141,7 +141,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
 	 * Cleans up the store prior to the test to start from fresh on each test
 	 * @throws IOException
 	 */
-	private void cleanupStore() throws IOException {
+	protected void cleanupStore() throws IOException {
 		File storeRoot = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/live/data");
 		FileUtils.deleteDirectory(storeRoot.getParentFile());
 		storeRoot.mkdirs();
