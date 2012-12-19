@@ -24,12 +24,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.MapUtils;
 
 /**
- * Apply transformation to the cache and click URLs (Results, BestBets...)
- * <ul>
- * 	<li>Adds a prefix configured in the global app.properties (can be empty)</li>
- * 	<li>Generates click tracking URLs</li>
- * </ul>
- *
+ * Apply transformation to the click URLs (Results, BestBets...) like
+ * adding click tracking URLs.
  */
 @Component("fixCacheAndClickLinks")
 public class FixCacheAndClickLinks implements OutputProcessor {
@@ -45,7 +41,6 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			if (q.length() > 0) {
 			
 				for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
-					r.setCacheUrl(r.getCacheUrl());
 					if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
 						r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
 					} else {
