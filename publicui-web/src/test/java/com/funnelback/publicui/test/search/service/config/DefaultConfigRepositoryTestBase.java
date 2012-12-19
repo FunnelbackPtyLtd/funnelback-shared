@@ -35,8 +35,6 @@ public abstract class DefaultConfigRepositoryTestBase {
 	 */
 	@Before
 	public void before() throws IOException {
-		PropertyConfigurator.configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
-		
 		FileUtils.deleteDirectory(SEARCH_HOME);
 		TEST_DIR.mkdirs();
 		FileUtils.copyDirectory(new File(DUMMY_SEARCH_HOME+"/conf/config-repository"), TEST_DIR);

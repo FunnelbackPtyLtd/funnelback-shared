@@ -55,6 +55,8 @@ public class LocalDataRepository implements DataRepository {
 		case database:
 		case directory:
 			return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
+		case trimpush:
+			return URLDecoder.decode(url, "UTF-8");
 		case meta:
 		case unknown:
 			throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");

@@ -100,7 +100,7 @@ public abstract class AbstractXmlCacheControllerTest {
 		
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertEquals("text/xml", response.getContentType());
-		Assert.assertEquals(Xml.toString(Xml.fromFile(TEST_DOCUMENT)), response.getContentAsString());
+		Assert.assertEquals(Xml.toString(rmd.record.getContent()), response.getContentAsString());
 	}
 
 	/**

@@ -37,8 +37,6 @@ public class AutoRefreshResourceManagerTest {
 
 	@Before
 	public void before() throws Exception {
-		PropertyConfigurator.configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
-		
 		FileUtils.deleteDirectory(TEST_DIR);
 		TEST_DIR.mkdirs();
 		FileUtils.copyDirectory(new File("src/test/resources/resource-manager/"), TEST_DIR);
