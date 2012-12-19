@@ -45,7 +45,7 @@ public class LocalCollectionCacheControllerTest {
 		response = new MockHttpServletResponse();
 	}
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void test() throws Exception {
 		cacheController.cache(request,
 				response,
