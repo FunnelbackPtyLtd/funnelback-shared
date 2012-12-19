@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.search.web.controllers.cache;
+package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
 import java.io.IOException;
 

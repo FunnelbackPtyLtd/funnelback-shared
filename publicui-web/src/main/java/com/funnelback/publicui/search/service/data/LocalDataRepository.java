@@ -1,7 +1,10 @@
 package com.funnelback.publicui.search.service.data;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Repository;
@@ -46,11 +49,12 @@ public class LocalDataRepository implements DataRepository {
 	 * @param url URL of the document
 	 * @return Corresponding primary key
 	 */
+	@SneakyThrows(UnsupportedEncodingException.class)
 	private String extractPrimaryKey(Collection collection, String url) {
 		switch (collection.getType()) {
 		case database:
 		case directory:
-			return url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1");
+			return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
 		case meta:
 		case unknown:
 			throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");
