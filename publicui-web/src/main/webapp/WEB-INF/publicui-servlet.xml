@@ -77,6 +77,7 @@
 					<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
 					
 					<property name="cache" value="true" />
+					<property name="cacheUnresolved" value="false" />
 					<property name="prefix" value="" />
 					<property name="suffix" value=".ftl" />
 					<property name="contentType" value="text/html;charset=UTF-8" />
