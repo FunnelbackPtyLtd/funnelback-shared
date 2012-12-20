@@ -42,16 +42,39 @@ public class Collection {
 	 * <p>Groovy Hook scripts names.</p>
 	 * 
 	 * <p>Each collection can have a set of Groovy scripts that
-	 * are run at various stages in a search lifecycle.</p>
+	 * are run at various stages of the search lifecycle.</p>
 	 */
 	public static enum Hook {
-		pre_datafetch, post_datafetch, pre_process, post_process, extra_searches;
+		pre_datafetch, post_datafetch, pre_process, post_process, extra_searches,
+		pre_cache;
 		
 		/**
 		 * <p>Name of the Groovy variable that will contain the search transaction,
 		 * from whithin a Groovy script.</p>
 		 */
 		public static final String SEARCH_TRANSACTION_KEY = "transaction";
+		
+		/**
+		 * Name of the Groovy variable that will contain the collection,
+		 * from within a cache Groovy script.
+		 */
+		public static final String COLLECTION_KEY = "collection";
+		
+		/**
+		 * Name of the Groovy variable that will contain the document (key + content),
+		 * from within a cache Groovy script.
+		 * 
+		 * @since v12.4
+		 */
+		public static final String DOCUMENT_KEY = "document";
+		
+		/**
+		 * Name of the Groovy variable that will contain the document metadata
+		 * from within a cache Groovy script.
+		 * 
+		 * @since v12.4
+		 */
+		public static final String METADATA_KEY = "metaData";
 	}
 	
 	/**
