@@ -24,10 +24,10 @@ public class LocalDataRepository implements DataRepository {
 	/** Name of the parameter containing the record id for database collections */
 	private final static String RECORD_ID = "record_id";
 	
-	public RecordAndMetadata<? extends Record> getCachedDocument(
+	public RecordAndMetadata<? extends Record<?>> getCachedDocument(
 			Collection collection, View view, String url) {
 		
-		try (Store<? extends Record> store = StoreType.getStore(collection.getConfiguration(), view)) {
+		try (Store<? extends Record<?>> store = StoreType.getStore(collection.getConfiguration(), view)) {
 			store.open();
 			return store.getRecordAndMetadata(extractPrimaryKey(collection, url));		
 		} catch (ClassNotFoundException cnfe) {
@@ -36,7 +36,7 @@ public class LocalDataRepository implements DataRepository {
 			log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
 		}
 	
-		return new RecordAndMetadata<Record>(null, null);
+		return new RecordAndMetadata<Record<?>>(null, null);
 
 	}
 

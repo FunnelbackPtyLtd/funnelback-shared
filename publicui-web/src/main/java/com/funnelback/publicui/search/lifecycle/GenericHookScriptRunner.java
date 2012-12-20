@@ -4,6 +4,7 @@ import groovy.lang.Binding;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,11 +93,9 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 			Class<Script> hookScriptClass = searchTransaction.getQuestion().getCollection().getHookScriptsClasses().get(hookScriptToRun);
 			if (hookScriptClass != null) {
 				try {
-					Script s = hookScriptClass.newInstance();
-					Binding binding = new Binding();
-					binding.setVariable(Hook.SEARCH_TRANSACTION_KEY, searchTransaction);
-					s.setBinding(binding);
-					s.run();
+					Map<String, Object> data = new HashMap<>();
+					data.put(Hook.SEARCH_TRANSACTION_KEY, searchTransaction);
+					runScript(hookScriptClass, data);
 					
 					fixMapsWithArrayLists(searchTransaction);
 				} catch (Throwable t) {
@@ -105,6 +104,24 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 			}
 		}
 	}
+	
+	/**
+	 * Runs a script
+	 * @param scriptClass Class of the script to run
+	 * @param data Data to pass to the script
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static Object runScript(Class<Script> scriptClass, Map<String, ?> data) throws InstantiationException, IllegalAccessException {
+		Script s = scriptClass.newInstance();
+		Binding binding = new Binding();
+		for (Map.Entry<String, ?> entry: data.entrySet()) {
+			binding.setVariable(entry.getKey(), entry.getValue());
+		}
+		s.setBinding(binding);
+		return s.run();
+	}
+
 	
 	/**
 	 * <p>Problem: Groovy arrays are internally implemented as {@link ArrayList}s. It means that when

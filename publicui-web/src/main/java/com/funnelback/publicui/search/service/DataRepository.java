@@ -17,6 +17,6 @@ public interface DataRepository {
 	 * @param url URL of the document
 	 * @return Cached document + metadata, or null on both fields if not found
 	 */
-	public RecordAndMetadata<? extends Record> getCachedDocument(Collection collection, Store.View view, String url);
+	public RecordAndMetadata<? extends Record<?>> getCachedDocument(Collection collection, Store.View view, String url);
 	
 }
