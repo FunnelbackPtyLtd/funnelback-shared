@@ -62,7 +62,7 @@
 		<property name="defaultContentType" value="text/html" />
 		<property name="mediaTypes">
 			<map>
-				<entry key="xml" value="text/xml" />
+				<entry key="xml" value="application/xml" />
 				<entry key="json" value="application/json" />
 				<entry key="classic" value="text/xml-classic" />
 			</map>
@@ -95,7 +95,7 @@
 
 				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
 					<constructor-arg ref="xmlMarshaller" />
-					<property name="contentType" value="text/xml;charset=UTF-8" />
+					<property name="contentType" value="application/xml;charset=UTF-8" />
 					<property name="modelKey"
 						value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchTransaction.toString()}" />
 				</bean>
