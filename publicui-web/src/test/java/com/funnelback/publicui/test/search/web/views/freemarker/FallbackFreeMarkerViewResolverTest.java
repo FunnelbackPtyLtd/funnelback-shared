@@ -45,11 +45,19 @@ public class FallbackFreeMarkerViewResolverTest {
 		FileUtils.deleteDirectory(confDir);
 		confDir.mkdirs();
 		new File(confDir, DefaultValues.DEFAULT_PROFILE).mkdirs();
+		
+		// Copy default templates
+		FileUtils.copyDirectory(
+				new File("src/test/resources/dummy-search_home/web"),
+				new File(searchHome, "web"));
 	}
 	
 	@Test
 	public void testUnknownView() throws Exception {
-		Assert.assertNull(resolver.resolveViewName("unknown", Locale.getDefault()));
+		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("unknown", Locale.getDefault());
+		Assert.assertNotNull(v);
+		Assert.assertEquals("web/templates/modernui/form-not-found.ftl", v.getUrl());
+
 	}
 	
 	@Test
@@ -77,6 +85,15 @@ public class FallbackFreeMarkerViewResolverTest {
 		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
 		Assert.assertNotNull(v);
 		Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+	}
+	
+	@Test
+	public void testNoCollectionDefaultView() throws Exception {
+		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName(DefaultValues.FOLDER_WEB+"/"
+				+DefaultValues.FOLDER_TEMPLATES+"/"
+				+DefaultValues.FOLDER_MODERNUI+"/no-collection", Locale.getDefault());
+		Assert.assertNotNull(v);
+		Assert.assertEquals("web/templates/modernui/no-collection.default.ftl", v.getUrl());
 	}
 	
 

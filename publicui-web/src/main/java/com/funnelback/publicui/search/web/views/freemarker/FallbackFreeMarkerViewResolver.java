@@ -46,6 +46,8 @@ public class FallbackFreeMarkerViewResolver extends FreeMarkerViewResolver {
 			v = super.resolveViewName(folder+view+defaultSuffix, locale);
 			if (v == null) {
 				folder = folder.substring(0, folder.lastIndexOf('/'));
+			} else {
+				return v;
 			}
 			
 			v = super.resolveViewName(folder+view, locale);
