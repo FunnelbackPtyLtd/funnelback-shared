@@ -2,6 +2,9 @@
 # Used in DLS only.
 padre.fork.native.timeout=30000
 
+# Timeout to wait for PADRE when forking from java, in ms.
+padre.fork.java.timeout=60000
+
 # Timeout to wait for processing extra searches
 extra.searches.timeout=10000
 

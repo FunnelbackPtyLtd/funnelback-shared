@@ -41,6 +41,11 @@ public class JavaPadreForker implements PadreForker {
 		
 		PadreExecutor executor = new PadreExecutor();
 
+		// SUPPORT-938 TODO - Should not be necessary, but this is not populated in the junit tests
+		if (padreWaitTimeout < 1) {
+			padreWaitTimeout = 60000;
+		}
+		
 		ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
 		executor.setWatchdog(watchdog);
 
