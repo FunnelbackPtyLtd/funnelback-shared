@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -56,6 +57,8 @@ public class JavaPadreForker implements PadreForker {
 		try {
 			int rc = executor.execute(padreCmdLine, environmnent);
 			return new PadreExecutionReturn(rc, padreOutput.toString());
+		} catch (ExecuteException ee) {
+			throw new PadreForkingException(i18n.tr("padre.forking.java.failed", "(watchdog-timeout?) " + padreCmdLine.toString()), ee);
 		} catch (IOException ioe) {
 			throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
 		}
