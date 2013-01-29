@@ -86,6 +86,19 @@
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
 
+	<bean class="com.funnelback.publicui.test.mock.MockSuggester" />		
+	<bean id="suggestController"
+		class="com.funnelback.publicui.search.web.controllers.SuggestController" />
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="suggestViewSimple">
+		<property name="url" value="suggest/simple.ftl" />
+		<property name="contentType" value="application/json;charset=UTF-8" />
+	</bean>
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="suggestViewRich">
+		<property name="url" value="suggest/rich.ftl" />
+		<property name="contentType" value="application/json;charset=UTF-8" />
+	</bean>
+
+
 	<bean id="resourcesController"
 		class="com.funnelback.publicui.search.web.controllers.ResourcesController">
 		<property name="contextPath" value=""/>

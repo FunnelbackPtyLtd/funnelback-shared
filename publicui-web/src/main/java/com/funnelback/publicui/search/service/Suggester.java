@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.service;
 
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
 
 
@@ -57,6 +58,6 @@ public interface Suggester {
 		}
 	}
 	
-	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery, int numSuggestions, Sort sort);
+	public List<Suggestion> suggest(Collection collection, String profileId, String partialQuery, int numSuggestions, Sort sort);
 	
 }

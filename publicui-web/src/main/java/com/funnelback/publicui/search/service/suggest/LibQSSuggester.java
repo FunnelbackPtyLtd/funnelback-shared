@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
@@ -12,7 +11,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
 import com.funnelback.publicui.search.model.transaction.Suggestion.ActionType;
 import com.funnelback.publicui.search.model.transaction.Suggestion.DisplayType;
-import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.Suggester;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -27,9 +25,6 @@ import com.sun.jna.Structure;
  */
 @Component
 public class LibQSSuggester implements Suggester {
-
-	@Autowired
-	private ConfigRepository configRepository;
 	
 	public interface PadreQS extends Library {
 		public PadreQS INSTANCE = (PadreQS) Native.loadLibrary("qs", PadreQS.class);
@@ -40,10 +35,8 @@ public class LibQSSuggester implements Suggester {
 	}
 	
 	@Override
-	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery, int numSuggestions, Sort sort) {
+	public List<Suggestion> suggest(Collection c, String profileId, String partialQuery, int numSuggestions, Sort sort) {
 		
-		Collection c = configRepository.getCollection(collectionId);
-
 		File indexStem = new File(c.getConfiguration().getCollectionRoot()
 				+ File.separator + DefaultValues.VIEW_LIVE
 				+ File.separator + DefaultValues.FOLDER_IDX,

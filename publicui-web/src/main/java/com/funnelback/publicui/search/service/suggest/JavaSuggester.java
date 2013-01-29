@@ -38,14 +38,13 @@ public class JavaSuggester implements Suggester {
 	private ConfigRepository configRepository;
 	
 	@Override
-	public List<Suggestion> suggest(String collectionId, String profileId, String partialQuery,
+	public List<Suggestion> suggest(Collection c, String profileId, String partialQuery,
 			int numSuggestions, Sort sort) {
 		
 		SortedSet<Suggestion> suggestions = new TreeSet<Suggestion>(new Suggestion.ByWeightComparator(.5f, partialQuery.length()));
 		FileInputStream fis = null;
 		
 		try {
-			Collection c = configRepository.getCollection(collectionId);
 			File suggestFile = new File(c.getConfiguration().getCollectionRoot()
 				+ File.separator + DefaultValues.VIEW_LIVE
 				+ File.separator + DefaultValues.FOLDER_IDX,

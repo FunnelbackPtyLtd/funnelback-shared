@@ -12,6 +12,8 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,9 +21,12 @@ import org.springframework.web.servlet.View;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.service.Suggester.Sort;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
 
 /**
  * Query completion / suggestion controller.
@@ -32,6 +37,8 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 
 	private static final String PADRE_QS = "padre-qs";
 	
+	@Autowired
+	private ConfigRepository configRepository;
 	
 	private enum Format {
 		Json("json"), JsonPlus("json++"), JsonPlusBad("json  ");
@@ -82,6 +89,16 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 			throw new ServletException(e);
 		}
 	}
+
+	@InitBinder
+	public void initBinder(DataBinder binder) {
+		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+	}
+
+	@RequestMapping(value="/suggest.json",params="!"+RequestParameters.COLLECTION)
+	public void noCollection(HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
 	
 	/**
 	 * Use the default suggester service, usually backed by LibQS.
@@ -96,32 +113,41 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/suggest.json")
-	public ModelAndView suggestJava(String collection,
+	@RequestMapping(value="/suggest.json",params=RequestParameters.COLLECTION)
+	public ModelAndView suggestJava(@RequestParam("collection") String collectionId,
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
 			@RequestParam("partial_query") String partialQuery,
 			@RequestParam(defaultValue="10") int show,
 			@RequestParam(defaultValue="0") int sort,
 			@RequestParam(value="fmt",defaultValue="json") String format,
-			String callback) throws IOException {
+			String callback,
+			HttpServletResponse response) throws IOException {
 		
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("suggestions", suggester.suggest(collection, profile, partialQuery, show, Sort.valueOf(sort)));
-		mav.addObject("callback", callback);
-		
-		switch(Format.fromValue(format)) {
-		case Json:
-			mav.setView(simpleView);
-			break;
-		case JsonPlus:
-		case JsonPlusBad:
-			mav.setView(richView);
-			break;
-		default:
-			throw new IllegalArgumentException("Unrecognized format " + format);
+		Collection c = configRepository.getCollection(collectionId);
+		if (c != null) {
+			ModelAndView mav = new ModelAndView();
+			mav.addObject("suggestions", suggester.suggest(c, profile, partialQuery, show, Sort.valueOf(sort)));
+			mav.addObject("callback", callback);
+			
+			switch(Format.fromValue(format)) {
+			case Json:
+				mav.setView(simpleView);
+				break;
+			case JsonPlus:
+			case JsonPlusBad:
+				mav.setView(richView);
+				break;
+			default:
+				throw new IllegalArgumentException("Unrecognized format " + format);
+			}
+			
+			return mav;
+		} else {
+			// Collection not found
+			log.warn("Collection '"+collectionId+"' not found");
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return null;
 		}
-		
-		return mav;
 	}
 
 	@Override
