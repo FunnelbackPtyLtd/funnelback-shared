@@ -65,6 +65,21 @@ public class TagifyMethodTests extends AbstractMethodTest {
 		
 		Assert.assertEquals("This is the <tag>Word</tag> that should <tag>BE</tag> boldicized", result.getAsString());
 	}
+	
+	@Test
+	public void testAccents() throws TemplateModelException {
+		List<TemplateModel> arguments = new ArrayList<TemplateModel>();
+		arguments.add(new SimpleScalar("tag"));
+		arguments.add(new SimpleScalar("(?i)école|écoles|\\bhaute\\b|\\bhautes\\b|étude|études"));
+		arguments.add(new SimpleScalar("école des hautes études"));
+		
+		arguments.add(new BooleanModel(true, new DefaultObjectWrapper()));
+
+		SimpleScalar result = (SimpleScalar) method.exec(arguments);
+		
+		Assert.assertEquals("<tag>école</tag> des <tag>hautes</tag> <tag>étude</tag>s", result.getAsString());
+
+	}
 
 	@Override
 	protected AbstractTemplateMethod buildMethod() {
