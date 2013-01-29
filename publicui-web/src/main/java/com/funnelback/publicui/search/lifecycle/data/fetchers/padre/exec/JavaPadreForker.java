@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,29 +23,30 @@ import com.funnelback.publicui.i18n.I18n;
 @RequiredArgsConstructor
 public class JavaPadreForker implements PadreForker {
 
+	/** Avg. size of a PADRE result packet */
+	private final static int AVG_PADRE_PACKET_SIZE = 8*1024;
+	
+	/** Avg. size of PADRE error messages */
+	private final static int AVG_PADRE_ERR_SIZE = 256;
+	
 	private final I18n i18n;
 	
     @Value("#{appProperties['padre.fork.java.timeout']?:60000}")
 	@Setter
-	protected long padreWaitTimeout;
+	protected long padreWaitTimeout = 60000;
 	
 	@Override
 	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
 		
 		CommandLine padreCmdLine = CommandLine.parse(commandLine);
 		
-		ByteArrayOutputStream padreOutput = new ByteArrayOutputStream();
-		ByteArrayOutputStream padreError = new ByteArrayOutputStream();
+		ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
+		ByteArrayOutputStream padreError = new ByteArrayOutputStream(AVG_PADRE_ERR_SIZE);
 		
 		log.debug("Executing '" + padreCmdLine + "' with environment " + environmnent);
 		
 		PadreExecutor executor = new PadreExecutor();
 
-		// SUPPORT-938 TODO - Should not be necessary, but this is not populated in the junit tests
-		if (padreWaitTimeout < 1) {
-			padreWaitTimeout = 60000;
-		}
-		
 		ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
 		executor.setWatchdog(watchdog);
 
