@@ -37,6 +37,8 @@ public class FallbackFreeMarkerViewResolverTest {
 	
 	@Before
 	public void before() throws IOException {
+		resolver.clearCache();
+		
 		// Prepare a collection configuration folder
 		FileUtils.deleteDirectory(searchHome);
 		searchHome.mkdirs();
