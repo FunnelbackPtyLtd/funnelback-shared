@@ -6,17 +6,17 @@
 	xsi:schemaLocation="
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-				http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
-				http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
-				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
-				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+				http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
+				http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.2.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 	<import resource="spring/freemarker.xml"/>
 	<import resource="spring/search-lifecycle.xml"/>
 	
 	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle" />
-	<mvc:annotation-driven />
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
 
@@ -56,20 +56,21 @@
 		<property name="autodetectAnnotations" value="true" />
 	</bean>
 
-	<bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
 		<property name="favorPathExtension" value="true" />
 		<property name="ignoreAcceptHeader" value="true" />
 		<property name="defaultContentType" value="text/html" />
 		<property name="mediaTypes">
-			<map>
-				<entry key="xml" value="application/xml" />
-				<entry key="json" value="application/json" />
-				<entry key="classic" value="text/xml-classic" />
-			</map>
+			<props>
+				<prop key="xml">application/xml</prop>
+				<prop key="json">application/json</prop>
+				<prop key="classic">text/xml-classic</prop>
+			</props>
 		</property>
 	</bean>
 	
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="contentNegotiationManager" ref="contentNegotiationManager" />
 		<property name="viewResolvers">
 			<list>
 				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
