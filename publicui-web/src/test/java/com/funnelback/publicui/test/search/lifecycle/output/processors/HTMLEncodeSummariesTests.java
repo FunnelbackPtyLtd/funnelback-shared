@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.HTMLEncodeSummaries;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -16,6 +15,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class HTMLEncodeSummariesTests {
 

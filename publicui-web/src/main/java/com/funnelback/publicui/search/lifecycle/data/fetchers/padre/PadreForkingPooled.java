@@ -13,9 +13,9 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnection;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.PadreXmlParser;
 
 /**
  * Uses a pool of forked PADRE communicate with them using stdin/out/err

@@ -221,18 +221,18 @@ public class ResultPacket {
 	
 	/**
 	 * A {@link Map} of floats that describe the cooler ranking weights. Weights are 
-	 * identified by the cooler variable short name, 
-	 * and the map is only populated when explain mode is on.
+	 * identified by the cooler variable short name + id, and the map is only populated when explain mode is on.
 	 */
-	@Getter private final Map<String,Float> coolerWeights = new HashMap<String,Float>();
+	@Getter private final Map<CoolerWeighting, Float> coolerWeights = new HashMap<CoolerWeighting, Float>();
 
 	/**
-	 * A {@link Map} of Strings that describes how to calculate the potential improvement for ranking 
-	 * on each feature when the content optimiser is used. 
-	 * Ranking features are identified by the cooler variable short name, 
-	 * and the map is only populated when explain mode is on.
+	 * <p>A {@link Map} of Strings that describes how to calculate the potential improvement for ranking 
+	 * on each feature when the content optimiser is used.</p>
+	 *  
+	 * <p>Ranking features are identified by the cooler variable short name + id, 
+	 * and the map is only populated when explain mode is on.</p>
 	 */
-	@Getter private final Map<String,String> explainTypes = new HashMap<String,String>();
+	@Getter private final Map<CoolerWeighting, String> explainTypes = new HashMap<CoolerWeighting, String>();
 	
 	/**
 	 * A {@link List} of stop words used by the query processor. Only populated when explain mode is on.
@@ -243,12 +243,12 @@ public class ResultPacket {
 	 * A {@link SetMultimap} of Strings that describes the results of stemming on the query. Only populated when explain mode is on.
 	 * The map keys are content terms, and the value(s) are the query terms that the key matches.   
 	 */
-	@Getter private SetMultimap<String,String> StemmedEquivs = HashMultimap.create();
+	@Getter private SetMultimap<String, String> stemmedEquivs = HashMultimap.create();
 
 	/**
-	 * A {@link Map} of long names for cooler ranking variables, keyed by the cooler variable short names. Only populated when explain mode is on.    
+	 * A {@link Map} of long names for cooler ranking variables, keyed by the cooler variable short names + id. Only populated when explain mode is on.    
 	 */
-	@Getter private Map<String,String> coolerNames = new HashMap<String,String>();
+	@Getter private Map<CoolerWeighting, String> coolerNames = new HashMap<CoolerWeighting, String>();
 	
 	/**
 	 * <p>Contains SVG data returned by PADRE, for example an SVG representation
@@ -355,6 +355,7 @@ public class ResultPacket {
 		public static final String STOP_WORDS = "stop_words";
 		public static final String STEM_EQUIV = "stem_equivs";
 		public static final String COOLER_NAMES = "cooler_names";
+		public static final String COOL = "cool";
 		
 		public static final String SVGS = "svgs";
 		

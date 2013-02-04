@@ -392,55 +392,97 @@
 <origin>-42.43,83.49</origin>    
 
 <cooler_weightings>
-        <content>0.41</content>
-        <offlink>0.14</offlink>
-        <urllen>0.14</urllen>
+        <content cool="0">0.41</content>
+        <offlink cool="2">0.14</offlink>
+        <urllen cool="3">0.14</urllen>
 </cooler_weightings>
 <cooler_names>
-<content>content weight</content>
-<onlink>onsite link weight</onlink>
-<offlink>offsite link weight</offlink>
-<urllen>URL length weight</urllen>
-<qie>external evidence</qie>
-<recency>recency weight</recency>
-<imp_phrase>implicit phrase match score</imp_phrase>
-<an_okapi>absolute-normalised Okapi score</an_okapi>
-<comp_wt>component collection weighting</comp_wt>
-<document_number>document number in the crawl</document_number>
-<host_click_score/>
-<host_linked_hosts_score/>
-<host_rank_in_crawl_order_score/>
+  <content cool="0">content weight</content>
+  <onlink cool="1">onsite link weight</onlink>
+  <offlink cool="2">offsite link weight</offlink>
+  <urllen cool="3">URL length weight</urllen>
+  <recency cool="5">recency weight</recency>
+  <urltype cool="6">URL attractiveness </urltype>
+  <nonbin cool="10">non-binariness </nonbin>
+  <no_ads cool="11">freedom from ads</no_ads>
+  <imp_phrase cool="12">implicit phrase match score</imp_phrase>
+  <mainhosts cool="20">bias in favour of principal servers </mainhosts>
+  <host_incoming_link_score cool="23"></host_incoming_link_score>
+  <lexical_span_score cool="67"></lexical_span_score>
 </cooler_names>
 <explain_types>
-<content>max_other</content>
-<onlink>max_other</onlink>
-<offlink>max_other</offlink>
-<urllen>max_other</urllen>
-<qie>max_other</qie>
-<recency>max_possible</recency>
-<urltype>max_possible</urltype>
-<annie>max_other</annie>
-<domain_weight>max_other</domain_weight>
-<geoprox>max_other</geoprox>
-<nonbin>max_possible</nonbin>
-<no_ads>max_possible</no_ads>
-<imp_phrase>max_possible</imp_phrase>
-<consistency>max_possible</consistency>
-<log_annie>max_other</log_annie>
-<anlog_annie>max_other</anlog_annie>
-<annie_rank>max_other</annie_rank>
-<BM25F>max_other</BM25F>
-<an_okapi>max_other</an_okapi>
-<BM25F_rank>max_other</BM25F_rank>
-<mainhosts>max_possible</mainhosts>
-<comp_wt>max_other</comp_wt>
-<document_number>max_possible</document_number>
-<host_incoming_link_score>max_other</host_incoming_link_score>
-<host_click_score>max_other</host_click_score>
-<host_linking_hosts_score>max_other</host_linking_hosts_score>
-<host_linked_hosts_score>max_other</host_linked_hosts_score>
-<host_rank_in_crawl_order_score>max_other</host_rank_in_crawl_order_score>
-<host_domain_shallowness_score>max_other</host_domain_shallowness_score>
+<content cool="0">max_other</content>
+<onlink cool="1">max_other</onlink>
+<offlink cool="2">max_other</offlink>
+<urllen cool="3">max_other</urllen>
+<qie cool="4">max_other</qie>
+<recency cool="5">max_other</recency>
+<urltype cool="6">max_other</urltype>
+<annie cool="7">max_other</annie>
+<domain_weight cool="8">max_other</domain_weight>
+<geoprox cool="9">max_other</geoprox>
+<nonbin cool="10">max_possible</nonbin>
+<no_ads cool="11">max_possible</no_ads>
+<imp_phrase cool="12">max_possible_multiword_only</imp_phrase>
+<consistency cool="13">max_possible</consistency>
+<log_annie cool="14">max_other</log_annie>
+<anlog_annie cool="15">max_other</anlog_annie>
+<annie_rank cool="16">max_other</annie_rank>
+<BM25F cool="17">max_other</BM25F>
+<an_okapi cool="18">max_other</an_okapi>
+<BM25F_rank cool="19">max_other</BM25F_rank>
+<mainhosts cool="20">max_possible</mainhosts>
+<comp_wt cool="21">max_other</comp_wt>
+<document_number cool="22">max_other</document_number>
+<host_incoming_link_score cool="23">max_other</host_incoming_link_score>
+<host_click_score cool="24">max_other</host_click_score>
+<host_linking_hosts_score cool="25">max_other</host_linking_hosts_score>
+<host_linked_hosts_score cool="26">max_other</host_linked_hosts_score>
+<host_rank_in_crawl_order_score cool="27">max_other</host_rank_in_crawl_order_score>
+<host_domain_shallowness_score cool="28">max_other</host_domain_shallowness_score>
+<doc_matches_regex cool="29">max_possible</doc_matches_regex>
+<doc_does_not_match_regex cool="30">max_possible</doc_does_not_match_regex>
+<titleWords cool="31">max_other</titleWords>
+<contentWords cool="32">max_other</contentWords>
+<compressionFactor cool="33">max_other</compressionFactor>
+<entropy cool="34">max_other</entropy>
+<stopwordFraction cool="35">max_other</stopwordFraction>
+<stopwordCover cool="36">max_other</stopwordCover>
+<averageTermLen cool="37">max_other</averageTermLen>
+<distinctWords cool="38">max_other</distinctWords>
+<maxFreq cool="39">max_other</maxFreq>
+<titleWords_neg cool="40">max_other</titleWords_neg>
+<contentWords_neg cool="41">max_other</contentWords_neg>
+<compressionFactor_neg cool="42">max_other</compressionFactor_neg>
+<entropy_neg cool="43">max_other</entropy_neg>
+<stopwordFraction_neg cool="44">max_other</stopwordFraction_neg>
+<stopwordCover_neg cool="45">max_other</stopwordCover_neg>
+<averageTermLen_neg cool="46">max_other</averageTermLen_neg>
+<distinctWords_neg cool="47">max_other</distinctWords_neg>
+<maxFreq_neg cool="48">max_other</maxFreq_neg>
+<titleWords_abs cool="49">max_other</titleWords_abs>
+<contentWords_abs cool="50">max_other</contentWords_abs>
+<compressionFactor_abs cool="51">max_other</compressionFactor_abs>
+<entropy_abs cool="52">max_other</entropy_abs>
+<stopwordFraction_abs cool="53">max_other</stopwordFraction_abs>
+<stopwordCover_abs cool="54">max_other</stopwordCover_abs>
+<averageTermLen_abs cool="55">max_other</averageTermLen_abs>
+<distinctWords_abs cool="56">max_other</distinctWords_abs>
+<maxFreq_abs cool="57">max_other</maxFreq_abs>
+<titleWords_abs_neg cool="58">max_other</titleWords_abs_neg>
+<contentWords_abs_neg cool="59">max_other</contentWords_abs_neg>
+<compressionFactor_abs_neg cool="60">max_other</compressionFactor_abs_neg>
+<entropy_abs_neg cool="61">max_other</entropy_abs_neg>
+<stopwordFraction_abs_neg cool="62">max_other</stopwordFraction_abs_neg>
+<stopwordCover_abs_neg cool="63">max_other</stopwordCover_abs_neg>
+<averageTermLen_abs_neg cool="64">max_other</averageTermLen_abs_neg>
+<distinctWords_abs_neg cool="65">max_other</distinctWords_abs_neg>
+<maxFreq_abs_neg cool="66">max_other</maxFreq_abs_neg>
+<lexical_span_score cool="67">max_other</lexical_span_score>
+<doc_matches_cgscope1 cool="68">max_other</doc_matches_cgscope1>
+<doc_matches_cgscope2 cool="69">max_other</doc_matches_cgscope2>
+<doc_does_not_match_cgscope1 cool="70">max_other</doc_does_not_match_cgscope1>
+<doc_does_not_match_cgscope2 cool="71">max_other</doc_does_not_match_cgscope2>
 </explain_types>
 <stop_words> 
 a
@@ -602,9 +644,9 @@ you
     	<final_score>0.639</final_score>
     	<lenratio>0.662</lenratio>
     	<cooler_scores>
-    		<content>0.997</content>
- 			<offlink>0</offlink>
- 			<urllen>0.512</urllen>
+    		<content cool="0">0.997</content>
+ 			<offlink cool="2">0</offlink>
+ 			<urllen cool="3">0.512</urllen>
     	</cooler_scores>
   </explain>
 <quicklinks domain="www.immi.gov.au/e_visa/"><quicklink><qltext>Request a Visa</qltext><qlurl>www.immi.gov.au/e_visa/request.html</qlurl></quicklink><quicklink><qltext>Check your application status</qltext><qlurl>www.immi.gov.au/e_visa/application-status/</qlurl></quicklink></quicklinks>

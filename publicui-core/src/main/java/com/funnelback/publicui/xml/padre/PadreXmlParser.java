@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml;
+package com.funnelback.publicui.xml.padre;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.xml.XmlParsingException;

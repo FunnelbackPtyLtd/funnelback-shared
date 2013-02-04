@@ -20,12 +20,12 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Category;
 import com.funnelback.publicui.search.model.padre.Cluster;
 import com.funnelback.publicui.search.model.padre.ClusterNav;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -33,6 +33,7 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class StaxStreamParserTests {
 
@@ -61,29 +62,30 @@ public class StaxStreamParserTests {
 	public void testCoolerWeightings() {
 		assertEquals(3,rp.getCoolerWeights().size());
 		
-		assertNotNull(rp.getCoolerWeights().get("content"));
-		assertNotNull(rp.getCoolerWeights().get("offlink"));
-		assertNotNull(rp.getCoolerWeights().get("urllen"));
+		assertNotNull(rp.getCoolerWeights().get(new CoolerWeighting("content", 0)));
+		assertNotNull(rp.getCoolerWeights().get(new CoolerWeighting("offlink", 2)));
+		assertNotNull(rp.getCoolerWeights().get(new CoolerWeighting("urllen", 3)));
 		
-		assertEquals(0.41,rp.getCoolerWeights().get("content"),0.0001);
-		assertEquals(0.14,rp.getCoolerWeights().get("offlink"),0.0001);
-		assertEquals(0.14,rp.getCoolerWeights().get("urllen"),0.0001);
+		assertEquals(0.41,rp.getCoolerWeights().get(new CoolerWeighting("content", 0)),0.0001);
+		assertEquals(0.14,rp.getCoolerWeights().get(new CoolerWeighting("offlink", 2)),0.0001);
+		assertEquals(0.14,rp.getCoolerWeights().get(new CoolerWeighting("urllen", 3)),0.0001);
 	}
 	
 	@Test
 	public void testCoolerNames() {
-		assertEquals("content weight",rp.getCoolerNames().get("content"));
-		assertEquals("onsite link weight",rp.getCoolerNames().get("onlink"));
-		assertEquals("offsite link weight",rp.getCoolerNames().get("offlink"));
-		assertEquals("URL length weight",rp.getCoolerNames().get("urllen"));
-		assertEquals("external evidence",rp.getCoolerNames().get("qie"));
-		assertEquals("recency weight",rp.getCoolerNames().get("recency"));
-		assertEquals("implicit phrase match score",rp.getCoolerNames().get("imp_phrase"));
-		assertEquals("component collection weighting",rp.getCoolerNames().get("comp_wt"));
-		assertEquals("document number in the crawl",rp.getCoolerNames().get("document_number"));
-		assertEquals("",rp.getCoolerNames().get("host_click_score"));
-		assertEquals("",rp.getCoolerNames().get("host_linked_hosts_score"));
-		assertEquals("",rp.getCoolerNames().get("host_rank_in_crawl_order_score"));
+		assertEquals(12, rp.getCoolerNames().size());
+		assertEquals("content weight",rp.getCoolerNames().get(new CoolerWeighting("content", 0)));
+		assertEquals("onsite link weight",rp.getCoolerNames().get(new CoolerWeighting("onlink", 1)));
+		assertEquals("offsite link weight",rp.getCoolerNames().get(new CoolerWeighting("offlink", 2)));
+		assertEquals("URL length weight",rp.getCoolerNames().get(new CoolerWeighting("urllen", 3)));
+		assertEquals("recency weight",rp.getCoolerNames().get(new CoolerWeighting("recency", 5)));
+		assertEquals("URL attractiveness ",rp.getCoolerNames().get(new CoolerWeighting("urltype", 6)));
+		assertEquals("non-binariness ",rp.getCoolerNames().get(new CoolerWeighting("nonbin", 10)));
+		assertEquals("freedom from ads",rp.getCoolerNames().get(new CoolerWeighting("no_ads", 11)));
+		assertEquals("implicit phrase match score",rp.getCoolerNames().get(new CoolerWeighting("imp_phrase", 12)));
+		assertEquals("bias in favour of principal servers ",rp.getCoolerNames().get(new CoolerWeighting("mainhosts", 20)));
+		assertEquals("",rp.getCoolerNames().get(new CoolerWeighting("host_incoming_link_score", 23)));
+		assertEquals("",rp.getCoolerNames().get(new CoolerWeighting("lexical_span_score", 67)));
 	}
 
 	@Test
@@ -102,13 +104,13 @@ public class StaxStreamParserTests {
 		assertEquals(2, e.getConsat());
 		assertEquals(0.662,e.getLenratio(),0.0001);
 		
-		assertNotNull(e.getFeatureScores().get("content"));
-		assertNotNull(e.getFeatureScores().get("offlink"));
-		assertNotNull(e.getFeatureScores().get("urllen"));
+		assertNotNull(e.getFeatureScores().get(new CoolerWeighting("content", 0)));
+		assertNotNull(e.getFeatureScores().get(new CoolerWeighting("offlink", 2)));
+		assertNotNull(e.getFeatureScores().get(new CoolerWeighting("urllen", 3)));
 		
-		assertEquals(0.997,e.getFeatureScores().get("content"),0.0001);
-		assertEquals(0,e.getFeatureScores().get("offlink"),0.0001);
-		assertEquals(0.512,e.getFeatureScores().get("urllen"),0.0001);
+		assertEquals(0.997,e.getFeatureScores().get(new CoolerWeighting("content", 0)),0.0001);
+		assertEquals(0,e.getFeatureScores().get(new CoolerWeighting("offlink", 2)),0.0001);
+		assertEquals(0.512,e.getFeatureScores().get(new CoolerWeighting("urllen", 3)),0.0001);
 		
 		for (int i=1; i<rp.getResults().size(); i++) {
 			assertNull(rp.getResults().get(i).getExplain());
@@ -125,37 +127,37 @@ public class StaxStreamParserTests {
 	
 	@Test
 	public void testWinType() {
-		Map<String,String> winTypes = rp.getExplainTypes();
+		Map<CoolerWeighting, String> winTypes = rp.getExplainTypes();
+		assertEquals(72, winTypes.size());
 		
-		assertEquals("max_other",winTypes.get("content"));
-		assertEquals("max_other",winTypes.get("onlink"));
-		assertEquals("max_other",winTypes.get("offlink"));
-		assertEquals("max_other",winTypes.get("urllen"));
-		assertEquals("max_other",winTypes.get("qie"));
-		assertEquals("max_other",winTypes.get("annie"));
-		assertEquals("max_other",winTypes.get("domain_weight"));
-		assertEquals("max_other",winTypes.get("geoprox"));
-		assertEquals("max_other",winTypes.get("log_annie"));
-		assertEquals("max_other",winTypes.get("annie_rank"));
-		assertEquals("max_other",winTypes.get("BM25F"));
-		assertEquals("max_other",winTypes.get("an_okapi"));
-		assertEquals("max_other",winTypes.get("comp_wt"));
-		assertEquals("max_other",winTypes.get("BM25F_rank"));
-		assertEquals("max_other",winTypes.get("host_incoming_link_score"));
-		assertEquals("max_other",winTypes.get("host_click_score"));
-		assertEquals("max_other",winTypes.get("host_linking_hosts_score"));
-		assertEquals("max_other",winTypes.get("host_linked_hosts_score"));
-		assertEquals("max_other",winTypes.get("host_rank_in_crawl_order_score"));
-		assertEquals("max_other",winTypes.get("host_domain_shallowness_score"));		
-	
-		assertEquals("max_possible",winTypes.get("recency"));
-		assertEquals("max_possible",winTypes.get("urltype"));
-		assertEquals("max_possible",winTypes.get("nonbin"));
-		assertEquals("max_possible",winTypes.get("no_ads"));
-		assertEquals("max_possible",winTypes.get("imp_phrase"));
-		assertEquals("max_possible",winTypes.get("consistency"));
-		assertEquals("max_possible",winTypes.get("mainhosts"));
-		assertEquals("max_possible",winTypes.get("document_number"));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("content", 0)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("onlink", 1)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("offlink", 2)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("urllen", 3)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("qie", 4)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("recency", 5)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("urltype", 6)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("annie", 7)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("domain_weight", 8)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("geoprox", 9)));
+		assertEquals("max_possible",winTypes.get(new CoolerWeighting("nonbin", 10)));
+		assertEquals("max_possible",winTypes.get(new CoolerWeighting("no_ads", 11)));
+		assertEquals("max_possible_multiword_only",winTypes.get(new CoolerWeighting("imp_phrase", 12)));
+		assertEquals("max_possible",winTypes.get(new CoolerWeighting("consistency", 13)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("log_annie", 14)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("annie_rank", 16)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("BM25F", 17)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("an_okapi", 18)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("comp_wt", 21)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("BM25F_rank", 19)));
+		assertEquals("max_possible",winTypes.get(new CoolerWeighting("mainhosts", 20)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("document_number", 22)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_incoming_link_score", 23)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_click_score", 24)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_linking_hosts_score", 25)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_linked_hosts_score", 26)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_rank_in_crawl_order_score", 27)));
+		assertEquals("max_other",winTypes.get(new CoolerWeighting("host_domain_shallowness_score", 28)));		
 	}
 	
 	@Test

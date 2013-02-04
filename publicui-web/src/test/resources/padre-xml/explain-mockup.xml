@@ -22,40 +22,40 @@
 </results_summary>
 
 <cooler_weightings>
-  <content>0.41</content>
-  <offlink>0.14</offlink>
-  <urllen>0.45</urllen>
+  <content cool="0">0.41</content>
+  <offlink cool="2">0.14</offlink>
+  <urllen cool="3">0.45</urllen>
 </cooler_weightings>
 <explain_types>
-<content>max_other</content>
-<onlink>max_other</onlink>
-<offlink>max_other</offlink>
-<urllen>max_other</urllen>
-<qie>max_other</qie>
-<recency>max_other</recency>
-<urltype>max_other</urltype>
-<annie>max_other</annie>
-<domain_weight>max_other</domain_weight>
-<geoprox>max_other</geoprox>
-<nonbin>max_possible</nonbin>
-<no_ads>max_possible</no_ads>
-<imp_phrase>max_possible_multiword_only</imp_phrase>
-<consistency>max_possible</consistency>
-<log_annie>max_other</log_annie>
-<anlog_annie>max_other</anlog_annie>
-<annie_rank>max_other</annie_rank>
-<BM25F>max_other</BM25F>
-<an_okapi>max_other</an_okapi>
-<BM25F_rank>max_other</BM25F_rank>
-<mainhosts>max_possible</mainhosts>
-<comp_wt>max_other</comp_wt>
-<document_number>max_other</document_number>
-<host_incoming_link_score>max_other</host_incoming_link_score>
-<host_click_score>max_other</host_click_score>
-<host_linking_hosts_score>max_other</host_linking_hosts_score>
-<host_linked_hosts_score>max_other</host_linked_hosts_score>
-<host_rank_in_crawl_order_score>max_other</host_rank_in_crawl_order_score>
-<host_domain_shallowness_score>max_other</host_domain_shallowness_score>
+<content cool="0">max_other</content>
+<onlink cool="1">max_other</onlink>
+<offlink cool="2">max_other</offlink>
+<urllen cool="3">max_other</urllen>
+<qie cool="4">max_other</qie>
+<recency cool="5">max_other</recency>
+<urltype cool="6">max_other</urltype>
+<annie cool="7">max_other</annie>
+<domain_weight cool="8">max_other</domain_weight>
+<geoprox cool="9">max_other</geoprox>
+<nonbin cool="10">max_possible</nonbin>
+<no_ads cool="11">max_possible</no_ads>
+<imp_phrase cool="12">max_possible_multiword_only</imp_phrase>
+<consistency cool="13">max_possible</consistency>
+<log_annie cool="14">max_other</log_annie>
+<anlog_annie cool="15">max_other</anlog_annie>
+<annie_rank cool="16">max_other</annie_rank>
+<BM25F cool="17">max_other</BM25F>
+<an_okapi cool="18">max_other</an_okapi>
+<BM25F_rank cool="19">max_other</BM25F_rank>
+<mainhosts cool="20">max_possible</mainhosts>
+<comp_wt cool="21">max_other</comp_wt>
+<document_number cool="22">max_other</document_number>
+<host_incoming_link_score cool="23">max_other</host_incoming_link_score>
+<host_click_score cool="24">max_other</host_click_score>
+<host_linking_hosts_score cool="25">max_other</host_linking_hosts_score>
+<host_linked_hosts_score cool="26">max_other</host_linked_hosts_score>
+<host_rank_in_crawl_order_score cool="27">max_other</host_rank_in_crawl_order_score>
+<host_domain_shallowness_score cool="28">max_other</host_domain_shallowness_score>
 </explain_types>
 <stop_words> 
 a
@@ -201,9 +201,9 @@ you
   <final_score>0.639</final_score>
   <lenratio>0.662</lenratio>
   <cooler_scores>
-    <content>0.997</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.997</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -227,9 +227,9 @@ you
   <final_score>0.555</final_score>
   <lenratio>0.0619</lenratio>
   <cooler_scores>
-    <content>0.766</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">0.766</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -253,9 +253,9 @@ you
   <final_score>0.539</final_score>
   <lenratio>0.229</lenratio>
   <cooler_scores>
-    <content>0.753</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.753</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -279,9 +279,9 @@ you
   <final_score>0.458</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>0.521</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">0.521</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -305,9 +305,9 @@ you
   <final_score>0.417</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>0.412</content>
-    <offlink>0</offlink>
-    <urllen>0.551</urllen>
+    <content cool="0">0.412</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.551</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -331,9 +331,9 @@ you
   <final_score>0.416</final_score>
   <lenratio>7.03</lenratio>
   <cooler_scores>
-    <content>0.41</content>
-    <offlink>0</offlink>
-    <urllen>0.551</urllen>
+    <content cool="0">0.41</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.551</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -357,9 +357,9 @@ you
   <final_score>0.363</final_score>
   <lenratio>0.713</lenratio>
   <cooler_scores>
-    <content>0.324</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.324</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -383,9 +383,9 @@ you
   <final_score>0.361</final_score>
   <lenratio>0.68</lenratio>
   <cooler_scores>
-    <content>0.319</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.319</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -409,9 +409,9 @@ you
   <final_score>0.358</final_score>
   <lenratio>0.407</lenratio>
   <cooler_scores>
-    <content>0.311</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.311</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -435,9 +435,9 @@ you
   <final_score>0.358</final_score>
   <lenratio>0.11</lenratio>
   <cooler_scores>
-    <content>0.311</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.311</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -461,9 +461,9 @@ you
   <final_score>0.357</final_score>
   <lenratio>0.623</lenratio>
   <cooler_scores>
-    <content>0.309</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.309</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -487,9 +487,9 @@ you
   <final_score>0.355</final_score>
   <lenratio>0.249</lenratio>
   <cooler_scores>
-    <content>0.304</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.304</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -513,9 +513,9 @@ you
   <final_score>0.355</final_score>
   <lenratio>0.752</lenratio>
   <cooler_scores>
-    <content>0.304</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.304</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -539,9 +539,9 @@ you
   <final_score>0.354</final_score>
   <lenratio>0.0685</lenratio>
   <cooler_scores>
-    <content>0.146</content>
-    <offlink>0</offlink>
-    <urllen>0.654</urllen>
+    <content cool="0">0.146</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.654</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -565,9 +565,9 @@ you
   <final_score>0.352</final_score>
   <lenratio>0.198</lenratio>
   <cooler_scores>
-    <content>0.297</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.297</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -591,9 +591,9 @@ you
   <final_score>0.339</final_score>
   <lenratio>0.127</lenratio>
   <cooler_scores>
-    <content>0.265</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.265</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -617,9 +617,9 @@ you
   <final_score>0.339</final_score>
   <lenratio>0.0424</lenratio>
   <cooler_scores>
-    <content>0.265</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.265</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -643,9 +643,9 @@ you
   <final_score>0.334</final_score>
   <lenratio>0.166</lenratio>
   <cooler_scores>
-    <content>0.253</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.253</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -669,9 +669,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0657</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -695,9 +695,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.252</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -721,9 +721,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0482</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -747,9 +747,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0689</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -773,9 +773,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.217</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -799,9 +799,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0689</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -825,9 +825,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.185</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -851,9 +851,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0934</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -877,9 +877,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.123</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -903,9 +903,9 @@ you
   <final_score>0.326</final_score>
   <lenratio>0.0602</lenratio>
   <cooler_scores>
-    <content>0.233</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.233</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -929,9 +929,9 @@ you
   <final_score>0.325</final_score>
   <lenratio>0.285</lenratio>
   <cooler_scores>
-    <content>0.231</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.231</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -955,9 +955,9 @@ you
   <final_score>0.324</final_score>
   <lenratio>0.358</lenratio>
   <cooler_scores>
-    <content>0.229</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.229</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -981,9 +981,9 @@ you
   <final_score>0.323</final_score>
   <lenratio>0.391</lenratio>
   <cooler_scores>
-    <content>0.226</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.226</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1012,9 +1012,9 @@ you
   <final_score>0.347</final_score>
   <lenratio>0.17</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1038,9 +1038,9 @@ you
   <final_score>0.346</final_score>
   <lenratio>0.623</lenratio>
   <cooler_scores>
-    <content>0.265</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">0.265</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1064,9 +1064,9 @@ you
   <final_score>0.344</final_score>
   <lenratio>0.393</lenratio>
   <cooler_scores>
-    <content>0.277</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.277</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1090,9 +1090,9 @@ you
   <final_score>0.34</final_score>
   <lenratio>0.598</lenratio>
   <cooler_scores>
-    <content>0.268</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.268</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1116,9 +1116,9 @@ you
   <final_score>0.34</final_score>
   <lenratio>0.57</lenratio>
   <cooler_scores>
-    <content>0.268</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.268</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1142,9 +1142,9 @@ you
   <final_score>0.337</final_score>
   <lenratio>0.732</lenratio>
   <cooler_scores>
-    <content>0.26</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.26</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1168,9 +1168,9 @@ you
   <final_score>0.336</final_score>
   <lenratio>0.0415</lenratio>
   <cooler_scores>
-    <content>0.232</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">0.232</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1194,9 +1194,9 @@ you
   <final_score>0.333</final_score>
   <lenratio>0.279</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1220,9 +1220,9 @@ you
   <final_score>0.333</final_score>
   <lenratio>0.206</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1246,9 +1246,9 @@ you
   <final_score>0.333</final_score>
   <lenratio>0.121</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1272,9 +1272,9 @@ you
   <final_score>0.332</final_score>
   <lenratio>0.311</lenratio>
   <cooler_scores>
-    <content>0.283</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">0.283</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1298,9 +1298,9 @@ you
   <final_score>0.32</final_score>
   <lenratio>0.512</lenratio>
   <cooler_scores>
-    <content>0.271</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">0.271</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1324,9 +1324,9 @@ you
   <final_score>0.319</final_score>
   <lenratio>0.206</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1350,9 +1350,9 @@ you
   <final_score>0.319</final_score>
   <lenratio>0.129</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1376,9 +1376,9 @@ you
   <final_score>0.319</final_score>
   <lenratio>0.175</lenratio>
   <cooler_scores>
-    <content>0.285</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.285</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1402,9 +1402,9 @@ you
   <final_score>0.318</final_score>
   <lenratio>0.313</lenratio>
   <cooler_scores>
-    <content>0.283</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.283</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1428,9 +1428,9 @@ you
   <final_score>0.314</final_score>
   <lenratio>0.46</lenratio>
   <cooler_scores>
-    <content>0.273</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.273</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1454,9 +1454,9 @@ you
   <final_score>0.311</final_score>
   <lenratio>0.594</lenratio>
   <cooler_scores>
-    <content>0.266</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.266</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1480,9 +1480,9 @@ you
   <final_score>0.31</final_score>
   <lenratio>0.648</lenratio>
   <cooler_scores>
-    <content>0.263</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">0.263</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1506,9 +1506,9 @@ you
   <final_score>0.308</final_score>
   <lenratio>0.441</lenratio>
   <cooler_scores>
-    <content>0.276</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">0.276</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1532,9 +1532,9 @@ you
   <final_score>0.306</final_score>
   <lenratio>5.44</lenratio>
   <cooler_scores>
-    <content>0.15</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">0.15</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1558,9 +1558,9 @@ you
   <final_score>0.297</final_score>
   <lenratio>1.03</lenratio>
   <cooler_scores>
-    <content>0.249</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">0.249</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1584,9 +1584,9 @@ you
   <final_score>0.283</final_score>
   <lenratio>6.1</lenratio>
   <cooler_scores>
-    <content>0.129</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.129</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1610,9 +1610,9 @@ you
   <final_score>0.28</final_score>
   <lenratio>6.84</lenratio>
   <cooler_scores>
-    <content>0.104</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">0.104</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1636,9 +1636,9 @@ you
   <final_score>0.265</final_score>
   <lenratio>5.48</lenratio>
   <cooler_scores>
-    <content>0.0414</content>
-    <offlink>0</offlink>
-    <urllen>0.551</urllen>
+    <content cool="0">0.0414</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.551</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1662,9 +1662,9 @@ you
   <final_score>0.265</final_score>
   <lenratio>5.44</lenratio>
   <cooler_scores>
-    <content>0.0414</content>
-    <offlink>0</offlink>
-    <urllen>0.551</urllen>
+    <content cool="0">0.0414</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.551</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1688,9 +1688,9 @@ you
   <final_score>0.257</final_score>
   <lenratio>5.74</lenratio>
   <cooler_scores>
-    <content>0.0219</content>
-    <offlink>0</offlink>
-    <urllen>0.551</urllen>
+    <content cool="0">0.0219</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.551</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1714,9 +1714,9 @@ you
   <final_score>0.253</final_score>
   <lenratio>4.59</lenratio>
   <cooler_scores>
-    <content>0.0467</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">0.0467</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1740,9 +1740,9 @@ you
   <final_score>0.251</final_score>
   <lenratio>5.78</lenratio>
   <cooler_scores>
-    <content>-0.0014</content>
-    <offlink>0</offlink>
-    <urllen>0.559</urllen>
+    <content cool="0">-0.0014</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.559</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1766,9 +1766,9 @@ you
   <final_score>0.251</final_score>
   <lenratio>5.74</lenratio>
   <cooler_scores>
-    <content>-0.0014</content>
-    <offlink>0</offlink>
-    <urllen>0.559</urllen>
+    <content cool="0">-0.0014</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.559</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1792,9 +1792,9 @@ you
   <final_score>0.245</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>0.0358</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.0358</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1818,9 +1818,9 @@ you
   <final_score>0.245</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>0.0358</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">0.0358</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1844,9 +1844,9 @@ you
   <final_score>0.244</final_score>
   <lenratio>5.02</lenratio>
   <cooler_scores>
-    <content>-0.00119</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">-0.00119</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1870,9 +1870,9 @@ you
   <final_score>0.244</final_score>
   <lenratio>4.95</lenratio>
   <cooler_scores>
-    <content>-0.00119</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">-0.00119</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1896,9 +1896,9 @@ you
   <final_score>0.244</final_score>
   <lenratio>5.51</lenratio>
   <cooler_scores>
-    <content>-0.00119</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">-0.00119</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1922,9 +1922,9 @@ you
   <final_score>0.244</final_score>
   <lenratio>5.44</lenratio>
   <cooler_scores>
-    <content>-0.00119</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">-0.00119</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1948,9 +1948,9 @@ you
   <final_score>0.244</final_score>
   <lenratio>0.0228</lenratio>
   <cooler_scores>
-    <content>-0.00119</content>
-    <offlink>0</offlink>
-    <urllen>0.543</urllen>
+    <content cool="0">-0.00119</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.543</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -1974,9 +1974,9 @@ you
   <final_score>0.242</final_score>
   <lenratio>5.98</lenratio>
   <cooler_scores>
-    <content>0.0371</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">0.0371</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2000,9 +2000,9 @@ you
   <final_score>0.241</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>0.0347</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">0.0347</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2026,9 +2026,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>6.89</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2052,9 +2052,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>6.84</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2078,9 +2078,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>8.1</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2104,9 +2104,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>8.04</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2130,9 +2130,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>4.95</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2156,9 +2156,9 @@ you
   <final_score>0.24</final_score>
   <lenratio>5.44</lenratio>
   <cooler_scores>
-    <content>-0.0023</content>
-    <offlink>0</offlink>
-    <urllen>0.535</urllen>
+    <content cool="0">-0.0023</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.535</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2182,9 +2182,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>8.04</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2208,9 +2208,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>4.62</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2234,9 +2234,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>4.59</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2260,9 +2260,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>7.08</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2286,9 +2286,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2312,9 +2312,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>5.82</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2338,9 +2338,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>5.78</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2364,9 +2364,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>4.41</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2390,9 +2390,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>4.41</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2416,9 +2416,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.363</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2442,9 +2442,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.537</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2468,9 +2468,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.827</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2494,9 +2494,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>1.95</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2520,9 +2520,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.313</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2546,9 +2546,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.438</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2572,9 +2572,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.383</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2598,9 +2598,9 @@ you
   <final_score>0.237</final_score>
   <lenratio>0.375</lenratio>
   <cooler_scores>
-    <content>-0.000979</content>
-    <offlink>0</offlink>
-    <urllen>0.528</urllen>
+    <content cool="0">-0.000979</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.528</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2624,9 +2624,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>0.0602</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2650,9 +2650,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>7.03</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2676,9 +2676,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2702,9 +2702,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.57</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2728,9 +2728,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2754,9 +2754,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.59</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2780,9 +2780,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.55</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2806,9 +2806,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2832,9 +2832,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.59</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2858,9 +2858,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.62</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2884,9 +2884,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.78</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2910,9 +2910,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.74</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2936,9 +2936,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.1</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2962,9 +2962,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.1</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -2988,9 +2988,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.75</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3014,9 +3014,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.7</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3040,9 +3040,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.57</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3066,9 +3066,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3092,9 +3092,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>5.78</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3118,9 +3118,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>4.38</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3144,9 +3144,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>4.95</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3170,9 +3170,9 @@ you
   <final_score>0.233</final_score>
   <lenratio>4.91</lenratio>
   <cooler_scores>
-    <content>-0.00209</content>
-    <offlink>0</offlink>
-    <urllen>0.52</urllen>
+    <content cool="0">-0.00209</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.52</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3196,9 +3196,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3222,9 +3222,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>4.32</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3248,9 +3248,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>4.29</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3274,9 +3274,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>5.51</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3300,9 +3300,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.0627</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3326,9 +3326,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.02</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3352,9 +3352,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>5.98</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3378,9 +3378,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.84</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3404,9 +3404,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.8</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3430,9 +3430,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>5.59</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3456,9 +3456,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>5.74</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3482,9 +3482,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.0492</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3508,9 +3508,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.0602</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3534,9 +3534,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.353</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3560,9 +3560,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>1.25</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3586,9 +3586,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.311</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3612,9 +3612,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.171</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3638,9 +3638,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.373</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3664,9 +3664,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.136</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3690,9 +3690,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.0346</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3716,9 +3716,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.108</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3742,9 +3742,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>0.261</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3768,9 +3768,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.7</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3794,9 +3794,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.57</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3820,9 +3820,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3846,9 +3846,9 @@ you
   <final_score>0.23</final_score>
   <lenratio>4.91</lenratio>
   <cooler_scores>
-    <content>-0.000768</content>
-    <offlink>0</offlink>
-    <urllen>0.512</urllen>
+    <content cool="0">-0.000768</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.512</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3872,9 +3872,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0469</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3898,9 +3898,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>4.29</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3924,9 +3924,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0675</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3950,9 +3950,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>6.8</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -3976,9 +3976,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0586</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4002,9 +4002,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0602</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4028,9 +4028,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0526</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4054,9 +4054,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>0.0469</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4080,9 +4080,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>7.37</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4106,9 +4106,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>7.32</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4132,9 +4132,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>7.94</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4158,9 +4158,9 @@ you
   <final_score>0.226</final_score>
   <lenratio>7.88</lenratio>
   <cooler_scores>
-    <content>-0.00188</content>
-    <offlink>0</offlink>
-    <urllen>0.504</urllen>
+    <content cool="0">-0.00188</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.504</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4184,9 +4184,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>5.7</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4210,9 +4210,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>5.7</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4236,9 +4236,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>1.13</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4262,9 +4262,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.0457</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4288,9 +4288,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>5.98</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4314,9 +4314,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>5.94</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4340,9 +4340,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>7.32</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4366,9 +4366,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.0463</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4392,9 +4392,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>7.88</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4418,9 +4418,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.239</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4444,9 +4444,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.657</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4470,9 +4470,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.139</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4496,9 +4496,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.662</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4522,9 +4522,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>1.05</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4548,9 +4548,9 @@ you
   <final_score>0.223</final_score>
   <lenratio>0.444</lenratio>
   <cooler_scores>
-    <content>-0.000557</content>
-    <offlink>0</offlink>
-    <urllen>0.496</urllen>
+    <content cool="0">-0.000557</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.496</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4574,9 +4574,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>5.59</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4600,9 +4600,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>5.55</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4626,9 +4626,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>5.66</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4652,9 +4652,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>5.94</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4678,9 +4678,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>6.57</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4704,9 +4704,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4730,9 +4730,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>6.57</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4756,9 +4756,9 @@ you
   <final_score>0.219</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.00167</content>
-    <offlink>0</offlink>
-    <urllen>0.488</urllen>
+    <content cool="0">-0.00167</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.488</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4782,9 +4782,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.401</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4808,9 +4808,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0879</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4834,9 +4834,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.319</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4860,9 +4860,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.139</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4886,9 +4886,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.302</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4912,9 +4912,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0753</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4938,9 +4938,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.105</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4964,9 +4964,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.132</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -4990,9 +4990,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.158</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5016,9 +5016,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.137</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5042,9 +5042,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0966</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5068,9 +5068,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.412</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5094,9 +5094,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0685</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5120,9 +5120,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0928</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5146,9 +5146,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.68</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5172,9 +5172,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0619</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5198,9 +5198,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.635</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5224,9 +5224,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.275</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5250,9 +5250,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.149</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5276,9 +5276,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.855</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5302,9 +5302,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.323</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5328,9 +5328,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.383</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5354,9 +5354,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0838</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5380,9 +5380,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.202</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5406,9 +5406,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>5.55</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5432,9 +5432,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.412</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5458,9 +5458,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0713</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5484,9 +5484,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.262</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5510,9 +5510,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.159</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5536,9 +5536,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>1.26</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5562,9 +5562,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.427</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5588,9 +5588,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.219</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5614,9 +5614,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.867</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5640,9 +5640,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.363</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5666,9 +5666,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.644</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5692,9 +5692,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.102</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5718,9 +5718,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.203</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5744,9 +5744,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.148</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5770,9 +5770,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.555</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5796,9 +5796,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.838</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5822,9 +5822,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.479</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5848,9 +5848,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.0856</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5874,9 +5874,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>0.444</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5900,9 +5900,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>5.4</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5926,9 +5926,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>5.37</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5952,9 +5952,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>5.22</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -5978,9 +5978,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>5.19</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6004,9 +6004,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>4.59</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6030,9 +6030,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>4.56</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6056,9 +6056,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>6.48</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6082,9 +6082,9 @@ you
   <final_score>0.215</final_score>
   <lenratio>6.53</lenratio>
   <cooler_scores>
-    <content>-0.00278</content>
-    <offlink>0</offlink>
-    <urllen>0.48</urllen>
+    <content cool="0">-0.00278</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.48</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6108,9 +6108,9 @@ you
   <final_score>0.212</final_score>
   <lenratio>5.37</lenratio>
   <cooler_scores>
-    <content>-0.00146</content>
-    <offlink>0</offlink>
-    <urllen>0.472</urllen>
+    <content cool="0">-0.00146</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.472</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6134,9 +6134,9 @@ you
   <final_score>0.212</final_score>
   <lenratio>5.19</lenratio>
   <cooler_scores>
-    <content>-0.00146</content>
-    <offlink>0</offlink>
-    <urllen>0.472</urllen>
+    <content cool="0">-0.00146</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.472</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6160,9 +6160,9 @@ you
   <final_score>0.212</final_score>
   <lenratio>4.56</lenratio>
   <cooler_scores>
-    <content>-0.00146</content>
-    <offlink>0</offlink>
-    <urllen>0.472</urllen>
+    <content cool="0">-0.00146</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.472</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6186,9 +6186,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.328</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6212,9 +6212,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.152</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6238,9 +6238,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.114</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6264,9 +6264,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.142</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6290,9 +6290,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.181</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6316,9 +6316,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.323</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6342,9 +6342,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.102</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6368,9 +6368,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.129</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6394,9 +6394,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.319</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6420,9 +6420,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.337</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6446,9 +6446,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.168</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6472,9 +6472,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.794</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6498,9 +6498,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.396</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6524,9 +6524,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.432</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6550,9 +6550,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.38</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6576,9 +6576,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.586</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6602,9 +6602,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.737</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6628,9 +6628,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.154</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6654,9 +6654,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.275</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6680,9 +6680,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.567</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6706,9 +6706,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.418</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6732,9 +6732,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.666</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6758,9 +6758,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.225</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6784,9 +6784,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>1.1</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6810,9 +6810,9 @@ you
   <final_score>0.208</final_score>
   <lenratio>0.317</lenratio>
   <cooler_scores>
-    <content>-0.00257</content>
-    <offlink>0</offlink>
-    <urllen>0.465</urllen>
+    <content cool="0">-0.00257</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.465</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6836,9 +6836,9 @@ you
   <final_score>0.205</final_score>
   <lenratio>6.98</lenratio>
   <cooler_scores>
-    <content>-0.00125</content>
-    <offlink>0</offlink>
-    <urllen>0.457</urllen>
+    <content cool="0">-0.00125</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.457</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6862,9 +6862,9 @@ you
   <final_score>0.205</final_score>
   <lenratio>6.93</lenratio>
   <cooler_scores>
-    <content>-0.00125</content>
-    <offlink>0</offlink>
-    <urllen>0.457</urllen>
+    <content cool="0">-0.00125</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.457</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6888,9 +6888,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.29</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6914,9 +6914,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.237</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6940,9 +6940,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.315</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6966,9 +6966,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.519</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -6992,9 +6992,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0856</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7018,9 +7018,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.309</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7044,9 +7044,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.232</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7070,9 +7070,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.469</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7096,9 +7096,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.281</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7122,9 +7122,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.323</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7148,9 +7148,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.816</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7174,9 +7174,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.432</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7200,9 +7200,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.582</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7226,9 +7226,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.475</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7252,9 +7252,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.703</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7278,9 +7278,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.155</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7304,9 +7304,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.375</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7330,9 +7330,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.279</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7356,9 +7356,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0811</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7382,9 +7382,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.195</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7408,9 +7408,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.391</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7434,9 +7434,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0418</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7460,9 +7460,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.127</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7486,9 +7486,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.171</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7512,9 +7512,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.249</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7538,9 +7538,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.168</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7564,9 +7564,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.401</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7590,9 +7590,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.313</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7616,9 +7616,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.479</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7642,9 +7642,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.453</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7668,9 +7668,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.226</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7694,9 +7694,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.216</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7720,9 +7720,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0816</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7746,9 +7746,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.337</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7772,9 +7772,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0891</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7798,9 +7798,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.152</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7824,9 +7824,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0728</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7850,9 +7850,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.107</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7876,9 +7876,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.623</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7902,9 +7902,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.135</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7928,9 +7928,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.25</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7954,9 +7954,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.666</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -7980,9 +7980,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.979</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8006,9 +8006,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.671</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8032,9 +8032,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.143</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8058,9 +8058,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.424</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8084,9 +8084,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.222</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8110,9 +8110,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0578</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8136,9 +8136,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.326</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8162,9 +8162,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.135</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8188,9 +8188,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.125</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8214,9 +8214,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.138</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8240,9 +8240,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.108</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8266,9 +8266,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.121</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8292,9 +8292,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.111</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8318,9 +8318,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.135</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8344,9 +8344,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.217</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8370,9 +8370,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.264</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8396,9 +8396,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.25</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8422,9 +8422,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.136</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8448,9 +8448,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.186</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8474,9 +8474,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.435</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8500,9 +8500,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.108</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8526,9 +8526,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.231</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8552,9 +8552,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.211</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8578,9 +8578,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.341</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8604,9 +8604,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.375</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8630,9 +8630,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.198</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8656,9 +8656,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0753</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8682,9 +8682,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.358</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8708,9 +8708,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.296</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8734,9 +8734,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.407</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8760,9 +8760,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.236</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8786,9 +8786,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0953</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8812,9 +8812,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.732</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8838,9 +8838,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.472</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8864,9 +8864,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0903</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8890,9 +8890,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.762</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8916,9 +8916,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.544</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8942,9 +8942,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.129</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8968,9 +8968,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.288</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -8994,9 +8994,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.232</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9020,9 +9020,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.254</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9046,9 +9046,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.14</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9072,9 +9072,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.122</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9098,9 +9098,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.181</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9124,9 +9124,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0885</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9150,9 +9150,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0475</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9176,9 +9176,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.21</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9202,9 +9202,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0526</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9228,9 +9228,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.482</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9254,9 +9254,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.236</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9280,9 +9280,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.482</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9306,9 +9306,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.041</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9332,9 +9332,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.456</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9358,9 +9358,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.81</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9384,9 +9384,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.328</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9410,9 +9410,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.53</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9436,9 +9436,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0816</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9462,9 +9462,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.897</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9488,9 +9488,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.252</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9514,9 +9514,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.162</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9540,9 +9540,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.393</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9566,9 +9566,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.294</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9592,9 +9592,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.19</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9618,9 +9618,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.191</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9644,9 +9644,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.166</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9670,9 +9670,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.482</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9696,9 +9696,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.102</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9722,9 +9722,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.223</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9748,9 +9748,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0973</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9774,9 +9774,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.252</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9800,9 +9800,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.618</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9826,9 +9826,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.827</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9852,9 +9852,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.249</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9878,9 +9878,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.559</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9904,9 +9904,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.222</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9930,9 +9930,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.407</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9956,9 +9956,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.223</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -9982,9 +9982,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.271</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10008,9 +10008,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.3</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10034,9 +10034,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>1.2</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10060,9 +10060,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>6.93</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10086,9 +10086,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.313</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10112,9 +10112,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0993</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10138,9 +10138,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.281</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10164,9 +10164,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.24</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10190,9 +10190,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.134</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10216,9 +10216,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.598</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10242,9 +10242,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.37</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10268,9 +10268,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.365</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10294,9 +10294,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.0773</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10320,9 +10320,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.482</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10346,9 +10346,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.222</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10372,9 +10372,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.232</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10398,9 +10398,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.255</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10424,9 +10424,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.225</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10450,9 +10450,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.149</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10476,9 +10476,9 @@ you
   <final_score>0.201</final_score>
   <lenratio>0.127</lenratio>
   <cooler_scores>
-    <content>-0.00236</content>
-    <offlink>0</offlink>
-    <urllen>0.449</urllen>
+    <content cool="0">-0.00236</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.449</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10502,9 +10502,9 @@ you
   <final_score>0.198</final_score>
   <lenratio>0.213</lenratio>
   <cooler_scores>
-    <content>-0.00104</content>
-    <offlink>0</offlink>
-    <urllen>0.441</urllen>
+    <content cool="0">-0.00104</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.441</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10528,9 +10528,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.555</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10554,9 +10554,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.463</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10580,9 +10580,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.972</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10606,9 +10606,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.236</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10632,9 +10632,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.121</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10658,9 +10658,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.275</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10684,9 +10684,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.666</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10710,9 +10710,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.24</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10736,9 +10736,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.732</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10762,9 +10762,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0361</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10788,9 +10788,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.29</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10814,9 +10814,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.482</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10840,9 +10840,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.456</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10866,9 +10866,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.339</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10892,9 +10892,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.653</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10918,9 +10918,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0636</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10944,9 +10944,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.144</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10970,9 +10970,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.317</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -10996,9 +10996,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.38</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11022,9 +11022,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.107</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11048,9 +11048,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.285</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11074,9 +11074,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0541</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11100,9 +11100,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.821</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11126,9 +11126,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.533</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11152,9 +11152,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.211</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11178,9 +11178,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.122</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11204,9 +11204,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.407</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11230,9 +11230,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0993</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11256,9 +11256,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0903</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11282,9 +11282,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.182</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11308,9 +11308,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.288</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11334,9 +11334,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.396</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11360,9 +11360,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.335</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11386,9 +11386,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.219</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11412,9 +11412,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.418</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11438,9 +11438,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.418</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11464,9 +11464,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.563</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11490,9 +11490,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.488</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11516,9 +11516,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.424</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11542,9 +11542,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.512</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11568,9 +11568,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0966</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11594,9 +11594,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.412</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11620,9 +11620,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.249</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11646,9 +11646,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.164</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11672,9 +11672,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.353</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11698,9 +11698,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.226</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11724,9 +11724,9 @@ you
   <final_score>0.194</final_score>
   <lenratio>0.0728</lenratio>
   <cooler_scores>
-    <content>-0.00215</content>
-    <offlink>0</offlink>
-    <urllen>0.433</urllen>
+    <content cool="0">-0.00215</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.433</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11750,9 +11750,9 @@ you
   <final_score>0.191</final_score>
   <lenratio>0.46</lenratio>
   <cooler_scores>
-    <content>-0.000826</content>
-    <offlink>0</offlink>
-    <urllen>0.425</urllen>
+    <content cool="0">-0.000826</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.425</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11776,9 +11776,9 @@ you
   <final_score>0.191</final_score>
   <lenratio>0.0979</lenratio>
   <cooler_scores>
-    <content>-0.000826</content>
-    <offlink>0</offlink>
-    <urllen>0.425</urllen>
+    <content cool="0">-0.000826</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.425</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11802,9 +11802,9 @@ you
   <final_score>0.191</final_score>
   <lenratio>0.0891</lenratio>
   <cooler_scores>
-    <content>-0.000826</content>
-    <offlink>0</offlink>
-    <urllen>0.425</urllen>
+    <content cool="0">-0.000826</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.425</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11828,9 +11828,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.252</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11854,9 +11854,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.574</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11880,9 +11880,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.574</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11906,9 +11906,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.0631</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11932,9 +11932,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.805</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11958,9 +11958,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.128</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -11984,9 +11984,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.348</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12010,9 +12010,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.0732</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12036,9 +12036,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.0447</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12062,9 +12062,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.441</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12088,9 +12088,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.0973</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12114,9 +12114,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>1.21</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12140,9 +12140,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.309</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12166,9 +12166,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.509</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12192,9 +12192,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.602</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12218,9 +12218,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.337</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12244,9 +12244,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.773</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12270,9 +12270,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.123</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12296,9 +12296,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.286</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12322,9 +12322,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.257</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12348,9 +12348,9 @@ you
   <final_score>0.187</final_score>
   <lenratio>0.252</lenratio>
   <cooler_scores>
-    <content>-0.00194</content>
-    <offlink>0</offlink>
-    <urllen>0.417</urllen>
+    <content cool="0">-0.00194</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.417</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12374,9 +12374,9 @@ you
   <final_score>0.18</final_score>
   <lenratio>0.479</lenratio>
   <cooler_scores>
-    <content>-0.00173</content>
-    <offlink>0</offlink>
-    <urllen>0.402</urllen>
+    <content cool="0">-0.00173</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.402</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12400,9 +12400,9 @@ you
   <final_score>0.18</final_score>
   <lenratio>0.614</lenratio>
   <cooler_scores>
-    <content>-0.00173</content>
-    <offlink>0</offlink>
-    <urllen>0.402</urllen>
+    <content cool="0">-0.00173</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.402</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12426,9 +12426,9 @@ you
   <final_score>0.18</final_score>
   <lenratio>0.2</lenratio>
   <cooler_scores>
-    <content>-0.00173</content>
-    <offlink>0</offlink>
-    <urllen>0.402</urllen>
+    <content cool="0">-0.00173</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.402</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12452,9 +12452,9 @@ you
   <final_score>0.18</final_score>
   <lenratio>0.368</lenratio>
   <cooler_scores>
-    <content>-0.00173</content>
-    <offlink>0</offlink>
-    <urllen>0.402</urllen>
+    <content cool="0">-0.00173</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.402</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12478,9 +12478,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.418</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12504,9 +12504,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.435</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12530,9 +12530,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.211</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12556,9 +12556,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.105</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12582,9 +12582,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.348</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12608,9 +12608,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>1.01</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12634,9 +12634,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>1.82</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12660,9 +12660,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.275</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12686,9 +12686,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.101</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12712,9 +12712,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.401</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12738,9 +12738,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.519</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12764,9 +12764,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.383</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12790,9 +12790,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.152</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12816,9 +12816,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.456</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12842,9 +12842,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.132</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12868,9 +12868,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.512</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12894,9 +12894,9 @@ you
   <final_score>0.173</final_score>
   <lenratio>0.469</lenratio>
   <cooler_scores>
-    <content>-0.00152</content>
-    <offlink>0</offlink>
-    <urllen>0.386</urllen>
+    <content cool="0">-0.00152</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.386</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12920,9 +12920,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.266</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12946,9 +12946,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.0947</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12972,9 +12972,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.358</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -12998,9 +12998,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.689</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13024,9 +13024,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.348</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13050,9 +13050,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.703</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13076,9 +13076,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.167</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13102,9 +13102,9 @@ you
   <final_score>0.166</final_score>
   <lenratio>0.768</lenratio>
   <cooler_scores>
-    <content>-0.00131</content>
-    <offlink>0</offlink>
-    <urllen>0.37</urllen>
+    <content cool="0">-0.00131</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.37</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13128,9 +13128,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.53</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13154,9 +13154,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.435</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13180,9 +13180,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.296</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13206,9 +13206,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.101</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13232,9 +13232,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.762</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>
@@ -13258,9 +13258,9 @@ you
   <final_score>0.145</final_score>
   <lenratio>0.176</lenratio>
   <cooler_scores>
-    <content>-0.000672</content>
-    <offlink>0</offlink>
-    <urllen>0.323</urllen>
+    <content cool="0">-0.000672</content>
+    <offlink cool="2">0</offlink>
+    <urllen cool="3">0.323</urllen>
   </cooler_scores>
 </explain>
   </result>

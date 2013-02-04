@@ -19,7 +19,6 @@ import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamParser;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -29,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

@@ -7,9 +7,10 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.xml.XmlStreamUtils;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class ExplainFactory {
 	public static Explain fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws XMLStreamException {
@@ -22,7 +23,7 @@ public class ExplainFactory {
 		float finalScore = 0;
 		int consat = 0;
 		float lenratio = 0;
-		Map<String,String> stringFeatures = null;
+		Map<CoolerWeighting, String> stringFeatures = new HashMap<CoolerWeighting, String>();
 		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
 			if (xmlStreamReader.isStartElement()) {
 				if (Explain.Schema.FINAL_SCORE.equals(xmlStreamReader.getLocalName().toString())) {
@@ -32,17 +33,20 @@ public class ExplainFactory {
 				} if (Explain.Schema.LENRATIO.equals(xmlStreamReader.getLocalName().toString())) {
 						lenratio = Float.parseFloat(xmlStreamReader.getElementText());
 				} if (Explain.Schema.COOLER_SCORES.equals(xmlStreamReader.getLocalName().toString())) {
-					stringFeatures = XmlStreamUtils.tagsToMap(Explain.Schema.COOLER_SCORES, xmlStreamReader);
+					while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+						StaxStreamParser.CoolValue cv = StaxStreamParser.parseCoolValue(xmlStreamReader);
+						stringFeatures.put(new CoolerWeighting(cv.name, cv.id), cv.value);
+					}
 				}
 			}
 		}
 		
-		if(stringFeatures == null) {
+		if(stringFeatures.isEmpty()) {
 			throw new IllegalStateException("<explain> tag did not contain <cooler_scores>");
 		}
 		
-		Map<String,Float> features = new HashMap<String,Float>();
-		for (Map.Entry<String,String> feature : stringFeatures.entrySet()) {
+		Map<CoolerWeighting,Float> features = new HashMap<CoolerWeighting,Float>();
+		for (Map.Entry<CoolerWeighting, String> feature : stringFeatures.entrySet()) {
 			features.put(feature.getKey(), Float.parseFloat(feature.getValue()));
 		}
 

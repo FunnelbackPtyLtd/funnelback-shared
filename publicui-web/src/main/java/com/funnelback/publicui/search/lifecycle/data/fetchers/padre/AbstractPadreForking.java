@@ -26,11 +26,11 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.PadreXmlParser;
 
 /**
  * Forks PADRE and communicate with it using stdin/out/err

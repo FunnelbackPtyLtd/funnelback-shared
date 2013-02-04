@@ -125,7 +125,9 @@
 	            <value type="org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion">#{ appProperties['json.inclusion'] }</value>
 	        </list>
 	    </property>
-	</bean>		
+	</bean>	
+	
+	<bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />	
 			
 	<mvc:resources mapping="/content-optimiser/**" location="/content-optimiser/" />
 		

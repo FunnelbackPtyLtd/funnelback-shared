@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.impl;
+package com.funnelback.publicui.xml.padre;
 
 import java.io.StringReader;
 import java.security.InvalidParameterException;
@@ -14,10 +14,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.log4j.Log4j;
 
-import org.springframework.stereotype.Component;
-
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.xml.PadreXmlParser;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.QSup;
@@ -40,7 +38,6 @@ import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
-@Component("padreXmlParser")
 @Log4j
 public class StaxStreamParser implements PadreXmlParser {
 
@@ -116,12 +113,15 @@ public class StaxStreamParser implements PadreXmlParser {
 					} else if (ResultPacket.Schema.EXCLUDE_SCOPE.equals(xmlStreamReader.getLocalName())) {
 						packet.getExcludeScopes().addAll(parseScopes(xmlStreamReader.getElementText()));
 					} else if (ResultPacket.Schema.COOLER_WEIGHTINGS.equals(xmlStreamReader.getLocalName())) {
-						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.COOLER_WEIGHTINGS, xmlStreamReader);
-						for (Map.Entry<String,String> feature : stringFeatures.entrySet()) {
-							packet.getCoolerWeights().put(feature.getKey(), Float.parseFloat(feature.getValue()));
+						while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+							CoolValue cv = parseCoolValue(xmlStreamReader);
+							packet.getCoolerWeights().put(new CoolerWeighting(cv.name, cv.id), Float.parseFloat(cv.value));
 						}
 					} else if (ResultPacket.Schema.COOLER_NAMES.equals(xmlStreamReader.getLocalName())) {
-						packet.getCoolerNames().putAll(XmlStreamUtils.tagsToMap(ResultPacket.Schema.COOLER_NAMES, xmlStreamReader));
+						while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+							CoolValue cv = parseCoolValue(xmlStreamReader);
+							packet.getCoolerNames().put(new CoolerWeighting(cv.name, cv.id), cv.value);
+						}
 					} else if (ResultPacket.Schema.STOP_WORDS.equals(xmlStreamReader.getLocalName())) {
 						String[] stopWords = xmlStreamReader.getElementText().split("\\s+");
 						for(String word : stopWords){
@@ -145,8 +145,10 @@ public class StaxStreamParser implements PadreXmlParser {
 						}
 						
 					} else if (ResultPacket.Schema.EXPLAIN_TYPES.equals(xmlStreamReader.getLocalName())) {
-						Map<String,String> stringFeatures = XmlStreamUtils.tagsToMap(ResultPacket.Schema.EXPLAIN_TYPES, xmlStreamReader);
-						packet.getExplainTypes().putAll(stringFeatures);
+						while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+							CoolValue cv = parseCoolValue(xmlStreamReader);
+							packet.getExplainTypes().put(new CoolerWeighting(cv.name, cv.id), cv.value);
+						}
 					} else if (ResultPacket.Schema.SVGS.equals(xmlStreamReader.getLocalName())) {
 						packet.getSvgs().putAll(XmlStreamUtils.tagsToMap(ResultPacket.Schema.SVGS, xmlStreamReader));
 					} else {
@@ -224,6 +226,20 @@ public class StaxStreamParser implements PadreXmlParser {
 		}
 		
 		return null;
+	}
+	
+	public static CoolValue parseCoolValue(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		if (xmlStreamReader.getAttributeCount() == 1
+				&& ResultPacket.Schema.COOL.equals(xmlStreamReader.getAttributeLocalName(0))) {
+			CoolValue cv = new CoolValue();
+			cv.id = Integer.parseInt(xmlStreamReader.getAttributeValue(0));
+			cv.name = xmlStreamReader.getLocalName();
+			cv.value = xmlStreamReader.getElementText();
+			
+			return cv;
+		} else {
+			throw new InvalidParameterException();
+		}
 	}
 	
 	/**
@@ -427,6 +443,12 @@ public class StaxStreamParser implements PadreXmlParser {
 	private class RMC {
 		public String item;
 		public int count;
+	}
+	
+	public static class CoolValue {
+		public String name;
+		public int id;
+		public String value;
 	}
 	
 	private class URLCount {

@@ -31,9 +31,11 @@ public class Explain {
 		@Getter public float lenratio;
 		
 		/**
-		 * a Map of float scores for each ranking feature.&nbsp;Feature names are specified by their unique short name.
+		 * <p>Map of float scores for each ranking feature.</p>
+		 * 
+		 * <p>Feature names are specified by their unique short name + id.</p>
 		 */
-		@Getter public Map<String,Float> featureScores;
+		@Getter public Map<CoolerWeighting, Float> featureScores;
 		
 		/** Constants to enable extracting the Explain data from the PADRE XML result packet tags. */
 		public static final class Schema {

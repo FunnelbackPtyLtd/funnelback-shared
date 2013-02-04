@@ -30,6 +30,7 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -61,7 +62,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	
 	@Autowired @Setter File searchHome;
 	
-	// TODO replace with an implementation that gets this from padre's XML
+	// TODO FUN-3689,FUN-3871 replace with an implementation that gets this from a config file or collection.cfg
 	private String getCategory(String key) {
 		String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT,
 				"entropy","entropy_abs","entropy_abs_neg","entropy_neg",
@@ -80,7 +81,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		Set<String> urlSet = new HashSet<String>(Arrays.asList(url));
 		String[] beyond = {"qie","document_number","host_rank_in_crawl_order_score","comp_wt","domain_weight","doc_matches_regex","doc_does_not_match_regex","doc_matches_cgscope1","doc_matches_cgscope2","doc_does_not_match_cgscope1","doc_does_not_match_cgscope2"};
 		Set<String> beyondSet = new HashSet<String>(Arrays.asList(beyond));
-		String[] annie = {"annie_rank","log_annie","anlog_annie","annie_rank","consistency","annie"};
+		String[] annie = {"annie_rank","log_annie","anlog_annie","annie_rank","consistency","annie","raw_annie"};
 		Set<String> annieSet = new HashSet<String>(Arrays.asList(annie));
 		
 		if(contentSet.contains(key)) return "content";
@@ -205,14 +206,14 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp,RankingFeatureFactory hintFactory) {
 		
 		// Add weights, create hint objects
-		for (Entry<String, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
-			comparison.getWeights().put(weightEntry.getKey(), weightEntry.getValue() * 100);
+		for (Entry<CoolerWeighting, Float> weightEntry :  rp.getCoolerWeights().entrySet()) {
+			comparison.getWeights().put(weightEntry.getKey().getName(), weightEntry.getValue() * 100);
 		}
 
 		Map<String, RankingFeature> hintsByName = comparison.getHintsByName();
-		for (Entry<String,String> nameAndType : rp.getExplainTypes().entrySet()) {
-			RankingFeature h = hintFactory.create(nameAndType.getKey(),nameAndType.getValue(),getCategory(nameAndType.getKey()),rp);
-			hintsByName.put(nameAndType.getKey(),h);
+		for (Entry<CoolerWeighting,String> nameAndType : rp.getExplainTypes().entrySet()) {
+			RankingFeature h = hintFactory.create(nameAndType.getKey().getName(),nameAndType.getValue(),getCategory(nameAndType.getKey().getName()),rp);
+			hintsByName.put(nameAndType.getKey().getName(),h);
 			comparison.getHintsByWin().add(h);			
 		}
 		
@@ -230,16 +231,16 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 				if(seenEasterEgg) { 
 					result.setRank(result.getRank() + 1);
 				} 
-				for (Map.Entry<String,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
+				for (Map.Entry<CoolerWeighting,Float> feature : result.getExplain().getFeatureScores().entrySet()) {
 					float percentage = feature.getValue()*rp.getCoolerWeights().get(feature.getKey())  *100;
 					//causes.add(new RankingScore(feature.getKey(), percentage));
-					RankingFeature hint = hintsByName.get(feature.getKey());
+					RankingFeature hint = hintsByName.get(feature.getKey().getName());
 					hint.rememberScore(percentage,"" +(result.getRank()));
 				}
 			} else {
 				// this is the easter egg query, produce null hints
-				for(Map.Entry<String,Float> feature : rp.getCoolerWeights().entrySet()) {
-					RankingFeature hint = hintsByName.get(feature.getKey());
+				for(Map.Entry<CoolerWeighting ,Float> feature : rp.getCoolerWeights().entrySet()) {
+					RankingFeature hint = hintsByName.get(feature.getKey().getName());
 					hint.rememberScore(feature.getValue() * 100,"" +result.getRank());
 				}
 				seenEasterEgg = true;
@@ -318,9 +319,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		// Otherwise we must create it ourselves
 		if(comparison.getSelectedDocument() == null) {
 			comparison.setSelectedDocument(importantResult);
-			for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
+			for (Map.Entry<CoolerWeighting,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 				float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
-				RankingFeature hint = comparison.getHintsByName().get(feature.getKey());
+				RankingFeature hint = comparison.getHintsByName().get(feature.getKey().getName());
 				hint.rememberScore(percentage, "" +importantResult.getRank());
 			}
 		}
@@ -336,9 +337,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 		}
 
 		// now calculate the wins for each feature;
-		if(importantResult.getExplain() != null) for (Map.Entry<String,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
+		if(importantResult.getExplain() != null) for (Map.Entry<CoolerWeighting,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
 			float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
-			RankingFeature hint = comparison.getHintsByName().get(feature.getKey());
+			RankingFeature hint = comparison.getHintsByName().get(feature.getKey().getName());
 			hint.caculateWin(percentage, allRp.getCoolerWeights().get(feature.getKey())*100);
 		}
 		
