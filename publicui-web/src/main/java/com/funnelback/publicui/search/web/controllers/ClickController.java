@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
@@ -37,6 +38,9 @@ public class ClickController {
 
 	@Autowired
 	private LogService logService;
+
+	@Autowired
+	private AuthTokenManager authTokenManager;
 	
 	@Autowired
 	private ConfigRepository configRepository;
@@ -55,10 +59,20 @@ public class ClickController {
 			Integer rank,
 			@RequestParam(required=false) String profile,
 			@RequestParam(RequestParameters.Cache.INDEX_URL) URI indexUrl,
+			@RequestParam(RequestParameters.AUTH_TOKEN) String authtoken,
 			@RequestParam(value=RequestParameters.Cache.NOATTACHMENT, required=false) String noAttachment) throws IOException {
-		
-		if (collection != null) {
 
+		
+		
+			
+		if (collection != null) {
+			if(! authTokenManager.checkToken(authtoken, 
+					indexUrl.toString(), 
+					collection.getConfiguration().value(Keys.SERVER_SECRET)
+					)) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			}
+			
 			String userId = LogUtils.getUserIdentifier(request,
 					DefaultValues.UserIdToLog.valueOf(collection.getConfiguration().value(Keys.USERID_TO_LOG)));
 			

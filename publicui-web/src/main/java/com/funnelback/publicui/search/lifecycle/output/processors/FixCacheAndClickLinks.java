@@ -3,11 +3,12 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.utils.MapUtils;
 
 /**
@@ -30,6 +32,9 @@ import com.funnelback.publicui.utils.MapUtils;
 @Component("fixCacheAndClickLinks")
 public class FixCacheAndClickLinks implements OutputProcessor {
 
+	@Autowired @Setter
+	private AuthTokenManager authTokenManager;
+	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
 		if (SearchTransactionUtils.hasCollection(searchTransaction)
@@ -118,10 +123,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 	 * @return
 	 */
 	private String getAuth(String url, String serverSecret) {
-		// FIXME The Perl UI expects non standard Base64 encoded
-		// (22 bytes long instead of a multiple of 4, see the doco
-		// for Perl Digest::MD5::md5_base64()
-		return StringUtils.removeEnd(new String(Base64.encodeBase64(DigestUtils.md5(serverSecret+url))), "==");
+		return authTokenManager.getToken(url,serverSecret);
 	}
 
 }

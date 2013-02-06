@@ -21,6 +21,7 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class FixCacheAndClickLinksTests {
@@ -32,6 +33,7 @@ public class FixCacheAndClickLinksTests {
 	@Before
 	public void before() throws Exception{
 		processor = new FixCacheAndClickLinks();
+		processor.setAuthTokenManager(new DefaultAuthTokenManager());
 		
 		SearchQuestion question = new SearchQuestion();
 		question.setQuery("livelinks");

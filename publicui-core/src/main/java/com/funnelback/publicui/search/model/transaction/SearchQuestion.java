@@ -331,6 +331,9 @@ public class SearchQuestion {
 		
 		/** Parameter to specify the locale of the UI only */
 		public static final String LANG_UI = "lang.ui";
+
+		/** Parameter for the auth token used to validate click redirects */
+		public static final String AUTH_TOKEN = "auth";
 		
 		/**
 		 * Common request header names
