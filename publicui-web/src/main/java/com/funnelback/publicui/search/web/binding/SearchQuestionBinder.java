@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvi
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.log.LogUtils;
+import com.funnelback.publicui.search.web.interceptors.UserUniqueIdInterceptor;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 
@@ -31,7 +32,8 @@ public class SearchQuestionBinder {
 		to.setCollection(from.getCollection());
 		to.setProfile(from.getProfile());
 		to.setImpersonated(from.isImpersonated());
-		to.setUserId(from.getUserId());
+		to.setUserIdToLog(from.getUserIdToLog());
+		to.setUserUniqueId(from.getUserUniqueId());
 		to.setLocale(from.getLocale());
 		to.setCnClickedCluster(from.getCnClickedCluster());
 		to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
@@ -79,10 +81,15 @@ public class SearchQuestionBinder {
 		// Is request impersonated ?
 		question.setImpersonated(isRequestImpersonated(request));
 		
-		// User identifier
+		// User identifier to log
 		if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
-			question.setUserId(LogUtils.getUserIdentifier(request,
+			question.setUserIdToLog(LogUtils.getUserIdentifier(request,
 					DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
+		}
+		
+		// Unique user identifier
+		if (request.getAttribute(UserUniqueIdInterceptor.USER_ID_REQUEST_ATTRIBUTE) != null) {
+			question.setUserUniqueId((String) request.getAttribute(UserUniqueIdInterceptor.USER_ID_REQUEST_ATTRIBUTE)); 
 		}
 		
 		// Last clicked cluster

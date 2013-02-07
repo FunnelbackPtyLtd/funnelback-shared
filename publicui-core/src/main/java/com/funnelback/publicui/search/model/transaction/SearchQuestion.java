@@ -179,10 +179,21 @@ public class SearchQuestion {
 	@Getter @Setter private boolean impersonated;
 	
 	/**
-	 * User identifier for this transaction. Depending of the collection configuration
-	 * it can be an IP address, an md5 hash of the address, nothing ("-") or null. 
+	 * User identifier to log for this transaction. Depending of the collection configuration
+	 * it can be an IP address, an md5 hash of the address, nothing ("-") or null.
+	 * 
+	 *  @since v12.4 - Renamed from <code>userId</code>
 	 */
-	@Getter @Setter private String userId = Log.USERID_NOTHING;
+	@Getter @Setter private String userIdToLog = Log.USERID_NOTHING;
+	
+	/**
+	 * <p>Unique identifier for the search user.</p>
+	 * 
+	 * <p>Will be the same across multiple searches for a given user.</p>
+	 * 
+	 * @since v12.4
+	 */
+	@Getter @Setter private String userUniqueId;
 
 	/**
 	 * <p>Raw input parameters</p>

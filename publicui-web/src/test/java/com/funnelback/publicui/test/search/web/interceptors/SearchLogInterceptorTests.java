@@ -39,7 +39,7 @@ public class SearchLogInterceptorTests {
 		st.getQuestion().getCollection().getConfiguration().setValue(Keys.USERID_TO_LOG, DefaultValues.UserIdToLog.ip.toString());
 		st.getQuestion().setCnClickedCluster("Clicked Cluster");
 		st.getQuestion().getCnPreviousClusters().add("Previous Cluster");
-		st.getQuestion().setUserId("1.2.3.4");
+		st.getQuestion().setUserIdToLog("1.2.3.4");
 	}
 	
 	@Test

@@ -144,7 +144,7 @@ public class SearchController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@Valid SearchQuestion question) {
-				
+
 		SearchTransaction transaction = null;
 		SearchQuestionBinder.bind(request, question, localeResolver);
 		
@@ -161,7 +161,7 @@ public class SearchController {
 		}
 		
 		if (transaction.getError() != null) {
-			// Error occured while processing the transaction, set the
+			// Error occurred while processing the transaction, set the
 			// response status code accordingly
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
