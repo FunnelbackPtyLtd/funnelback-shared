@@ -30,6 +30,10 @@
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
+			<mvc:mapping path="/cache.*" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
 			<mvc:mapping path="/anchors.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>

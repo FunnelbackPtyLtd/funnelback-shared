@@ -68,31 +68,5 @@ public class CacheControllerDisabledTest {
 		Assert.assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
 		Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
 	}
-	
-	@Test
-	public void testCacheDisabledLateBindingDLS() throws Exception {
-		configRepository.getCollection("cache-disabled").getConfiguration().setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "enabled");
-		ModelAndView mav = cacheController.cache(request,
-				response,
-				configRepository.getCollection("cache-disabled"),
-				DefaultValues.PREVIEW_SUFFIX,
-				DefaultValues.DEFAULT_FORM,
-				"unused");
-		Assert.assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-		Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
-	}
-
-	@Test
-	public void testCacheDisabledEarlyBindingDLS() throws Exception {
-		configRepository.getCollection("cache-disabled").getConfiguration().setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "something");
-		ModelAndView mav = cacheController.cache(request,
-				response,
-				configRepository.getCollection("cache-disabled"),
-				DefaultValues.PREVIEW_SUFFIX,
-				DefaultValues.DEFAULT_FORM,
-				"unused");
-		Assert.assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-		Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
-	}
 
 }

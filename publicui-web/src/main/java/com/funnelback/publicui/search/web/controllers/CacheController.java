@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.Xml;
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.RawBytesRecord;
@@ -99,8 +98,9 @@ public class CacheController {
 			@RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
 			@RequestParam(required=true) String url) throws Exception {
 		
-		if (cachedCopiesDisabled(collection.getConfiguration()) || url == null) {
-			// Cache disabled
+		if (url == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		} else if (collection.getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		} else {
 			RecordAndMetadata<? extends Record<?>> rmd = dataRepository.getCachedDocument(collection, View.live, url);
@@ -163,19 +163,6 @@ public class CacheController {
 		}
 		
 		return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, new HashMap<String, Object>());
-	}
-	
-	/**
-	 * Test if cached copies are available or not depending of the
-	 * collection configuration
-	 * @param c
-	 * @return
-	 */
-	private boolean cachedCopiesDisabled(Config c) {
-		return c.valueAsBoolean(Keys.UI_CACHE_DISABLED)
-				|| c.hasValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER)
-				|| ( c.hasValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)
-						&& Config.isTrue(c.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)));
 	}
 	
 	/**
