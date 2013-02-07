@@ -117,6 +117,7 @@ public class CacheController {
 						model.put(RequestParameters.FORM, form);
 						model.put(MODEL_REQUEST_URL, new URL(request.getRequestURL().toString()));
 						model.put(MODEL_METADATA, rmd.metadata);
+						model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
 						
 						String charset = setContentTypeAndCharset(response, rmd.metadata);
 						model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent(),charset)));

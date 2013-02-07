@@ -52,7 +52,7 @@ public class SearchController {
 
 	public enum ModelAttributes {
 		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-		extra, question, response, error;
+		extra, question, response, error, httpRequest;
 		
 		public static Set<String> getNames() {
 			HashSet<String> out = new HashSet<String>();
@@ -204,6 +204,10 @@ public class SearchController {
 				out.put(ModelAttributes.extra.toString(), st.getExtraSearches());
 			}
 			out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
+			
+			if (!ViewTypes.json.equals(vt)) {
+				out.put(ModelAttributes.httpRequest.toString(), request);
+			}
 			break;
 		case xml:
 		case classic:
