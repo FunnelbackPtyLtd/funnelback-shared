@@ -331,9 +331,6 @@ public class SearchQuestion {
 		
 		/** Parameter to specify the locale of the UI only */
 		public static final String LANG_UI = "lang.ui";
-
-		/** Parameter for the auth token used to validate click redirects */
-		public static final String AUTH_TOKEN = "auth";
 		
 		/**
 		 * Common request header names
@@ -370,17 +367,6 @@ public class SearchQuestion {
 		 */
 		public static class Cache {
 			
-			/**
-			 * Used in automated tests, in click tracking, to return directly the content
-			 * of a file instead of redirecting to it.
-			 */
-			public static final String NOATTACHMENT = "noattachment";
-			
-			/**
-			 * Used in click tracking. Target URL to redirect to.
-			 */
-			public static final String INDEX_URL = "index_url";
-			
 			/** URL of the original document */
 			public static final String URL = "url";
 		}
@@ -392,11 +378,30 @@ public class SearchQuestion {
 		 * @since 11.0
 		 */
 		public static class Click {
+			/**
+			 * Target URL to redirect to.
+			 */
 			public static final String URL = "url";
+			
+			
+			/** URL of the target in the index (may be different to the redirect URL). This is the URL that will be logged in clicks.log */
 			public static final String INDEX_URL = "index_url";
+			
+			/** Authorisation token used to prevent spoofed redirects */
 			public static final String AUTH = "auth";
+			
+			/** Search referrer */
 			public static final String SEARCH_REFERER = "search_referer";
+			
+			/** Type of click for logging purposes */
 			public static final String TYPE = "type";
+			
+			/**
+			 * Used in automated tests, in click tracking, to return directly the content
+			 * of a file instead of redirecting to it.
+			 */
+			public static final String NOATTACHMENT = "noattachment";
+			
 			
 			public static final String TYPE_FP = "FP";
 		}

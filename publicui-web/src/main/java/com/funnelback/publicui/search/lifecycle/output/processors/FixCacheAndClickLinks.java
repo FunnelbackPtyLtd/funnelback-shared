@@ -77,7 +77,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 			.append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
 			.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
 			.append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
-			.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(getAuth(r.getLiveUrl(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
+			.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(r.getLiveUrl(),question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
 			.append("&").append(RequestParameters.QUERY).append("=").append(queryExpr);
 		
 		if (question.getProfile() != null) {
@@ -106,7 +106,7 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 		.append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
 		.append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
 		.append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(bb.getLink(), "UTF-8"))
-		.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(getAuth(bb.getLink(), question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
+		.append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(bb.getLink(),question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
 		.append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP);
 
 		if (question.getProfile() != null) {
@@ -114,16 +114,6 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 		}
 	
 		return out.toString();
-	}
-	
-	/**
-	 * Generates an auth String to prevent click URLs forgery.
-	 * @param url
-	 * @param serverSecret
-	 * @return
-	 */
-	private String getAuth(String url, String serverSecret) {
-		return authTokenManager.getToken(url,serverSecret);
 	}
 
 }

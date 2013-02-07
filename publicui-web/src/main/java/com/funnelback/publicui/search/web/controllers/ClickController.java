@@ -58,16 +58,16 @@ public class ClickController {
 			@RequestParam(required=false,defaultValue="CLICK") ClickLog.Type type,
 			Integer rank,
 			@RequestParam(required=false) String profile,
-			@RequestParam(RequestParameters.Cache.INDEX_URL) URI indexUrl,
-			@RequestParam(RequestParameters.AUTH_TOKEN) String authtoken,
-			@RequestParam(value=RequestParameters.Cache.NOATTACHMENT, required=false) String noAttachment) throws IOException {
+			@RequestParam(value=RequestParameters.Click.URL,required=true) URI redirectUrl,
+			@RequestParam(value=RequestParameters.Click.INDEX_URL,required=false) URI indexUrl,
+			@RequestParam(value=RequestParameters.Click.AUTH, required=true) String authtoken,
+			@RequestParam(value=RequestParameters.Click.NOATTACHMENT, required=false) String noAttachment) throws IOException {
 
-		
-		
+		if(indexUrl == null) indexUrl = redirectUrl;
 			
 		if (collection != null) {
 			if(! authTokenManager.checkToken(authtoken, 
-					indexUrl.toString(), 
+					redirectUrl.toString(), 
 					collection.getConfiguration().value(Keys.SERVER_SECRET)
 					)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
