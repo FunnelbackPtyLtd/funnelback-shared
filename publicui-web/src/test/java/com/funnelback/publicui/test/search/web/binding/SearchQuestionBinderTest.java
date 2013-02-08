@@ -1,9 +1,13 @@
 package com.funnelback.publicui.test.search.web.binding;
 
 import java.util.Locale;
+import static org.mockito.Mockito.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -49,4 +53,57 @@ public class SearchQuestionBinderTest {
 		SearchQuestionBinder.bind(new SearchQuestion(), new SearchQuestion());
 	}
 	
+	@Test 
+	public void testGetIpRemoteAddr() {
+		LocaleResolver loc = mock(LocaleResolver.class);
+		SearchQuestion question = new SearchQuestion();
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		when(req.getRemoteAddr()).thenReturn("correct.ip");
+
+		SearchQuestionBinder.bind(req, question, loc);		
+		Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+	}
+	
+	@Test
+	public void testGetIpForwardedFor() {
+		LocaleResolver loc = mock(LocaleResolver.class);
+		SearchQuestion question = new SearchQuestion();
+
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		when(req.getRemoteAddr()).thenReturn("bad.ip");
+		when(req.getHeader("X-Forwarded-For")).thenReturn("correct.ip");
+
+		SearchQuestionBinder.bind(req, question, loc);		
+		Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+
+	}
+	
+	@Test
+	public void testGetIpForwardedForMultiple() {
+		LocaleResolver loc = mock(LocaleResolver.class);
+		SearchQuestion question = new SearchQuestion();
+
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		when(req.getRemoteAddr()).thenReturn("bad.ip");
+		when(req.getHeader("X-Forwarded-For")).thenReturn("correct.ip, bad.ip, bad.ip");
+
+		SearchQuestionBinder.bind(req, question, loc);		
+		Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+
+	}
+
+	@Test
+	public void testGetIpForwardedForMultipleSpaces() {
+		LocaleResolver loc = mock(LocaleResolver.class);
+		SearchQuestion question = new SearchQuestion();
+
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		when(req.getRemoteAddr()).thenReturn("bad.ip");
+		when(req.getHeader("X-Forwarded-For")).thenReturn(" correct.ip ,  bad.ip , bad.ip");
+
+		SearchQuestionBinder.bind(req, question, loc);		
+		Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+
+	}
+
 }

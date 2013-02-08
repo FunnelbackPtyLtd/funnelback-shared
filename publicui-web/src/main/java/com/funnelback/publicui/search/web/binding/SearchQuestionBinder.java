@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -133,14 +134,25 @@ public class SearchQuestionBinder {
 	}
 
 	/**
-	 * Gets the requesting IP for a given search question 
+	 * Gets the requesting IP for a given search question. Currently, this implementation returns 
+	 * the first element in the X-Forwarded-For header (if present), or the value of the REMOTE_ADR header, 
+	 * or null. 
 	 * 
 	 * @since v12.4
 	 * @param question The search question associated with the request
-	 * @return String representation of the request IP
+	 * @return String String representing the request IP
 	 */
 	public static String getRequestIp(SearchQuestion question) {
-		return question.getRawInputParameters().get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString())[0];
+		Map<String, String[]> rawInputParameters = question.getRawInputParameters();
+		String[] xForwardedFor = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString());
+		if(xForwardedFor != null) {
+			String[] ipAddresses = xForwardedFor[0].split(",");
+			return ipAddresses[0].trim();
+		}
+		
+		String[] remoteAddr = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString());
+		if(remoteAddr == null) return null;
+		return remoteAddr[0];
 	}
 	
 }
