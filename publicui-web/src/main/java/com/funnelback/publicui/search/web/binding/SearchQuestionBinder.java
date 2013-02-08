@@ -130,5 +130,16 @@ public class SearchQuestionBinder {
 	private static boolean isRequestImpersonated(HttpServletRequest request) {
 		return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
 	}
+
+	/**
+	 * Gets the requesting IP for a given search question 
+	 * 
+	 * @since v12.4
+	 * @param question The search question associated with the request
+	 * @return String representation of the request IP
+	 */
+	public static String getRequestIp(SearchQuestion question) {
+		return question.getRawInputParameters().get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString())[0];
+	}
 	
 }
