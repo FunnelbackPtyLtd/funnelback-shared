@@ -25,6 +25,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
+import com.maxmind.geoip.Location;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
@@ -256,7 +257,35 @@ public class SearchQuestion {
 	 * @since 12.0
 	 */
 	@Getter @Setter private Locale locale = Locale.getDefault();
-	
+
+    /**
+     * <p>{@link Location} information detected for the remote user based on
+     * information from their request.</p>
+     * 
+     * <p>Properties may include, depending on what can be determined:</p>
+     * 
+     * <ul>
+     *     <li>area__code</li>
+     *     <li>city</li>
+     *     <li>countryCode</li>
+     *     <li>countryName</li>
+     *     <li>dma__code</li>
+     *     <li>latitude</li>
+     *     <li>longitude</li>
+     *     <li>metro__code</li>
+     *     <li>postalCode</li>
+     *     <li>region</li>
+     * </ul>
+     * 
+     * <p>See also: <a href="http://www.jarvana.com/jarvana/view/org/dspace/dependencies/dspace-geoip/1.2.3/dspace-geoip-1.2.3-javadoc.jar!/com/maxmind/geoip/Location.html">
+     * MaxMind Location class Javadoc</a></p>
+     * 
+     * @since 12.4
+     */
+    @Getter
+    @Setter
+    private Location location;
+
 	/**
 	 * <p>Principal representing the remote user for the current request.</p>
 	 * 

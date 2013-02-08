@@ -8,6 +8,7 @@
 		<ref bean="passThroughParametersInputProcessor" />
 		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
 		<ref bean="localeOverrideInputProcessor" />
+		<ref bean="geolocationInputProcessor" />
 		<bean id="preProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
