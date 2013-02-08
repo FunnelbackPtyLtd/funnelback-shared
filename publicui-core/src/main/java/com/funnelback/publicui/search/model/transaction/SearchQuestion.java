@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +17,13 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -187,13 +188,13 @@ public class SearchQuestion {
 	@Getter @Setter private String userIdToLog = Log.USERID_NOTHING;
 	
 	/**
-	 * <p>Unique identifier for the search user.</p>
+	 * <p>User performing the search.</p>
 	 * 
 	 * <p>Will be the same across multiple searches for a given user.</p>
 	 * 
 	 * @since v12.4
 	 */
-	@Getter @Setter private String userUniqueId;
+	@Getter @Setter private SearchUser searchUser;
 
 	/**
 	 * <p>Raw input parameters</p>

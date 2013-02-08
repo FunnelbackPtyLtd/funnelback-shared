@@ -27,6 +27,10 @@
 	<bean id="searchHome" class="java.io.File">
 		<constructor-arg index="0" type="java.lang.String" value="#{ systemProperties['funnelback.installdir'] }" />
 	</bean>
+	
+	<bean id="globalFunnelbackConfig" class="com.funnelback.common.config.GlobalOnlyConfig">
+		<constructor-arg ref="searchHome"></constructor-arg>
+	</bean>
 
 	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg index="0" type="java.net.URL"
@@ -52,8 +56,35 @@
 			<bean class="com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnectionFactory" />
 		</constructor-arg>
 	</bean>
-	
 
+	<!-- Redis setup to store search history -->
+	
+	<bean id="defaultRedisSerializer" class="org.springframework.data.redis.serializer.JacksonJsonRedisSerializer">
+		<constructor-arg value="#{T(com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory)}" />
+	</bean>
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	
+	<bean id="jedisReadConnectionFactory"
+	 	class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+	 	p:password="#{T(com.funnelback.common.Security).generateSystemPassword(T(com.funnelback.common.Security$System).REDIS, globalFunnelbackConfig.value('server_secret'))}"
+	 	p:host-name="localhost"
+	 	p:port="#{new Integer(globalFunnelbackConfig.value('redis.slave.port'))}" />
+	<bean id="redisReadTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+	 	p:connection-factory-ref="jedisReadConnectionFactory"
+	 	p:default-serializer-ref="defaultRedisSerializer"
+	 	p:key-serializer-ref="stringRedisSerializer" />
+	
+	<bean id="jedisWriteConnectionFactory"
+	 	class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+	 	p:password="#{T(com.funnelback.common.Security).generateSystemPassword(T(com.funnelback.common.Security$System).REDIS, globalFunnelbackConfig.value('server_secret'))}"
+	 	p:host-name="#{globalFunnelbackConfig.value('redis.master.host')}"
+		p:port="#{new Integer(globalFunnelbackConfig.value('redis.master.port'))}" />
+	<bean id="redisWriteTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+	 	p:connection-factory-ref="jedisWriteConnectionFactory"
+	 	p:default-serializer-ref="defaultRedisSerializer"
+	 	p:key-serializer-ref="stringRedisSerializer" />
+	
+	<!-- End Redis setup -->
 
 	
 </beans>

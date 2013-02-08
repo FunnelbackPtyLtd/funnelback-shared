@@ -13,9 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.log.LogService;
-import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.utils.web.ModelUtils;
 
 public class SearchLogInterceptor implements HandlerInterceptor {
 	
@@ -30,33 +29,19 @@ public class SearchLogInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		if (modelAndView != null) {
-			SearchQuestion q = null;
-			Object o = modelAndView.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
+		SearchQuestion q = ModelUtils.getSearchQuestion(modelAndView);
 			
-			if (o != null && o instanceof SearchTransaction) {
-				SearchTransaction t = (SearchTransaction) o;
-				q = t.getQuestion();
-			} else {
-				// Try directly with the question
-				o = modelAndView.getModel().get(SearchController.ModelAttributes.question.toString());
-				if ( o != null && o instanceof SearchQuestion) {
-					q = (SearchQuestion) o;
-				}
-			}
+		if (q != null && q.getCnClickedCluster() != null && q.getCollection() != null) {
 			
-			if (q != null && q.getCnClickedCluster() != null && q.getCollection() != null) {
+			ContextualNavigationLog cnl = new ContextualNavigationLog(
+					new Date(),
+					q.getCollection(),
+					q.getCollection().getProfiles().get(q.getProfile()),
+					q.getUserIdToLog(),
+					q.getCnClickedCluster(),
+					q.getCnPreviousClusters());
 				
-				ContextualNavigationLog cnl = new ContextualNavigationLog(
-						new Date(),
-						q.getCollection(),
-						q.getCollection().getProfiles().get(q.getProfile()),
-						q.getUserIdToLog(),
-						q.getCnClickedCluster(),
-						q.getCnPreviousClusters());
-				
-				logService.logContextualNavigation(cnl);
-			}
+			logService.logContextualNavigation(cnl);
 		}
 	}
 

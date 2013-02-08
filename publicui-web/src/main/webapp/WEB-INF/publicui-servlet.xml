@@ -27,11 +27,15 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.SearchHistoryInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/search.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.UserUniqueIdInterceptor" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.SessionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/cache.*" />
