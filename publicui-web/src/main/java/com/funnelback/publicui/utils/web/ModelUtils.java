@@ -23,7 +23,7 @@ public class ModelUtils {
 		SearchTransaction st = getSearchTransaction(mav);
 		if (st != null) {
 			return st.getQuestion();
-		} else {
+		} else if (mav != null) {
 			Object o = mav.getModel().get(SearchController.ModelAttributes.question.toString());
 			if (o != null && o instanceof SearchQuestion) {
 				return (SearchQuestion) o;
@@ -41,7 +41,7 @@ public class ModelUtils {
 		SearchTransaction st = getSearchTransaction(mav);
 		if (st != null) {
 			return st.getResponse();
-		} else {
+		} else if (mav != null) {
 			Object o = mav.getModel().get(SearchController.ModelAttributes.response.toString());
 			if (o != null && o instanceof SearchResponse) {
 				return (SearchResponse) o;

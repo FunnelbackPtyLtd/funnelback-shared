@@ -11,6 +11,7 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 
 public class SearchQuestionBinderTest {
@@ -25,7 +26,7 @@ public class SearchQuestionBinderTest {
 		from.setProfile("profile");
 		from.setImpersonated(true);
 		from.setUserIdToLog("user-id");
-		from.setUserUniqueId("unique-id");
+		from.setSearchUser(new SearchUser("user-id"));
 		from.setLocale(Locale.JAPANESE);
 		from.setCnClickedCluster("cluster");
 		from.getCnPreviousClusters().add("previous-clusters");
@@ -41,7 +42,7 @@ public class SearchQuestionBinderTest {
 		Assert.assertEquals("profile", to.getProfile());
 		Assert.assertEquals(true, to.isImpersonated());
 		Assert.assertEquals("user-id", to.getUserIdToLog());
-		Assert.assertEquals("unique-id", to.getUserUniqueId());
+		Assert.assertEquals("user-id", to.getSearchUser().getId());
 		Assert.assertEquals(Locale.JAPANESE, to.getLocale());
 		Assert.assertEquals("cluster", to.getCnClickedCluster());
 		Assert.assertEquals("previous-clusters", to.getCnPreviousClusters().get(0));
