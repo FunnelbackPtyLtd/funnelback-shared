@@ -146,6 +146,8 @@ public class SearchQuestionBinder {
 		Map<String, String[]> rawInputParameters = question.getRawInputParameters();
 		String[] xForwardedFor = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString());
 		if(xForwardedFor != null) {
+			// The general format for these is "X-Forwarded-For: client, proxy1, proxy2"
+			// So we need to extract the first element, if there are commas.
 			String[] ipAddresses = xForwardedFor[0].split(",");
 			return ipAddresses[0].trim();
 		}
