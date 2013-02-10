@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -24,8 +25,6 @@ import com.maxmind.geoip.Location;
 @Component("geolocationInputProcessor")
 public class Geolocation implements InputProcessor {
 
-    private final static String GEOLOCATION_ENABLED_CONFIG_KEY = "ui.modern.geolocation.enabled";
-
     @Autowired
     Geolocator geolocator;
 
@@ -35,7 +34,7 @@ public class Geolocation implements InputProcessor {
         if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
             if (searchTransaction.getQuestion().getCollection()
                     .getConfiguration()
-                    .valueAsBoolean(GEOLOCATION_ENABLED_CONFIG_KEY)) {
+                    .valueAsBoolean(Keys.ModernUI.GEOLOCATION_ENABLED)) {
                 Location location = geolocator.geolocate(searchTransaction
                         .getQuestion());
                 searchTransaction.getQuestion().setLocation(location);

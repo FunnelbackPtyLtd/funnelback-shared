@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -21,8 +22,6 @@ import com.maxmind.geoip.LookupService;
 @Log4j
 @Component
 public class DefaultGeolocator implements Geolocator {
-
-    private static final String GEOLOCATION_DATABASE_KEY = "geolocation.maxmind.database";
 
     @Autowired
     private ConfigRepository configRepository;
@@ -56,7 +55,7 @@ public class DefaultGeolocator implements Geolocator {
     private void updateLookupServiceIfRequired() {
         try {
             String newLookupServiceDatabase = configRepository
-                    .getGlobalConfiguration().value(GEOLOCATION_DATABASE_KEY);
+                    .getGlobalConfiguration().value(Keys.GEOLOCATION_DATABASE_KEY);
             if (!lookupServiceDatabase.equals(newLookupServiceDatabase)) {
                 // Recreate the lookup service
 
