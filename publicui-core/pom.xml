@@ -137,7 +137,6 @@
 		<dependency>
 			<groupId>com.maxmind</groupId>
 			<artifactId>geoip</artifactId>
-			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>
