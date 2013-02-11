@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.model.transaction.usertracking;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +16,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SearchUser {
+public class SearchUser implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	/** Unique identifier of the user */
 	@Getter @Setter private String id;
 	
