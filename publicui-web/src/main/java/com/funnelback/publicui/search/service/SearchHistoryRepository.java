@@ -18,7 +18,7 @@ public interface SearchHistoryRepository {
 	 * @param u
 	 * @param h
 	 */
-	public void save(SearchUser u, SearchHistory h, Collection c);
+	public void saveHistory(SearchUser u, SearchHistory h, Collection c);
 	
 	/**
 	 * @param u
@@ -26,6 +26,13 @@ public interface SearchHistoryRepository {
 	 * @return Latest <code>maxEntries</code> entries from the user
 	 * search history
 	 */
-	public List<SearchHistory> get(SearchUser u, Collection c, int maxEntries);
+	public List<SearchHistory> getHistory(SearchUser u, Collection c, int maxEntries);
+	
+	/**
+	 * Delete all entries for the given user on the given collection
+	 * @param user
+	 * @param collection
+	 */
+	public void clearHistory(SearchUser user, Collection collection);
 
 }

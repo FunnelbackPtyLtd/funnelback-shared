@@ -27,6 +27,7 @@
     
     <properties>
     	<m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
+    	<install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
     </properties>
 
     <dependencies>

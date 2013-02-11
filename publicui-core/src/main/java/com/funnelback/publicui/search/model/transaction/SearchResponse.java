@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
@@ -83,7 +84,13 @@ public class SearchResponse {
 	 * @since 12.4
 	 */
 	@Getter final private List<SearchHistory> searchHistory = new ArrayList<>();
-
+	
+	/**
+	 * Results cart of the user for the current collection
+	 * 
+	 * @since 12.4
+	 */
+	@Getter final private Map<String, Result> resultsCart = new HashMap<String, Result>();
 	
 	/**
 	 * @return true if the {@link #resultPacket} is not null.

@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 public class SessionInterceptor implements HandlerInterceptor {
 
-	public static final String SEARCH_USER_ATTRIBUTE = SearchUser.class.getName();
+	public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.usertracking.SearchUser";
 	
 	@Autowired
 	private ConfigRepository configRepository;

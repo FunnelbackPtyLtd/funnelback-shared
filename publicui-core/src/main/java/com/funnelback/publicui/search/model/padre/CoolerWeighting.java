@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.padre;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CoolerWeighting {
+	
+	/** Separator between the id and the name */
+	private final static String SEP = ":";
 
 	/** Short name, e.g. <em>offlink</em> */
 	@Getter @Setter private String name;
@@ -61,10 +66,25 @@ public class CoolerWeighting {
 			return getId();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return id+":"+name;
+		// Be aware that this String representation will be used by
+		// the JSON serializer when a CoolerWeighting is used as a Map key.
+		// See also fromJSON() below to adapt if you change the format
+		return id+SEP+name;
+	}
+	
+	/**
+	 * Used to deserialize a {@link CoolerWeighting} from a JSON value,
+	 * as represented by {@link #toString()}.
+	 * @param json JSON representation of a {@link CoolerWeighting}
+	 * @return The deserialized {@link CoolerWeighting}
+	 */
+	@JsonCreator
+	public static CoolerWeighting fromJSON(String json) {
+		String[] kv = json.split(SEP);
+		return new CoolerWeighting(kv[1], Integer.parseInt(kv[0]));
 	}
 	
 }

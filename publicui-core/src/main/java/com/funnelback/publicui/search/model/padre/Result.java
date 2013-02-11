@@ -159,7 +159,7 @@ public class Result implements ResultType {
 	/**
 	 * Original URL from the index, taken from indexUrl before any transformation.
 	 */
-	@Getter private String indexUrl;
+	@Getter @Setter private String indexUrl;
 
 	/**
 	 * Custom data placeholder allowing any arbitrary data to be
