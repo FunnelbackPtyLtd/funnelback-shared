@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.usertracking;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
 
 /**
@@ -14,8 +15,8 @@ public class RedisNamespace {
 	 * @param u
 	 * @return The key to access this user search history
 	 */
-	public static String searchHistoryForUser(SearchUser u) {
-		return USER_TRACKING_NAMESPACE+":"+SEARCH_HISTORY_NAMESPACE+":"+u.getId();
+	public static String searchHistoryForUser(Collection c, SearchUser u) {
+		return USER_TRACKING_NAMESPACE+":"+SEARCH_HISTORY_NAMESPACE+":"+c.getId()+":"+u.getId();
 	}
 
 }

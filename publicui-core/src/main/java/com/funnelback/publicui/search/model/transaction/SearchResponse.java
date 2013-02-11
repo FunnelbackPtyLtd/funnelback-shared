@@ -14,6 +14,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
@@ -75,6 +76,14 @@ public class SearchResponse {
 	@XStreamOmitField
 	@Getter
 	private final Map<String, String> translations = new HashMap<String, String>();
+	
+	/**
+	 * Search history of the user for the current collection.
+	 * 
+	 * @since 12.4
+	 */
+	@Getter final private List<SearchHistory> searchHistory = new ArrayList<>();
+
 	
 	/**
 	 * @return true if the {@link #resultPacket} is not null.

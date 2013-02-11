@@ -67,6 +67,12 @@ public class SearchQuestionBinder {
 		MapUtils.putAsStringArrayIfNotNull(
 				question.getRawInputParameters(),
 				PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
+		if (request.getRequestURL() != null) {
+			question.getRawInputParameters()
+					.put(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString(),
+							new String[] { request.getRequestURL().toString()
+									+ ((request.getQueryString() != null) ? "?"	+ request.getQueryString() : "") });
+		}
 		
 		// Originating IP address (prior to forwarding)
 		MapUtils.putAsStringArrayIfNotNull(
@@ -90,7 +96,7 @@ public class SearchQuestionBinder {
 		}
 		
 		// Unique user identifier
-		if (request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
+		if (request.getSession() != null && request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
 			question.setSearchUser(((SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE))); 
 		}
 		

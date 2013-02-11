@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.service;
 
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
 
@@ -17,7 +18,7 @@ public interface SearchHistoryRepository {
 	 * @param u
 	 * @param h
 	 */
-	public void save(SearchUser u, SearchHistory h);
+	public void save(SearchUser u, SearchHistory h, Collection c);
 	
 	/**
 	 * @param u
@@ -25,6 +26,6 @@ public interface SearchHistoryRepository {
 	 * @return Latest <code>maxEntries</code> entries from the user
 	 * search history
 	 */
-	public List<SearchHistory> get(SearchUser u, int maxEntries);
+	public List<SearchHistory> get(SearchUser u, Collection c, int maxEntries);
 
 }

@@ -14,7 +14,7 @@ import com.funnelback.publicui.utils.MapUtils;
 
 /**
  * Will collect some environment variables from the request that will
- * be repassed as environment variables to PADRE.
+ * be passed-trough as environment variables to PADRE.
  */
 @Component("passThroughEnvironmentVariabesInputProcessor")
 @Log4j
@@ -24,7 +24,7 @@ public class PassThroughEnvironmentVariables implements InputProcessor {
 	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
 	// SITE_SEARCH_ROOT: Used for Matrix OEM
 	public enum Keys {
-		REMOTE_ADDR, REQUEST_URI, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
+		REMOTE_ADDR, REQUEST_URI, REQUEST_URL, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
 	}
 
 
