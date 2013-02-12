@@ -1,9 +1,12 @@
 package com.funnelback.publicui.search.service.location;
 
+import java.io.File;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,9 +63,16 @@ public class DefaultGeolocator implements Geolocator {
                 // Recreate the lookup service
 
                 lookupServiceDatabase = newLookupServiceDatabase;
+                
+                StopWatch s = new StopWatch();
+                s.start();
+                
                 lookupService = new LookupService(lookupServiceDatabase,
                         LookupService.GEOIP_MEMORY_CACHE
                                 | LookupService.GEOIP_CHECK_CACHE);
+                
+                s.stop();
+                log.debug("LookupService recreated. Took " + s);
             }
         } catch (IOException e) {
             log.error("Error while trying to create lookupService for "
