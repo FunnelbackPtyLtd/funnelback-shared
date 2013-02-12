@@ -1,17 +1,14 @@
 package com.funnelback.publicui.search.service.location;
 
-import java.io.File;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
@@ -42,6 +39,11 @@ public class DefaultGeolocator implements Geolocator {
 
         if (lookupService != null) {
             String remoteIpAddress = SearchQuestionBinder.getRequestIp(question);
+            
+            // TODO - FUN-5392 - Just for testing - remove this before shipping.
+            if (question.getAdditionalParameters().containsKey("IP_test")) {
+                remoteIpAddress = question.getAdditionalParameters().get("IP_test")[0];
+            }
 
             Location result = lookupService.getLocation(remoteIpAddress);
             if (result != null) {
