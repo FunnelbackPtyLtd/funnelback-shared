@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service.usertracking;
+package com.funnelback.publicui.search.service.session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,8 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.utils.RedisNamespace;
 
@@ -43,8 +43,8 @@ public class RedisSearchHistoryRepository implements SearchHistoryRepository, Ap
 		try {
 			writeListOps.leftPush(key, h);
 			writeListOps.trim(key, 0,
-					c.getConfiguration().valueAsInt(Keys.ModernUI.UserTracking.SEARCH_HISTORY_SIZE,
-							DefaultValues.ModernUI.UserTracking.SEARCH_HISTORY_SIZE) -1 );
+					c.getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
+							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE) -1 );
 		} catch (DataAccessException dae) {
 			log.error("Couldn't store user search history of user '"+u.getId()+"' on collection '"+c.getId()+"'", dae);
 		}

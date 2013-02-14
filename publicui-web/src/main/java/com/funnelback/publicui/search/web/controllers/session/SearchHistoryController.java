@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.usertracking;
+package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  */
 @Controller
 @SessionAttributes(SessionInterceptor.SEARCH_USER_ATTRIBUTE)
-public class SearchHistoryController extends UserTrackingController {
+public class SearchHistoryController extends SessionControllerBase {
 	
 	@Autowired
 	private ConfigRepository configRepository;

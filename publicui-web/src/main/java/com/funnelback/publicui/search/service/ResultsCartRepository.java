@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * Interacts with the user search results cart.

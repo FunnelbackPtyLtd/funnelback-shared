@@ -14,7 +14,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 /**
@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 public class SessionInterceptor implements HandlerInterceptor {
 
-	public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.usertracking.SearchUser";
+	public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.session.SearchUser";
 	
 	@Autowired
 	private ConfigRepository configRepository;
@@ -39,7 +39,7 @@ public class SessionInterceptor implements HandlerInterceptor {
 		
 		if (request.getParameter(RequestParameters.COLLECTION) != null) {
 			Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-			if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.USER_TRACKING, DefaultValues.ModernUI.USER_TRACKING)) {
+			if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
 				HttpSession session = request.getSession();
 				
 				if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {

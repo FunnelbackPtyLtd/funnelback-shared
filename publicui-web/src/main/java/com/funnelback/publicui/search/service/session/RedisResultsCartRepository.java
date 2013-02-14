@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.service.usertracking;
+package com.funnelback.publicui.search.service.session;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.utils.RedisNamespace;
 

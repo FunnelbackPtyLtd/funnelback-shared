@@ -15,7 +15,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
+import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**

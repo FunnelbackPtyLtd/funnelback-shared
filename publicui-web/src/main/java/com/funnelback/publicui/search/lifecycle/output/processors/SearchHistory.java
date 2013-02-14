@@ -46,7 +46,7 @@ public class SearchHistory implements OutputProcessor {
 
 			// Save current search
 			if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {
-				com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory h = new com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory();
+				com.funnelback.publicui.search.model.transaction.session.SearchHistory h = new com.funnelback.publicui.search.model.transaction.session.SearchHistory();
 				h.setCurrStart(r.getResultPacket().getResultsSummary().getCurrStart());
 				h.setNumRanks(r.getResultPacket().getResultsSummary().getNumRanks());
 				h.setOriginalQuery(q.getOriginalQuery());
@@ -66,8 +66,8 @@ public class SearchHistory implements OutputProcessor {
 			// Retrieve previous history
 			r.getSearchHistory().addAll(repository.getHistory(q.getSearchUser(),
 					q.getCollection(), 
-					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.UserTracking.SEARCH_HISTORY_SIZE,
-							DefaultValues.ModernUI.UserTracking.SEARCH_HISTORY_SIZE)));
+					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
+							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
 		}
 
 	}

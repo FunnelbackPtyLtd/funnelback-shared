@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.web.controllers.usertracking;
+package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
- * Base class for user tracking controllers
+ * Base class for session related controllers
  * 
  * @since 12.4
  */
 @Log4j
-public class UserTrackingController {
+public class SessionControllerBase {
 
 	protected final static String STATUS = "status";
 	protected final static String ERROR_MESSAGE = "error-message";

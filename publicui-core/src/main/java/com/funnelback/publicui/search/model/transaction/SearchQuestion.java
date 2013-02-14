@@ -23,7 +23,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.maxmind.geoip.Location;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;

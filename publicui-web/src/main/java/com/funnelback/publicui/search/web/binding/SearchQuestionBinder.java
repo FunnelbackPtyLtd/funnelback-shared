@@ -14,7 +14,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 import com.funnelback.publicui.utils.MapKeyFilter;

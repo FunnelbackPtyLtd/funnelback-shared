@@ -3,8 +3,8 @@ package com.funnelback.publicui.search.service;
 import java.util.List;
 
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchHistory;
-import com.funnelback.publicui.search.model.transaction.usertracking.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * Interacts with search user search history

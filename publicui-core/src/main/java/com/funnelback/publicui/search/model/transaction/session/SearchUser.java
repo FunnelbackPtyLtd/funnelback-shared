@@ -1,4 +1,4 @@
-package com.funnelback.publicui.search.model.transaction.usertracking;
+package com.funnelback.publicui.search.model.transaction.session;
 
 import java.io.Serializable;
 
