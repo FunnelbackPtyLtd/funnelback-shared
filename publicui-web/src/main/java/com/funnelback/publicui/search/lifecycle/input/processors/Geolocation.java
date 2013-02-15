@@ -13,6 +13,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.location.Geolocator;
 import com.maxmind.geoip.Location;
 
@@ -53,7 +54,7 @@ public class Geolocation implements InputProcessor {
                 if (config.valueAsBoolean(Keys.ModernUI.GEOLOCATION_SET_ORIGIN)
                         && !params.containsKey("origin")) {
                     // Set the origin only if it is not already set by CGI
-                    params.put("origin", new String[] { location.latitude + ","
+                    params.put(RequestParameters.ORIGIN, new String[] { location.latitude + ","
                             + location.longitude });
                 }
                 

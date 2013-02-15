@@ -372,7 +372,10 @@ public class SearchQuestion {
 		
 		/** Parameter to specify the locale of the UI only */
 		public static final String LANG_UI = "lang.ui";
-		
+
+	    /** Parameter specifying the origin point for the search request */
+        public static final String ORIGIN = "origin";
+
 		/**
 		 * Common request header names
 		 * 
