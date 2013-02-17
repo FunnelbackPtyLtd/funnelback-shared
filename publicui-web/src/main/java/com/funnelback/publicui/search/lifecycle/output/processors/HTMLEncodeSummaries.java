@@ -14,7 +14,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * can contain decoded HTML entities (See FUN-3530).</p>
  * 
  * <p>Only encode specific unsafe characters that could generate
- * invalid HTML. Other entities (accented letters, etc.)</p>
+ * invalid HTML. Other entities (accented letters, etc.) are left
+ * as is.</p>
  */
 @Component("htmlEncodeSummaries")
 public class HTMLEncodeSummaries implements OutputProcessor {
