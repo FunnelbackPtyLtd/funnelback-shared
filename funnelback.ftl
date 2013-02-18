@@ -601,7 +601,11 @@
 
             <ul>
                 <#list response.clickHistory as h>
-                    <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.indexUrl}">${h.indexUrl}</a></li>
+                    <li<#if h_index &gt;= max> class="fb-more" </#if>>
+                        <a href="${h.indexUrl}">${h.title}</a>
+                        <p>${h.summary}</p>
+                        <cite><@s.cut cut="http://"><@s.TruncateURL length=75>${h.indexUrl}</@s.TruncateURL></@s.cut></cite>
+                    </li>
                 </#list>
             </ul>
         </div>
