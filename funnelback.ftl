@@ -551,3 +551,74 @@
         <a class="fb-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">${label}</a>
     </@AdminUIOnly>
 </#macro>
+
+<#--- @begin Session -->
+<#---
+    Generates a "save" link to save the current result in the results cart
+    or a "remove" link if the result is already in the cart
+-->
+<#macro ResultCart>
+    <#if question?? && question.searchUser??
+        && response?? && response.resultsCart??>
+        <a class="fb-result-cart" data-incart="<#if response.resultsCart[s.result.indexUrl]??>true<#else>false</#if>" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
+    </#if>
+</#macro>
+
+<#---
+    Displays the user search history and clear history links.
+
+    @param lastQueryLabel Label to use for "last queries" text.
+    @param clearLabel Label to use for the "clear history" link.
+    @param resultsLabel Label to use for the number of "results".
+    @param max Max number of entries to show.
+-->
+<#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5>
+    <#if response.searchHistory?size &gt; 0>
+        <div id="fb-search-history">
+            <h4>${lastQueriesLabel} (<a class="clear" href="search-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
+
+            <ul>
+                <#list response.searchHistory as h>
+                    <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.searchUrl}">${h.originalQuery}</a> (${h.totalMatching} ${resultsLabel}) ${h.searchDate?datetime?string}</li> 
+                </#list>
+            </ul>
+        </div>
+    </#if>
+
+</#macro>
+
+<#---
+    Displays the user click history and clear click history links.
+
+    @param lastQueryLabel Label to use for "last results clicked" text.
+    @param clearLabel Label to use for the "clear history" link.
+    @param max Max number of entries to show.
+-->
+<#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5>
+    <#if response.clickHistory?size &gt; 0>
+        <div id="fb-click-history">
+            <h4>${lastClicksLabel} (<a class="clear" href="click-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
+
+            <ul>
+                <#list response.clickHistory as h>
+                    <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.indexUrl}">${h.indexUrl}</a></li>
+                </#list>
+            </ul>
+        </div>
+    </#if>
+</#macro>
+
+<#---
+    Displays the list of saved search results.
+
+    @param savedResultsLabel to use for "saved results".
+    @param clearLabel Label to use for the "clear cart" link.
+-->
+<#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear">
+    <div id="fb-results-cart" style="display: none;">
+        <h4>${savedResultsLabel} (<a class="clear" href="cart-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
+
+        <ul></ul>
+    </div>
+</#macro>
+<#--- @end Session -->
