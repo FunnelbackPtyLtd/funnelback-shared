@@ -3,14 +3,13 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
@@ -70,8 +69,8 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 	 * @return
 	 */
 	@SneakyThrows(UnsupportedEncodingException.class)
-	private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, Result r) {
-		StringBuffer out = new StringBuffer()
+	private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
+		final StringBuffer out = new StringBuffer()
 			.append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
 			.append("rank=").append(r.getRank().toString())
 			.append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
@@ -89,6 +88,18 @@ public class FixCacheAndClickLinks implements OutputProcessor {
 				.append(RequestParameters.Click.SEARCH_REFERER)
 				.append("=")
 				.append(URLEncoder.encode(MapUtils.getFirstString(question.getRawInputParameters(), PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString(), null), "UTF-8"));
+		}
+		
+		if (question.getCollection().getConfiguration().valueAsBoolean(
+				Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
+			// Add parameters to build a Result object that will be saved in the
+			// user click history. Only add fields we need.
+			out.append("&").append(RequestParameters.Click.Result.INDEX_URL)
+				.append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
+				.append("&").append(RequestParameters.Click.Result.TITLE)
+				.append("=").append(URLEncoder.encode(r.getTitle(), "UTF-8"))
+				.append("&").append(RequestParameters.Click.Result.SUMMARY)
+				.append("=").append(URLEncoder.encode(r.getSummary(), "UTF-8"));
 		}
 		
 		return out.toString();

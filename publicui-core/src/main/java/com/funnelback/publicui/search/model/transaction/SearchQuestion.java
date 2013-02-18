@@ -448,6 +448,23 @@ public class SearchQuestion {
 			
 			
 			public static final String TYPE_FP = "FP";
+			
+			/**
+			 * Parameter names matching the field names of the
+			 * {@link Result} class
+			 * 
+			 * @since 12.4
+			 */
+			public static class Result {
+				/** URL of the result in the index */
+				public static final String INDEX_URL = "indexUrl";
+				
+				/** Title of the result */
+				public static final String TITLE = "title";
+				
+				/** Summary of the result */
+				public static final String SUMMARY = "summary";
+			}
 		}
 
 		/**
