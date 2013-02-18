@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -23,17 +23,22 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
+import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 
 /**
  * Click tracking controller
  */
 @Log4j
+@Controller
 public class ClickController {
 
 	@Autowired
@@ -44,6 +49,9 @@ public class ClickController {
 	
 	@Autowired
 	private ConfigRepository configRepository;
+	
+	@Autowired
+	private SearchHistoryRepository searchHistoryRepository;
 	
 	@InitBinder
 	public void initBinder(DataBinder binder) {
@@ -85,7 +93,18 @@ public class ClickController {
 				}
 			}
 			
-			logService.logClick(new ClickLog(new Date(), collection, collection.getProfiles().get(profile), userId, referer, rank, indexUrl, type));
+			// TODO: Clean up how to get the user properly
+			if (request.getSession() != null && request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
+				// FIXME: Populate other fields ? At least summary, displayUrl
+				Result r = new Result();
+				r.setIndexUrl(indexUrl.toString());
+				searchHistoryRepository.saveClick(
+						(SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE), 
+						r, collection);
+			}
+			
+			// FIXME: Not yet implemented
+			// logService.logClick(new ClickLog(new Date(), collection, collection.getProfiles().get(profile), userId, referer, rank, indexUrl, type));
 			
 			response.sendRedirect(indexUrl.toString());
 		} else {

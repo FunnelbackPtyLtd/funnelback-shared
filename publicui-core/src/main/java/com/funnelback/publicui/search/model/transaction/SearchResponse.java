@@ -86,6 +86,13 @@ public class SearchResponse {
 	@Getter final private List<SearchHistory> searchHistory = new ArrayList<>();
 	
 	/**
+	 * Click history of the user for the current collection.
+	 * 
+	 * @since 12.4
+	 */
+	@Getter final private List<Result> clickHistory = new ArrayList<>();
+	
+	/**
 	 * Results cart of the user for the current collection
 	 * 
 	 * @since 12.4

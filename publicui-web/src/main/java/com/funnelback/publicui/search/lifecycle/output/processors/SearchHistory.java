@@ -60,14 +60,20 @@ public class SearchHistory implements OutputProcessor {
 					log.warn("Couldn't parse search URL", mue);
 				}
 				
-				repository.saveHistory(q.getSearchUser(), h, q.getCollection());
+				repository.saveSearch(q.getSearchUser(), h, q.getCollection());
 			}
 
 			// Retrieve previous history
-			r.getSearchHistory().addAll(repository.getHistory(q.getSearchUser(),
+			r.getSearchHistory().addAll(repository.getSearchHistory(q.getSearchUser(),
 					q.getCollection(), 
 					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
 							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+			
+			r.getClickHistory().addAll(repository.getClickHistory(q.getSearchUser(),
+					q.getCollection(),
+					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
+							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+
 		}
 
 	}

@@ -40,15 +40,30 @@ public class SearchHistoryController extends SessionControllerBase {
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/history-clear.json")
-	public void historyClear(
+	@RequestMapping(value="/search-history-clear.json")
+	public void searchHistoryClear(
 			@RequestParam("collection") String collectionId,
 			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
 			HttpServletResponse response) throws IOException {
 
 		Collection c = configRepository.getCollection(collectionId);
 		if (c != null) {
-			historyRepository.clearHistory(user, c);
+			historyRepository.clearSearchHistory(user, c);
+			sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
+		} else {
+			sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
+		}
+	}
+	
+	@RequestMapping(value="/click-history-clear.json")
+	public void clickHistoryClear(
+			@RequestParam("collection") String collectionId,
+			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+			HttpServletResponse response) throws IOException {
+
+		Collection c = configRepository.getCollection(collectionId);
+		if (c != null) {
+			historyRepository.clearClickHistory(user, c);
 			sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
 		} else {
 			sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
