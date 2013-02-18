@@ -36,7 +36,7 @@ public class ResultsCartController extends SessionControllerBase {
 	@Autowired
 	private ResultsCartRepository cartRepository;
 
-	@RequestMapping(value="/cart-list.html")
+	@RequestMapping(value="/cart-list.json")
 	public void cartList(
 			@RequestParam("collection") String collectionId,
 			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
@@ -66,7 +66,7 @@ public class ResultsCartController extends SessionControllerBase {
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/cart-add.html")
+	@RequestMapping(value="/cart-add.json")
 	public void cartAdd(
 			Result result,
 			String query,
@@ -92,7 +92,7 @@ public class ResultsCartController extends SessionControllerBase {
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/cart-remove.html")
+	@RequestMapping(value="/cart-remove.json")
 	public void cartRemove(
 			@RequestParam("collection") String collectionId,
 			String url,
@@ -115,7 +115,7 @@ public class ResultsCartController extends SessionControllerBase {
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/cart-clear.html")
+	@RequestMapping(value="/cart-clear.json")
 	public void cartClear(
 			@RequestParam("collection") String collectionId,
 			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,

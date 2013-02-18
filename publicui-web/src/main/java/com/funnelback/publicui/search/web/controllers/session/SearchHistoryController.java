@@ -40,7 +40,7 @@ public class SearchHistoryController extends SessionControllerBase {
 	 * @param response
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/history-clear.html")
+	@RequestMapping(value="/history-clear.json")
 	public void historyClear(
 			@RequestParam("collection") String collectionId,
 			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,

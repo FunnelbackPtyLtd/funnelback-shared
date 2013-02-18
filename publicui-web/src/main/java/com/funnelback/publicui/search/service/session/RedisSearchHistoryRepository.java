@@ -62,7 +62,11 @@ public class RedisSearchHistoryRepository implements SearchHistoryRepository, Ap
 	
 	@Override
 	public void clearHistory(SearchUser user, Collection collection) {
-		writeListOps.getOperations().delete(RedisNamespace.searchHistoryForUser(collection, user));		
+		try {
+			writeListOps.getOperations().delete(RedisNamespace.searchHistoryForUser(collection, user));
+		} catch (DataAccessException dae) {
+			log.error("Couldn't clear search history for user " + user + " on collection '"+collection.getId()+"'", dae);
+		}
 	}
 
 	/**
