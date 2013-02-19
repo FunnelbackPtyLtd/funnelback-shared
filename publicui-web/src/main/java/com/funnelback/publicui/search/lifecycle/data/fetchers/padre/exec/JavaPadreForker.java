@@ -12,7 +12,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.publicui.i18n.I18n;
 
@@ -30,10 +29,8 @@ public class JavaPadreForker implements PadreForker {
 	private final static int AVG_PADRE_ERR_SIZE = 256;
 	
 	private final I18n i18n;
-	
-    @Value("#{appProperties['padre.fork.java.timeout']?:60000}")
-	@Setter
-	protected long padreWaitTimeout = 60000;
+
+	protected final long padreWaitTimeout;
 	
 	@Override
 	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
@@ -58,9 +55,14 @@ public class JavaPadreForker implements PadreForker {
 			int rc = executor.execute(padreCmdLine, environmnent);
 			return new PadreExecutionReturn(rc, padreOutput.toString());
 		} catch (ExecuteException ee) {
-			throw new PadreForkingException(i18n.tr("padre.forking.java.failed", "(watchdog-timeout?) " + padreCmdLine.toString()), ee);
+			throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
 		} catch (IOException ioe) {
 			throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
+		} finally {
+			if (watchdog.killedProcess()) {
+				log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
+						+ " Command line was '"+padreCmdLine.toString()+"', environment was '"+environmnent.toString());
+			}
 		}
 	}
 

@@ -62,7 +62,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 	@Setter
 	protected PadreXmlParser padreXmlParser;
 	
-	@Value("#{appProperties['padre.fork.native.timeout']?:30000}")
+	@Value("#{appProperties['padre.fork.timeout']?:30000}")
 	@Setter
 	protected int padreWaitTimeout;
 
@@ -135,7 +135,7 @@ public abstract class AbstractPadreForking implements DataFetcher {
 				if (searchTransaction.getQuestion().isImpersonated()) {
 					padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 				} else {
-					padreOutput = new JavaPadreForker(i18n).execute(commandLine, env);
+					padreOutput = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 				}
 				if (log.isTraceEnabled()) {
 					log.trace("\n---- RAW result packet BEGIN ----:\n\n"+padreOutput.getOutput()+"\n---- RAW result packet END ----");

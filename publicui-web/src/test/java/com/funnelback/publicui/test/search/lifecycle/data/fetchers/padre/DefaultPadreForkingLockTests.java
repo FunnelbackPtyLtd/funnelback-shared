@@ -44,7 +44,7 @@ public class DefaultPadreForkingLockTests {
 	public void before() {
 		forking = new DefaultPadreForking();
 		forking.setI18n(i18n);
-		forking.setPadreWaitTimeout(30);
+		forking.setPadreWaitTimeout(30000);
 		forking.setPadreXmlParser(new StaxStreamParser());
 		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
 	}
@@ -64,7 +64,7 @@ public class DefaultPadreForkingLockTests {
 		if (OS.isFamilyWindows()) {
 			// Can't sleep/wait in a batch script except when using PING or TIMEOUT,
 			// but those weren't working when forked from Java for some reason (error code 9009).
-			// I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.eEXE
+			// I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.EXE
 			// interpreter.
 			forking.setAbsoluteQueryProcessorPath(true);
 			

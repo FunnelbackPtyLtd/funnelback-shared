@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.OS;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.i18n.I18n;
@@ -37,7 +39,11 @@ public abstract class AbstractRunPadreBinaryController {
 	
 	private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
 	private static final String HEADER_NAME_SEPARATOR = ": ";
-	
+
+	@Value("#{appProperties['padre.fork.timeout']?:30000}")
+	@Setter
+	protected int padreWaitTimeout;
+
 	@Autowired
 	private I18n i18n;
 
@@ -69,7 +75,7 @@ public abstract class AbstractRunPadreBinaryController {
 		}
 
 		try {
-			PadreExecutionReturn out = new JavaPadreForker(i18n).execute(commandLine, env);
+			PadreExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 
 			if (detectHeaders) {
 				Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
