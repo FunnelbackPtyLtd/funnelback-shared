@@ -102,7 +102,7 @@ public class DefaultPadreForkingLockTests {
 		// same collection
 		DefaultPadreForking forking2 = new DefaultPadreForking();
 		forking2.setI18n(i18n);
-		forking2.setPadreWaitTimeout(30);
+		forking2.setPadreWaitTimeout(30000);
 		forking2.setPadreXmlParser(new StaxStreamParser());
 		forking2.setSearchHome(new File("src/test/resources/dummy-search_home"));
 
