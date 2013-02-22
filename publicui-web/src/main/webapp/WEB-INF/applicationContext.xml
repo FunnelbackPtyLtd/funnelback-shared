@@ -75,4 +75,12 @@
 	
 	<!-- End Redis setup -->
 	
+	<bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="#{globalFunnelbackConfig.value('mail.smtp.host')}" />
+		<property name="port" value="#{globalFunnelbackConfig.value('mail.smtp.port')}" />
+		<property name="username" value="#{globalFunnelbackConfig.value('mail.smtp.user')}" />
+		<property name="password" value="#{globalFunnelbackConfig.value('mail.smtp.password')}" />
+		<property name="javaMailProperties" value="#{globalFunnelbackConfig.properties}"></property>
+	</bean>
+	
 </beans>

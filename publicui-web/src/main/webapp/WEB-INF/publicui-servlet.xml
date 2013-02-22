@@ -76,22 +76,24 @@
 			</props>
 		</property>
 	</bean>
+
+	<bean id="fallbackFreemarkerViewResolver" class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
+		<constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
+		<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
+		
+		<property name="cache" value="true" />
+		<property name="cacheUnresolved" value="false" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
+	</bean>
 	
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="contentNegotiationManager" ref="contentNegotiationManager" />
 		<property name="viewResolvers">
 			<list>
-				<bean class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
-					<constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
-					<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
-					
-					<property name="cache" value="true" />
-					<property name="cacheUnresolved" value="false" />
-					<property name="prefix" value="" />
-					<property name="suffix" value=".ftl" />
-					<property name="contentType" value="text/html;charset=UTF-8" />
-					<property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
-				</bean>
+				<ref bean="fallbackFreemarkerViewResolver" />
 			</list>
 		</property>
 		<property name="defaultViews">

@@ -39,8 +39,14 @@ public class SessionControllerBase {
 	}
 	
 	@ExceptionHandler(DataAccessException.class)
+	public void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
+		log.error("Error while accessing session data", dae);
+		sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, getJsonErrorMap(dae.toString()));
+	}
+	
+	@ExceptionHandler(Exception.class)
 	public void exceptionHandler(Exception e, HttpServletResponse response) throws IOException {
-		log.error("Error while processing results cart", e);
+		log.error("Unknown session error", e);
 		sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, getJsonErrorMap(e.toString()));
 	}
 	
