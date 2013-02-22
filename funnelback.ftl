@@ -623,6 +623,12 @@
         <h4>${savedResultsLabel} (<a class="clear" href="cart-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
         <ul></ul>
+
+        <form action="cart-email.json?collection=${question.collection.id}" method="get">
+            <input type="hidden" name="collection" value="${question.collection.id}" />
+            <input type="submit" value="Send by email to:" />
+            <input type="email" name="email" value="${question.searchUser.email!}" />
+        </form>
     </div>
 </#macro>
 <#--- @end Session -->
