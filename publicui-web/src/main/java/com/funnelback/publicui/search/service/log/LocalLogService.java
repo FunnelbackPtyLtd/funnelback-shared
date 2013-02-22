@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
@@ -40,9 +42,28 @@ public class LocalLogService implements LogService {
 	@Autowired
 	@Setter private LocalHostnameHolder localHostnameHolder;
 	
+	@Autowired
+	@Setter private ClickLogWriterHolder clickLogWriterHolder;
+	
 	@Override
 	public void logClick(ClickLog cl) {
-		throw new RuntimeException("NOT YET IMPLEMENTED");
+		try {
+			CSVWriter csvWriter = new CSVWriter(clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir("live"),"clicks-"+ localHostnameHolder.getShortHostname()+".log"));
+			
+			String[] entry = new String[6];
+			
+			if(cl.getDate() != null) entry[0] = ClickLog.DATE_FORMAT.format(cl.getDate());
+			entry[1] = cl.getRequestIp();
+			if(cl.getReferer() != null) entry[2] = cl.getReferer().toString();
+			entry[3] = "" + cl.getRank();
+			if(cl.getTarget() != null) entry[4] = cl.getTarget().toString();
+			if(cl.getType() != null) entry[5] = cl.getType().toString();
+						
+			csvWriter.writeNext(entry);
+			csvWriter.close();
+		} catch (IOException e) {
+			log.error("Unable to open clicks.log", e);
+		}
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,16 +13,17 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -29,6 +31,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
+import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 
 /**
@@ -43,12 +46,16 @@ public class ClickController {
 
 	@Autowired
 	private AuthTokenManager authTokenManager;
-	
+
 	@Autowired
 	private ConfigRepository configRepository;
 	
 	@Autowired
+	private LocaleResolver localeResolver;
+
+	@Autowired
 	private SearchHistoryRepository searchHistoryRepository;
+
 	
 	/**
 	 * 
@@ -68,41 +75,50 @@ public class ClickController {
 	 * will be filled.
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/click", method=RequestMethod.GET)
+	@RequestMapping(value = "/redirect", method = RequestMethod.GET)
 	public void click(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(RequestParameters.COLLECTION) String collectionId,
-			@RequestParam(required=false,defaultValue="CLICK") ClickLog.Type type,
+			@RequestParam(required = false, defaultValue = "CLICK") ClickLog.Type type,
 			Integer rank,
-			@RequestParam(required=false) String profile,
-			@RequestParam(value=RequestParameters.Click.URL,required=true) URI redirectUrl,
-			@RequestParam(value=RequestParameters.Click.INDEX_URL,required=false) URI indexUrl,
-			@RequestParam(value=RequestParameters.Click.AUTH, required=true) String authtoken,
-			@RequestParam(value=RequestParameters.Click.NOATTACHMENT, required=false) String noAttachment,
+			@RequestParam(required = false) String profile,
+			@RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
+			@RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
+			@RequestParam(value = RequestParameters.Click.NOATTACHMENT, required = false) String noAttachment,
 			Result result) throws IOException {
 
-		if(indexUrl == null) indexUrl = redirectUrl;
-			
 		Collection collection = configRepository.getCollection(collectionId);
 		
 		if (collection != null) {
-			if(! authTokenManager.checkToken(authtoken, 
-					redirectUrl.toString(), 
-					collection.getConfiguration().value(Keys.SERVER_SECRET)
-					)) {
+			// Does the token match the target? Forbidden if not.
+			if (!authTokenManager.checkToken(authtoken, redirectUrl.toString(),
+					collection.getConfiguration().value(Keys.SERVER_SECRET))) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				return;
 			}
-			
+
+			// Get the user id
 			String userId = LogUtils.getUserIdentifier(request,
-					DefaultValues.UserIdToLog.valueOf(collection.getConfiguration().value(Keys.USERID_TO_LOG)));
+					DefaultValues.UserIdToLog.valueOf(collection
+							.getConfiguration().value(Keys.USERID_TO_LOG)));
 			
+			/* We only use the SearchQuestion to get the request IP
+			 * Perhaps we should have a helper to do the same thing from the request?
+			 */
+			SearchQuestion question = new SearchQuestion();
+			SearchQuestionBinder.bind(request, question, localeResolver);
+			String requestIp = SearchQuestionBinder.getRequestIp(question);
+			
+			// get the referrer
 			URL referer = null;
 			if (request.getHeader("referer") != null) {
 				try {
 					referer = new URL(request.getHeader("referer"));
 				} catch (MalformedURLException mue) {
-					log.warn("Unable to parse referer '" + request.getHeader("referer") + "'", mue);
+					log.warn(
+							"Unable to parse referer '"
+									+ request.getHeader("referer") + "'", mue);
 				}
 			}
 			
@@ -114,20 +130,16 @@ public class ClickController {
 						(SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE), 
 						result, collection);
 			}
+
+			logService.logClick(new ClickLog(new Date(), collection, collection
+					.getProfiles().get(profile), userId, referer, rank,
+					redirectUrl, type, requestIp));
 			
-			// FIXME: Not yet implemented
-			// logService.logClick(new ClickLog(new Date(), collection, collection.getProfiles().get(profile), userId, referer, rank, indexUrl, type));
 			
-			response.sendRedirect(indexUrl.toString());
+			response.sendRedirect(redirectUrl.toString());
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
-	
-	// TODO remove
-	@ExceptionHandler(Exception.class)
-	public void handleException(Exception ex) {
-		log.error(ex);
-	}
-	
+
 }
