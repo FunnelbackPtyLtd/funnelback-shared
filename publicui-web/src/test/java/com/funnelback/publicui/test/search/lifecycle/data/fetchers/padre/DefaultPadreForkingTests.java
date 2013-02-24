@@ -43,7 +43,7 @@ public class DefaultPadreForkingTests {
 	public void before() {
 		forking = new DefaultPadreForking();
 		forking.setI18n(i18n);
-		forking.setPadreWaitTimeout(30);
+		forking.setPadreWaitTimeout(30000);
 		forking.setPadreXmlParser(new StaxStreamParser());
 		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
 
