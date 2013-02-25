@@ -193,6 +193,12 @@ public class ResultsCartController extends SessionControllerBase {
 						+ DefaultValues.CART_EMAIL_FORM;
 	
 				FreeMarkerView view = (FreeMarkerView) viewResolver.resolveViewName(viewName, localeResolver.resolveLocale(request));
+				if (! view.getUrl().contains(DefaultValues.CART_EMAIL_FORM)) {
+					// View fell back on default "template not found" view which is not
+					// suitable
+					throw new IllegalStateException("Template "+viewName+" or parent not found");
+				}
+				
 				Template tpl = freemarkerConfig.getConfiguration().getTemplate(view.getUrl(), localeResolver.resolveLocale(request));
 				
 				String content = FreeMarkerTemplateUtils.processTemplateIntoString(tpl, model);
