@@ -628,6 +628,7 @@
             <input type="hidden" name="collection" value="${question.collection.id}" />
             <input type="submit" value="Send by email to:" />
             <input type="email" name="email" value="${question.searchUser.email!}" />
+            <span class="email-result" style="display:none;"></span><img class="email-progress" style="display: none;" src="${SearchPrefix}images/ajax-loader.gif" />
         </form>
     </div>
 </#macro>
