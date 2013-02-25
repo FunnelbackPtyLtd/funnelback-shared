@@ -88,7 +88,10 @@ public class RequestParametersTransformWrapperTests {
 			
 			RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParamTransformRuleFactory.buildRules(rules));
 			Assert.assertEquals(2, wrapper.getParameterMap().size());
-			Assert.assertArrayEquals(new String[] {"value1", "newValue1"}, wrapper.getParameterValues("param1"));
+			Assert.assertTrue("value1".equals(wrapper.getParameterValues("param1")[0])
+					|| "newValue1".equals(wrapper.getParameterValues("param1")[0]));
+			Assert.assertTrue("value1".equals(wrapper.getParameterValues("param1")[1])
+					|| "newValue1".equals(wrapper.getParameterValues("param1")[1]));
 			Assert.assertEquals("identical", wrapper.getParameter("extra"));
 	}
 	
@@ -146,6 +149,21 @@ public class RequestParametersTransformWrapperTests {
 	}
 	
 	@Test
+	public void testRulesWithSameParameter() {
+		String[] rules = {
+				"collection=squiz => collection=squiz&param=value"
+		};
+		
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter("collection", "squiz");
+		
+		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParamTransformRuleFactory.buildRules(rules));
+		Assert.assertEquals(2, wrapper.getParameterMap().size());
+		Assert.assertArrayEquals(new String[] {"squiz"}, wrapper.getParameterValues("collection"));
+		Assert.assertArrayEquals(new String[] {"value"}, wrapper.getParameterValues("param"));
+	}
+	
+	@Test
 	public void testBroadLeftSide() {
 		String[] rules = {
 			"param1 => -scope",
@@ -187,7 +205,7 @@ public class RequestParametersTransformWrapperTests {
 		RequestParametersTransformWrapper wrapper = new RequestParametersTransformWrapper(req, ParamTransformRuleFactory.buildRules(rules1));
 		Assert.assertEquals(3, wrapper.getParameterMap().size());
 		Assert.assertArrayEquals(new String[] {"sharks"}, wrapper.getParameterValues("query"));
-		Assert.assertArrayEquals(new String[] {"business-gov", "business-gov"}, wrapper.getParameterValues("collection"));
+		Assert.assertArrayEquals(new String[] {"business-gov"}, wrapper.getParameterValues("collection"));
 		Assert.assertArrayEquals(new String[] {"9,10,11,12,13,14,15,16"}, wrapper.getParameterValues("extra_state-gov_gscope1"));
 		
 		// Rules #2
