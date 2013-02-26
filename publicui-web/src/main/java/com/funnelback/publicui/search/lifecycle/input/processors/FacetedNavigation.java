@@ -15,7 +15,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -36,7 +36,7 @@ import com.funnelback.publicui.utils.MapKeyFilter;
  */
 @Log4j
 @Component("facetedNavigationInputProcessor")
-public class FacetedNavigation implements InputProcessor {
+public class FacetedNavigation extends AbstractInputProcessor {
 	
 	@Override
 	public void processInput(SearchTransaction searchTransaction) {

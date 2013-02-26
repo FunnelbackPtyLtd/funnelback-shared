@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.QuickLinks.QuickLink;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -17,7 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 
  */
 @Component("quickLinksOutputProcessor")
-public class QuickLinks implements OutputProcessor {
+public class QuickLinks extends AbstractOutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {

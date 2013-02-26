@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Log4j
 @Component("quickLinksInputProcessor")
-public class QuickLinks implements InputProcessor {
+public class QuickLinks extends AbstractInputProcessor {
 
 	/**
 	 * Name of the query processor option for quick links depth

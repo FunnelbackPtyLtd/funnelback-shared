@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -30,7 +30,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Component("fixPseudoLiveLinksOutputProcessor")
 @Log4j
-public class FixPseudoLiveLinks implements OutputProcessor {
+public class FixPseudoLiveLinks extends AbstractOutputProcessor {
 
 	@Autowired
 	private ConfigRepository configRepository;

@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.MapKeyFilter;
@@ -22,7 +23,7 @@ import com.funnelback.publicui.utils.MapKeyFilter;
  */
 @Log4j
 @Component("metaParametersInputProcessor")
-public class MetaParameters implements InputProcessor {
+public class MetaParameters extends AbstractInputProcessor {
 
 	/**
 	 * Valid types of operators in meta_* parameters.

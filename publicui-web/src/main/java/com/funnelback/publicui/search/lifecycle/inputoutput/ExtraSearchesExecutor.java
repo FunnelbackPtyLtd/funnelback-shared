@@ -90,4 +90,9 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 		}
 	}
 
+	@Override
+	public String getId() {
+		return this.getClass().getSimpleName();
+	}
+
 }

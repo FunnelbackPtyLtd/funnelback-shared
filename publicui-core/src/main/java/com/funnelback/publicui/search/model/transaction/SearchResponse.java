@@ -98,6 +98,13 @@ public class SearchResponse {
 	 * @since 12.4
 	 */
 	@Getter final private Map<String, Result> resultsCart = new HashMap<String, Result>();
+
+	/**
+	 * Performance metrics of each phase of the transaction lifecycle
+	 * 
+	 * @since 12.4
+	 */
+	@Getter @Setter private org.springframework.util.StopWatch performanceMetrics;
 	
 	/**
 	 * @return true if the {@link #resultPacket} is not null.

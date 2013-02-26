@@ -172,5 +172,10 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
 			map.remove(key);
 		}
 	}
+	
+	@Override
+	public String getId() {
+		return this.getClass().getSimpleName()+" "+hookScriptToRun;
+	}
 
 }

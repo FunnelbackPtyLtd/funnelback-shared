@@ -5,13 +5,13 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.ContentOptimiserSelectUrlQuestionFactory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.utils.MapUtils;
 
 // This component has been temporarily disabled until the output from explain is 
@@ -19,7 +19,7 @@ import com.funnelback.publicui.utils.MapUtils;
 // determine whether or not a document appears in the results.
 //@Component("contentOptimiserSelectDocumentInputProcessor")
 @Log4j
-public class ContentOptimiserSelectDocument implements InputProcessor {
+public class ContentOptimiserSelectDocument extends AbstractInputProcessor {
 
 	@Override
 	public void processInput(SearchTransaction searchTransaction)

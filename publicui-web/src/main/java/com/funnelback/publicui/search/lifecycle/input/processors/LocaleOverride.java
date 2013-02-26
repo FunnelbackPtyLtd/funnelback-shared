@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Log4j
 @Component("localeOverrideInputProcessor")
-public class LocaleOverride implements InputProcessor {
+public class LocaleOverride extends AbstractInputProcessor {
 
 	private static final String SEPARATOR = "_";
 	

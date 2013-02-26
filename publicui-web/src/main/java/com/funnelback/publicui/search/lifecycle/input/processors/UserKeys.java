@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("userKeysInputProcessor")
 @Log4j
-public class UserKeys implements InputProcessor {
+public class UserKeys extends AbstractInputProcessor {
 	
 	@Autowired
 	@Setter private I18n i18n;

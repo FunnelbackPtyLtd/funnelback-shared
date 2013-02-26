@@ -19,8 +19,8 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
-import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
@@ -39,7 +39,7 @@ import com.funnelback.publicui.xml.padre.PadreXmlParser;
  * depending of the "impersonation" status of the transaction.
  */
 @Log4j
-public abstract class AbstractPadreForking implements DataFetcher {
+public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
 	public enum EnvironmentKeys {
 		SEARCH_HOME, QUERY_STRING, SystemRoot;

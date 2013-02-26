@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.utils.VFSURLUtils;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -20,7 +20,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Component("fixDisplayUrlsOutputProcessor")
 @Log4j
-public class FixDisplayUrls implements OutputProcessor {
+public class FixDisplayUrls extends AbstractOutputProcessor {
 
 	@Autowired
 	private ConfigRepository configRepository;

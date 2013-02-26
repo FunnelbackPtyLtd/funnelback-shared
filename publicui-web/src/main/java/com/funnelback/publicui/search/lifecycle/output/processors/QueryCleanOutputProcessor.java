@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("queryCleanOutputProcessor")
 @Log4j
-public class QueryCleanOutputProcessor implements OutputProcessor {
+public class QueryCleanOutputProcessor extends AbstractOutputProcessor {
 
 	private static final Pattern WEIGHTED_OPERATORS_PATTERN = Pattern.compile("\\^\\d+\\.\\d+");
 	

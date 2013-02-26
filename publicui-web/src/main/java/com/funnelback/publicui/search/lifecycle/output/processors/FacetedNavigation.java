@@ -9,7 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
  */
 @Component("facetedNavigationOutputProcessor")
 @Log4j
-public class FacetedNavigation implements OutputProcessor {
+public class FacetedNavigation extends AbstractOutputProcessor {
 
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -26,7 +26,7 @@ import com.funnelback.publicui.utils.web.LocalHostnameHolder;
  */
 @Log4j
 @Component("hostnameInLogFilename")
-public class HostnameInLogFilename implements InputProcessor {
+public class HostnameInLogFilename extends AbstractInputProcessor {
 
 	/** Name of the QP option to specify the log file */
 	public static final String QP_OPT_LOGFILE = "-qlog_file";

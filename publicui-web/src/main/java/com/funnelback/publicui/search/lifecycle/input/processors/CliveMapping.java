@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("cliveMappingInputProcessor")
 @Log4j
-public class CliveMapping implements InputProcessor {
+public class CliveMapping extends AbstractInputProcessor {
 
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {

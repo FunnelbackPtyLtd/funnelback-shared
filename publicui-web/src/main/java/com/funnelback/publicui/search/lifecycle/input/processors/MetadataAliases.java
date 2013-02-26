@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -17,7 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("metadataAliasesInputProcessor")
 @Log4j
-public class MetadataAliases implements InputProcessor {
+public class MetadataAliases extends AbstractInputProcessor {
 
 	private static final String SEPARATOR = ":";
 	private enum Operators {

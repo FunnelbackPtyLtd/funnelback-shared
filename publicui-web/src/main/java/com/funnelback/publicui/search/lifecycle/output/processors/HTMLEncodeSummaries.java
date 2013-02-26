@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -18,7 +18,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * as is.</p>
  */
 @Component("htmlEncodeSummaries")
-public class HTMLEncodeSummaries implements OutputProcessor {
+public class HTMLEncodeSummaries extends AbstractOutputProcessor {
 	
 	private static final String[] UNSAFE_CHARS = {"\\", "\"", "'", "<", ">", "&"};
 	private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&#39;", "&lt;", "&gt;", "&amp;"};

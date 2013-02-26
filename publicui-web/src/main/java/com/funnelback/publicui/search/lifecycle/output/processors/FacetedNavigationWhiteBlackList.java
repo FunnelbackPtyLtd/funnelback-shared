@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("facetedNavigationWhiteBlackListOutputProcessor")
 @Log4j
-public class FacetedNavigationWhiteBlackList implements OutputProcessor {
+public class FacetedNavigationWhiteBlackList extends AbstractOutputProcessor {
 
 	private static final String SEP = ",";
 	

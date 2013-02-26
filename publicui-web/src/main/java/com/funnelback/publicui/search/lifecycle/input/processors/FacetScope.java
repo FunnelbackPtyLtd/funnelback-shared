@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -20,7 +20,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
  */
 @Component("facetScopeInputProcessor")
 @Log4j
-public class FacetScope implements InputProcessor {
+public class FacetScope extends AbstractInputProcessor {
 
 	@Override
 	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {

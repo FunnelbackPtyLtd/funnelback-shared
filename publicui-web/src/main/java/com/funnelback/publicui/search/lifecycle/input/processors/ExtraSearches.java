@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.ChangeCollectionQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.ExtraSearchQuestionFactory;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Component("extraSearchesInputProcessor")
 @Log4j
-public class ExtraSearches implements InputProcessor, ApplicationContextAware {
+public class ExtraSearches extends AbstractInputProcessor implements ApplicationContextAware {
 
 	/**
 	 * Key containing the class of the {@link ExtraSearchQuestionFactory}

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -20,7 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 @Component("textMinerOutputProcessor")
 @Log4j
-public class TextMiner implements OutputProcessor {
+public class TextMiner extends AbstractOutputProcessor {
 	
 	public static final String KEY_NOUN_PHRASES = "noun_phrases";
 	public static final String KEY_CUSTOM_DEFINITION = "entity.custom-definition";

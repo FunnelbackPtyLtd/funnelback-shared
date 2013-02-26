@@ -3,11 +3,11 @@ package com.funnelback.publicui.test.mock;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-public class MockInputProcessor implements InputProcessor {
+public class MockInputProcessor extends AbstractInputProcessor {
 
 	@Getter @Setter
 	private boolean traversed = false;

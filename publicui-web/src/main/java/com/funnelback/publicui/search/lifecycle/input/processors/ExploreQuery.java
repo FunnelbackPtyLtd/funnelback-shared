@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.explore.ExploreQueryGenerator;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -21,7 +21,7 @@ import com.funnelback.publicui.utils.MapUtils;
  */
 @Component("exploreQueryInputProcessor")
 @Log4j
-public class ExploreQuery implements InputProcessor {
+public class ExploreQuery extends AbstractInputProcessor {
 
 	private static final String OPT_VSIMPLE = "-vsimple=on";
 	private static final String OPT_DAAT0 = "-daat=0";

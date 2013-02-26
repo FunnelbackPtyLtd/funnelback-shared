@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
  */
 @Component("searchHistoryOutputProcessor")
 @Log4j
-public class SearchHistory implements OutputProcessor {
+public class SearchHistory extends AbstractOutputProcessor {
 
 	@Autowired
 	private SearchHistoryRepository repository;

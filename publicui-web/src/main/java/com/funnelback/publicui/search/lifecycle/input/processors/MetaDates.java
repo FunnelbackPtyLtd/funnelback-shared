@@ -13,7 +13,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -27,7 +27,7 @@ import com.funnelback.publicui.utils.MapUtils;
  */
 @Component("metaDatesInputProcessor")
 @Log4j
-public class MetaDates implements InputProcessor {
+public class MetaDates extends AbstractInputProcessor {
 
 	private static final String PREFIX = "meta_";
 	private static final String YEAR = "year";

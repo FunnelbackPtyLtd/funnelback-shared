@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
-import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.xml.padre.PadreXmlParser;
  */
 @Log4j
 @Component("padreForkingPooled")
-public class PadreForkingPooled implements DataFetcher {
+public class PadreForkingPooled extends AbstractDataFetcher {
 
 	@Autowired
 	private KeyedObjectPool padrePool;

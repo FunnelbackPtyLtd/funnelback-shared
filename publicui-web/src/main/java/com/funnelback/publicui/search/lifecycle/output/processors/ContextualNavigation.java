@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.Category;
 import com.funnelback.publicui.search.model.padre.Cluster;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
  *
  */
 @Component("contextualNavigationOutputProcessor")
-public class ContextualNavigation implements OutputProcessor {
+public class ContextualNavigation extends AbstractOutputProcessor {
 	
 	@Override
 	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {

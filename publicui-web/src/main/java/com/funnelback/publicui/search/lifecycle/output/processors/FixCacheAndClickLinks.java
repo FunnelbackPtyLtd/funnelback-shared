@@ -13,7 +13,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -29,7 +29,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * adding click tracking URLs.
  */
 @Component("fixCacheAndClickLinks")
-public class FixCacheAndClickLinks implements OutputProcessor {
+public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
 	@Autowired @Setter
 	private AuthTokenManager authTokenManager;

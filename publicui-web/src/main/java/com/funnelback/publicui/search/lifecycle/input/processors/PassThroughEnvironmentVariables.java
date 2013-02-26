@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.MapUtils;
@@ -18,7 +18,7 @@ import com.funnelback.publicui.utils.MapUtils;
  */
 @Component("passThroughEnvironmentVariabesInputProcessor")
 @Log4j
-public class PassThroughEnvironmentVariables implements InputProcessor {
+public class PassThroughEnvironmentVariables extends AbstractInputProcessor {
 
 	// FIXME Found these other ones in PADRE source code. Are they really needed ?
 	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML

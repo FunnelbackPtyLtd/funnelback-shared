@@ -9,7 +9,7 @@ import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.UrlStatus;
 import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
 import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.utils.MapUtils;
  */
 @Log4j
 @Component("contentOptimiserOutputProcessor")
-public class ContentOptimiser implements OutputProcessor {
+public class ContentOptimiser extends AbstractOutputProcessor {
 
 	@Autowired
 	private ContentOptimiserFiller filler;

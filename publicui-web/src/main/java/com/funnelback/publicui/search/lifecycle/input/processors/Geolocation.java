@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.location.Geolocator;
 import com.maxmind.geoip.Location;
 
@@ -27,7 +27,7 @@ import com.maxmind.geoip.Location;
  */
 @Log4j
 @Component("geolocationInputProcessor")
-public class Geolocation implements InputProcessor {
+public class Geolocation extends AbstractInputProcessor {
 
     @Autowired
     Geolocator geolocator;

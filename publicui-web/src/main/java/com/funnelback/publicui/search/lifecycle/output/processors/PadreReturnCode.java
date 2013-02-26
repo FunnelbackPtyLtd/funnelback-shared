@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.search.model.padre.ReturnCodes;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.service.log.LogService;
  */
 @Component("padreReturnCodeOutputProcessor")
 @Log4j
-public class PadreReturnCode implements OutputProcessor {
+public class PadreReturnCode extends AbstractOutputProcessor {
 
 	@Autowired
 	@Setter private LogService logService;

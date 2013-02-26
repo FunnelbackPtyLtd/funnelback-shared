@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -25,7 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  *
  */
 @Component("passThroughParametersInputProcessor")
-public class PassThroughParameters implements InputProcessor {
+public class PassThroughParameters extends AbstractInputProcessor {
 
 	/**
 	 * Names of the parameters to ignore (Irrelevant to PADRE, or because
