@@ -136,7 +136,7 @@
     @param question Initial SearchQuestion, used as a base for parameters.
     @param collection Name of the collection to search on.
     @param query Query terms to search for.
-    @param params Map of additional parameters (ex: <code>{"num_ranks" : "3"}</code>).
+    @param params Map of additional parameters (ex: <code>{&quot;num_ranks&quot; : &quot;3&quot;}</code>).
 -->
 <#macro ExtraSearch question collection query params={}>
     <#local questionBackup = question!{} />
@@ -170,12 +170,12 @@
             </li>
             <li><strong>Add extra search form code to search template</strong><br />
                 <pre>
-                &lt;div id="extraSearch"&gt;<br />
-                    &lt;@fb.ExtraResults name="&lt;extra search name&gt;"&gt;<br />
+                &lt;div id=&quot;extraSearch&quot;&gt;<br />
+                    &lt;@fb.ExtraResults name=&quot;&lt;extra search name&gt;&quot;&gt;<br />
                         &lt;#if response.resultPacket.results?size &lt; 0&gt;<br />
                             &lt;h3>Related news&gt;/h3&gt;<br />
                                 &lt;#list response.resultPacket.results as result&gt;<br />
-                                    &lt;p class="fb-extra-result"&gt;<br />
+                                    &lt;p class=&quot;fb-extra-result&quot;&gt;<br />
                                         ${result.title}<br />
                                     &lt;/p&gt;<br />
                                 &lt;/#list&gt;<br />
@@ -479,7 +479,7 @@
 
     @param url : URL to request. This is the only mandatory parameter.
     @param expiry : Cache time to live, in seconds (default = 3600). This is a number so you must pass the parameters without quotes: <tt>expiry=3600</tt>.
-    @param start : Regular expression pattern (Java) marking the beginning of the content to include. Double quotes must be escaped: <tt>start="start \"pattern\""</tt>.
+    @param start : Regular expression pattern (Java) marking the beginning of the content to include. Double quotes must be escaped: <tt>start=&quot;start \&quot;pattern\&quot;&quot;</tt>.
     @param end : Regular expression pattern (Java) marking the end of the content to include. Double quotes must be escaped too.
     @param username : Username if the remote server requires authentication.
     @param password : Password if the remote server requires authentication.
@@ -516,7 +516,7 @@
     lookup the corresponding translation key in the data model. Using <tt>str</tt> will
     format the <tt>str</tt> string directly.</p>
     <p>When <tt>key</tt> is used, <tt>str</tt> can be used with it as a fallback value if
-    the key is not found in the data model. For example <code>&lt;@fb.Format key="results" str="Results for %s" args=[question.query] /&gt;</code>
+    the key is not found in the data model. For example <code>&lt;@fb.Format key=&quot;results&quot; str=&quot;Results for %s&quot; args=[question.query] /&gt;</code>
     will lookup the key <em>results</em> in the translations. If the key is not present,
     then the literal string <em>Results for %s</em> will be used instead.</p>
 
@@ -524,8 +524,8 @@
 
     @param locale The <tt>java.util.Locale</tt> to use, defaults to the current Locale in the <tt>question</tt>.
     @param key Takes the string to format from the translations in the data model (<tt>response.translations</tt>).
-    @param str Use a literal string instead of a translation key. For example <em>"%d results match the query %s"</em>. See <tt>java.util.Formatter</tt> for the format specifier documentation.
-    @param args Array of arguments to be formatted, for example <tt>[42, "funnelback"]</tt>.
+    @param str Use a literal string instead of a translation key. For example <em>&quot;%d results match the query %s&quot;</em>. See <tt>java.util.Formatter</tt> for the format specifier documentation.
+    @param args Array of arguments to be formatted, for example <tt>[42, &quot;funnelback&quot;]</tt>.
 -->
 <#macro Format args str="" key="" locale=question.locale>
     <#if key != "">
@@ -542,7 +542,7 @@
 </#macro>
 
 <#---
-    Generates an "optimise" link to the content optimiser (From the admin side only)
+    Generates an &quot;optimise&quot; link to the content optimiser (From the admin side only)
 
     @param label Text to use for the link.
 -->
@@ -552,10 +552,44 @@
     </@AdminUIOnly>
 </#macro>
 
+<#---
+    Displays a table with the time taken by each step in the query lifecycle.
+
+    @param width Width in pixels to use for the bar graphs
+    @msLabel Label to use for &quot;milliseconds&quot;
+    @totalLabel Label to use for the &quot;Total&quot; summary row
+-->
+<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total">
+    <#if response?? && response.performanceMetrics??>
+        ${response.performanceMetrics.stop()}
+        <#assign scale= width / response.performanceMetrics.totalTimeMillis />
+        <#assign offset=0 />
+
+        <table class="fb-metrics">
+        <#list response.performanceMetrics.taskInfo as ti>
+            <#assign timeTaken = ti.timeMillis * scale />
+            <#assign kv = (ti.taskName!":")?split(":") />
+            <#assign class=kv[0]! />
+            <#assign name=kv[1]! />
+            <tr>
+                <td>${name}</td>
+                <td>${ti.timeMillis!} ${msLabel}</td>
+                <td><div class="metric ${class}" style="width: ${timeTaken?round}px; margin-left: ${offset}px;">&nbsp;</div></td>
+            </tr>
+            <#assign offset = offset+(timeTaken) />
+        </#list>
+            <tr>
+                <th>${totalLabel}</th>
+                <th colspan="2">${response.performanceMetrics.totalTimeMillis} ${msLabel}</th>
+            </tr>
+        </table>
+    </#if>
+</#macro>
+
 <#--- @begin Session -->
 <#---
-    Generates a "save" link to save the current result in the results cart
-    or a "remove" link if the result is already in the cart
+    Generates a &quot;save&quot; link to save the current result in the results cart
+    or a &quot;remove&quot; link if the result is already in the cart
 -->
 <#macro ResultCart>
     <#if question?? && question.searchUser??
@@ -567,9 +601,9 @@
 <#---
     Displays the user search history and clear history links.
 
-    @param lastQueryLabel Label to use for "last queries" text.
-    @param clearLabel Label to use for the "clear history" link.
-    @param resultsLabel Label to use for the number of "results".
+    @param lastQueryLabel Label to use for &quot;last queries&quot; text.
+    @param clearLabel Label to use for the &quot;clear history&quot; link.
+    @param resultsLabel Label to use for the number of &quot;results&quot;.
     @param max Max number of entries to show.
 -->
 <#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5>
@@ -590,8 +624,8 @@
 <#---
     Displays the user click history and clear click history links.
 
-    @param lastQueryLabel Label to use for "last results clicked" text.
-    @param clearLabel Label to use for the "clear history" link.
+    @param lastQueryLabel Label to use for &quot;last results clicked&quot; text.
+    @param clearLabel Label to use for the &quot;clear history&quot; link.
     @param max Max number of entries to show.
 -->
 <#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5>
@@ -615,8 +649,8 @@
 <#---
     Displays the list of saved search results.
 
-    @param savedResultsLabel to use for "saved results".
-    @param clearLabel Label to use for the "clear cart" link.
+    @param savedResultsLabel to use for &quot;saved results&quot;.
+    @param clearLabel Label to use for the &quot;clear cart&quot; link.
 -->
 <#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear">
     <div id="fb-results-cart" style="display: none;">
