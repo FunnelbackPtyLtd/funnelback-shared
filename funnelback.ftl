@@ -586,6 +586,17 @@
     </#if>
 </#macro>
 
+<#---
+    Generates an authentication token suitable for click tracking redirection,
+    based on the globally configured <tt>server_secret</tt>.
+
+    @nested URL to generate the token for.
+-->
+<#macro AuthToken><#compress>
+    <#assign content><#nested></#assign>
+    ${authToken(content)}
+</#compress></#macro>
+
 <#--- @begin Session -->
 <#---
     Generates a &quot;save&quot; link to save the current result in the results cart
