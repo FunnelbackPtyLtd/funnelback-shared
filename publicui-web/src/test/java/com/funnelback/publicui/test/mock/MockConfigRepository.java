@@ -25,7 +25,7 @@ public class MockConfigRepository implements ConfigRepository {
 	@Getter private final Map<String, String> translations = new HashMap<String, String>();
 	@Getter @Setter private File xslTemplate;
 	
-	@Getter private Config globalConfiguration;
+	@Getter @Setter private Config globalConfiguration;
 		
 	@Override
 	public Collection getCollection(String collectionId) {

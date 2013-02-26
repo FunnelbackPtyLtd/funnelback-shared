@@ -118,6 +118,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FormatMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.FormatMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>
