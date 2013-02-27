@@ -39,13 +39,15 @@ public class SessionInterceptor implements HandlerInterceptor {
 		
 		if (request.getParameter(RequestParameters.COLLECTION) != null) {
 			Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-			if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
-				HttpSession session = request.getSession();
-				
-				if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {
-					// New user
-					session.setMaxInactiveInterval(-1);
-					session.setAttribute(SEARCH_USER_ATTRIBUTE, new SearchUser(UUID.randomUUID().toString()));
+			if (collection != null) {
+				if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
+					HttpSession session = request.getSession();
+					
+					if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {
+						// New user
+						session.setMaxInactiveInterval(-1);
+						session.setAttribute(SEARCH_USER_ATTRIBUTE, new SearchUser(UUID.randomUUID().toString()));
+					}
 				}
 			}
 		}
