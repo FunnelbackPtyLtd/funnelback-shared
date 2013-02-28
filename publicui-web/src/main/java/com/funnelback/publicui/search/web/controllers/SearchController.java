@@ -34,6 +34,10 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
+import com.yammer.metrics.core.MetricName;
+import com.yammer.metrics.core.MetricsRegistry;
+
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.*;
 
 /**
  * <p>Main controller for the Modern UI.</p>
@@ -75,6 +79,9 @@ public class SearchController {
 	
 	@Autowired
 	private LocaleResolver localeResolver;
+	
+	@Autowired
+	private MetricsRegistry metrics;
 
 	/**
 	 * <p>Configures the binder to:
@@ -177,6 +184,8 @@ public class SearchController {
 					+ "' called with an unknown extension '"+request.getRequestURI()+"'.");
 			throw new ViewTypeNotFoundException(FilenameUtils.getExtension(request.getRequestURI()));
 		}
+		
+		metrics.newCounter(new MetricName(ALL_NS, VIEW_TYPE_NS, vt.name())).inc();
 		
 		Map<String, Object> model = getModel(vt, request, transaction);
 

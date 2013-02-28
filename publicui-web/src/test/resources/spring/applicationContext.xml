@@ -6,7 +6,9 @@
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:lang="http://www.springframework.org/schema/lang"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:metrics="http://www.yammer.com/schema/metrics"
 	xsi:schemaLocation="
+				http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 				http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
@@ -126,5 +128,7 @@
 	<bean class="com.funnelback.publicui.search.web.exception.DefaultTemplateExceptionHandler" />
 	
 	<bean class="org.springframework.web.servlet.i18n.FixedLocaleResolver" />
+	
+	<metrics:metrics-registry id="metricsRegistry" />
 	
 </beans>

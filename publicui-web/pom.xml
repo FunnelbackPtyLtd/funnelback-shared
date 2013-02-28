@@ -231,7 +231,32 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
 			<version>1.0.2.RELEASE</version>
+		</dependency>	
+		<dependency>
+			<groupId>com.yammer.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>${version.yammer-metrics}</version>
 		</dependency>
+				<dependency>
+			<groupId>com.yammer.metrics</groupId>
+			<artifactId>metrics-spring</artifactId>
+			<version>${version.yammer-metrics}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.yammer.metrics</groupId>
+		    <artifactId>metrics-web</artifactId>
+		    <version>${version.yammer-metrics}</version>
+		</dependency>		
+		<dependency>
+		    <groupId>com.yammer.metrics</groupId>
+		    <artifactId>metrics-servlet</artifactId>
+		    <version>${version.yammer-metrics}</version>
+		</dependency>		
+		<dependency>
+		    <groupId>com.yammer.metrics</groupId>
+		    <artifactId>metrics-graphite</artifactId>
+		    <version>${version.yammer-metrics}</version>
+		</dependency>		
 	  </dependencies>
 
 </project>

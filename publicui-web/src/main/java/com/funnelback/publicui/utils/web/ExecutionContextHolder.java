@@ -17,7 +17,7 @@ import org.springframework.web.context.ServletContextAware;
 @Component
 public class ExecutionContextHolder implements ServletContextAware {
 
-	private enum ExecutionContext {
+	public static enum ExecutionContext {
 		Admin,
 		Public,
 		/** Used for special instance of Public UI for Novell OES 2 DLS */
