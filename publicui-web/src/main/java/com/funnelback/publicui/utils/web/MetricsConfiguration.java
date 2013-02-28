@@ -61,11 +61,11 @@ public class MetricsConfiguration {
 				hostName = "unknown";
 			}
 		
-			GraphiteReporter.enable(registry, 1, TimeUnit.SECONDS,
+			GraphiteReporter.enable(registry, 10, TimeUnit.SECONDS,
 					graphiteHost, graphitePort,
 					hostName+"."+MODERNUI_PREFIX);
 			
-			GraphiteReporter.enable(1, TimeUnit.SECONDS,
+			GraphiteReporter.enable(10, TimeUnit.SECONDS,
 					graphiteHost, graphitePort,
 					hostName+"."+MODERNUI_PREFIX+"."+DEFAULT_REGISTRY);
 		
