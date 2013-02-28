@@ -59,6 +59,8 @@ public class MetricsConfiguration {
 			String hostName = hostnameHolder.getHostname();
 			if (hostName == null) {
 				hostName = "unknown";
+			} else {
+				hostName = hostName.replace(".", "_").toLowerCase();
 			}
 		
 			GraphiteReporter.enable(registry, 10, TimeUnit.SECONDS,
