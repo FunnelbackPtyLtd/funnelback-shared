@@ -558,31 +558,40 @@
     @param width Width in pixels to use for the bar graphs
     @msLabel Label to use for &quot;milliseconds&quot;
     @totalLabel Label to use for the &quot;Total&quot; summary row
+    @jsOnly Do not display the metrics, only output the processing time in the JS console.
 -->
-<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total">
+<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false>
     <#if response?? && response.performanceMetrics??>
         ${response.performanceMetrics.stop()}
-        <#assign scale= width / response.performanceMetrics.totalTimeMillis />
-        <#assign offset=0 />
+        <script type="text/javascript">
+            try {
+                console.log("Query processing time: ${response.performanceMetrics.totalTimeMillis} ${msLabel}");
+            } catch (ex) {
+            }
+        </script>
+        <#if ! jsOnly>
+            <#assign scale= width / response.performanceMetrics.totalTimeMillis />
+            <#assign offset=0 />
 
-        <table class="fb-metrics">
-        <#list response.performanceMetrics.taskInfo as ti>
-            <#assign timeTaken = ti.timeMillis * scale />
-            <#assign kv = (ti.taskName!":")?split(":") />
-            <#assign class=kv[0]! />
-            <#assign name=kv[1]! />
-            <tr>
-                <td>${name}</td>
-                <td>${ti.timeMillis!} ${msLabel}</td>
-                <td><div class="metric ${class}" style="width: ${timeTaken?round}px; margin-left: ${offset}px;">&nbsp;</div></td>
-            </tr>
-            <#assign offset = offset+(timeTaken) />
-        </#list>
-            <tr>
-                <th>${totalLabel}</th>
-                <th colspan="2">${response.performanceMetrics.totalTimeMillis} ${msLabel}</th>
-            </tr>
-        </table>
+            <table class="fb-metrics">
+            <#list response.performanceMetrics.taskInfo as ti>
+                <#assign timeTaken = ti.timeMillis * scale />
+                <#assign kv = (ti.taskName!":")?split(":") />
+                <#assign class=kv[0]! />
+                <#assign name=kv[1]! />
+                <tr>
+                    <td>${name}</td>
+                    <td>${ti.timeMillis!} ${msLabel}</td>
+                    <td><div class="metric ${class}" style="width: ${timeTaken?round}px; margin-left: ${offset}px;">&nbsp;</div></td>
+                </tr>
+                <#assign offset = offset+(timeTaken) />
+            </#list>
+                <tr>
+                    <th>${totalLabel}</th>
+                    <th colspan="2">${response.performanceMetrics.totalTimeMillis} ${msLabel}</th>
+                </tr>
+            </table>
+        </#if>
     </#if>
 </#macro>
 
