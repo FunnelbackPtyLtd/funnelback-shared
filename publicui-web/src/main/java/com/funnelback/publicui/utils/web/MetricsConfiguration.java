@@ -26,15 +26,14 @@ public class MetricsConfiguration {
 	public static final String COLLECTION_NS = "collection";
 	
 	/** All/global namespace */
-	public static final String ALL_NS = "all";
+	public static final String ALL_NS = "_all";
 	
 	/** View type (xml/json/html) namespace */
 	public static final String VIEW_TYPE_NS = "view-type";
 	
-	public static final String UNKNOWN = "unknown";
+	public static final String UNKNOWN = "_unknown";
 	
 	public static final String QUERIES = "queries";
-	public static final String QUERIES_COUNT = QUERIES+"_count";
 	public static final String ERRORS_COUNT = "errors_count";
 	public static final String PADRE_ELAPSED_TIME = "padre-elapsed-time";
 	public static final String TOTAL_MATCHING = "total-matching";

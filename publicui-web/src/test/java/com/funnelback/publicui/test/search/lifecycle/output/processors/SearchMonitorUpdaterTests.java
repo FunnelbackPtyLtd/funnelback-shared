@@ -5,7 +5,6 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.COLLECTION_
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.ERRORS_COUNT;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_ELAPSED_TIME;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
-import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES_COUNT;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 
 import java.util.concurrent.TimeUnit;
@@ -87,14 +86,12 @@ public class SearchMonitorUpdaterTests {
 		Assert.assertEquals(123, monitor.getAveragePadreProcessingTime(), 0.1);
 		Assert.assertEquals(1, monitor.getNbQueries());
 		
-		Assert.assertEquals(1, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, QUERIES_COUNT)).count());
 		Assert.assertEquals(0, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT)).count());
 		Assert.assertEquals(456, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false).mean(), 0.1);
 		Assert.assertEquals(123, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false).mean(), 0.1);
 		Assert.assertEquals(1, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).count());
 		Assert.assertNotSame(0, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
 		
-		Assert.assertEquals(1, metrics.newCounter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES_COUNT)).count());
 		Assert.assertEquals(0, metrics.newCounter(new MetricName(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).count());
 		Assert.assertEquals(456, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", TOTAL_MATCHING), false).mean(), 0.1);
 		Assert.assertEquals(123, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME), false).mean(), 0.1);

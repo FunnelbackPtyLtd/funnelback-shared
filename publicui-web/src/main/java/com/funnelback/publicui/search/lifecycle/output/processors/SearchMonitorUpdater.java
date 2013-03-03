@@ -30,7 +30,6 @@ public class SearchMonitorUpdater extends AbstractOutputProcessor {
 	@Autowired
 	@Setter private MetricsRegistry metrics;
 	
-	private Counter allQueriesCounter;
 	private Counter allErrorsCounter;
 	private Histogram allTotalMatchingHistogram;
 	private Histogram allPadreElapsedTimeHistogram;
@@ -40,7 +39,6 @@ public class SearchMonitorUpdater extends AbstractOutputProcessor {
 	public void processOutput(SearchTransaction st) throws OutputProcessorException {
 		monitor.incrementQueryCount();
 
-		allQueriesCounter.inc();
 		allQueriesMeter.mark();
 		
 		String collectionAndProfile = UNKNOWN+"."+UNKNOWN;
@@ -50,7 +48,6 @@ public class SearchMonitorUpdater extends AbstractOutputProcessor {
 						+ "." + st.getQuestion().getProfile();
 			}
 		
-			metrics.newCounter(new MetricName(COLLECTION_NS, collectionAndProfile, QUERIES_COUNT)).inc();
 			metrics.newMeter(new MetricName(COLLECTION_NS, collectionAndProfile, QUERIES), QUERIES, TimeUnit.SECONDS).mark();
 		
 			if (st.hasResponse()
@@ -84,7 +81,6 @@ public class SearchMonitorUpdater extends AbstractOutputProcessor {
 	
 	@PostConstruct
 	public void postConstruct() {
-		allQueriesCounter = metrics.newCounter(new MetricName(ALL_NS, ALL_NS, QUERIES_COUNT));
 		allErrorsCounter = metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT));
 		allTotalMatchingHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false);
 		allPadreElapsedTimeHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false);
