@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -158,6 +160,8 @@ public class WindowsNativePadreForker implements PadreForker {
 			} else {
 				log.debug("PADRE exited successfuly (NTSTATUS exit code: "+returnCode+")");
 			}
+		} catch (IOException ioe) {
+			throw new PadreForkingException(i18n.tr("padre.forking.native.output.failed"), ioe);
 		} finally {
 			if (impersonateSelf) {
 				if (! Advapi32.INSTANCE.RevertToSelf()) {
@@ -193,13 +197,14 @@ public class WindowsNativePadreForker implements PadreForker {
 	 * @param hChildOutWrite Pipe to write to STDOUT. Will be closed.
 	 * @param hChildOutRead Pipe to read from STDOUT. Will be closed.
 	 * @return Content of STDOUT
+	 * @throws IOException 
 	 */
-	private String readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) {
-		StringBuffer out = new StringBuffer();
+	private String readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) throws IOException {
 		if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
 			log.warn("Unable to close the stdout write pipe of child process (GetLastError="+Kernel32.INSTANCE.GetLastError()+ ")");
 		}
 
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
 		IntByReference nbRead = new IntByReference();
 		while(true) {
@@ -209,8 +214,8 @@ public class WindowsNativePadreForker implements PadreForker {
 			} else {
 				byte[] b = new byte[nbRead.getValue()];
 				buf.get(b, 0, nbRead.getValue());
-				
-				out.append(Native.toString(b));
+
+				bos.write(b);
 				buf.clear();
 			}
 		}
@@ -218,7 +223,8 @@ public class WindowsNativePadreForker implements PadreForker {
 		if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {
 			log.warn("Unable to close stdout read pipe of child process (GetLastError="+Kernel32.INSTANCE.GetLastError()+")");
 		}
-		return out.toString();
+		
+		return Native.toString(bos.toByteArray());
 	}
 
 	
