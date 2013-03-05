@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import scala.actors.threadpool.Arrays;
+
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
@@ -102,6 +104,21 @@ public class LibQSSuggester implements Suggester {
 			s.setActionType(ActionType.fromValue(actionType));
 			
 			return s;
+		}
+		
+		@Override
+		protected List getFieldOrder() {
+			return Arrays.asList(new String[] {
+				"length",
+				"key",
+				"weight",
+				"display",
+				"displayType",
+				"category",
+				"categoryType",
+				"action",
+				"actionType"
+			});
 		}
 	}
 
