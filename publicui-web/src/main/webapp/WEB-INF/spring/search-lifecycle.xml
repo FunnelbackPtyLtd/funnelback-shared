@@ -63,7 +63,7 @@
 		<ref bean="getTranslationsOutputProcessor" />
 		<ref bean="searchHistoryOutputProcessor" />
 		<ref bean="resultsCartOutputProcessor" />
-		<ref bean="searchMonitorUpdaterOutputProcessor" />
+		<ref bean="metricsOutputProcessor" />
 		<bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Output }" />

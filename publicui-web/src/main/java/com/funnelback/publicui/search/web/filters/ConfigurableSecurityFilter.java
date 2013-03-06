@@ -53,7 +53,7 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 	
 		if (OS.isFamilyWindows()) {
 			active = true;
-			log.info("Windows authentication filter is loaded. Use "+Keys.ModernUI.AUTHENTICATION+"=true to activate it on collections");
+			log.debug("Windows authentication filter is loaded. Use "+Keys.ModernUI.AUTHENTICATION+"=true to activate it on collections");
 		}
 	}
 	

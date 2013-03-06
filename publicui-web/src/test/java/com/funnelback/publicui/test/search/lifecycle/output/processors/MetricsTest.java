@@ -13,9 +13,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.jmx.SearchMonitor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
-import com.funnelback.publicui.search.lifecycle.output.processors.SearchMonitorUpdater;
+import com.funnelback.publicui.search.lifecycle.output.processors.Metrics;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
@@ -25,19 +24,16 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
 
-public class SearchMonitorUpdaterTests {
+public class MetricsTest {
 
 	private SearchTransaction st;
-	private SearchMonitor monitor;
-	private SearchMonitorUpdater processor;
+	private Metrics processor;
 	private MetricsRegistry metrics;
 	
 	@Before
 	public void before() {
-		monitor = new SearchMonitor();
 		metrics = new MetricsRegistry();
-		processor = new SearchMonitorUpdater();
-		processor.setMonitor(monitor);
+		processor = new Metrics();
 		processor.setMetrics(metrics);
 		processor.postConstruct();
 		
@@ -75,16 +71,10 @@ public class SearchMonitorUpdaterTests {
 	
 	@Test
 	public void test() throws OutputProcessorException {
-		Assert.assertEquals(-1, monitor.getAveragePadreProcessingTime(), 0);
-		Assert.assertEquals(0, monitor.getNbQueries());
-		
 		st.getResponse().getResultPacket().setPadreElapsedTime(123);
 		st.getResponse().getResultPacket().setResultsSummary(new ResultsSummary());
 		st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(456); 
 		processor.processOutput(st);
-		
-		Assert.assertEquals(123, monitor.getAveragePadreProcessingTime(), 0.1);
-		Assert.assertEquals(1, monitor.getNbQueries());
 		
 		Assert.assertEquals(0, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT)).count());
 		Assert.assertEquals(456, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false).mean(), 0.1);

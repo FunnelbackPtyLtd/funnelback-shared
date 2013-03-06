@@ -1,5 +1,13 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.COLLECTION_NS;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.ERRORS_COUNT;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_ELAPSED_TIME;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -9,7 +17,6 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.jmx.SearchMonitor;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -19,26 +26,30 @@ import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.Meter;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
-import static com.funnelback.publicui.utils.web.MetricsConfiguration.*;
 
-@Component("searchMonitorUpdaterOutputProcessor")
-public class SearchMonitorUpdater extends AbstractOutputProcessor {
-	
-	@Autowired
-	@Setter private SearchMonitor monitor;
+/**
+ * Update internal performance metrics
+ */
+@Component("metricsOutputProcessor")
+public class Metrics extends AbstractOutputProcessor {
 	
 	@Autowired
 	@Setter private MetricsRegistry metrics;
 	
+	/** Global count of search errors */
 	private Counter allErrorsCounter;
+	
+	/** Average number of total matching results across all searches */
 	private Histogram allTotalMatchingHistogram;
+	
+	/** Average time taken by padre across all searches */
 	private Histogram allPadreElapsedTimeHistogram;
+	
+	/** Global number of queries processed */
 	private Meter allQueriesMeter;
 	
 	@Override
 	public void processOutput(SearchTransaction st) throws OutputProcessorException {
-		monitor.incrementQueryCount();
-
 		allQueriesMeter.mark();
 		
 		String collectionAndProfile = UNKNOWN+"."+UNKNOWN;
@@ -66,7 +77,6 @@ public class SearchMonitorUpdater extends AbstractOutputProcessor {
 					metrics.newHistogram(new MetricName(COLLECTION_NS , collectionAndProfile, PADRE_ELAPSED_TIME), false)
 						.update(st.getResponse().getResultPacket().getPadreElapsedTime());
 
-					monitor.addResponseTime(st.getResponse().getResultPacket().getPadreElapsedTime());
 				}
 
 			}

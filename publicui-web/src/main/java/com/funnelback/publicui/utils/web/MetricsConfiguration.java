@@ -42,9 +42,6 @@ public class MetricsConfiguration {
 	private LocalHostnameHolder hostnameHolder;
 	
 	@Autowired
-	private ExecutionContextHolder executionContextHolder;
-	
-	@Autowired
 	private ConfigRepository configRepository;
 	
 	@Bean
