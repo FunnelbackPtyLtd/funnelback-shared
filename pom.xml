@@ -104,6 +104,7 @@
 						<artifactId>mallet</artifactId>
 					</exclusion>
 					<exclusion>
+						<groupId>com.funnelback</groupId>
 						<artifactId>funnelback-squiz-api</artifactId>
 					</exclusion>
 				</exclusions>
