@@ -48,7 +48,17 @@ public class LocalLogService implements LogService {
 	@Override
 	public void logClick(ClickLog cl) {
 		try {
-			CSVWriter csvWriter = new CSVWriter(clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir("live"),"clicks-"+ localHostnameHolder.getShortHostname()+".log"));
+			String shortHostname = localHostnameHolder.getShortHostname();
+			CSVWriter csvWriter;
+			if(shortHostname != null) {
+				csvWriter = new CSVWriter(
+						clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+						Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT));
+			} else {
+				csvWriter = new CSVWriter(
+						clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+						Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT));
+			}
 			
 			String[] entry = new String[6];
 			

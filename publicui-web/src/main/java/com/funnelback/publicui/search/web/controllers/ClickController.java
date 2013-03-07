@@ -76,7 +76,7 @@ public class ClickController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/redirect", method = RequestMethod.GET)
-	public void click(
+	public void redirect(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(RequestParameters.COLLECTION) String collectionId,

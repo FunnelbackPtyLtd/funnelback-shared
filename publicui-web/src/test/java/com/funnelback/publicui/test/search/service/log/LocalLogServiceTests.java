@@ -79,6 +79,33 @@ public class LocalLogServiceTests {
 	
 	
 	@Test 
+	public void testClickCsvNoHostname() throws Exception {
+		LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+		when(lhh.getShortHostname()).thenReturn(null);
+		
+		logService.setLocalHostnameHolder(lhh);
+		
+		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
+		Collection c = new Collection(COLLECTION_NAME, config);
+		Profile p = new Profile("profile");
+		Date date = new Date(1361331439286L);
+	
+		ClickLog cl = new ClickLog(date, c, p, "userID", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
+		ClickLogWriterHolder clickLogWriterHolder = mock(ClickLogWriterHolder.class);
+		Writer csvWritten = new StringWriter();
+		when(clickLogWriterHolder.getWriter(c.getConfiguration().getLogDir("live"), "clicks.log")).thenReturn(csvWritten);
+		logService.setClickLogWriterHolder(clickLogWriterHolder);
+		
+		logService.logClick(cl);
+		
+		Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n", 
+				csvWritten.toString());
+	}
+	
+	
+	
+	@Test 
 	public void testClickCsvComplete() throws Exception {
 		Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
 			.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
