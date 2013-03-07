@@ -596,6 +596,86 @@ abc.com.au=abc-news,abc-shop]]>
 			</para>
 			
 		</section>
+		
+	</chapter>
+	
+	<chapter xml:id="serve-x-document">
+		<title>Serving documents (Filecopy, DB, ...)</title>
+		
+		<section xml:id="serve-filecopy-document">
+			<title>Filecopy</title>
+			
+			<para>
+				Filecopy documents are served by <literal>serve-filecopy-document.tcgi</literal>. It has 2 modes of operation:
+				<simplelist>
+					<member>
+						Retrieve the file using the Filecopier program, when no DLS is in use. In this mode the file is retrieved using the credentials
+						used during the crawl, as configured in <literal>collection.cfg</literal>.
+					</member>
+					<member>
+						Retrieve the file by trying to open it directly, when DLS is enabled. This assumes that the process that opens the file
+						is impersonating the search user, thus enforcing the user permissions.
+					</member>
+				</simplelist>
+				
+				In the first mode the file is retrieved by Filecopier and stored in a temporary file under <literal>SEARCH_HOME/log/filecopy-extract-&lt;pid&gt;.output"</literal>,
+				<literal>pid</literal> being the process ID of Perl when it runs this CGI. In the second mode the file is read in memory then streamed to the
+				user browser.
+			</para>
+			
+			<para>The URI of the file to serve is passed in the <literal>uri</literal> parameter.	</para>
+			
+			<para>
+				Other features:
+				<simplelist>
+					<member>
+						The script sets a <literal>Content-Disposition</literal> header with the actual file name, extracted from the
+						<literal>uri</literal> parameter (Last part of the URL). This header can be disabled using the <literal>noattachment</literal>
+						parameter. This is especially used in the Selenium tests where we want the file content to be shown on the browser.
+					</member>
+					<member>
+						Takes a <literal>nounlink</literal> parameter, used for debugging purposes to prevent the script from deleting the temporary
+						<literal>filecopy-extract-&lt;pid&gt;.output</literal> file.
+					</member>
+					<member>On Novell collections, mounts the fileshare first and unmount it in the end.</member>
+				</simplelist>
+				
+				There are also some gotchas on Windows:
+				<simplelist>
+					<member>
+						Dealing with non ascii filenames is a problem and needs to be properly tested. Perl was unable to <literal>open()</literal>
+						a file with non-ascii characters, so we had to use a native Win32 function instead <literal>CreateFileW()</literal>
+					</member>
+					<member>
+						Dealing with paths longer than 255 characters is also a problem. The path must be
+						<link  xlink:href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx">prefixed with a specific expression</link> to
+						allow Windows to access the file. The prefix is different if it's a local file (<literal>\\?\C:\...</literal>) or a UNC one
+						(<literal>\\?\UNC\\server\...</literal>).
+					</member>
+					<member>
+						In the mode where the file is fetched with Filecopy having non-ascii characters in the URL might also be a problem as it's
+						passed down as a CLI argument to filecopier. For now the URL is Base64 encoded to avoid any issues.
+					</member>
+				</simplelist>
+			</para>
+		</section>
+		
+		<section xml:id="serve-filecopy-document-implementation">
+			<title>Implementation notes</title>
+			
+			<para>
+				For the impersonation to work the actual file access would have to happen on the native side, not in Java, probably using
+				<literal>CreateFileW()</literal> as in Perl. Another native function that might be useful is
+				<link xlink:href="http://msdn.microsoft.com/en-us/library/aa385482(v=vs.85).aspx"><literal>WNetUseConnection()</literal></link>
+				in case the connection needs to be established (equivalent of mounting the share) before acessing the remote resource.
+			</para>
+			
+			<para>
+				For the Filecopy fetch mode we could use directly the Filecopy classes to fetch the document, however that would drag along
+				lots of dependencies. For that reason we should consider keeping the actual way of forking a new process.
+			</para>
+			
+		</section>
 	</chapter>
 
 </part>
