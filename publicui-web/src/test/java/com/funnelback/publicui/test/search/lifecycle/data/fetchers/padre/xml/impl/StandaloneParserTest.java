@@ -14,66 +14,66 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class StandaloneParserTest {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		if (args.length != 1) {
-			System.out.println("You must provide the folder containing XML files");
-			System.exit(1);
-		}
-		
-		File dir = new File(args[0]);
-		if (!dir.isDirectory()) {
-			System.out.println("Provided path '" + dir.getAbsolutePath() + "' is not a directory");
-			System.exit(1);
-		}
-		System.out.println("Using folder: '" + dir.getAbsolutePath() + "'");
-		
-		File[] files = dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".xml");
-			}
-		});
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        
+        if (args.length != 1) {
+            System.out.println("You must provide the folder containing XML files");
+            System.exit(1);
+        }
+        
+        File dir = new File(args[0]);
+        if (!dir.isDirectory()) {
+            System.out.println("Provided path '" + dir.getAbsolutePath() + "' is not a directory");
+            System.exit(1);
+        }
+        System.out.println("Using folder: '" + dir.getAbsolutePath() + "'");
+        
+        File[] files = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".xml");
+            }
+        });
 
-		configureLogging();
-		
-		int errors = 0;
-		StaxStreamParser parser = new StaxStreamParser();
-		for (File f: files) {
-			try {
-				System.out.println("-- Parsing " + f.getAbsolutePath());
-				ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"));
-				if (rp == null) {
-					errors++;
-					System.out.println("Parser result for file '" + f.getAbsolutePath() + "' is null");
-				}
-			} catch (Exception e) {
-				System.out.println("Error while parsing '" + f.getAbsolutePath() + "'");
-				e.printStackTrace();
-				errors++;
-			}
-		}
-		
-		if (errors > 0) {
-			System.out.println(errors + " errors encountered over " + files.length + " files");
-			System.exit(1);
-		} else {
-			System.out.println("All " + files.length + " XML files were parsed successfully");
-		}
-		
-	}
-	
-	private static void configureLogging() {
-		Properties p = new Properties();
-		p.put("log4j.rootLogger", "DEBUG, console");
-		p.put("log4j.appender.console", ConsoleAppender.class.getName());
-		p.put("log4j.appender.console.layout", PatternLayout.class.getName());
-		p.put("log4j.appender.console.layout.ConversionPattern", "%d [%t] %-5p %c{2} %x - %m%n");
-		
-		PropertyConfigurator.configure(p);
-	}
+        configureLogging();
+        
+        int errors = 0;
+        StaxStreamParser parser = new StaxStreamParser();
+        for (File f: files) {
+            try {
+                System.out.println("-- Parsing " + f.getAbsolutePath());
+                ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"));
+                if (rp == null) {
+                    errors++;
+                    System.out.println("Parser result for file '" + f.getAbsolutePath() + "' is null");
+                }
+            } catch (Exception e) {
+                System.out.println("Error while parsing '" + f.getAbsolutePath() + "'");
+                e.printStackTrace();
+                errors++;
+            }
+        }
+        
+        if (errors > 0) {
+            System.out.println(errors + " errors encountered over " + files.length + " files");
+            System.exit(1);
+        } else {
+            System.out.println("All " + files.length + " XML files were parsed successfully");
+        }
+        
+    }
+    
+    private static void configureLogging() {
+        Properties p = new Properties();
+        p.put("log4j.rootLogger", "DEBUG, console");
+        p.put("log4j.appender.console", ConsoleAppender.class.getName());
+        p.put("log4j.appender.console.layout", PatternLayout.class.getName());
+        p.put("log4j.appender.console.layout.ConversionPattern", "%d [%t] %-5p %c{2} %x - %m%n");
+        
+        PropertyConfigurator.configure(p);
+    }
 
 }

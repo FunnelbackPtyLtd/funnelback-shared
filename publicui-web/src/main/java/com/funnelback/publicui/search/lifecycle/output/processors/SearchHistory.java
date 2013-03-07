@@ -30,51 +30,51 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 @Log4j
 public class SearchHistory extends AbstractOutputProcessor {
 
-	@Autowired
-	private SearchHistoryRepository repository;
+    @Autowired
+    private SearchHistoryRepository repository;
 
-	@Override
-	public void processOutput(SearchTransaction st)
-			throws OutputProcessorException {
+    @Override
+    public void processOutput(SearchTransaction st)
+        throws OutputProcessorException {
 
-		if (SearchTransactionUtils.hasQuestion(st)
-				&& SearchTransactionUtils.hasResponse(st)
-				&& st.getQuestion().getSearchUser() != null) {
-		
-			SearchResponse r = st.getResponse();
-			SearchQuestion q = st.getQuestion();
+        if (SearchTransactionUtils.hasQuestion(st)
+                && SearchTransactionUtils.hasResponse(st)
+                && st.getQuestion().getSearchUser() != null) {
+        
+            SearchResponse r = st.getResponse();
+            SearchQuestion q = st.getQuestion();
 
-			// Save current search
-			if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {
-				com.funnelback.publicui.search.model.transaction.session.SearchHistory h = new com.funnelback.publicui.search.model.transaction.session.SearchHistory();
-				h.setCurrStart(r.getResultPacket().getResultsSummary().getCurrStart());
-				h.setNumRanks(r.getResultPacket().getResultsSummary().getNumRanks());
-				h.setOriginalQuery(q.getOriginalQuery());
-				h.setQueryAsProcessed(r.getResultPacket().getQueryAsProcessed());
-				h.setSearchDate(new Date());
-				h.setTotalMatching(r.getResultPacket().getResultsSummary().getTotalMatching());
-				h.setCollectionId(q.getCollection().getId());
-				try {
-					h.setSearchUrl(new URL(q.getInputParameterMap().get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString())));
-				} catch (MalformedURLException mue) {
-					log.warn("Couldn't parse search URL", mue);
-				}
-				
-				repository.saveSearch(q.getSearchUser(), h, q.getCollection());
-			}
+            // Save current search
+            if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {
+                com.funnelback.publicui.search.model.transaction.session.SearchHistory h = new com.funnelback.publicui.search.model.transaction.session.SearchHistory();
+                h.setCurrStart(r.getResultPacket().getResultsSummary().getCurrStart());
+                h.setNumRanks(r.getResultPacket().getResultsSummary().getNumRanks());
+                h.setOriginalQuery(q.getOriginalQuery());
+                h.setQueryAsProcessed(r.getResultPacket().getQueryAsProcessed());
+                h.setSearchDate(new Date());
+                h.setTotalMatching(r.getResultPacket().getResultsSummary().getTotalMatching());
+                h.setCollectionId(q.getCollection().getId());
+                try {
+                    h.setSearchUrl(new URL(q.getInputParameterMap().get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString())));
+                } catch (MalformedURLException mue) {
+                    log.warn("Couldn't parse search URL", mue);
+                }
+                
+                repository.saveSearch(q.getSearchUser(), h, q.getCollection());
+            }
 
-			// Retrieve previous history
-			r.getSearchHistory().addAll(repository.getSearchHistory(q.getSearchUser(),
-					q.getCollection(), 
-					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
-							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
-			
-			r.getClickHistory().addAll(repository.getClickHistory(q.getSearchUser(),
-					q.getCollection(),
-					q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
-							DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+            // Retrieve previous history
+            r.getSearchHistory().addAll(repository.getSearchHistory(q.getSearchUser(),
+                    q.getCollection(), 
+                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
+                            DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+            
+            r.getClickHistory().addAll(repository.getClickHistory(q.getSearchUser(),
+                    q.getCollection(),
+                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
+                            DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
 
-		}
+        }
 
-	}
+    }
 }

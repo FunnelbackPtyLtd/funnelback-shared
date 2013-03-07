@@ -15,16 +15,16 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
  */
 @Log4j
 public class ParameterTransformResource extends AbstractSingleFileResource<List<TransformRule>> {
-	
-	public ParameterTransformResource(File file) {
-		super(file);
-	}
+    
+    public ParameterTransformResource(File file) {
+        super(file);
+    }
 
-	@Override
-	public List<TransformRule> parse() throws IOException {
-		log.debug("Loading parameter transform rules from '"+file.getAbsolutePath()+"'");
-		String[] rules = new SimpleFileResource(file).parse();
-		return ParamTransformRuleFactory.buildRules(rules);
-	}
+    @Override
+    public List<TransformRule> parse() throws IOException {
+        log.debug("Loading parameter transform rules from '"+file.getAbsolutePath()+"'");
+        String[] rules = new SimpleFileResource(file).parse();
+        return ParamTransformRuleFactory.buildRules(rules);
+    }
 
 }

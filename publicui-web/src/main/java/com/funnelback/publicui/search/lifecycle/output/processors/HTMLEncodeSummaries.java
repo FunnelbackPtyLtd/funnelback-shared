@@ -19,18 +19,18 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("htmlEncodeSummaries")
 public class HTMLEncodeSummaries extends AbstractOutputProcessor {
-	
-	private static final String[] UNSAFE_CHARS = {"\\", "\"", "'", "<", ">", "&"};
-	private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&#39;", "&lt;", "&gt;", "&amp;"};
+    
+    private static final String[] UNSAFE_CHARS = {"\\", "\"", "'", "<", ">", "&"};
+    private static final String[] SAFE_REPLACEMENT = {"&#92;", "&quot;", "&#39;", "&lt;", "&gt;", "&amp;"};
 
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasResults(searchTransaction)) {
-			for(Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
-				if (r.getSummary() != null) {
-					r.setSummary(StringUtils.replaceEach(r.getSummary(), UNSAFE_CHARS, SAFE_REPLACEMENT));
-				}
-			}
-		}
-	}
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasResults(searchTransaction)) {
+            for(Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
+                if (r.getSummary() != null) {
+                    r.setSummary(StringUtils.replaceEach(r.getSummary(), UNSAFE_CHARS, SAFE_REPLACEMENT));
+                }
+            }
+        }
+    }
 }

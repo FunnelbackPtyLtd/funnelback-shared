@@ -21,25 +21,24 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Component("getTranslationsOutputProcessor")
 public class GetTranslations extends AbstractOutputProcessor {
 
-	@Autowired
-	@Setter
-	private ConfigRepository configRepository;
-	
-	@Override
-	public void processOutput(SearchTransaction searchTransaction)
-			throws OutputProcessorException {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)
-				&& SearchTransactionUtils.hasCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getLocale() != null
-				&& SearchTransactionUtils.hasResponse(searchTransaction)
-				&& searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.ModernUI.I18N)) {
-			searchTransaction.getResponse().getTranslations().putAll(
-					configRepository.getTranslations(
-							searchTransaction.getQuestion().getCollection().getId(),
-							searchTransaction.getQuestion().getProfile(),
-							searchTransaction.getQuestion().getLocale()));
-		}
+    @Autowired
+    @Setter
+    private ConfigRepository configRepository;
+    
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)
+                && SearchTransactionUtils.hasCollection(searchTransaction)
+                && searchTransaction.getQuestion().getLocale() != null
+                && SearchTransactionUtils.hasResponse(searchTransaction)
+                && searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.ModernUI.I18N)) {
+            searchTransaction.getResponse().getTranslations().putAll(
+                    configRepository.getTranslations(
+                            searchTransaction.getQuestion().getCollection().getId(),
+                            searchTransaction.getQuestion().getProfile(),
+                            searchTransaction.getQuestion().getLocale()));
+        }
 
-	}
+    }
 
 }

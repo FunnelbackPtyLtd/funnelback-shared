@@ -15,7 +15,7 @@ import com.funnelback.publicui.search.service.resource.ResourceManager;
  * <p>It will use the file system for implementing the various
  * {@link ResourceManager} methods:
  * <ul>
- * 	<li>{@link #getCacheKey()} will return the absolute path of the file.</li>
+ *     <li>{@link #getCacheKey()} will return the absolute path of the file.</li>
  *  <li>{@link #isStale(long)} will check the file last modified date.</li>
  *  <li>{@link #exists()} will check if the file exists.</li>
  * </ul>
@@ -27,25 +27,25 @@ import com.funnelback.publicui.search.service.resource.ResourceManager;
 @Log4j
 public abstract class AbstractSingleFileResource<T> implements ParseableResource<T> {
 
-	protected final File file;
-	
-	@Override
-	public abstract T parse() throws IOException;
-	
-	@Override
-	public boolean isStale(long timestamp) {
-		boolean stale = file.lastModified() > timestamp;
-		log.debug("Stale check for file '"+file.getAbsolutePath()+"' returned '"+stale+"' (lastModified="+file.lastModified()+",timestamp="+timestamp+")");
-		return stale;
-	}
-	
-	@Override
-	public Object getCacheKey() {
-		return file.getAbsolutePath();
-	}
-	
-	@Override
-	public boolean exists() {
-		return file.exists();
-	}
+    protected final File file;
+    
+    @Override
+    public abstract T parse() throws IOException;
+    
+    @Override
+    public boolean isStale(long timestamp) {
+        boolean stale = file.lastModified() > timestamp;
+        log.debug("Stale check for file '"+file.getAbsolutePath()+"' returned '"+stale+"' (lastModified="+file.lastModified()+",timestamp="+timestamp+")");
+        return stale;
+    }
+    
+    @Override
+    public Object getCacheKey() {
+        return file.getAbsolutePath();
+    }
+    
+    @Override
+    public boolean exists() {
+        return file.exists();
+    }
 }

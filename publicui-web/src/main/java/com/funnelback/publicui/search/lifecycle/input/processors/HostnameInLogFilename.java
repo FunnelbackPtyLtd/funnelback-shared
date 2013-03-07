@@ -28,32 +28,32 @@ import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 @Component("hostnameInLogFilename")
 public class HostnameInLogFilename extends AbstractInputProcessor {
 
-	/** Name of the QP option to specify the log file */
-	public static final String QP_OPT_LOGFILE = "-qlog_file";
-	
-	@Autowired
-	@Setter private LocalHostnameHolder localHostnameHolder;
-	
-	@Override
-	public void processInput(SearchTransaction searchTransaction)
-			throws InputProcessorException {
-		if (localHostnameHolder.getHostname() != null
-				&& ! localHostnameHolder.isLocalhost()
-				&& SearchTransactionUtils.hasCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getCollection().getConfiguration()
-				.valueAsBoolean(Keys.Logging.HOSTNAME_IN_FILENAME, DefaultValues.Logging.HOSTNAME_IN_FILENAME)) {
-			
-			File logFile = new File(
-					searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE
-					+ File.separator + DefaultValues.FOLDER_LOG,
-					"queries-"+localHostnameHolder.getShortHostname()+".log");
-			String opt = QP_OPT_LOGFILE + "=" + logFile.getAbsolutePath();
-			
-			searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(opt);
-			log.debug("Added QP option '"+opt+"'");			
-		}
+    /** Name of the QP option to specify the log file */
+    public static final String QP_OPT_LOGFILE = "-qlog_file";
+    
+    @Autowired
+    @Setter private LocalHostnameHolder localHostnameHolder;
+    
+    @Override
+    public void processInput(SearchTransaction searchTransaction)
+        throws InputProcessorException {
+        if (localHostnameHolder.getHostname() != null
+                && ! localHostnameHolder.isLocalhost()
+                && SearchTransactionUtils.hasCollection(searchTransaction)
+                && searchTransaction.getQuestion().getCollection().getConfiguration()
+                .valueAsBoolean(Keys.Logging.HOSTNAME_IN_FILENAME, DefaultValues.Logging.HOSTNAME_IN_FILENAME)) {
+            
+            File logFile = new File(
+                    searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
+                    + File.separator + DefaultValues.VIEW_LIVE
+                    + File.separator + DefaultValues.FOLDER_LOG,
+                    "queries-"+localHostnameHolder.getShortHostname()+".log");
+            String opt = QP_OPT_LOGFILE + "=" + logFile.getAbsolutePath();
+            
+            searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(opt);
+            log.debug("Added QP option '"+opt+"'");            
+        }
 
-	}
+    }
 
 }

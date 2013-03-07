@@ -35,68 +35,68 @@ import com.funnelback.publicui.utils.web.CGIEnvironment;
 @Log4j
 public abstract class AbstractRunPadreBinaryController {
 
-	protected abstract File getSearchHome();
-	
-	private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
-	private static final String HEADER_NAME_SEPARATOR = ": ";
+    protected abstract File getSearchHome();
+    
+    private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
+    private static final String HEADER_NAME_SEPARATOR = ": ";
 
-	@Value("#{appProperties['padre.fork.timeout']?:30000}")
-	@Setter
-	protected int padreWaitTimeout;
+    @Value("#{appProperties['padre.fork.timeout']?:30000}")
+    @Setter
+    protected int padreWaitTimeout;
 
-	@Autowired
-	private I18n i18n;
+    @Autowired
+    private I18n i18n;
 
-	/**
-	 * Runs a PADRE binary.
-	 * @param padreBinary Name of the binary (excluding extension if on Windows)
-	 * @param options Command line options, or null
-	 * @param request
-	 * @param response
-	 * @param detectHeaders Whereas to try to detect headers in the output and send them
-	 * @throws IOException
-	 * @throws PadreForkingException
-	 */
-	protected final void runPadreBinary(String padreBinary,
-			String options,
-			HttpServletRequest request, HttpServletResponse response,
-			boolean detectHeaders) throws IOException, PadreForkingException {
-		CGIEnvironment cgi = new CGIEnvironment(request);
+    /**
+     * Runs a PADRE binary.
+     * @param padreBinary Name of the binary (excluding extension if on Windows)
+     * @param options Command line options, or null
+     * @param request
+     * @param response
+     * @param detectHeaders Whereas to try to detect headers in the output and send them
+     * @throws IOException
+     * @throws PadreForkingException
+     */
+    protected final void runPadreBinary(String padreBinary,
+            String options,
+            HttpServletRequest request, HttpServletResponse response,
+            boolean detectHeaders) throws IOException, PadreForkingException {
+        CGIEnvironment cgi = new CGIEnvironment(request);
 
-		Map<String, String> env = cgi.getEnvironment();
-		env.put(EnvironmentKeys.SEARCH_HOME.toString(), getSearchHome().getAbsolutePath());
+        Map<String, String> env = cgi.getEnvironment();
+        env.put(EnvironmentKeys.SEARCH_HOME.toString(), getSearchHome().getAbsolutePath());
 
-		String commandLine = new File(getSearchHome(),
-				DefaultValues.FOLDER_BIN + File.separator
-				+ padreBinary + ((OS.isFamilyWindows()) ? ".exe" : "")).getAbsolutePath();
-		
-		if (options != null) {
-			commandLine += " " + options;
-		}
+        String commandLine = new File(getSearchHome(),
+                DefaultValues.FOLDER_BIN + File.separator
+                + padreBinary + ((OS.isFamilyWindows()) ? ".exe" : "")).getAbsolutePath();
+        
+        if (options != null) {
+            commandLine += " " + options;
+        }
 
-		try {
-			PadreExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+        try {
+            PadreExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 
-			if (detectHeaders) {
-				Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
-				if (m.matches()) {
-	
-					// Output headers
-					String[] headers = m.group(1).split("\r?\n");
-					for (String header : headers) {
-						String[] kv = header.split(HEADER_NAME_SEPARATOR);
-						response.setHeader(kv[0], kv[1]);
-					}
+            if (detectHeaders) {
+                Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
+                if (m.matches()) {
+    
+                    // Output headers
+                    String[] headers = m.group(1).split("\r?\n");
+                    for (String header : headers) {
+                        String[] kv = header.split(HEADER_NAME_SEPARATOR);
+                        response.setHeader(kv[0], kv[1]);
+                    }
 
-					// Output content
-					response.getWriter().write(m.group(2));
-				}
-			} else {
-				response.getWriter().write(out.getOutput());				
-			}
-		} catch (PadreForkingException pfe) {
-			log.error("Unable to run PADRE binary '" + padreBinary + "'", pfe);
-			throw pfe;
-		}
-	}
+                    // Output content
+                    response.getWriter().write(m.group(2));
+                }
+            } else {
+                response.getWriter().write(out.getOutput());                
+            }
+        } catch (PadreForkingException pfe) {
+            log.error("Unable to run PADRE binary '" + padreBinary + "'", pfe);
+            throw pfe;
+        }
+    }
 }

@@ -11,37 +11,37 @@ import freemarker.template.TemplateModelException;
 
 public class ResolveUrlMethodTests extends AbstractMethodTest {
 
-	@Test
-	public void testRelative() throws TemplateModelException {
-		SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/funnelback", "/favicon.ico"));
-		Assert.assertEquals("http://www.funnelback.com/favicon.ico", result.getAsString());
-	}
+    @Test
+    public void testRelative() throws TemplateModelException {
+        SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/funnelback", "/favicon.ico"));
+        Assert.assertEquals("http://www.funnelback.com/favicon.ico", result.getAsString());
+    }
 
-	@Test
-	public void testRelativeNotRoot() throws TemplateModelException {
-		SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/funnelback", "wcag"));
-		Assert.assertEquals("http://www.funnelback.com/products/wcag", result.getAsString());
-	}
+    @Test
+    public void testRelativeNotRoot() throws TemplateModelException {
+        SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/funnelback", "wcag"));
+        Assert.assertEquals("http://www.funnelback.com/products/wcag", result.getAsString());
+    }
 
-	@Test
-	public void testAbsolute() throws TemplateModelException {
-		SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/services", "http://www.funnelback.com.au"));
-		Assert.assertEquals("http://www.funnelback.com.au", result.getAsString());
-	}
+    @Test
+    public void testAbsolute() throws TemplateModelException {
+        SimpleScalar result = (SimpleScalar) method.exec(buildStringArguments("http://www.funnelback.com/products/services", "http://www.funnelback.com.au"));
+        Assert.assertEquals("http://www.funnelback.com.au", result.getAsString());
+    }
 
-	@Override
-	protected AbstractTemplateMethod buildMethod() {
-		return new ResolveUrlMethod();
-	}
+    @Override
+    protected AbstractTemplateMethod buildMethod() {
+        return new ResolveUrlMethod();
+    }
 
-	@Override
-	protected int getRequiredArgumentsCount() {
-		return 2;
-	}
+    @Override
+    protected int getRequiredArgumentsCount() {
+        return 2;
+    }
 
-	@Override
-	protected int getOptionalArgumentsCount() {
-		return 0;
-	}
-	
+    @Override
+    protected int getOptionalArgumentsCount() {
+        return 0;
+    }
+    
 }

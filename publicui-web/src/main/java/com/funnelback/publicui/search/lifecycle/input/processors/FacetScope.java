@@ -22,20 +22,20 @@ import com.funnelback.publicui.utils.QueryStringUtils;
 @Log4j
 public class FacetScope extends AbstractInputProcessor {
 
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			if(searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.FACET_SCOPE) != null) {
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+            if(searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.FACET_SCOPE) != null) {
 
-				String facetScope = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(),
-						RequestParameters.FACET_SCOPE, null);
-				
-				if (facetScope != null && ! "".equals(facetScope)) {
-					Map<String, String> qs = QueryStringUtils.toSingleMap(facetScope, false);
-					searchTransaction.getQuestion().getRawInputParameters().putAll(QueryStringUtils.toArrayMap(facetScope, false));
-					log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + qs + "'");
-				}
-			}
-		}
-	}
+                String facetScope = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(),
+                        RequestParameters.FACET_SCOPE, null);
+                
+                if (facetScope != null && ! "".equals(facetScope)) {
+                    Map<String, String> qs = QueryStringUtils.toSingleMap(facetScope, false);
+                    searchTransaction.getQuestion().getRawInputParameters().putAll(QueryStringUtils.toArrayMap(facetScope, false));
+                    log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + qs + "'");
+                }
+            }
+        }
+    }
 }

@@ -20,26 +20,26 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ContextualNavigation {
 
-	/** Terms used within this contextual navigation object */
-	@Getter @Setter private String searchTerm;
-	
-	/** Navigation items */
-	@Getter @Setter private ClusterNav clusterNav;
-	
-	/** List of categories (type, topic, site). */
-	@Getter private final List<Category> categories = new ArrayList<Category>();
-	
-	/**
-	 * Custom data placeholder allowing any arbitrary data to be
-	 * stored by hook scripts.
-	 */
-	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    /** Terms used within this contextual navigation object */
+    @Getter @Setter private String searchTerm;
+    
+    /** Navigation items */
+    @Getter @Setter private ClusterNav clusterNav;
+    
+    /** List of categories (type, topic, site). */
+    @Getter private final List<Category> categories = new ArrayList<Category>();
+    
+    /**
+     * Custom data placeholder allowing any arbitrary data to be
+     * stored by hook scripts.
+     */
+    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
 
-	/** Constants for the PADRE XML result packet tags. */
-	public final static class Schema {
-		public static final String CONTEXTUAL_NAVIGATION = "contextual_navigation";
-		
-		public static final String SEARCH_TERMS = "search_terms";
-	}
-	
+    /** Constants for the PADRE XML result packet tags. */
+    public final static class Schema {
+        public static final String CONTEXTUAL_NAVIGATION = "contextual_navigation";
+        
+        public static final String SEARCH_TERMS = "search_terms";
+    }
+    
 }

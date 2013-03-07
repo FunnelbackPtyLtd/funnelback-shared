@@ -22,56 +22,56 @@ import com.funnelback.publicui.search.service.image.ImageScalerSettings.ScaleTyp
 @Log4j
 @Component
 public class DefaultImageScaler implements ImageScaler {
-	
-	protected static final String CACHE = DefaultImageScaler.class.getSimpleName() + "Repository";
+    
+    protected static final String CACHE = DefaultImageScaler.class.getSimpleName() + "Repository";
 
-	@Autowired
-	protected CacheManager appCacheManager;
+    @Autowired
+    protected CacheManager appCacheManager;
 
-	@Override
-	public byte[] scaleImage(String scaledCacheIdentifier, byte[] imageData, ImageScalerSettings settings) throws IOException {
+    @Override
+    public byte[] scaleImage(String scaledCacheIdentifier, byte[] imageData, ImageScalerSettings settings) throws IOException {
 
-		Cache cache = appCacheManager.getCache(CACHE);
+        Cache cache = appCacheManager.getCache(CACHE);
 
-		String processedKey = scaledCacheIdentifier + "|" + settings.getWidth()
-				+ "|" + settings.getHeight() + "|"
-				+ settings.getType() + "|" + settings.getFormat();
+        String processedKey = scaledCacheIdentifier + "|" + settings.getWidth()
+                + "|" + settings.getHeight() + "|"
+                + settings.getType() + "|" + settings.getFormat();
 
-		if (! cache.isKeyInCache(processedKey)) {
-			log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + processedKey);
-			
-			@Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
-			Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
-			
-			thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
-	
-			if (settings.getFormat() != null) {
-				thumbnailor = thumbnailor.outputFormat(settings.getFormat());
-			}		
-	
-			if (settings.getType() == null) {
-				thumbnailor = thumbnailor.keepAspectRatio(true);
-			} else if (settings.getType() == ScaleType.keep_aspect) {
-				thumbnailor = thumbnailor.keepAspectRatio(true);
-			} else if (settings.getType() == ScaleType.ignore_aspect) {
-				thumbnailor = thumbnailor.keepAspectRatio(false);
-			} else {
-				String cropName = settings.getType().name();
-				// Strip prefix to match position names
-				String positionName = cropName.substring("crop_".length());
-				thumbnailor = thumbnailor.crop(Positions.valueOf(positionName.toUpperCase()));
-			}
-	
-			@Cleanup ByteArrayOutputStream scaledImageBytes = new ByteArrayOutputStream();
-			try {
-				thumbnailor.toOutputStream(scaledImageBytes);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			
-			cache.put(new Element(processedKey, scaledImageBytes.toByteArray()));
-		}
+        if (! cache.isKeyInCache(processedKey)) {
+            log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + processedKey);
+            
+            @Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
+            Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
+            
+            thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
+    
+            if (settings.getFormat() != null) {
+                thumbnailor = thumbnailor.outputFormat(settings.getFormat());
+            }        
+    
+            if (settings.getType() == null) {
+                thumbnailor = thumbnailor.keepAspectRatio(true);
+            } else if (settings.getType() == ScaleType.keep_aspect) {
+                thumbnailor = thumbnailor.keepAspectRatio(true);
+            } else if (settings.getType() == ScaleType.ignore_aspect) {
+                thumbnailor = thumbnailor.keepAspectRatio(false);
+            } else {
+                String cropName = settings.getType().name();
+                // Strip prefix to match position names
+                String positionName = cropName.substring("crop_".length());
+                thumbnailor = thumbnailor.crop(Positions.valueOf(positionName.toUpperCase()));
+            }
+    
+            @Cleanup ByteArrayOutputStream scaledImageBytes = new ByteArrayOutputStream();
+            try {
+                thumbnailor.toOutputStream(scaledImageBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            
+            cache.put(new Element(processedKey, scaledImageBytes.toByteArray()));
+        }
 
-		return (byte[])cache.get(processedKey).getValue();
-	}
+        return (byte[])cache.get(processedKey).getValue();
+    }
 }

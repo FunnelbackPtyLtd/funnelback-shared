@@ -10,13 +10,13 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 public class MockUserKeysMapper implements UserKeysMapper {
 
-	@Getter
-	private boolean traversed = false;
-	
-	@Override
-	public List<String> getUserKeys(SearchTransaction transaction) {
-		traversed = true;
-		return Arrays.asList(new String[] {MockUserKeysMapper.class.getSimpleName()});
-	}
+    @Getter
+    private boolean traversed = false;
+    
+    @Override
+    public List<String> getUserKeys(SearchTransaction transaction) {
+        traversed = true;
+        return Arrays.asList(new String[] {MockUserKeysMapper.class.getSimpleName()});
+    }
 
 }

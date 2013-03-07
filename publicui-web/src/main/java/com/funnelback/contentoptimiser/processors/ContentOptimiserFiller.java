@@ -9,13 +9,13 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.google.common.collect.SetMultimap;
 
 public interface ContentOptimiserFiller {
-	public void fillHintCollections(ContentOptimiserModel comparison);
+    public void fillHintCollections(ContentOptimiserModel comparison);
 
-	public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp, RankingFeatureFactory hintFactory);
-	void setImportantUrl(ContentOptimiserModel comparison, SearchTransaction searchTransaction);
+    public void consumeResultPacket(ContentOptimiserModel comparison, ResultPacket rp, RankingFeatureFactory hintFactory);
+    void setImportantUrl(ContentOptimiserModel comparison, SearchTransaction searchTransaction);
 
 
-	void obtainContentBreakdown(ContentOptimiserModel comparison,
-			SearchTransaction searchTransaction, Result importantResult,
-			AnchorModel anchors, SetMultimap<String, String> stemMatches);
+    void obtainContentBreakdown(ContentOptimiserModel comparison,
+            SearchTransaction searchTransaction, Result importantResult,
+            AnchorModel anchors, SetMultimap<String, String> stemMatches);
 }

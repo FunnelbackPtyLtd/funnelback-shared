@@ -21,33 +21,33 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Profile {
 
-	/**
-	 * Profile id, identical to the name of the folder containing the
-	 * profile configuration under <code>conf/[collection]/[profile]/</code>.
-	 */
-	@Getter private String id;
-	
-	/**
-	 * Faceted navigation configuration in
-	 * <code>conf/[collection]/[profile]/faceted_navigation.cfg</code>
-	 */
-	@Getter @Setter private FacetedNavigationConfig facetedNavConfConfig;
-	
-	/**
-	 * Faceted navigation configuration in
-	 * <code>data/[collection]/live/idx/[profile]/faceted_navigation.cfg</code>
-	 */
-	@Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
-	
-	/**
-	 * <p>Specific query processor options for this profile.</p>
-	 * 
-	 * <p>Read from <code>conf/[collection]/[profile]/padre_opts.cfg</code>.</p>
-	 */
-	@Getter @Setter private String padreOpts;
-	
-	public Profile(String id) {
-		this.id = id;
-	}
-	
+    /**
+     * Profile id, identical to the name of the folder containing the
+     * profile configuration under <code>conf/[collection]/[profile]/</code>.
+     */
+    @Getter private String id;
+    
+    /**
+     * Faceted navigation configuration in
+     * <code>conf/[collection]/[profile]/faceted_navigation.cfg</code>
+     */
+    @Getter @Setter private FacetedNavigationConfig facetedNavConfConfig;
+    
+    /**
+     * Faceted navigation configuration in
+     * <code>data/[collection]/live/idx/[profile]/faceted_navigation.cfg</code>
+     */
+    @Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
+    
+    /**
+     * <p>Specific query processor options for this profile.</p>
+     * 
+     * <p>Read from <code>conf/[collection]/[profile]/padre_opts.cfg</code>.</p>
+     */
+    @Getter @Setter private String padreOpts;
+    
+    public Profile(String id) {
+        this.id = id;
+    }
+    
 }

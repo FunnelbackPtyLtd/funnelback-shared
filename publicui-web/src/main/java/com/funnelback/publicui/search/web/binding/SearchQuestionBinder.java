@@ -21,146 +21,146 @@ import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 
 public class SearchQuestionBinder {
-	
-	/**
-	 * Binds a {@link SearchQuestion} to another one by copying relevant fields.
-	 * @param from
-	 * @param to
-	 */
-	public static void bind(SearchQuestion from, SearchQuestion to) {
-		to.getRawInputParameters().putAll(from.getRawInputParameters());
-		to.setQuery(from.getQuery());
-		to.setOriginalQuery(from.getOriginalQuery());
-		to.setCollection(from.getCollection());
-		to.setProfile(from.getProfile());
-		to.setImpersonated(from.isImpersonated());
-		to.setUserIdToLog(from.getUserIdToLog());
-		to.setSearchUser(from.getSearchUser());
-		to.setLocale(from.getLocale());
-		to.setCnClickedCluster(from.getCnClickedCluster());
-		to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
-		to.setClive(from.getClive());
-	}
-	
-	/**
-	 * Binds properties of the given {@link SearchQuestion} to the given {@link HttpServletRequest}
-	 * @param request
-	 * @param question
-	 */
-	@SuppressWarnings("unchecked")
-	public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
-		question.getRawInputParameters().putAll(request.getParameterMap());
-		
-		// Add any HTTP servlet specifics 
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
-		if (request.getRequestURL() != null) {
-			question.getRawInputParameters()
-					.put(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString(),
-							new String[] { request.getRequestURL().toString()
-									+ ((request.getQueryString() != null) ? "?"	+ request.getQueryString() : "") });
-		}
-		
-		// Originating IP address (prior to forwarding)
-		MapUtils.putAsStringArrayIfNotNull(
-				question.getRawInputParameters(),
-				PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(),
-				request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
+    
+    /**
+     * Binds a {@link SearchQuestion} to another one by copying relevant fields.
+     * @param from
+     * @param to
+     */
+    public static void bind(SearchQuestion from, SearchQuestion to) {
+        to.getRawInputParameters().putAll(from.getRawInputParameters());
+        to.setQuery(from.getQuery());
+        to.setOriginalQuery(from.getOriginalQuery());
+        to.setCollection(from.getCollection());
+        to.setProfile(from.getProfile());
+        to.setImpersonated(from.isImpersonated());
+        to.setUserIdToLog(from.getUserIdToLog());
+        to.setSearchUser(from.getSearchUser());
+        to.setLocale(from.getLocale());
+        to.setCnClickedCluster(from.getCnClickedCluster());
+        to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
+        to.setClive(from.getClive());
+    }
+    
+    /**
+     * Binds properties of the given {@link SearchQuestion} to the given {@link HttpServletRequest}
+     * @param request
+     * @param question
+     */
+    @SuppressWarnings("unchecked")
+    public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
+        question.getRawInputParameters().putAll(request.getParameterMap());
+        
+        // Add any HTTP servlet specifics 
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), request.getRemoteAddr());
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.REQUEST_URI.toString(), request.getRequestURI());
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.AUTH_TYPE.toString(), request.getAuthType());
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.HTTP_HOST.toString(), request.getHeader(SearchQuestion.RequestParameters.Header.HOST));
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.REMOTE_USER.toString(), request.getRemoteUser());
+        if (request.getRequestURL() != null) {
+            question.getRawInputParameters()
+                    .put(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString(),
+                            new String[] { request.getRequestURL().toString()
+                                    + ((request.getQueryString() != null) ? "?"    + request.getQueryString() : "") });
+        }
+        
+        // Originating IP address (prior to forwarding)
+        MapUtils.putAsStringArrayIfNotNull(
+                question.getRawInputParameters(),
+                PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(),
+                request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
 
-		// Set locale
-		question.setLocale(localeResolver.resolveLocale(request));
-		
-		// Copy original query
-		question.setOriginalQuery(question.getQuery());
-		
-		// Is request impersonated ?
-		question.setImpersonated(isRequestImpersonated(request));
-		
-		// User identifier to log
-		if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
-			question.setUserIdToLog(LogUtils.getUserIdentifier(request,
-					DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
-		}
-		
-		// Unique user identifier
-		if (request.getSession() != null && request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
-			question.setSearchUser(((SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE))); 
-		}
-		
-		// Last clicked cluster
-		question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
-		
-		// Previously clicked clusters
-		MapKeyFilter filter = new MapKeyFilter(request.getParameterMap());
-		String[] paramNames = filter.filter(RequestParameters.ContextualNavigation.CN_PREV_PATTERN);
-		Arrays.sort(paramNames);
-		for(String paramName : paramNames) {
-			// We don't really care of the indexes given in parameter names
-			String value = request.getParameter(paramName);
-			if (value != null && !"".equals(value) ) {
-				question.getCnPreviousClusters().add(value);
-			}
-		}
-		
-		// Security Principal
-		question.setPrincipal(request.getUserPrincipal());
-		
-	}
+        // Set locale
+        question.setLocale(localeResolver.resolveLocale(request));
+        
+        // Copy original query
+        question.setOriginalQuery(question.getQuery());
+        
+        // Is request impersonated ?
+        question.setImpersonated(isRequestImpersonated(request));
+        
+        // User identifier to log
+        if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
+            question.setUserIdToLog(LogUtils.getUserIdentifier(request,
+                    DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
+        }
+        
+        // Unique user identifier
+        if (request.getSession() != null && request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
+            question.setSearchUser(((SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE))); 
+        }
+        
+        // Last clicked cluster
+        question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));
+        
+        // Previously clicked clusters
+        MapKeyFilter filter = new MapKeyFilter(request.getParameterMap());
+        String[] paramNames = filter.filter(RequestParameters.ContextualNavigation.CN_PREV_PATTERN);
+        Arrays.sort(paramNames);
+        for(String paramName : paramNames) {
+            // We don't really care of the indexes given in parameter names
+            String value = request.getParameter(paramName);
+            if (value != null && !"".equals(value) ) {
+                question.getCnPreviousClusters().add(value);
+            }
+        }
+        
+        // Security Principal
+        question.setPrincipal(request.getUserPrincipal());
+        
+    }
 
-	/**
-	 * <p>Detects if the request is impersonated.</p>
-	 * 
-	 * <p>TODO The current implementation doesn't really check if the user is impersonated
-	 * but only relies on the fact that it has been authenticated using the Waffle filter.
-	 * Unfortunately J2EE 5 doesn't allow us to have access to the FilterConfig to read
-	 * the value of the "impersonate" parameter (Possible with J2EE 6)</p>
-	 * <ul>
-	 * 	<li>Either switch to J2EE 6</li>
-	 * 	<li>Or update the WindowsPrincipal with a impersonation status field ?</li>
-	 * </ul>
-	 *   
-	 * @param request
-	 * @return true if the request is impersonated, false otherwise
-	 */
-	private static boolean isRequestImpersonated(HttpServletRequest request) {
-		return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
-	}
+    /**
+     * <p>Detects if the request is impersonated.</p>
+     * 
+     * <p>TODO The current implementation doesn't really check if the user is impersonated
+     * but only relies on the fact that it has been authenticated using the Waffle filter.
+     * Unfortunately J2EE 5 doesn't allow us to have access to the FilterConfig to read
+     * the value of the "impersonate" parameter (Possible with J2EE 6)</p>
+     * <ul>
+     *     <li>Either switch to J2EE 6</li>
+     *     <li>Or update the WindowsPrincipal with a impersonation status field ?</li>
+     * </ul>
+     *   
+     * @param request
+     * @return true if the request is impersonated, false otherwise
+     */
+    private static boolean isRequestImpersonated(HttpServletRequest request) {
+        return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
+    }
 
-	/**
-	 * Gets the requesting IP for a given search question. Currently, this implementation returns 
-	 * the first element in the X-Forwarded-For header (if present), or the value of the REMOTE_ADR header, 
-	 * or null. 
-	 * 
-	 * @since v12.4
-	 * @param question The search question associated with the request
-	 * @return String String representing the request IP
-	 */
-	public static String getRequestIp(SearchQuestion question) {
-		Map<String, String[]> rawInputParameters = question.getRawInputParameters();
-		String[] xForwardedFor = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString());
-		if(xForwardedFor != null) {
-			// The general format for these is "X-Forwarded-For: client, proxy1, proxy2"
-			// So we need to extract the first element, if there are commas.
-			String[] ipAddresses = xForwardedFor[0].split(",");
-			return ipAddresses[0].trim();
-		}
-		
-		String[] remoteAddr = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString());
-		if(remoteAddr == null) return null;
-		return remoteAddr[0];
-	}
-	
+    /**
+     * Gets the requesting IP for a given search question. Currently, this implementation returns 
+     * the first element in the X-Forwarded-For header (if present), or the value of the REMOTE_ADR header, 
+     * or null. 
+     * 
+     * @since v12.4
+     * @param question The search question associated with the request
+     * @return String String representing the request IP
+     */
+    public static String getRequestIp(SearchQuestion question) {
+        Map<String, String[]> rawInputParameters = question.getRawInputParameters();
+        String[] xForwardedFor = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString());
+        if(xForwardedFor != null) {
+            // The general format for these is "X-Forwarded-For: client, proxy1, proxy2"
+            // So we need to extract the first element, if there are commas.
+            String[] ipAddresses = xForwardedFor[0].split(",");
+            return ipAddresses[0].trim();
+        }
+        
+        String[] remoteAddr = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString());
+        if(remoteAddr == null) return null;
+        return remoteAddr[0];
+    }
+    
 }

@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface ImageFetcher {
 
-	byte[] fetch(String url) throws IOException;
+    byte[] fetch(String url) throws IOException;
 
 }

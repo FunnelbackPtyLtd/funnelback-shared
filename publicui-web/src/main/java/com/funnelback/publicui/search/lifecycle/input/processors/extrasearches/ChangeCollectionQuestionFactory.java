@@ -18,32 +18,32 @@ import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
  * 
  */
 public class ChangeCollectionQuestionFactory implements ExtraSearchQuestionFactory {
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Override
-	public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration) throws InputProcessorException {
-		SearchQuestion out = new SearchQuestion();
-		SearchQuestionBinder.bind(originalQuestion, out);
-		
-		String collectionId = extraSearchConfiguration.get(Keys.COLLECTION);
-		if (collectionId != null) {
-			Collection c = configRepository.getCollection(collectionId);
-			if (c != null) {
-				out.setCollection(c);
-			} else {
-				throw new InputProcessorException("Invalid collection parameter '" + collectionId + "'");
-			}
-		} else {
-			throw new InputProcessorException("Collection parameter cannot be null");
-		}
-		
-		if (extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS) != null) {
-			out.getDynamicQueryProcessorOptions().add(extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS));
-		}
-		
-		return out;
-	}
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Override
+    public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration) throws InputProcessorException {
+        SearchQuestion out = new SearchQuestion();
+        SearchQuestionBinder.bind(originalQuestion, out);
+        
+        String collectionId = extraSearchConfiguration.get(Keys.COLLECTION);
+        if (collectionId != null) {
+            Collection c = configRepository.getCollection(collectionId);
+            if (c != null) {
+                out.setCollection(c);
+            } else {
+                throw new InputProcessorException("Invalid collection parameter '" + collectionId + "'");
+            }
+        } else {
+            throw new InputProcessorException("Collection parameter cannot be null");
+        }
+        
+        if (extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS) != null) {
+            out.getDynamicQueryProcessorOptions().add(extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS));
+        }
+        
+        return out;
+    }
 
 }

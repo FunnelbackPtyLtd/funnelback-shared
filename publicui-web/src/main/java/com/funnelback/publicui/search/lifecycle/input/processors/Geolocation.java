@@ -40,7 +40,7 @@ public class Geolocation extends AbstractInputProcessor {
      */
     @Override
     public void processInput(SearchTransaction searchTransaction)
-            throws InputProcessorException {
+        throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
             Config config = searchTransaction.getQuestion().getCollection()
                     .getConfiguration();

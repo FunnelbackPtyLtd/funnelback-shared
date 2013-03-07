@@ -25,37 +25,37 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("localeOverrideInputProcessor")
 public class LocaleOverride extends AbstractInputProcessor {
 
-	private static final String SEPARATOR = "_";
-	
-	@Override
-	public void processInput(SearchTransaction searchTransaction)
-			throws InputProcessorException {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			String lang = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.LANG_UI);
-			
-			if (lang != null && !"".equals(lang)) {
-				searchTransaction.getQuestion().setLocale(getLocale(lang));
-				log.debug("UI locale set to '"+searchTransaction.getQuestion().getLocale()+"' via CGI override (&"+RequestParameters.LANG_UI+"="+lang+")");
-			} else {
-				lang = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.LANG);
-				if (lang != null && !"".equals(lang)) {
-					searchTransaction.getQuestion().setLocale(getLocale(lang));
-					log.debug("UI and query processor locale set to '"+searchTransaction.getQuestion().getLocale()+"' via CGI override (&"+RequestParameters.LANG+"="+lang+")");					
-				} else {
-					log.debug("Locale auto-detected to '"+searchTransaction.getQuestion().getLocale()+"'");
-				}		
-			}
-		}
+    private static final String SEPARATOR = "_";
+    
+    @Override
+    public void processInput(SearchTransaction searchTransaction)
+        throws InputProcessorException {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+            String lang = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.LANG_UI);
+            
+            if (lang != null && !"".equals(lang)) {
+                searchTransaction.getQuestion().setLocale(getLocale(lang));
+                log.debug("UI locale set to '"+searchTransaction.getQuestion().getLocale()+"' via CGI override (&"+RequestParameters.LANG_UI+"="+lang+")");
+            } else {
+                lang = searchTransaction.getQuestion().getInputParameterMap().get(RequestParameters.LANG);
+                if (lang != null && !"".equals(lang)) {
+                    searchTransaction.getQuestion().setLocale(getLocale(lang));
+                    log.debug("UI and query processor locale set to '"+searchTransaction.getQuestion().getLocale()+"' via CGI override (&"+RequestParameters.LANG+"="+lang+")");                    
+                } else {
+                    log.debug("Locale auto-detected to '"+searchTransaction.getQuestion().getLocale()+"'");
+                }        
+            }
+        }
 
-	}
-	
-	private Locale getLocale(String lang) {
-		if (lang.contains(SEPARATOR)) {
-			String[] code = lang.split(SEPARATOR);
-			return new Locale(code[0], code[1]);
-		} else {
-			return new Locale(lang);
-		}
-	}
+    }
+    
+    private Locale getLocale(String lang) {
+        if (lang.contains(SEPARATOR)) {
+            String[] code = lang.split(SEPARATOR);
+            return new Locale(code[0], code[1]);
+        } else {
+            return new Locale(lang);
+        }
+    }
 
 }

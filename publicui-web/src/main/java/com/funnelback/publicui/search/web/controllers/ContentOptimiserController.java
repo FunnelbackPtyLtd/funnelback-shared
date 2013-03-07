@@ -37,154 +37,154 @@ import com.funnelback.publicui.xml.XmlParsingException;
 @RequestMapping("/content-optimiser")
 public class ContentOptimiserController {
 
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Resource(name="contentOptimiserKickoffView")
-	private FreeMarkerView contentOptimiserKickoffView; 
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Resource(name="contentOptimiserKickoffView")
+    private FreeMarkerView contentOptimiserKickoffView; 
 
-	@Resource(name="contentOptimiserView")
-	private FreeMarkerView contentOptimiserView;
-	
-	@Resource(name="contentOptimiserTextView")
-	private FreeMarkerView contentOptimiserTextView;
+    @Resource(name="contentOptimiserView")
+    private FreeMarkerView contentOptimiserView;
+    
+    @Resource(name="contentOptimiserTextView")
+    private FreeMarkerView contentOptimiserTextView;
 
-	@Resource(name="contentOptimiserLoadingView")
-	private FreeMarkerView contentOptimiserLoadingView;
-	
-	@Autowired
-	private SearchController searchController;
-	
-	@InitBinder
-	public void initBinder(DataBinder binder) {
-		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
-	}
-	
-	/**
-	 * Called when no collection has been specified.
-	 * @return a list of all available collections.
-	 */
-	@RequestMapping(value={"/"},params="!"+RequestParameters.COLLECTION)
-	public ModelAndView noCollectionKickoff() {
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
+    @Resource(name="contentOptimiserLoadingView")
+    private FreeMarkerView contentOptimiserLoadingView;
+    
+    @Autowired
+    private SearchController searchController;
+    
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+    }
+    
+    /**
+     * Called when no collection has been specified.
+     * @return a list of all available collections.
+     */
+    @RequestMapping(value={"/"},params="!"+RequestParameters.COLLECTION)
+    public ModelAndView noCollectionKickoff() {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
-		return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
-				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
-	}
-	
-	@RequestMapping(value="")
-	public String noSlash() {
-		return "redirect:content-optimiser/";
-	}
-	
-	
-	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,RequestParameters.CONTENT_OPTIMISER_ADVANCED})
-	public ModelAndView contentOptimiserAdvanced(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			SearchQuestion question) throws IOException, XmlParsingException {
-		question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
-		question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
-		if("".equals(question.getQuery())) {
-			return kickoff(request);
-		}
-		long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
-		if(timeDiff < 0 ) {
-			return buildLoadingScreen(request);
-		}
+        return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
+                +DefaultValues.FOLDER_TEMPLATES+"/"
+                +DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
+    }
+    
+    @RequestMapping(value="")
+    public String noSlash() {
+        return "redirect:content-optimiser/";
+    }
+    
+    
+    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,RequestParameters.CONTENT_OPTIMISER_ADVANCED})
+    public ModelAndView contentOptimiserAdvanced(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question) throws IOException, XmlParsingException {
+        question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+        if("".equals(question.getQuery())) {
+            return kickoff(request);
+        }
+        long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
+        if(timeDiff < 0 ) {
+            return buildLoadingScreen(request);
+        }
 
-		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-		Map<String, Object> model = searchController.search(request, response, question).getModel();
-		
-		if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
- 			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
-			model.put("nonAdminLink", nonAdminLink);
-		}
-		if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
-		
-		return new ModelAndView(contentOptimiserView, model);
-	}
-	
-	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
-	public ModelAndView contentOptimiserTextOnly(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			SearchQuestion question) throws IOException, XmlParsingException {
-		question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
-		question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
-		if("".equals(question.getQuery())) {
-			return kickoff(request);
-		}
-		long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
-		if(timeDiff < 0 ) {
-			return buildLoadingScreen(request);
-		}
-		
-		Map<String, Object> model = searchController.search(request, response, question).getModel();
-		
-		ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-	
-		if(contentOptimiserUserRestrictions.isAllowNonAdminTextAccess()) {
- 			String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
-			model.put("nonAdminLink", nonAdminLink);
-		}
-		if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
-		
-		return new ModelAndView(contentOptimiserTextView, model);
-	}
-	
+        ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
+        Map<String, Object> model = searchController.search(request, response, question).getModel();
+        
+        if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
+             String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
+            model.put("nonAdminLink", nonAdminLink);
+        }
+        if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
+        
+        return new ModelAndView(contentOptimiserView, model);
+    }
+    
+    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
+    public ModelAndView contentOptimiserTextOnly(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question) throws IOException, XmlParsingException {
+        question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+        if("".equals(question.getQuery())) {
+            return kickoff(request);
+        }
+        long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
+        if(timeDiff < 0 ) {
+            return buildLoadingScreen(request);
+        }
+        
+        Map<String, Object> model = searchController.search(request, response, question).getModel();
+        
+        ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
+    
+        if(contentOptimiserUserRestrictions.isAllowNonAdminTextAccess()) {
+             String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
+            model.put("nonAdminLink", nonAdminLink);
+        }
+        if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
+        
+        return new ModelAndView(contentOptimiserTextView, model);
+    }
+    
 
-	@RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
-	public ModelAndView collectionNoQuery(HttpServletRequest request) {
-		return kickoff(request);
-	}
-	
-	@RequestMapping(value="/optimise.html") 
-	public ModelAndView noCollectionContentOptimiser(){
-		return noCollectionKickoff();
-	}
-	
-	//@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
-	@RequestMapping(value={"/"})
-	public ModelAndView kickoff(HttpServletRequest request) {
-		Map<String,Object> m = new HashMap<String,Object>();
-		m.put("collection", request.getParameter(RequestParameters.COLLECTION));
-		if(request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) m.put("advanced", request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED));
-		return new ModelAndView(contentOptimiserKickoffView,m);
-	}
-	
-	@RequestMapping(value="/runOptimiser.html")
+    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
+    public ModelAndView collectionNoQuery(HttpServletRequest request) {
+        return kickoff(request);
+    }
+    
+    @RequestMapping(value="/optimise.html") 
+    public ModelAndView noCollectionContentOptimiser(){
+        return noCollectionKickoff();
+    }
+    
+    //@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
+    @RequestMapping(value={"/"})
+    public ModelAndView kickoff(HttpServletRequest request) {
+        Map<String,Object> m = new HashMap<String,Object>();
+        m.put("collection", request.getParameter(RequestParameters.COLLECTION));
+        if(request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) m.put("advanced", request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED));
+        return new ModelAndView(contentOptimiserKickoffView,m);
+    }
+    
+    @RequestMapping(value="/runOptimiser.html")
 
-	public ModelAndView loadingScreen(HttpServletRequest request) {
-		return buildLoadingScreen(request);
-	}
+    public ModelAndView loadingScreen(HttpServletRequest request) {
+        return buildLoadingScreen(request);
+    }
 
-	@SneakyThrows(UnsupportedEncodingException.class)
-	@SuppressWarnings("unchecked") // because request.getParameterNames() returns Enumeration not Enumeration<String>
-	public ModelAndView buildLoadingScreen(HttpServletRequest request) {
-		Map<String, Object> model = new HashMap<String,Object>();
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("optimise.html?");
+    @SneakyThrows(UnsupportedEncodingException.class)
+    @SuppressWarnings("unchecked") // because request.getParameterNames() returns Enumeration not Enumeration<String>
+    public ModelAndView buildLoadingScreen(HttpServletRequest request) {
+        Map<String, Object> model = new HashMap<String,Object>();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("optimise.html?");
 
-	    for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
-	    	String key = e.nextElement();
-	    	if(key.equals("optimiser_ts")) continue;
-	    	
-	        sb.append(key);
-	    	sb.append("=");
-	    	sb.append(URLEncoder.encode(request.getParameter(key),"UTF-8"));
-	    	sb.append("&");
-	    }
-	    
-	    sb.append("optimiser_ts=");
-	    sb.append(Calendar.getInstance().getTimeInMillis());
-	     
-	    	
-	    model.put("urlToLoad", sb.toString());
-		return new ModelAndView(contentOptimiserLoadingView,model);
-	}
+        for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
+            String key = e.nextElement();
+            if(key.equals("optimiser_ts")) continue;
+            
+            sb.append(key);
+            sb.append("=");
+            sb.append(URLEncoder.encode(request.getParameter(key),"UTF-8"));
+            sb.append("&");
+        }
+        
+        sb.append("optimiser_ts=");
+        sb.append(Calendar.getInstance().getTimeInMillis());
+         
+            
+        model.put("urlToLoad", sb.toString());
+        return new ModelAndView(contentOptimiserLoadingView,model);
+    }
 
 }

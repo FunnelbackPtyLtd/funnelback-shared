@@ -34,65 +34,65 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @Log4j
 public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
-	@Value("#{appProperties['extra.searches.timeout']?:10000}")
-	@Setter
-	protected long extraSearchesWaitTimeout;
-	
-	@Autowired
-	private SearchTransactionProcessor transactionProcessor;
+    @Value("#{appProperties['extra.searches.timeout']?:10000}")
+    @Setter
+    protected long extraSearchesWaitTimeout;
+    
+    @Autowired
+    private SearchTransactionProcessor transactionProcessor;
 
-	@Autowired
-	private TaskExecutor executor;
+    @Autowired
+    private TaskExecutor executor;
 
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (searchTransaction != null && searchTransaction.getExtraSearchesQuestions().size() > 0) {
-			for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
-				
-				entry.getValue().setExtraSearch(true);
-				FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
-						new Callable<SearchTransaction>() {
-							@Override
-							public SearchTransaction call() throws Exception {
-								StopWatch sw = new StopWatch();
-								try {
-									sw.start();
-									return transactionProcessor.process(entry.getValue());
-								} finally {
-									sw.stop();
-									log.debug("Extra search '" + entry.getKey() + "' took " + sw.toString());
-								}
-							}
-						});
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (searchTransaction != null && searchTransaction.getExtraSearchesQuestions().size() > 0) {
+            for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
+                
+                entry.getValue().setExtraSearch(true);
+                FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
+                        new Callable<SearchTransaction>() {
+                            @Override
+                            public SearchTransaction call() throws Exception {
+                                StopWatch sw = new StopWatch();
+                                try {
+                                    sw.start();
+                                    return transactionProcessor.process(entry.getValue());
+                                } finally {
+                                    sw.stop();
+                                    log.debug("Extra search '" + entry.getKey() + "' took " + sw.toString());
+                                }
+                            }
+                        });
 
-				searchTransaction.getExtraSearchesTasks().put(entry.getKey(), task);
-				log.trace("Submitting extra search '" + entry.getKey() + "'");
-				executor.execute(task);
-			}
-		}
-	}
+                searchTransaction.getExtraSearchesTasks().put(entry.getKey(), task);
+                log.trace("Submitting extra search '" + entry.getKey() + "'");
+                executor.execute(task);
+            }
+        }
+    }
 
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction != null && searchTransaction.getExtraSearchesTasks().size() > 0) {
-			// Wait for all pending extra searches task to complete,
-			// and fill {@link #extraSearches}.
-			for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
-				try {
-					searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
-				} catch (TimeoutException te) {
-					log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + entry.getKey() + "'."
-							+ "Consider raising 'extra.searches.timeout'.", te);
-				} catch (Exception e) {
-					log.error("Unable to wait results for extra search '" + entry.getKey() + "'", e);
-				}
-			}
-		}
-	}
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (searchTransaction != null && searchTransaction.getExtraSearchesTasks().size() > 0) {
+            // Wait for all pending extra searches task to complete,
+            // and fill {@link #extraSearches}.
+            for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
+                try {
+                    searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
+                } catch (TimeoutException te) {
+                    log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + entry.getKey() + "'."
+                            + "Consider raising 'extra.searches.timeout'.", te);
+                } catch (Exception e) {
+                    log.error("Unable to wait results for extra search '" + entry.getKey() + "'", e);
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getId() {
-		return this.getClass().getSimpleName();
-	}
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
+    }
 
 }

@@ -24,48 +24,48 @@ import com.funnelback.publicui.xml.padre.PadreXmlParser;
 @Component("padreForkingPooled")
 public class PadreForkingPooled extends AbstractDataFetcher {
 
-	@Autowired
-	private KeyedObjectPool padrePool;
+    @Autowired
+    private KeyedObjectPool padrePool;
 
-	@Autowired
-	private PadreXmlParser padreXmlParser;
-	
-	@Autowired
-	private I18n i18n;
+    @Autowired
+    private PadreXmlParser padreXmlParser;
+    
+    @Autowired
+    private I18n i18n;
 
-	@Override
-	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
-		PadreConnection c = null;
-		String padreOutput = null;
-		try {
-			c  = (PadreConnection) padrePool.borrowObject(searchTransaction.getQuestion().getCollection().getId());
-						
-			padreOutput = c.inputCmd(new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery());
-			
-			searchTransaction.getResponse().setRawPacket(padreOutput.toString());
-			searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput));
-			searchTransaction.getResponse().setReturnCode(-1);
-		} catch (IOException ioe) {
-			log.error("Unable to communicate with PADRE", ioe);
-			throw new DataFetchException(i18n.tr("padre.forking.pooled.communicate.failed"), ioe);
-		} catch (XmlParsingException xpe) {
-			log.error("Unable to parse PADRE response", xpe);
-			log.error("PADRE response was: \n" + padreOutput);
-			throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), xpe);
-		} catch (Exception e) {
-			log.error("Unable get a PADRE connection", e);
-			throw new DataFetchException(i18n.tr("padre.forking.pooled.connection.failed"), e);			
-		} finally {
-			if (c != null) {
-				try {
-					padrePool.returnObject(searchTransaction.getQuestion().getCollection().getId(), c);
-				} catch (Exception e) {
-					log.error("Unable to return PADRE connection to the pool for collection '" + searchTransaction.getQuestion().getCollection().getId() + "'", e);
-				}
-			}
-			log.debug("Pool status: " + padrePool.getNumActive() + " active, " + padrePool.getNumIdle() + " idle");
-		}
+    @Override
+    public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
+        PadreConnection c = null;
+        String padreOutput = null;
+        try {
+            c  = (PadreConnection) padrePool.borrowObject(searchTransaction.getQuestion().getCollection().getId());
+                        
+            padreOutput = c.inputCmd(new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery());
+            
+            searchTransaction.getResponse().setRawPacket(padreOutput.toString());
+            searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput));
+            searchTransaction.getResponse().setReturnCode(-1);
+        } catch (IOException ioe) {
+            log.error("Unable to communicate with PADRE", ioe);
+            throw new DataFetchException(i18n.tr("padre.forking.pooled.communicate.failed"), ioe);
+        } catch (XmlParsingException xpe) {
+            log.error("Unable to parse PADRE response", xpe);
+            log.error("PADRE response was: \n" + padreOutput);
+            throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), xpe);
+        } catch (Exception e) {
+            log.error("Unable get a PADRE connection", e);
+            throw new DataFetchException(i18n.tr("padre.forking.pooled.connection.failed"), e);            
+        } finally {
+            if (c != null) {
+                try {
+                    padrePool.returnObject(searchTransaction.getQuestion().getCollection().getId(), c);
+                } catch (Exception e) {
+                    log.error("Unable to return PADRE connection to the pool for collection '" + searchTransaction.getQuestion().getCollection().getId() + "'", e);
+                }
+            }
+            log.debug("Pool status: " + padrePool.getNumActive() + " active, " + padrePool.getNumIdle() + " idle");
+        }
 
-	}
+    }
 
 }

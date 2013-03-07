@@ -25,53 +25,53 @@ import com.funnelback.utils.CgiRunnerFactory;
 @Component
 public class DefaultUrlStatusFetcher implements UrlStatusFetcher {
 
-	@Autowired @Setter File searchHome;
-	
-	@Autowired @Setter ConfigRepository configRepository;
-	
-	@Autowired @Setter CgiRunnerFactory cgiRunnerFactory;
+    @Autowired @Setter File searchHome;
+    
+    @Autowired @Setter ConfigRepository configRepository;
+    
+    @Autowired @Setter CgiRunnerFactory cgiRunnerFactory;
 
-	@Override
-	public UrlStatus fetch(String optimiserUrl, String collection) {
+    @Override
+    public UrlStatus fetch(String optimiserUrl, String collection) {
 
-		UrlStatus status = null;
-		if(! optimiserUrl.contains("://")) {
-			optimiserUrl = "http://" + optimiserUrl; 
-		}
-		
-		File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
-		CgiRunner runner = cgiRunnerFactory.create(
-				new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"),
-				perlBin)
-			.addRequestParameter("u", optimiserUrl)
-			.addRequestParameter("c", collection)		
-			.addRequestParameter("f", "json")
-			.setTaint()
-			.setEnvironmentVariable("REMOTE_USER", "admin")
-			.setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath());
-		String json = "";
-		try {
-			json = runner.runToString();
-		} catch (CgiRunnerException e1) {
-			log.error("Unable to run the CGI command to get URL status ",e1);
-			return null;
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			// strip headers
-			json = json.replaceAll("(?m)^[A-Z][^:]+:\\s.+$", "");
-			status = mapper.readValue(json, UrlStatus.class);
-		} catch (JsonParseException e) {
-			log.error("Error obtaining info about URL",e);
-		} catch (JsonMappingException e) {
-			log.error("Error obtaining info about URL",e);
-		} catch (IOException e) {
-			log.error("Error obtaining info about URL",e);
-		}
-		
-		return status;
-	}
+        UrlStatus status = null;
+        if(! optimiserUrl.contains("://")) {
+            optimiserUrl = "http://" + optimiserUrl; 
+        }
+        
+        File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
+        CgiRunner runner = cgiRunnerFactory.create(
+                new File(searchHome, DefaultValues.FOLDER_WEB + File.separator +  DefaultValues.FOLDER_ADMIN  + File.separator + "url-status.cgi"),
+                perlBin)
+            .addRequestParameter("u", optimiserUrl)
+            .addRequestParameter("c", collection)        
+            .addRequestParameter("f", "json")
+            .setTaint()
+            .setEnvironmentVariable("REMOTE_USER", "admin")
+            .setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath());
+        String json = "";
+        try {
+            json = runner.runToString();
+        } catch (CgiRunnerException e1) {
+            log.error("Unable to run the CGI command to get URL status ",e1);
+            return null;
+        }
+        
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // strip headers
+            json = json.replaceAll("(?m)^[A-Z][^:]+:\\s.+$", "");
+            status = mapper.readValue(json, UrlStatus.class);
+        } catch (JsonParseException e) {
+            log.error("Error obtaining info about URL",e);
+        } catch (JsonMappingException e) {
+            log.error("Error obtaining info about URL",e);
+        } catch (IOException e) {
+            log.error("Error obtaining info about URL",e);
+        }
+        
+        return status;
+    }
 
 }
 

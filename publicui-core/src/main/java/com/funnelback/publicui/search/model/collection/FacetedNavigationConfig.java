@@ -18,48 +18,48 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
  */
 @AllArgsConstructor
 public class FacetedNavigationConfig {
-	
-	/** Query processor options embedded in the configuration file */
-	@Getter private final String qpOptions;
-	
-	/** List of facets definitions. */
-	@Getter private final List<FacetDefinition> facetDefinitions;
-	
-	/**
-	 * Get the list of metadata fields used in this configuration.
-	 * @return The list of metadata fields used in this configuration.
-	 */
-	public List<String> getMetadataFieldsUsed() {
-		ArrayList<String> out = new ArrayList<String>();
-		if (facetDefinitions != null) {
-			for (FacetDefinition facet: facetDefinitions) {
-				if (facet.getCategoryDefinitions() != null) {
-					for (CategoryDefinition cd: facet.getCategoryDefinitions()) {
-						out.addAll(collectMetadataFields(cd));
-					}
-				}
-			}
-		}
-		return out;
-	}
-	
-	/**
-	 * Recursively collect the metadata classes used for a specific {@link CategoryDefinition}.
-	 * @param definition The {@link CategoryDefinition} to search on.
-	 * @return The list of metadata classes (Single letters).
-	 */
-	private static List<String> collectMetadataFields(CategoryDefinition definition) {
-		ArrayList<String> out = new ArrayList<String>();
-		
-		if (definition instanceof MetadataBasedCategory) {
-			out.add( ((MetadataBasedCategory)definition).getMetadataClass());
-		}
-		if (definition.getSubCategories() != null) {
-			for (CategoryDefinition subDefinition: definition.getSubCategories()) {
-				out.addAll(collectMetadataFields(subDefinition));
-			}
-		}
-		return out;
-	}
-		
+    
+    /** Query processor options embedded in the configuration file */
+    @Getter private final String qpOptions;
+    
+    /** List of facets definitions. */
+    @Getter private final List<FacetDefinition> facetDefinitions;
+    
+    /**
+     * Get the list of metadata fields used in this configuration.
+     * @return The list of metadata fields used in this configuration.
+     */
+    public List<String> getMetadataFieldsUsed() {
+        ArrayList<String> out = new ArrayList<String>();
+        if (facetDefinitions != null) {
+            for (FacetDefinition facet: facetDefinitions) {
+                if (facet.getCategoryDefinitions() != null) {
+                    for (CategoryDefinition cd: facet.getCategoryDefinitions()) {
+                        out.addAll(collectMetadataFields(cd));
+                    }
+                }
+            }
+        }
+        return out;
+    }
+    
+    /**
+     * Recursively collect the metadata classes used for a specific {@link CategoryDefinition}.
+     * @param definition The {@link CategoryDefinition} to search on.
+     * @return The list of metadata classes (Single letters).
+     */
+    private static List<String> collectMetadataFields(CategoryDefinition definition) {
+        ArrayList<String> out = new ArrayList<String>();
+        
+        if (definition instanceof MetadataBasedCategory) {
+            out.add( ((MetadataBasedCategory)definition).getMetadataClass());
+        }
+        if (definition.getSubCategories() != null) {
+            for (CategoryDefinition subDefinition: definition.getSubCategories()) {
+                out.addAll(collectMetadataFields(subDefinition));
+            }
+        }
+        return out;
+    }
+        
 }

@@ -13,9 +13,9 @@ import org.apache.commons.exec.Executor;
  */
 public class PadreExecutor extends DefaultExecutor {
 
-	@Override
-	public boolean isFailure(int result) {
-		return false;
-	}
-	
+    @Override
+    public boolean isFailure(int result) {
+        return false;
+    }
+    
 }

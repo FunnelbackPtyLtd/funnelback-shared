@@ -8,18 +8,18 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 
 public class ContentOptimiserSelectUrlQuestionFactory implements
-		ExtraSearchQuestionFactory {
+        ExtraSearchQuestionFactory {
 
-	@Override
-	public SearchQuestion buildQuestion(SearchQuestion originalQuestion,
-			Map<String, String> extraSearchConfiguration)
-			throws InputProcessorException {
-		SearchQuestion out = new SearchQuestion();
-		SearchQuestionBinder.bind(originalQuestion, out);
-		
-		out.getRawInputParameters().put("xscope", new String[] {extraSearchConfiguration.get(RequestParameters.CONTENT_OPTIMISER_URL)});
-//		out.getInputParameterMap().put("daat" , new String[] { "off"});
-		return out;
-	}
+    @Override
+    public SearchQuestion buildQuestion(SearchQuestion originalQuestion,
+            Map<String, String> extraSearchConfiguration)
+        throws InputProcessorException {
+        SearchQuestion out = new SearchQuestion();
+        SearchQuestionBinder.bind(originalQuestion, out);
+        
+        out.getRawInputParameters().put("xscope", new String[] {extraSearchConfiguration.get(RequestParameters.CONTENT_OPTIMISER_URL)});
+//        out.getInputParameterMap().put("daat" , new String[] { "off"});
+        return out;
+    }
 
 }

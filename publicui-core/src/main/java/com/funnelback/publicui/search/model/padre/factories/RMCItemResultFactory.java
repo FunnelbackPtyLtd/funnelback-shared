@@ -18,29 +18,29 @@ import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
  */
 public class RMCItemResultFactory {
 
-	public static RMCItemResult fromMap(Map<String, String> data) {
-		String title = data.get(Result.Schema.TITLE);
-		String liveUrl = data.get(Result.Schema.LIVE_URL);
-		String summary = data.get(Result.Schema.SUMMARY);
+    public static RMCItemResult fromMap(Map<String, String> data) {
+        String title = data.get(Result.Schema.TITLE);
+        String liveUrl = data.get(Result.Schema.LIVE_URL);
+        String summary = data.get(Result.Schema.SUMMARY);
 
-		return new RMCItemResult(title, liveUrl, summary);
-	}
+        return new RMCItemResult(title, liveUrl, summary);
+    }
 
-	public static RMCItemResult fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws XMLStreamException {
-		if (!ResultPacket.Schema.RMC_ITEM_RESULT.equals(xmlStreamReader.getLocalName())) {
-			throw new IllegalArgumentException();
-		}
+    public static RMCItemResult fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+        if (!ResultPacket.Schema.RMC_ITEM_RESULT.equals(xmlStreamReader.getLocalName())) {
+            throw new IllegalArgumentException();
+        }
 
-		Map<String, String> data = new HashMap<String, String>();
-		
-		while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
-			if (xmlStreamReader.isStartElement()) {
-				TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
-				data.put(tt.tag, tt.text);
-			}
-		}
+        Map<String, String> data = new HashMap<String, String>();
+        
+        while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
+            if (xmlStreamReader.isStartElement()) {
+                TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
+                data.put(tt.tag, tt.text);
+            }
+        }
 
-		return fromMap(data);
-	}
+        return fromMap(data);
+    }
 
 }

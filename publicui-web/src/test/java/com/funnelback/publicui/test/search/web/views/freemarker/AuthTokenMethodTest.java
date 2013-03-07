@@ -21,51 +21,51 @@ import freemarker.template.TemplateModelException;
 
 public class AuthTokenMethodTest extends AbstractMethodTest {
 
-	private AuthTokenManager authTokenManager;
-	
-	private MockConfigRepository configRepository;
-	
-	@Before
-	@Override
-	public void before() {
-		configRepository = new MockConfigRepository();
-		configRepository.setGlobalConfiguration(new NoOptionsConfig("dummy")
-			.setValue(Keys.SERVER_SECRET, "server-secret"));
-		
-		authTokenManager = new DefaultAuthTokenManager();
+    private AuthTokenManager authTokenManager;
+    
+    private MockConfigRepository configRepository;
+    
+    @Before
+    @Override
+    public void before() {
+        configRepository = new MockConfigRepository();
+        configRepository.setGlobalConfiguration(new NoOptionsConfig("dummy")
+            .setValue(Keys.SERVER_SECRET, "server-secret"));
+        
+        authTokenManager = new DefaultAuthTokenManager();
 
-		super.before();
-	}
-	
-	@Override
-	protected AbstractTemplateMethod buildMethod() {
-		AuthTokenMethod method = new AuthTokenMethod();
-		method.setConfigRepository(configRepository);
-		method.setAuthTokenManager(authTokenManager);
-		
-		return method;
-	}
+        super.before();
+    }
+    
+    @Override
+    protected AbstractTemplateMethod buildMethod() {
+        AuthTokenMethod method = new AuthTokenMethod();
+        method.setConfigRepository(configRepository);
+        method.setAuthTokenManager(authTokenManager);
+        
+        return method;
+    }
 
-	@Override
-	protected int getRequiredArgumentsCount() {
-		return 1;
-	}
+    @Override
+    protected int getRequiredArgumentsCount() {
+        return 1;
+    }
 
-	@Override
-	protected int getOptionalArgumentsCount() {
-		return 0;
-	}
-	
-	@Test
-	public void test() throws TemplateModelException {
-		String actual = (String) method.exec(buildStringArguments("test-data"));
-		
-		String expected = authTokenManager.getToken("test-data", "server-secret");
-		
-		Assert.assertNotNull(actual);
-		Assert.assertNotSame("", actual);
-		
-		Assert.assertEquals(expected, actual);
-	}
+    @Override
+    protected int getOptionalArgumentsCount() {
+        return 0;
+    }
+    
+    @Test
+    public void test() throws TemplateModelException {
+        String actual = (String) method.exec(buildStringArguments("test-data"));
+        
+        String expected = authTokenManager.getToken("test-data", "server-secret");
+        
+        Assert.assertNotNull(actual);
+        Assert.assertNotSame("", actual);
+        
+        Assert.assertEquals(expected, actual);
+    }
 
 }

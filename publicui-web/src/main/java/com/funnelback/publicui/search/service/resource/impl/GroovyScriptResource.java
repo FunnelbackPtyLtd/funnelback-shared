@@ -14,18 +14,18 @@ import lombok.extern.log4j.Log4j;
  */
 @Log4j
 public class GroovyScriptResource extends AbstractSingleFileResource<Class<Script>> {
-	
-	public GroovyScriptResource(File file) {
-		super(file);
-	}
+    
+    public GroovyScriptResource(File file) {
+        super(file);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<Script> parse() throws IOException {
-		log.debug("Loading Groovy script from '"+file.getAbsolutePath()+"'");
-		try (GroovyClassLoader cl = new GroovyClassLoader()) {
-			return cl.parseClass(file);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<Script> parse() throws IOException {
+        log.debug("Loading Groovy script from '"+file.getAbsolutePath()+"'");
+        try (GroovyClassLoader cl = new GroovyClassLoader()) {
+            return cl.parseClass(file);
+        }
+    }
 
 }

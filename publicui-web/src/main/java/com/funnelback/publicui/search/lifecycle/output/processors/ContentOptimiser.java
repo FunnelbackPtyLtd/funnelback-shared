@@ -26,59 +26,59 @@ import com.funnelback.publicui.utils.MapUtils;
 @Component("contentOptimiserOutputProcessor")
 public class ContentOptimiser extends AbstractOutputProcessor {
 
-	@Autowired
-	private ContentOptimiserFiller filler;
-	
-	@Autowired
-	AnchorsFetcher anchorsFetcher;
-	
-	@Autowired
-	UrlStatusFetcher urlStatusFetcher;
-	
-	@Autowired
-	private RankingFeatureFactory hintFactory;
-	
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
-				&& searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
-				&& !searchTransaction.getQuestion().isExtraSearch()) {
-			ContentOptimiserModel comparison = new ContentOptimiserModel();
-			log.debug("Process output content optimiser has all data");
-			filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
-			log.debug("Done consuming result packet");
+    @Autowired
+    private ContentOptimiserFiller filler;
+    
+    @Autowired
+    AnchorsFetcher anchorsFetcher;
+    
+    @Autowired
+    UrlStatusFetcher urlStatusFetcher;
+    
+    @Autowired
+    private RankingFeatureFactory hintFactory;
+    
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
+                && searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
+                && !searchTransaction.getQuestion().isExtraSearch()) {
+            ContentOptimiserModel comparison = new ContentOptimiserModel();
+            log.debug("Process output content optimiser has all data");
+            filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);
+            log.debug("Done consuming result packet");
 
-			String optimiserUrl = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null);
-			if(!"".equals(optimiserUrl) && optimiserUrl != null) {
-			
-				
+            String optimiserUrl = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null);
+            if(!"".equals(optimiserUrl) && optimiserUrl != null) {
+            
+                
 
-				
-				// if there was, we should try and find it anyway
-				filler.setImportantUrl(comparison,searchTransaction);
-				log.debug("Filling hint texts");
-				filler.fillHintCollections(comparison);
-			
-				if(comparison.getSelectedDocument() != null){
-					log.debug("obtaining anchors");		
-					AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getSelectedDocument().getDocNum(),comparison.getSelectedDocument().getCollection());
+                
+                // if there was, we should try and find it anyway
+                filler.setImportantUrl(comparison,searchTransaction);
+                log.debug("Filling hint texts");
+                filler.fillHintCollections(comparison);
+            
+                if(comparison.getSelectedDocument() != null){
+                    log.debug("obtaining anchors");        
+                    AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getSelectedDocument().getDocNum(),comparison.getSelectedDocument().getCollection());
 
-					log.debug("obtaining content");					
-					filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
-					optimiserUrl = comparison.getSelectedDocument().getDisplayUrl(); 
-				}
-				// if there is an optimiser URL, look it up with the URL status too 
-				UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
-				if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
-					comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
-				}				
-			} else {
-				// if there isn't an optimiser URL, note that we didn't find anything
-				comparison.getMessages().add("No document URL selected.");
-				filler.fillHintCollections(comparison);
-			}
-			searchTransaction.getResponse().setOptimiserModel(comparison);
-		}
-	}
+                    log.debug("obtaining content");                    
+                    filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
+                    optimiserUrl = comparison.getSelectedDocument().getDisplayUrl(); 
+                }
+                // if there is an optimiser URL, look it up with the URL status too 
+                UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
+                if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
+                    comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
+                }                
+            } else {
+                // if there isn't an optimiser URL, note that we didn't find anything
+                comparison.getMessages().add("No document URL selected.");
+                filler.fillHintCollections(comparison);
+            }
+            searchTransaction.getResponse().setOptimiserModel(comparison);
+        }
+    }
 
 }

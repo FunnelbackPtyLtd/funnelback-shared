@@ -36,82 +36,82 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Log4j
 public class ResourcesController implements ServletContextAware {
 
-	public static final String MAPPING_PATH = "/resources/";
-	private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Value("#{appProperties['resources.web.directory.name']?:\"web\"}")
-	@Setter private String collectionWebResourcesDirectoryName;
-	
-	@Setter private String contextPath;
-	
-	@RequestMapping("/resources/{collectionId}/**")
-	public void handleRequest(@PathVariable String collectionId,
-			HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Collection c = configRepository.getCollection(collectionId);
-		
-		if (c != null) {
-			String prefix = contextPath + "/resources/" + collectionId + "/";
-			String resource = request.getRequestURI().substring(prefix.length());
-		
-			if (resource != null && ! "".equals(resource)) {
-				// Extract profileId. The first part of the resource is either the profileId
-				// or the actual file, i.e.
-				// /resources/my-collection/_default_preview/folder/file.ext
-				// /resources/my-collection/folder/file.ext    -> Should fall back to _default
-				
-				String profileId = DefaultValues.DEFAULT_PROFILE;
-				if (resource.indexOf('/') > -1) {
-					String profileInUri = resource.substring(0, resource.indexOf('/'));
-					// Is this profile really existing ?
-					if (c.getProfiles().containsKey(profileInUri)) {
-						profileId = profileInUri;
-						resource = resource.substring(("/"+profileInUri).length());
-					}
-				}
-				
-				String logicPath = "/" + collectionId + "/" + profileId + "/" + resource;
-				
-				log.debug("Processing request for resource '"+logicPath+"'");
-		
-				if (validateResourcePath(resource)) {
-					try {
-						FileSystemResource r = new FileSystemResource(
-								new File(c.getConfiguration().getConfigDirectory()
-										+ File.separator + profileId
-										+ File.separator + collectionWebResourcesDirectoryName)
-									.getAbsolutePath() + File.separator);
-						log.trace("Looking up resource from " + r.getPath());
-						
-						List<Resource> locations = new ArrayList<Resource>();
-						locations.add(r);
-						
-						request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, resource);
-					
-						ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
-						handler.setLocations(locations);
-					
-						handler.handleRequest(request, response);
-						return;
-					} catch (IOException ioe) {
-						log.error("Error on resource '" + logicPath + "'", ioe);
-					}
-				}
-			}
-		}
-			
-		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-	}
+    public static final String MAPPING_PATH = "/resources/";
+    private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Value("#{appProperties['resources.web.directory.name']?:\"web\"}")
+    @Setter private String collectionWebResourcesDirectoryName;
+    
+    @Setter private String contextPath;
+    
+    @RequestMapping("/resources/{collectionId}/**")
+    public void handleRequest(@PathVariable String collectionId,
+            HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        Collection c = configRepository.getCollection(collectionId);
+        
+        if (c != null) {
+            String prefix = contextPath + "/resources/" + collectionId + "/";
+            String resource = request.getRequestURI().substring(prefix.length());
+        
+            if (resource != null && ! "".equals(resource)) {
+                // Extract profileId. The first part of the resource is either the profileId
+                // or the actual file, i.e.
+                // /resources/my-collection/_default_preview/folder/file.ext
+                // /resources/my-collection/folder/file.ext    -> Should fall back to _default
+                
+                String profileId = DefaultValues.DEFAULT_PROFILE;
+                if (resource.indexOf('/') > -1) {
+                    String profileInUri = resource.substring(0, resource.indexOf('/'));
+                    // Is this profile really existing ?
+                    if (c.getProfiles().containsKey(profileInUri)) {
+                        profileId = profileInUri;
+                        resource = resource.substring(("/"+profileInUri).length());
+                    }
+                }
+                
+                String logicPath = "/" + collectionId + "/" + profileId + "/" + resource;
+                
+                log.debug("Processing request for resource '"+logicPath+"'");
+        
+                if (validateResourcePath(resource)) {
+                    try {
+                        FileSystemResource r = new FileSystemResource(
+                                new File(c.getConfiguration().getConfigDirectory()
+                                        + File.separator + profileId
+                                        + File.separator + collectionWebResourcesDirectoryName)
+                                    .getAbsolutePath() + File.separator);
+                        log.trace("Looking up resource from " + r.getPath());
+                        
+                        List<Resource> locations = new ArrayList<Resource>();
+                        locations.add(r);
+                        
+                        request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, resource);
+                    
+                        ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
+                        handler.setLocations(locations);
+                    
+                        handler.handleRequest(request, response);
+                        return;
+                    } catch (IOException ioe) {
+                        log.error("Error on resource '" + logicPath + "'", ioe);
+                    }
+                }
+            }
+        }
+            
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
 
-	private boolean validateResourcePath(String path) {
-		return ! INVALID_PATH_PATTERN.matcher(path).matches();
-	}
+    private boolean validateResourcePath(String path) {
+        return ! INVALID_PATH_PATTERN.matcher(path).matches();
+    }
 
-	@Override
-	public void setServletContext(ServletContext servletContext) {
-		this.contextPath = servletContext.getContextPath();
-	}
-	
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.contextPath = servletContext.getContextPath();
+    }
+    
 }

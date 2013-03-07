@@ -23,47 +23,47 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
  */
 public class GScopeItem extends CategoryDefinition implements GScopeBasedCategory {
 
-	/** GScope number */
-	@Getter @Setter private int userSetGScope;
-	
-	/** {@inheritDoc} */
-	@Override
-	@SneakyThrows(UnsupportedEncodingException.class)
-	public List<CategoryValue> computeValues(final SearchTransaction st) {
-		List<CategoryValue> categories = new ArrayList<CategoryValue>();
-		ResultPacket rp = st.getResponse().getResultPacket();
-		if (rp.getGScopeCounts().get(userSetGScope) != null) {
-			categories.add(new CategoryValue(
-					Integer.toString(userSetGScope),
-					data,
-					rp.getGScopeCounts().get(userSetGScope),
-					getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8"),
-					Integer.toString(getGScopeNumber())));
-		}
-		return categories;
-	}
+    /** GScope number */
+    @Getter @Setter private int userSetGScope;
+    
+    /** {@inheritDoc} */
+    @Override
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public List<CategoryValue> computeValues(final SearchTransaction st) {
+        List<CategoryValue> categories = new ArrayList<CategoryValue>();
+        ResultPacket rp = st.getResponse().getResultPacket();
+        if (rp.getGScopeCounts().get(userSetGScope) != null) {
+            categories.add(new CategoryValue(
+                    Integer.toString(userSetGScope),
+                    data,
+                    rp.getGScopeCounts().get(userSetGScope),
+                    getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8"),
+                    Integer.toString(getGScopeNumber())));
+        }
+        return categories;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String getQueryStringParamName() {
-		return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + userSetGScope;
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public boolean matches(String value, String extraParams) {
-		return data.equals(value) && Integer.parseInt(extraParams) == userSetGScope;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public String getQueryStringParamName() {
+        return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + userSetGScope;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean matches(String value, String extraParams) {
+        return data.equals(value) && Integer.parseInt(extraParams) == userSetGScope;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public int getGScopeNumber() {
-		return userSetGScope;
-	}
+    /** {@inheritDoc} */
+    @Override
+    public int getGScopeNumber() {
+        return userSetGScope;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String getGScope1Constraint() {
-		return Integer.toString(userSetGScope);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public String getGScope1Constraint() {
+        return Integer.toString(userSetGScope);
+    }
 }

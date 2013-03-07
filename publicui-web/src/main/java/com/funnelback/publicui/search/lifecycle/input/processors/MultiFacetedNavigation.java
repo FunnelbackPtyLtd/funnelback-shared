@@ -14,14 +14,14 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("multiFacetedNavigationInputProcessor")
 public class MultiFacetedNavigation extends AbstractInputProcessor {
 
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasCollection(searchTransaction)
-				&& Config.isTrue(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.FULL_FACETS_LIST))
-				&& ! searchTransaction.getQuestion().isExtraSearch()) {
-			SearchQuestion q = new FacetedNavigationQuestionFactory().buildQuestion(searchTransaction.getQuestion(), null);
-			searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString(), q);
-		}
-	}
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (SearchTransactionUtils.hasCollection(searchTransaction)
+                && Config.isTrue(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.FULL_FACETS_LIST))
+                && ! searchTransaction.getQuestion().isExtraSearch()) {
+            SearchQuestion q = new FacetedNavigationQuestionFactory().buildQuestion(searchTransaction.getQuestion(), null);
+            searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString(), q);
+        }
+    }
 
 }

@@ -7,10 +7,10 @@ package com.funnelback.publicui.search.lifecycle;
  */
 public interface LifecycleProcessor {
 
-	/**
-	 * @return The identifier of the processor, usually to be
-	 * displayed in performance metrics or debug logs.
-	 */
-	public String getId();
-	
+    /**
+     * @return The identifier of the processor, usually to be
+     * displayed in performance metrics or debug logs.
+     */
+    public String getId();
+    
 }

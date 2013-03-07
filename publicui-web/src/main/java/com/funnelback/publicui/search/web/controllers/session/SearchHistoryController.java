@@ -25,50 +25,50 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 @Controller
 @SessionAttributes(SessionInterceptor.SEARCH_USER_ATTRIBUTE)
 public class SearchHistoryController extends SessionControllerBase {
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Autowired
-	private SearchHistoryRepository historyRepository;
-	
-	/**
-	 * Clear the search history for the given collection.
-	 * 
-	 * @param collectionId
-	 * @param user
-	 * @param response
-	 * @throws IOException
-	 */
-	@RequestMapping(value="/search-history-clear.json")
-	public void searchHistoryClear(
-			@RequestParam("collection") String collectionId,
-			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
-			HttpServletResponse response) throws IOException {
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Autowired
+    private SearchHistoryRepository historyRepository;
+    
+    /**
+     * Clear the search history for the given collection.
+     * 
+     * @param collectionId
+     * @param user
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value="/search-history-clear.json")
+    public void searchHistoryClear(
+            @RequestParam("collection") String collectionId,
+            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            HttpServletResponse response) throws IOException {
 
-		Collection c = configRepository.getCollection(collectionId);
-		if (c != null) {
-			historyRepository.clearSearchHistory(user, c);
-			sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
-		} else {
-			sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
-		}
-	}
-	
-	@RequestMapping(value="/click-history-clear.json")
-	public void clickHistoryClear(
-			@RequestParam("collection") String collectionId,
-			@ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
-			HttpServletResponse response) throws IOException {
+        Collection c = configRepository.getCollection(collectionId);
+        if (c != null) {
+            historyRepository.clearSearchHistory(user, c);
+            sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
+        } else {
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
+        }
+    }
+    
+    @RequestMapping(value="/click-history-clear.json")
+    public void clickHistoryClear(
+            @RequestParam("collection") String collectionId,
+            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            HttpServletResponse response) throws IOException {
 
-		Collection c = configRepository.getCollection(collectionId);
-		if (c != null) {
-			historyRepository.clearClickHistory(user, c);
-			sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
-		} else {
-			sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
-		}
-	}
-	
+        Collection c = configRepository.getCollection(collectionId);
+        if (c != null) {
+            historyRepository.clearClickHistory(user, c);
+            sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
+        } else {
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
+        }
+    }
+    
 
 }

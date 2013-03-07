@@ -26,39 +26,39 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Log4j
 public class MetaCollectionMapper implements UserKeysMapper {
 
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Autowired
-	private I18n i18n;
-	
-	@Autowired
-	private AutowireCapableBeanFactory beanFactory;
-	
-	@Override
-	public List<String> getUserKeys(SearchTransaction transaction) {
-		Collection c = transaction.getQuestion().getCollection();
-		List<String> out = new ArrayList<String>();
-		if (c.getType().equals(Type.meta)) {
-			for (String component: c.getMetaComponents()) {
-				Collection componentCollection = configRepository.getCollection(component);
-				if (componentCollection != null) {
-					String securityPlugin = componentCollection.getConfiguration().value(
-							Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
-					if (securityPlugin != null && ! "".equals(securityPlugin)) {
-						try {
-							out.addAll(UserKeys.getUserKeys(securityPlugin, transaction, i18n, beanFactory));
-						} catch (InputProcessorException ipe) {
-							throw new IllegalStateException("Unable to secure transaction for collection '"
-									+ componentCollection + "' with plugin '"+securityPlugin+"'", ipe);
-						}
-					}
-				}
-			}
-		} else {
-			log.warn("Collection '"+c.getId()+"' is not a meta collection");
-		}
-		return out;
-	}
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Autowired
+    private I18n i18n;
+    
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
+    
+    @Override
+    public List<String> getUserKeys(SearchTransaction transaction) {
+        Collection c = transaction.getQuestion().getCollection();
+        List<String> out = new ArrayList<String>();
+        if (c.getType().equals(Type.meta)) {
+            for (String component: c.getMetaComponents()) {
+                Collection componentCollection = configRepository.getCollection(component);
+                if (componentCollection != null) {
+                    String securityPlugin = componentCollection.getConfiguration().value(
+                            Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
+                    if (securityPlugin != null && ! "".equals(securityPlugin)) {
+                        try {
+                            out.addAll(UserKeys.getUserKeys(securityPlugin, transaction, i18n, beanFactory));
+                        } catch (InputProcessorException ipe) {
+                            throw new IllegalStateException("Unable to secure transaction for collection '"
+                                    + componentCollection + "' with plugin '"+securityPlugin+"'", ipe);
+                        }
+                    }
+                }
+            }
+        } else {
+            log.warn("Collection '"+c.getId()+"' is not a meta collection");
+        }
+        return out;
+    }
 
 }

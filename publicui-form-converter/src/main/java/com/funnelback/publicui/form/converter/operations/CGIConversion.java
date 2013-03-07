@@ -13,19 +13,19 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class CGIConversion implements Operation {
 
-	private static final Pattern PATTERN = Pattern.compile("<s:cgi>(.*?)</s:cgi>", Pattern.CASE_INSENSITIVE);
-	
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		Matcher m = PATTERN.matcher(out);
-		if (m.find()) {
-			log.info("Processing <s:cgi> tags");
-			out = m.replaceAll("\\${question.inputParameterMap[\"$1\"]!?html}");
-		}
-		
-		return out;
-	}
+    private static final Pattern PATTERN = Pattern.compile("<s:cgi>(.*?)</s:cgi>", Pattern.CASE_INSENSITIVE);
+    
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        Matcher m = PATTERN.matcher(out);
+        if (m.find()) {
+            log.info("Processing <s:cgi> tags");
+            out = m.replaceAll("\\${question.inputParameterMap[\"$1\"]!?html}");
+        }
+        
+        return out;
+    }
 
 }

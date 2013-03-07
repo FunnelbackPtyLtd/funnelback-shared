@@ -11,8 +11,8 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 public class EntityDefinition {
-	
-	/** An entity e.g <em>"The ABC"</em>. */
+    
+    /** An entity e.g <em>"The ABC"</em>. */
     @Getter @Setter private String entity;
     
     /** A definition e.g. <em>"The Australian Broadcasting Corporation"</em> */

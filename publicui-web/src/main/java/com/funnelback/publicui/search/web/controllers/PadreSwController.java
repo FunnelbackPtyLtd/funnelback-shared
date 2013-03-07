@@ -24,25 +24,25 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
 @Log4j
 public class PadreSwController extends AbstractRunPadreBinaryController {
 
-	private static final String PADRE_SW = "padre-sw";
-	
-	@Autowired
-	private File searchHome;
+    private static final String PADRE_SW = "padre-sw";
+    
+    @Autowired
+    private File searchHome;
 
-	@Override
-	protected File getSearchHome() {
-		return searchHome;
-	}
-	
-	@RequestMapping("/padre-sw.cgi")
-	public void padreSw(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		try {
-			runPadreBinary(PADRE_SW, null, request, response, false);
-		} catch (PadreForkingException e) {
-			PadreSwController.log.debug("Unable to run " + PADRE_SW, e);
-			throw new ServletException(e);
-		}
-	}
+    @Override
+    protected File getSearchHome() {
+        return searchHome;
+    }
+    
+    @RequestMapping("/padre-sw.cgi")
+    public void padreSw(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        try {
+            runPadreBinary(PADRE_SW, null, request, response, false);
+        } catch (PadreForkingException e) {
+            PadreSwController.log.debug("Unable to run " + PADRE_SW, e);
+            throw new ServletException(e);
+        }
+    }
 
 
 }

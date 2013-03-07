@@ -22,46 +22,46 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Log4j
 public class FixDisplayUrls extends AbstractOutputProcessor {
 
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasResults(searchTransaction)) {
-			
-			for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
-				String displayUrl = result.getDisplayUrl();
-				
-				// Most of the time the result will be coming from the same collection as
-				// the question, except for meta collections
-				Collection resultCollection = searchTransaction.getQuestion().getCollection();
-				if (! searchTransaction.getQuestion().getCollection().getId().equals(result.getCollection())) {
-					resultCollection = configRepository.getCollection(result.getCollection());
-				}
-				
-				if ( resultCollection == null) {
-					log.warn("Invalid collection '" + result.getCollection() + "' for result '" + result + "'");
-					continue;
-				}
-				
-				switch (resultCollection.getType()) {
-				
-				case local:
-				case filecopy:
-				case connector:
-					displayUrl = VFSURLUtils.vfsUrlToSystemUrl(displayUrl);
-					break;
-				default:
-					// Do nothing
-				}
-				
-				log.debug("Display URL transformed from '"+result.getDisplayUrl()+"' to '"+displayUrl+"'");
-				result.setDisplayUrl(displayUrl);
-			}
-		
-		}
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasResults(searchTransaction)) {
+            
+            for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
+                String displayUrl = result.getDisplayUrl();
+                
+                // Most of the time the result will be coming from the same collection as
+                // the question, except for meta collections
+                Collection resultCollection = searchTransaction.getQuestion().getCollection();
+                if (! searchTransaction.getQuestion().getCollection().getId().equals(result.getCollection())) {
+                    resultCollection = configRepository.getCollection(result.getCollection());
+                }
+                
+                if ( resultCollection == null) {
+                    log.warn("Invalid collection '" + result.getCollection() + "' for result '" + result + "'");
+                    continue;
+                }
+                
+                switch (resultCollection.getType()) {
+                
+                case local:
+                case filecopy:
+                case connector:
+                    displayUrl = VFSURLUtils.vfsUrlToSystemUrl(displayUrl);
+                    break;
+                default:
+                    // Do nothing
+                }
+                
+                log.debug("Display URL transformed from '"+result.getDisplayUrl()+"' to '"+displayUrl+"'");
+                result.setDisplayUrl(displayUrl);
+            }
+        
+        }
 
 
-	}
+    }
 
 }

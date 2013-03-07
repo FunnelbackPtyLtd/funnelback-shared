@@ -16,26 +16,26 @@ import com.funnelback.publicui.search.model.collection.paramtransform.operation.
  */
 @RequiredArgsConstructor
 public class TransformRule {
-	
-	/** Criteria to match the rule */
-	@Getter private final Criteria criteria;
-	
-	/** List of operations to apply */
-	@Getter private final List<Operation> operations;
+    
+    /** Criteria to match the rule */
+    @Getter private final Criteria criteria;
+    
+    /** List of operations to apply */
+    @Getter private final List<Operation> operations;
 
-	/**
-	 * Returns an human-friendly version of the rule.
-	 */
-	@Override
-	public String toString() {
-		StringBuffer out = new StringBuffer();
-		out.append("\n-> IF ").append(criteria.toString()).append("\n");
-		out.append("APPLY \n");
-		for (Operation o : operations) {
-			out.append("\t").append(o.toString()).append("\n");
-		}
-		out.append("<-\n");
-		return out.toString();
-	}
+    /**
+     * Returns an human-friendly version of the rule.
+     */
+    @Override
+    public String toString() {
+        StringBuffer out = new StringBuffer();
+        out.append("\n-> IF ").append(criteria.toString()).append("\n");
+        out.append("APPLY \n");
+        for (Operation o : operations) {
+            out.append("\t").append(o.toString()).append("\n");
+        }
+        out.append("<-\n");
+        return out.toString();
+    }
 }
 

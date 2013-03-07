@@ -27,65 +27,65 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Log4j
 public class ExtraSearches extends AbstractInputProcessor implements ApplicationContextAware {
 
-	/**
-	 * Key containing the class of the {@link ExtraSearchQuestionFactory}
-	 * implementation.
-	 */
-	private static final String KEY_CLASS = "class";
-	
-	private static final Class<? extends ExtraSearchQuestionFactory> DEFAULT_CLASS = ChangeCollectionQuestionFactory.class;
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	private ApplicationContext applicationContext;
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.ModernUI.EXTRA_SEARCHES)
-				&& ! searchTransaction.getQuestion().isExtraSearch() ) {
-			
-			String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
-			
-			for (final String extraSearch: extraSearches) {
-				log.trace("Configuring extra search '" + extraSearch + "'");
-				
-				Map<String, String> extraSearchConfiguration = configRepository.getExtraSearchConfiguration(
-						searchTransaction.getQuestion().getCollection(),
-						extraSearch);
+    /**
+     * Key containing the class of the {@link ExtraSearchQuestionFactory}
+     * implementation.
+     */
+    private static final String KEY_CLASS = "class";
+    
+    private static final Class<? extends ExtraSearchQuestionFactory> DEFAULT_CLASS = ChangeCollectionQuestionFactory.class;
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    private ApplicationContext applicationContext;
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (SearchTransactionUtils.hasCollection(searchTransaction)
+                && searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.ModernUI.EXTRA_SEARCHES)
+                && ! searchTransaction.getQuestion().isExtraSearch() ) {
+            
+            String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
+            
+            for (final String extraSearch: extraSearches) {
+                log.trace("Configuring extra search '" + extraSearch + "'");
+                
+                Map<String, String> extraSearchConfiguration = configRepository.getExtraSearchConfiguration(
+                        searchTransaction.getQuestion().getCollection(),
+                        extraSearch);
 
-				if (extraSearchConfiguration != null) {
-					Class<? extends ExtraSearchQuestionFactory> clazz = DEFAULT_CLASS;
-					
-					try {
-						
-						if (extraSearchConfiguration.get(KEY_CLASS) != null) {
-							// Try to use user defined class
-							clazz = (Class<? extends ExtraSearchQuestionFactory>) Class.forName(extraSearchConfiguration.get(KEY_CLASS));
-						}
-						ExtraSearchQuestionFactory factory = applicationContext.getAutowireCapableBeanFactory().createBean(clazz);
-						final SearchQuestion q = factory.buildQuestion(searchTransaction.getQuestion(), extraSearchConfiguration);
-						
-						log.trace("Adding extra search '" + extraSearch
-								+ "' on collection '" + q.getCollection().getId() + "'"
-								+ " with query '" + q.getQuery() + "'");
+                if (extraSearchConfiguration != null) {
+                    Class<? extends ExtraSearchQuestionFactory> clazz = DEFAULT_CLASS;
+                    
+                    try {
+                        
+                        if (extraSearchConfiguration.get(KEY_CLASS) != null) {
+                            // Try to use user defined class
+                            clazz = (Class<? extends ExtraSearchQuestionFactory>) Class.forName(extraSearchConfiguration.get(KEY_CLASS));
+                        }
+                        ExtraSearchQuestionFactory factory = applicationContext.getAutowireCapableBeanFactory().createBean(clazz);
+                        final SearchQuestion q = factory.buildQuestion(searchTransaction.getQuestion(), extraSearchConfiguration);
+                        
+                        log.trace("Adding extra search '" + extraSearch
+                                + "' on collection '" + q.getCollection().getId() + "'"
+                                + " with query '" + q.getQuery() + "'");
 
-						searchTransaction.addExtraSearch(extraSearch, q);
-					} catch (Exception e) {
-						log.error("Unable to configure extra search '" + extraSearch + "'", e);
-					}
-				} else {
-					log.error("Extra search configuration '" + extraSearch + "' for collection '"
-							+ searchTransaction.getQuestion().getCollection().getId() + "' is not available");
-				}
-			}			
-		}
-	}
-	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;		
-	}
+                        searchTransaction.addExtraSearch(extraSearch, q);
+                    } catch (Exception e) {
+                        log.error("Unable to configure extra search '" + extraSearch + "'", e);
+                    }
+                } else {
+                    log.error("Extra search configuration '" + extraSearch + "' for collection '"
+                            + searchTransaction.getQuestion().getCollection().getId() + "' is not available");
+                }
+            }            
+        }
+    }
+    
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;        
+    }
 }

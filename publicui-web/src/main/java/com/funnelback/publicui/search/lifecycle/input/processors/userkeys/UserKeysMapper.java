@@ -9,6 +9,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface UserKeysMapper {
 
-	public List<String> getUserKeys(SearchTransaction transaction);
-	
+    public List<String> getUserKeys(SearchTransaction transaction);
+    
 }

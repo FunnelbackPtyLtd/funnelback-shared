@@ -10,29 +10,29 @@ import com.funnelback.publicui.utils.MapKeyFilter;
 
 public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFactory {
 
-	private static final String NUM_RANKS_OPT = "-num_ranks=1";
-	
-	@Override
-	public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
-			throws InputProcessorException {
-		SearchQuestion out = new SearchQuestion();
-		SearchQuestionBinder.bind(originalQuestion, out);
-		
-		// Remove faceted navigation parameters
-		MapKeyFilter filter = new MapKeyFilter(originalQuestion.getRawInputParameters());
-		String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
-		for (String paramName: selectedFacetsParams) {
-			out.getRawInputParameters().remove(paramName);
-		}
-		
-		// Remove additional 'facetScope' parameter used in faceted navigation
-		out.getRawInputParameters().remove(RequestParameters.FACET_SCOPE);
-		
-		out.setFacetsGScopeConstraints(null);
-		out.getFacetsQueryConstraints().clear();
-		out.getDynamicQueryProcessorOptions().add(NUM_RANKS_OPT);
-		
-		return out;
-	}
+    private static final String NUM_RANKS_OPT = "-num_ranks=1";
+    
+    @Override
+    public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
+        throws InputProcessorException {
+        SearchQuestion out = new SearchQuestion();
+        SearchQuestionBinder.bind(originalQuestion, out);
+        
+        // Remove faceted navigation parameters
+        MapKeyFilter filter = new MapKeyFilter(originalQuestion.getRawInputParameters());
+        String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
+        for (String paramName: selectedFacetsParams) {
+            out.getRawInputParameters().remove(paramName);
+        }
+        
+        // Remove additional 'facetScope' parameter used in faceted navigation
+        out.getRawInputParameters().remove(RequestParameters.FACET_SCOPE);
+        
+        out.setFacetsGScopeConstraints(null);
+        out.getFacetsQueryConstraints().clear();
+        out.getDynamicQueryProcessorOptions().add(NUM_RANKS_OPT);
+        
+        return out;
+    }
 
 }

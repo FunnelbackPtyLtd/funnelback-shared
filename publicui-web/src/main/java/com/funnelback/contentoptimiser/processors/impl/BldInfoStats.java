@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BldInfoStats {
 
-	@Getter private final long totalDocuments;
-	@Getter private final int avgWords;
+    @Getter private final long totalDocuments;
+    @Getter private final int avgWords;
 }

@@ -23,51 +23,51 @@ import com.funnelback.publicui.utils.MapUtils;
 @Log4j
 public class ExploreQuery extends AbstractInputProcessor {
 
-	private static final String OPT_VSIMPLE = "-vsimple=on";
-	private static final String OPT_DAAT0 = "-daat=0";
-	
-	private final String EXPLORE_PREFIX = "explore:";
-	
-	@Autowired
-	@Setter private ExploreQueryGenerator generator;
-	
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
-			
-			Integer nbOfTerms = null;
-			if (searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.EXP) != null) {
-				String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.EXP, null);
-				try {
-					nbOfTerms = Integer.parseInt(exp);
-				} catch (Throwable t) {
-					log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + exp + "'");
-				}
-			}
-			
-			String[] queries = searchTransaction.getQuestion().getQuery().split("\\s");
-			boolean queryChanged = false;
-			for(int i=0; i<queries.length; i++) {
-				if (queries[i].startsWith(EXPLORE_PREFIX)) {
-					String url = queries[i].substring(EXPLORE_PREFIX.length());
-					String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(), url, nbOfTerms);
-					if (exploreQuery != null) {
-						queries[i] = exploreQuery;
-						queryChanged = true;
-					} else {
-						log.warn("No explore query returned for URL '" + url + "'");
-					}
-				} 				
-			}
-			
-			if (queryChanged) {
-				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_VSIMPLE);
-				searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_DAAT0);
-				log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery() + "' to '" + StringUtils.join(queries, " ") + "'");
-				searchTransaction.getQuestion().setQuery(StringUtils.join(queries, " "));
-			}
-		}
+    private static final String OPT_VSIMPLE = "-vsimple=on";
+    private static final String OPT_DAAT0 = "-daat=0";
+    
+    private final String EXPLORE_PREFIX = "explore:";
+    
+    @Autowired
+    @Setter private ExploreQueryGenerator generator;
+    
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
+            
+            Integer nbOfTerms = null;
+            if (searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.EXP) != null) {
+                String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.EXP, null);
+                try {
+                    nbOfTerms = Integer.parseInt(exp);
+                } catch (Throwable t) {
+                    log.warn("Invalid '" + RequestParameters.EXP + "' parameter: '" + exp + "'");
+                }
+            }
+            
+            String[] queries = searchTransaction.getQuestion().getQuery().split("\\s");
+            boolean queryChanged = false;
+            for(int i=0; i<queries.length; i++) {
+                if (queries[i].startsWith(EXPLORE_PREFIX)) {
+                    String url = queries[i].substring(EXPLORE_PREFIX.length());
+                    String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(), url, nbOfTerms);
+                    if (exploreQuery != null) {
+                        queries[i] = exploreQuery;
+                        queryChanged = true;
+                    } else {
+                        log.warn("No explore query returned for URL '" + url + "'");
+                    }
+                }                 
+            }
+            
+            if (queryChanged) {
+                searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_VSIMPLE);
+                searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_DAAT0);
+                log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery() + "' to '" + StringUtils.join(queries, " ") + "'");
+                searchTransaction.getQuestion().setQuery(StringUtils.join(queries, " "));
+            }
+        }
 
-	}
+    }
 
 }

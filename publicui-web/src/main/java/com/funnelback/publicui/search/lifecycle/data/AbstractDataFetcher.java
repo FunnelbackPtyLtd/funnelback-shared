@@ -9,13 +9,13 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public abstract class AbstractDataFetcher implements DataFetcher {
 
-	@Override
-	public String getId() {
-		return this.getClass().getSimpleName();
-	}
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
+    }
 
-	@Override
-	public abstract void fetchData(SearchTransaction searchTransaction)
-			throws DataFetchException;
+    @Override
+    public abstract void fetchData(SearchTransaction searchTransaction)
+        throws DataFetchException;
 
 }

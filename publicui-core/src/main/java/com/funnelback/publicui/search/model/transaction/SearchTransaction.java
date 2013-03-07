@@ -25,72 +25,72 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions"})
 public class SearchTransaction {
 
-	/**
-	 * <em>Internal use</em>: Keys for internal extra searches.
-	 */
-	public static enum ExtraSearches {
-		FACETED_NAVIGATION, CONTENT_OPTIMISER_SELECT_DOCUMENT;
-	}
-	
-	/** The question containing the input parameters. */
-	@Getter private SearchQuestion question;
-	/** The response containing result data. */
-	@Getter private SearchResponse response;
-	/** Any error if the search wasn't successful. */
-	@Getter @Setter private SearchError error;
+    /**
+     * <em>Internal use</em>: Keys for internal extra searches.
+     */
+    public static enum ExtraSearches {
+        FACETED_NAVIGATION, CONTENT_OPTIMISER_SELECT_DOCUMENT;
+    }
+    
+    /** The question containing the input parameters. */
+    @Getter private SearchQuestion question;
+    /** The response containing result data. */
+    @Getter private SearchResponse response;
+    /** Any error if the search wasn't successful. */
+    @Getter @Setter private SearchError error;
 
-	public SearchTransaction(SearchQuestion sq, SearchResponse sr) {
-		this.question = sq;
-		this.response = sr;
-	}
-	
-	/**
-	 * <p>Any additional extra search transactions performed during this transaction.<p>
-	 * 
-	 * <p>To access result data from an extra search source, use the name
-	 * of this source as a key on this Map.</p>
-	 * 
-	 * @see <code>ui.modern.extra_searches</code>
-	 */
-	@Getter private final Map<String, SearchTransaction> extraSearches = new HashMap<String, SearchTransaction>();
+    public SearchTransaction(SearchQuestion sq, SearchResponse sr) {
+        this.question = sq;
+        this.response = sr;
+    }
+    
+    /**
+     * <p>Any additional extra search transactions performed during this transaction.<p>
+     * 
+     * <p>To access result data from an extra search source, use the name
+     * of this source as a key on this Map.</p>
+     * 
+     * @see <code>ui.modern.extra_searches</code>
+     */
+    @Getter private final Map<String, SearchTransaction> extraSearches = new HashMap<String, SearchTransaction>();
 
-	/**
-	 * <p><em>Internal use</em>: Additional {@link SearchQuestion}s to process as extra searches.</p>
-	 * 
-	 * <p>These questions will be submitted in parrallel to the main search.</p>
-	 */
-	@XStreamOmitField
-	@Getter private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
-	
-	/**
-	 * <em>Internal use</em>: Holds the extra searches tasks being executed.
-	 */
-	@XStreamOmitField
-	@Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
-	
-	/**
-	 * Custom data placeholder allowing any arbitrary data to be
-	 * stored by hook scripts.
-	 */
-	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
-	
-	/**
-	 * Adds an {@link SearchQuestion} to be processed as an extra search.
-	 * @param key Name of the extra source (see <code>ui.modern.extra_searches</code>).
-	 * @param q The {@link SearchQuestion}
-	 */
-	public void addExtraSearch(String key, SearchQuestion q) {
-		extraSearchesQuestions.put(key, q);
-	}	
-	
-	/**
-	 * @return true if the {@link #question} is not null.
-	 */
-	public boolean hasResponse() { return response != null; }
-	
-	/**
-	 * @return true if the {@link #response} is not null.
-	 */
-	public boolean hasQuestion() { return question != null; }
-	
+    /**
+     * <p><em>Internal use</em>: Additional {@link SearchQuestion}s to process as extra searches.</p>
+     * 
+     * <p>These questions will be submitted in parrallel to the main search.</p>
+     */
+    @XStreamOmitField
+    @Getter private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
+    
+    /**
+     * <em>Internal use</em>: Holds the extra searches tasks being executed.
+     */
+    @XStreamOmitField
+    @Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
+    
+    /**
+     * Custom data placeholder allowing any arbitrary data to be
+     * stored by hook scripts.
+     */
+    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    
+    /**
+     * Adds an {@link SearchQuestion} to be processed as an extra search.
+     * @param key Name of the extra source (see <code>ui.modern.extra_searches</code>).
+     * @param q The {@link SearchQuestion}
+     */
+    public void addExtraSearch(String key, SearchQuestion q) {
+        extraSearchesQuestions.put(key, q);
+    }    
+    
+    /**
+     * @return true if the {@link #question} is not null.
+     */
+    public boolean hasResponse() { return response != null; }
+    
+    /**
+     * @return true if the {@link #response} is not null.
+     */
+    public boolean hasQuestion() { return question != null; }
+    
 }

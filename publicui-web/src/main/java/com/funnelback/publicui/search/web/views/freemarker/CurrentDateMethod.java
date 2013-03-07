@@ -10,15 +10,15 @@ import freemarker.template.TemplateModelException;
  */
 public class CurrentDateMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "currentDate";
-	
-	public CurrentDateMethod() {
-		super(0, 0, false);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		return new Date();
-	}
+    public static final String NAME = "currentDate";
+    
+    public CurrentDateMethod() {
+        super(0, 0, false);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        return new Date();
+    }
 
 }

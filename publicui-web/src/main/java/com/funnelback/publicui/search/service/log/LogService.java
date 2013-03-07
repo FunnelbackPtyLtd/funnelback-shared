@@ -9,10 +9,10 @@ import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
  */
 public interface LogService {
 
-	public void logClick(ClickLog cl);
-	
-	public void logContextualNavigation(ContextualNavigationLog cnl);
-	
-	public void logPublicUIWarning(PublicUIWarningLog warning);
-	
+    public void logClick(ClickLog cl);
+    
+    public void logContextualNavigation(ContextualNavigationLog cnl);
+    
+    public void logPublicUIWarning(PublicUIWarningLog warning);
+    
 }

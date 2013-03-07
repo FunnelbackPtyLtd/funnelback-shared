@@ -6,6 +6,6 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 
 public interface InDocCountFetcher {
 
-	Map<String, Integer> getTermWeights(ContentOptimiserModel comparison, String queryWord, String collectionName);
+    Map<String, Integer> getTermWeights(ContentOptimiserModel comparison, String queryWord, String collectionName);
 
 }

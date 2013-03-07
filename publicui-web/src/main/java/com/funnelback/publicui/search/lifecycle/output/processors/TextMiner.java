@@ -21,87 +21,87 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("textMinerOutputProcessor")
 @Log4j
 public class TextMiner extends AbstractOutputProcessor {
-	
-	public static final String KEY_NOUN_PHRASES = "noun_phrases";
-	public static final String KEY_CUSTOM_DEFINITION = "entity.custom-definition";
+    
+    public static final String KEY_NOUN_PHRASES = "noun_phrases";
+    public static final String KEY_CUSTOM_DEFINITION = "entity.custom-definition";
 
-	@Autowired
-	@Setter
-	private com.funnelback.publicui.search.service.TextMiner textMiner;
+    @Autowired
+    @Setter
+    private com.funnelback.publicui.search.service.TextMiner textMiner;
 
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.TEXT_MINER)) {
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)
+                && searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.TEXT_MINER)) {
 
-			String query = searchTransaction.getQuestion().getQuery();
-			log.debug("Received query: " + query);
-			query = query.replaceAll("\"", "");
-			query = WordUtils.capitalizeFully(query);
+            String query = searchTransaction.getQuestion().getQuery();
+            log.debug("Received query: " + query);
+            query = query.replaceAll("\"", "");
+            query = WordUtils.capitalizeFully(query);
 
-			if (searchTransaction.getQuestion().getCollection().getTextMinerBlacklist().contains(query.toLowerCase())) {
-				log.debug("Blacklisted query: " + query);
-			} else {
-				generateDefinition(query, searchTransaction);
-				generateNounPhrases(searchTransaction);
-				generateCustomData(query, searchTransaction);
-			}
-		}
-	}
+            if (searchTransaction.getQuestion().getCollection().getTextMinerBlacklist().contains(query.toLowerCase())) {
+                log.debug("Blacklisted query: " + query);
+            } else {
+                generateDefinition(query, searchTransaction);
+                generateNounPhrases(searchTransaction);
+                generateCustomData(query, searchTransaction);
+            }
+        }
+    }
 
-	/**
-	 * Generate a definition for the given query and insert into the data model.
-	 */
-	private void generateDefinition(String query, SearchTransaction searchTransaction) {
-		Collection collection = searchTransaction.getQuestion().getCollection();
+    /**
+     * Generate a definition for the given query and insert into the data model.
+     */
+    private void generateDefinition(String query, SearchTransaction searchTransaction) {
+        Collection collection = searchTransaction.getQuestion().getCollection();
 
-		long start_time = System.currentTimeMillis();
-		EntityDefinition entityDefinition = textMiner.getEntityDefinition(query, collection);
-		long total_time = (System.currentTimeMillis() - start_time);
-		log.debug("Time to get entity and definition: " + total_time + "ms");
+        long start_time = System.currentTimeMillis();
+        EntityDefinition entityDefinition = textMiner.getEntityDefinition(query, collection);
+        long total_time = (System.currentTimeMillis() - start_time);
+        log.debug("Time to get entity and definition: " + total_time + "ms");
 
-		if (entityDefinition != null) {
-			searchTransaction.getResponse().setEntityDefinition(entityDefinition);
-		}
-	}
+        if (entityDefinition != null) {
+            searchTransaction.getResponse().setEntityDefinition(entityDefinition);
+        }
+    }
 
-	/**
-	 * Generate noun phrases for the result URLs and insert into the data model.
-	 * 
-	 */
+    /**
+     * Generate noun phrases for the result URLs and insert into the data model.
+     * 
+     */
 
-	private void generateNounPhrases(SearchTransaction searchTransaction) {
-		if (SearchTransactionUtils.hasResults(searchTransaction)) {
-			Collection collection = searchTransaction.getQuestion().getCollection();
+    private void generateNounPhrases(SearchTransaction searchTransaction) {
+        if (SearchTransactionUtils.hasResults(searchTransaction)) {
+            Collection collection = searchTransaction.getQuestion().getCollection();
 
-			for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
-				String live_url = result.getLiveUrl();
+            for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
+                String live_url = result.getLiveUrl();
 
-				List<String> noun_phrase_list = textMiner.getURLNounPhrases(live_url, collection);
+                List<String> noun_phrase_list = textMiner.getURLNounPhrases(live_url, collection);
 
-				if (noun_phrase_list != null) {
-					result.getCustomData().put(KEY_NOUN_PHRASES, noun_phrase_list);
-					log.debug("TextMiner: Inserted noun phrase data into data model: " + noun_phrase_list);
-				}
-			}
-		}
-	}
+                if (noun_phrase_list != null) {
+                    result.getCustomData().put(KEY_NOUN_PHRASES, noun_phrase_list);
+                    log.debug("TextMiner: Inserted noun phrase data into data model: " + noun_phrase_list);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Generate and custom data found in Redis and insert into the response.
-	 * 
-	 * @param query
-	 *            seed query
-	 * @param searchHome
-	 *            value of SEARCH_HOME environment variable
-	 */
-	private void generateCustomData(String query, SearchTransaction searchTransaction) {
-		Collection collection = searchTransaction.getQuestion().getCollection();
-		EntityDefinition entityDefinition = textMiner.getCustomDefinition(query, collection);
+    /**
+     * Generate and custom data found in Redis and insert into the response.
+     * 
+     * @param query
+     *            seed query
+     * @param searchHome
+     *            value of SEARCH_HOME environment variable
+     */
+    private void generateCustomData(String query, SearchTransaction searchTransaction) {
+        Collection collection = searchTransaction.getQuestion().getCollection();
+        EntityDefinition entityDefinition = textMiner.getCustomDefinition(query, collection);
 
-		if (entityDefinition != null) {
-			String definition = entityDefinition.getDefinition();
-			searchTransaction.getResponse().getCustomData().put(KEY_CUSTOM_DEFINITION, definition);
-		}
-	}
+        if (entityDefinition != null) {
+            String definition = entityDefinition.getDefinition();
+            searchTransaction.getResponse().getCustomData().put(KEY_CUSTOM_DEFINITION, definition);
+        }
+    }
 }

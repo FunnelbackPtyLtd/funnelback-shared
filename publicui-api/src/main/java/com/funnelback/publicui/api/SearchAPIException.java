@@ -8,14 +8,14 @@ package com.funnelback.publicui.api;
  */
 public class SearchAPIException extends Exception {
 
-	private static final long serialVersionUID = 1L;
-	
-	public SearchAPIException(String message) {
-		super(message);
-	}
-	
-	public SearchAPIException(Throwable cause) {
-		super(cause);
-	}
+    private static final long serialVersionUID = 1L;
+    
+    public SearchAPIException(String message) {
+        super(message);
+    }
+    
+    public SearchAPIException(Throwable cause) {
+        super(cause);
+    }
 
 }

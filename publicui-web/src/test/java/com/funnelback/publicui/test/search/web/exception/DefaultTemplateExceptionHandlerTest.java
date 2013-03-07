@@ -34,89 +34,89 @@ import freemarker.template.TemplateModel;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultTemplateExceptionHandlerTest {
 
-	@Autowired
-	private DefaultTemplateExceptionHandler handler;
-	
-	private Environment env;
-	private TemplateModel model;
-	private Config config;
-	private StringWriter out;
-	@Before
-	public void before() throws IOException {
-		
-		config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
-		
-		SearchQuestion sq = new SearchQuestion();
-		sq.setCollection(new Collection("dummy", config));
-		SearchTransaction st = new SearchTransaction(sq, null);
-		model = new BeanModel(st, new DefaultObjectWrapper());
-		
-		out = new StringWriter();
-		env = new Environment(new Template("", new StringReader(""), null), (TemplateHashModel) model, out);
-		
+    @Autowired
+    private DefaultTemplateExceptionHandler handler;
+    
+    private Environment env;
+    private TemplateModel model;
+    private Config config;
+    private StringWriter out;
+    @Before
+    public void before() throws IOException {
+        
+        config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
+        
+        SearchQuestion sq = new SearchQuestion();
+        sq.setCollection(new Collection("dummy", config));
+        SearchTransaction st = new SearchTransaction(sq, null);
+        model = new BeanModel(st, new DefaultObjectWrapper());
+        
+        out = new StringWriter();
+        env = new Environment(new Template("", new StringReader(""), null), (TemplateHashModel) model, out);
+        
 
-	}
-	
-	@Test
-	public void testNoSearchQuestion() {
-		model = new SimpleHash();
-		try {
-			handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-			Assert.fail();
-		} catch (TemplateException te) { }		
-	}
-	
-	@Test
-	public void testDefaultConfig() {
-		try {
-			handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-			Assert.fail();
-		} catch (TemplateException te) { }		
+    }
+    
+    @Test
+    public void testNoSearchQuestion() {
+        model = new SimpleHash();
+        try {
+            handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+            Assert.fail();
+        } catch (TemplateException te) { }        
+    }
+    
+    @Test
+    public void testDefaultConfig() {
+        try {
+            handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+            Assert.fail();
+        } catch (TemplateException te) { }        
 
-		Assert.assertFalse(out.getBuffer().toString().equals(""));	
-	}
+        Assert.assertFalse(out.getBuffer().toString().equals(""));    
+    }
 
-	@Test
-	public void testInvalidFormat() {
-		config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "invalid");
-		try {
-			handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-			Assert.fail();
-		} catch (TemplateException te) {
-			Assert.assertEquals(te.getCause().getClass(), IllegalArgumentException.class);
-		}		
+    @Test
+    public void testInvalidFormat() {
+        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "invalid");
+        try {
+            handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+            Assert.fail();
+        } catch (TemplateException te) {
+            Assert.assertEquals(te.getCause().getClass(), IllegalArgumentException.class);
+        }        
 
-		Assert.assertTrue(out.getBuffer().toString().equals(""));
-	}
-	
-	@Test
-	public void testHtml() throws TemplateException {
-		config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "html");
-		handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-		
-		Assert.assertFalse(out.getBuffer().toString().equals(""));
-		Assert.assertTrue(out.getBuffer().toString().startsWith("<!--"));
-		Assert.assertTrue(out.getBuffer().toString().endsWith("-->\n"));
-		Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
-	}
+        Assert.assertTrue(out.getBuffer().toString().equals(""));
+    }
+    
+    @Test
+    public void testHtml() throws TemplateException {
+        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "html");
+        handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+        
+        Assert.assertFalse(out.getBuffer().toString().equals(""));
+        Assert.assertTrue(out.getBuffer().toString().startsWith("<!--"));
+        Assert.assertTrue(out.getBuffer().toString().endsWith("-->\n"));
+        Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
+    }
 
-	@Test
-	public void testJson() throws TemplateException {
-		config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
-		handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-		
-		Assert.assertFalse(out.getBuffer().toString().equals(""));
-		Assert.assertTrue(out.getBuffer().toString().startsWith("/*"));
-		Assert.assertTrue(out.getBuffer().toString().endsWith("*/\n"));
-		Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
-	}
+    @Test
+    public void testJson() throws TemplateException {
+        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
+        handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+        
+        Assert.assertFalse(out.getBuffer().toString().equals(""));
+        Assert.assertTrue(out.getBuffer().toString().startsWith("/*"));
+        Assert.assertTrue(out.getBuffer().toString().endsWith("*/\n"));
+        Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
+    }
 
-	@Test
-	public void testString() throws TemplateException {
-		config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
-		handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
-		
-		Assert.assertFalse(out.getBuffer().toString().equals(""));
-		Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
-	}
+    @Test
+    public void testString() throws TemplateException {
+        config.setValue(Keys.ModernUI.FREEMARKER_ERROR_FORMAT, "json");
+        handler.handleTemplateException(new TemplateException("TPL_ERROR", env), env, out);
+        
+        Assert.assertFalse(out.getBuffer().toString().equals(""));
+        Assert.assertTrue(out.getBuffer().toString().contains("TPL_ERROR"));
+    }
 }

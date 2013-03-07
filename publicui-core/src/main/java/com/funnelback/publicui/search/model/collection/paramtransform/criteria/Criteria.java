@@ -8,11 +8,11 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
  * A criteria to match, part of a {@link TransformRule}.
  */
 public interface Criteria {
-	
-	/**
-	 * @param parameters
-	 * @return true if the criteria matches the input parameter map.
-	 */
-	public boolean matches(final Map<String, String[]> parameters);
+    
+    /**
+     * @param parameters
+     * @return true if the criteria matches the input parameter map.
+     */
+    public boolean matches(final Map<String, String[]> parameters);
 }
 

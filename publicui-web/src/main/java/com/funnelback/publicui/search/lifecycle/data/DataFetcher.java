@@ -8,6 +8,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface DataFetcher extends LifecycleProcessor {
 
-	public void fetchData(final SearchTransaction searchTransaction) throws DataFetchException;
-	
+    public void fetchData(final SearchTransaction searchTransaction) throws DataFetchException;
+    
 }

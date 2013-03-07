@@ -17,35 +17,35 @@ import freemarker.template.TemplateScalarModel;
  */
 public class ChangeQSParamMethod extends AbstractTemplateMethod {
 
-	public ChangeQSParamMethod() {
-		super(3, 0, false);
-	}
+    public ChangeQSParamMethod() {
+        super(3, 0, false);
+    }
 
-	public static final String NAME = "changeParam"; 
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		String paramName = ((TemplateScalarModel) arguments.get(1)).getAsString();
-		String newValue = "";
-		try {
-			newValue = ((TemplateScalarModel) arguments.get(2)).getAsString();
-		} catch (ClassCastException cce) {
-			// Sometimes the new value is passed as a number, not a String.
-			newValue = ((TemplateNumberModel) arguments.get(2)).toString();
-		}
-		
-		
-		Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");
-		Matcher m = p.matcher(qs);
-		if (m.find()) {
-			// Escape backreferences in value
-			newValue = newValue.replace("$", "\\$");
+    public static final String NAME = "changeParam"; 
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        String qs = ((TemplateScalarModel) arguments.get(0)).getAsString();
+        String paramName = ((TemplateScalarModel) arguments.get(1)).getAsString();
+        String newValue = "";
+        try {
+            newValue = ((TemplateScalarModel) arguments.get(2)).getAsString();
+        } catch (ClassCastException cce) {
+            // Sometimes the new value is passed as a number, not a String.
+            newValue = ((TemplateNumberModel) arguments.get(2)).toString();
+        }
+        
+        
+        Pattern p = Pattern.compile("([&;]|^)\\Q" + paramName + "\\E=[^&]*");
+        Matcher m = p.matcher(qs);
+        if (m.find()) {
+            // Escape backreferences in value
+            newValue = newValue.replace("$", "\\$");
 
-			return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));
-		} else {
-			return new SimpleScalar(qs + "&" + paramName + "=" + newValue);
-		}
+            return new SimpleScalar(m.replaceAll("$1" + paramName + "=" + newValue));
+        } else {
+            return new SimpleScalar(qs + "&" + paramName + "=" + newValue);
+        }
 
-	}
+    }
 }

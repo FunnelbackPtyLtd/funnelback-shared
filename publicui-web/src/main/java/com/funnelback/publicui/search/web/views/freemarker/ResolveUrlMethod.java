@@ -22,27 +22,27 @@ import freemarker.template.TemplateScalarModel;
 @Log4j
 public class ResolveUrlMethod extends AbstractTemplateMethod {
 
-	public ResolveUrlMethod() {
-		super(2, 0, false);
-	}
+    public ResolveUrlMethod() {
+        super(2, 0, false);
+    }
 
-	public static final String NAME = "resolveUrl"; 
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		String baseString = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		String toResolveString = ((TemplateScalarModel) arguments.get(1)).getAsString();
-		String result;
+    public static final String NAME = "resolveUrl"; 
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        String baseString = ((TemplateScalarModel) arguments.get(0)).getAsString();
+        String toResolveString = ((TemplateScalarModel) arguments.get(1)).getAsString();
+        String result;
 
-		URL resolved;
-		try {
-			resolved = new URL(new URL(baseString), toResolveString);
-			result = resolved.toString();
-		} catch (MalformedURLException e) {
-			log.warn("Malformed URL exception resolving " + toResolveString + " against " + baseString, e);
-			result = toResolveString;
-		}
-		
-		return new SimpleScalar(result);
-	}
+        URL resolved;
+        try {
+            resolved = new URL(new URL(baseString), toResolveString);
+            result = resolved.toString();
+        } catch (MalformedURLException e) {
+            log.warn("Malformed URL exception resolving " + toResolveString + " against " + baseString, e);
+            result = toResolveString;
+        }
+        
+        return new SimpleScalar(result);
+    }
 }

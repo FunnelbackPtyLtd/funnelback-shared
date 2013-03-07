@@ -26,27 +26,27 @@ import com.funnelback.publicui.search.service.image.ImageScalerSettings;
 @Controller
 public class ImageScaleController {
 
-	@Autowired
-	ImageFetcher fetcher;
+    @Autowired
+    ImageFetcher fetcher;
 
-	@Autowired
-	ImageScaler scaler;
+    @Autowired
+    ImageScaler scaler;
 
-	@RequestMapping(value="/scale", method=RequestMethod.GET)
-	public ModelAndView scale(HttpServletRequest request,
-			HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
-			throws Exception {
-		
-		byte[] unscaledImage = fetcher.fetch(url);
-		byte[] scaledImage = scaler.scaleImage(url, unscaledImage, ss);
-		
-		@Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
-		
-		org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
-		
-		response.getOutputStream().close();
-		
-		return null;
-	}
-		
+    @RequestMapping(value="/scale", method=RequestMethod.GET)
+    public ModelAndView scale(HttpServletRequest request,
+            HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
+        throws Exception {
+        
+        byte[] unscaledImage = fetcher.fetch(url);
+        byte[] scaledImage = scaler.scaleImage(url, unscaledImage, ss);
+        
+        @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
+        
+        org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
+        
+        response.getOutputStream().close();
+        
+        return null;
+    }
+        
 }

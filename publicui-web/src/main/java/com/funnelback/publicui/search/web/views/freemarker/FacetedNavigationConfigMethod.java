@@ -20,30 +20,30 @@ import freemarker.template.TemplateScalarModel;
  */
 public class FacetedNavigationConfigMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "facetedNavigationConfig";
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	public FacetedNavigationConfigMethod() {
-		super(2, 0, false);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		Object arg = arguments.get(0);
-		
-		Collection c = null;
-		if (arg instanceof SimpleScalar) {
-			String collectionId = ((TemplateScalarModel) arg).getAsString();
-			c = configRepository.getCollection(collectionId);
-		} else if (arg instanceof AdapterTemplateModel) {
-			c = (Collection) ((BeanModel) arg).getWrappedObject();
-		}
-	
-		String profileId = ((TemplateScalarModel) arguments.get(1)).getAsString();
-		
-		return FacetedNavigationUtils.selectConfiguration(c, profileId);
-	}
+    public static final String NAME = "facetedNavigationConfig";
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    public FacetedNavigationConfigMethod() {
+        super(2, 0, false);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        Object arg = arguments.get(0);
+        
+        Collection c = null;
+        if (arg instanceof SimpleScalar) {
+            String collectionId = ((TemplateScalarModel) arg).getAsString();
+            c = configRepository.getCollection(collectionId);
+        } else if (arg instanceof AdapterTemplateModel) {
+            c = (Collection) ((BeanModel) arg).getWrappedObject();
+        }
+    
+        String profileId = ((TemplateScalarModel) arguments.get(1)).getAsString();
+        
+        return FacetedNavigationUtils.selectConfiguration(c, profileId);
+    }
 
 }

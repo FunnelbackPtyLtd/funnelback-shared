@@ -16,27 +16,27 @@ import com.thoughtworks.xstream.XStream;
 @Log4j
 public class MetaInfoConfigReader implements ConfigReader<MetaInfo> {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Map<String, MetaInfo> read(String file) {
-		XStream xstream = new XStream();
-		xstream.alias("namesAndSuggestions",Map.class);
-		xstream.alias("className", String.class);
-		xstream.alias("info", MetaInfo.class);
-		xstream.alias("metadataClass", Map.Entry.class);
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, MetaInfo> read(String file) {
+        XStream xstream = new XStream();
+        xstream.alias("namesAndSuggestions",Map.class);
+        xstream.alias("className", String.class);
+        xstream.alias("info", MetaInfo.class);
+        xstream.alias("metadataClass", Map.Entry.class);
 
-		File fileInstance = new File(file);
-		String xml = null;
-		if(fileInstance.exists()) {
-			try {	
-				xml = Files.toString(fileInstance, Charset.forName("UTF-8"));
+        File fileInstance = new File(file);
+        String xml = null;
+        if(fileInstance.exists()) {
+            try {    
+                xml = Files.toString(fileInstance, Charset.forName("UTF-8"));
 
-			} catch (IOException e) {
-				log.error("IOException when reading config file",e);
-			}
-		}
-		if (xml != null) return (Map<String, MetaInfo>) xstream.fromXML(xml);
-		else return new HashMap<String,MetaInfo>();
-	}
+            } catch (IOException e) {
+                log.error("IOException when reading config file",e);
+            }
+        }
+        if (xml != null) return (Map<String, MetaInfo>) xstream.fromXML(xml);
+        else return new HashMap<String,MetaInfo>();
+    }
 
 }

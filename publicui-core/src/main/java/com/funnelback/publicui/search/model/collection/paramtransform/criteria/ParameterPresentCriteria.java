@@ -7,20 +7,20 @@ import java.util.Map;
  * regardless of its value.
  */
 public class ParameterPresentCriteria implements Criteria {
-	
-	private String parameterName;
+    
+    private String parameterName;
 
-	public ParameterPresentCriteria(String parameterName) {
-		this.parameterName = parameterName;
-	}
+    public ParameterPresentCriteria(String parameterName) {
+        this.parameterName = parameterName;
+    }
 
-	@Override
-	public boolean matches(final Map<String, String[]> parameters) {
-		return parameters.containsKey(parameterName);
-	}
+    @Override
+    public boolean matches(final Map<String, String[]> parameters) {
+        return parameters.containsKey(parameterName);
+    }
 
-	@Override
-	public String toString() {
-		return "Parameter '" + parameterName + "' is present";
-	}
+    @Override
+    public String toString() {
+        return "Parameter '" + parameterName + "' is present";
+    }
 }

@@ -17,13 +17,13 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
  */
 public interface ExtraSearchQuestionFactory {
 
-	/**
-	 * Builds a question for this specific extra search, given an original question
-	 * and a set of parameters.
-	 * @param originalQuestion
-	 * @param extraSearchConfiguration
-	 * @return
-	 */
-	public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration) throws InputProcessorException;
-	
+    /**
+     * Builds a question for this specific extra search, given an original question
+     * and a set of parameters.
+     * @param originalQuestion
+     * @param extraSearchConfiguration
+     * @return
+     */
+    public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration) throws InputProcessorException;
+    
 }

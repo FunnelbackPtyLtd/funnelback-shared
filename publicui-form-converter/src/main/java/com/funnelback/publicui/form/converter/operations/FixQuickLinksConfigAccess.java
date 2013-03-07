@@ -22,19 +22,19 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class FixQuickLinksConfigAccess implements Operation {
 
-	public static final Pattern CONFIG_PATTERN = Pattern.compile("question.collection.configuration.value\\(\"quicklinks\\.(.*?)\"\\)");
-	
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		Matcher m = CONFIG_PATTERN.matcher(out);
-		if (m.find()) {
-			log.info("Fixing quick links configuration accessors");
-			out = m.replaceAll("question.collection.quickLinksConfiguration[\"quicklinks.$1\"]");
-		}
-		
-		return out;
-	}
+    public static final Pattern CONFIG_PATTERN = Pattern.compile("question.collection.configuration.value\\(\"quicklinks\\.(.*?)\"\\)");
+    
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        Matcher m = CONFIG_PATTERN.matcher(out);
+        if (m.find()) {
+            log.info("Fixing quick links configuration accessors");
+            out = m.replaceAll("question.collection.quickLinksConfiguration[\"quicklinks.$1\"]");
+        }
+        
+        return out;
+    }
 
 }

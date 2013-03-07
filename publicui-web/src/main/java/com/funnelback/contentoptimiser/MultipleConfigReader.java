@@ -9,8 +9,8 @@ import java.util.Set;
 
 public interface MultipleConfigReader<T> {
 
-	Map<String, T> read(List<String> fileNames);
+    Map<String, T> read(List<String> fileNames);
 
-	Map<String, T> read(List<String> fileNames, Set<String> mustExist) throws FileNotFoundException;
+    Map<String, T> read(List<String> fileNames, Set<String> mustExist) throws FileNotFoundException;
 
 }

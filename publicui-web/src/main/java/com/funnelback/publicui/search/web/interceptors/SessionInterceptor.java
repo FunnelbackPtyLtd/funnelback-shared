@@ -28,42 +28,41 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 public class SessionInterceptor implements HandlerInterceptor {
 
-	public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.session.SearchUser";
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Override
-	public boolean preHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler) throws Exception {
-		
-		if (request.getParameter(RequestParameters.COLLECTION) != null) {
-			Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-			if (collection != null) {
-				if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
-					HttpSession session = request.getSession();
-					
-					if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {
-						// New user
-						session.setMaxInactiveInterval(-1);
-						session.setAttribute(SEARCH_USER_ATTRIBUTE, new SearchUser(UUID.randomUUID().toString()));
-					}
-				}
-			}
-		}
+    public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.session.SearchUser";
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+            HttpServletResponse response, Object handler) throws Exception {
+        
+        if (request.getParameter(RequestParameters.COLLECTION) != null) {
+            Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
+            if (collection != null) {
+                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
+                    HttpSession session = request.getSession();
+                    
+                    if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {
+                        // New user
+                        session.setMaxInactiveInterval(-1);
+                        session.setAttribute(SEARCH_USER_ATTRIBUTE, new SearchUser(UUID.randomUUID().toString()));
+                    }
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public void postHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
-	}
+    @Override
+    public void postHandle(HttpServletRequest request,
+            HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) throws Exception {
+    }
 
-	@Override
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-	}
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+        throws Exception {
+    }
 }

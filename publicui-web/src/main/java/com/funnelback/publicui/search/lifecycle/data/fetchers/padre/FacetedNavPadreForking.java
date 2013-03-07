@@ -18,14 +18,14 @@ import com.funnelback.publicui.xml.XmlParsingException;
 @Component
 public class FacetedNavPadreForking extends AbstractPadreForking {
 
-	@Override
-	protected String getQueryString(SearchTransaction transaction) {
-		return new PadreQueryStringBuilder(transaction.getQuestion(), false).buildQueryString();
-	}
+    @Override
+    protected String getQueryString(SearchTransaction transaction) {
+        return new PadreQueryStringBuilder(transaction.getQuestion(), false).buildQueryString();
+    }
 
-	@Override
-	protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
-		throw new IllegalStateException("Not yet implemented");
-	}
+    @Override
+    protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
+        throw new IllegalStateException("Not yet implemented");
+    }
 
 }

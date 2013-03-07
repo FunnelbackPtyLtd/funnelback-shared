@@ -28,40 +28,40 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Component("passThroughParametersInputProcessor")
 public class PassThroughParameters extends AbstractInputProcessor {
 
-	/**
-	 * Names of the parameters to ignore (Irrelevant to PADRE, or because
-	 * we deal with them specifically)
-	 */
-	public static final String[] IGNORED_NAMES = {
-		RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.PROFILE,
-		RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED,
-		RequestParameters.ONESHOT, // FUN-4328: Ignore oneshot parameter
-		RequestParameters.ENC      // Input parameters are always UTF-8
-		};
-	
-	/**
-	 * Pattern of parameter names to ignore
-	 */
-	public static final Pattern[] IGNORED_PATTERNS = {
-		RequestParameters.ContextualNavigation.CN_PREV_PATTERN
-	};
-	
-	@Override
-	public void processInput(SearchTransaction searchTransaction) {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			searchTransaction.getQuestion().getAdditionalParameters().putAll(searchTransaction.getQuestion().getRawInputParameters());
-		
-			for (String ignored: IGNORED_NAMES) {
-				searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);
-			}
-			
-			for (Pattern ignored: IGNORED_PATTERNS) {
-				for (String paramName: searchTransaction.getQuestion().getAdditionalParameters().keySet().toArray(new String[0])) {
-					if (ignored.matcher(paramName).matches()) {
-						searchTransaction.getQuestion().getAdditionalParameters().remove(paramName);
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Names of the parameters to ignore (Irrelevant to PADRE, or because
+     * we deal with them specifically)
+     */
+    public static final String[] IGNORED_NAMES = {
+        RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.PROFILE,
+        RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED,
+        RequestParameters.ONESHOT, // FUN-4328: Ignore oneshot parameter
+        RequestParameters.ENC      // Input parameters are always UTF-8
+    };
+    
+    /**
+     * Pattern of parameter names to ignore
+     */
+    public static final Pattern[] IGNORED_PATTERNS = {
+        RequestParameters.ContextualNavigation.CN_PREV_PATTERN
+    };
+    
+    @Override
+    public void processInput(SearchTransaction searchTransaction) {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+            searchTransaction.getQuestion().getAdditionalParameters().putAll(searchTransaction.getQuestion().getRawInputParameters());
+        
+            for (String ignored: IGNORED_NAMES) {
+                searchTransaction.getQuestion().getAdditionalParameters().remove(ignored);
+            }
+            
+            for (Pattern ignored: IGNORED_PATTERNS) {
+                for (String paramName: searchTransaction.getQuestion().getAdditionalParameters().keySet().toArray(new String[0])) {
+                    if (ignored.matcher(paramName).matches()) {
+                        searchTransaction.getQuestion().getAdditionalParameters().remove(paramName);
+                    }
+                }
+            }
+        }
+    }
 }

@@ -14,18 +14,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QSup {
 
-	/** Query blending sources */
-	public enum Source {
-		/** US / UK conflation */ USUK,
-		/** Spelling suggestions */ SPEL,
-		/** Synonyms */ SYNS,
-		/** Unknown */ Unknown;
-	}
-	
-	/** Source of this additional query */
-	@Getter @Setter private Source src = Source.Unknown;
-	
-	/** Query terms */
-	@Getter @Setter private String query;
-	
+    /** Query blending sources */
+    public enum Source {
+        /** US / UK conflation */ USUK,
+        /** Spelling suggestions */ SPEL,
+        /** Synonyms */ SYNS,
+        /** Unknown */ Unknown;
+    }
+    
+    /** Source of this additional query */
+    @Getter @Setter private Source src = Source.Unknown;
+    
+    /** Query terms */
+    @Getter @Setter private String query;
+    
 }

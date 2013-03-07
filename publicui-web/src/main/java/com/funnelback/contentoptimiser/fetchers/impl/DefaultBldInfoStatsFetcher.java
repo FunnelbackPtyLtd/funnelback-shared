@@ -20,43 +20,43 @@ import com.funnelback.publicui.search.service.IndexRepository;
 @Log4j
 @Component
 public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
-	
-	@Autowired @Setter
-	I18n i18n;
-	
-	@Autowired @Setter
-	IndexRepository indexRepository;
-	
-	public BldInfoStats fetch(ContentOptimiserModel model, Collection collection) throws IOException {
-		String[] bldInfos = collection.getMetaComponents();
-		long totalDocs = 0;
-		BigDecimal totalWordsInDocs = new BigDecimal(0);
+    
+    @Autowired @Setter
+    I18n i18n;
+    
+    @Autowired @Setter
+    IndexRepository indexRepository;
+    
+    public BldInfoStats fetch(ContentOptimiserModel model, Collection collection) throws IOException {
+        String[] bldInfos = collection.getMetaComponents();
+        long totalDocs = 0;
+        BigDecimal totalWordsInDocs = new BigDecimal(0);
 
-		if(bldInfos.length == 0) {
-			totalDocs = Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString()));
-			String avgDocs = indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Average_document_length.toString());
-			if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
-			totalWordsInDocs = totalWordsInDocs.add(
-					new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString())))
-					.multiply(new BigDecimal(avgDocs)));
-		} else {
-			for(String coll : bldInfos) {
-				totalDocs += Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString()));
-				String avgDocs = indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Average_document_length.toString());
-				if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
-				totalWordsInDocs = totalWordsInDocs.add(
-						new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString())))
-						.multiply(new BigDecimal(avgDocs)));
-			}			
-		}
-		int avgWordsInDoc = 0;
-		
-		if(totalDocs != 0) {
-		  avgWordsInDoc = totalWordsInDocs.divide(new BigDecimal(totalDocs),RoundingMode.HALF_DOWN).intValue();
-		} else {
-			log.error("Didn't find any documents reported in the bldinfo files. \".bldinfo\"s were: " + Arrays.toString(bldInfos));
-			model.getMessages().add(i18n.tr("error.readingBldinfo"));
-		}
-		return new BldInfoStats(totalDocs,avgWordsInDoc); 
-	}
+        if(bldInfos.length == 0) {
+            totalDocs = Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString()));
+            String avgDocs = indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Average_document_length.toString());
+            if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
+            totalWordsInDocs = totalWordsInDocs.add(
+                    new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString())))
+                    .multiply(new BigDecimal(avgDocs)));
+        } else {
+            for(String coll : bldInfos) {
+                totalDocs += Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString()));
+                String avgDocs = indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Average_document_length.toString());
+                if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
+                totalWordsInDocs = totalWordsInDocs.add(
+                        new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString())))
+                        .multiply(new BigDecimal(avgDocs)));
+            }            
+        }
+        int avgWordsInDoc = 0;
+        
+        if(totalDocs != 0) {
+          avgWordsInDoc = totalWordsInDocs.divide(new BigDecimal(totalDocs),RoundingMode.HALF_DOWN).intValue();
+        } else {
+            log.error("Didn't find any documents reported in the bldinfo files. \".bldinfo\"s were: " + Arrays.toString(bldInfos));
+            model.getMessages().add(i18n.tr("error.readingBldinfo"));
+        }
+        return new BldInfoStats(totalDocs,avgWordsInDoc); 
+    }
 }

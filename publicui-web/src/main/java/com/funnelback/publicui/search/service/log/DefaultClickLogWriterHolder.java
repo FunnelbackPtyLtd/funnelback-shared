@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultClickLogWriterHolder implements ClickLogWriterHolder {
 
-	@Override
-	public Writer getWriter(File logDir, String fileName) throws IOException {
-		return new FileWriter(new File(logDir,fileName));
-	}
+    @Override
+    public Writer getWriter(File logDir, String fileName) throws IOException {
+        return new FileWriter(new File(logDir,fileName));
+    }
 
 }

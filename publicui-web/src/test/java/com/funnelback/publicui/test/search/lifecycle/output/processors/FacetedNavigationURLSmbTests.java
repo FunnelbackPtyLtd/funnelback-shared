@@ -27,72 +27,72 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationURLSmbTests {
 
-	@Resource(name="localConfigRepository")
-	private DefaultConfigRepository configRepository;
+    @Resource(name="localConfigRepository")
+    private DefaultConfigRepository configRepository;
 
-	private SearchTransaction st;
-	private FacetedNavigation processor;
-	
-	@Before
-	public void before() throws Exception {
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(configRepository.getCollection("faceted-navigation-urls-smb"));
-		
-		st = new SearchTransaction(question, new SearchResponse());
-		
-		processor = new FacetedNavigation();
-	}
-	
-	@Test
-	public void test() throws Exception {
-		
-		st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
-		
-		Assert.assertEquals(0, st.getResponse().getFacets().size());
-		processor.processOutput(st);
-		
-		Assert.assertEquals(1, st.getResponse().getFacets().size());
-		
-		Facet f = st.getResponse().getFacets().get(0);
-		Assert.assertEquals("By URL", f.getName());
-		Assert.assertEquals(1, f.getCategories().size());
+    private SearchTransaction st;
+    private FacetedNavigation processor;
+    
+    @Before
+    public void before() throws Exception {
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(configRepository.getCollection("faceted-navigation-urls-smb"));
+        
+        st = new SearchTransaction(question, new SearchResponse());
+        
+        processor = new FacetedNavigation();
+    }
+    
+    @Test
+    public void test() throws Exception {
+        
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
+        
+        Assert.assertEquals(0, st.getResponse().getFacets().size());
+        processor.processOutput(st);
+        
+        Assert.assertEquals(1, st.getResponse().getFacets().size());
+        
+        Facet f = st.getResponse().getFacets().get(0);
+        Assert.assertEquals("By URL", f.getName());
+        Assert.assertEquals(1, f.getCategories().size());
 
-		Facet.Category c = f.getCategories().get(0);
-		Assert.assertNull(c.getLabel());
-		Assert.assertEquals("f.By URL|url", c.getQueryStringParamName());
-		Assert.assertEquals(36, c.getValues().size());
-		
-		Facet.CategoryValue cv = c.getValues().get(0);
-		Assert.assertEquals("v", cv.getConstraint());
-		Assert.assertEquals(46, cv.getCount());
-		Assert.assertEquals("cleopatra", cv.getData());
-		Assert.assertEquals("cleopatra", cv.getLabel());
-		Assert.assertEquals("f.By URL|url=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
-		
-		// No sub-categories should be returned since nothing
-		// has been selected in the first level category
-		Assert.assertEquals(0, c.getCategories().size());
-		
-	}
-	
-	@Test
-	public void testCategorySelection() throws Exception {
-		st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
-		
-		Assert.assertEquals(0, st.getResponse().getFacets().size());
-		
-		List<String> selected = new ArrayList<String>();
-		selected.add("cleopatra");
-		st.getQuestion().getSelectedCategoryValues().put("f.By URL|url", selected);
+        Facet.Category c = f.getCategories().get(0);
+        Assert.assertNull(c.getLabel());
+        Assert.assertEquals("f.By URL|url", c.getQueryStringParamName());
+        Assert.assertEquals(36, c.getValues().size());
+        
+        Facet.CategoryValue cv = c.getValues().get(0);
+        Assert.assertEquals("v", cv.getConstraint());
+        Assert.assertEquals(46, cv.getCount());
+        Assert.assertEquals("cleopatra", cv.getData());
+        Assert.assertEquals("cleopatra", cv.getLabel());
+        Assert.assertEquals("f.By URL|url=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
+        
+        // No sub-categories should be returned since nothing
+        // has been selected in the first level category
+        Assert.assertEquals(0, c.getCategories().size());
+        
+    }
+    
+    @Test
+    public void testCategorySelection() throws Exception {
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
+        
+        Assert.assertEquals(0, st.getResponse().getFacets().size());
+        
+        List<String> selected = new ArrayList<String>();
+        selected.add("cleopatra");
+        st.getQuestion().getSelectedCategoryValues().put("f.By URL|url", selected);
 
-		processor.processOutput(st);
-		
-		Assert.assertEquals(1, st.getResponse().getFacets().size());
-		
-		Facet f = st.getResponse().getFacets().get(0);
-		Assert.assertEquals("By URL", f.getName());
-		Assert.assertEquals(0, f.getCategories().size());
+        processor.processOutput(st);
+        
+        Assert.assertEquals(1, st.getResponse().getFacets().size());
+        
+        Facet f = st.getResponse().getFacets().get(0);
+        Assert.assertEquals("By URL", f.getName());
+        Assert.assertEquals(0, f.getCategories().size());
 
-	}
-	
+    }
+    
 }

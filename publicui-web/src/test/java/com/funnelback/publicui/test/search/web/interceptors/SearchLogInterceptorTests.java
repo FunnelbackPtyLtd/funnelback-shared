@@ -24,75 +24,75 @@ import com.funnelback.publicui.test.mock.MockLogService;
 
 public class SearchLogInterceptorTests {
 
-	private SearchLogInterceptor interceptor;
-	private MockLogService logService;
-	private SearchTransaction st;
-	
-	@Before
-	public void before() throws FileNotFoundException, EnvironmentVariableException {
-		logService = new MockLogService();
-		interceptor = new SearchLogInterceptor();
-		interceptor.setLogService(logService);
-		
-		st = new SearchTransaction(new SearchQuestion(), null);
-		st.getQuestion().setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
-		st.getQuestion().getCollection().getConfiguration().setValue(Keys.USERID_TO_LOG, DefaultValues.UserIdToLog.ip.toString());
-		st.getQuestion().setCnClickedCluster("Clicked Cluster");
-		st.getQuestion().getCnPreviousClusters().add("Previous Cluster");
-		st.getQuestion().setUserIdToLog("1.2.3.4");
-	}
-	
-	@Test
-	public void testInterceptorPrehandleDoesntBlock() throws Exception {
-		Assert.assertTrue(interceptor.preHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null));
-	}
-	
-	@Test
-	public void testMissingParams() throws Exception {
-		// No ModelAndView
-		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, null);
-		Assert.assertEquals(0, logService.getCnLogs().size());
-		
-		// Empty ModelAndView
-		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, new ModelAndView());
-		Assert.assertEquals(0, logService.getCnLogs().size());
-		
-		// Empty search transaction
-		ModelAndView mav = new ModelAndView();
-		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(null, null));
-		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
-		Assert.assertEquals(0, logService.getCnLogs().size());
-		
-		// Empty question & response
-		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(new SearchQuestion(), new SearchResponse()));
-		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
-		Assert.assertEquals(0, logService.getCnLogs().size());
-		
-		// No Clicked Clusters
-		((SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString())).getQuestion().setCollection(new Collection("dummy", null));
-		interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
-		Assert.assertEquals(0, logService.getCnLogs().size());
-	}
-	
-	@Test
-	public void testContextualNavigationLog() throws Exception {
-		ModelAndView mav = new ModelAndView();
-		mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), st);
-		
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setRemoteAddr("5.6.7.8");
-		
-		interceptor.postHandle(request, null, null, mav);
-		
-		Assert.assertEquals(1, logService.getCnLogs().size());
-		ContextualNavigationLog cnLog = logService.getCnLogs().get(0);
-		
-		Assert.assertEquals("Clicked Cluster", cnLog.getCluster());
-		Assert.assertEquals("dummy", cnLog.getCollection().getId());
-		Assert.assertNotNull(cnLog.getDate());
-		Assert.assertEquals("Previous Cluster", cnLog.getPreviousClusters().get(0));
-		Assert.assertNull("", cnLog.getProfile());
-		Assert.assertEquals("userId should be taken from the SearchQuestion, not the request", "1.2.3.4", cnLog.getUserId());
-	}
-	
+    private SearchLogInterceptor interceptor;
+    private MockLogService logService;
+    private SearchTransaction st;
+    
+    @Before
+    public void before() throws FileNotFoundException, EnvironmentVariableException {
+        logService = new MockLogService();
+        interceptor = new SearchLogInterceptor();
+        interceptor.setLogService(logService);
+        
+        st = new SearchTransaction(new SearchQuestion(), null);
+        st.getQuestion().setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        st.getQuestion().getCollection().getConfiguration().setValue(Keys.USERID_TO_LOG, DefaultValues.UserIdToLog.ip.toString());
+        st.getQuestion().setCnClickedCluster("Clicked Cluster");
+        st.getQuestion().getCnPreviousClusters().add("Previous Cluster");
+        st.getQuestion().setUserIdToLog("1.2.3.4");
+    }
+    
+    @Test
+    public void testInterceptorPrehandleDoesntBlock() throws Exception {
+        Assert.assertTrue(interceptor.preHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null));
+    }
+    
+    @Test
+    public void testMissingParams() throws Exception {
+        // No ModelAndView
+        interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, null);
+        Assert.assertEquals(0, logService.getCnLogs().size());
+        
+        // Empty ModelAndView
+        interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, new ModelAndView());
+        Assert.assertEquals(0, logService.getCnLogs().size());
+        
+        // Empty search transaction
+        ModelAndView mav = new ModelAndView();
+        mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(null, null));
+        interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
+        Assert.assertEquals(0, logService.getCnLogs().size());
+        
+        // Empty question & response
+        mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), new SearchTransaction(new SearchQuestion(), new SearchResponse()));
+        interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
+        Assert.assertEquals(0, logService.getCnLogs().size());
+        
+        // No Clicked Clusters
+        ((SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString())).getQuestion().setCollection(new Collection("dummy", null));
+        interceptor.postHandle(new MockHttpServletRequest(), new MockHttpServletResponse(), null, mav);
+        Assert.assertEquals(0, logService.getCnLogs().size());
+    }
+    
+    @Test
+    public void testContextualNavigationLog() throws Exception {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject(SearchController.ModelAttributes.SearchTransaction.toString(), st);
+        
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("5.6.7.8");
+        
+        interceptor.postHandle(request, null, null, mav);
+        
+        Assert.assertEquals(1, logService.getCnLogs().size());
+        ContextualNavigationLog cnLog = logService.getCnLogs().get(0);
+        
+        Assert.assertEquals("Clicked Cluster", cnLog.getCluster());
+        Assert.assertEquals("dummy", cnLog.getCollection().getId());
+        Assert.assertNotNull(cnLog.getDate());
+        Assert.assertEquals("Previous Cluster", cnLog.getPreviousClusters().get(0));
+        Assert.assertNull("", cnLog.getProfile());
+        Assert.assertEquals("userId should be taken from the SearchQuestion, not the request", "1.2.3.4", cnLog.getUserId());
+    }
+    
 }

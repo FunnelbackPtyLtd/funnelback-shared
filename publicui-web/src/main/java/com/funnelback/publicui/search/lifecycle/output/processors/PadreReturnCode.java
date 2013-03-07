@@ -27,31 +27,31 @@ import com.funnelback.publicui.search.service.log.LogService;
 @Log4j
 public class PadreReturnCode extends AbstractOutputProcessor {
 
-	@Autowired
-	@Setter private LogService logService;
-	
-	@Autowired
-	@Setter private I18n i18n;
-	
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasResponse(searchTransaction)
-				&& searchTransaction.getResponse().getReturnCode() != ReturnCodes.SUCCESS
-				&& SearchTransactionUtils.hasCollection(searchTransaction)) {
-			
-			log.trace("Processing return code '" + searchTransaction.getResponse().getReturnCode() + "'");
-			switch (searchTransaction.getResponse().getReturnCode()) {
-			case ReturnCodes.QUERIES_LOG_ERROR:
-				logService.logPublicUIWarning(
-						new PublicUIWarningLog(new Date(),
-								searchTransaction.getQuestion().getCollection(),
-								searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
-								searchTransaction.getQuestion().getUserIdToLog(),
-								i18n.tr("outputprocessor.padrereturncode.log.failed")));
-				break;
-			}
-		}
+    @Autowired
+    @Setter private LogService logService;
+    
+    @Autowired
+    @Setter private I18n i18n;
+    
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasResponse(searchTransaction)
+                && searchTransaction.getResponse().getReturnCode() != ReturnCodes.SUCCESS
+                && SearchTransactionUtils.hasCollection(searchTransaction)) {
+            
+            log.trace("Processing return code '" + searchTransaction.getResponse().getReturnCode() + "'");
+            switch (searchTransaction.getResponse().getReturnCode()) {
+            case ReturnCodes.QUERIES_LOG_ERROR:
+                logService.logPublicUIWarning(
+                        new PublicUIWarningLog(new Date(),
+                                searchTransaction.getQuestion().getCollection(),
+                                searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
+                                searchTransaction.getQuestion().getUserIdToLog(),
+                                i18n.tr("outputprocessor.padrereturncode.log.failed")));
+                break;
+            }
+        }
 
-	}
+    }
 
 }

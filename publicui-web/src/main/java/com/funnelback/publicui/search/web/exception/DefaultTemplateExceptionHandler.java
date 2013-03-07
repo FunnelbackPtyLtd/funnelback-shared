@@ -34,49 +34,49 @@ import freemarker.template.TemplateHashModel;
 @Log4j
 public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler {
 
-	@Autowired
-	private I18n i18n;
-	
-	@Override
-	public void handleTemplateException(TemplateException te, Environment env, Writer out) throws TemplateException {
-		log.error("An error occured while processing a template", te);
-		
-		// Try to get the source collection config
-		TemplateHashModel model = env.getDataModel();
-		if (model.get(SearchController.ModelAttributes.question.toString()) != null) {
-			SearchQuestion sq = (SearchQuestion) ((AdapterTemplateModel)model.get(SearchController.ModelAttributes.question.toString())).getAdaptedObject(SearchQuestion.class);
-			boolean displayErrors = sq.getCollection().getConfiguration().valueAsBoolean(
-					Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS,
-					DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS);
-			if (displayErrors) {
-				String errorFormat = sq.getCollection().getConfiguration().value(
-						Keys.ModernUI.FREEMARKER_ERROR_FORMAT,
-						DefaultValues.ModernUI.ErrorFormat.exception.toString());
-				try {
-					ErrorFormat fmt = ErrorFormat.valueOf(errorFormat);
-					switch (fmt) {
-					case exception:
-						out.write(te.getFTLInstructionStack());
-						throw te;
-					case html:
-						out.write("<!-- " + i18n.tr("freemarker.template.error") + ": " + te.getMessage() + " -->\n");
-						break;
-					case json:
-						out.write("/* " + i18n.tr("freemarker.template.error") + ": " + te.getMessage() + " */\n");
-						break;
-					case string:
-						out.write(i18n.tr("freemarker.template.error") + ": " + te.getMessage());
-						break;
-					}
-				} catch (IOException ioe) {
-					throw new TemplateException(ioe, env);
-				} catch (IllegalArgumentException iae) {
-					log.error(i18n.tr("freemarker.error_format.invalid", errorFormat, StringUtils.join(ErrorFormat.values(), ",")));
-					throw new TemplateException(iae, env);
-				}
-			}
-		} else {
-			throw te;
-		}
-	}
+    @Autowired
+    private I18n i18n;
+    
+    @Override
+    public void handleTemplateException(TemplateException te, Environment env, Writer out) throws TemplateException {
+        log.error("An error occured while processing a template", te);
+        
+        // Try to get the source collection config
+        TemplateHashModel model = env.getDataModel();
+        if (model.get(SearchController.ModelAttributes.question.toString()) != null) {
+            SearchQuestion sq = (SearchQuestion) ((AdapterTemplateModel)model.get(SearchController.ModelAttributes.question.toString())).getAdaptedObject(SearchQuestion.class);
+            boolean displayErrors = sq.getCollection().getConfiguration().valueAsBoolean(
+                    Keys.ModernUI.FREEMARKER_DISPLAY_ERRORS,
+                    DefaultValues.ModernUI.FREEMARKER_DISPLAY_ERRORS);
+            if (displayErrors) {
+                String errorFormat = sq.getCollection().getConfiguration().value(
+                        Keys.ModernUI.FREEMARKER_ERROR_FORMAT,
+                        DefaultValues.ModernUI.ErrorFormat.exception.toString());
+                try {
+                    ErrorFormat fmt = ErrorFormat.valueOf(errorFormat);
+                    switch (fmt) {
+                    case exception:
+                        out.write(te.getFTLInstructionStack());
+                        throw te;
+                    case html:
+                        out.write("<!-- " + i18n.tr("freemarker.template.error") + ": " + te.getMessage() + " -->\n");
+                        break;
+                    case json:
+                        out.write("/* " + i18n.tr("freemarker.template.error") + ": " + te.getMessage() + " */\n");
+                        break;
+                    case string:
+                        out.write(i18n.tr("freemarker.template.error") + ": " + te.getMessage());
+                        break;
+                    }
+                } catch (IOException ioe) {
+                    throw new TemplateException(ioe, env);
+                } catch (IllegalArgumentException iae) {
+                    log.error(i18n.tr("freemarker.error_format.invalid", errorFormat, StringUtils.join(ErrorFormat.values(), ",")));
+                    throw new TemplateException(iae, env);
+                }
+            }
+        } else {
+            throw te;
+        }
+    }
 }

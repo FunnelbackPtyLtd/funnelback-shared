@@ -22,27 +22,27 @@ import com.funnelback.publicui.search.model.padre.Error;
 @AllArgsConstructor
 public class SearchError {
 
-	/**
-	 * Generic reasons of errors.
-	 */
-	public enum Reason {
-		InvalidCollection,
-		MissingParameter,
-		InputProcessorError,
-		DataFetchError,
-		OutputProcessorError,
-		Unknown;
-	}
+    /**
+     * Generic reasons of errors.
+     */
+    public enum Reason {
+        InvalidCollection,
+        MissingParameter,
+        InputProcessorError,
+        DataFetchError,
+        OutputProcessorError,
+        Unknown;
+    }
 
-	/**
-	 * Reason for this error.
-	 */
-	@Getter	private final Reason reason;
-	
-	/**
-	 * The original {@link Exception} that occured,
-	 * if available.
-	 */
-	@Getter @Setter private Exception additionalData;
-	
+    /**
+     * Reason for this error.
+     */
+    @Getter    private final Reason reason;
+    
+    /**
+     * The original {@link Exception} that occured,
+     * if available.
+     */
+    @Getter @Setter private Exception additionalData;
+    
 }

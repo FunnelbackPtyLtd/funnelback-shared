@@ -12,20 +12,20 @@ import com.funnelback.publicui.form.converter.Operation;
  */
 @Slf4j
 public class QuickLinksConversion implements Operation {
-	
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		Matcher m = Pattern.compile("<s:ql>\\w*</s:ql>").matcher(out);
-		if (m.find()) {
-			log.info("Processing QuickLinks data tags");
-			out = out.replaceAll("<s:ql>url</s:ql>", "\\${s.ql.url}");
-			out = out.replaceAll("<s:ql>title</s:ql>", "\\${s.ql.text}");
-			
-			out = out.replaceAll("<s:ql>domain</s:ql>", "\\${s.result.quickLinks.domain}");
-		}
-		return out;
-	}
+    
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        Matcher m = Pattern.compile("<s:ql>\\w*</s:ql>").matcher(out);
+        if (m.find()) {
+            log.info("Processing QuickLinks data tags");
+            out = out.replaceAll("<s:ql>url</s:ql>", "\\${s.ql.url}");
+            out = out.replaceAll("<s:ql>title</s:ql>", "\\${s.ql.text}");
+            
+            out = out.replaceAll("<s:ql>domain</s:ql>", "\\${s.result.quickLinks.domain}");
+        }
+        return out;
+    }
 
 }

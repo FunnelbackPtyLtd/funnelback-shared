@@ -28,72 +28,72 @@ import com.funnelback.utils.RedisNamespace;
 @Log4j
 public class RedisResultsCartRepository implements ResultsCartRepository, ApplicationContextAware {
 
-	@Setter private ApplicationContext applicationContext;
-	
-	private HashOperations<String, String, Result> writeHashOps;
-	private HashOperations<String, String, Result> readHashOps;
+    @Setter private ApplicationContext applicationContext;
+    
+    private HashOperations<String, String, Result> writeHashOps;
+    private HashOperations<String, String, Result> readHashOps;
 
-	@Override
-	public void addToCart(SearchUser user, Collection collection,
-			Result result, String query) {
-		try {
-			writeHashOps.put(RedisNamespace.resultsCartForUser(collection, user),
-					result.getIndexUrl(), result);
-		} catch (DataAccessException dae) {
-			log.error("Error while adding to cart", dae);
-		}
-	}
+    @Override
+    public void addToCart(SearchUser user, Collection collection,
+            Result result, String query) {
+        try {
+            writeHashOps.put(RedisNamespace.resultsCartForUser(collection, user),
+                    result.getIndexUrl(), result);
+        } catch (DataAccessException dae) {
+            log.error("Error while adding to cart", dae);
+        }
+    }
 
-	@Override
-	public void removeFromCart(SearchUser user, Collection collection,
-			String url) {
-		try {
-			writeHashOps.delete(RedisNamespace.resultsCartForUser(collection, user), url);
-		} catch (DataAccessException dae) {
-			log.error("Error while deleting from cart", dae);
-		}
-	}
-	
-	@Override
-	public void clearCart(SearchUser user, Collection collection) {
-		try {
-			writeHashOps.getOperations().delete(RedisNamespace.resultsCartForUser(collection, user));
-		} catch (DataAccessException dae) {
-			log.error("Error while clearing cart", dae);
-		}
-	}
-	
-	@Override
-	public Map<String, Result> getCart(SearchUser user, Collection collection) {
-		try {
-			return readHashOps.entries(RedisNamespace.resultsCartForUser(collection, user));
-		} catch (DataAccessException dae) {
-			log.error("Error retrieving cart", dae);
-			return new HashMap<String, Result>();
-		}
-	}
-	
-	/**
-	 * Builds helper {@link RedisTemplate}s to read and write hashes of
-	 * {@link Result} to Redis
-	 */
- 	@PostConstruct
-	private void createRedisTemplate() {
-		RedisTemplate<String, Result> writeTpl = new RedisTemplate<>();
-		writeTpl.setConnectionFactory(applicationContext.getBean("jedisWriteConnectionFactory", RedisConnectionFactory.class));
-		writeTpl.setDefaultSerializer(new JacksonJsonRedisSerializer<>(Result.class));
-		writeTpl.setHashKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
-		writeTpl.setKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
-		applicationContext.getAutowireCapableBeanFactory().initializeBean(writeTpl, "redisCartWriteTemplate");
-		writeHashOps = writeTpl.opsForHash();
-		
-		RedisTemplate<String, Result> readTpl = new RedisTemplate<>();
-		readTpl.setConnectionFactory(applicationContext.getBean("jedisReadConnectionFactory", RedisConnectionFactory.class));
-		readTpl.setDefaultSerializer(new JacksonJsonRedisSerializer<>(Result.class));
-		readTpl.setHashKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
-		readTpl.setKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
-		applicationContext.getAutowireCapableBeanFactory().initializeBean(readTpl, "redisCartReadTemplate");
-		readHashOps = readTpl.opsForHash();
-	}
+    @Override
+    public void removeFromCart(SearchUser user, Collection collection,
+            String url) {
+        try {
+            writeHashOps.delete(RedisNamespace.resultsCartForUser(collection, user), url);
+        } catch (DataAccessException dae) {
+            log.error("Error while deleting from cart", dae);
+        }
+    }
+    
+    @Override
+    public void clearCart(SearchUser user, Collection collection) {
+        try {
+            writeHashOps.getOperations().delete(RedisNamespace.resultsCartForUser(collection, user));
+        } catch (DataAccessException dae) {
+            log.error("Error while clearing cart", dae);
+        }
+    }
+    
+    @Override
+    public Map<String, Result> getCart(SearchUser user, Collection collection) {
+        try {
+            return readHashOps.entries(RedisNamespace.resultsCartForUser(collection, user));
+        } catch (DataAccessException dae) {
+            log.error("Error retrieving cart", dae);
+            return new HashMap<String, Result>();
+        }
+    }
+    
+    /**
+     * Builds helper {@link RedisTemplate}s to read and write hashes of
+     * {@link Result} to Redis
+     */
+    @PostConstruct
+    private void createRedisTemplate() {
+        RedisTemplate<String, Result> writeTpl = new RedisTemplate<>();
+        writeTpl.setConnectionFactory(applicationContext.getBean("jedisWriteConnectionFactory", RedisConnectionFactory.class));
+        writeTpl.setDefaultSerializer(new JacksonJsonRedisSerializer<>(Result.class));
+        writeTpl.setHashKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
+        writeTpl.setKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
+        applicationContext.getAutowireCapableBeanFactory().initializeBean(writeTpl, "redisCartWriteTemplate");
+        writeHashOps = writeTpl.opsForHash();
+        
+        RedisTemplate<String, Result> readTpl = new RedisTemplate<>();
+        readTpl.setConnectionFactory(applicationContext.getBean("jedisReadConnectionFactory", RedisConnectionFactory.class));
+        readTpl.setDefaultSerializer(new JacksonJsonRedisSerializer<>(Result.class));
+        readTpl.setHashKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
+        readTpl.setKeySerializer(applicationContext.getBean("stringRedisSerializer", StringRedisSerializer.class));
+        applicationContext.getAutowireCapableBeanFactory().initializeBean(readTpl, "redisCartReadTemplate");
+        readHashOps = readTpl.opsForHash();
+    }
 
 }

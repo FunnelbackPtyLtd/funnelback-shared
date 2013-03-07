@@ -24,79 +24,79 @@ import com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerVie
 @ContextConfiguration("file:src/test/resources/spring/freemarkerViewResolver.xml")
 public class FallbackFreeMarkerViewResolverTest {
 
-	@Autowired
-	private File searchHome;
-	
-	private File confDir;
-	
-	@Autowired
-	private FallbackFreeMarkerViewResolver resolver;
-	
-	@Autowired
-	private FreeMarkerConfigurer config;
-	
-	@Before
-	public void before() throws IOException {
-		resolver.clearCache();
-		
-		// Prepare a collection configuration folder
-		FileUtils.deleteDirectory(searchHome);
-		searchHome.mkdirs();
-		
-		confDir = new File(searchHome, DefaultValues.FOLDER_CONF + "/dummy");
-		FileUtils.deleteDirectory(confDir);
-		confDir.mkdirs();
-		new File(confDir, DefaultValues.DEFAULT_PROFILE).mkdirs();
-		
-		// Copy default templates
-		FileUtils.copyDirectory(
-				new File("src/test/resources/dummy-search_home/web"),
-				new File(searchHome, "web"));
-	}
-	
-	@Test
-	public void testUnknownView() throws Exception {
-		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("unknown", Locale.getDefault());
-		Assert.assertNotNull(v);
-		Assert.assertEquals("web/templates/modernui/form-not-found.ftl", v.getUrl());
+    @Autowired
+    private File searchHome;
+    
+    private File confDir;
+    
+    @Autowired
+    private FallbackFreeMarkerViewResolver resolver;
+    
+    @Autowired
+    private FreeMarkerConfigurer config;
+    
+    @Before
+    public void before() throws IOException {
+        resolver.clearCache();
+        
+        // Prepare a collection configuration folder
+        FileUtils.deleteDirectory(searchHome);
+        searchHome.mkdirs();
+        
+        confDir = new File(searchHome, DefaultValues.FOLDER_CONF + "/dummy");
+        FileUtils.deleteDirectory(confDir);
+        confDir.mkdirs();
+        new File(confDir, DefaultValues.DEFAULT_PROFILE).mkdirs();
+        
+        // Copy default templates
+        FileUtils.copyDirectory(
+                new File("src/test/resources/dummy-search_home/web"),
+                new File(searchHome, "web"));
+    }
+    
+    @Test
+    public void testUnknownView() throws Exception {
+        FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("unknown", Locale.getDefault());
+        Assert.assertNotNull(v);
+        Assert.assertEquals("web/templates/modernui/form-not-found.ftl", v.getUrl());
 
-	}
-	
-	@Test
-	public void testProfileView() throws Exception {
-		new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").createNewFile();
-		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
-		Assert.assertNotNull(v);
-		Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
-	}
+    }
+    
+    @Test
+    public void testProfileView() throws Exception {
+        new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").createNewFile();
+        FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
+        Assert.assertNotNull(v);
+        Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+    }
 
-	@Test
-	public void testCollectionView() throws Exception {
-		new File(confDir, "simple.ftl").createNewFile();
-		Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
-		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
-		Assert.assertNotNull(v);
-		Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
-	}
+    @Test
+    public void testCollectionView() throws Exception {
+        new File(confDir, "simple.ftl").createNewFile();
+        Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
+        FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
+        Assert.assertNotNull(v);
+        Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+    }
 
-	@Test
-	public void testGlobalConfView() throws Exception {
-		new File(searchHome, "conf/simple.ftl").createNewFile();
-		Assert.assertFalse(new File(confDir, "simple.ftl").exists());
-		Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
-		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
-		Assert.assertNotNull(v);
-		Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
-	}
-	
-	@Test
-	public void testNoCollectionDefaultView() throws Exception {
-		FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName(DefaultValues.FOLDER_WEB+"/"
-				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_MODERNUI+"/no-collection", Locale.getDefault());
-		Assert.assertNotNull(v);
-		Assert.assertEquals("web/templates/modernui/no-collection.default.ftl", v.getUrl());
-	}
-	
+    @Test
+    public void testGlobalConfView() throws Exception {
+        new File(searchHome, "conf/simple.ftl").createNewFile();
+        Assert.assertFalse(new File(confDir, "simple.ftl").exists());
+        Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
+        FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
+        Assert.assertNotNull(v);
+        Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+    }
+    
+    @Test
+    public void testNoCollectionDefaultView() throws Exception {
+        FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName(DefaultValues.FOLDER_WEB+"/"
+                +DefaultValues.FOLDER_TEMPLATES+"/"
+                +DefaultValues.FOLDER_MODERNUI+"/no-collection", Locale.getDefault());
+        Assert.assertNotNull(v);
+        Assert.assertEquals("web/templates/modernui/no-collection.default.ftl", v.getUrl());
+    }
+    
 
 }

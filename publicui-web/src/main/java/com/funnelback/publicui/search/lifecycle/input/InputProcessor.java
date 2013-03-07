@@ -8,7 +8,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface InputProcessor extends LifecycleProcessor {
 
-	public void processInput(final SearchTransaction searchTransaction)
-			throws InputProcessorException;
+    public void processInput(final SearchTransaction searchTransaction)
+        throws InputProcessorException;
 
 }

@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 @Component("i18n")
 public class I18n {
 
-	@Autowired
-	private MessageSource messages;
-	
-	public String tr(String code) {
-		return messages.getMessage(code, null, LocaleContextHolder.getLocale());		
-	}
-	
-	public String tr(String code, Object... args) {
-		return messages.getMessage(code, args, LocaleContextHolder.getLocale());
-	}
-	
+    @Autowired
+    private MessageSource messages;
+    
+    public String tr(String code) {
+        return messages.getMessage(code, null, LocaleContextHolder.getLocale());        
+    }
+    
+    public String tr(String code, Object... args) {
+        return messages.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+    
 }

@@ -19,19 +19,19 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class BoldicizeConversion implements Operation {
 
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		Matcher m = Pattern.compile("<s:boldicize\\s+bold=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
-		if (m.find()) {
-			log.info("Processing <s:boldicize> tags");
-			out = m.replaceAll("<@s.boldicize bold=$1>");
-			
-			out = out.replaceAll("(?i)</s:boldicize>", "</@s.boldicize>");
-		}
-		
-		return out;
-	}
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        Matcher m = Pattern.compile("<s:boldicize\\s+bold=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
+        if (m.find()) {
+            log.info("Processing <s:boldicize> tags");
+            out = m.replaceAll("<@s.boldicize bold=$1>");
+            
+            out = out.replaceAll("(?i)</s:boldicize>", "</@s.boldicize>");
+        }
+        
+        return out;
+    }
 
 }

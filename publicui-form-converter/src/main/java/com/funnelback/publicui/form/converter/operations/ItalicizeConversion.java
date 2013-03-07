@@ -19,19 +19,19 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class ItalicizeConversion implements Operation {
 
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		Matcher m = Pattern.compile("<s:italicize\\s+italics=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
-		if (m.find()) {
-			log.info("Processing <s:italicize> tags");
-			out = m.replaceAll("<@s.italicize italics=$1>");
-			
-			out = out.replaceAll("(?i)</s:italicize>", "</@s.italicize>");
-		}
-		
-		return out;
-	}
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        Matcher m = Pattern.compile("<s:italicize\\s+italics=['\"]\\$\\{([^\\}]*)\\}['\"]\\s*>", Pattern.CASE_INSENSITIVE).matcher(out);
+        if (m.find()) {
+            log.info("Processing <s:italicize> tags");
+            out = m.replaceAll("<@s.italicize italics=$1>");
+            
+            out = out.replaceAll("(?i)</s:italicize>", "</@s.italicize>");
+        }
+        
+        return out;
+    }
 
 }

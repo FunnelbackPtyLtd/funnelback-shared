@@ -8,6 +8,6 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 
 public interface BldInfoStatsFetcher {
 
-	BldInfoStats fetch(ContentOptimiserModel model,Collection collection) throws IOException;
+    BldInfoStats fetch(ContentOptimiserModel model,Collection collection) throws IOException;
 
 }

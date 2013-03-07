@@ -25,64 +25,64 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 @Log4j
 public class PadreConnectionFactory extends BaseKeyedPoolableObjectFactory {
 
-	@Autowired
-	private ConfigRepository configRepository;
+    @Autowired
+    private ConfigRepository configRepository;
 
-	@Autowired
-	private File searchHome;
-	
-	@Override
-	public PadreConnection makeObject(Object key) throws Exception {
-		String collectionId = (String) key;
-		Collection c = configRepository.getCollection(collectionId);
-		
-		if (c == null) {
-			throw new IllegalArgumentException("Invalid collection '" + collectionId + "'");
-		}
-		
-		File indexStem = new File(c.getConfiguration().getCollectionRoot()
-				+ File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX,
-				DefaultValues.INDEXFILES_PREFIX);
-		
-		String commandLine = new File(searchHome
-				+ File.separator + DefaultValues.FOLDER_BIN,								
-				c.getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
-				+ " " + indexStem.getAbsolutePath() + " -res xml";
-		
-		Map<String, String> env = new HashMap<String, String>();
-		env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
+    @Autowired
+    private File searchHome;
+    
+    @Override
+    public PadreConnection makeObject(Object key) throws Exception {
+        String collectionId = (String) key;
+        Collection c = configRepository.getCollection(collectionId);
+        
+        if (c == null) {
+            throw new IllegalArgumentException("Invalid collection '" + collectionId + "'");
+        }
+        
+        File indexStem = new File(c.getConfiguration().getCollectionRoot()
+                + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX,
+                DefaultValues.INDEXFILES_PREFIX);
+        
+        String commandLine = new File(searchHome
+                + File.separator + DefaultValues.FOLDER_BIN,                                
+                c.getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
+                + " " + indexStem.getAbsolutePath() + " -res xml";
+        
+        Map<String, String> env = new HashMap<String, String>();
+        env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
 
-		// SystemRoot environment variable is MANDATORY for TRIM DLS checks
-		// The TRIM SDK uses WinSock to connect to the remote server, and 
-		// WinSock needs SystemRoot to initialise itself.
-		if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
-			env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
-		}
+        // SystemRoot environment variable is MANDATORY for TRIM DLS checks
+        // The TRIM SDK uses WinSock to connect to the remote server, and 
+        // WinSock needs SystemRoot to initialise itself.
+        if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
+            env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
+        }
 
-		log.debug("Running new PADRE instance for collection '" + c.getId());
-		PadreExecutor executor = new PadreExecutor();
-		executor.setStreamHandler(new PadreStreamHandler());
-		executor.execute(CommandLine.parse(commandLine), env, new PadreResultHandler());
-		
-		return new PadreConnection(executor);
-	}
-	
-	@Override
-	public void destroyObject(Object key, Object obj) throws Exception {
-		PadreConnection c = (PadreConnection) obj;
-		c.close();
-	}
-	
-	private class PadreResultHandler implements ExecuteResultHandler {
-		@Override
-		public void onProcessFailed(ExecuteException ex) {
-			log.error("PADRE failed", ex);				
-		}
-		
-		@Override
-		public void onProcessComplete(int rc) {
-			log.info("PADRE completed with exit code: " + rc);				
-		}
-	}
+        log.debug("Running new PADRE instance for collection '" + c.getId());
+        PadreExecutor executor = new PadreExecutor();
+        executor.setStreamHandler(new PadreStreamHandler());
+        executor.execute(CommandLine.parse(commandLine), env, new PadreResultHandler());
+        
+        return new PadreConnection(executor);
+    }
+    
+    @Override
+    public void destroyObject(Object key, Object obj) throws Exception {
+        PadreConnection c = (PadreConnection) obj;
+        c.close();
+    }
+    
+    private class PadreResultHandler implements ExecuteResultHandler {
+        @Override
+        public void onProcessFailed(ExecuteException ex) {
+            log.error("PADRE failed", ex);                
+        }
+        
+        @Override
+        public void onProcessComplete(int rc) {
+            log.info("PADRE completed with exit code: " + rc);                
+        }
+    }
 
 }

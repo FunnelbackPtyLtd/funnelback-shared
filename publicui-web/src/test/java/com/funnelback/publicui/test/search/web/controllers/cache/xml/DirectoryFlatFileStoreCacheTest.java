@@ -11,34 +11,34 @@ import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.xml.FlatFileStore;
 
 public class DirectoryFlatFileStoreCacheTest extends
-		AbstractXmlCacheControllerTest {
+        AbstractXmlCacheControllerTest {
 
-	private static final String COLLECTION_ID = "cache-directory-flatfilestore";
-	
-	@Override
-	protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
-			throws IOException {
-		FlatFileStore store = new FlatFileStore(liveRoot);
-		store.open();
-		store.add(rmd.record);
-		store.close();
+    private static final String COLLECTION_ID = "cache-directory-flatfilestore";
+    
+    @Override
+    protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
+            throws IOException {
+        FlatFileStore store = new FlatFileStore(liveRoot);
+        store.open();
+        store.add(rmd.record);
+        store.close();
 
-	}
+    }
 
-	@Override
-	protected String getPrimaryKey() {
-		return "CN=Guest,CN=Users,DC=harness,DC=local";
-	}
+    @Override
+    protected String getPrimaryKey() {
+        return "CN=Guest,CN=Users,DC=harness,DC=local";
+    }
 
-	@Override
-	protected String getCollectionId() {
-		return COLLECTION_ID;
-	}
+    @Override
+    protected String getCollectionId() {
+        return COLLECTION_ID;
+    }
 
-	@Override
-	@SneakyThrows(UnsupportedEncodingException.class)
-	protected String getCacheUrl(String primaryKey) {
-		return "local://serve-directory-document.tcgi?collection=Se2-Directory-Harness&record_id="+URLEncoder.encode(getPrimaryKey(), "UTF-8");
-	}
+    @Override
+    @SneakyThrows(UnsupportedEncodingException.class)
+    protected String getCacheUrl(String primaryKey) {
+        return "local://serve-directory-document.tcgi?collection=Se2-Directory-Harness&record_id="+URLEncoder.encode(getPrimaryKey(), "UTF-8");
+    }
 
 }

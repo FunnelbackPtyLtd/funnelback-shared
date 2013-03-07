@@ -20,33 +20,33 @@ import com.funnelback.publicui.utils.MapUtils;
 @Log4j
 public class PassThroughEnvironmentVariables extends AbstractInputProcessor {
 
-	// FIXME Found these other ones in PADRE source code. Are they really needed ?
-	// SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
-	// SITE_SEARCH_ROOT: Used for Matrix OEM
-	public enum Keys {
-		REMOTE_ADDR, REQUEST_URI, REQUEST_URL, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
-	}
+    // FIXME Found these other ones in PADRE source code. Are they really needed ?
+    // SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
+    // SITE_SEARCH_ROOT: Used for Matrix OEM
+    public enum Keys {
+        REMOTE_ADDR, REQUEST_URI, REQUEST_URL, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
+    }
 
 
-	
-	@Override
-	public void processInput(SearchTransaction searchTransaction) {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
-			Map<String, String[]> params = searchTransaction.getQuestion().getRawInputParameters();
-			HashMap<String, String> out = new HashMap<String, String>();
-			
-			for (Keys key: Keys.values()) {
-				setIfNotNull(out, key.toString(), MapUtils.getFirstString(params, key.toString(), null));
-			}
-			
-			log.debug("Adding environment variables: " + out);
-			searchTransaction.getQuestion().getEnvironmentVariables().putAll(out);
-		}		
-	}
-	
-	private void setIfNotNull(Map<String, String> out, String key, String data) {
-		if (data != null) {
-			out.put(key, data);
-		}
-	}
+    
+    @Override
+    public void processInput(SearchTransaction searchTransaction) {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+            Map<String, String[]> params = searchTransaction.getQuestion().getRawInputParameters();
+            HashMap<String, String> out = new HashMap<String, String>();
+            
+            for (Keys key: Keys.values()) {
+                setIfNotNull(out, key.toString(), MapUtils.getFirstString(params, key.toString(), null));
+            }
+            
+            log.debug("Adding environment variables: " + out);
+            searchTransaction.getQuestion().getEnvironmentVariables().putAll(out);
+        }        
+    }
+    
+    private void setIfNotNull(Map<String, String> out, String key, String data) {
+        if (data != null) {
+            out.put(key, data);
+        }
+    }
 }

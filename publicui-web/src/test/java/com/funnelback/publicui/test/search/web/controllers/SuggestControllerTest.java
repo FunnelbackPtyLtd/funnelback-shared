@@ -20,27 +20,27 @@ import com.funnelback.publicui.test.mock.MockConfigRepository;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class SuggestControllerTest {
 
-	@Autowired
-	private MockConfigRepository configRepository;
+    @Autowired
+    private MockConfigRepository configRepository;
 
-	@Autowired
-	private SuggestController suggestController;
-	
-	@Test
-	public void testNoCollection() {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		suggestController.noCollection(response);
-		Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
-	}
-	
-	@Test
-	public void testInvalidCollection() throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		suggestController.suggestJava("invalid",
-				DefaultValues.DEFAULT_PROFILE,
-				"ab", 0, 0, "json", "cb", response);
-		
-		Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
-	}
-	
+    @Autowired
+    private SuggestController suggestController;
+    
+    @Test
+    public void testNoCollection() {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        suggestController.noCollection(response);
+        Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+    }
+    
+    @Test
+    public void testInvalidCollection() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        suggestController.suggestJava("invalid",
+                DefaultValues.DEFAULT_PROFILE,
+                "ab", 0, 0, "json", "cb", response);
+        
+        Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+    }
+    
 }

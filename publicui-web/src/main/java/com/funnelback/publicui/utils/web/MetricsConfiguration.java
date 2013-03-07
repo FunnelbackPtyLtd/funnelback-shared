@@ -19,58 +19,58 @@ import com.yammer.metrics.reporting.GraphiteReporter;
 @Configuration
 public class MetricsConfiguration {
 
-	private static final String MODERNUI_PREFIX = "modernui";
-	private static final String DEFAULT_REGISTRY = "defaultRegistry";
-	
-	/** Collection metric namespace */
-	public static final String COLLECTION_NS = "collection";
-	
-	/** All/global namespace */
-	public static final String ALL_NS = "_all";
-	
-	/** View type (xml/json/html) namespace */
-	public static final String VIEW_TYPE_NS = "view-type";
-	
-	public static final String UNKNOWN = "_unknown";
-	
-	public static final String QUERIES = "queries";
-	public static final String ERRORS_COUNT = "errors_count";
-	public static final String PADRE_ELAPSED_TIME = "padre-elapsed-time";
-	public static final String TOTAL_MATCHING = "total-matching";
-	
-	@Autowired
-	private LocalHostnameHolder hostnameHolder;
-	
-	@Autowired
-	private ConfigRepository configRepository;
-	
-	@Bean
-	public MetricsRegistry metricRegistry() {
-		MetricsRegistry registry = new MetricsRegistry();
-		
-		String graphiteHost = configRepository.getGlobalConfiguration().value(Keys.Metrics.GRAPHITE_HOST);
-		int graphitePort = configRepository.getGlobalConfiguration().valueAsInt(Keys.Metrics.GRAPHITE_PORT, DefaultValues.Metrics.GRAHITE_PORT);
-		
-		if (graphiteHost != null) {
-			String hostName = hostnameHolder.getHostname();
-			if (hostName == null) {
-				hostName = "unknown";
-			} else {
-				hostName = hostName.replace(".", "_").toLowerCase();
-			}
-		
-			GraphiteReporter.enable(registry, 10, TimeUnit.SECONDS,
-					graphiteHost, graphitePort,
-					hostName+"."+MODERNUI_PREFIX);
-			
-			GraphiteReporter.enable(10, TimeUnit.SECONDS,
-					graphiteHost, graphitePort,
-					hostName+"."+MODERNUI_PREFIX+"."+DEFAULT_REGISTRY);
-		
-			return registry;
-		}
-		
-		return registry;
-	}
-	
+    private static final String MODERNUI_PREFIX = "modernui";
+    private static final String DEFAULT_REGISTRY = "defaultRegistry";
+    
+    /** Collection metric namespace */
+    public static final String COLLECTION_NS = "collection";
+    
+    /** All/global namespace */
+    public static final String ALL_NS = "_all";
+    
+    /** View type (xml/json/html) namespace */
+    public static final String VIEW_TYPE_NS = "view-type";
+    
+    public static final String UNKNOWN = "_unknown";
+    
+    public static final String QUERIES = "queries";
+    public static final String ERRORS_COUNT = "errors_count";
+    public static final String PADRE_ELAPSED_TIME = "padre-elapsed-time";
+    public static final String TOTAL_MATCHING = "total-matching";
+    
+    @Autowired
+    private LocalHostnameHolder hostnameHolder;
+    
+    @Autowired
+    private ConfigRepository configRepository;
+    
+    @Bean
+    public MetricsRegistry metricRegistry() {
+        MetricsRegistry registry = new MetricsRegistry();
+        
+        String graphiteHost = configRepository.getGlobalConfiguration().value(Keys.Metrics.GRAPHITE_HOST);
+        int graphitePort = configRepository.getGlobalConfiguration().valueAsInt(Keys.Metrics.GRAPHITE_PORT, DefaultValues.Metrics.GRAHITE_PORT);
+        
+        if (graphiteHost != null) {
+            String hostName = hostnameHolder.getHostname();
+            if (hostName == null) {
+                hostName = "unknown";
+            } else {
+                hostName = hostName.replace(".", "_").toLowerCase();
+            }
+        
+            GraphiteReporter.enable(registry, 10, TimeUnit.SECONDS,
+                    graphiteHost, graphitePort,
+                    hostName+"."+MODERNUI_PREFIX);
+            
+            GraphiteReporter.enable(10, TimeUnit.SECONDS,
+                    graphiteHost, graphitePort,
+                    hostName+"."+MODERNUI_PREFIX+"."+DEFAULT_REGISTRY);
+        
+            return registry;
+        }
+        
+        return registry;
+    }
+    
 }

@@ -9,13 +9,13 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public abstract class AbstractInputProcessor implements InputProcessor {
 
-	@Override
-	public String getId() {
-		return this.getClass().getSimpleName();
-	}
+    @Override
+    public String getId() {
+        return this.getClass().getSimpleName();
+    }
 
-	@Override
-	public abstract void processInput(SearchTransaction searchTransaction)
-			throws InputProcessorException;
+    @Override
+    public abstract void processInput(SearchTransaction searchTransaction)
+        throws InputProcessorException;
 
 }

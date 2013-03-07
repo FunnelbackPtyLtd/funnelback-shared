@@ -5,6 +5,6 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 
 public interface RankingFeatureFactory {
 
-	RankingFeature create(String name, String type,String category, ResultPacket rp);
+    RankingFeature create(String name, String type,String category, ResultPacket rp);
 
 }

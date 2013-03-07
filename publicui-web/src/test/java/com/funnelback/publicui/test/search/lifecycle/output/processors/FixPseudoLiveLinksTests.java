@@ -34,121 +34,121 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FixPseudoLiveLinksTests {
 
-	@Autowired
-	protected MockConfigRepository configRepository;
-	
-	@Autowired
-	protected FixPseudoLiveLinks processor;
-	
-	protected SearchTransaction st;
-	
-	@Before
-	public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
-		
-		SearchQuestion question = new SearchQuestion();
-		question.setQuery("livelinks");
-		question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig("meta-livelinks")));
-		
-		SearchResponse response = new SearchResponse();
-		response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
-		
-		st = new SearchTransaction(question, response);
-		
-		// Fill repository with mock collections
-		configRepository.addCollection(new Collection("collection-db",
-				new NoOptionsConfig("collection-db")
-					.setValue(Keys.COLLECTION_TYPE, Type.database.toString())));
-		configRepository.addCollection(new Collection("collection-connector",
-				new NoOptionsConfig("collection-connector")
-					.setValue(Keys.COLLECTION_TYPE, Type.connector.toString())));
-		configRepository.addCollection(new Collection("collection-trim",
-				new NoOptionsConfig("collection-trim")
-					.setValue(Keys.COLLECTION_TYPE, Type.trim.toString())
-					.setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
-		configRepository.addCollection(new Collection("collection-filecopy",
-				new NoOptionsConfig("collection-filecopy")
-					.setValue(Keys.COLLECTION_TYPE, Type.filecopy.toString())));
-		configRepository.addCollection(new Collection("collection-local",
-				new NoOptionsConfig("collection-local")
-					.setValue(Keys.COLLECTION_TYPE, Type.local.toString())));
-		configRepository.addCollection(new Collection("collection-web",
-				new NoOptionsConfig("collection-web")
-					.setValue(Keys.COLLECTION_TYPE, Type.web.toString())));
+    @Autowired
+    protected MockConfigRepository configRepository;
+    
+    @Autowired
+    protected FixPseudoLiveLinks processor;
+    
+    protected SearchTransaction st;
+    
+    @Before
+    public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
+        
+        SearchQuestion question = new SearchQuestion();
+        question.setQuery("livelinks");
+        question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig("meta-livelinks")));
+        
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
+        
+        st = new SearchTransaction(question, response);
+        
+        // Fill repository with mock collections
+        configRepository.addCollection(new Collection("collection-db",
+                new NoOptionsConfig("collection-db")
+                    .setValue(Keys.COLLECTION_TYPE, Type.database.toString())));
+        configRepository.addCollection(new Collection("collection-connector",
+                new NoOptionsConfig("collection-connector")
+                    .setValue(Keys.COLLECTION_TYPE, Type.connector.toString())));
+        configRepository.addCollection(new Collection("collection-trim",
+                new NoOptionsConfig("collection-trim")
+                    .setValue(Keys.COLLECTION_TYPE, Type.trim.toString())
+                    .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
+        configRepository.addCollection(new Collection("collection-filecopy",
+                new NoOptionsConfig("collection-filecopy")
+                    .setValue(Keys.COLLECTION_TYPE, Type.filecopy.toString())));
+        configRepository.addCollection(new Collection("collection-local",
+                new NoOptionsConfig("collection-local")
+                    .setValue(Keys.COLLECTION_TYPE, Type.local.toString())));
+        configRepository.addCollection(new Collection("collection-web",
+                new NoOptionsConfig("collection-web")
+                    .setValue(Keys.COLLECTION_TYPE, Type.web.toString())));
 
-	}
-	
-	@Test
-	public void testMissingData() throws OutputProcessorException {
-		// No transaction
-		processor.processOutput(null);
-		
-		// No response
-		processor.processOutput(new SearchTransaction(null, null));
-		
-		// No results
-		SearchResponse response = new SearchResponse();
-		processor.processOutput(new SearchTransaction(null, response));
-		
-		// No results in packet
-		response.setResultPacket(new ResultPacket());
-		processor.processOutput(new SearchTransaction(null, response));
-	}
-	
-	@Test
-	public void test() throws UnsupportedEncodingException, OutputProcessorException {
-		processor.processOutput(st);
-		
-		ResultPacket rp = st.getResponse().getResultPacket();
-		
-		Assert.assertEquals(
-				"/search/serve-db-document.tcgi?collection=collection-db&record_id=1234/",
-				rp.getResults().get(0).getLiveUrl());
-		
-		Assert.assertEquals(
-				"/search/serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
-				rp.getResults().get(1).getLiveUrl());
+    }
+    
+    @Test
+    public void testMissingData() throws OutputProcessorException {
+        // No transaction
+        processor.processOutput(null);
+        
+        // No response
+        processor.processOutput(new SearchTransaction(null, null));
+        
+        // No results
+        SearchResponse response = new SearchResponse();
+        processor.processOutput(new SearchTransaction(null, response));
+        
+        // No results in packet
+        response.setResultPacket(new ResultPacket());
+        processor.processOutput(new SearchTransaction(null, response));
+    }
+    
+    @Test
+    public void test() throws UnsupportedEncodingException, OutputProcessorException {
+        processor.processOutput(st);
+        
+        ResultPacket rp = st.getResponse().getResultPacket();
+        
+        Assert.assertEquals(
+                "/search/serve-db-document.tcgi?collection=collection-db&record_id=1234/",
+                rp.getResults().get(0).getLiveUrl());
+        
+        Assert.assertEquals(
+                "/search/serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
+                rp.getResults().get(1).getLiveUrl());
 
-		Assert.assertEquals(
-				"/search/serve-trim-document.cgi?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
-				rp.getResults().get(2).getLiveUrl());
-		
-		Assert.assertEquals(
-				"/search/serve-filecopy-document.cgi?collection=collection-filecopy&uri="+URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8"),
-				rp.getResults().get(3).getLiveUrl());
+        Assert.assertEquals(
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+                rp.getResults().get(2).getLiveUrl());
+        
+        Assert.assertEquals(
+                "/search/serve-filecopy-document.cgi?collection=collection-filecopy&uri="+URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8"),
+                rp.getResults().get(3).getLiveUrl());
 
-		Assert.assertEquals(
-				"file:///C:/folder/file.ext",
-				rp.getResults().get(4).getLiveUrl());
+        Assert.assertEquals(
+                "file:///C:/folder/file.ext",
+                rp.getResults().get(4).getLiveUrl());
 
-		Assert.assertEquals(
-				"file:///folder/file.ext",
-				rp.getResults().get(5).getLiveUrl());
+        Assert.assertEquals(
+                "file:///folder/file.ext",
+                rp.getResults().get(5).getLiveUrl());
 
-		Assert.assertEquals(
-				"Unknown collection URL should be left inchanged",
-				"http://www.result.com",
-				rp.getResults().get(6).getLiveUrl());
+        Assert.assertEquals(
+                "Unknown collection URL should be left inchanged",
+                "http://www.result.com",
+                rp.getResults().get(6).getLiveUrl());
 
-		Assert.assertEquals(
-				"Web collection should have unchanged URL",
-				"http://www.site.com/folder/result.html",
-				rp.getResults().get(7).getLiveUrl());
+        Assert.assertEquals(
+                "Web collection should have unchanged URL",
+                "http://www.site.com/folder/result.html",
+                rp.getResults().get(7).getLiveUrl());
 
-		Assert.assertEquals(
-				"DB result without local:// prefix should be left unchanged",
-				"custom-show-db-record.cgi?collection=collection-db&record_id=1234/",
-				rp.getResults().get(8).getLiveUrl());
+        Assert.assertEquals(
+                "DB result without local:// prefix should be left unchanged",
+                "custom-show-db-record.cgi?collection=collection-db&record_id=1234/",
+                rp.getResults().get(8).getLiveUrl());
 
-		Assert.assertEquals(
-				"TRIM result without trim:// prefix should be left unchanged",
-				"http://trim-ws.company.com/show-record?uri=356",
-				rp.getResults().get(9).getLiveUrl());	
-		
-		Assert.assertEquals(
-				"TRIM result without cache link shouldn't have a doc parameter",
-				"/search/serve-trim-document.cgi?collection=collection-trim&uri=1234",
-				rp.getResults().get(10).getLiveUrl());		
+        Assert.assertEquals(
+                "TRIM result without trim:// prefix should be left unchanged",
+                "http://trim-ws.company.com/show-record?uri=356",
+                rp.getResults().get(9).getLiveUrl());    
+        
+        Assert.assertEquals(
+                "TRIM result without cache link shouldn't have a doc parameter",
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234",
+                rp.getResults().get(10).getLiveUrl());        
 
-	}
-	
+    }
+    
 }

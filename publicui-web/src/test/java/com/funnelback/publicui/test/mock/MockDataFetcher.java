@@ -9,20 +9,20 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 public class MockDataFetcher extends AbstractDataFetcher {
 
-	@Getter @Setter
-	private boolean traversed = false;
-	
-	@Setter
-	private boolean throwError = false;
-	
-	@Override
-	public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
-		traversed = true;
-		if (throwError) {
-			throw new DataFetchException(MockDataFetcher.class.getName(), null);
-		}
-	}
-	
-	
+    @Getter @Setter
+    private boolean traversed = false;
+    
+    @Setter
+    private boolean throwError = false;
+    
+    @Override
+    public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
+        traversed = true;
+        if (throwError) {
+            throw new DataFetchException(MockDataFetcher.class.getName(), null);
+        }
+    }
+    
+    
 
 }

@@ -18,49 +18,49 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationCombinedTests {
 
-	@Resource(name="localConfigRepository")
-	private DefaultConfigRepository configRepository;
-	
-	private FacetedNavigation processor;
-	private SearchTransaction st;
+    @Resource(name="localConfigRepository")
+    private DefaultConfigRepository configRepository;
+    
+    private FacetedNavigation processor;
+    private SearchTransaction st;
 
-	@Before
-	public void before() {
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(configRepository.getCollection("faceted-navigation-combined"));
-		st = new SearchTransaction(question, null);
-		
-		processor = new FacetedNavigation();
-	}
-	
-	@Test
-	public void test() {		
-		processor.processInput(st);
-		
-		Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-		Assert.assertEquals("-rmcf=d -count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
-	}
-	
-	@Test
-	public void testFacetSelected() {
-		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-		
-		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {"Shakespeare/cleopatra"});
-		st.getQuestion().getRawInputParameters().put("f.By Date|d", new String[] {"1500-01-01", "1600-01-01"});
-		st.getQuestion().getRawInputParameters().put("f.By Query|41", new String[] {"King"});
-		st.getQuestion().getRawInputParameters().put("f.By Play|10", new String[] {"Coriolanus"});
-		st.getQuestion().getRawInputParameters().put("f.By Play|1", new String[] {"Henry IV"});
-		processor.processInput(st);
-		
-		Assert.assertNotNull(st.getQuestion().getFacetsGScopeConstraints());
-		// FIXME: FUN-4480 This should be 1,10|41+
-		Assert.assertEquals("1,10,41++", st.getQuestion().getFacetsGScopeConstraints());
-		Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
-		Assert.assertEquals("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]", st.getQuestion().getFacetsQueryConstraints().get(0));
-		Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(1));
-		
-	}
-	
-	
+    @Before
+    public void before() {
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(configRepository.getCollection("faceted-navigation-combined"));
+        st = new SearchTransaction(question, null);
+        
+        processor = new FacetedNavigation();
+    }
+    
+    @Test
+    public void test() {        
+        processor.processInput(st);
+        
+        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
+        Assert.assertEquals("-rmcf=d -count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+    }
+    
+    @Test
+    public void testFacetSelected() {
+        Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+        
+        st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {"Shakespeare/cleopatra"});
+        st.getQuestion().getRawInputParameters().put("f.By Date|d", new String[] {"1500-01-01", "1600-01-01"});
+        st.getQuestion().getRawInputParameters().put("f.By Query|41", new String[] {"King"});
+        st.getQuestion().getRawInputParameters().put("f.By Play|10", new String[] {"Coriolanus"});
+        st.getQuestion().getRawInputParameters().put("f.By Play|1", new String[] {"Henry IV"});
+        processor.processInput(st);
+        
+        Assert.assertNotNull(st.getQuestion().getFacetsGScopeConstraints());
+        // FIXME: FUN-4480 This should be 1,10|41+
+        Assert.assertEquals("1,10,41++", st.getQuestion().getFacetsGScopeConstraints());
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]", st.getQuestion().getFacetsQueryConstraints().get(0));
+        Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(1));
+        
+    }
+    
+    
 }

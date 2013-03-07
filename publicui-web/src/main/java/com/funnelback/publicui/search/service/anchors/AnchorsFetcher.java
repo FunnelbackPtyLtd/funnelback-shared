@@ -5,8 +5,8 @@ import com.funnelback.publicui.search.model.anchors.AnchorModel;
 
 public interface AnchorsFetcher {
 
-	AnchorModel fetchGeneral(int docNum, String collectionName);
+    AnchorModel fetchGeneral(int docNum, String collectionName);
 
-	AnchorModel fetchDetail(int docNum, String collectionName,String anchortext, int start);
+    AnchorModel fetchDetail(int docNum, String collectionName,String anchortext, int start);
 
 }

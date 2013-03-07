@@ -19,38 +19,38 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 public class DenyIfDlsIsOnInterceptor implements HandlerInterceptor {
 
-	@Autowired
-	private ConfigRepository configRepository;
+    @Autowired
+    private ConfigRepository configRepository;
 
-	@Override
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object o, Exception e)
-			throws Exception { }
+    @Override
+    public void afterCompletion(HttpServletRequest request,
+        HttpServletResponse response, Object o, Exception e)
+        throws Exception { }
 
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response,
-			Object o, ModelAndView mav) throws Exception {	}
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+            Object o, ModelAndView mav) throws Exception {    }
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-			Object handler) throws Exception {
-		if (request.getParameter(RequestParameters.COLLECTION) != null) {
-			Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-			if(collection == null) {
-				return true;
-			}
-			
-			Config c = collection.getConfiguration();
-			
-			if (c.hasValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER)
-					|| ( c.hasValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)
-							&& ! Config.isFalse(c.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)))) {
-				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				return false;
-			}
-		} 
-		
-		return true;
-	}
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+            Object handler) throws Exception {
+        if (request.getParameter(RequestParameters.COLLECTION) != null) {
+            Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
+            if(collection == null) {
+                return true;
+            }
+            
+            Config c = collection.getConfiguration();
+            
+            if (c.hasValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER)
+                    || ( c.hasValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)
+                            && ! Config.isFalse(c.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE)))) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
+            }
+        } 
+        
+        return true;
+    }
 
 }

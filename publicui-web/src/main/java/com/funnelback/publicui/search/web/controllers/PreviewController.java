@@ -26,41 +26,41 @@ import com.funnelback.publicui.search.service.image.UrlRenderer;
 @Controller
 public class PreviewController {
 
-	@Autowired
-	UrlRenderer renderer;
+    @Autowired
+    UrlRenderer renderer;
 
-	@Autowired
-	ImageScaler scaler;
+    @Autowired
+    ImageScaler scaler;
 
-	@RequestMapping(value="/preview", method=RequestMethod.GET)
-	public ModelAndView preview(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			String url,
-			@Valid ImageScalerSettings ss,
-			@RequestParam(value = "render_width", required = false) Integer renderWidth,
-			@RequestParam(value = "render_height", required = false) Integer renderHeight)
-			throws Exception {
-		
-		if (renderWidth == null) {
-			renderWidth = 1024;
-		}
-		if (renderHeight == null) {
-			renderHeight = 768;
-		}
+    @RequestMapping(value="/preview", method=RequestMethod.GET)
+    public ModelAndView preview(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String url,
+            @Valid ImageScalerSettings ss,
+            @RequestParam(value = "render_width", required = false) Integer renderWidth,
+            @RequestParam(value = "render_height", required = false) Integer renderHeight)
+        throws Exception {
+        
+        if (renderWidth == null) {
+            renderWidth = 1024;
+        }
+        if (renderHeight == null) {
+            renderHeight = 768;
+        }
 
-		byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
-		byte[] scaledImage = scaler.scaleImage(
-				PreviewController.class.getCanonicalName() + "|" + url,
-				unscaledImage, ss);
-		
-		@Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
-		
-		org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
-		
-		response.getOutputStream().close();
-		
-		return null;
-	}
+        byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
+        byte[] scaledImage = scaler.scaleImage(
+                PreviewController.class.getCanonicalName() + "|" + url,
+                unscaledImage, ss);
+        
+        @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
+        
+        org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
+        
+        response.getOutputStream().close();
+        
+        return null;
+    }
 
 }

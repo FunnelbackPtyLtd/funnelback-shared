@@ -26,49 +26,49 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class PortalMapperTests {
 
-	@Autowired
-	private I18n i18n;
-	
-	@Autowired
-	private AutowireCapableBeanFactory beanFactory;
-	
-	private UserKeys processor;
-	private Collection c;
-	
-	@Before
-	public void before() throws FileNotFoundException, EnvironmentVariableException {
-		processor = new UserKeys();
-		processor.setI18n(i18n);
-		processor.setBeanFactory(beanFactory);
-		c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
-				Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, PortalMapper.class.getSimpleName()));
-	}
+    @Autowired
+    private I18n i18n;
+    
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
+    
+    private UserKeys processor;
+    private Collection c;
+    
+    @Before
+    public void before() throws FileNotFoundException, EnvironmentVariableException {
+        processor = new UserKeys();
+        processor.setI18n(i18n);
+        processor.setBeanFactory(beanFactory);
+        c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, PortalMapper.class.getSimpleName()));
+    }
 
-	@Test
-	public void testNoHeader() throws InputProcessorException {
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(c);
-		SearchTransaction st = new SearchTransaction(question, null);
+    @Test
+    public void testNoHeader() throws InputProcessorException {
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(c);
+        SearchTransaction st = new SearchTransaction(question, null);
 
-		processor.processInput(st);
+        processor.processInput(st);
 
-		Assert.assertEquals(0, st.getQuestion().getUserKeys().size());
-	}
-	
-	@Test
-	public void testHeader() throws InputProcessorException {
-		SearchQuestion question = new SearchQuestion();
-		question.getRawInputParameters().put(PortalMapper.PORTAL_PARAMETER_NAME, new String[] {"ab,cd,ef"});
-		question.setCollection(c);
-		SearchTransaction st = new SearchTransaction(question, null);
+        Assert.assertEquals(0, st.getQuestion().getUserKeys().size());
+    }
+    
+    @Test
+    public void testHeader() throws InputProcessorException {
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(PortalMapper.PORTAL_PARAMETER_NAME, new String[] {"ab,cd,ef"});
+        question.setCollection(c);
+        SearchTransaction st = new SearchTransaction(question, null);
 
-		processor.processInput(st);
+        processor.processInput(st);
 
-		Assert.assertEquals(3, st.getQuestion().getUserKeys().size());
-		Assert.assertEquals("ab", st.getQuestion().getUserKeys().get(0));
-		Assert.assertEquals("cd", st.getQuestion().getUserKeys().get(1));
-		Assert.assertEquals("ef", st.getQuestion().getUserKeys().get(2));
-	}
+        Assert.assertEquals(3, st.getQuestion().getUserKeys().size());
+        Assert.assertEquals("ab", st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("cd", st.getQuestion().getUserKeys().get(1));
+        Assert.assertEquals("ef", st.getQuestion().getUserKeys().get(2));
+    }
 
 
 }

@@ -26,67 +26,67 @@ import com.yammer.metrics.core.MetricsRegistry;
 
 public class MetricsTest {
 
-	private SearchTransaction st;
-	private Metrics processor;
-	private MetricsRegistry metrics;
-	
-	@Before
-	public void before() {
-		metrics = new MetricsRegistry();
-		processor = new Metrics();
-		processor.setMetrics(metrics);
-		processor.postConstruct();
-		
-		st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-		st.getQuestion().setCollection(new Collection("metrics", null));
-		st.getResponse().setResultPacket(new ResultPacket());
-	}
-	
-	@Test
-	public void testMissingData() throws Exception {
-		// No transaction
-		processor.processOutput(null);
-		
-		// No response & question
-		processor.processOutput(new SearchTransaction(null, null));
-		
-		// No question
-		processor.processOutput(new SearchTransaction(null, new SearchResponse()));
-		
-		// No response
-		processor.processOutput(new SearchTransaction(new SearchQuestion(), null));
-		
-		// No results
-		SearchResponse response = new SearchResponse();
-		processor.processOutput(new SearchTransaction(null, response));
-		
-		// No results in packet
-		response.setResultPacket(new ResultPacket());
-		processor.processOutput(new SearchTransaction(null, response));
-		
-		// No processing time
-		st.getResponse().getResultPacket().setPadreElapsedTime(null);
-		processor.processOutput(st);
-	}
-	
-	@Test
-	public void test() throws OutputProcessorException {
-		st.getResponse().getResultPacket().setPadreElapsedTime(123);
-		st.getResponse().getResultPacket().setResultsSummary(new ResultsSummary());
-		st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(456); 
-		processor.processOutput(st);
-		
-		Assert.assertEquals(0, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT)).count());
-		Assert.assertEquals(456, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false).mean(), 0.1);
-		Assert.assertEquals(123, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false).mean(), 0.1);
-		Assert.assertEquals(1, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).count());
-		Assert.assertNotSame(0, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
-		
-		Assert.assertEquals(0, metrics.newCounter(new MetricName(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).count());
-		Assert.assertEquals(456, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", TOTAL_MATCHING), false).mean(), 0.1);
-		Assert.assertEquals(123, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME), false).mean(), 0.1);
-		Assert.assertEquals(1, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).count());
-		Assert.assertNotSame(0, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
-	}
-	
+    private SearchTransaction st;
+    private Metrics processor;
+    private MetricsRegistry metrics;
+    
+    @Before
+    public void before() {
+        metrics = new MetricsRegistry();
+        processor = new Metrics();
+        processor.setMetrics(metrics);
+        processor.postConstruct();
+        
+        st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setCollection(new Collection("metrics", null));
+        st.getResponse().setResultPacket(new ResultPacket());
+    }
+    
+    @Test
+    public void testMissingData() throws Exception {
+        // No transaction
+        processor.processOutput(null);
+        
+        // No response & question
+        processor.processOutput(new SearchTransaction(null, null));
+        
+        // No question
+        processor.processOutput(new SearchTransaction(null, new SearchResponse()));
+        
+        // No response
+        processor.processOutput(new SearchTransaction(new SearchQuestion(), null));
+        
+        // No results
+        SearchResponse response = new SearchResponse();
+        processor.processOutput(new SearchTransaction(null, response));
+        
+        // No results in packet
+        response.setResultPacket(new ResultPacket());
+        processor.processOutput(new SearchTransaction(null, response));
+        
+        // No processing time
+        st.getResponse().getResultPacket().setPadreElapsedTime(null);
+        processor.processOutput(st);
+    }
+    
+    @Test
+    public void test() throws OutputProcessorException {
+        st.getResponse().getResultPacket().setPadreElapsedTime(123);
+        st.getResponse().getResultPacket().setResultsSummary(new ResultsSummary());
+        st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(456); 
+        processor.processOutput(st);
+        
+        Assert.assertEquals(0, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT)).count());
+        Assert.assertEquals(456, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false).mean(), 0.1);
+        Assert.assertEquals(123, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false).mean(), 0.1);
+        Assert.assertEquals(1, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).count());
+        Assert.assertNotSame(0, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
+        
+        Assert.assertEquals(0, metrics.newCounter(new MetricName(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).count());
+        Assert.assertEquals(456, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", TOTAL_MATCHING), false).mean(), 0.1);
+        Assert.assertEquals(123, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME), false).mean(), 0.1);
+        Assert.assertEquals(1, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).count());
+        Assert.assertNotSame(0, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
+    }
+    
 }

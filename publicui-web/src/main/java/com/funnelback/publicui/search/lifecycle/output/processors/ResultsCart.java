@@ -17,20 +17,20 @@ import com.funnelback.publicui.search.service.ResultsCartRepository;
 @Component("resultsCartOutputProcessor")
 public class ResultsCart extends AbstractOutputProcessor {
 
-	@Autowired
-	private ResultsCartRepository repository;
-	
-	@Override
-	public void processOutput(SearchTransaction st)
-			throws OutputProcessorException {
+    @Autowired
+    private ResultsCartRepository repository;
+    
+    @Override
+    public void processOutput(SearchTransaction st)
+        throws OutputProcessorException {
 
-		if (SearchTransactionUtils.hasQuestion(st)
-				&& SearchTransactionUtils.hasResponse(st)
-				&& st.getQuestion().getSearchUser() != null) {
-			
-			st.getResponse().getResultsCart().putAll(repository.getCart(st.getQuestion().getSearchUser(), st.getQuestion().getCollection()));
-		}
+        if (SearchTransactionUtils.hasQuestion(st)
+                && SearchTransactionUtils.hasResponse(st)
+                && st.getQuestion().getSearchUser() != null) {
+            
+            st.getResponse().getResultsCart().putAll(repository.getCart(st.getQuestion().getSearchUser(), st.getQuestion().getCollection()));
+        }
 
-	}
+    }
 
 }

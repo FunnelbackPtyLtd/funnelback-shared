@@ -10,11 +10,11 @@ import com.funnelback.publicui.xml.XmlStreamUtils;
 
 public class SpellFactory {
 
-	public static Spell fromMap(Map<String, String> data) {
-		return new Spell(data.get(Spell.Schema.URL), data.get(Spell.Schema.TEXT));
-	}
-	
-	public static Spell fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
-		return fromMap(XmlStreamUtils.tagsToMap(Spell.Schema.SPELL, xmlStreamReader));
-	}
+    public static Spell fromMap(Map<String, String> data) {
+        return new Spell(data.get(Spell.Schema.URL), data.get(Spell.Schema.TEXT));
+    }
+    
+    public static Spell fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
+        return fromMap(XmlStreamUtils.tagsToMap(Spell.Schema.SPELL, xmlStreamReader));
+    }
 }

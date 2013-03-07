@@ -5,8 +5,8 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 
 public interface DocFromCache {
 
-	String getDocument(ContentOptimiserModel comparison, String cacheUrl, Config config, String collectionId);
+    String getDocument(ContentOptimiserModel comparison, String cacheUrl, Config config, String collectionId);
 
-	String[] getArgsForSingleDocument(String[] wholeCollectionArgs);
+    String[] getArgsForSingleDocument(String[] wholeCollectionArgs);
 
 }

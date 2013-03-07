@@ -8,10 +8,10 @@ import com.funnelback.publicui.form.converter.Operation;
  */
 public class FixQueryCompletion implements Operation {
 
-	@Override
-	public String process(String in) {
-		
-		return in.replace("<@s.cfg>query_completion.program", "${SearchPrefix}<@s.cfg>query_completion.program");
-	}
+    @Override
+    public String process(String in) {
+        
+        return in.replace("<@s.cfg>query_completion.program", "${SearchPrefix}<@s.cfg>query_completion.program");
+    }
 
 }

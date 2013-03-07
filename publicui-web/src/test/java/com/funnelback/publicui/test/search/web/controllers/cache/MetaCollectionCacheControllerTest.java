@@ -23,36 +23,36 @@ import com.funnelback.publicui.search.web.controllers.CacheController;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class MetaCollectionCacheControllerTest {
 
-	protected CacheController cacheController;
-	
-	@Resource(name="localConfigRepository")
-	protected ConfigRepository configRepository;
-	
-	@Resource(name="localDataRepository")
-	protected DataRepository dataRepository;
-	
-	protected MockHttpServletRequest request;
-	protected MockHttpServletResponse response;
+    protected CacheController cacheController;
+    
+    @Resource(name="localConfigRepository")
+    protected ConfigRepository configRepository;
+    
+    @Resource(name="localDataRepository")
+    protected DataRepository dataRepository;
+    
+    protected MockHttpServletRequest request;
+    protected MockHttpServletResponse response;
 
-	@Before
-	public void before() throws IOException {
-		cacheController = new CacheController();
-		cacheController.setConfigRepository(configRepository);
-		cacheController.setDataRepository(dataRepository);
-		
-		request = new MockHttpServletRequest();
-		request.setRequestURI("/s/cache.html");
-		response = new MockHttpServletResponse();
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void test() throws Exception {
-		cacheController.cache(request,
-				response,
-				configRepository.getCollection("cache-meta"),
-				DefaultValues.PREVIEW_SUFFIX,
-				DefaultValues.DEFAULT_FORM,
-				"unknown-record");
+    @Before
+    public void before() throws IOException {
+        cacheController = new CacheController();
+        cacheController.setConfigRepository(configRepository);
+        cacheController.setDataRepository(dataRepository);
+        
+        request = new MockHttpServletRequest();
+        request.setRequestURI("/s/cache.html");
+        response = new MockHttpServletResponse();
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void test() throws Exception {
+        cacheController.cache(request,
+                response,
+                configRepository.getCollection("cache-meta"),
+                DefaultValues.PREVIEW_SUFFIX,
+                DefaultValues.DEFAULT_FORM,
+                "unknown-record");
 
-	}
+    }
 }

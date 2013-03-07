@@ -12,11 +12,11 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface SearchTransactionProcessor {
 
-	/**
-	 * Processes a {@link SearchQuestion} into a {@link SearchTransaction}
-	 * @param q
-	 * @return
-	 */
-	public SearchTransaction process(SearchQuestion q);
-	
+    /**
+     * Processes a {@link SearchQuestion} into a {@link SearchTransaction}
+     * @param q
+     * @return
+     */
+    public SearchTransaction process(SearchQuestion q);
+    
 }

@@ -24,50 +24,50 @@ import com.funnelback.publicui.search.model.collection.paramtransform.operation.
  * @see HttpServletRequestWrapper *
  */
 public class RequestParametersTransformWrapper extends HttpServletRequestWrapper {
-	
-	/** Modified parameters Map */
-	private Map<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
-	
-	@SuppressWarnings("unchecked")
-	public RequestParametersTransformWrapper(HttpServletRequest request, List<TransformRule> rules) {
-		super(request);
-		modifiedParameterMap.putAll(request.getParameterMap());
-		
-		if (rules != null) {
-			for (TransformRule rule: rules) {
-				if (rule.getCriteria().matches(request.getParameterMap())) {
-					for (Operation o: rule.getOperations()) {
-						modifiedParameterMap = o.apply(Collections.unmodifiableMap(modifiedParameterMap));
-					}
-				}
-			}
-		}
-	}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Map getParameterMap() {
-		return modifiedParameterMap;
-	}
+    
+    /** Modified parameters Map */
+    private Map<String, String[]> modifiedParameterMap = new HashMap<String, String[]>();
+    
+    @SuppressWarnings("unchecked")
+    public RequestParametersTransformWrapper(HttpServletRequest request, List<TransformRule> rules) {
+        super(request);
+        modifiedParameterMap.putAll(request.getParameterMap());
+        
+        if (rules != null) {
+            for (TransformRule rule: rules) {
+                if (rule.getCriteria().matches(request.getParameterMap())) {
+                    for (Operation o: rule.getOperations()) {
+                        modifiedParameterMap = o.apply(Collections.unmodifiableMap(modifiedParameterMap));
+                    }
+                }
+            }
+        }
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Map getParameterMap() {
+        return modifiedParameterMap;
+    }
 
-	@Override
-	public String getParameter(String name) {
-		String[] values = modifiedParameterMap.get(name);
-		if(values != null && values.length > 0) {
-			return values[0];
-		} else {
-			return null;
-		}
-	}
-	
-	@Override
-	public String[] getParameterValues(String name) {
-		return modifiedParameterMap.get(name);
-	}
-	
-	@Override
-	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(modifiedParameterMap.keySet());
-	}
-	
+    @Override
+    public String getParameter(String name) {
+        String[] values = modifiedParameterMap.get(name);
+        if(values != null && values.length > 0) {
+            return values[0];
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public String[] getParameterValues(String name) {
+        return modifiedParameterMap.get(name);
+    }
+    
+    @Override
+    public Enumeration<String> getParameterNames() {
+        return Collections.enumeration(modifiedParameterMap.keySet());
+    }
+    
 }

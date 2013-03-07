@@ -18,23 +18,23 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  */
 public class ExceptionConverter implements Converter {
 
-	@Override
-	public boolean canConvert(@SuppressWarnings("rawtypes") Class type) {
-		return Exception.class.equals(type.getGenericSuperclass());
-	}
+    @Override
+    public boolean canConvert(@SuppressWarnings("rawtypes") Class type) {
+        return Exception.class.equals(type.getGenericSuperclass());
+    }
 
-	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-		Exception e = (Exception) source;
-		writer.setValue(ExceptionUtils.getStackTrace(e));
-	}
+    @Override
+    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+        Exception e = (Exception) source;
+        writer.setValue(ExceptionUtils.getStackTrace(e));
+    }
 
-	/**
-	 * @throws UnsupportedOperationException
-	 */
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		throw new UnsupportedOperationException();
-	}
-	
+    /**
+     * @throws UnsupportedOperationException
+     */
+    @Override
+    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        throw new UnsupportedOperationException();
+    }
+    
 }

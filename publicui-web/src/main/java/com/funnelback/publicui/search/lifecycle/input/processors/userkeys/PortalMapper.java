@@ -15,18 +15,18 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class PortalMapper implements UserKeysMapper {
 
-	public static final String PORTAL_PARAMETER_NAME = "userkeys";
-	
-	@Override
-	public List<String> getUserKeys(SearchTransaction transaction) {
-		String[] userKeys = transaction.getQuestion().getRawInputParameters().get(PORTAL_PARAMETER_NAME);
-		List<String> result = new ArrayList<String>();
-		if (userKeys != null) {
-			for (String key: userKeys) {
-				result.addAll(Arrays.asList(key.split(",")));
-			}
-		}
-		return result;
-	}
+    public static final String PORTAL_PARAMETER_NAME = "userkeys";
+    
+    @Override
+    public List<String> getUserKeys(SearchTransaction transaction) {
+        String[] userKeys = transaction.getQuestion().getRawInputParameters().get(PORTAL_PARAMETER_NAME);
+        List<String> result = new ArrayList<String>();
+        if (userKeys != null) {
+            for (String key: userKeys) {
+                result.addAll(Arrays.asList(key.split(",")));
+            }
+        }
+        return result;
+    }
 
 }

@@ -17,80 +17,80 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 
 public class CliveMappingTests {
 
-	private CliveMapping processor = new CliveMapping();
-	private SearchTransaction st;
-	
-	@Before
-	public void before() throws FileNotFoundException, EnvironmentVariableException {
-		processor = new CliveMapping();
-		Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(c);
-		st = new SearchTransaction(question, null);
-	}
-	
+    private CliveMapping processor = new CliveMapping();
+    private SearchTransaction st;
+    
+    @Before
+    public void before() throws FileNotFoundException, EnvironmentVariableException {
+        processor = new CliveMapping();
+        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(c);
+        st = new SearchTransaction(question, null);
+    }
+    
 
-	@Test
-	public void testInvalidParameters() {
-		try {
-			processor.processInput(null);
-			processor.processInput(new SearchTransaction(null, null));
-			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
-			processor.processInput(new SearchTransaction(new SearchQuestion(), null));
-			st.getQuestion().setClive(new String[0]);
-			processor.processInput(st);
-		} catch (Exception e) {
-			Assert.fail();
-		}
-	}
-	
-	@Test
-	public void testCliveParameterButNoMetaComponents() throws InputProcessorException {
-		st.getQuestion().setClive(new String[] {"clive1", "clive2"});
-		processor.processInput(st);
-		
-		Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-	}
-	
-	@Test
-	public void testNoCliveParameterButMetaComponents() throws InputProcessorException {
-		st.getQuestion().getCollection().setMetaComponents(new String[] {"value1", "value2"});
-		processor.processInput(st);
-		
-		Assert.assertNull(st.getQuestion().getClive());
-		Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-	}
-	
-	@Test
-	public void test() throws InputProcessorException {
-		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-		st.getQuestion().setClive(new String[] {"component1", "component2"});
+    @Test
+    public void testInvalidParameters() {
+        try {
+            processor.processInput(null);
+            processor.processInput(new SearchTransaction(null, null));
+            processor.processInput(new SearchTransaction(new SearchQuestion(), null));
+            processor.processInput(new SearchTransaction(new SearchQuestion(), null));
+            st.getQuestion().setClive(new String[0]);
+            processor.processInput(st);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+    
+    @Test
+    public void testCliveParameterButNoMetaComponents() throws InputProcessorException {
+        st.getQuestion().setClive(new String[] {"clive1", "clive2"});
+        processor.processInput(st);
+        
+        Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+    }
+    
+    @Test
+    public void testNoCliveParameterButMetaComponents() throws InputProcessorException {
+        st.getQuestion().getCollection().setMetaComponents(new String[] {"value1", "value2"});
+        processor.processInput(st);
+        
+        Assert.assertNull(st.getQuestion().getClive());
+        Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+    }
+    
+    @Test
+    public void test() throws InputProcessorException {
+        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
+        st.getQuestion().setClive(new String[] {"component1", "component2"});
 
-		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]  {"0", "1"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-		
-		st.getQuestion().setClive(new String[] {"component3"});
-		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]  {"2"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-	}
-	
-	@Test
-	public void testInvalidCliveParameter2() throws InputProcessorException {
-		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-		st.getQuestion().setClive(new String[] {"invalid", "component1"});
+        processor.processInput(st);
+        Assert.assertArrayEquals(new String[]  {"0", "1"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+        
+        st.getQuestion().setClive(new String[] {"component3"});
+        processor.processInput(st);
+        Assert.assertArrayEquals(new String[]  {"2"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+    }
+    
+    @Test
+    public void testInvalidCliveParameter2() throws InputProcessorException {
+        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
+        st.getQuestion().setClive(new String[] {"invalid", "component1"});
 
-		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]  {"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-		
-	}
-	
-	@Test
-	public void testWithNumbers() throws InputProcessorException {
-		st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-		st.getQuestion().setClive(new String[] {"component1", "component2", "1", "42"});
-		
-		processor.processInput(st);
-		Assert.assertArrayEquals(new String[]  {"0", "1", "42"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-	}
-	
+        processor.processInput(st);
+        Assert.assertArrayEquals(new String[]  {"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+        
+    }
+    
+    @Test
+    public void testWithNumbers() throws InputProcessorException {
+        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
+        st.getQuestion().setClive(new String[] {"component1", "component2", "1", "42"});
+        
+        processor.processInput(st);
+        Assert.assertArrayEquals(new String[]  {"0", "1", "42"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+    }
+    
 }

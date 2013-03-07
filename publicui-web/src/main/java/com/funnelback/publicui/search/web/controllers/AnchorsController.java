@@ -27,69 +27,69 @@ import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttr
 
 @Controller
 public class AnchorsController {
-	
-	@Autowired
-	ConfigRepository configRepository;
-	
-	@InitBinder
-	public void initBinder(DataBinder binder) {
-		binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
-	}
-	
-	@Autowired
-	AnchorsFetcher fetcher;
-	
-	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","!anchortext"})
-	public ModelAndView anchors(HttpServletResponse response,
-			@RequestParam(RequestParameters.COLLECTION) Collection collection, String docnum) throws IOException {
-		
-		AnchorModel anchors = fetcher.fetchGeneral(Integer.parseInt(docnum),collection.getId());
-		
-		Map<String,Object> model = new HashMap<String,Object>(); 
-		model.put("anchors", anchors);
-		return new ModelAndView(
-				DefaultValues.FOLDER_WEB+"/"
-				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_MODERNUI+"/anchors/anchors",model);
-	}
+    
+    @Autowired
+    ConfigRepository configRepository;
+    
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+    }
+    
+    @Autowired
+    AnchorsFetcher fetcher;
+    
+    @RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","!anchortext"})
+    public ModelAndView anchors(HttpServletResponse response,
+            @RequestParam(RequestParameters.COLLECTION) Collection collection, String docnum) throws IOException {
+        
+        AnchorModel anchors = fetcher.fetchGeneral(Integer.parseInt(docnum),collection.getId());
+        
+        Map<String,Object> model = new HashMap<String,Object>(); 
+        model.put("anchors", anchors);
+        return new ModelAndView(
+                DefaultValues.FOLDER_WEB+"/"
+                +DefaultValues.FOLDER_TEMPLATES+"/"
+                +DefaultValues.FOLDER_MODERNUI+"/anchors/anchors",model);
+    }
 
-	@RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","anchortext"})
-	public ModelAndView anchorsDetail(HttpServletResponse response,
-			@RequestParam(RequestParameters.COLLECTION) Collection collection,
-			String docnum, 
-			String anchortext,
-			String start) throws IOException {
-		
-		int startInt = 0;
-		if(start != null){ 
-			startInt = Integer.parseInt(start);
-		}
-		AnchorModel anchors = fetcher.fetchDetail(Integer.parseInt(docnum),collection.getId(),anchortext,startInt);
-		
-		Map<String,Object> model = new HashMap<String,Object>(); 
-		model.put("anchors", anchors);
-		model.put("max_urls_per_page",AnchorDetail.MAX_URLS_PER_PAGE);
-		return new ModelAndView(
-				DefaultValues.FOLDER_WEB+"/"
-				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_MODERNUI+"/anchors/anchors-detail",model);
-	}
-	
-	
-	
-	/**
-	 * Called when no collection has been specified.
-	 * @return a list of all available collections.
-	 */
-	@RequestMapping(value="/anchors.html",params="!"+RequestParameters.COLLECTION)
-	public ModelAndView noCollection() {
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
+    @RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","anchortext"})
+    public ModelAndView anchorsDetail(HttpServletResponse response,
+            @RequestParam(RequestParameters.COLLECTION) Collection collection,
+            String docnum, 
+            String anchortext,
+            String start) throws IOException {
+        
+        int startInt = 0;
+        if(start != null){ 
+            startInt = Integer.parseInt(start);
+        }
+        AnchorModel anchors = fetcher.fetchDetail(Integer.parseInt(docnum),collection.getId(),anchortext,startInt);
+        
+        Map<String,Object> model = new HashMap<String,Object>(); 
+        model.put("anchors", anchors);
+        model.put("max_urls_per_page",AnchorDetail.MAX_URLS_PER_PAGE);
+        return new ModelAndView(
+                DefaultValues.FOLDER_WEB+"/"
+                +DefaultValues.FOLDER_TEMPLATES+"/"
+                +DefaultValues.FOLDER_MODERNUI+"/anchors/anchors-detail",model);
+    }
+    
+    
+    
+    /**
+     * Called when no collection has been specified.
+     * @return a list of all available collections.
+     */
+    @RequestMapping(value="/anchors.html",params="!"+RequestParameters.COLLECTION)
+    public ModelAndView noCollection() {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
 
-		return new ModelAndView(
-				DefaultValues.FOLDER_WEB+"/"
-				+DefaultValues.FOLDER_TEMPLATES+"/"
-				+DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
-	}
-	
+        return new ModelAndView(
+                DefaultValues.FOLDER_WEB+"/"
+                +DefaultValues.FOLDER_TEMPLATES+"/"
+                +DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
+    }
+    
 }

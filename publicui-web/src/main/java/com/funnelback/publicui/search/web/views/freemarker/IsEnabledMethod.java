@@ -13,20 +13,20 @@ import freemarker.template.TemplateScalarModel;
  */
 public class IsEnabledMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "is_enabled";
-	
-	public IsEnabledMethod() {
-		super(1, 0, true);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		TemplateScalarModel arg = (TemplateScalarModel) arguments.get(0);
-		if (arg == null) {
-			return false;
-		} else {
-			return Config.isTrue(arg.getAsString());
-		}
-	}
+    public static final String NAME = "is_enabled";
+    
+    public IsEnabledMethod() {
+        super(1, 0, true);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        TemplateScalarModel arg = (TemplateScalarModel) arguments.get(0);
+        if (arg == null) {
+            return false;
+        } else {
+            return Config.isTrue(arg.getAsString());
+        }
+    }
 
 }

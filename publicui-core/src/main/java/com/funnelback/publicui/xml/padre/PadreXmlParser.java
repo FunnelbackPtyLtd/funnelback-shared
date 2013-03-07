@@ -8,6 +8,6 @@ import com.funnelback.publicui.xml.XmlParsingException;
  */
 public interface PadreXmlParser {
 
-	public ResultPacket parse(String xml) throws XmlParsingException;
-	
+    public ResultPacket parse(String xml) throws XmlParsingException;
+    
 }

@@ -23,40 +23,40 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Log4j
 public class CliveMapping extends AbstractInputProcessor {
 
-	@Override
-	public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
-		if (SearchTransactionUtils.hasQuestion(searchTransaction)
-				&& SearchTransactionUtils.hasCollection(searchTransaction)
-				&& searchTransaction.getQuestion().getClive() != null
-				&& searchTransaction.getQuestion().getClive().length > 0) {
-			
-			SortedSet<String> clives = new TreeSet<String>();
-			for (String clive: searchTransaction.getQuestion().getClive()) {
-				if (clive.matches("\\d+")) {
-					// Already a number, pass it through
-					// That can happen with links built by PADRE (Contextual Nav. links)
-					clives.add(clive);
-				} else {
-					for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
-						if (clive.equals(searchTransaction.getQuestion().getCollection().getMetaComponents()[i])) {
-							clives.add(Integer.toString(i));
-							break;
-						}
-					}
-				}
-			}
-	
-			if (clives.size() > 0) {
-				if (log.isDebugEnabled()) {
-					log.debug("Transformed clive parameter from '"
-							+ StringUtils.join(searchTransaction.getQuestion().getClive(), ",")
-							+ "' to '" + StringUtils.join(clives, ",") + "'");
-				}
-	
-				searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.CLIVE, clives.toArray(new String[0]));
-			}
-		}
+    @Override
+    public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
+        if (SearchTransactionUtils.hasQuestion(searchTransaction)
+                && SearchTransactionUtils.hasCollection(searchTransaction)
+                && searchTransaction.getQuestion().getClive() != null
+                && searchTransaction.getQuestion().getClive().length > 0) {
+            
+            SortedSet<String> clives = new TreeSet<String>();
+            for (String clive: searchTransaction.getQuestion().getClive()) {
+                if (clive.matches("\\d+")) {
+                    // Already a number, pass it through
+                    // That can happen with links built by PADRE (Contextual Nav. links)
+                    clives.add(clive);
+                } else {
+                    for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
+                        if (clive.equals(searchTransaction.getQuestion().getCollection().getMetaComponents()[i])) {
+                            clives.add(Integer.toString(i));
+                            break;
+                        }
+                    }
+                }
+            }
+    
+            if (clives.size() > 0) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Transformed clive parameter from '"
+                            + StringUtils.join(searchTransaction.getQuestion().getClive(), ",")
+                            + "' to '" + StringUtils.join(clives, ",") + "'");
+                }
+    
+                searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.CLIVE, clives.toArray(new String[0]));
+            }
+        }
 
-	}
+    }
 
 }

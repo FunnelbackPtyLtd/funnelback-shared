@@ -9,8 +9,8 @@ import com.funnelback.common.utils.cgirunner.DefaultCgiRunner;
 
 @Component
 public class CgiRunnerFactory {
-	
-	public CgiRunner create(File pathToCgi, File pathToPerl) {
-		return new DefaultCgiRunner(pathToCgi,pathToPerl);
-	}
+    
+    public CgiRunner create(File pathToCgi, File pathToPerl) {
+        return new DefaultCgiRunner(pathToCgi,pathToPerl);
+    }
 }

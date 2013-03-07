@@ -21,82 +21,82 @@ import com.funnelback.publicui.search.service.IndexRepository;
 @Repository("indexRepository")
 public class AutoRefreshLocalIndexRepository extends CachedLocalIndexRepository {
 
-	@Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
-	private int checkingInterval = 0;
-	
-	/**
-	 * Keep track of recent stale checks to avoid checking all
-	 * the files to often
-	 */
-	private Map<String, Long> staleChecks = new HashMap<String, Long>();
-	
-	/**
-	 * Prefix used to store the last time the "index_time" file has been
-	 * checked for a specific collection, in the staleChecks map.
-	 */
-	private static final String LAST_UPDATED_STALE_KEY_PREFIX = "_LAST_UPDATED_DATE_";
-	
-	/** Prefix used to store the last time the <code>index.bldinfo</code> file
-	 * has been checked for a specific collection, in the {@link #staleChecks} map.
-	 */
-	private static final String BLDINFO_STALE_KEY_PREFIX = "_BLDINFO_";
-	
-	@Override
-	public Date getLastUpdated(String collectionId) {
-		Cache cache = appCacheManager.getCache(CACHE);
-		String key = CacheKeys._CACHE_lastUpdated_.toString() + collectionId;
-		
-		Element elt = cache.get(key);
-		if (elt == null) {
-			return loadLastUpdated(collectionId);
-		} else {
-			Long now = System.currentTimeMillis();
-			Long lastAccessTime = staleChecks.get(LAST_UPDATED_STALE_KEY_PREFIX + collectionId);
-			staleChecks.put(LAST_UPDATED_STALE_KEY_PREFIX + collectionId, now);
-			// Take an early exit if we've already check recently.
-			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
-				return (Date) elt.getObjectValue();
-			} else {
-				// Has the file changed ?
-				if (isFileStale(getIndexFile(collectionId, Files.Index.INDEX_TIME), elt.getCreationTime())) {
-					cache.remove(elt.getKey());
-					return super.getLastUpdated(collectionId);
-				} else {
-					return (Date) elt.getObjectValue(); 
-				}
-			}		
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public String getBuildInfoValue(final String collectionId, final String key) {
-		Cache cache = appCacheManager.getCache(CACHE);
-		String cacheKey = CacheKeys._CACHE_bldinfo_.toString() + collectionId;
-		
-		Element elt = cache.get(cacheKey);
-		if (elt == null) {
-			return super.getBuildInfoValue(collectionId, key);
-		} else {
-			Long now = System.currentTimeMillis();
-			Long lastAccessTime = staleChecks.get(BLDINFO_STALE_KEY_PREFIX + collectionId);
-			staleChecks.put(BLDINFO_STALE_KEY_PREFIX+collectionId, now);
-			if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
-				return ((Map<String, String>) elt.getObjectValue()).get(key); 
-			} else {
-				// Has the file changed ?
-				if (isFileStale(getIndexFile(collectionId, Files.Index.BLDINFO), elt.getCreationTime())) {
-					cache.remove(elt.getKey());
-					return super.getBuildInfoValue(collectionId, key);
-				} else {
-					return ((Map<String, String>) elt.getObjectValue()).get(key);
-				}
-			}
-		}
-	}
+    @Value("#{appProperties['config.repository.autorefresh.interval']?:250}")
+    private int checkingInterval = 0;
+    
+    /**
+     * Keep track of recent stale checks to avoid checking all
+     * the files to often
+     */
+    private Map<String, Long> staleChecks = new HashMap<String, Long>();
+    
+    /**
+     * Prefix used to store the last time the "index_time" file has been
+     * checked for a specific collection, in the staleChecks map.
+     */
+    private static final String LAST_UPDATED_STALE_KEY_PREFIX = "_LAST_UPDATED_DATE_";
+    
+    /** Prefix used to store the last time the <code>index.bldinfo</code> file
+     * has been checked for a specific collection, in the {@link #staleChecks} map.
+     */
+    private static final String BLDINFO_STALE_KEY_PREFIX = "_BLDINFO_";
+    
+    @Override
+    public Date getLastUpdated(String collectionId) {
+        Cache cache = appCacheManager.getCache(CACHE);
+        String key = CacheKeys._CACHE_lastUpdated_.toString() + collectionId;
+        
+        Element elt = cache.get(key);
+        if (elt == null) {
+            return loadLastUpdated(collectionId);
+        } else {
+            Long now = System.currentTimeMillis();
+            Long lastAccessTime = staleChecks.get(LAST_UPDATED_STALE_KEY_PREFIX + collectionId);
+            staleChecks.put(LAST_UPDATED_STALE_KEY_PREFIX + collectionId, now);
+            // Take an early exit if we've already check recently.
+            if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
+                return (Date) elt.getObjectValue();
+            } else {
+                // Has the file changed ?
+                if (isFileStale(getIndexFile(collectionId, Files.Index.INDEX_TIME), elt.getCreationTime())) {
+                    cache.remove(elt.getKey());
+                    return super.getLastUpdated(collectionId);
+                } else {
+                    return (Date) elt.getObjectValue(); 
+                }
+            }        
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public String getBuildInfoValue(final String collectionId, final String key) {
+        Cache cache = appCacheManager.getCache(CACHE);
+        String cacheKey = CacheKeys._CACHE_bldinfo_.toString() + collectionId;
+        
+        Element elt = cache.get(cacheKey);
+        if (elt == null) {
+            return super.getBuildInfoValue(collectionId, key);
+        } else {
+            Long now = System.currentTimeMillis();
+            Long lastAccessTime = staleChecks.get(BLDINFO_STALE_KEY_PREFIX + collectionId);
+            staleChecks.put(BLDINFO_STALE_KEY_PREFIX+collectionId, now);
+            if (lastAccessTime != null && now < (lastAccessTime+checkingInterval)) {
+                return ((Map<String, String>) elt.getObjectValue()).get(key); 
+            } else {
+                // Has the file changed ?
+                if (isFileStale(getIndexFile(collectionId, Files.Index.BLDINFO), elt.getCreationTime())) {
+                    cache.remove(elt.getKey());
+                    return super.getBuildInfoValue(collectionId, key);
+                } else {
+                    return ((Map<String, String>) elt.getObjectValue()).get(key);
+                }
+            }
+        }
+    }
 
-	private boolean isFileStale(File f, long timestamp) {
-		return f.lastModified() > timestamp;
-	}
-	
+    private boolean isFileStale(File f, long timestamp) {
+        return f.lastModified() > timestamp;
+    }
+    
 }

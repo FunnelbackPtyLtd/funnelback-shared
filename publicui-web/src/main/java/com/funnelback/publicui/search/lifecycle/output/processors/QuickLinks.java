@@ -18,31 +18,31 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  */
 @Component("quickLinksOutputProcessor")
 public class QuickLinks extends AbstractOutputProcessor {
-	
-	@Override
-	public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-		if (SearchTransactionUtils.hasResults(searchTransaction)) {
-			for (Result r : searchTransaction.getResponse().getResultPacket().getResults()) {
+    
+    @Override
+    public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
+        if (SearchTransactionUtils.hasResults(searchTransaction)) {
+            for (Result r : searchTransaction.getResponse().getResultPacket().getResults()) {
 
-				if (r.getQuickLinks() != null) {
-					for (QuickLink ql : r.getQuickLinks().getQuickLinks()) {
-						if (ql.getUrl() != null) {
-							
-							// Try to find a colon between the first dot, to assess
-							// the presence of a scheme in the URL.
-							int dot = ql.getUrl().indexOf('.');
-							if (dot == -1) {
-								// In case no dot: http://server/page
-								dot = ql.getUrl().length();
-							}
-							
-							if (ql.getUrl().substring(0, dot).indexOf(':') < 0) {
-								ql.setUrl("http://" + ql.getUrl());
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                if (r.getQuickLinks() != null) {
+                    for (QuickLink ql : r.getQuickLinks().getQuickLinks()) {
+                        if (ql.getUrl() != null) {
+                            
+                            // Try to find a colon between the first dot, to assess
+                            // the presence of a scheme in the URL.
+                            int dot = ql.getUrl().indexOf('.');
+                            if (dot == -1) {
+                                // In case no dot: http://server/page
+                                dot = ql.getUrl().length();
+                            }
+                            
+                            if (ql.getUrl().substring(0, dot).indexOf(':') < 0) {
+                                ql.setUrl("http://" + ql.getUrl());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

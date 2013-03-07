@@ -31,83 +31,83 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @JsonIgnoreProperties({"rawPacket","translations"})
 public class SearchResponse {
 
-	/** The result packet coming from PADRE */
-	@Getter @Setter private ResultPacket resultPacket;
-	
-	/**
-	 * Raw XML packet as return by PADRE, for
-	 * debugging purposes
-	 */
-	@XStreamOmitField
-	@Getter @Setter private String rawPacket;
-	
-	/** PADRE return code (0 = success) */
-	@Getter @Setter private int returnCode;
-	
-	/**
-	 * Computed facets based on the PADRE
-	 * result packet and collection configuration.
-	 **/
-	@Getter private final List<Facet> facets = new ArrayList<Facet>();
-	
-	/**
-	 * Custom data placeholder allowing any arbitrary data to be
-	 * stored by hook scripts.
-	 */
-	@Getter private final Map<String, Object> customData = new HashMap<String, Object>();
-	
-	/**
-	 * Content Optimiser: URL comparison data.
-	 */
-	@Getter @Setter private ContentOptimiserModel optimiserModel;
-	
-	/**
-	 * TextMiner: Entity/Definition/URL data.
-	 * 
-	 * @since 12.0
-	 */	
-	@Getter @Setter private EntityDefinition entityDefinition;
-	
-	/**
-	 * Contains translation messages for the UI, for the locale
-	 * given in the {@link SearchQuestion}.
-	 * 
-	 * @since 12.0
-	 */
-	@XStreamOmitField
-	@Getter
-	private final Map<String, String> translations = new HashMap<String, String>();
-	
-	/**
-	 * Search history of the user for the current collection.
-	 * 
-	 * @since 12.4
-	 */
-	@Getter final private List<SearchHistory> searchHistory = new ArrayList<>();
-	
-	/**
-	 * Click history of the user for the current collection.
-	 * 
-	 * @since 12.4
-	 */
-	@Getter final private List<Result> clickHistory = new ArrayList<>();
-	
-	/**
-	 * Results cart of the user for the current collection
-	 * 
-	 * @since 12.4
-	 */
-	@Getter final private Map<String, Result> resultsCart = new HashMap<String, Result>();
+    /** The result packet coming from PADRE */
+    @Getter @Setter private ResultPacket resultPacket;
+    
+    /**
+     * Raw XML packet as return by PADRE, for
+     * debugging purposes
+     */
+    @XStreamOmitField
+    @Getter @Setter private String rawPacket;
+    
+    /** PADRE return code (0 = success) */
+    @Getter @Setter private int returnCode;
+    
+    /**
+     * Computed facets based on the PADRE
+     * result packet and collection configuration.
+     **/
+    @Getter private final List<Facet> facets = new ArrayList<Facet>();
+    
+    /**
+     * Custom data placeholder allowing any arbitrary data to be
+     * stored by hook scripts.
+     */
+    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    
+    /**
+     * Content Optimiser: URL comparison data.
+     */
+    @Getter @Setter private ContentOptimiserModel optimiserModel;
+    
+    /**
+     * TextMiner: Entity/Definition/URL data.
+     * 
+     * @since 12.0
+     */    
+    @Getter @Setter private EntityDefinition entityDefinition;
+    
+    /**
+     * Contains translation messages for the UI, for the locale
+     * given in the {@link SearchQuestion}.
+     * 
+     * @since 12.0
+     */
+    @XStreamOmitField
+    @Getter
+    private final Map<String, String> translations = new HashMap<String, String>();
+    
+    /**
+     * Search history of the user for the current collection.
+     * 
+     * @since 12.4
+     */
+    @Getter final private List<SearchHistory> searchHistory = new ArrayList<>();
+    
+    /**
+     * Click history of the user for the current collection.
+     * 
+     * @since 12.4
+     */
+    @Getter final private List<Result> clickHistory = new ArrayList<>();
+    
+    /**
+     * Results cart of the user for the current collection
+     * 
+     * @since 12.4
+     */
+    @Getter final private Map<String, Result> resultsCart = new HashMap<String, Result>();
 
-	/**
-	 * Performance metrics of each phase of the transaction lifecycle
-	 * 
-	 * @since 12.4
-	 */
-	@Getter @Setter private org.springframework.util.StopWatch performanceMetrics;
-	
-	/**
-	 * @return true if the {@link #resultPacket} is not null.
-	 */
-	public boolean hasResultPacket() { return resultPacket != null; }
+    /**
+     * Performance metrics of each phase of the transaction lifecycle
+     * 
+     * @since 12.4
+     */
+    @Getter @Setter private org.springframework.util.StopWatch performanceMetrics;
+    
+    /**
+     * @return true if the {@link #resultPacket} is not null.
+     */
+    public boolean hasResultPacket() { return resultPacket != null; }
 }

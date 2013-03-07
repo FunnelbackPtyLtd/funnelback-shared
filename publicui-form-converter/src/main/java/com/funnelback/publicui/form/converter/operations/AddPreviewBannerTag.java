@@ -7,9 +7,9 @@ import com.funnelback.publicui.form.converter.Operation;
  */
 public class AddPreviewBannerTag implements Operation {
 
-	@Override
-	public String process(String in) {
-		return in.replaceAll("(?i)<body([^>]*)>", "<body$1>\n<@fb.ViewModeBanner />");
-	}
+    @Override
+    public String process(String in) {
+        return in.replaceAll("(?i)<body([^>]*)>", "<body$1>\n<@fb.ViewModeBanner />");
+    }
 
 }

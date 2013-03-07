@@ -14,39 +14,39 @@ import freemarker.template.TemplateModelException;
 
 public class IsEnabledMethodTests extends AbstractMethodTest {
 
-	@Test
-	public void test() throws TemplateModelException {
-		Assert.assertTrue((Boolean) method.exec(buildStringArguments("true")));
-		Assert.assertTrue((Boolean) method.exec(buildStringArguments("on")));
-		Assert.assertTrue((Boolean) method.exec(buildStringArguments("enabled")));
-		Assert.assertTrue((Boolean) method.exec(buildStringArguments("yes")));
-		
-		Assert.assertFalse((Boolean) method.exec(buildStringArguments("false")));
-		Assert.assertFalse((Boolean) method.exec(buildStringArguments("off")));
-		Assert.assertFalse((Boolean) method.exec(buildStringArguments("disabled")));
-		Assert.assertFalse((Boolean) method.exec(buildStringArguments("no")));
-	}
-	
-	@Test
-	public void testNullStringReturnsFalse() throws TemplateModelException {
-		List<TemplateModel> arguments = new ArrayList<TemplateModel>();
-		arguments.add(null);
-		Assert.assertFalse((Boolean) method.exec(arguments));
-	}
-	
-	@Override
-	protected AbstractTemplateMethod buildMethod() {
-		return new IsEnabledMethod();
-	}
+    @Test
+    public void test() throws TemplateModelException {
+        Assert.assertTrue((Boolean) method.exec(buildStringArguments("true")));
+        Assert.assertTrue((Boolean) method.exec(buildStringArguments("on")));
+        Assert.assertTrue((Boolean) method.exec(buildStringArguments("enabled")));
+        Assert.assertTrue((Boolean) method.exec(buildStringArguments("yes")));
+        
+        Assert.assertFalse((Boolean) method.exec(buildStringArguments("false")));
+        Assert.assertFalse((Boolean) method.exec(buildStringArguments("off")));
+        Assert.assertFalse((Boolean) method.exec(buildStringArguments("disabled")));
+        Assert.assertFalse((Boolean) method.exec(buildStringArguments("no")));
+    }
+    
+    @Test
+    public void testNullStringReturnsFalse() throws TemplateModelException {
+        List<TemplateModel> arguments = new ArrayList<TemplateModel>();
+        arguments.add(null);
+        Assert.assertFalse((Boolean) method.exec(arguments));
+    }
+    
+    @Override
+    protected AbstractTemplateMethod buildMethod() {
+        return new IsEnabledMethod();
+    }
 
-	@Override
-	protected int getRequiredArgumentsCount() {
-		return 1;
-	}
+    @Override
+    protected int getRequiredArgumentsCount() {
+        return 1;
+    }
 
-	@Override
-	protected int getOptionalArgumentsCount() {
-		return 0;
-	}
+    @Override
+    protected int getOptionalArgumentsCount() {
+        return 0;
+    }
 
 }

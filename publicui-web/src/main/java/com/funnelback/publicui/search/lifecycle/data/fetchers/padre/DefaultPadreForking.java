@@ -17,21 +17,21 @@ import com.funnelback.publicui.xml.XmlParsingException;
 @Component
 public class DefaultPadreForking extends AbstractPadreForking {
 
-	@Override
-	protected String getQueryString(SearchTransaction transaction) {
-		return new PadreQueryStringBuilder(transaction.getQuestion(), true).buildQueryString();
-	}
+    @Override
+    protected String getQueryString(SearchTransaction transaction) {
+        return new PadreQueryStringBuilder(transaction.getQuestion(), true).buildQueryString();
+    }
 
-	@Override
-	protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
-		transaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
-		transaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
-		transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
-	}
+    @Override
+    protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
+        transaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
+        transaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
+        transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
+    }
 
-	public void setI18n(I18n i18n) {
-		this.i18n = i18n;
-	}
+    public void setI18n(I18n i18n) {
+        this.i18n = i18n;
+    }
 
 
 }

@@ -20,48 +20,48 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  */
 public class FallbackFreeMarkerViewResolver extends FreeMarkerViewResolver {
 
-	/** URL of the fallback view */
-	private final String fallbackViewUrl;
-	
-	/** Default suffix to try to fallback to */
-	private final String defaultSuffix;
-	
-	public FallbackFreeMarkerViewResolver(String fallbackViewUrl, String defaultSuffix) {
-		this.fallbackViewUrl = fallbackViewUrl;
-		this.defaultSuffix = defaultSuffix;
-	}
-	
-	@Override
-	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		String folder = "";
-		String view = viewName;
-		if (viewName.contains("/")) {
-			folder = viewName.substring(0, viewName.lastIndexOf('/'));
-			view = viewName.substring(viewName.lastIndexOf('/'));
-		}		
-		
-		View v = super.resolveViewName(folder+view, locale);
-		
-		while (v == null && folder.contains("/")) {
-			v = super.resolveViewName(folder+view+defaultSuffix, locale);
-			if (v == null) {
-				folder = folder.substring(0, folder.lastIndexOf('/'));
-			} else {
-				return v;
-			}
-			
-			v = super.resolveViewName(folder+view, locale);
-		}
+    /** URL of the fallback view */
+    private final String fallbackViewUrl;
+    
+    /** Default suffix to try to fallback to */
+    private final String defaultSuffix;
+    
+    public FallbackFreeMarkerViewResolver(String fallbackViewUrl, String defaultSuffix) {
+        this.fallbackViewUrl = fallbackViewUrl;
+        this.defaultSuffix = defaultSuffix;
+    }
+    
+    @Override
+    public View resolveViewName(String viewName, Locale locale) throws Exception {
+        String folder = "";
+        String view = viewName;
+        if (viewName.contains("/")) {
+            folder = viewName.substring(0, viewName.lastIndexOf('/'));
+            view = viewName.substring(viewName.lastIndexOf('/'));
+        }        
+        
+        View v = super.resolveViewName(folder+view, locale);
+        
+        while (v == null && folder.contains("/")) {
+            v = super.resolveViewName(folder+view+defaultSuffix, locale);
+            if (v == null) {
+                folder = folder.substring(0, folder.lastIndexOf('/'));
+            } else {
+                return v;
+            }
+            
+            v = super.resolveViewName(folder+view, locale);
+        }
 
-		// Fall back view
-		if (v == null) {
-			v = super.resolveViewName(fallbackViewUrl, locale);
-			if (v == null) {
-				v = super.resolveViewName(fallbackViewUrl+defaultSuffix, locale);
-			}
-		}
+        // Fall back view
+        if (v == null) {
+            v = super.resolveViewName(fallbackViewUrl, locale);
+            if (v == null) {
+                v = super.resolveViewName(fallbackViewUrl+defaultSuffix, locale);
+            }
+        }
 
-		return v;
-	}
-	
+        return v;
+    }
+    
 }

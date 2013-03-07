@@ -10,33 +10,33 @@ import com.funnelback.common.io.store.xml.FlatFileStore;
 
 @Ignore
 public class ConnectorWarcXmlStoreCacheTest extends
-		AbstractXmlCacheControllerTest {
+        AbstractXmlCacheControllerTest {
 
-	private static final String COLLECTION_ID = "cache-connector-warcxmlstore";
-	
-	@Override
-	protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
-			throws IOException {
-		FlatFileStore store = new FlatFileStore(liveRoot);
-		store.open();
-		store.add(rmd.record);
-		store.close();
+    private static final String COLLECTION_ID = "cache-connector-warcxmlstore";
+    
+    @Override
+    protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
+            throws IOException {
+        FlatFileStore store = new FlatFileStore(liveRoot);
+        store.open();
+        store.add(rmd.record);
+        store.close();
 
-	}
+    }
 
-	@Override
-	protected String getPrimaryKey() {
-		return "https://exchange2007.harness.local/owa?ae=Folder&id=LgAAAAD9UFRvllr3TLdKKZ9cbQzmAQDIbcuzRQWYQLNSRcGj6iIrAAAAADwUAAAB";
-	}
+    @Override
+    protected String getPrimaryKey() {
+        return "https://exchange2007.harness.local/owa?ae=Folder&id=LgAAAAD9UFRvllr3TLdKKZ9cbQzmAQDIbcuzRQWYQLNSRcGj6iIrAAAAADwUAAAB";
+    }
 
-	@Override
-	protected String getCollectionId() {
-		return COLLECTION_ID;
-	}
+    @Override
+    protected String getCollectionId() {
+        return COLLECTION_ID;
+    }
 
-	@Override
-	protected String getCacheUrl(String primaryKey) {
-		return getPrimaryKey();
-	}
+    @Override
+    protected String getCacheUrl(String primaryKey) {
+        return getPrimaryKey();
+    }
 
 }

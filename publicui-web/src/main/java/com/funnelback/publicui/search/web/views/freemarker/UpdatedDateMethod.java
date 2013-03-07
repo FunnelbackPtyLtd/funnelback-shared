@@ -14,19 +14,19 @@ import freemarker.template.TemplateScalarModel;
  */
 public class UpdatedDateMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "updatedDate";
-	
-	@Autowired
-	private IndexRepository indexRepository;
-	
-	public UpdatedDateMethod() {
-		super(1, 0, false);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		return indexRepository.getLastUpdated(collectionId);
-	}
+    public static final String NAME = "updatedDate";
+    
+    @Autowired
+    private IndexRepository indexRepository;
+    
+    public UpdatedDateMethod() {
+        super(1, 0, false);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        String collectionId = ((TemplateScalarModel) arguments.get(0)).getAsString();
+        return indexRepository.getLastUpdated(collectionId);
+    }
 
 }

@@ -18,12 +18,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RMCItemResult {
 
-	/** Title of the result */
-	@Getter @Setter private String title;
-	
-	/** URL to access the search result. */
-	@Getter @Setter private String liveUrl;
-	
-	/** Snippet (non query-biased) */
-	@Getter @Setter private String summary;
+    /** Title of the result */
+    @Getter @Setter private String title;
+    
+    /** URL to access the search result. */
+    @Getter @Setter private String liveUrl;
+    
+    /** Snippet (non query-biased) */
+    @Getter @Setter private String summary;
 }

@@ -10,21 +10,21 @@ import lombok.RequiredArgsConstructor;
  */
 public interface PadreForker {
 
-	/**
-	 * Executes PADRE
-	 * @param commandLine PADRE command line, with program path and arguments
-	 * @param environmnent Environment variables to set
-	 * @return Output of the command.
-	 */
-	public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException;
-	
-	/**
-	 * PADRE response: A return code, and the content.
-	 */
-	@RequiredArgsConstructor
-	public class PadreExecutionReturn {
-		@Getter private final int returnCode;
-		@Getter private final String output;
-	}
-	
+    /**
+     * Executes PADRE
+     * @param commandLine PADRE command line, with program path and arguments
+     * @param environmnent Environment variables to set
+     * @return Output of the command.
+     */
+    public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException;
+    
+    /**
+     * PADRE response: A return code, and the content.
+     */
+    @RequiredArgsConstructor
+    public class PadreExecutionReturn {
+        @Getter private final int returnCode;
+        @Getter private final String output;
+    }
+    
 }

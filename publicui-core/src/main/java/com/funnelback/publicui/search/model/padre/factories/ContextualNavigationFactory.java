@@ -9,30 +9,30 @@ import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 
 public class ContextualNavigationFactory {
 
-	public static ContextualNavigation fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
-		if( ! ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName()) ) {
-			throw new IllegalArgumentException();
-		}
-		
-		ContextualNavigation cn = new ContextualNavigation();
-		
-		while(xmlStreamReader.hasNext()) {
-			int type = xmlStreamReader.next();
-			
-			if (type == XMLStreamReader.END_ELEMENT && ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
-				break;
-			} else if (type == XMLStreamReader.START_ELEMENT) {
-				if (ContextualNavigation.Schema.SEARCH_TERMS.equals(xmlStreamReader.getLocalName())) {
-					cn.setSearchTerm(xmlStreamReader.getElementText());
-				} else if (ClusterNav.Schema.CLUSTER_NAV.equals(xmlStreamReader.getLocalName())) {
-					cn.setClusterNav(ClusterNavFactory.fromXmlStreamReader(xmlStreamReader));
-				} else if (Category.Schema.CATEGORY.equals(xmlStreamReader.getLocalName())) {
-					cn.getCategories().add(CategoryFactory.fromXmlStreamReader(xmlStreamReader));
-				} 
-			}
-		}
-		
-		return cn;
-	}
-	
+    public static ContextualNavigation fromXmlStreamReader(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
+        if( ! ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName()) ) {
+            throw new IllegalArgumentException();
+        }
+        
+        ContextualNavigation cn = new ContextualNavigation();
+        
+        while(xmlStreamReader.hasNext()) {
+            int type = xmlStreamReader.next();
+            
+            if (type == XMLStreamReader.END_ELEMENT && ContextualNavigation.Schema.CONTEXTUAL_NAVIGATION.equals(xmlStreamReader.getLocalName())) {
+                break;
+            } else if (type == XMLStreamReader.START_ELEMENT) {
+                if (ContextualNavigation.Schema.SEARCH_TERMS.equals(xmlStreamReader.getLocalName())) {
+                    cn.setSearchTerm(xmlStreamReader.getElementText());
+                } else if (ClusterNav.Schema.CLUSTER_NAV.equals(xmlStreamReader.getLocalName())) {
+                    cn.setClusterNav(ClusterNavFactory.fromXmlStreamReader(xmlStreamReader));
+                } else if (Category.Schema.CATEGORY.equals(xmlStreamReader.getLocalName())) {
+                    cn.getCategories().add(CategoryFactory.fromXmlStreamReader(xmlStreamReader));
+                } 
+            }
+        }
+        
+        return cn;
+    }
+    
 }

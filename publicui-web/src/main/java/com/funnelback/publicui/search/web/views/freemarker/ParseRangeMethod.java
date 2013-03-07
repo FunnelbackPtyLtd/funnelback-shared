@@ -19,51 +19,51 @@ import freemarker.template.TemplateScalarModel;
 @Log4j
 public class ParseRangeMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "parseRange";
-	
-	public static final String START = "start";
-	public static final String END = "end";
-	
-	private static final String CURRENT_YEAR = "CURRENT_YEAR";
+    public static final String NAME = "parseRange";
+    
+    public static final String START = "start";
+    public static final String END = "end";
+    
+    private static final String CURRENT_YEAR = "CURRENT_YEAR";
 
-	private static final Pattern RANGE_PATTERN = Pattern.compile("^\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)\\s*$");
-	private static final Pattern CURRENT_YEAR_OP_PATTERN = Pattern.compile(CURRENT_YEAR + "\\s*(\\+|\\-)\\s*(\\d+)");
-	
-	
-	public ParseRangeMethod() {
-		super(1, 0, false);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		HashMap<String, TemplateNumberModel> map = new HashMap<String, TemplateNumberModel>();
-		String range = ((TemplateScalarModel) arguments.get(0)).getAsString();
-	
-		log.trace("Incoming range is '" + range + "'");
-		
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		Matcher m = CURRENT_YEAR_OP_PATTERN.matcher(range);
-		StringBuffer buf = new StringBuffer();
-		while (m.find()) {
-			if ("+".equals(m.group(1))) {
-				m.appendReplacement(buf, Integer.toString(year+Integer.parseInt(m.group(2))));
-			} else if ("-".equals(m.group(1))) {
-				m.appendReplacement(buf, Integer.toString(year-Integer.parseInt(m.group(2))));
-			}
-		}
-		m.appendTail(buf);
-		range = buf.toString();
-		
-		range = range.replace(CURRENT_YEAR, Integer.toString(year));
-		
-		log.trace("After " + CURRENT_YEAR + " processing: '" + range + "'");
-		
-		m = RANGE_PATTERN.matcher(range);
-		if (m.find()) {	
-			map.put(START, new SimpleNumber(Integer.parseInt(m.group(1))));
-			map.put(END, new SimpleNumber(Integer.parseInt(m.group(2))));
-		}
-		return new SimpleHash(map);
-	}
+    private static final Pattern RANGE_PATTERN = Pattern.compile("^\\s*(\\d+)\\s*\\.\\.\\s*(\\d+)\\s*$");
+    private static final Pattern CURRENT_YEAR_OP_PATTERN = Pattern.compile(CURRENT_YEAR + "\\s*(\\+|\\-)\\s*(\\d+)");
+    
+    
+    public ParseRangeMethod() {
+        super(1, 0, false);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        HashMap<String, TemplateNumberModel> map = new HashMap<String, TemplateNumberModel>();
+        String range = ((TemplateScalarModel) arguments.get(0)).getAsString();
+    
+        log.trace("Incoming range is '" + range + "'");
+        
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        Matcher m = CURRENT_YEAR_OP_PATTERN.matcher(range);
+        StringBuffer buf = new StringBuffer();
+        while (m.find()) {
+            if ("+".equals(m.group(1))) {
+                m.appendReplacement(buf, Integer.toString(year+Integer.parseInt(m.group(2))));
+            } else if ("-".equals(m.group(1))) {
+                m.appendReplacement(buf, Integer.toString(year-Integer.parseInt(m.group(2))));
+            }
+        }
+        m.appendTail(buf);
+        range = buf.toString();
+        
+        range = range.replace(CURRENT_YEAR, Integer.toString(year));
+        
+        log.trace("After " + CURRENT_YEAR + " processing: '" + range + "'");
+        
+        m = RANGE_PATTERN.matcher(range);
+        if (m.find()) {    
+            map.put(START, new SimpleNumber(Integer.parseInt(m.group(1))));
+            map.put(END, new SimpleNumber(Integer.parseInt(m.group(2))));
+        }
+        return new SimpleHash(map);
+    }
 
 }

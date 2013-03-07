@@ -18,56 +18,56 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationURLTests {
 
-	@Resource(name="localConfigRepository")
-	private DefaultConfigRepository configRepository;
-	
-	private FacetedNavigation processor;
-	private SearchTransaction st;
+    @Resource(name="localConfigRepository")
+    private DefaultConfigRepository configRepository;
+    
+    private FacetedNavigation processor;
+    private SearchTransaction st;
 
-	@Before
-	public void before() {
-		SearchQuestion question = new SearchQuestion();
-		question.setCollection(configRepository.getCollection("faceted-navigation-urls"));
-		st = new SearchTransaction(question, null);
-		
-		processor = new FacetedNavigation();
-	}
-	
-	@Test
-	public void test() {		
-		processor.processInput(st);
-		
-		Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-		Assert.assertEquals("-count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
-	}
-	
-	@Test
-	public void testEmpty() {
-		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[0]);
-		processor.processInput(st);
-		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+    @Before
+    public void before() {
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(configRepository.getCollection("faceted-navigation-urls"));
+        st = new SearchTransaction(question, null);
+        
+        processor = new FacetedNavigation();
+    }
+    
+    @Test
+    public void test() {        
+        processor.processInput(st);
+        
+        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
+        Assert.assertEquals("-count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+    }
+    
+    @Test
+    public void testEmpty() {
+        st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[0]);
+        processor.processInput(st);
+        Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
 
-		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {""});
-		processor.processInput(st);
-		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-	}
-	
-	@Test
-	public void testFacetSelected() {
-		Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-		
-		st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {"Shakespeare/cleopatra"});
-		processor.processInput(st);
-		
-		Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-		Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
-		Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(0));
-		
-		
-		
-		
-	}
-	
-	
+        st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {""});
+        processor.processInput(st);
+        Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+    }
+    
+    @Test
+    public void testFacetSelected() {
+        Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+        
+        st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {"Shakespeare/cleopatra"});
+        processor.processInput(st);
+        
+        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(0));
+        
+        
+        
+        
+    }
+    
+    
 }

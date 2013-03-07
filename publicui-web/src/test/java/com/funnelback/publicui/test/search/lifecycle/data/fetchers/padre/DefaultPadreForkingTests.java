@@ -34,153 +34,153 @@ import com.sun.jna.platform.win32.WinNT;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultPadreForkingTests {
 
-	@Autowired
-	private I18n i18n;
-	
-	private DefaultPadreForking forking;
-	
-	@Before
-	public void before() {
-		forking = new DefaultPadreForking();
-		forking.setI18n(i18n);
-		forking.setPadreWaitTimeout(30000);
-		forking.setPadreXmlParser(new StaxStreamParser());
-		forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
+    @Autowired
+    private I18n i18n;
+    
+    private DefaultPadreForking forking;
+    
+    @Before
+    public void before() {
+        forking = new DefaultPadreForking();
+        forking.setI18n(i18n);
+        forking.setPadreWaitTimeout(30000);
+        forking.setPadreXmlParser(new StaxStreamParser());
+        forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
 
-	}
-	
-	@Test
-	public void testMissingData() throws DataFetchException, FileNotFoundException, EnvironmentVariableException {
-		SearchTransaction st = new SearchTransaction(null, null);
-		forking.fetchData(st);
-		Assert.assertNull(st.getResponse());
-		
-		SearchQuestion sq = new SearchQuestion();
-		st = new SearchTransaction(sq, null);
-		forking.fetchData(st);
-		Assert.assertNull(st.getResponse());
-		
-		sq.setQuery("query");
-		forking.fetchData(st);
-		Assert.assertNull(st.getResponse());
-		
-		sq.setQuery(null);
-		sq.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking")));
-		forking.fetchData(st);
-		Assert.assertNull(st.getResponse());
-		
-	}
-	
-	@Test
-	public void testNoExplicitQueryShouldReturnResults() throws Exception {
-		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
-		
-		SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-		st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-		st.getQuestion().getMetaParameters().add("t:test");
-		forking.fetchData(st);
-		Assert.assertNotNull(st.getResponse());
-		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
-		Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
-		Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
-	}
-	
-	@Test
-	public void test() throws DataFetchException, EnvironmentVariableException, IOException {
-		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
-		
-		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-		qs.setQuery("test");
-		SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
-		
-		
-		forking.fetchData(st);
-		
-		Assert.assertNotNull(st.getResponse());
-		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
-		Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
-		Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
-	}
-	
-	@Test
-	public void testInvalidPacket() throws Exception {
-		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
-		
-		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-		qs.setQuery("test");
-		SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
-		
-		
-		try {
-			forking.fetchData(ts);
-			Assert.fail();
-		} catch (DataFetchException dfe) {
-			Assert.assertEquals(XmlParsingException.class, dfe.getCause().getClass());
-		}
-	}
-	
-	@Test
-	public void testInvalidQueryProcessor() throws FileNotFoundException, EnvironmentVariableException {
-		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", "invalid")));
-		qs.setQuery("test");
-		SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
-		
-		
-		try {
-			forking.fetchData(ts);
-			Assert.fail();
-		} catch (DataFetchException dfe) {
-			Assert.assertEquals(PadreForkingException.class, dfe.getCause().getClass());
-		}
-	}
-	
-	@Test
-	public void testErrorReturn() throws Exception {
-		String qp = "mock-padre-error"+getExtension();
+    }
+    
+    @Test
+    public void testMissingData() throws DataFetchException, FileNotFoundException, EnvironmentVariableException {
+        SearchTransaction st = new SearchTransaction(null, null);
+        forking.fetchData(st);
+        Assert.assertNull(st.getResponse());
+        
+        SearchQuestion sq = new SearchQuestion();
+        st = new SearchTransaction(sq, null);
+        forking.fetchData(st);
+        Assert.assertNull(st.getResponse());
+        
+        sq.setQuery("query");
+        forking.fetchData(st);
+        Assert.assertNull(st.getResponse());
+        
+        sq.setQuery(null);
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking")));
+        forking.fetchData(st);
+        Assert.assertNull(st.getResponse());
+        
+    }
+    
+    @Test
+    public void testNoExplicitQueryShouldReturnResults() throws Exception {
+        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        st.getQuestion().getMetaParameters().add("t:test");
+        forking.fetchData(st);
+        Assert.assertNotNull(st.getResponse());
+        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
+        Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
+        Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
+    }
+    
+    @Test
+    public void test() throws DataFetchException, EnvironmentVariableException, IOException {
+        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setQuery("test");
+        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        
+        
+        forking.fetchData(st);
+        
+        Assert.assertNotNull(st.getResponse());
+        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
+        Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
+        Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
+    }
+    
+    @Test
+    public void testInvalidPacket() throws Exception {
+        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
+        
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setQuery("test");
+        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        
+        
+        try {
+            forking.fetchData(ts);
+            Assert.fail();
+        } catch (DataFetchException dfe) {
+            Assert.assertEquals(XmlParsingException.class, dfe.getCause().getClass());
+        }
+    }
+    
+    @Test
+    public void testInvalidQueryProcessor() throws FileNotFoundException, EnvironmentVariableException {
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", "invalid")));
+        qs.setQuery("test");
+        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        
+        
+        try {
+            forking.fetchData(ts);
+            Assert.fail();
+        } catch (DataFetchException dfe) {
+            Assert.assertEquals(PadreForkingException.class, dfe.getCause().getClass());
+        }
+    }
+    
+    @Test
+    public void testErrorReturn() throws Exception {
+        String qp = "mock-padre-error"+getExtension();
 
-		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-		qs.setQuery("test");
-		SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
-		
-		
-		forking.fetchData(ts);
-		
-		Assert.assertEquals(68, ts.getResponse().getReturnCode());
-	}
-	
-	@Test
-	public void testWindowsNative() throws Exception {
-		Assume.assumeTrue(OS.isFamilyWindows());
-		
-		String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
-		
-		SearchQuestion qs = new SearchQuestion();
-		qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-		qs.setQuery("test");
-		qs.setImpersonated(true);
-		SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
-		
-		Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
-		forking.fetchData(ts);
-		Advapi32.INSTANCE.RevertToSelf();
-		
-		Assert.assertNotNull(ts.getResponse());
-		Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
-		Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
-		Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
-	}
-	
-	private String getExtension() {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		
-		return ext;
-	}
-	
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setQuery("test");
+        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        
+        
+        forking.fetchData(ts);
+        
+        Assert.assertEquals(68, ts.getResponse().getReturnCode());
+    }
+    
+    @Test
+    public void testWindowsNative() throws Exception {
+        Assume.assumeTrue(OS.isFamilyWindows());
+        
+        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setQuery("test");
+        qs.setImpersonated(true);
+        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+        
+        Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
+        forking.fetchData(ts);
+        Advapi32.INSTANCE.RevertToSelf();
+        
+        Assert.assertNotNull(ts.getResponse());
+        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
+        Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
+        Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
+    }
+    
+    private String getExtension() {
+        String ext = ".sh";
+        if (OS.isFamilyWindows()) {
+            ext = ".bat";
+        }
+        
+        return ext;
+    }
+    
 }

@@ -16,28 +16,28 @@ import com.funnelback.common.config.ConfigReader;
 @Log4j
 public class ConfigMapResource extends AbstractSingleFileResource<Map<String, String>> {
 
-	private final String collectionId;
-	private final File searchHome;
+    private final String collectionId;
+    private final File searchHome;
 
-	public ConfigMapResource(String collectionId, File searchHome, File configFile) {
-		super(configFile);
-		this.searchHome = searchHome;
-		this.collectionId = collectionId;
-	}
-	
-	public ConfigMapResource(File searchHome, File configFile) {
-		super(configFile);
-		this.searchHome = searchHome;
-		this.collectionId = null;
-	}
-	
-	@Override
-	public Map<String, String> parse() throws IOException {
-		log.debug("Reading configuration data from '"+file.getAbsolutePath()+"'");
-		if (collectionId != null) {
-			return ConfigReader.readConfig(file, searchHome, collectionId);
-		} else {
-			return ConfigReader.readConfig(file, searchHome);
-		}
-	}	
+    public ConfigMapResource(String collectionId, File searchHome, File configFile) {
+        super(configFile);
+        this.searchHome = searchHome;
+        this.collectionId = collectionId;
+    }
+    
+    public ConfigMapResource(File searchHome, File configFile) {
+        super(configFile);
+        this.searchHome = searchHome;
+        this.collectionId = null;
+    }
+    
+    @Override
+    public Map<String, String> parse() throws IOException {
+        log.debug("Reading configuration data from '"+file.getAbsolutePath()+"'");
+        if (collectionId != null) {
+            return ConfigReader.readConfig(file, searchHome, collectionId);
+        } else {
+            return ConfigReader.readConfig(file, searchHome);
+        }
+    }    
 }

@@ -5,14 +5,14 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 
 public class RankingFeatureConstraintsSatisfied extends RankingFeature {
 
-	public RankingFeatureConstraintsSatisfied(String name, String category, ResultPacket rp) {
-		super(name, category, "Query constraints");
-		
-	}
+    public RankingFeatureConstraintsSatisfied(String name, String category, ResultPacket rp) {
+        super(name, category, "Query constraints");
+        
+    }
 
-	@Override
-	public void caculateWin(float selectedScore, float weighting) {
-		this.win = 100 * weighting;
-	}
+    @Override
+    public void caculateWin(float selectedScore, float weighting) {
+        this.win = 100 * weighting;
+    }
 
 }

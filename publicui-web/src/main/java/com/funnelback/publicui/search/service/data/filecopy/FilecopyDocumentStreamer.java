@@ -13,8 +13,8 @@ import com.funnelback.publicui.search.model.collection.Collection;
  */
 public interface FilecopyDocumentStreamer {
 
-	public void streamDocument(Collection collection, URI uri, OutputStream os) throws IOException;
-	
-	public void streamPartialDocument(Collection collection, URI uri, OutputStream os, int limit) throws IOException;
-	
+    public void streamDocument(Collection collection, URI uri, OutputStream os) throws IOException;
+    
+    public void streamPartialDocument(Collection collection, URI uri, OutputStream os, int limit) throws IOException;
+    
 }

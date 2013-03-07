@@ -12,16 +12,16 @@ import freemarker.template.TemplateScalarModel;
  */
 public class HTMLDecodeMethod extends AbstractTemplateMethod {
 
-	public static final String NAME = "htmlDecode";
-	
-	public HTMLDecodeMethod() {
-		super(1, 0, false);
-	}
-	
-	@Override
-	public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
-		String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
-		return HtmlUtils.htmlUnescape(str);
-	}
+    public static final String NAME = "htmlDecode";
+    
+    public HTMLDecodeMethod() {
+        super(1, 0, false);
+    }
+    
+    @Override
+    public Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
+        String str = ((TemplateScalarModel) arguments.get(0)).getAsString();
+        return HtmlUtils.htmlUnescape(str);
+    }
 
 }

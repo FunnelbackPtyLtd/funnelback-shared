@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface PanLook extends Iterable<String> {
 
-	void close() throws IOException;
+    void close() throws IOException;
 }

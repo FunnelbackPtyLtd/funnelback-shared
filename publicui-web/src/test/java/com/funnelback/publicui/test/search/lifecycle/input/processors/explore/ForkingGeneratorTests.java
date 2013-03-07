@@ -14,45 +14,45 @@ import com.funnelback.publicui.search.lifecycle.input.processors.explore.Forking
 import com.funnelback.publicui.search.model.collection.Collection;
 
 public class ForkingGeneratorTests {
-	
-	private ForkingGenerator generator;
-	
-	@Before
-	public void before() {
-		generator = new ForkingGenerator();
-		generator.setSearchHome(new File("src/test/resources/dummy-search_home"));
-		
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		generator.setPadreRfBinary("padre-rf" + ext);
-	}
-	
-	@Test
-	public void test() throws FileNotFoundException, EnvironmentVariableException {
-		String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", 10);
-		
-		Assert.assertEquals("heath^1.6158 camp^1.6158 entire^1.2664 palace^1.2084 french^1.1012 near^0.8637 tent^0.8011 play^0.7935 british^0.6693 wood^0.6365", q);
-	}
+    
+    private ForkingGenerator generator;
+    
+    @Before
+    public void before() {
+        generator = new ForkingGenerator();
+        generator.setSearchHome(new File("src/test/resources/dummy-search_home"));
+        
+        String ext = ".sh";
+        if (OS.isFamilyWindows()) {
+            ext = ".bat";
+        }
+        generator.setPadreRfBinary("padre-rf" + ext);
+    }
+    
+    @Test
+    public void test() throws FileNotFoundException, EnvironmentVariableException {
+        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", 10);
+        
+        Assert.assertEquals("heath^1.6158 camp^1.6158 entire^1.2664 palace^1.2084 french^1.1012 near^0.8637 tent^0.8011 play^0.7935 british^0.6693 wood^0.6365", q);
+    }
 
-	@Test
-	public void testBadPadreRfBinary() throws Exception {
-		generator.setPadreRfBinary("Bad one");
-		
-		String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", null);
-		Assert.assertNull(q);
-	}
-	
-	public void testBadPadreRfOutput() throws Exception {
-		String ext = ".sh";
-		if (OS.isFamilyWindows()) {
-			ext = ".bat";
-		}
-		generator.setPadreRfBinary("padre-rf-bad" + ext);
-		
-		String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", 10);
-		Assert.assertNull(q);
-		
-	}
+    @Test
+    public void testBadPadreRfBinary() throws Exception {
+        generator.setPadreRfBinary("Bad one");
+        
+        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", null);
+        Assert.assertNull(q);
+    }
+    
+    public void testBadPadreRfOutput() throws Exception {
+        String ext = ".sh";
+        if (OS.isFamilyWindows()) {
+            ext = ".bat";
+        }
+        generator.setPadreRfBinary("padre-rf-bad" + ext);
+        
+        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", 10);
+        Assert.assertNull(q);
+        
+    }
 }

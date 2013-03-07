@@ -8,6 +8,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public interface OutputProcessor extends LifecycleProcessor {
 
-	public void processOutput(final SearchTransaction searchTransaction) throws OutputProcessorException;
-	
+    public void processOutput(final SearchTransaction searchTransaction) throws OutputProcessorException;
+    
 }

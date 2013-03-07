@@ -6,12 +6,12 @@ import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 public interface DocumentWordsProcessor {
-	
-	SingleTermFrequencies explainQueryTerm(String query, Collection collection);
+    
+    SingleTermFrequencies explainQueryTerm(String query, Collection collection);
 
-	String[] getCommonWords(List<String> stopWords, String fieldType);
+    String[] getCommonWords(List<String> stopWords, String fieldType);
 
-	int getTotalWords();
-	int setUniqueWords();
+    int getTotalWords();
+    int setUniqueWords();
 
 }

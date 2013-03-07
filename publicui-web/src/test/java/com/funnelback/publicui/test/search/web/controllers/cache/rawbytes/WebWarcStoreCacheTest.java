@@ -20,57 +20,57 @@ import com.funnelback.common.utils.Log4JPrintWriter;
 @Log4j
 @Ignore("FUN-5298")
 public class WebWarcStoreCacheTest extends
-		AbstractRawBytesCacheControllerTest {
+        AbstractRawBytesCacheControllerTest {
 
-	private static final String COLLECTION_ID = "cache-web-warcstore";
+    private static final String COLLECTION_ID = "cache-web-warcstore";
 
-	@Override
-	protected String getPrimaryKey() {
-		return "http://server.com/folder/file.html";
-	}
-	
-	@Override
-	protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
-		Log4JPrintWriter pw = new Log4JPrintWriter(log);
-		
-		WARCStore ms = new WARCStore();
-		ms.setUp(View.live,
-				liveRoot.getAbsolutePath(),
-				"",
-				new DummyObjectCache(),
-				new DummyObjectCache(),
-				new DummyObjectCache(),
-				new SimpleRevisitPolicy(),
-				configRepository.getCollection(collectionId).getConfiguration(),
-				pw,
-				pw,
-				pw,
-				pw,
-				pw,
-				pw,
-				0,
-				0,
-				new DummyObjectCache());
-		
-		ms.storeContent(
-				new URL(getPrimaryKey()),
-				FileUtils.readFileToByteArray(TEST_DOCUMENT),
-				FileUtils.readFileToByteArray(TEST_DOCUMENT).length,
-				DocHdrUtils.mapToDocHdr(METADATA),
-				"text/html",
-				false,
-				false);
-		
-		ms.close();
-	}
-	
-	@Override
-	protected String getCollectionId() {
-		return COLLECTION_ID;
-	}
-	
-	@Override
-	protected String getCacheUrl(String primaryKey) {
-		return primaryKey;
-	}
+    @Override
+    protected String getPrimaryKey() {
+        return "http://server.com/folder/file.html";
+    }
+    
+    @Override
+    protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
+        Log4JPrintWriter pw = new Log4JPrintWriter(log);
+        
+        WARCStore ms = new WARCStore();
+        ms.setUp(View.live,
+                liveRoot.getAbsolutePath(),
+                "",
+                new DummyObjectCache(),
+                new DummyObjectCache(),
+                new DummyObjectCache(),
+                new SimpleRevisitPolicy(),
+                configRepository.getCollection(collectionId).getConfiguration(),
+                pw,
+                pw,
+                pw,
+                pw,
+                pw,
+                pw,
+                0,
+                0,
+                new DummyObjectCache());
+        
+        ms.storeContent(
+                new URL(getPrimaryKey()),
+                FileUtils.readFileToByteArray(TEST_DOCUMENT),
+                FileUtils.readFileToByteArray(TEST_DOCUMENT).length,
+                DocHdrUtils.mapToDocHdr(METADATA),
+                "text/html",
+                false,
+                false);
+        
+        ms.close();
+    }
+    
+    @Override
+    protected String getCollectionId() {
+        return COLLECTION_ID;
+    }
+    
+    @Override
+    protected String getCacheUrl(String primaryKey) {
+        return primaryKey;
+    }
 }

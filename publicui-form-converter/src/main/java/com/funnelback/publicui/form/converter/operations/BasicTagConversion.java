@@ -14,30 +14,30 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class BasicTagConversion implements Operation {
 
-	private static final String[] TAGS = {
-		"AfterSearchOnly", "InitialFormOnly", "cfg", "OpenSearch",
-		"PrevNext", "CheckSpelling", "BestBets", "QueryClean", "HtmlDecode", "URLEncode",
-		"cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
-		"NoClustersFound", "ClusterLayout", "Category", "CategoryName", "CategoryCount",
-		"Clusters", "ShowMoreClusters", "ShowFewerClusters", "FacetScope", "CurrentDate",
-		"Date", "rss", "FormChoice", "Facet", "FacetLabel", "ShortFacetLabel", "ClusterNavLayout"		
-	};
-	
-	@Override
-	public String process(final String in) {
-		String out = in;
-		for(String tag: TAGS) {
-			Pattern p = Pattern.compile("<(/?)s:" + tag + "(\\s[^>]*)*>", Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(out);
-			if (m.find()) {
-				log.info("Processing tag '" + tag + "'");
-				out = m.replaceAll("<$1@s." + tag + "$2>");
-			} else {
-				log.info("No tag '" + tag + "' found.");
-			}
-		}
-	
-		return out;		
-	}
+    private static final String[] TAGS = {
+        "AfterSearchOnly", "InitialFormOnly", "cfg", "OpenSearch",
+        "PrevNext", "CheckSpelling", "BestBets", "QueryClean", "HtmlDecode", "URLEncode",
+        "cut", "Explore", "Quicklinks", "QuickRepeat", "FacetedSearch", "ContextualNavigation",
+        "NoClustersFound", "ClusterLayout", "Category", "CategoryName", "CategoryCount",
+        "Clusters", "ShowMoreClusters", "ShowFewerClusters", "FacetScope", "CurrentDate",
+        "Date", "rss", "FormChoice", "Facet", "FacetLabel", "ShortFacetLabel", "ClusterNavLayout"        
+    };
+    
+    @Override
+    public String process(final String in) {
+        String out = in;
+        for(String tag: TAGS) {
+            Pattern p = Pattern.compile("<(/?)s:" + tag + "(\\s[^>]*)*>", Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(out);
+            if (m.find()) {
+                log.info("Processing tag '" + tag + "'");
+                out = m.replaceAll("<$1@s." + tag + "$2>");
+            } else {
+                log.info("No tag '" + tag + "' found.");
+            }
+        }
+    
+        return out;        
+    }
 
 }

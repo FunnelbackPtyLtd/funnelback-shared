@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface ConfigReader<T> {
 
-	Map<String, ? extends T> read(String file);
-	
+    Map<String, ? extends T> read(String file);
+    
 }

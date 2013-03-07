@@ -18,44 +18,44 @@ import com.funnelback.publicui.search.service.resource.ParseableResource;
 @Log4j
 public class ConfigResource implements ParseableResource<Config> {
 
-	private final File searchHome;
-	private final String collectionId;
-	private final File configFile;
+    private final File searchHome;
+    private final String collectionId;
+    private final File configFile;
 
-	public ConfigResource(File searchHome, String collectionId) {
-		this.searchHome = searchHome;
-		this.collectionId = collectionId;
-		this.configFile = new File(searchHome
-				+ File.separator + DefaultValues.FOLDER_CONF
-				+ File.separator + collectionId,
-				Files.COLLECTION_FILENAME);
-	}
-	
-	@Override
-	public Config parse() throws IOException {
-		log.debug("Creating config object for collection '"+collectionId+"'");
-		return new NoOptionsConfig(searchHome, collectionId);
-	}
+    public ConfigResource(File searchHome, String collectionId) {
+        this.searchHome = searchHome;
+        this.collectionId = collectionId;
+        this.configFile = new File(searchHome
+                + File.separator + DefaultValues.FOLDER_CONF
+                + File.separator + collectionId,
+                Files.COLLECTION_FILENAME);
+    }
+    
+    @Override
+    public Config parse() throws IOException {
+        log.debug("Creating config object for collection '"+collectionId+"'");
+        return new NoOptionsConfig(searchHome, collectionId);
+    }
 
-	@Override
-	public boolean isStale(long timestamp) {
-		for(Types type: Types.values()) {
-			if (Config.getLastUpdated(searchHome, type, collectionId) > timestamp) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
+    @Override
+    public boolean isStale(long timestamp) {
+        for(Types type: Types.values()) {
+            if (Config.getLastUpdated(searchHome, type, collectionId) > timestamp) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
-	@Override
-	public Object getCacheKey() {
-		return configFile;
-	}
-	
-	@Override
-	public boolean exists() {
-		return configFile.exists();
-	}
+    @Override
+    public Object getCacheKey() {
+        return configFile;
+    }
+    
+    @Override
+    public boolean exists() {
+        return configFile.exists();
+    }
 
 }

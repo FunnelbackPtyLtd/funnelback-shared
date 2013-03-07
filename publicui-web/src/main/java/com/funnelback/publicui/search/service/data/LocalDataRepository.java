@@ -23,68 +23,68 @@ import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeFilecop
 @Repository
 @Log4j
 public class LocalDataRepository implements DataRepository {
-	
-	/** Name of the parameter containing the record id for database collections */
-	private final static String RECORD_ID = "record_id";
-	
-	public RecordAndMetadata<? extends Record<?>> getCachedDocument(
-			Collection collection, View view, String url) {
-		
-		try (Store<? extends Record<?>> store = StoreType.getStore(collection.getConfiguration(), view)) {
-			store.open();
-			return store.getRecordAndMetadata(extractPrimaryKey(collection, url));		
-		} catch (ClassNotFoundException cnfe) {
-			log.error("Error while getting store for collection '"+collection.getId()+"'", cnfe);
-		} catch (IOException ioe) {
-			log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
-		}
-	
-		return new RecordAndMetadata<Record<?>>(null, null);
+    
+    /** Name of the parameter containing the record id for database collections */
+    private final static String RECORD_ID = "record_id";
+    
+    public RecordAndMetadata<? extends Record<?>> getCachedDocument(
+            Collection collection, View view, String url) {
+        
+        try (Store<? extends Record<?>> store = StoreType.getStore(collection.getConfiguration(), view)) {
+            store.open();
+            return store.getRecordAndMetadata(extractPrimaryKey(collection, url));        
+        } catch (ClassNotFoundException cnfe) {
+            log.error("Error while getting store for collection '"+collection.getId()+"'", cnfe);
+        } catch (IOException ioe) {
+            log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
+        }
+    
+        return new RecordAndMetadata<Record<?>>(null, null);
 
-	}
-	
-	@Override
-	public void streamFilecopyDocument(Collection collection, URI uri,
-			boolean withDls, OutputStream os, int limit) throws IOException {
-		log.debug("Streaming document "+uri+" on collection "+collection.getId());
-		
-		if (limit > 0) {
-			new WindowsNativeFilecopyDocumentStreamer().streamPartialDocument(collection, uri, os, limit);
-		} else {
-			new WindowsNativeFilecopyDocumentStreamer().streamDocument(collection, uri, os);
-		}
-				
-	}
-	
-	@Override
-	public void streamFilecopyDocument(Collection collection, URI uri,
-			boolean withDls, OutputStream os) throws IOException {
-		streamFilecopyDocument(collection, uri, withDls, os, 0);
-	}
+    }
+    
+    @Override
+    public void streamFilecopyDocument(Collection collection, URI uri,
+            boolean withDls, OutputStream os, int limit) throws IOException {
+        log.debug("Streaming document "+uri+" on collection "+collection.getId());
+        
+        if (limit > 0) {
+            new WindowsNativeFilecopyDocumentStreamer().streamPartialDocument(collection, uri, os, limit);
+        } else {
+            new WindowsNativeFilecopyDocumentStreamer().streamDocument(collection, uri, os);
+        }
+                
+    }
+    
+    @Override
+    public void streamFilecopyDocument(Collection collection, URI uri,
+            boolean withDls, OutputStream os) throws IOException {
+        streamFilecopyDocument(collection, uri, withDls, os, 0);
+    }
 
-	/**
-	 * Resolves the primary key used to store the document from its URL,
-	 * depending on the collection type. For example database collections use
-	 * the database ID as primary key (12), but the actual document URL will be
-	 * something like <code>local://serve-db-document?...&amp;record_id=12</code>
-	 * 
-	 * @param url URL of the document
-	 * @return Corresponding primary key
-	 */
-	@SneakyThrows(UnsupportedEncodingException.class)
-	private String extractPrimaryKey(Collection collection, String url) {
-		switch (collection.getType()) {
-		case database:
-		case directory:
-			return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
-		case trimpush:
-			return URLDecoder.decode(url, "UTF-8");
-		case meta:
-		case unknown:
-			throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");
-		default:
-			return url;
-		}
-	}
+    /**
+     * Resolves the primary key used to store the document from its URL,
+     * depending on the collection type. For example database collections use
+     * the database ID as primary key (12), but the actual document URL will be
+     * something like <code>local://serve-db-document?...&amp;record_id=12</code>
+     * 
+     * @param url URL of the document
+     * @return Corresponding primary key
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    private String extractPrimaryKey(Collection collection, String url) {
+        switch (collection.getType()) {
+        case database:
+        case directory:
+            return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
+        case trimpush:
+            return URLDecoder.decode(url, "UTF-8");
+        case meta:
+        case unknown:
+            throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");
+        default:
+            return url;
+        }
+    }
 
 }

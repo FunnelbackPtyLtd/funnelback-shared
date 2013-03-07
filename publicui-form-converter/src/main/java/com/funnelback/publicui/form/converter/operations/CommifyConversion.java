@@ -17,16 +17,16 @@ import com.funnelback.publicui.form.converter.Operation;
 @Slf4j
 public class CommifyConversion implements Operation {
 
-	@Override
-	public String process(String in) {
-		String out = in;
-		
-		if (out.matches("(?is).*<s:commify>.*")) {
-			log.info("Processing <s:commify> tags");
-			out = out.replaceAll("(?i)<s:commify>[^\\$]*\\$\\{([^\\}]*)\\}[^<]*</s:commify>", "\\${$1?string.number}");
-		}
-		
-		return out;
-	}
+    @Override
+    public String process(String in) {
+        String out = in;
+        
+        if (out.matches("(?is).*<s:commify>.*")) {
+            log.info("Processing <s:commify> tags");
+            out = out.replaceAll("(?i)<s:commify>[^\\$]*\\$\\{([^\\}]*)\\}[^<]*</s:commify>", "\\${$1?string.number}");
+        }
+        
+        return out;
+    }
 
 }

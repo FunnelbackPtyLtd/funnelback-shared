@@ -29,55 +29,55 @@ import org.springframework.web.servlet.view.AbstractView;
 @Log4j
 public class XSLTXStreamView extends AbstractView {
 
-	/**
-	 * Key to serialize in the model
-	 */
-	@Setter private String modelKey;
-	
-	/**
-	 * Marshaller to use to generate initial XML
-	 */
-	@Setter private Marshaller marshaller;
-	
-	/**
-	 * Pre-compiled XSL stylesheet
-	 */
-	private Templates templates;
-	
-	/**
-	 * Source of XSLT stylesheet
-	 */
-	private Resource xslt;
-	
-	/**
-	 * Wether to pre-compile the styleseet or not
-	 */
-	@Setter private boolean cacheXslt = true;
-	
-	public XSLTXStreamView(Resource xslt) throws Exception {
-		log.debug("Compiling XSL from '" + xslt.toString() + "'");
-		this.xslt = xslt;
-		if (cacheXslt) {
-			templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getInputStream()));
-		}
-	}
-	
-	@Override
-	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		
-		response.setContentType("text/xml;charset=UTF-8");
+    /**
+     * Key to serialize in the model
+     */
+    @Setter private String modelKey;
+    
+    /**
+     * Marshaller to use to generate initial XML
+     */
+    @Setter private Marshaller marshaller;
+    
+    /**
+     * Pre-compiled XSL stylesheet
+     */
+    private Templates templates;
+    
+    /**
+     * Source of XSLT stylesheet
+     */
+    private Resource xslt;
+    
+    /**
+     * Wether to pre-compile the styleseet or not
+     */
+    @Setter private boolean cacheXslt = true;
+    
+    public XSLTXStreamView(Resource xslt) throws Exception {
+        log.debug("Compiling XSL from '" + xslt.toString() + "'");
+        this.xslt = xslt;
+        if (cacheXslt) {
+            templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getInputStream()));
+        }
+    }
+    
+    @Override
+    protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
+                    HttpServletResponse response) throws Exception {
+        
+        response.setContentType("text/xml;charset=UTF-8");
 
-		// Marshal to XML
-		StringWriter sw = new StringWriter();
-		marshaller.marshal(model.get(modelKey), new StreamResult(sw));
+        // Marshal to XML
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(model.get(modelKey), new StreamResult(sw));
 
-		// Transform using XSLT
-		if (!cacheXslt) {
-			templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getFile()));
-		}
-		StreamSource source = new StreamSource(new StringReader(sw.getBuffer().toString()));
-		templates.newTransformer().transform(source, new StreamResult(response.getOutputStream()));
-	}
+        // Transform using XSLT
+        if (!cacheXslt) {
+            templates = TransformerFactory.newInstance().newTemplates(new StreamSource(xslt.getFile()));
+        }
+        StreamSource source = new StreamSource(new StringReader(sw.getBuffer().toString()));
+        templates.newTransformer().transform(source, new StreamResult(response.getOutputStream()));
+    }
 
 }

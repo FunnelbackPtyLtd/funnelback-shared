@@ -10,16 +10,16 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
  */
 public class ViewTypeNotFoundException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * View type which caused the exception
-	 */
-	@Getter private final String viewType;
-	
-	public ViewTypeNotFoundException(String viewType) {
-		super("View type '"+viewType+"' not found");
-		this.viewType = viewType;		
-	}
-	
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * View type which caused the exception
+     */
+    @Getter private final String viewType;
+    
+    public ViewTypeNotFoundException(String viewType) {
+        super("View type '"+viewType+"' not found");
+        this.viewType = viewType;        
+    }
+    
 }

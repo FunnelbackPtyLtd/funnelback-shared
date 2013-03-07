@@ -8,11 +8,11 @@ import com.funnelback.publicui.search.service.Suggester;
 
 public class MockSuggester implements Suggester {
 
-	@Override
-	public List<Suggestion> suggest(Collection collection, String profileId,
-			String partialQuery, int numSuggestions, Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<Suggestion> suggest(Collection collection, String profileId,
+            String partialQuery, int numSuggestions, Sort sort) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
