@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -45,9 +46,6 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
 	/** Local scheme as used in DB or Connector collection */
 	private static final String LOCAL_SCHEME = "local://";
 	
-	/** Prefix to use for FileCopy links */
-	private static final String FILECOPY_PREFIX = "serve-filecopy-document.cgi";
-	
 	/** Prefix to use for TRIM links */
 	private static final String TRIM_PREFIX = "serve-trim-";
 	
@@ -62,6 +60,10 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
 	public void processOutput(SearchTransaction searchTransaction) {
 		// Ensure we have something to do
 		if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResults(searchTransaction)) {
+			
+			final String serveFilecopyLink = searchTransaction.getQuestion().getCollection()
+					.getConfiguration().value(Keys.ModernUI.Serve.FILECOPY_LINK,
+							searchUrlPrefix + DefaultValues.ModernUI.Serve.FILECOPY_LINK);
 			
 			// 	Iterate over the results
 			for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
@@ -123,7 +125,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
 				
 				case filecopy:
 					// Prefix with serve-filecopy-document.cgi
-					transformedLiveUrl = searchUrlPrefix + FILECOPY_PREFIX
+					transformedLiveUrl = serveFilecopyLink
 						+ "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
 						+ "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
 					

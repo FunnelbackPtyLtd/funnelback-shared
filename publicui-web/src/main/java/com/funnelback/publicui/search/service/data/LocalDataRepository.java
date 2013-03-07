@@ -1,7 +1,9 @@
 package com.funnelback.publicui.search.service.data;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
 
 import lombok.SneakyThrows;
@@ -16,6 +18,7 @@ import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.StoreType;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeFilecopyDocumentStreamer;
 
 @Repository
 @Log4j
@@ -38,6 +41,25 @@ public class LocalDataRepository implements DataRepository {
 	
 		return new RecordAndMetadata<Record<?>>(null, null);
 
+	}
+	
+	@Override
+	public void streamFilecopyDocument(Collection collection, URI uri,
+			boolean withDls, OutputStream os, int limit) throws IOException {
+		log.debug("Streaming document "+uri+" on collection "+collection.getId());
+		
+		if (limit > 0) {
+			new WindowsNativeFilecopyDocumentStreamer().streamPartialDocument(collection, uri, os, limit);
+		} else {
+			new WindowsNativeFilecopyDocumentStreamer().streamDocument(collection, uri, os);
+		}
+				
+	}
+	
+	@Override
+	public void streamFilecopyDocument(Collection collection, URI uri,
+			boolean withDls, OutputStream os) throws IOException {
+		streamFilecopyDocument(collection, uri, withDls, os, 0);
 	}
 
 	/**
