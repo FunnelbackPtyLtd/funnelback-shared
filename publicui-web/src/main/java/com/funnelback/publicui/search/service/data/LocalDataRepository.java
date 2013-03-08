@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.service.data;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -16,10 +16,15 @@ import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.StoreType;
+import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeFilecopyDocumentStreamer;
+import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeInputStream;
 
+/**
+ * {@link DataRepository} implementation against the 
+ * local filesystem
+ */
 @Repository
 @Log4j
 public class LocalDataRepository implements DataRepository {
@@ -27,6 +32,7 @@ public class LocalDataRepository implements DataRepository {
     /** Name of the parameter containing the record id for database collections */
     private final static String RECORD_ID = "record_id";
     
+    @Override
     public RecordAndMetadata<? extends Record<?>> getCachedDocument(
             Collection collection, View view, String url) {
         
@@ -44,24 +50,13 @@ public class LocalDataRepository implements DataRepository {
     }
     
     @Override
-    public void streamFilecopyDocument(Collection collection, URI uri,
-            boolean withDls, OutputStream os, int limit) throws IOException {
-        log.debug("Streaming document "+uri+" on collection "+collection.getId());
-        
-        if (limit > 0) {
-            new WindowsNativeFilecopyDocumentStreamer().streamPartialDocument(collection, uri, os, limit);
-        } else {
-            new WindowsNativeFilecopyDocumentStreamer().streamDocument(collection, uri, os);
-        }
-                
+    public InputStream getFilecopyDocument(Collection collection, URI uri,
+            boolean withDls) throws IOException {
+        // Convert the URI to a Windows path
+        String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(URLDecoder.decode(uri.toString(), "UTF-8"), true);
+        return new WindowsNativeInputStream(windowsPath);
     }
     
-    @Override
-    public void streamFilecopyDocument(Collection collection, URI uri,
-            boolean withDls, OutputStream os) throws IOException {
-        streamFilecopyDocument(collection, uri, withDls, os, 0);
-    }
-
     /**
      * Resolves the primary key used to store the document from its URL,
      * depending on the collection type. For example database collections use

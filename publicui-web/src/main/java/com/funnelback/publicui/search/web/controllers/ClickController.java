@@ -41,6 +41,9 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 @Controller
 public class ClickController {
 
+    /** HTTP Referer header */
+    private static final String REFERER = "referer"; 
+    
     @Autowired
     private LogService logService;
 
@@ -59,21 +62,20 @@ public class ClickController {
     
     /**
      * 
-     * @param request
-     * @param response
-     * @param collectionId
+     * @param request HTTP Request
+     * @param response HTTP response
+     * @param collectionId ID of the collection
      * @param type Faceted nav, Cluster, result click, etc.
      * @param rank Rank of the clicked result
-     * @param profile
+     * @param profile Current profile
      * @param redirectUrl URL to redirect to
-     * @param indexUrl URL of the clicked result from the index
      * @param authtoken Token to check that the link was built by Funnelback
      * @param noAttachment Special parameter to stream the content directly to the browser,
      * used in automated testing
      * @param result The {@link Result} object that was clicked on. It's used for click history
      * purposes only, might be <tt>null</tt> if click history is disabled, and only some fields
      * will be filled.
-     * @throws IOException
+     * @throws IOException If something goes wrong
      */
     @RequestMapping(value = "/redirect", method = RequestMethod.GET)
     public void redirect(
@@ -85,7 +87,8 @@ public class ClickController {
             @RequestParam(required = false) String profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
-            @RequestParam(value = RequestParameters.Click.NOATTACHMENT, required = false) String noAttachment,
+            @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
+                required = false, defaultValue = "false") boolean noAttachment,
             Result result) throws IOException {
 
         Collection collection = configRepository.getCollection(collectionId);
@@ -112,13 +115,13 @@ public class ClickController {
             
             // get the referrer
             URL referer = null;
-            if (request.getHeader("referer") != null) {
+            if (request.getHeader(REFERER) != null) {
                 try {
-                    referer = new URL(request.getHeader("referer"));
+                    referer = new URL(request.getHeader(REFERER));
                 } catch (MalformedURLException mue) {
                     log.warn(
                             "Unable to parse referer '"
-                                    + request.getHeader("referer") + "'", mue);
+                                    + request.getHeader(REFERER) + "'", mue);
                 }
             }
             
@@ -136,7 +139,12 @@ public class ClickController {
                     redirectUrl, type, requestIp));
             
             
-            response.sendRedirect(redirectUrl.toString());
+            response.sendRedirect(
+                redirectUrl.toString()
+                + ( noAttachment
+                    ? "&"+RequestParameters.Click.NOATTACHMENT+"="+Boolean.toString(noAttachment)
+                    : "")
+            );
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

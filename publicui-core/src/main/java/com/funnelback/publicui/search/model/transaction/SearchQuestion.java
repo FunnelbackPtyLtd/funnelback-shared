@@ -428,7 +428,8 @@ public class SearchQuestion {
             public static final String URL = "url";
             
             
-            /** URL of the target in the index (may be different to the redirect URL). This is the URL that will be logged in clicks.log */
+            /** URL of the target in the index (may be different to the redirect URL).
+             * This is the URL that will be logged in clicks.log */
             public static final String INDEX_URL = "index_url";
             
             /** Authorisation token used to prevent spoofed redirects */
@@ -446,7 +447,7 @@ public class SearchQuestion {
              */
             public static final String NOATTACHMENT = "noattachment";
             
-            
+            /** Feature page click type */
             public static final String TYPE_FP = "FP";
             
             /**
