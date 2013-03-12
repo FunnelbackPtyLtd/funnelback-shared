@@ -16,7 +16,7 @@ import com.funnelback.publicui.xml.SearchXStreamMarshaller;
  */
 public class Search {
 
-    private static final String SEARCH_XML_CONTROLLER = "/publicui/search.xml";
+    private static final String SEARCH_XML_CONTROLLER = "/s/search.xml";
     private static final String SEARCH_URI_TEMPLATE = "?collection={collection}"
         + "&query={query}"
         + "&start_rank={startRank}"
