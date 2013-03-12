@@ -16,6 +16,8 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -34,10 +36,15 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 @Controller
 @Log4j
-public class ResourcesController implements ServletContextAware {
+public class ResourcesController implements ApplicationContextAware, ServletContextAware {
 
+    /** Root path to use to access resources */
     public static final String MAPPING_PATH = "/resources/";
+    
     private static final Pattern INVALID_PATH_PATTERN = Pattern.compile("(\\.\\.|/|\\\\|:)");
+    
+    /** Needed to instantiate Spring resource request handler */
+    @Setter private ApplicationContext applicationContext;
     
     @Autowired
     private ConfigRepository configRepository;
@@ -47,13 +54,20 @@ public class ResourcesController implements ServletContextAware {
     
     @Setter private String contextPath;
     
-    @RequestMapping("/resources/{collectionId}/**")
+    /**
+     * Handles a resource request
+     * @param collectionId ID of the collection to load the resource from
+     * @param request HTTP request
+     * @param response HTTP response
+     * @throws ServletException 
+     */
+    @RequestMapping(MAPPING_PATH+"{collectionId}/**")
     public void handleRequest(@PathVariable String collectionId,
             HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Collection c = configRepository.getCollection(collectionId);
         
         if (c != null) {
-            String prefix = contextPath + "/resources/" + collectionId + "/";
+            String prefix = contextPath + MAPPING_PATH + collectionId + "/";
             String resource = request.getRequestURI().substring(prefix.length());
         
             if (resource != null && ! "".equals(resource)) {
@@ -89,8 +103,9 @@ public class ResourcesController implements ServletContextAware {
                         locations.add(r);
                         
                         request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, resource);
-                    
+                        
                         ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
+                        handler.setApplicationContext(applicationContext);
                         handler.setLocations(locations);
                     
                         handler.handleRequest(request, response);
