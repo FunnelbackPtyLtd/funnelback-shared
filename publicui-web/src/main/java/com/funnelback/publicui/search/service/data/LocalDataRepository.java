@@ -52,8 +52,10 @@ public class LocalDataRepository implements DataRepository {
     @Override
     public InputStream getFilecopyDocument(Collection collection, URI uri,
             boolean withDls) throws IOException {
-        // Convert the URI to a Windows path
-        String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(URLDecoder.decode(uri.toString(), "UTF-8"), true);
+        // Convert the URI to a Windows path, taking care
+        // of preserving plus signs
+        String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
+                        URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
         return new WindowsNativeInputStream(windowsPath);
     }
     
