@@ -41,19 +41,32 @@ public class GetFilecopyDocumentController {
 
     private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
     private static final String CONTENT_DISPOSITION_VALUE = "attachment; filename=";
+    
+    /** Content type when serving files */
     private static final String OCTET_STRING_MIME_TYPE = "application/octet-stream";
+    /** Content type when serving a partial file when <code>noattachment=1</code> is used */
     private static final String TEXT_HTML_MIME_TYPE = "text/html";
     
+    /**
+     * Custom header returned to indicate if DLS is in use or not
+     * mostly for testing
+     */
+    private static final String X_FUNNELBACK_DLS = "X-Funnelback-DLS";
+    
+    /**
+     * File name to use for the Content-Disposition header if the name cannot
+     * be extracted from the URI
+     */
     private static final String UNKNOWN_FILE_NAME = "unknown.file";
-    
-    @Autowired
-    private I18n i18n;
-    
+
     /**
      * Only stream 2k of data in &quot;noattachment&quot; mode, as used in the
      * automated tests.
      */
     private static final int NOATTACHMENT_LIMIT = 2048;
+
+    @Autowired
+    private I18n i18n;
     
     @Autowired
     private ConfigRepository configRepository;
@@ -115,6 +128,8 @@ public class GetFilecopyDocumentController {
                 }
                 withDls = true;
             }
+  
+            response.addHeader(X_FUNNELBACK_DLS, Boolean.toString(withDls));
   
             try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, withDls)) {
                 if (noAttachment) {
