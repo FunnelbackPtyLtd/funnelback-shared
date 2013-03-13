@@ -94,13 +94,14 @@ public class GetFilecopyDocumentController {
                 .value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE);
             String dlsAction = collection.getConfiguration()
                 .value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION);
+            String securityModel = collection.getConfiguration()
+                .value(Keys.FileCopy.SECURITY_MODEL);
             
             if ((DefaultValues.DocumentLevelSecurity.ACTION_NTFS.equals(dlsAction)
                     && ! Config.isFalse(dlsMode))
-                    || collection.getConfiguration().hasValue(Keys.FileCopy.SECURITY_MODEL)) {
-                // DLS mode.
-                // Ensure impersonation is enabled
+                    || (securityModel != null && !DefaultValues.FileCopy.SECURITY_MODEL_NONE.equals(securityModel))) {
                 
+                // DLS mode, ensure impersonation is enabled
                 if (! collection.getConfiguration().valueAsBoolean(Keys.ModernUI.AUTHENTICATION)
                         || request.getUserPrincipal() == null) {
                     log.error("DLS is enabled on collection '"+collectionId+"' but the request is not impersonated."
@@ -109,27 +110,23 @@ public class GetFilecopyDocumentController {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
-  
-                try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, true)) {
-                    if (noAttachment) {
-                        response.setContentType(TEXT_HTML_MIME_TYPE);
-                        
-                        // Only send the first 2 KBs
-                        byte[] b = new byte[NOATTACHMENT_LIMIT];
-                        int nbRead = new BufferedInputStream(is, NOATTACHMENT_LIMIT).read(b);
-                        response.getOutputStream().write(b, 0, nbRead);
-                    } else {
-                        response.setContentType(OCTET_STRING_MIME_TYPE);
-                        response.addHeader(CONTENT_DISPOSITION_HEADER,
-                            CONTENT_DISPOSITION_VALUE+"\""+getFilename(uri)+"\"");
-                        IOUtils.copy(is, response.getOutputStream());
-                    }
-                }
-                
-            } else {
-                // Non DLS mode
             }
-            
+  
+            try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, true)) {
+                if (noAttachment) {
+                    response.setContentType(TEXT_HTML_MIME_TYPE);
+                    
+                    // Only send the first 2 KBs
+                    byte[] b = new byte[NOATTACHMENT_LIMIT];
+                    int nbRead = new BufferedInputStream(is, NOATTACHMENT_LIMIT).read(b);
+                    response.getOutputStream().write(b, 0, nbRead);
+                } else {
+                    response.setContentType(OCTET_STRING_MIME_TYPE);
+                    response.addHeader(CONTENT_DISPOSITION_HEADER,
+                        CONTENT_DISPOSITION_VALUE+"\""+getFilename(uri)+"\"");
+                    IOUtils.copy(is, response.getOutputStream());
+                }
+            }
         }
         
     }
