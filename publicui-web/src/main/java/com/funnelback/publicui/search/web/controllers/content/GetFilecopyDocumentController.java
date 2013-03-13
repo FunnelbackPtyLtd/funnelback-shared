@@ -84,6 +84,7 @@ public class GetFilecopyDocumentController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         } else if (! Type.filecopy.equals(collection.getType())) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.warn("Collection '"+collectionId+"' of type '"+collection.getType()
                  +"' not suitable for serving filecopy documents");
             return;

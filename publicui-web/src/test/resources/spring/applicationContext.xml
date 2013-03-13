@@ -87,6 +87,9 @@
 
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
+		
+	<bean id="serveFilecopyDocumentController"
+		class="com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController"/>
 
 	<bean class="com.funnelback.publicui.test.mock.MockSuggester" />		
 	<bean id="suggestController"
