@@ -89,6 +89,8 @@ public class GetFilecopyDocumentController {
             return;
         } else {
             
+            boolean withDls = false;
+            
             // If DLS is on, fetch the file natively as the impersonated user
             String dlsMode = collection.getConfiguration()
                 .value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE);
@@ -110,9 +112,10 @@ public class GetFilecopyDocumentController {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
+                withDls = true;
             }
   
-            try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, true)) {
+            try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, withDls)) {
                 if (noAttachment) {
                     response.setContentType(TEXT_HTML_MIME_TYPE);
                     
@@ -132,10 +135,9 @@ public class GetFilecopyDocumentController {
     }
     
     private String getFilename(URI uri) {
-        if (uri.getPath() != null) {
-            if (! uri.getPath().endsWith("/") && uri.getPath().lastIndexOf('/') > -1) {
-                return uri.getPath().substring(uri.getPath().lastIndexOf('/')+1);
-            }
+        String s = uri.toString();
+        if (! s.endsWith("/") && s.lastIndexOf('/') > -1) {
+            return s.substring(s.lastIndexOf('/')+1);
         }
         
         return UNKNOWN_FILE_NAME;

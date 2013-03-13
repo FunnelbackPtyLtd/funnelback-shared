@@ -9,8 +9,16 @@ import java.net.URLDecoder;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.FileSystemOptions;
+import org.apache.commons.vfs.UserAuthenticator;
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.auth.StaticUserAuthenticator;
+import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
@@ -52,11 +60,25 @@ public class LocalDataRepository implements DataRepository {
     @Override
     public InputStream getFilecopyDocument(Collection collection, URI uri,
             boolean withDls) throws IOException {
-        // Convert the URI to a Windows path, taking care
-        // of preserving plus signs
-        String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
-                        URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
-        return new WindowsNativeInputStream(windowsPath);
+        if (withDls) {
+            // Convert the URI to a Windows path, taking care
+            // of preserving plus signs
+            String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
+                            URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
+            return new WindowsNativeInputStream(windowsPath);
+        } else {
+            // Use Filecopy credentials to fetch the content
+            FileSystemOptions options = new FileSystemOptions();
+            UserAuthenticator ua = new StaticUserAuthenticator(
+                            collection.getConfiguration().value(Keys.FileCopy.DOMAIN),
+                            collection.getConfiguration().value(Keys.FileCopy.USERNAME),
+                            collection.getConfiguration().value(Keys.FileCopy.PASSWORD));
+            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(options, ua);
+            
+            FileSystemManager manager = VFS.getManager();
+            FileObject file = manager.resolveFile(uri.toString(), options);
+            return file.getContent().getInputStream();
+        }
     }
     
     /**
