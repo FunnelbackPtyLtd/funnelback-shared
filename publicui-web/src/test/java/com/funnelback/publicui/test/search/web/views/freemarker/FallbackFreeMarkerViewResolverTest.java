@@ -38,6 +38,7 @@ public class FallbackFreeMarkerViewResolverTest {
     @Before
     public void before() throws IOException {
         resolver.clearCache();
+        config.getConfiguration().clearTemplateCache();
         
         // Prepare a collection configuration folder
         FileUtils.deleteDirectory(searchHome);
@@ -76,7 +77,7 @@ public class FallbackFreeMarkerViewResolverTest {
         Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
         FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
         Assert.assertNotNull(v);
-        Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+        Assert.assertEquals("conf/dummy/simple.ftl", v.getUrl());
     }
 
     @Test
@@ -86,7 +87,7 @@ public class FallbackFreeMarkerViewResolverTest {
         Assert.assertFalse(new File(confDir+ "/" + DefaultValues.DEFAULT_PROFILE, "simple.ftl").exists());
         FreeMarkerView v = (FreeMarkerView) resolver.resolveViewName("conf/dummy/_default/simple", Locale.getDefault());
         Assert.assertNotNull(v);
-        Assert.assertEquals("conf/dummy/_default/simple.ftl", v.getUrl());
+        Assert.assertEquals("conf/simple.ftl", v.getUrl());
     }
     
     @Test
