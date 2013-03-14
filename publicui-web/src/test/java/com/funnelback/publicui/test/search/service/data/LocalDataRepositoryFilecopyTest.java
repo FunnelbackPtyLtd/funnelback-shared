@@ -52,11 +52,15 @@ public class LocalDataRepositoryFilecopyTest {
             .getFilecopyDocument(collection, invalidUri, false);
     }
     
-    @Test(expected=FileNotFoundException.class)
+    @Test
     public void testNonExistentFileDls() throws Exception {
         if (OS.isFamilyWindows()) {
-            new LocalDataRepository()
-                .getFilecopyDocument(collection, invalidUri, true);
+            try {
+                new LocalDataRepository()
+                    .getFilecopyDocument(collection, invalidUri, true);
+                Assert.fail("Should have thrown a " + FileNotFoundException.class);
+            } catch (FileNotFoundException fnfe) {
+            }
         }
     }
     
