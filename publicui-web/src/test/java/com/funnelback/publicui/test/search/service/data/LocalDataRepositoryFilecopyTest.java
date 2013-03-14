@@ -54,10 +54,10 @@ public class LocalDataRepositoryFilecopyTest {
     
     @Test(expected=FileNotFoundException.class)
     public void testNonExistentFileDls() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
-        
-        new LocalDataRepository()
-        .getFilecopyDocument(collection, invalidUri, true);
+        if (OS.isFamilyWindows()) {
+            new LocalDataRepository()
+                .getFilecopyDocument(collection, invalidUri, true);
+        }
     }
     
     @Test
@@ -72,14 +72,15 @@ public class LocalDataRepositoryFilecopyTest {
     
     @Test
     public void testDls() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
+        if (OS.isFamilyWindows()) {
         
-        InputStream is = new LocalDataRepository()
-        .getFilecopyDocument(collection, uri, true);
-    
-        Assert.assertArrayEquals(
-            FileUtils.readFileToByteArray(TEST_FILE),
-            IOUtils.toByteArray(is));
+            InputStream is = new LocalDataRepository()
+                .getFilecopyDocument(collection, uri, true);
+        
+            Assert.assertArrayEquals(
+                FileUtils.readFileToByteArray(TEST_FILE),
+                IOUtils.toByteArray(is));
+        }
     }
     
 }

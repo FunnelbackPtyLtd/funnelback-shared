@@ -154,24 +154,25 @@ public class DefaultPadreForkingTests {
     
     @Test
     public void testWindowsNative() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
-        
-        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
-        
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
-        qs.setQuery("test");
-        qs.setImpersonated(true);
-        SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
-        
-        Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
-        forking.fetchData(ts);
-        Advapi32.INSTANCE.RevertToSelf();
-        
-        Assert.assertNotNull(ts.getResponse());
-        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
-        Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
-        Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
+        if (OS.isFamilyWindows()) {
+            
+            String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+            
+            SearchQuestion qs = new SearchQuestion();
+            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+            qs.setQuery("test");
+            qs.setImpersonated(true);
+            SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+            
+            Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
+            forking.fetchData(ts);
+            Advapi32.INSTANCE.RevertToSelf();
+            
+            Assert.assertNotNull(ts.getResponse());
+            Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
+            Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
+            Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
+        }
     }
     
     private String getExtension() {

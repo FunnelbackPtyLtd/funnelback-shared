@@ -123,76 +123,79 @@ public class GetFilecopyDocumentControllerTest {
     
     @Test
     public void testDlsEarlyBinding() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setUserPrincipal(new MockPrincipal());
-        
-        controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
-        
-        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        Assert.assertArrayEquals(
-            FileUtils.readFileToByteArray(TEST_FILE),
-            response.getContentAsByteArray());
-        Assert.assertEquals("true", response.getHeaderValue("X-Funnelback-DLS"));
-        Assert.assertEquals("application/octet-stream", response.getContentType());
-        Assert.assertEquals(
-            "attachment; filename=\"collection.cfg\"",
-            response.getHeaderValue("Content-Disposition"));
+        if (OS.isFamilyWindows()) {
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setUserPrincipal(new MockPrincipal());
+            
+            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            
+            Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+            Assert.assertArrayEquals(
+                FileUtils.readFileToByteArray(TEST_FILE),
+                response.getContentAsByteArray());
+            Assert.assertEquals("true", response.getHeaderValue("X-Funnelback-DLS"));
+            Assert.assertEquals("application/octet-stream", response.getContentType());
+            Assert.assertEquals(
+                "attachment; filename=\"collection.cfg\"",
+                response.getHeaderValue("Content-Disposition"));
+        }
     }
     
     @Test
     public void testDlsLateBinding() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
+        if (OS.isFamilyWindows()) {
         
-        configRepository.getCollection("filecopy-dls")
-            .getConfiguration().setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NONE)
-                .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION, "ntfs")
-                .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "custom");
-
-        
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setUserPrincipal(new MockPrincipal());
-        
-        controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
-        
-        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        Assert.assertArrayEquals(
-            FileUtils.readFileToByteArray(TEST_FILE),
-            response.getContentAsByteArray());
-        Assert.assertEquals("true", response.getHeaderValue("X-Funnelback-DLS"));
-        Assert.assertEquals("application/octet-stream", response.getContentType());
-        Assert.assertEquals(
-            "attachment; filename=\"collection.cfg\"",
-            response.getHeaderValue("Content-Disposition"));
+            configRepository.getCollection("filecopy-dls")
+                .getConfiguration().setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NONE)
+                    .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION, "ntfs")
+                    .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "custom");
+    
+            
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setUserPrincipal(new MockPrincipal());
+            
+            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            
+            Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+            Assert.assertArrayEquals(
+                FileUtils.readFileToByteArray(TEST_FILE),
+                response.getContentAsByteArray());
+            Assert.assertEquals("true", response.getHeaderValue("X-Funnelback-DLS"));
+            Assert.assertEquals("application/octet-stream", response.getContentType());
+            Assert.assertEquals(
+                "attachment; filename=\"collection.cfg\"",
+                response.getHeaderValue("Content-Disposition"));
+        }
     }
 
     @Test
     public void testDlsLateBindingDisabled() throws Exception {
-        Assume.assumeTrue(OS.isFamilyWindows());
+        if (OS.isFamilyWindows()) {
         
-        configRepository.getCollection("filecopy-dls")
-            .getConfiguration().setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NONE)
-                .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION, "ntfs")
-                .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "disabled");
-
-        
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setUserPrincipal(new MockPrincipal());
-        
-        controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
-        
-        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-        Assert.assertArrayEquals(
-            FileUtils.readFileToByteArray(TEST_FILE),
-            response.getContentAsByteArray());
-        Assert.assertEquals("false", response.getHeaderValue("X-Funnelback-DLS"));
-        Assert.assertEquals("application/octet-stream", response.getContentType());
-        Assert.assertEquals(
-            "attachment; filename=\"collection.cfg\"",
-            response.getHeaderValue("Content-Disposition"));        
+            configRepository.getCollection("filecopy-dls")
+                .getConfiguration().setValue(Keys.FileCopy.SECURITY_MODEL, DefaultValues.FileCopy.SECURITY_MODEL_NONE)
+                    .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_ACTION, "ntfs")
+                    .setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "disabled");
+    
+            
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setUserPrincipal(new MockPrincipal());
+            
+            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            
+            Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+            Assert.assertArrayEquals(
+                FileUtils.readFileToByteArray(TEST_FILE),
+                response.getContentAsByteArray());
+            Assert.assertEquals("false", response.getHeaderValue("X-Funnelback-DLS"));
+            Assert.assertEquals("application/octet-stream", response.getContentType());
+            Assert.assertEquals(
+                "attachment; filename=\"collection.cfg\"",
+                response.getHeaderValue("Content-Disposition"));
+        }
     }
     
     @Test
