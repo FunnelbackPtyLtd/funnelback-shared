@@ -222,12 +222,13 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testNoAttachmentEnabled() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy", bigDocUri, true, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("filecopy", 
+            new URI(bigDocUri.toString().replaceAll("\\.html", ".doc")), true, response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertEquals(2048, response.getContentAsByteArray().length);
         
-        byte[] expected = FileUtils.readFileToByteArray(new File("src/test/resources/dummy-search_home/conf/filecopy/shakespeare.html"));
+        byte[] expected = FileUtils.readFileToByteArray(new File("src/test/resources/dummy-search_home/conf/filecopy/shakespeare.doc"));
         
         Assert.assertArrayEquals(
             ArrayUtils.subarray(expected, 0, 2048),
@@ -238,7 +239,7 @@ public class GetFilecopyDocumentControllerTest {
     }
 
     @Test
-    public void testNoAttachmentDisabled() throws Exception {
+    public void testNoAttachmentDisabledButHtml() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
         controller.getFilecopyDocument("filecopy", bigDocUri, false, response, new MockHttpServletRequest());
         
@@ -247,11 +248,27 @@ public class GetFilecopyDocumentControllerTest {
             FileUtils.readFileToByteArray(new File("src/test/resources/dummy-search_home/conf/filecopy/shakespeare.html")),
             response.getContentAsByteArray());
         Assert.assertEquals("false", response.getHeaderValue("X-Funnelback-DLS"));
+        Assert.assertEquals("text/html", response.getContentType());
+        Assert.assertNull(response.getHeaderValue("Content-Disposition"));
+    }
+
+    @Test    
+    public void testNoAttachmentDisabled() throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        controller.getFilecopyDocument("filecopy",
+            new URI(bigDocUri.toString().replaceAll("\\.html", ".txt")),false, response, new MockHttpServletRequest());
+        
+        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        Assert.assertArrayEquals(
+            FileUtils.readFileToByteArray(new File("src/test/resources/dummy-search_home/conf/filecopy/shakespeare.txt")),
+            response.getContentAsByteArray());
+        Assert.assertEquals("false", response.getHeaderValue("X-Funnelback-DLS"));
         Assert.assertEquals("application/octet-stream", response.getContentType());
         Assert.assertEquals(
-            "attachment; filename=\"shakespeare.html\"",
+            "attachment; filename=\"shakespeare.txt\"",
             response.getHeaderValue("Content-Disposition"));
     }
+
 
     private static class MockPrincipal implements Principal {
         @Override

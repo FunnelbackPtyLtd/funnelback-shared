@@ -632,8 +632,12 @@ abc.com.au=abc-news,abc-shop]]>
 						The script sets a <literal>Content-Disposition</literal> header with the actual file name, extracted from the
 						<literal>uri</literal> parameter (Last part of the URL). This header can be disabled using the <literal>noattachment</literal>
 						parameter. This is especially used in the Selenium tests where we want the file content to be shown on the browser. When
-                        <literal>noattachment</literal> is specified, only the first 2KB of the content are returned, presumably to avoid loading
-                        too much data in the Selenium browser.
+                        <literal>noattachment</literal> is specified, only the first 2KB of the content are returned if the filetype is
+                        <literal>doc</literal> or <literal>pdf</literal>, presumably to avoid loading too much data in the Selenium browser.
+					</member>
+					<member>
+						If the file type is <literal>html</literal> then the content is displayed directly in the browser
+						(no <literal>Content-Disposition</literal> header).
 					</member>
 					<member>
 						Takes a <literal>nounlink</literal> parameter, used for debugging purposes to prevent the script from deleting the temporary

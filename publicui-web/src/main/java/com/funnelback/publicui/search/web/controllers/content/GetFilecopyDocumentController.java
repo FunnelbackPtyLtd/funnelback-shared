@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +47,10 @@ public class GetFilecopyDocumentController {
     private static final String OCTET_STRING_MIME_TYPE = "application/octet-stream";
     /** Content type when serving a partial file when <code>noattachment=1</code> is used */
     private static final String TEXT_HTML_MIME_TYPE = "text/html";
+    /** Pattern to detect HTML documents */
+    private static final Pattern HTML_EXTENSION_PATTERN = Pattern.compile("\\.html?$");
+    /** Pattern to detect documents that should be stripped to 2KB */
+    private static final Pattern NO_ATTACHMENT_PATTERN = Pattern.compile("\\.(doc|pdf)$");
     
     /**
      * Custom header returned to indicate if DLS is in use or not
@@ -132,17 +137,24 @@ public class GetFilecopyDocumentController {
             response.addHeader(X_FUNNELBACK_DLS, Boolean.toString(withDls));
   
             try (InputStream is = dataRepository.getFilecopyDocument(collection, uri, withDls)) {
-                if (noAttachment) {
+                String filename = getFilename(uri);
+                
+                if (HTML_EXTENSION_PATTERN.matcher(filename).find() || noAttachment) {
+                    // Display HTML in-browser
                     response.setContentType(TEXT_HTML_MIME_TYPE);
                     
-                    // Only send the first 2 KBs
-                    byte[] b = new byte[NOATTACHMENT_LIMIT];
-                    int nbRead = new BufferedInputStream(is, NOATTACHMENT_LIMIT).read(b);
-                    response.getOutputStream().write(b, 0, nbRead);
+                    if (noAttachment && NO_ATTACHMENT_PATTERN.matcher(filename).find()) {
+                        // Only send the first 2 KBs
+                        byte[] b = new byte[NOATTACHMENT_LIMIT];
+                        int nbRead = new BufferedInputStream(is, NOATTACHMENT_LIMIT).read(b);
+                        response.getOutputStream().write(b, 0, nbRead);
+                    } else {
+                        IOUtils.copy(is, response.getOutputStream());
+                    }
                 } else {
                     response.setContentType(OCTET_STRING_MIME_TYPE);
                     response.addHeader(CONTENT_DISPOSITION_HEADER,
-                        CONTENT_DISPOSITION_VALUE+"\""+getFilename(uri)+"\"");
+                        CONTENT_DISPOSITION_VALUE+"\""+filename+"\"");
                     IOUtils.copy(is, response.getOutputStream());
                 }
             }
