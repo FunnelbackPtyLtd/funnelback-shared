@@ -5,8 +5,11 @@ import java.util.List;
 
 import lombok.Getter;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.search.service.log.LogService;
 
@@ -30,5 +33,10 @@ public class MockLogService implements LogService {
     public void logPublicUIWarning(PublicUIWarningLog warning) {
         publicUiWarnings.add(warning);        
     }
+
+	@Override
+	public void logInteraction(InteractionLog interactionLog) {
+		throw new NotImplementedException("MockLogService doesn't implement logInteraction");
+	}	
 
 }

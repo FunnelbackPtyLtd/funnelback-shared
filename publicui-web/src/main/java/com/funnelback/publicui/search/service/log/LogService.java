@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.service.log;
 
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 
 /**
@@ -15,4 +16,6 @@ public interface LogService {
     
     public void logPublicUIWarning(PublicUIWarningLog warning);
     
+	public void logInteraction(InteractionLog interactionLog);
+	
 }

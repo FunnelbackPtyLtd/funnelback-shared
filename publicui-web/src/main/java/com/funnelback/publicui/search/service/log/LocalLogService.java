@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -22,6 +26,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
@@ -197,5 +202,58 @@ public class LocalLogService implements LogService {
             } catch (IOException ioe) {}            
         }
     }
+
+	
+	
+	
+	/**
+	 * Saves an interaction log in the relevant log directory in the relevant collection.
+	 * 
+	 * @param InteractionLog 
+	 */
+	@Override
+	public void logInteraction(InteractionLog il) {
+		String shortHostname = localHostnameHolder.getShortHostname();
+		CSVWriter csvWriter;
+		try {
+			if(shortHostname != null) {
+				csvWriter = new CSVWriter(
+				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname+ Files.Log.INTERACTION_LOG_EXT)));
+			} else {
+				csvWriter = new CSVWriter(
+				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_EXT)));
+			}
+			
+			ArrayList<String> logToWrite = new ArrayList<String>();
+			
+			if(il.getDate() != null) logToWrite.add(InteractionLog.DATE_FORMAT.format(il.getDate()));
+			else logToWrite.add(null);
+			
+			logToWrite.add(il.getRequestIp());
+			
+			if(il.getReferer() != null) logToWrite.add(il.getReferer().toString());
+			else logToWrite.add(null);
+	
+			logToWrite.add(il.getLogType());
+			
+			SortedSet<String> sortedKeys = new TreeSet<String>(il.getParameters().keySet());
+			
+			for(String key : sortedKeys) {
+				String [] entry = il.getParameters().get(key);
+				for(String element : entry) {
+					logToWrite.add(key + ":" + element);
+				}
+			}
+			
+			csvWriter.writeNext(logToWrite.toArray(new String[0]));
+			csvWriter.close();
+		
+		} catch (IOException e) {
+			log.error("Unable to open clicks.log", e);
+		}
+		
+	}
 
 }
