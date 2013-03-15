@@ -2,11 +2,10 @@ package com.funnelback.publicui.search.service.suggest;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-
-import scala.actors.threadpool.Arrays;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;

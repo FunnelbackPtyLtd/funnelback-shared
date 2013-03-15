@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.collection.paramtransform.operation;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-
-import scala.actors.threadpool.Arrays;
 
 /**
  * <p>An {@link Operation} that adds a parameter and its value to the map. The
