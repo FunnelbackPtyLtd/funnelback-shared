@@ -30,7 +30,9 @@ public class DefaultContentOptimiserFillerTest {
     @Test
     public void testFillHints () throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
     
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
         ContentOptimiserModel comparison = new ContentOptimiserModel();
@@ -74,7 +76,9 @@ public class DefaultContentOptimiserFillerTest {
     @Test
     public void testSetImportantURLalreadyThere() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
         ContentOptimiserModel comparison = new ContentOptimiserModel();
         RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
@@ -100,7 +104,9 @@ public class DefaultContentOptimiserFillerTest {
     @Test
     public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
         ContentOptimiserModel comparison = new ContentOptimiserModel();
         RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
@@ -128,7 +134,9 @@ public class DefaultContentOptimiserFillerTest {
     public void testConsumeResultPacket() throws XmlParsingException, IOException {
         
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
 
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
         ContentOptimiserModel comparison = new ContentOptimiserModel();

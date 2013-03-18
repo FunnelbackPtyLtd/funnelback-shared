@@ -79,7 +79,9 @@ public class FacetedNavigationURLTests {
     @Test
     public void test() throws Exception {
         
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         processor.processOutput(st);
@@ -110,7 +112,9 @@ public class FacetedNavigationURLTests {
     
     @Test
     public void testCategorySelection() throws Exception {
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         

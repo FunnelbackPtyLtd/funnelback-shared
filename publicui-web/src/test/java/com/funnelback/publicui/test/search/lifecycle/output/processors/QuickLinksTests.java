@@ -33,7 +33,9 @@ public class QuickLinksTests {
         question.setCollection(new Collection("quicklinks", null));
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/quicklinks.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/quicklinks.xml")),
+            false));
         
         st = new SearchTransaction(question, response);
         processor = new QuickLinks();

@@ -44,7 +44,9 @@ public class FacetedNavigationMetadataTypeFillTests {
         
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            false));
         st = new SearchTransaction(question, response);
         
         processor = new FacetedNavigation();

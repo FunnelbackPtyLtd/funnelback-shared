@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool.PadreConnection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
 
@@ -43,7 +44,9 @@ public class PadreForkingPooled extends AbstractDataFetcher {
             padreOutput = c.inputCmd(new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery());
             
             searchTransaction.getResponse().setRawPacket(padreOutput.toString());
-            searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput));
+            searchTransaction.getResponse().setResultPacket(padreXmlParser.parse(
+                padreOutput,
+                searchTransaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.DEBUG)));
             searchTransaction.getResponse().setReturnCode(-1);
         } catch (IOException ioe) {
             log.error("Unable to communicate with PADRE", ioe);

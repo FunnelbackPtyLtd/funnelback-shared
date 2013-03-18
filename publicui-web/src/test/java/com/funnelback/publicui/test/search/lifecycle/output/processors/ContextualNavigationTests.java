@@ -28,8 +28,9 @@ public class ContextualNavigationTests {
     @Before
     public void before() throws XmlParsingException, IOException {
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File(
-                "src/test/resources/padre-xml/complex.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml")),
+            false));
 
         st = new SearchTransaction(new SearchQuestion(), response);
         st.getQuestion().setQuery("CN test");

@@ -44,7 +44,7 @@ public class XSLTXStreamViewTests {
         MockHttpServletResponse response = new MockHttpServletResponse();
         
         String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
-        ResultPacket rp = new StaxStreamParser().parse(oldXml);
+        ResultPacket rp = new StaxStreamParser().parse(oldXml, false);
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQuery("dummy");

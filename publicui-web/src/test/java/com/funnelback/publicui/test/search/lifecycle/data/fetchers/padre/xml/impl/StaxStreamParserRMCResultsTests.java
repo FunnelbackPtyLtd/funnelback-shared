@@ -22,7 +22,9 @@ public class StaxStreamParserRMCResultsTests extends StaxStreamParserTests {
     @Override
     public void before() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex-rmc-results.xml"), "UTF-8"));
+        rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex-rmc-results.xml"), "UTF-8"),
+            false);
         assertNotNull(rp);
     }
     

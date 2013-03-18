@@ -42,7 +42,9 @@ public class FixCacheAndClickLinksTests {
         question.getRawInputParameters().put("HTTP_REFERER", new String[] {"REFERER"});
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            false));
         response.getResultPacket().getBestBets().add(
                 new BestBet("trigger", "http://www.url.com", "title", "description", "http://www.url.com"));
         

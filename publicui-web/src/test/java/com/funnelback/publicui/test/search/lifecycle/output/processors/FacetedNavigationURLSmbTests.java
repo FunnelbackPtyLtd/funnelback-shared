@@ -46,7 +46,9 @@ public class FacetedNavigationURLSmbTests {
     @Test
     public void test() throws Exception {
         
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         processor.processOutput(st);
@@ -77,7 +79,9 @@ public class FacetedNavigationURLSmbTests {
     
     @Test
     public void testCategorySelection() throws Exception {
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(
+            new File("src/test/resources/padre-xml/faceted-navigation-urls-smb.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         

@@ -43,7 +43,9 @@ public class FacetedNavigationXPathFillTests {
         question.setCollection(configRepository.getCollection("faceted-navigation-xpathfill"));
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            false));
         st = new SearchTransaction(question, response);
         
         processor = new FacetedNavigation();

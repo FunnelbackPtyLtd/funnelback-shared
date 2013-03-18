@@ -79,7 +79,9 @@ public class FacetedNavigationGScopesTests {
     @Test
     public void test() throws Exception {
         
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         processor.processOutput(st);
@@ -126,7 +128,9 @@ public class FacetedNavigationGScopesTests {
     
     @Test
     public void testCategorySelection() throws Exception {
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes-selected.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes-selected.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         
@@ -159,7 +163,9 @@ public class FacetedNavigationGScopesTests {
     
     @Test
     public void testNestedCategory() throws Exception {
-        st.getResponse().setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes-nested.xml"))));
+        st.getResponse().setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-gscopes-nested.xml")),
+            false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
         

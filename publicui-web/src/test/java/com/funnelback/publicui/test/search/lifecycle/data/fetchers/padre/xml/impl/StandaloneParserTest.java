@@ -45,7 +45,7 @@ public class StandaloneParserTest {
         for (File f: files) {
             try {
                 System.out.println("-- Parsing " + f.getAbsolutePath());
-                ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"));
+                ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"), false);
                 if (rp == null) {
                     errors++;
                     System.out.println("Parser result for file '" + f.getAbsolutePath() + "' is null");

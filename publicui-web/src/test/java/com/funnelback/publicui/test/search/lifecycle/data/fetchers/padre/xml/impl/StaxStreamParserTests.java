@@ -42,7 +42,9 @@ public class StaxStreamParserTests {
     @Before
     public void before() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"));
+        rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"),
+            false);
         assertNotNull(rp);
     }
     
@@ -496,12 +498,16 @@ public class StaxStreamParserTests {
     
     @Test(expected=XmlParsingException.class)
     public void testInvalidXml() throws IOException, XmlParsingException {
-        new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")));
+        new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/invalid.xml.bad")),
+            false);
     }
     
     @Test(expected=IllegalStateException.class)
     public void testBadlyFormedExplainTag() throws IllegalStateException, XmlParsingException, IOException {
-        new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")));
+        new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")),
+            false);
     }
 }
 

@@ -6,6 +6,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
@@ -25,7 +26,9 @@ public class DefaultPadreForking extends AbstractPadreForking {
     @Override
     protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
         transaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
-        transaction.getResponse().setResultPacket(padreXmlParser.parse(padreOutput.getOutput().toString()));
+        transaction.getResponse().setResultPacket(padreXmlParser.parse(
+            padreOutput.getOutput().toString(),
+            transaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.DEBUG)));
         transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
     }
 

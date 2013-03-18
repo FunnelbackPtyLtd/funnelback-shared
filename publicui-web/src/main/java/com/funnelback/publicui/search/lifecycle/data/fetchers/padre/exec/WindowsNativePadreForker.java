@@ -209,8 +209,14 @@ public class WindowsNativePadreForker implements PadreForker {
         IntByReference nbRead = new IntByReference();
         while(true) {
             boolean success = Kernel32.INSTANCE.ReadFile(hChildOutRead, buf, buf.capacity(), nbRead, null);
-            if ( ! success || nbRead.getValue() == 0) {
-                break;
+            if (! success) {
+                if (nbRead.getValue() == 0) {
+                    // EOF
+                    break;
+                } else {            
+                    // Actual error
+                    throw new IOException(new Win32Exception(Kernel32.INSTANCE.GetLastError()));
+                }
             } else {
                 byte[] b = new byte[nbRead.getValue()];
                 buf.get(b, 0, nbRead.getValue());

@@ -27,7 +27,9 @@ public class HTMLEncodeSummariesTests {
         processor = new HTMLEncodeSummaries();
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/htmlencode-summaries.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/htmlencode-summaries.xml")),
+            false));
         
         st = new SearchTransaction(null, response);
     }

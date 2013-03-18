@@ -24,7 +24,9 @@ public class RankingFeatureTest {
     @Test
     public void testHintMaxOther() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
         
 
         RankingFeature h = new RankingFeatureMaxOther("name","content",rp);
@@ -75,7 +77,9 @@ public class RankingFeatureTest {
 
     @Test public void testHintMaxPossibleMultiwordOnly() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
         
         RankingFeature h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",rp);
         h.rememberScore(0.8f,""+1);
@@ -130,7 +134,9 @@ public class RankingFeatureTest {
         h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",rp);
         assertFalse(h.isInteresting());
         
-        ResultPacket oneWordQuery = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"));
+        ResultPacket oneWordQuery = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"),
+            false);
         h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",oneWordQuery);
         h.rememberScore(0.6f,""+1);
         h.rememberScore(0.6f,""+2);
@@ -144,7 +150,9 @@ public class RankingFeatureTest {
     @Test
     public void testHintMaxPossible() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"));
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
         
         
         RankingFeature h = new RankingFeatureMaxPossible("name","content",rp);

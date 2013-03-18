@@ -50,7 +50,9 @@ public class FixPseudoLiveLinksTests {
         question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig("meta-livelinks")));
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml"))));
+        response.setResultPacket(new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            false));
         
         st = new SearchTransaction(question, response);
         

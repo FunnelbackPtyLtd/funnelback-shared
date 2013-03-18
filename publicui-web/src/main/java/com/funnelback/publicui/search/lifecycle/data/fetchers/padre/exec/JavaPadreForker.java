@@ -53,6 +53,9 @@ public class JavaPadreForker implements PadreForker {
         
         try {
             int rc = executor.execute(padreCmdLine, environmnent);
+            if (rc != 0) {
+                log.debug("PADRE returned a non-zero exit code: " + rc);
+            }
             return new PadreExecutionReturn(rc, padreOutput.toString());
         } catch (ExecuteException ee) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
