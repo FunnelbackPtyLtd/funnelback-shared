@@ -24,6 +24,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Log4j
 public class UserKeys extends AbstractInputProcessor {
     
+    /** Suffix of classes implementing the user key mapper interface */
+    private static final String MAPPER_SUFFIX = "Mapper";
+    
     @Autowired
     @Setter private I18n i18n;
     
@@ -48,18 +51,23 @@ public class UserKeys extends AbstractInputProcessor {
      * @param st {@link SearchTransaction} to secure
      * @param i18n for error messages
      * @param beanFactory Factory used to create the security plugin instance
-     * @return 
-     * @throws InputProcessorException
+     * @return A list of user keys. Might be empty or null depending of the actual
+     * {@link UserKeysMapper} implementation
+     * @throws InputProcessorException 
      */
     public static List<String> getUserKeys(String securityPlugin, SearchTransaction st,
             I18n i18n, AutowireCapableBeanFactory beanFactory) throws InputProcessorException {
-        log.debug("Will use '" + securityPlugin + "' security plugin");
         
-        String className = UserKeysMapper.class.getPackage().getName() + "." + securityPlugin;
+        String className = UserKeysMapper.class.getPackage().getName()
+            + "." + securityPlugin
+            + MAPPER_SUFFIX;
+        
         if (securityPlugin.contains(".")) {
             // Use fully qualified class name instead of injecting the package name
             className = securityPlugin;
         }
+        
+        log.debug("Will use '" + className + "' security plugin");
         
         try {
             Class<?> clazz = Class.forName(className);

@@ -47,9 +47,9 @@ public class MetaMapperTests {
         processor.setBeanFactory(beanFactory);
         
         configRepository.addCollection(new Collection("sub1", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getSimpleName())));
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName())));
         configRepository.addCollection(new Collection("sub2", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getSimpleName())));
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName())));
 
 
     }
@@ -57,7 +57,7 @@ public class MetaMapperTests {
     @Test
     public void testNotSetToMeta() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
         Collection meta = new Collection("meta", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getSimpleName()));
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName()));
         meta.setMetaComponents(new String[] {"sub1", "sub2"});
         
         SearchQuestion question = new SearchQuestion();
@@ -73,7 +73,7 @@ public class MetaMapperTests {
     @Test
     public void testSetToMeta() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
         Collection meta = new Collection("meta", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MetaCollectionMapper.class.getSimpleName())
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MetaCollectionMapper.class.getName())
                 .setValue(Keys.COLLECTION_TYPE, Type.meta.toString()));
         meta.setMetaComponents(new String[] {"sub1", "sub2"});
         configRepository.addCollection(meta);

@@ -75,7 +75,7 @@ public class UserKeysTests {
     @Test
     public void testShippedPlugin() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
         Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getSimpleName()));
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "MasterKey"));
 
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);

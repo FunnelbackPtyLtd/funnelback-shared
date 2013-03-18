@@ -41,7 +41,7 @@ public class PortalMapperTests {
         processor.setI18n(i18n);
         processor.setBeanFactory(beanFactory);
         c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, PortalMapper.class.getSimpleName()));
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, PortalMapper.class.getName()));
     }
 
     @Test
