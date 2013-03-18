@@ -375,6 +375,9 @@ public class SearchQuestion {
 
         /** Parameter specifying the origin point for the search request */
         public static final String ORIGIN = "origin";
+        
+        /** PADRE debug mode */
+        public static final String DEBUG = "debug";
 
         /**
          * Common request header names

@@ -8,6 +8,15 @@ import com.funnelback.publicui.xml.XmlParsingException;
  */
 public interface PadreXmlParser {
 
-    public ResultPacket parse(String xml) throws XmlParsingException;
+    /**
+     * Parses PADRE XML, possibly allowing content in the prolog 
+     * @param xml XML to parse
+     * @param skipCommentInProlog Whether to skip comments in prolog instead of
+     * throwing a parsing exception. This is usually used in conjunction with debug
+     * mode for padre-sw.
+     * @return Parsed {@link ResultPacket}
+     * @throws XmlParsingException If the XML is malformed
+     */
+    public ResultPacket parse(String xml, boolean skipCommentInProlog) throws XmlParsingException;
     
 }

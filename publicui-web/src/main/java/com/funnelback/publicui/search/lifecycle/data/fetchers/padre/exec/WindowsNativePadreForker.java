@@ -221,6 +221,16 @@ public class WindowsNativePadreForker implements PadreForker {
                 byte[] b = new byte[nbRead.getValue()];
                 buf.get(b, 0, nbRead.getValue());
 
+                // FIXME FUN-5485 Padre sometimes output NUL characters
+                // in debug comments. Strip them off to ensure XML will be
+                // parsed correctly
+                for (int i=0; i<b.length; i++) {
+                    if (b[i] == '\0') {
+                        b[i] = '0';
+                    }
+                }
+                
+                
                 bos.write(b);
                 buf.clear();
             }

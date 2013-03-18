@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -41,13 +42,25 @@ import com.funnelback.publicui.xml.XmlStreamUtils;
 @Log4j
 public class StaxStreamParser implements PadreXmlParser {
 
+    /** Tag marking the start of the XML document */
+    private static final String XML_HEADER_TAG = "<?xml";
+    
+    /** Regexp to match everything before the XML start tag */
+    private static final Pattern XML_PROLOG_PATTERN = Pattern.compile("^(.*)"+Pattern.quote(XML_HEADER_TAG),
+        Pattern.DOTALL);
+    
     @Override
-    public ResultPacket parse(String xml) throws XmlParsingException {
+    public ResultPacket parse(String xml, boolean allowContentInProlog) throws XmlParsingException {
 
+        String xmlToParse = xml;
+        if (allowContentInProlog) {
+            xmlToParse = XML_PROLOG_PATTERN.matcher(xmlToParse).replaceFirst(XML_HEADER_TAG);
+        }
+        
         ResultPacket packet = new ResultPacket();
         
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
+            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xmlToParse));
         
             while(xmlStreamReader.hasNext()) {
                 int type = xmlStreamReader.next();
