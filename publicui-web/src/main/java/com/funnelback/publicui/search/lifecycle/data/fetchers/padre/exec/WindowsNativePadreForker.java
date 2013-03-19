@@ -201,7 +201,8 @@ public class WindowsNativePadreForker implements PadreForker {
      */
     private String readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
-            log.warn("Unable to close the stdout write pipe of child process (GetLastError="+Kernel32.INSTANCE.GetLastError()+ ")");
+            log.warn("Unable to close the stdout write pipe of child process",
+                new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -230,14 +231,14 @@ public class WindowsNativePadreForker implements PadreForker {
                     }
                 }
                 
-                
                 bos.write(b);
                 buf.clear();
             }
         }
         
         if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {
-            log.warn("Unable to close stdout read pipe of child process (GetLastError="+Kernel32.INSTANCE.GetLastError()+")");
+            log.warn("Unable to close stdout read pipe of child process",
+                new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
         
         return Native.toString(bos.toByteArray());
