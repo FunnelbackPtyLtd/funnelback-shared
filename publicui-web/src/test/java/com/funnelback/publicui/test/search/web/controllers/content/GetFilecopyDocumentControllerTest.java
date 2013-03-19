@@ -2,7 +2,6 @@ package com.funnelback.publicui.test.search.web.controllers.content;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.Principal;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.vfs.FileSystemException;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +21,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
@@ -40,6 +40,12 @@ public class GetFilecopyDocumentControllerTest {
     
     @Autowired
     private MockConfigRepository configRepository;
+    
+    @Autowired
+    private File searchHome;
+    
+    @Autowired
+    private AuthTokenManager authTokenManager;
 
     private URI uri;
     private URI bigDocUri;
@@ -47,6 +53,9 @@ public class GetFilecopyDocumentControllerTest {
 
     @Before
     public void before() throws Exception {
+        configRepository.setGlobalConfiguration(new GlobalOnlyConfig(searchHome));
+        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "server_secret");
+        
         configRepository.removeAllCollections();
         
         configRepository.addCollection(
@@ -86,7 +95,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testInvalidCollection() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("non-existent", null, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("non-existent", null, false, "token", response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
@@ -94,7 +103,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testWrongCollectionType() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("dummy", invalidUri, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("dummy", invalidUri, false, "token", response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
@@ -102,13 +111,13 @@ public class GetFilecopyDocumentControllerTest {
     @Test(expected=FileSystemException.class)
     public void testNonExistentUriNoDls() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy", invalidUri, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("filecopy", invalidUri, false, tokenize(invalidUri), response, new MockHttpServletRequest());
     }
     
     @Test
     public void testNoDls() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy", uri, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("filecopy", uri, false, tokenize(uri), response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertArrayEquals(
@@ -128,7 +137,7 @@ public class GetFilecopyDocumentControllerTest {
             MockHttpServletRequest request = new MockHttpServletRequest();
             request.setUserPrincipal(new MockPrincipal());
             
-            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, request);
             
             Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
             Assert.assertArrayEquals(
@@ -156,7 +165,7 @@ public class GetFilecopyDocumentControllerTest {
             MockHttpServletRequest request = new MockHttpServletRequest();
             request.setUserPrincipal(new MockPrincipal());
             
-            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, request);
             
             Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
             Assert.assertArrayEquals(
@@ -184,7 +193,7 @@ public class GetFilecopyDocumentControllerTest {
             MockHttpServletRequest request = new MockHttpServletRequest();
             request.setUserPrincipal(new MockPrincipal());
             
-            controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+            controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, request);
             
             Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
             Assert.assertArrayEquals(
@@ -206,7 +215,7 @@ public class GetFilecopyDocumentControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setUserPrincipal(new MockPrincipal());
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy-dls", uri, false, response, request);
+        controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, request);
         
         Assert.assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
     }
@@ -214,7 +223,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testDlsNoRequestPrincipal() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy-dls", uri, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("filecopy-dls", uri, false, tokenize(uri), response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
     }
@@ -223,7 +232,8 @@ public class GetFilecopyDocumentControllerTest {
     public void testNoAttachmentEnabled() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
         controller.getFilecopyDocument("filecopy", 
-            new URI(bigDocUri.toString().replaceAll("\\.html", ".doc")), true, response, new MockHttpServletRequest());
+            new URI(bigDocUri.toString().replaceAll("\\.html", ".doc")), true,
+                tokenize(new URI(bigDocUri.toString().replaceAll("\\.html", ".doc"))), response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertEquals(2048, response.getContentAsByteArray().length);
@@ -241,7 +251,7 @@ public class GetFilecopyDocumentControllerTest {
     @Test
     public void testNoAttachmentDisabledButHtml() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getFilecopyDocument("filecopy", bigDocUri, false, response, new MockHttpServletRequest());
+        controller.getFilecopyDocument("filecopy", bigDocUri, false, tokenize(bigDocUri), response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertArrayEquals(
@@ -256,7 +266,8 @@ public class GetFilecopyDocumentControllerTest {
     public void testNoAttachmentDisabled() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
         controller.getFilecopyDocument("filecopy",
-            new URI(bigDocUri.toString().replaceAll("\\.html", ".txt")),false, response, new MockHttpServletRequest());
+            new URI(bigDocUri.toString().replaceAll("\\.html", ".txt")),false,
+                tokenize(new URI(bigDocUri.toString().replaceAll("\\.html", ".txt"))), response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertArrayEquals(
@@ -269,12 +280,14 @@ public class GetFilecopyDocumentControllerTest {
             response.getHeaderValue("Content-Disposition"));
     }
 
-
+    private String tokenize(URI uri) {
+        return authTokenManager.getToken(uri.toString(), "server_secret");
+    }
+    
     private static class MockPrincipal implements Principal {
         @Override
         public String getName() {
             return "me";
         }
-        
     }
 }

@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeInputStream.AccessDeniedException;
 
 /**
@@ -79,11 +80,15 @@ public class GetFilecopyDocumentController {
     @Autowired
     private DataRepository dataRepository;
     
+    @Autowired
+    private AuthTokenManager authTokenManager;
+    
     /**
      * Fetches a document from a fileshare, for a filecopy collection
      * @param collectionId ID of the filecopy collection
      * @param uri URI of the document (as of in the index)
      * @param noAttachment Whether to send or not the "Content-Disposition" header
+     * @param authToken Authentication token to check the URI validity
      * @param response HTTP response
      * @param request HTTP request
      * @throws IOException If something goes wrong
@@ -91,9 +96,11 @@ public class GetFilecopyDocumentController {
     @RequestMapping(value="/filecopy.document",
             params={RequestParameters.COLLECTION, RequestParameters.Serve.URI})
     public void getFilecopyDocument(
-            @RequestParam("collection") String collectionId,
-            @RequestParam("uri") URI uri,
-            @RequestParam(value="noattachment", required=false, defaultValue="false") boolean noAttachment,
+            @RequestParam(RequestParameters.COLLECTION) String collectionId,
+            @RequestParam(RequestParameters.Serve.URI) URI uri,
+            @RequestParam(value=RequestParameters.Click.NOATTACHMENT, required=false, defaultValue="false")
+                boolean noAttachment,
+            @RequestParam(value=RequestParameters.Serve.AUTH) String authToken,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
         
@@ -106,6 +113,10 @@ public class GetFilecopyDocumentController {
             log.warn("Collection '"+collectionId+"' of type '"+collection.getType()
                  +"' not suitable for serving filecopy documents");
             return;
+        } else if (! authTokenManager.checkToken(authToken,
+            uri.toString(), configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.warn("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {
             
             boolean withDls = false;
