@@ -132,6 +132,8 @@
 	
 	<bean class="org.springframework.web.servlet.i18n.FixedLocaleResolver" />
 	
+	<bean class="com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager" />
+	
 	<metrics:metrics-registry id="metricsRegistry" />
 	
 </beans>

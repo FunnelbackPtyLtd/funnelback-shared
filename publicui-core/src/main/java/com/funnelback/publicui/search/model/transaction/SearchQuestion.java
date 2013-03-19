@@ -478,8 +478,14 @@ public class SearchQuestion {
          * @since 11.0
          */
         public static class Serve {
+            /** URI of the document to serve */
             public static final String URI = "uri";
+            
+            /** Location of the file on disk */
             public static final String DOC = "doc";
+            
+            /** Authentication token */
+            public static final String AUTH = Click.AUTH;
         }
         
         /**

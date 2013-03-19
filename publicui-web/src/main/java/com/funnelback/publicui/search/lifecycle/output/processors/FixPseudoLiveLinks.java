@@ -23,6 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 
 /**
  * Fixes some "magic" URLs like "local://serve-...-document.cgi"
@@ -36,9 +37,13 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     @Autowired
     private ConfigRepository configRepository;
     
+    @Autowired
+    private AuthTokenManager authTokenManager;
+    
     @Value("#{appProperties['urls.search.prefix']}")
     private String searchUrlPrefix;
     
+    /** Collection type supported by this input processor */
     public static final Type[] SUPPORTED_TYPES = {
         Type.trim, Type.connector, Type.filecopy, Type.database, Type.directory
     };
@@ -59,11 +64,8 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     @SneakyThrows(UnsupportedEncodingException.class)
     public void processOutput(SearchTransaction searchTransaction) {
         // Ensure we have something to do
-        if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResults(searchTransaction)) {
-            
-            final String serveFilecopyLink = searchTransaction.getQuestion().getCollection()
-                    .getConfiguration().value(Keys.ModernUI.Serve.FILECOPY_LINK,
-                            searchUrlPrefix + DefaultValues.ModernUI.Serve.FILECOPY_LINK);
+        if (SearchTransactionUtils.hasCollection(searchTransaction)
+            && SearchTransactionUtils.hasResults(searchTransaction)) {
             
             //     Iterate over the results
             for (Result result : searchTransaction.getResponse().getResultPacket().getResults()) {
@@ -104,7 +106,8 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                     Matcher cachedUrlMatcher = TRIM_CACHE_URL_PATTERN.matcher(result.getCacheUrl());
                     
                     if (liveUrlMatcher.find()) {
-                        String trimDefaultLiveLinks = resultCollection.getConfiguration().value(Keys.Trim.DEFAULT_LIVE_LINKS);
+                        String trimDefaultLiveLinks = resultCollection
+                            .getConfiguration().value(Keys.Trim.DEFAULT_LIVE_LINKS);
                         
                         String docUri = liveUrlMatcher.group(1);
                         
@@ -124,10 +127,17 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                     break;
                 
                 case filecopy:
+                    // FUN-5472 Add a token to prevent people fiddling with the file URI
+                    String securityToken = authTokenManager.getToken(result.getLiveUrl(),
+                        configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET));
+
                     // Prefix with serve-filecopy-document.cgi
-                    transformedLiveUrl = serveFilecopyLink
+                    transformedLiveUrl =  resultCollection
+                        .getConfiguration().value(Keys.ModernUI.Serve.FILECOPY_LINK,
+                            searchUrlPrefix + DefaultValues.ModernUI.Serve.FILECOPY_LINK)
                         + "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
-                        + "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8");
+                        + "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8")
+                        + "&"+RequestParameters.Serve.AUTH+"="+securityToken;
                     
                     break;
                 default:

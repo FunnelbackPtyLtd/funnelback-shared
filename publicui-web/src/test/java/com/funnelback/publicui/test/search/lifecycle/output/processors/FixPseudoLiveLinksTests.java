@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -40,10 +41,16 @@ public class FixPseudoLiveLinksTests {
     @Autowired
     protected FixPseudoLiveLinks processor;
     
+    @Autowired
+    private File searchHome;
+    
     protected SearchTransaction st;
     
     @Before
     public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
+        
+        configRepository.setGlobalConfiguration(new GlobalOnlyConfig(searchHome));
+        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "server_secret");
         
         SearchQuestion question = new SearchQuestion();
         question.setQuery("livelinks");
@@ -97,6 +104,24 @@ public class FixPseudoLiveLinksTests {
     }
     
     @Test
+    public void testServeFilecopyLink() throws Exception {
+        configRepository.getCollection("collection-filecopy")
+            .getConfiguration()
+            .setValue(Keys.ModernUI.Serve.FILECOPY_LINK, "custom.link");
+        
+        processor.processOutput(st);
+        
+        ResultPacket rp = st.getResponse().getResultPacket();
+        
+        Assert.assertEquals(
+            "custom.link?collection=collection-filecopy&uri="
+                +URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8")
+                + "&auth=y4R5VU2sWYUn4IwErgNlZw",
+            rp.getResults().get(3).getLiveUrl());
+
+    }
+    
+    @Test
     public void test() throws UnsupportedEncodingException, OutputProcessorException {
         processor.processOutput(st);
         
@@ -115,7 +140,9 @@ public class FixPseudoLiveLinksTests {
                 rp.getResults().get(2).getLiveUrl());
         
         Assert.assertEquals(
-                "/search/serve-filecopy-document.cgi?collection=collection-filecopy&uri="+URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8"),
+                "/search/serve-filecopy-document.cgi?collection=collection-filecopy&uri="
+                    +URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8")
+                    + "&auth=y4R5VU2sWYUn4IwErgNlZw",
                 rp.getResults().get(3).getLiveUrl());
 
         Assert.assertEquals(
