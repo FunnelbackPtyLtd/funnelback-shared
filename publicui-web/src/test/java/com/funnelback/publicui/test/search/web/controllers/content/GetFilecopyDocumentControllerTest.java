@@ -1,7 +1,9 @@
 package com.funnelback.publicui.test.search.web.controllers.content;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.security.Principal;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +56,7 @@ public class GetFilecopyDocumentControllerTest {
     @Before
     public void before() throws Exception {
         configRepository.setGlobalConfiguration(new GlobalOnlyConfig(searchHome));
-        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "server_secret");
+        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "autotest-server-secret");
         
         configRepository.removeAllCollections();
         
@@ -279,9 +281,35 @@ public class GetFilecopyDocumentControllerTest {
             "attachment; filename=\"shakespeare.txt\"",
             response.getHeaderValue("Content-Disposition"));
     }
+    
+    @Test
+    public void testWrongToken() throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        controller.getFilecopyDocument("filecopy", uri, false, "wrong-token", response, new MockHttpServletRequest());
+        
+        Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+    }
+    
+    @Test
+    public void testTokenUrlDecode() throws Exception {
+        URI uriShakespeare = new URI("smb://internalfilesha/DLS%20Share/Shakespeare/romeo_juliet/romeo_juliet.1.3.html");
+        String tokenShakespeare = tokenize(uriShakespeare);
+        Assert.assertTrue( "Token should contain a plus but was: "+tokenShakespeare, tokenShakespeare.contains("+"));
+        
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        try {
+            controller.getFilecopyDocument("filecopy",
+                uriShakespeare, false, tokenShakespeare, response, new MockHttpServletRequest());
+            Assert.fail();
+        } catch (FileSystemException fse) {
+           // Thrown because we can't access the smb:// file from  unit test,
+           // that's ok
+           Assert.assertTrue(fse.getMessage().contains("Could not determine the type of file \"smb://"));
+        }
+    }
 
-    private String tokenize(URI uri) {
-        return authTokenManager.getToken(uri.toString(), "server_secret");
+    private String tokenize(URI uri) throws UnsupportedEncodingException {
+        return authTokenManager.getToken(URLDecoder.decode(uri.toString(), "UTF-8"), "autotest-server-secret");
     }
     
     private static class MockPrincipal implements Principal {

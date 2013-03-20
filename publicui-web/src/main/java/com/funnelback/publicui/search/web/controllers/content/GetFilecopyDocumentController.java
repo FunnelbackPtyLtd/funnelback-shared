@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +115,8 @@ public class GetFilecopyDocumentController {
                  +"' not suitable for serving filecopy documents");
             return;
         } else if (! authTokenManager.checkToken(authToken,
-            uri.toString(), configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
+            URLDecoder.decode(uri.toString(), "UTF-8"),
+            configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.warn("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {

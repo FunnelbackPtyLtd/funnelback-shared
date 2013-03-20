@@ -137,7 +137,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                             searchUrlPrefix + DefaultValues.ModernUI.Serve.FILECOPY_LINK)
                         + "?"+RequestParameters.COLLECTION+"="+resultCollection.getId()
                         + "&"+RequestParameters.Serve.URI+"="+URLEncoder.encode(result.getLiveUrl(), "UTF-8")
-                        + "&"+RequestParameters.Serve.AUTH+"="+securityToken;
+                        + "&"+RequestParameters.Serve.AUTH+"="+URLEncoder.encode(securityToken, "UTF-8");
                     
                     break;
                 default:
