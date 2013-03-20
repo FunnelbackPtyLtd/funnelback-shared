@@ -57,8 +57,10 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
     
     public static final int DEFAULT_EXPIRY = 3600; 
     
-    private enum Parameters {
-        url, expiry, start, end, username, password, useragent, timeout, convertrelative
+    public static final Pattern CONVERT_RELATIVE_PATTERN = Pattern.compile("<([^!>\\.]*?)(href|src|action|background)\\s*=\\s*([\"|']?)(.*?)\\3((\\s+.*?)*)>", Pattern.DOTALL);
+    
+    protected enum Parameters {
+        url, expiry, start, end, username, password, useragent, timeout, convertrelative, convertRelative
     }
     
     private CacheManager appCacheManager;
@@ -216,7 +218,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
      * @return
      * @throws TemplateModelException
      */
-    private String transformContent(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
+     protected String transformContent(String url, String content, Map<String, TemplateModel> params) throws TemplateModelException {
         String out = content;
         
         // Extract start-pattern
@@ -235,10 +237,14 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         
         // Convert relative URLs
         param = params.get(Parameters.convertrelative.toString());
+        if (param == null) {
+            // Try with alternative syntax
+            param = params.get(Parameters.convertrelative.toString());
+        }
         if (param != null) {
             boolean convert = ((TemplateBooleanModel) param).getAsBoolean();
             if (convert) {
-                Matcher m = Pattern.compile("<([^>]*?)(href|src|action|background)\\s*=\\s*([\"|']?)(.*?)\\3((\\s+.*?)*)>", Pattern.DOTALL).matcher(out);
+                Matcher m = CONVERT_RELATIVE_PATTERN.matcher(out);
                 
                 int lastStart = 0;
                 int lastEnd = 0;
