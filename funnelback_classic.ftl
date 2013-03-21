@@ -21,9 +21,10 @@
     @param next_prev_suffix Text placed after the Next and Previous links.
     @param prevLabel Label to use for "previous"
     @param nextLabel Label to use for "next"
+    @param numPages Number of pages links to display (default = 10)
     @nested Any HTML attributes to include in the a tag.
 -->
-<#macro PrevNext label="" separator=" " next_prev_prefix=" [ " next_prev_suffix=" ] " prevLabel="Prev" nextLabel="Next">
+<#macro PrevNext label="" separator=" " next_prev_prefix=" [ " next_prev_suffix=" ] " prevLabel="Prev" nextLabel="Next" numPages=10>
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#local rs = response.resultPacket.resultsSummary />
 
@@ -50,11 +51,11 @@
         </#if>
 
         <#local firstPage = 1 />
-        <#if currentPage &gt; 4>
-            <#local firstPage = currentPage - 4 />
+        <#if currentPage &gt; ((numPages-1)/2)?floor>
+            <#local firstPage = currentPage - ((numPages-1)/2)?floor />
         </#if>
 
-        <#list firstPage..firstPage+9 as pg>
+        <#list firstPage..firstPage+(numPages-1) as pg>
             <#if pg &gt; pages><#break /></#if>
 
             <#if pg == currentPage>

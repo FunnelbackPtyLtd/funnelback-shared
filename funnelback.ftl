@@ -85,8 +85,9 @@
 
     </p>
 
+    @param numPages Number of pages links to display (default = 10)
 -->
-<#macro Page>
+<#macro Page numPages=10>
     <#local rs = response.resultPacket.resultsSummary />
     <#local pages = 0 />
     <#if rs.fullyMatching &gt; 0>
@@ -101,11 +102,11 @@
     </#if>
 
     <#local firstPage = 1 />
-    <#if currentPage &gt; 4>
-       <#local firstPage = currentPage - 4 />
+    <#if currentPage &gt; ((numPages-1)/2)?floor>
+       <#local firstPage = currentPage - ((numPages-1)/2)?floor />
     </#if>
 
-    <#list firstPage..firstPage+9 as pg>
+    <#list firstPage..firstPage+(numPages-1) as pg>
         <#if pg &gt; pages><#break /></#if>
         <#assign pageNumber = pg in fb />
         <#assign pageUrl = question.collection.configuration.value("ui.modern.search_link") + "?" + changeParam(QueryString, "start_rank", (pg-1) * rs.numRanks+1) in fb />
