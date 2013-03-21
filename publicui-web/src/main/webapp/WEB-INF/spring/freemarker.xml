@@ -165,6 +165,7 @@
 		<property name="contentType" value="application/json;charset=UTF-8" />
 	</bean>
 
+	<!-- Content optimiser views -->
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserView">
 		<property name="url" value="contentoptimiser/content-optimiser.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
@@ -182,6 +183,12 @@
 
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserLoadingView">
 		<property name="url" value="contentoptimiser/content-optimiser-loading.ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+	
+	<!-- Serve TRIM reference view -->
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="trimReferenceView">
+		<property name="url" value="trim-reference.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 

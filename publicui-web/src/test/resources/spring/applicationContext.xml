@@ -91,6 +91,9 @@
 	<bean id="serveFilecopyDocumentController"
 		class="com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController"/>
 
+	<bean id="serveTrimDocumentController"
+		class="com.funnelback.publicui.search.web.controllers.content.GetTrimDocumentController"/>
+
 	<bean class="com.funnelback.publicui.test.mock.MockSuggester" />		
 	<bean id="suggestController"
 		class="com.funnelback.publicui.search.web.controllers.SuggestController" />
@@ -135,5 +138,10 @@
 	<bean class="com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager" />
 	
 	<metrics:metrics-registry id="metricsRegistry" />
+	
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="trimReferenceView">
+		<property name="url" value="trim-reference.ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
 	
 </beans>

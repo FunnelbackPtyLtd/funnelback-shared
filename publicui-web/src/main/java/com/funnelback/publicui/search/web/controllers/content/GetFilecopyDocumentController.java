@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.*;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -42,13 +43,6 @@ import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeInputSt
 @Log4j
 public class GetFilecopyDocumentController {
 
-    private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
-    private static final String CONTENT_DISPOSITION_VALUE = "attachment; filename=";
-    
-    /** Content type when serving files */
-    private static final String OCTET_STRING_MIME_TYPE = "application/octet-stream";
-    /** Content type when serving a partial file when <code>noattachment=1</code> is used */
-    private static final String TEXT_HTML_MIME_TYPE = "text/html";
     /** Pattern to detect HTML documents */
     private static final Pattern HTML_EXTENSION_PATTERN = Pattern.compile("\\.html?$");
     /** Pattern to detect documents that should be stripped to 2KB */
