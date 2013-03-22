@@ -31,7 +31,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
-import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeInputStream.AccessDeniedException;
+import com.funnelback.publicui.utils.jna.WindowsFileInputStream.AccessDeniedException;
 
 /**
  * Controller in charge of serving files from Filecopy collection

@@ -1,10 +1,8 @@
-package com.funnelback.publicui.search.service.data.filecopy;
+package com.funnelback.publicui.utils.jna;
 
-import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import lombok.extern.log4j.Log4j;
 
@@ -12,8 +10,6 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.ptr.IntByReference;
 
 /**
  * {@link InputStream} that reads a file using Native Windows APIs
@@ -21,13 +17,7 @@ import com.sun.jna.ptr.IntByReference;
  *
  */
 @Log4j
-public class WindowsNativeInputStream extends InputStream implements Closeable {
-
-    private static final short FF = 0xFF;
-    
-    private final HANDLE hFile;
-    private final ByteBuffer buf = ByteBuffer.allocate(1);
-    private final IntByReference nbRead = new IntByReference();
+public class WindowsFileInputStream extends WindowsHandleInputStream {
 
     /**
      * Creates a new instance and opens the file.
@@ -35,17 +25,17 @@ public class WindowsNativeInputStream extends InputStream implements Closeable {
      * @param path File path to read
      * @throws IOException If something goes wrong when opening the file
      */
-    public WindowsNativeInputStream(String path) throws IOException {
-        hFile = Kernel32.INSTANCE.CreateFile(
+    public WindowsFileInputStream(String path) throws IOException {
+        super(Kernel32.INSTANCE.CreateFile(
                 path,
                 WinNT.FILE_READ_DATA,
                 WinNT.FILE_SHARE_READ,
                 null,
                 WinNT.OPEN_EXISTING,
                 WinNT.FILE_ATTRIBUTE_NORMAL,
-                null);
+                null));
         
-        if (hFile.equals(WinBase.INVALID_HANDLE_VALUE)) {
+        if (handle.equals(WinBase.INVALID_HANDLE_VALUE)) {
             int errno = Kernel32.INSTANCE.GetLastError();
             
             Win32Exception ex = new Win32Exception(errno);
@@ -64,26 +54,6 @@ public class WindowsNativeInputStream extends InputStream implements Closeable {
 
     }
     
-    @Override
-    public int read() throws IOException {
-        
-        buf.rewind();
-        nbRead.setValue(0);
-        boolean success = Kernel32.INSTANCE.ReadFile(hFile, buf, buf.capacity(), nbRead, null);
-        if (!success) {
-            throw new IOException(new Win32Exception(Kernel32.INSTANCE.GetLastError()));
-        } else if (nbRead.getValue() <= 0) {
-            return -1;
-        } else {
-            return buf.get(0) & FF;   // Mask it with 0xFF to get a number in the 0-255 range
-        }
-    }
-    
-    @Override
-    public void close() throws IOException {
-        Kernel32.INSTANCE.CloseHandle(hFile);
-    }
-
     /**
      * Used when access to a file is denied.
      */

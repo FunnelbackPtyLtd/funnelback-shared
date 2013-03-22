@@ -27,7 +27,7 @@ import com.funnelback.common.io.store.StoreType;
 import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.data.filecopy.WindowsNativeInputStream;
+import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -65,7 +65,7 @@ public class LocalDataRepository implements DataRepository {
             // of preserving plus signs
             String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
                             URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
-            return new WindowsNativeInputStream(windowsPath);
+            return new WindowsFileInputStream(windowsPath);
         } else {
             // Use Filecopy credentials to fetch the content
             FileSystemOptions options = new FileSystemOptions();
