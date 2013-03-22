@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
-import com.funnelback.utils.RedisNamespace;
+import com.funnelback.publicui.utils.RedisNamespace;
 
 @Component
 @Log4j

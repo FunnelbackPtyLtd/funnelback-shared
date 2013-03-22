@@ -20,11 +20,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.contentoptimiser.fetchers.impl.DefaultInDocCountFetcher;
+import com.funnelback.contentoptimiser.utils.PanLook;
+import com.funnelback.contentoptimiser.utils.PanLookFactory;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
-import com.funnelback.utils.PanLook;
-import com.funnelback.utils.PanLookFactory;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

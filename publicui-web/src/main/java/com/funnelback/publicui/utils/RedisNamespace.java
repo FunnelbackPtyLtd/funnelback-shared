@@ -1,4 +1,4 @@
-package com.funnelback.utils;
+package com.funnelback.publicui.utils;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;

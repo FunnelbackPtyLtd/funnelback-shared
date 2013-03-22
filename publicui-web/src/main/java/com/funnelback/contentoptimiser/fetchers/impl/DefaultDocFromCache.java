@@ -31,11 +31,11 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.utils.cgirunner.CgiRunner;
 import com.funnelback.common.utils.cgirunner.CgiRunnerException;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
+import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
-import com.funnelback.utils.CgiRunnerFactory;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 

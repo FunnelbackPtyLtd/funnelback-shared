@@ -1,4 +1,4 @@
-package com.funnelback.utils;
+package com.funnelback.contentoptimiser.utils;
 
 import java.io.IOException;
 

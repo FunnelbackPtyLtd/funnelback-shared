@@ -19,13 +19,13 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.fetchers.impl.DefaultDocFromCache;
+import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
-import com.funnelback.utils.CgiRunnerFactory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

@@ -8,8 +8,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.utils.DefaultPanLookFactory;
-import com.funnelback.utils.PanLook;
+import com.funnelback.contentoptimiser.utils.DefaultPanLookFactory;
+import com.funnelback.contentoptimiser.utils.PanLook;
 
 
 public class MemoryMapperPanLookTest {

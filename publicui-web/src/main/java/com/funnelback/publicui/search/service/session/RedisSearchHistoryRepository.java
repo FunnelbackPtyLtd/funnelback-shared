@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
-import com.funnelback.utils.RedisNamespace;
+import com.funnelback.publicui.utils.RedisNamespace;
 
 @Repository
 @Log4j

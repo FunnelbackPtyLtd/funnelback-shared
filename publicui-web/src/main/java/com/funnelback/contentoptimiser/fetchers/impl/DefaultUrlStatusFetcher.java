@@ -18,8 +18,8 @@ import com.funnelback.common.utils.cgirunner.CgiRunner;
 import com.funnelback.common.utils.cgirunner.CgiRunnerException;
 import com.funnelback.contentoptimiser.UrlStatus;
 import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
+import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.utils.CgiRunnerFactory;
 
 @Log4j
 @Component
