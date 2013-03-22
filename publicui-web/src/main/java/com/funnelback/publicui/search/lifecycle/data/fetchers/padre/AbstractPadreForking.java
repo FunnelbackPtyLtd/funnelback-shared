@@ -22,7 +22,6 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.WindowsNativePadreForker;
@@ -30,6 +29,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvi
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
 
@@ -108,7 +108,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            PadreExecutionReturn padreOutput = null;
+            ExecutionReturn padreOutput = null;
             File indexUpdateLockFile = new File(searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
                     + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.Index.UPDATE_LOCK);
             RandomAccessFile indexUpdateLockRandomFile = null;
@@ -172,6 +172,6 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     
     protected abstract String getQueryString(SearchTransaction transaction);
     
-    protected abstract void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException;
+    protected abstract void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException;
     
 }

@@ -20,8 +20,8 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.web.CGIEnvironment;
 
 /**
@@ -75,7 +75,7 @@ public abstract class AbstractRunPadreBinaryController {
         }
 
         try {
-            PadreExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+            ExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
 
             if (detectHeaders) {
                 Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());

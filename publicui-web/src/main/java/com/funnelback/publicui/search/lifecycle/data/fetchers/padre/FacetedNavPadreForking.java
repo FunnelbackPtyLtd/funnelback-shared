@@ -2,9 +2,9 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForker.PadreExecutionReturn;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 
 /**
@@ -24,7 +24,7 @@ public class FacetedNavPadreForking extends AbstractPadreForking {
     }
 
     @Override
-    protected void updateTransaction(SearchTransaction transaction, PadreExecutionReturn padreOutput) throws XmlParsingException {
+    protected void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException {
         throw new IllegalStateException("Not yet implemented");
     }
 

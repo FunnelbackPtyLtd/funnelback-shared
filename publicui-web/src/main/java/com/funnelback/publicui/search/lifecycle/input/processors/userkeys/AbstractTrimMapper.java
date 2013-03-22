@@ -1,8 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,16 +8,17 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.utils.ExecutionReturn;
+import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
+import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
 
 /**
  * Fetch the user keys from TRIM by running an external tool
@@ -30,6 +29,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 @Log4j
 public abstract class AbstractTrimMapper implements UserKeysMapper {
 
+    /** How much time to wait for the user keys collector to return */
+    private static final int WAIT_TIMEOUT = 1000*60;
+    
     /**
      * Possible format for key strings, depending of the locks / keys
      * plugin configured in padre-sw
@@ -38,6 +40,9 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
     
     @Autowired
     private File searchHome;
+    
+    @Autowired
+    private I18n i18n;
     
     /**
      * Folder containing the binary to get the user keys,
@@ -74,42 +79,36 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                         System.getenv(EnvironmentKeys.SystemRoot.toString()));
                 }
                 
-                ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-                ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-                PumpStreamHandler streamHandler = new PumpStreamHandler(stdout, stderr, null);
-                
-                CommandLine cmdLine = CommandLine.parse(
-                    getUserKeysBinary.getAbsolutePath()
+                String cmdLine = getUserKeysBinary.getAbsolutePath()
                     + " -u " + st.getQuestion().getPrincipal().getName()
                     + " -f " + getKeyStringFormat().name()
-                    + " " + st.getQuestion().getCollection().getId());
+                    + " " + st.getQuestion().getCollection().getId();
                 
-                DefaultExecutor executor = new DefaultExecutor();
-                executor.setWorkingDirectory(getUserKeysBinary.getParentFile());
-                executor.setStreamHandler(streamHandler);
                 
                 try {
                     log.debug("Running user keys collector on collection '"
                         + st.getQuestion().getCollection().getId()+ "' for user '"
                         + st.getQuestion().getPrincipal().getName()
                         + "' with command line '" + cmdLine + "'");
-                    int rc = executor.execute(cmdLine, env);
-                    String outStr = stdout.toString().trim();
                     
-                    if (rc != 0) {
-                        log.error("User keys collector returned a non-zero status ("+rc+") with command line '"
-                            + cmdLine + "'. STDOUT was '"+stdout.toString()+"', STDERR was '"+stderr.toString()
-                            + "', return code = " + rc);
+                    ExecutionReturn er = new WindowsNativeExecutor(i18n, WAIT_TIMEOUT)
+                        .execute(cmdLine, env, getUserKeysBinary.getParentFile());
+                    
+                    String outStr = er.getOutput().trim();
+                    
+                    if (er.getReturnCode() != 0) {
+                        log.error("User keys collector returned a non-zero status ("
+                            + er.getReturnCode()+") with command line '"
+                            + cmdLine + "'. Output was '"+er.getOutput() + "'");
                     } else {
                         out.add(outStr);
                         log.debug("Collected keys '"+outStr+"' for user '"
                             +st.getQuestion().getPrincipal().getName()+"'");
                     }
                     
-                } catch (IOException ioe) {
+                } catch (ExecutionException ee) {
                     log.error("Error while running user keys collector with command line '"
-                        + cmdLine + "'. STDOUT was '"+stdout.toString()+"', STDERR was '"+stderr.toString()
-                        + "'", ioe);
+                        + cmdLine + "'", ee);
                 }
                 
                 

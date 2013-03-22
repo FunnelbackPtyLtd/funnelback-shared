@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.CommandLine;
@@ -14,6 +13,7 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.utils.ExecutionReturn;
 
 /**
  * Forks PADRE using Java API (Apache Commons Exec)
@@ -33,14 +33,14 @@ public class JavaPadreForker implements PadreForker {
     protected final long padreWaitTimeout;
     
     @Override
-    public PadreExecutionReturn execute(String commandLine, Map<String, String> environmnent) throws PadreForkingException {
+    public ExecutionReturn execute(String commandLine, Map<String, String> environment) throws PadreForkingException {
         
         CommandLine padreCmdLine = CommandLine.parse(commandLine);
         
         ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
         ByteArrayOutputStream padreError = new ByteArrayOutputStream(AVG_PADRE_ERR_SIZE);
         
-        log.debug("Executing '" + padreCmdLine + "' with environment " + environmnent);
+        log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
         
         PadreExecutor executor = new PadreExecutor();
 
@@ -52,11 +52,11 @@ public class JavaPadreForker implements PadreForker {
         executor.setStreamHandler(streamHandler);
         
         try {
-            int rc = executor.execute(padreCmdLine, environmnent);
+            int rc = executor.execute(padreCmdLine, environment);
             if (rc != 0) {
                 log.debug("PADRE returned a non-zero exit code: " + rc);
             }
-            return new PadreExecutionReturn(rc, padreOutput.toString());
+            return new ExecutionReturn(rc, padreOutput.toString());
         } catch (ExecuteException ee) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
         } catch (IOException ioe) {
@@ -64,7 +64,7 @@ public class JavaPadreForker implements PadreForker {
         } finally {
             if (watchdog.killedProcess()) {
                 log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
-                        + " Command line was '"+padreCmdLine.toString()+"', environment was '"+environmnent.toString());
+                        + " Command line was '"+padreCmdLine.toString()+"', environment was '"+environment.toString());
             }
         }
     }
