@@ -38,12 +38,6 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
      */
     protected static enum KeyStringFormat { v1, v2 };
     
-    @Autowired
-    private File searchHome;
-    
-    @Autowired
-    private I18n i18n;
-    
     /**
      * Folder containing the binary to get the user keys,
      * relative to SEARCH_HOME
@@ -54,10 +48,20 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
     /** File name of the program to get the user keys */
     private final static String GET_USER_KEYS_BINARY = "Funnelback.TRIM.GetUserKeys.exe";
 
+    /** Exit code when retrieving user keys was successful */
+    private static final int GET_USER_KEYS_SUCCESS = 0;
+
+    @Autowired
+    private File searchHome;
+    
+    @Autowired
+    private I18n i18n;
+
     /**
      * @return The key string format to get
      */
     protected abstract KeyStringFormat getKeyStringFormat();
+
     
     @Override
     public List<String> getUserKeys(SearchTransaction st) {
@@ -80,10 +84,8 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                 }
                 
                 String cmdLine = getUserKeysBinary.getAbsolutePath()
-                    + " -u " + st.getQuestion().getPrincipal().getName()
                     + " -f " + getKeyStringFormat().name()
                     + " " + st.getQuestion().getCollection().getId();
-                
                 
                 try {
                     log.debug("Running user keys collector on collection '"
@@ -96,7 +98,7 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                     
                     String outStr = er.getOutput().trim();
                     
-                    if (er.getReturnCode() != 0) {
+                    if (er.getReturnCode() != GET_USER_KEYS_SUCCESS) {
                         log.error("User keys collector returned a non-zero status ("
                             + er.getReturnCode()+") with command line '"
                             + cmdLine + "'. Output was '"+er.getOutput() + "'");

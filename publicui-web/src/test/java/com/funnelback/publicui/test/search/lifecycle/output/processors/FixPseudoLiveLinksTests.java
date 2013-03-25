@@ -118,9 +118,42 @@ public class FixPseudoLiveLinksTests {
                 +URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8")
                 + "&auth=y4R5VU2sWYUn4IwErgNlZw",
             rp.getResults().get(3).getLiveUrl());
-
     }
     
+    @Test
+    public void testServeTrimDocumentLink() throws Exception {
+        configRepository.getCollection("collection-trim")
+        .getConfiguration()
+        .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")
+        .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX+"document"+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX, "custom-prefix-");
+        
+    
+    processor.processOutput(st);
+    
+    ResultPacket rp = st.getResponse().getResultPacket();
+    
+    Assert.assertEquals(
+        "custom-prefix-document?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+        rp.getResults().get(2).getLiveUrl());
+    }
+
+    @Test
+    public void testServeTrimReferenceLink() throws Exception {
+        configRepository.getCollection("collection-trim")
+        .getConfiguration()
+        .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "reference")
+        .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX+"reference"+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX, "custom-prefix-");
+        
+    
+    processor.processOutput(st);
+    
+    ResultPacket rp = st.getResponse().getResultPacket();
+    
+    Assert.assertEquals(
+        "custom-prefix-reference?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+        rp.getResults().get(2).getLiveUrl());
+    }
+
     @Test
     public void test() throws UnsupportedEncodingException, OutputProcessorException {
         processor.processOutput(st);

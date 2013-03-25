@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -8,6 +9,7 @@ import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.data.exception.TRIMException;
 
 /**
  * Interface to access collection data (stores)
@@ -35,5 +37,24 @@ public interface DataRepository {
      * @throws IOException 
      */
     public InputStream getFilecopyDocument(Collection collection, URI uri, boolean withDls) throws IOException;
+    
+    /**
+     * Get a document from TRIM.
+     * 
+     * @param collection TRIM Collection
+     * @param trimUri URI (Unique ID) of the TRIM record to extract the document from.
+     * @return A temporary {@link File} containing the document content
+     * @throws IOException 
+     * @throws TRIMException 
+     */
+    public File getTemporaryTrimDocument(Collection collection, int trimUri) throws TRIMException, IOException;
+    
+    /**
+     * Releases a temporary document extracted from TRIM. In practice delete the 
+     * temporary files and possibly parent folder.
+     * 
+     * @param f {@link File} of the temporary document
+     */
+    public void releaseTemporaryTrimDocument(File f);
     
 }

@@ -51,8 +51,8 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     /** Local scheme as used in DB or Connector collection */
     private static final String LOCAL_SCHEME = "local://";
     
-    /** Prefix to use for TRIM links */
-    private static final String TRIM_PREFIX = "serve-trim-";
+    /** CGI suffix for Classic UI links */
+    private static final String CGI_SUFFIX = ".cgi";
     
     /** Pattern to parse TRIM pseudo live URLs */
     private static final Pattern TRIM_URL_PATTERN = Pattern.compile("trim://../(\\d+)/.*$");
@@ -106,14 +106,29 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                     Matcher cachedUrlMatcher = TRIM_CACHE_URL_PATTERN.matcher(result.getCacheUrl());
                     
                     if (liveUrlMatcher.find()) {
+                        String docUri = liveUrlMatcher.group(1);
+                        
+                        // 'reference' or 'document'
                         String trimDefaultLiveLinks = resultCollection
                             .getConfiguration().value(Keys.Trim.DEFAULT_LIVE_LINKS);
                         
-                        String docUri = liveUrlMatcher.group(1);
+                        // Lookup collection.cfg for 'ui.modern.serve.trim.(document|reference)_link'
+                        String trimLinkPrefix = resultCollection.getConfiguration()
+                            .value(Keys.ModernUI.Serve.TRIM_LINK_PREFIX
+                                + trimDefaultLiveLinks+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX,
+                                DefaultValues.ModernUI.Serve.TRIM_CLASSIC_LINK_PREFIX);
                         
-                        transformedLiveUrl = searchUrlPrefix + TRIM_PREFIX + trimDefaultLiveLinks
-                            + ".cgi?"+RequestParameters.COLLECTION+"=" + resultCollection.getId()
-                            + "&"+RequestParameters.Serve.URI+"=" + docUri;
+                        String trimLinkSuffix = "";
+                        if (DefaultValues.ModernUI.Serve.TRIM_CLASSIC_LINK_PREFIX.equals(trimLinkPrefix)) {
+                            // Classic UI, prefix with /search/, suffix with .cgi
+                            trimLinkPrefix = searchUrlPrefix + trimLinkPrefix;
+                            trimLinkSuffix = CGI_SUFFIX;
+                        }
+                        
+                        
+                        transformedLiveUrl = trimLinkPrefix + trimDefaultLiveLinks + trimLinkSuffix
+                            + "?"+RequestParameters.COLLECTION + "=" + resultCollection.getId()
+                            + "&"+RequestParameters.Serve.URI + "=" + docUri;
                             
                         if (cachedUrlMatcher.find()) {
                             transformedLiveUrl += "&"+RequestParameters.Serve.DOC+"=" + cachedUrlMatcher.group(1);

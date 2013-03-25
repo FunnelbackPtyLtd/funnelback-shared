@@ -48,7 +48,7 @@ public class LocalDataRepositoryFilecopyTest {
     
     @Test(expected=FileSystemException.class)
     public void testNonExistentFile() throws Exception {
-        new LocalDataRepository()
+        new LocalDataRepository(new File("src/test/resources/dummy-search_home"))
             .getFilecopyDocument(collection, invalidUri, false);
     }
     
@@ -56,7 +56,7 @@ public class LocalDataRepositoryFilecopyTest {
     public void testNonExistentFileDls() throws Exception {
         if (OS.isFamilyWindows()) {
             try {
-                new LocalDataRepository()
+                new LocalDataRepository(new File("src/test/resources/dummy-search_home"))
                     .getFilecopyDocument(collection, invalidUri, true);
                 Assert.fail("Should have thrown a " + FileNotFoundException.class);
             } catch (FileNotFoundException fnfe) {
@@ -66,7 +66,7 @@ public class LocalDataRepositoryFilecopyTest {
     
     @Test
     public void testNoDls() throws Exception {
-        InputStream is = new LocalDataRepository()
+        InputStream is = new LocalDataRepository(new File("src/test/resources/dummy-search_home"))
             .getFilecopyDocument(collection, uri, false);
         
         Assert.assertArrayEquals(
@@ -78,7 +78,7 @@ public class LocalDataRepositoryFilecopyTest {
     public void testDls() throws Exception {
         if (OS.isFamilyWindows()) {
         
-            InputStream is = new LocalDataRepository()
+            InputStream is = new LocalDataRepository(new File("src/test/resources/dummy-search_home"))
                 .getFilecopyDocument(collection, uri, true);
         
             Assert.assertArrayEquals(

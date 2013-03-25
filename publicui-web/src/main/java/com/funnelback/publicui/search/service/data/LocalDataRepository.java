@@ -1,14 +1,19 @@
 package com.funnelback.publicui.search.service.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -16,8 +21,11 @@ import org.apache.commons.vfs.UserAuthenticator;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
@@ -25,9 +33,15 @@ import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.StoreType;
 import com.funnelback.common.utils.VFSURLUtils;
+import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.data.exception.TRIMException;
+import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
+import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
+import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -39,6 +53,71 @@ public class LocalDataRepository implements DataRepository {
     
     /** Name of the parameter containing the record id for database collections */
     private final static String RECORD_ID = "record_id";
+
+    /** How long to wait (in ms.) to get a document out of TRIM */
+    private static final int GET_DOCUMENT_WAIT_TIMEOUT = 1000*60;
+
+    /**
+     * Folder containing the binary to get a TRIM document,
+     * relative to SEARCH_HOME
+     */
+    private final static String GET_DOCUMENT_BINARY_PATH =
+        DefaultValues.FOLDER_WINDOWS_BIN + File.separator + DefaultValues.FOLDER_TRIM;
+    
+    /** File name of the program to get a TRIM document*/
+    private final static String GET_DOCUMENT_BINARY = "Funnelback.TRIM.GetDocument.exe";
+
+    /** Exit code when retrieving the document was successful */
+    private static final int GET_DOCUMENT_SUCCESS = 0;
+    
+    /** Separator between the lines returned by the document fetcher binary */
+    private static final String GET_DOCUMENT_OUTPUT_LINE_SEP = "\r?\n";
+    
+    /** Separator between the keys and values of fields returned by the document fetcher */
+    private static final String GET_DOCUMENT_OUTPUT_KV_SEP = ": ";
+    
+    /** Document fetcher output field containing the error message */
+    private static final String ERROR_KEY = "ERROR";
+    
+    /** Document fetcher output field containing the file path */
+    private static final String FILE_KEY = "File";
+    
+    /** Document fetcher output field indicating a Trim HTML email */
+    private static final String IS_EMAIL_KEY = "IsTRIMMail";
+    
+    /** Pattern to detect HTML links in TRIM emails */
+    private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a[^>]*>(.*?)</a>",
+        Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
+    /** Full path to the binary to get a document from TRIM */
+    private final File getDocumentBinary;
+    
+    /** Environment used when calling the binary to get a document */
+    private final Map<String, String> getDocumentEnvironment;
+    
+    @Autowired
+    private I18n i18n;
+
+    /**
+     * @param searchHome Funnelback installation folder, to be able to locate
+     * the TRIM binaries from <code>wbin/trim/</code>.
+     */
+    @Autowired
+    public LocalDataRepository(File searchHome) {
+        getDocumentBinary = new File(searchHome
+            + File.separator + GET_DOCUMENT_BINARY_PATH,
+            GET_DOCUMENT_BINARY);
+
+        getDocumentEnvironment = new HashMap<String, String>();
+        getDocumentEnvironment.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
+        // SystemRoot environment variable is MANDATORY.
+        // The TRIM SDK uses WinSock to connect to the remote server, and 
+        // WinSock needs SystemRoot to initialise itself.
+        if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
+            getDocumentEnvironment.put(EnvironmentKeys.SystemRoot.toString(),
+                System.getenv(EnvironmentKeys.SystemRoot.toString()));
+        }
+    }
     
     @Override
     public RecordAndMetadata<? extends Record<?>> getCachedDocument(
@@ -81,6 +160,72 @@ public class LocalDataRepository implements DataRepository {
         }
     }
     
+    @Override
+    public File getTemporaryTrimDocument(Collection collection, int trimUri) throws TRIMException, IOException {
+        File tempFolder = new File(collection.getConfiguration().getCollectionRoot()
+            + File.separator + DefaultValues.VIEW_LIVE,
+            File.separator + DefaultValues.FOLDER_TMP);
+        
+        String cmdLine = getDocumentBinary.getAbsolutePath()
+            + " -i " + Integer.toString(trimUri)
+            + " -f " + tempFolder.getAbsolutePath()
+            + " " + collection.getId();
+
+        try {
+            ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
+                .execute(cmdLine, getDocumentEnvironment, getDocumentBinary.getParentFile());
+            
+            Map<String, String> executionOutput = parseExecutionOutput(er.getOutput());
+            
+            if (er.getReturnCode() != GET_DOCUMENT_SUCCESS) {
+                String error = executionOutput.get(ERROR_KEY);
+                if (error != null) {
+                    throw TRIMException.fromTRIMMessage(error, trimUri);
+                } else {
+                    // Unknown error
+                    log.error("Document fetcher returned a non-zero status ("
+                        + er.getReturnCode()+") with command line '"
+                        + cmdLine + "'. Output was '"+er.getOutput() + "'");
+                    throw new TRIMException("Error while retrieving document: "
+                        + error);
+                }
+            } else {
+                File trimDoc = new File(executionOutput.get(FILE_KEY));
+                
+                if (trimDoc.canRead() && trimDoc.isFile()) {
+                    log.debug("Is Trim Mail: " + Boolean.parseBoolean(executionOutput.get(IS_EMAIL_KEY)));
+                    if (Boolean.parseBoolean(executionOutput.get(IS_EMAIL_KEY))) {
+                        // Strip links to attachments
+                        
+                        FileUtils.writeStringToFile(trimDoc,
+                            HTML_LINK_PATTERN.matcher(FileUtils.readFileToString(trimDoc))
+                                .replaceAll("$1"));
+                    }
+                    return trimDoc;
+                } else {
+                    throw new IllegalStateException("Could not read temporary file '"+trimDoc.getAbsolutePath()+"'");
+                }
+            }
+        } catch (ExecutionException ee) {
+            log.error("Error while running document fetcher", ee);
+            throw new TRIMException(ee);
+        }
+    }
+
+    @Override
+    @Async
+    public void releaseTemporaryTrimDocument(File f) {
+        if (f != null) {
+            // The temporary file was created in a temporary folder that
+            // we need to delete as well
+            try {
+                FileUtils.deleteDirectory(f.getParentFile());
+            } catch (IOException ioe) {
+                log.warn("Unable to delete temporary document '"+f.getAbsolutePath()+"'");
+            }
+        }
+    }
+    
     /**
      * Resolves the primary key used to store the document from its URL,
      * depending on the collection type. For example database collections use
@@ -104,6 +249,15 @@ public class LocalDataRepository implements DataRepository {
         default:
             return url;
         }
+    }
+
+    private Map<String, String> parseExecutionOutput(String str) {
+        Map<String, String> out = new HashMap<String, String>();
+        for (String s: str.split(GET_DOCUMENT_OUTPUT_LINE_SEP)) {
+            String[] kv = s.split(GET_DOCUMENT_OUTPUT_KV_SEP);
+            out.put(kv[0], kv[1]);
+        }
+        return out;
     }
 
 }
