@@ -133,7 +133,7 @@ public class FixPseudoLiveLinksTests {
     ResultPacket rp = st.getResponse().getResultPacket();
     
     Assert.assertEquals(
-        "custom-prefix-document?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+        "custom-prefix-document?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
         rp.getResults().get(2).getLiveUrl());
     }
 
@@ -150,7 +150,7 @@ public class FixPseudoLiveLinksTests {
     ResultPacket rp = st.getResponse().getResultPacket();
     
     Assert.assertEquals(
-        "custom-prefix-reference?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+        "custom-prefix-reference?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
         rp.getResults().get(2).getLiveUrl());
     }
 
@@ -169,7 +169,7 @@ public class FixPseudoLiveLinksTests {
                 rp.getResults().get(1).getLiveUrl());
 
         Assert.assertEquals(
-                "/search/serve-trim-document.cgi?collection=collection-trim&uri=356&doc=file:///folder/file/356.pan.txt",
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
                 rp.getResults().get(2).getLiveUrl());
         
         Assert.assertEquals(
@@ -208,7 +208,7 @@ public class FixPseudoLiveLinksTests {
         
         Assert.assertEquals(
                 "TRIM result without cache link shouldn't have a doc parameter",
-                "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234",
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234&url=trim://45/1234/",
                 rp.getResults().get(10).getLiveUrl());        
 
     }
