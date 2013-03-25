@@ -6,19 +6,14 @@ import static com.funnelback.publicui.search.web.controllers.content.ContentCons
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,18 +27,15 @@ import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.data.exception.AccessToRecordDeniedException;
+import com.funnelback.publicui.search.service.data.exception.RecordHasNoAttachmentException;
 import com.funnelback.publicui.search.service.data.exception.RecordNotFoundException;
 import com.funnelback.publicui.search.service.data.exception.TRIMException;
-import com.funnelback.publicui.utils.ExecutionReturn;
-import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
-import com.funnelback.publicui.utils.jna.WindowsFileInputStream.AccessDeniedException;
-import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+import com.funnelback.publicui.search.web.controllers.CacheController;
 
 /**
  * Gets a TRIM reference (<code>.tr5</code>) file or stream
@@ -73,6 +65,9 @@ public class GetTrimDocumentController {
     
     @Autowired
     private DataRepository dataRepository;
+    
+    @Autowired
+    private CacheController cacheController;
     
     @Resource(name="trimReferenceView")
     private View trimReferenceView;
@@ -123,15 +118,20 @@ public class GetTrimDocumentController {
      * Stream a TRIM document to the browser
      * @param collectionId TRIM collection
      * @param trimUri URI (Unique ID) of the TRIM record to stream
+     * @param url URL of the document in the index
+     * @param request HTTP request
      * @param response HTTP response
-     * @throws IOException 
-     * @throws TRIMException 
+     * @return Either the TRIM document will be streamed to the user, or if it's on a
+     * record that has no attachments, the cached copy will be returned
+     * @throws Exception 
      */
     @RequestMapping(value="/"+DefaultValues.ModernUI.Serve.TRIM_MODERN_LINK_PREFIX+"document")
-    public void getTrimDocument(
+    public ModelAndView getTrimDocument(
         @RequestParam(value=RequestParameters.COLLECTION) String collectionId,
         @RequestParam(value=RequestParameters.Serve.URI) int trimUri,
-        HttpServletResponse response) throws IOException, TRIMException {
+        @RequestParam(value=RequestParameters.Cache.URL) String url,
+        HttpServletRequest request,
+        HttpServletResponse response) throws Exception {
         
         Collection collection = configRepository.getCollection(collectionId);
         if (collection == null) {
@@ -151,12 +151,24 @@ public class GetTrimDocumentController {
                     CONTENT_DISPOSITION_VALUE+"\""+trimDoc.getName()+"\"");
 
                 IOUtils.copy(fis, response.getOutputStream());
+            } catch (RecordHasNoAttachmentException rhnae) {
+                // Access checked passed, but the record doesn't have
+                // attachment. Send cached content using the cache controller.
+                
+                // We can't just redirect to the cache URL here since there's an interceptor
+                // that will prevent the request to complete if the collection has DLS enabled.
+                log.debug("No attachment for record " + trimUri + ", returning cached copy");
+                return cacheController.cache(request, response, collection,
+                    DefaultValues.DEFAULT_PROFILE,
+                    DefaultValues.DEFAULT_FORM, url);
+                
             } finally {
                 IOUtils.closeQuietly(fis);
                 dataRepository.releaseTemporaryTrimDocument(trimDoc);
             }
         }
         
+        return null;
     }
     
     /**

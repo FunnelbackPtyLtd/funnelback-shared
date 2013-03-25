@@ -22,22 +22,24 @@ public class TRIMException extends Exception {
     }
     
     /**
-     * Builds a new {@link TRIMException} from a TRIM error message
-     * @param trimMsg The TRIM error message
+     * Builds a new {@link TRIMException} from an exit code of the <code>GetDocument</code>
+     * binary.
+     * @param exitCode Exit code of the <code>GetDocumenet</code> binary.
+     * @param message the original error message.
      * @param trimUri URI (Unique ID) of the affected record
      * @return A specialized {@link TRIMException} subclass or a {@link TRIMException}
      * if no subclass match the error message.
      */
-    public static TRIMException fromTRIMMessage(String trimMsg, int trimUri) {
-        if (trimMsg != null && AccessToRecordDeniedException.ACCESS_DENIED.equals(trimMsg.trim())) {
+    public static TRIMException fromGetDocumentExitCode(int exitCode, String message, int trimUri) {
+        switch (exitCode) {
+        case AccessToRecordDeniedException.ACCESS_DENIED_EXIT_CODE:
             return new AccessToRecordDeniedException(trimUri);
-        } else if (trimMsg != null && RecordNotFoundException.RECORD_NOT_FOUND.equals(trimMsg.trim())) {
+        case RecordNotFoundException.RECORD_NOT_FOUND_EXIT_CODE:
             return new RecordNotFoundException(trimUri);
-        } else if (trimMsg != null
-            && RecordHasNoAttachmentException.RECORD_NOT_FOUND.matcher(trimMsg).matches()) {
+        case RecordHasNoAttachmentException.RECORD_HAS_NO_ATTACHMENT_EXIT_CODE:
             return new RecordHasNoAttachmentException(trimUri);
-        } else {
-            return new TRIMException(trimMsg);
+        default:
+            return new TRIMException(message);
         }
 
     }

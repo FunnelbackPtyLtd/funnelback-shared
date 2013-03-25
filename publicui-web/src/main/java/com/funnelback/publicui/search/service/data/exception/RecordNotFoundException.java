@@ -7,8 +7,8 @@ public class RecordNotFoundException extends TRIMException {
 
     private static final long serialVersionUID = 1L;
     
-    /** Error message returned by TRIM when a record is not found */
-    public static final String RECORD_NOT_FOUND = "An item with this identifier (URI) could not be found.";
+    /** Exit code returned when a record is not found */
+    public static final int RECORD_NOT_FOUND_EXIT_CODE = 2;
 
     /**
      * @param recordUri URI (Unique ID) of the TRIM record

@@ -128,7 +128,8 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                         
                         transformedLiveUrl = trimLinkPrefix + trimDefaultLiveLinks + trimLinkSuffix
                             + "?"+RequestParameters.COLLECTION + "=" + resultCollection.getId()
-                            + "&"+RequestParameters.Serve.URI + "=" + docUri;
+                            + "&"+RequestParameters.Serve.URI + "=" + docUri
+                            + "&"+RequestParameters.Cache.URL + "=" + result.getLiveUrl();
                             
                         if (cachedUrlMatcher.find()) {
                             transformedLiveUrl += "&"+RequestParameters.Serve.DOC+"=" + cachedUrlMatcher.group(1);

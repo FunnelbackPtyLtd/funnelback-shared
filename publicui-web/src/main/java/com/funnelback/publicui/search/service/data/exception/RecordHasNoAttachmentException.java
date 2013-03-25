@@ -9,8 +9,8 @@ public class RecordHasNoAttachmentException extends TRIMException {
 
     private static final long serialVersionUID = 1L;
 
-    /** Error message returned by TRIM when a record has no attachments */
-    public static final Pattern RECORD_NOT_FOUND = Pattern.compile("Record \\d+ has no document attached");
+    /** Exit code returned when a record has no attachments */
+    public static final int RECORD_HAS_NO_ATTACHMENT_EXIT_CODE = 3;
 
     /**
      * @param recordUri URI of the TRIM record

@@ -180,7 +180,7 @@ public class LocalDataRepository implements DataRepository {
             if (er.getReturnCode() != GET_DOCUMENT_SUCCESS) {
                 String error = executionOutput.get(ERROR_KEY);
                 if (error != null) {
-                    throw TRIMException.fromTRIMMessage(error, trimUri);
+                    throw TRIMException.fromGetDocumentExitCode(er.getReturnCode(), error, trimUri);
                 } else {
                     // Unknown error
                     log.error("Document fetcher returned a non-zero status ("
@@ -193,7 +193,6 @@ public class LocalDataRepository implements DataRepository {
                 File trimDoc = new File(executionOutput.get(FILE_KEY));
                 
                 if (trimDoc.canRead() && trimDoc.isFile()) {
-                    log.debug("Is Trim Mail: " + Boolean.parseBoolean(executionOutput.get(IS_EMAIL_KEY)));
                     if (Boolean.parseBoolean(executionOutput.get(IS_EMAIL_KEY))) {
                         // Strip links to attachments
                         
