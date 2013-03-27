@@ -219,11 +219,11 @@ public class LocalLogService implements LogService {
 			if(shortHostname != null) {
 				csvWriter = new CSVWriter(
 				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname+ Files.Log.INTERACTION_LOG_EXT)));
+						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname+ Files.Log.INTERACTION_LOG_EXT),true));
 			} else {
 				csvWriter = new CSVWriter(
 				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_EXT)));
+						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_EXT),true));
 			}
 			
 			ArrayList<String> logToWrite = new ArrayList<String>();
