@@ -5,10 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
@@ -33,14 +30,13 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
-import com.funnelback.publicui.search.service.log.ClickLogWriterHolder;
 import com.funnelback.publicui.search.service.log.LocalLogService;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
 
 public class LocalLogServiceTests {
 
-    private static final String COLLECTION_NAME = "log-service";
+	private static final String COLLECTION_NAME = "log-service";
     
     private static final File TEST_OUT_ROOT = new File("target" + File.separator
             + "test-response" + File.separator + COLLECTION_NAME); 
@@ -48,11 +44,28 @@ public class LocalLogServiceTests {
     private static final File TEST_IN_ROOT = new File("src" + File.separator
             + "test" + File.separator + "resources" + File.separator + COLLECTION_NAME);
     
+    private static final String TEST_HOSTNAME = "hostname";
+    
     private File contextualNavLogFile = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
             + File.separator + COLLECTION_NAME
             + File.separator + DefaultValues.VIEW_LIVE
             + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.CONTEXTUAL_NAVIGATION_LOG_FILENAME);
+    
+    private File clickLogFileWithHostname = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
+            + File.separator + COLLECTION_NAME
+            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + DefaultValues.FOLDER_LOG,
+            Files.Log.CLICKS_LOG_PREFIX 
+            + Files.Log.CLICKS_LOG_SEPARATOR + TEST_HOSTNAME 
+            + Files.Log.CLICKS_LOG_EXT);
+    
+    private File clickLogFileNoHostname = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
+            + File.separator + COLLECTION_NAME
+            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + DefaultValues.FOLDER_LOG,
+            Files.Log.CLICKS_LOG_PREFIX 
+            + Files.Log.CLICKS_LOG_EXT);
     
     private File publicUiWarningLogFile = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
@@ -75,6 +88,12 @@ public class LocalLogServiceTests {
         if (contextualNavLogFile.exists()) {
             Assert.assertTrue(contextualNavLogFile.delete());
         }
+        if (clickLogFileWithHostname.exists()) {
+            Assert.assertTrue(clickLogFileWithHostname.delete());
+        }
+        if (clickLogFileNoHostname.exists()) {
+            Assert.assertTrue(clickLogFileNoHostname.delete());
+        }
     }
     
     
@@ -92,21 +111,27 @@ public class LocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "userID", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
-        ClickLogWriterHolder clickLogWriterHolder = mock(ClickLogWriterHolder.class);
-        Writer csvWritten = new StringWriter();
-        when(clickLogWriterHolder.getWriter(c.getConfiguration().getLogDir("live"), "clicks.log")).thenReturn(csvWritten);
-        logService.setClickLogWriterHolder(clickLogWriterHolder);
         
         logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n", 
-                csvWritten.toString());
+                csvWritten);
+
+        // Now check for append
+        logService.logClick(cl);
+        csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
+        Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n", 
+                csvWritten);
     }
     
-    
-    
+      
     @Test 
     public void testClickCsvComplete() throws Exception {
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        logService.setLocalHostnameHolder(lhh);
+    	
         Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
@@ -114,14 +139,26 @@ public class LocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "userID", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
-        Writer csvWritten = logClickLog(cl,c);
+		logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
         Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n", 
-                csvWritten.toString());
+                csvWritten);
+        
+        // Now check for append.
+        
+		logService.logClick(cl);
+        csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
+        
+        Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",\"http://referrer.com\",\"1\",\"http://example.com/click\",\"CLICK\"\n", 
+                csvWritten);
     }
 
     @Test 
     public void testClickCsvNoReferrer() throws Exception {
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        logService.setLocalHostnameHolder(lhh);
         Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
@@ -129,14 +166,18 @@ public class LocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "userID", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
-        Writer csvWritten = logClickLog(cl,c);
+		logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
         Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",,\"1\",\"http://example.com/click\",\"CLICK\"\n", 
-                csvWritten.toString());
+                csvWritten);
     }
     
     @Test 
     public void testClickCsvNoReferrerNoClick() throws Exception {
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        logService.setLocalHostnameHolder(lhh);
         Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
@@ -144,38 +185,32 @@ public class LocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "userID", null, 1, null, ClickLog.Type.FP, "192.168.0.1");
-        Writer csvWritten = logClickLog(cl,c);
+		logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
         Assert.assertEquals("\"Wed Feb 20 14:37:19 2013\",\"192.168.0.1\",,\"1\",,\"FP\"\n", 
-                csvWritten.toString());
+                csvWritten);
     }
     
     @Test 
     public void testClickCsvNull() throws Exception {
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        logService.setLocalHostnameHolder(lhh);
         Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
     
         ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null, null);
-        Writer csvWritten = logClickLog(cl,c);
+		logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
         Assert.assertEquals(",,,\"0\",,\n", 
-                csvWritten.toString());
+                csvWritten);
     }
 
 
-    
-    private Writer logClickLog(ClickLog cl,Collection c) throws URISyntaxException, IOException {
-        
-        ClickLogWriterHolder clickLogWriterHolder = mock(ClickLogWriterHolder.class);
-        Writer csvWritten = new StringWriter();
-        when(clickLogWriterHolder.getWriter(c.getConfiguration().getLogDir("live"), "clicks-"+ localHostnameHolder.getShortHostname()+ ".log")).thenReturn(csvWritten);
-        logService.setClickLogWriterHolder(clickLogWriterHolder);
-        
-        logService.logClick(cl);
-        return csvWritten;
-    }
     
     @Test
     public void testLogContextualNavigation() throws Exception {

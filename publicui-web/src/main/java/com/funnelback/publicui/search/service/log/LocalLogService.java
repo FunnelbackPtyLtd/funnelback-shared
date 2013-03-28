@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -47,9 +46,6 @@ public class LocalLogService implements LogService {
     @Autowired
     @Setter private LocalHostnameHolder localHostnameHolder;
     
-    @Autowired
-    @Setter private ClickLogWriterHolder clickLogWriterHolder;
-    
     @Override
     public void logClick(ClickLog cl) {
         try {
@@ -57,12 +53,12 @@ public class LocalLogService implements LogService {
             CSVWriter csvWriter;
             if(shortHostname != null) {
                 csvWriter = new CSVWriter(
-                        clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT));
+                		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT),true));
             } else {
                 csvWriter = new CSVWriter(
-                        clickLogWriterHolder.getWriter(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT));
+                		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),true));
             }
             
             String[] entry = new String[6];
