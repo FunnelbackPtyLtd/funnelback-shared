@@ -36,6 +36,8 @@ import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
 public class LocalLogServiceTests {
 
+    private static final String UNKNOWN_COLLECTION = "UNKNOWN_COLLECTION";
+
 	private static final String COLLECTION_NAME = "log-service";
     
     private static final File TEST_OUT_ROOT = new File("target" + File.separator
@@ -66,6 +68,14 @@ public class LocalLogServiceTests {
             + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.CLICKS_LOG_PREFIX 
             + Files.Log.CLICKS_LOG_EXT);
+    
+    private File clickLogFileDoesntExist = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
+            + File.separator + UNKNOWN_COLLECTION
+            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + DefaultValues.FOLDER_LOG,
+            Files.Log.CLICKS_LOG_PREFIX 
+            + Files.Log.CLICKS_LOG_EXT);
+    
     
     private File publicUiWarningLogFile = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
@@ -125,7 +135,28 @@ public class LocalLogServiceTests {
                 csvWritten);
     }
     
-      
+	@Test
+	public void testClickCsvNonexistentDirectory() throws Exception {
+		LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+		when(lhh.getShortHostname()).thenReturn(null);
+		logService.setLocalHostnameHolder(lhh);
+
+		Config config = mock(Config.class);
+		when(config.getLogDir(DefaultValues.VIEW_LIVE)).thenReturn(clickLogFileDoesntExist);
+		Collection c = new Collection(UNKNOWN_COLLECTION, config);
+		Profile p = new Profile("profile");
+		Date date = new Date(1361331439286L);
+
+		ClickLog cl = new ClickLog(date, c, p, "userID", new URL(
+				"http://referrer.com"), 1, new URI("http://example.com/click"),
+				ClickLog.Type.CLICK, "192.168.0.1");
+
+		logService.logClick(cl);
+		Assert.assertFalse(clickLogFileDoesntExist.exists());
+	}
+
+    
+    
     @Test 
     public void testClickCsvComplete() throws Exception {
         LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
