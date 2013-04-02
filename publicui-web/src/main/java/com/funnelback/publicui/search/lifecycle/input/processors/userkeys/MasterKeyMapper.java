@@ -10,6 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class MasterKeyMapper implements UserKeysMapper {
 
+    /** Key to use as the master key */
     public static final String MASTER_KEY = "master";
     
     @Override

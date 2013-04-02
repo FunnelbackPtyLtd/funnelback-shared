@@ -3,14 +3,20 @@
  */
 package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
-import com.funnelback.jetty.jaas.session.UserKeys;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import java.security.Principal;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.security.auth.Subject;
+
+import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.plus.jaas.JAASUserPrincipal;
+
+import com.funnelback.jetty.jaas.session.UserKeys;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * Novell key mapper. Returns set of user and group keys read from Novell
@@ -20,15 +26,14 @@ import org.eclipse.jetty.plus.jaas.JAASUserPrincipal;
  *
  * $Id:$
  */
+@Log4j
 public class NovellMapper implements UserKeysMapper {
-
-    public NovellMapper() {
-    }
 
     /**
      * Get Novell eDirectory user and group keys for current transaction.
      *
-     * @returns List of user and group keys formatted for padre key/lock
+     * @param transaction Current search
+     * @return List of user and group keys formatted for padre key/lock
      * processing. If none, returns an empty list.
      */
     @Override
@@ -55,14 +60,7 @@ public class NovellMapper implements UserKeysMapper {
                 }
             }
 
-            /*
-             * uncomment to confirm correct user id and groups supplied
-             */
-//        String userid = principal.getName();
-//        Iterator key = keys.iterator();
-//        while( key.hasNext()) {
-//            System.out.println("Mapping novell user: "+userid+" with key: "+key.next());
-//        }
+            log.debug("Mapped Novell user '"+principal.getName()+"' with keys '"+StringUtils.join(keys, ","));
         }
 
         return keys;

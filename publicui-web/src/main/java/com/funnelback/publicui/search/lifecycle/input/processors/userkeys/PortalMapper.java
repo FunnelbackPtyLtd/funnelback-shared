@@ -15,6 +15,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class PortalMapper implements UserKeysMapper {
 
+    /** Name of the URL parameter to use to pass the keys */
     public static final String PORTAL_PARAMETER_NAME = "userkeys";
     
     @Override

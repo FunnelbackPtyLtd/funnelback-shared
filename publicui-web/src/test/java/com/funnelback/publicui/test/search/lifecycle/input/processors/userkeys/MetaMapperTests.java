@@ -2,6 +2,8 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors.userkeys;
 
 import java.io.FileNotFoundException;
 
+import net.sf.ehcache.CacheManager;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +40,9 @@ public class MetaMapperTests {
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
     
+    @Autowired
+    private CacheManager appCacheManager;
+    
     private UserKeys processor;
     
     @Before
@@ -45,6 +50,7 @@ public class MetaMapperTests {
         processor = new UserKeys();
         processor.setI18n(i18n);
         processor.setBeanFactory(beanFactory);
+        processor.setAppCacheManager(appCacheManager);
         
         configRepository.addCollection(new Collection("sub1", new NoOptionsConfig("dummy").setValue(
                 Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MasterKeyMapper.class.getName())));

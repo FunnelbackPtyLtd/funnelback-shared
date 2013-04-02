@@ -1,6 +1,11 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import net.sf.ehcache.CacheManager;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,6 +23,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MasterKeyMapper;
+import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -33,6 +39,9 @@ public class UserKeysTests {
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
     
+    @Autowired
+    private CacheManager appCacheManager;
+    
     private UserKeys processor;
     
     @Before
@@ -40,6 +49,7 @@ public class UserKeysTests {
         processor = new UserKeys();
         processor.setI18n(i18n);
         processor.setBeanFactory(beanFactory);
+        processor.setAppCacheManager(appCacheManager);
     }
     
     @Test
@@ -124,6 +134,90 @@ public class UserKeysTests {
             Assert.assertEquals(ClassNotFoundException.class, ipe.getCause().getClass());
         }
     }
+    
+    @Test
+    public void testCacheDisabledByDefault() throws InputProcessorException {
+        Collection c = new Collection("dummy", new NoOptionsConfig("dummy").setValue(
+            Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName()));
 
+        SearchQuestion question = new SearchQuestion();
+        // Need a user to use as a cache key
+        question.getInputParameterMap().put("REMOTE_USER", "user");
+        question.setCollection(c);
+        SearchTransaction st = new SearchTransaction(question, null);
+
+        // First run
+        processor.processInput(st);
+
+        Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
+        String key1 = st.getQuestion().getUserKeys().get(0);
+        Assert.assertTrue(key1.matches("[0-9]+"));
+        
+        // Second run
+        question = new SearchQuestion();
+        question.setCollection(c);
+        st = new SearchTransaction(question, null);
+        processor.processInput(st);
+
+        Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
+        String key2 = st.getQuestion().getUserKeys().get(0);
+        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertNotSame(key1,  key2);
+    }
+    
+    @Test
+    public void testCache() throws InputProcessorException {
+        Collection c = new Collection("dummy", new NoOptionsConfig("dummy")
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, RandomMapper.class.getName())
+            .setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER_CACHE_SECONDS, "3600"));
+
+        SearchQuestion question = new SearchQuestion();
+        // Need a user to use as a cache key
+        question.getInputParameterMap().put("REMOTE_USER", "user");
+        question.setCollection(c);
+        SearchTransaction st = new SearchTransaction(question, null);
+
+        // First run
+        processor.processInput(st);
+
+        Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
+        String key1 = st.getQuestion().getUserKeys().get(0);
+        Assert.assertTrue(key1.matches("[0-9]+"));
+        
+        // Second run
+        question = new SearchQuestion();
+        question.getInputParameterMap().put("REMOTE_USER", "user");
+        question.setCollection(c);
+        st = new SearchTransaction(question, null);
+        processor.processInput(st);
+
+        Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
+        String key2 = st.getQuestion().getUserKeys().get(0);
+        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertEquals(key1,  key2);
+        
+        // Different user should get different value
+        question = new SearchQuestion();
+        question.getInputParameterMap().put("REMOTE_USER", "other user");
+        question.setCollection(c);
+        st = new SearchTransaction(question, null);
+        processor.processInput(st);
+
+        Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
+        String key3 = st.getQuestion().getUserKeys().get(0);
+        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertNotSame(key1,  key3);
+        Assert.assertNotSame(key2,  key3);
+    }
+
+    public static class RandomMapper implements UserKeysMapper {
+        @Override
+        public List<String> getUserKeys(SearchTransaction transaction) {
+            List<String> out = new ArrayList<String>();
+            out.add(Integer.toString(Math.abs(new Random().nextInt())));
+            return out;
+        }
+    }
+    
     
 }

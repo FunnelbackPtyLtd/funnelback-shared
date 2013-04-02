@@ -12,6 +12,9 @@
 	<!-- Cache for parsed configuration files -->
 	<cache name="localConfigFilesRepository" maxElementsInMemory="10000" eternal="true" overflowToDisk="false" statistics="true" />
 
+	<!-- Cache for user keys (Early binding DLS) -->
+	<cache name="userKeyMapper" maxElementsInMemory="10000" eternal="true" overflowToDisk="true" statistics="true" />
+
 	<!-- Cache for IncludeUrl form directive -->
 	<cache name="IncludeUrlInternal" eternal="true" maxElementsInMemory="5000" overflowToDisk="true" diskPersistent="true" statistics="true" />
 

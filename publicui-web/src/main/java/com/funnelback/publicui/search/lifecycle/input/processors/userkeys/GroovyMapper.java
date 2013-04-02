@@ -30,7 +30,8 @@ public class GroovyMapper implements UserKeysMapper {
     @Autowired
     @Setter private I18n i18n;
     
-    @SuppressWarnings("rawtypes")
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public List<String> getUserKeys(SearchTransaction transaction) {
         String className = transaction.getQuestion().getCollection()
