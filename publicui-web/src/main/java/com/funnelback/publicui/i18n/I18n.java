@@ -1,5 +1,7 @@
 package com.funnelback.publicui.i18n;
 
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class I18n {
 
     @Autowired
-    private MessageSource messages;
+    @Setter private MessageSource messages;
     
     public String tr(String code) {
         return messages.getMessage(code, null, LocaleContextHolder.getLocale());        
