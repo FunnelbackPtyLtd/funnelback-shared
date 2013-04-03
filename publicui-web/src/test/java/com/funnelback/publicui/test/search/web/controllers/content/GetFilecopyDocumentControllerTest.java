@@ -307,6 +307,23 @@ public class GetFilecopyDocumentControllerTest {
            Assert.assertTrue(fse.getMessage().contains("Could not determine the type of file \"smb://"));
         }
     }
+    
+    @Test
+    public void testUrlWithPlus() throws Exception {
+        URI uriWithPlus = new URI("smb://internalfilesha/share/bad_characters/%2Bplus.html");
+        String token = tokenize(uriWithPlus);
+        
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        try {
+            controller.getFilecopyDocument("filecopy",
+                uriWithPlus, false, token, response, new MockHttpServletRequest());
+            Assert.fail();
+        } catch (FileSystemException fse) {
+           // Thrown because we can't access the smb:// file from  unit test,
+           // that's ok
+           Assert.assertTrue(fse.getMessage().contains("Could not determine the type of file \"smb://"));
+        }
+    }
 
     private String tokenize(URI uri) throws UnsupportedEncodingException {
         return authTokenManager.getToken(URLDecoder.decode(uri.toString(), "UTF-8"), "autotest-server-secret");

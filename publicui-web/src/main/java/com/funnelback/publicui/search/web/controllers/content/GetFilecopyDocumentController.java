@@ -109,8 +109,8 @@ public class GetFilecopyDocumentController {
                  +"' not suitable for serving filecopy documents");
             return;
         } else if (! authTokenManager.checkToken(authToken,
-            URLDecoder.decode(uri.toString(), "UTF-8"),
-            configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
+                URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"),
+                configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.warn("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {
