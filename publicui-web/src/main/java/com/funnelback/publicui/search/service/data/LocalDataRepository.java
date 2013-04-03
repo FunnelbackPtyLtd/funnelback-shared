@@ -254,7 +254,11 @@ public class LocalDataRepository implements DataRepository {
         Map<String, String> out = new HashMap<String, String>();
         for (String s: str.split(GET_DOCUMENT_OUTPUT_LINE_SEP)) {
             String[] kv = s.split(GET_DOCUMENT_OUTPUT_KV_SEP);
-            out.put(kv[0], kv[1]);
+            if (kv.length == 2) {
+                out.put(kv[0], kv[1]);
+            } else {
+                log.warn("Ignoring invalid output line '"+s+"'");
+            }
         }
         return out;
     }

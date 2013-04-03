@@ -114,8 +114,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                         
                         // Lookup collection.cfg for 'ui.modern.serve.trim.(document|reference)_link'
                         String trimLinkPrefix = resultCollection.getConfiguration()
-                            .value(Keys.ModernUI.Serve.TRIM_LINK_PREFIX
-                                + trimDefaultLiveLinks+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX,
+                            .value(Keys.ModernUI.Serve.TRIM_LINK_PREFIX,
                                 DefaultValues.ModernUI.Serve.TRIM_CLASSIC_LINK_PREFIX);
                         
                         String trimLinkSuffix = "";

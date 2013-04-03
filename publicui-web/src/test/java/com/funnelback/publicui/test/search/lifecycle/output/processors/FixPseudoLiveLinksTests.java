@@ -123,35 +123,33 @@ public class FixPseudoLiveLinksTests {
     @Test
     public void testServeTrimDocumentLink() throws Exception {
         configRepository.getCollection("collection-trim")
-        .getConfiguration()
-        .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")
-        .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX+"document"+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX, "custom-prefix-");
+            .getConfiguration()
+            .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")
+            .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX, "custom-prefix-");
+    
+        processor.processOutput(st);
         
-    
-    processor.processOutput(st);
-    
-    ResultPacket rp = st.getResponse().getResultPacket();
-    
-    Assert.assertEquals(
-        "custom-prefix-document?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
-        rp.getResults().get(2).getLiveUrl());
+        ResultPacket rp = st.getResponse().getResultPacket();
+        
+        Assert.assertEquals(
+            "custom-prefix-document?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            rp.getResults().get(2).getLiveUrl());
     }
 
     @Test
     public void testServeTrimReferenceLink() throws Exception {
         configRepository.getCollection("collection-trim")
-        .getConfiguration()
-        .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "reference")
-        .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX+"reference"+Keys.ModernUI.Serve.TRIM_LINK_SUFFIX, "custom-prefix-");
+            .getConfiguration()
+            .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "reference")
+            .setValue(Keys.ModernUI.Serve.TRIM_LINK_PREFIX, "custom-prefix-");
         
-    
-    processor.processOutput(st);
-    
-    ResultPacket rp = st.getResponse().getResultPacket();
-    
-    Assert.assertEquals(
-        "custom-prefix-reference?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
-        rp.getResults().get(2).getLiveUrl());
+        processor.processOutput(st);
+        
+        ResultPacket rp = st.getResponse().getResultPacket();
+        
+        Assert.assertEquals(
+            "custom-prefix-reference?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            rp.getResults().get(2).getLiveUrl());
     }
 
     @Test
