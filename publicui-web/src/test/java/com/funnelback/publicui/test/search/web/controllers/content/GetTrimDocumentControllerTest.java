@@ -50,14 +50,14 @@ public class GetTrimDocumentControllerTest {
     @Test
     public void testWrongCollectionType() {
         MockHttpServletResponse response = new MockHttpServletResponse();        
-        controller.getTrimReference("web", 123, response);
+        controller.getTrimReference("web", 123, false, response);
         Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     }
     
     @Test
     public void testNoCollection() {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.getTrimReference("unknown", 123, response);
+        controller.getTrimReference("unknown", 123, false, response);
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
@@ -65,9 +65,10 @@ public class GetTrimDocumentControllerTest {
     @Test
     public void test() throws UnsupportedEncodingException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.getTrimReference("trim", 123, response);
+        ModelAndView mav = controller.getTrimReference("trim", 123, false, response);
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        Assert.assertEquals("application/octet-stream", response.getContentType());
         Assert.assertEquals(
             "attachment; filename=\"search-result-123.tr5\"",
             response.getHeaderValue("Content-Disposition"));
@@ -81,5 +82,23 @@ public class GetTrimDocumentControllerTest {
         Assert.assertEquals(
             mav.getModel().get(ModelAttributes.uri.toString()),
             "123");
+        
+        response = new MockHttpServletResponse();
+        mav = controller.getTrimReference("trim", 123, true, response);
+        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        Assert.assertEquals("text/html", response.getContentType());
+        
+        Assert.assertEquals(
+            mav.getModel().get(ModelAttributes.trimLicenseNumber.toString()),
+            "1234");
+        Assert.assertEquals(
+            mav.getModel().get(ModelAttributes.trimDatabase.toString()),
+            "AB");
+        Assert.assertEquals(
+            mav.getModel().get(ModelAttributes.uri.toString()),
+            "123");
+
     }
+    
+    
 }
