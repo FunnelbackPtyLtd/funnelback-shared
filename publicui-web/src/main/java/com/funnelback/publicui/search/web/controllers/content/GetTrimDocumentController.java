@@ -74,7 +74,9 @@ public class GetTrimDocumentController {
     
     /**
      * @param collectionId TRIM collection to serve a reference from
-     * @param trimUri Interal ID of the TRIM record
+     * @param trimUri Internal ID of the TRIM record
+     * @param noAttachment If set the Content-Disposition header will not be sent
+     *  (used for automated testing)
      * @param response HTTP response
      * @return A TRIM <code>.tr5</code> shortcut file pointing
      * to the desired record.
@@ -83,6 +85,8 @@ public class GetTrimDocumentController {
     public ModelAndView getTrimReference(
         @RequestParam(value=RequestParameters.COLLECTION) String collectionId,
         @RequestParam(value=RequestParameters.Serve.URI) int trimUri,
+        @RequestParam(value=RequestParameters.Click.NOATTACHMENT, required=false, defaultValue="false")
+        boolean noAttachment,
         HttpServletResponse response) {
         
         Collection collection = configRepository.getCollection(collectionId);
@@ -95,11 +99,15 @@ public class GetTrimDocumentController {
                  +"' not suitable for serving trim references");
             return null;
         } else {
-            
-            response.setContentType(ContentConstants.OCTET_STRING_MIME_TYPE);
-            response.addHeader(
-                ContentConstants.CONTENT_DISPOSITION_HEADER,
-                ContentConstants.CONTENT_DISPOSITION_VALUE + "\"search-result-"+Integer.toString(trimUri)+".tr5\"");
+
+            if (!noAttachment) {
+                response.setContentType(ContentConstants.OCTET_STRING_MIME_TYPE);
+                response.addHeader(
+                    ContentConstants.CONTENT_DISPOSITION_HEADER,
+                    ContentConstants.CONTENT_DISPOSITION_VALUE + "\"search-result-"+Integer.toString(trimUri)+".tr5\"");
+            } else {
+                response.setContentType(ContentConstants.TEXT_HTML_MIME_TYPE);
+            }
                 
             ModelAndView mav = new ModelAndView(trimReferenceView);
             mav.getModel().put(
@@ -119,6 +127,8 @@ public class GetTrimDocumentController {
      * @param collectionId TRIM collection
      * @param trimUri URI (Unique ID) of the TRIM record to stream
      * @param url URL of the document in the index
+     * @param noAttachment If set the Content-Disposition header will not be sent
+     *  (used for automated testing)
      * @param request HTTP request
      * @param response HTTP response
      * @return Either the TRIM document will be streamed to the user, or if it's on a
@@ -130,6 +140,8 @@ public class GetTrimDocumentController {
         @RequestParam(value=RequestParameters.COLLECTION) String collectionId,
         @RequestParam(value=RequestParameters.Serve.URI) int trimUri,
         @RequestParam(value=RequestParameters.Cache.URL) String url,
+        @RequestParam(value=RequestParameters.Click.NOATTACHMENT, required=false, defaultValue="false")
+        boolean noAttachment,
         HttpServletRequest request,
         HttpServletResponse response) throws Exception {
         
@@ -146,9 +158,14 @@ public class GetTrimDocumentController {
             try {
                 trimDoc = dataRepository.getTemporaryTrimDocument(collection, trimUri);
                 fis = new FileInputStream(trimDoc);
-                response.setContentType(OCTET_STRING_MIME_TYPE);
-                response.addHeader(CONTENT_DISPOSITION_HEADER,
-                    CONTENT_DISPOSITION_VALUE+"\""+trimDoc.getName()+"\"");
+                
+                if (! noAttachment) {
+                    response.setContentType(OCTET_STRING_MIME_TYPE);
+                    response.addHeader(CONTENT_DISPOSITION_HEADER,
+                        CONTENT_DISPOSITION_VALUE+"\""+trimDoc.getName()+"\"");
+                } else {
+                    response.setContentType(ContentConstants.TEXT_HTML_MIME_TYPE);
+                }
 
                 IOUtils.copy(fis, response.getOutputStream());
             } catch (RecordHasNoAttachmentException rhnae) {
