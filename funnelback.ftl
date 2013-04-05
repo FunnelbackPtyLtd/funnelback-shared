@@ -627,13 +627,14 @@
     @param clearLabel Label to use for the &quot;clear history&quot; link.
     @param resultsLabel Label to use for the number of &quot;results&quot;.
     @param max Max number of entries to show.
+    @param cssClass Class to use to style the list (UL)
 -->
-<#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5>
+<#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5 cssClass="">
     <#if response.searchHistory?size &gt; 0>
         <div id="fb-search-history">
             <h4>${lastQueriesLabel} (<a class="clear" href="search-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
-            <ul>
+            <ul<#if cssClass != ""> class="${cssClass}"</#if>>
                 <#list response.searchHistory as h>
                     <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.searchUrl}">${h.originalQuery}</a> (${h.totalMatching} ${resultsLabel}) ${h.searchDate?datetime?string}</li> 
                 </#list>
@@ -649,16 +650,17 @@
     @param lastQueryLabel Label to use for &quot;last results clicked&quot; text.
     @param clearLabel Label to use for the &quot;clear history&quot; link.
     @param max Max number of entries to show.
+    @param cssClass Class to use to style the list (UL)
 -->
-<#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5>
+<#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5 cssClass="">
     <#if response.clickHistory?size &gt; 0>
         <div id="fb-click-history">
             <h4>${lastClicksLabel} (<a class="clear" href="click-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
-            <ul>
+            <ul<#if cssClass != ""> class="${cssClass}"</#if>>
                 <#list response.clickHistory as h>
                     <li<#if h_index &gt;= max> class="fb-more" </#if>>
-                        <a href="${h.indexUrl}">${h.title}</a>
+                        <a href="${h.liveUrl}">${h.title}</a>
                         <p>${h.summary}</p>
                         <cite><@s.cut cut="http://"><@s.TruncateURL length=75>${h.indexUrl}</@s.TruncateURL></@s.cut></cite>
                     </li>
@@ -673,12 +675,13 @@
 
     @param savedResultsLabel to use for &quot;saved results&quot;.
     @param clearLabel Label to use for the &quot;clear cart&quot; link.
+    @param cssClass Class to use to style the list (UL)
 -->
-<#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear">
+<#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear" cssClass="">
     <div id="fb-results-cart" style="display: none;">
         <h4>${savedResultsLabel} (<a class="clear" href="cart-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
-        <ul></ul>
+        <ul<#if cssClass != ""> class="${cssClass}"</#if>></ul>
 
         <form action="cart-email.json?collection=${question.collection.id}" method="get">
             <input type="hidden" name="collection" value="${question.collection.id}" />
