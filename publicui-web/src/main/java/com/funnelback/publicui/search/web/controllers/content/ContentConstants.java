@@ -16,5 +16,8 @@ public class ContentConstants {
     
     /** Content type when serving a partial file when <code>noattachment=1</code> is used */
     public static final String TEXT_HTML_MIME_TYPE = "text/html";
+    
+    /** text/plain content type */
+    public static final String TEXT_PLAIN_MIME_TYPE = "text/plain";
 
 }

@@ -288,6 +288,7 @@ public class GetFilecopyDocumentControllerTest {
         controller.getFilecopyDocument("filecopy", uri, false, "wrong-token", response, new MockHttpServletRequest());
         
         Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
+        Assert.assertEquals("serve.bad_token", response.getContentAsString());
     }
     
     @Test

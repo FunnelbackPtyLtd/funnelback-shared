@@ -112,6 +112,8 @@ public class GetFilecopyDocumentController {
                 URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"),
                 configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType(ContentConstants.TEXT_PLAIN_MIME_TYPE);
+            response.getWriter().write(i18n.tr("serve.bad_token"));
             log.warn("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {
             
