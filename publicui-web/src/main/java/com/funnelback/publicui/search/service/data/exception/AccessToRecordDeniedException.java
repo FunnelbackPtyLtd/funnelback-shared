@@ -16,7 +16,7 @@ public class AccessToRecordDeniedException extends TRIMException {
      * @param recordUri URI of the TRIM record
      */
     public AccessToRecordDeniedException(int recordUri) {
-        super("Access to record with URI '"+recordUri+" denied");
+        super("Access to record with URI "+recordUri+" denied");
     }
     
 }

@@ -14,7 +14,7 @@ public class RecordNotFoundException extends TRIMException {
      * @param recordUri URI (Unique ID) of the TRIM record
      */
     public RecordNotFoundException(int recordUri) {
-        super("Record with URI '"+recordUri+"' not found");
+        super("Record with URI "+recordUri+" not found");
     }
     
 }

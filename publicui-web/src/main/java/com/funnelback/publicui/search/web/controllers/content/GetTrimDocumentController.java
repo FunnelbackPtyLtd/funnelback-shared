@@ -204,7 +204,7 @@ public class GetTrimDocumentController {
     private void exceptionHandler(TRIMException e, HttpServletResponse response)
         throws IOException {
         response.setContentType("text/plain");
-        log.error("Error while streaming TRIM document", e);
+        log.debug("Error while streaming TRIM document", e);
         if (e instanceof AccessToRecordDeniedException) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getOutputStream().write(i18n.tr("serve.trim.document.access_denied").getBytes());
