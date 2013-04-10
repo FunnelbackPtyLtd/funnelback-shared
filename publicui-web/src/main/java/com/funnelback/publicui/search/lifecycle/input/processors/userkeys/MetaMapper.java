@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * @since 11.4
  */
 @Log4j
-public class MetaCollectionMapper implements UserKeysMapper {
+public class MetaMapper implements UserKeysMapper {
 
     @Autowired
     private ConfigRepository configRepository;

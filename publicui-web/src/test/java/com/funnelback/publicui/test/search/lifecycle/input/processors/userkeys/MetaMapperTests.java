@@ -21,7 +21,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.UserKeys;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MasterKeyMapper;
-import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MetaCollectionMapper;
+import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MetaMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -79,7 +79,7 @@ public class MetaMapperTests {
     @Test
     public void testSetToMeta() throws InputProcessorException, FileNotFoundException, EnvironmentVariableException {
         Collection meta = new Collection("meta", new NoOptionsConfig("dummy").setValue(
-                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MetaCollectionMapper.class.getName())
+                Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, MetaMapper.class.getName())
                 .setValue(Keys.COLLECTION_TYPE, Type.meta.toString()));
         meta.setMetaComponents(new String[] {"sub1", "sub2"});
         configRepository.addCollection(meta);
