@@ -115,7 +115,7 @@ public class FixPseudoLiveLinksPushTests {
         ResultPacket rp = st.getResponse().getResultPacket();
         
         Assert.assertEquals(
-            "custom-prefix-document?collection=collection-push&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-document?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -131,7 +131,7 @@ public class FixPseudoLiveLinksPushTests {
         ResultPacket rp = st.getResponse().getResultPacket();
         
         Assert.assertEquals(
-            "custom-prefix-reference?collection=collection-push&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-reference?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -150,7 +150,7 @@ public class FixPseudoLiveLinksPushTests {
                 rp.getResults().get(1).getLiveUrl());
 
         Assert.assertEquals(
-                "/search/serve-trim-document.cgi?collection=collection-push&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+                "/search/serve-trim-document.cgi?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
                 rp.getResults().get(2).getLiveUrl());
         
         Assert.assertEquals(

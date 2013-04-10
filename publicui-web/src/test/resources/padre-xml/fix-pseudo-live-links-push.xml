@@ -65,7 +65,7 @@
   <title><![CDATA[TRIM Result]]></title>
   <collection>collection-push</collection>
   <component>0</component>
-  <live_url>trim://45/356/</live_url>
+  <live_url>trim://45/356</live_url>
   <summary><![CDATA[Summary]]></summary>
   <cache_url>cache.cgi?doc=file:///folder/file/356.pan.txt</cache_url>
   <date>No Date</date>

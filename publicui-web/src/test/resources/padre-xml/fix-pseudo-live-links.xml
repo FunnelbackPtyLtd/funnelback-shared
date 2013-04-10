@@ -203,6 +203,38 @@
   <docnum>1</docnum>
   </result>
 
+  <result>
+  <rank>12</rank>
+  <score>100</score>
+  <title><![CDATA[TRIMPush Result (no trailing slash)]]></title>
+  <collection>collection-trimpush</collection>
+  <component>0</component>
+  <live_url>trim://45/356</live_url>
+  <summary><![CDATA[Summary]]></summary>
+  <cache_url>cache.cgi?doc=file:///folder/file/356.pan.txt</cache_url>
+  <date>No Date</date>
+  <filesize>1</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1</docnum>
+  </result>
+
+  <result>
+  <rank>13</rank>
+  <score>100</score>
+  <title><![CDATA[TRIMPush Result (no trailing slash)]]></title>
+  <collection>collection-trimpush</collection>
+  <component>0</component>
+  <live_url>trim://45/356/attachment.png</live_url>
+  <summary><![CDATA[Summary]]></summary>
+  <cache_url>cache.cgi?collection=collection-trimpush&amp;doc=/opt/funnelback/data/collection-trimpush/live/content/G52.warc&amp;off=1234&amp;len=1234</cache_url>
+  <date>No Date</date>
+  <filesize>1</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1</docnum>
+  </result>
+
 </results>
 
 </PADRE_result_packet>

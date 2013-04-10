@@ -74,6 +74,10 @@ public class FixPseudoLiveLinksTests {
                 new NoOptionsConfig("collection-trim")
                     .setValue(Keys.COLLECTION_TYPE, Type.trim.toString())
                     .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
+        configRepository.addCollection(new Collection("collection-trimpush",
+            new NoOptionsConfig("collection-trimpush")
+                .setValue(Keys.COLLECTION_TYPE, Type.trim.toString())
+                .setValue(Keys.Trim.DEFAULT_LIVE_LINKS, "document")));
         configRepository.addCollection(new Collection("collection-filecopy",
                 new NoOptionsConfig("collection-filecopy")
                     .setValue(Keys.COLLECTION_TYPE, Type.filecopy.toString())));
@@ -208,6 +212,14 @@ public class FixPseudoLiveLinksTests {
                 "TRIM result without cache link shouldn't have a doc parameter",
                 "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234&url=trim://45/1234/",
                 rp.getResults().get(10).getLiveUrl());        
+
+        Assert.assertEquals(
+            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
+            rp.getResults().get(11).getLiveUrl());        
+
+        Assert.assertEquals(
+            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim://45/356/attachment.png&doc=/opt/funnelback/data/collection-trimpush/live/content/G52.warc",
+            rp.getResults().get(12).getLiveUrl());        
 
     }
     

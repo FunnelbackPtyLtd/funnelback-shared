@@ -56,7 +56,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     private static final String CGI_SUFFIX = ".cgi";
     
     /** Pattern to parse TRIM pseudo live URLs */
-    private static final Pattern TRIM_URL_PATTERN = Pattern.compile("trim://../(\\d+)/.*$");
+    private static final Pattern TRIM_URL_PATTERN = Pattern.compile("trim://../(\\d+)/?.*$");
     
     /** Pattern to extract the URL of the cached version from the cache url */
     private static final Pattern TRIM_CACHE_URL_PATTERN = Pattern.compile(".*doc=([^&]*).*");

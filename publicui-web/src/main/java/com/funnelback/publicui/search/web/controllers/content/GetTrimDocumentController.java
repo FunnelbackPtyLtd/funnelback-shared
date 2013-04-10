@@ -204,7 +204,6 @@ public class GetTrimDocumentController {
     private void exceptionHandler(TRIMException e, HttpServletResponse response)
         throws IOException {
         response.setContentType("text/plain");
-        log.debug("Error while streaming TRIM document", e);
         if (e instanceof AccessToRecordDeniedException) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getOutputStream().write(i18n.tr("serve.trim.document.access_denied").getBytes());
@@ -212,6 +211,7 @@ public class GetTrimDocumentController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getOutputStream().write(i18n.tr("serve.trim.document.record_not_found").getBytes());
         } else {
+            log.warn("Unknown error while streaming TRIM document", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getOutputStream().write(i18n.tr("serve.trim.document.unknown_error").getBytes());
         }
