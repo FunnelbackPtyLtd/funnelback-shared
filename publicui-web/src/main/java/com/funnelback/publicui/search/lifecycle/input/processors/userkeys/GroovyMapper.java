@@ -16,6 +16,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.utils.ClassUtils;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -33,7 +34,7 @@ public class GroovyMapper implements UserKeysMapper {
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         String className = transaction.getQuestion().getCollection()
             .getConfiguration().value(Keys.SecurityEarlyBinding.GROOVY_CLASS);
         if (className == null) {
@@ -46,6 +47,7 @@ public class GroovyMapper implements UserKeysMapper {
         try {
             Map<String, Object> data = new HashMap<>();
             data.put(Hook.SEARCH_TRANSACTION_KEY, transaction);
+            data.put(Hook.COLLECTION_KEY, collection);
             
             Object o = GenericHookScriptRunner.runScript(scriptClass, data);
             

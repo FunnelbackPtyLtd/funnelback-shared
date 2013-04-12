@@ -36,7 +36,7 @@ public class MetaMapper implements UserKeysMapper {
     private AutowireCapableBeanFactory beanFactory;
     
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         Collection c = transaction.getQuestion().getCollection();
         List<String> out = new ArrayList<String>();
         if (c.getType().equals(Type.meta)) {
@@ -47,7 +47,8 @@ public class MetaMapper implements UserKeysMapper {
                             Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER);
                     if (securityPlugin != null && ! "".equals(securityPlugin)) {
                         try {
-                            out.addAll(UserKeys.getUserKeys(securityPlugin, transaction, i18n, beanFactory));
+                            out.addAll(UserKeys.getUserKeys(securityPlugin, componentCollection,
+                                transaction, i18n, beanFactory));
                         } catch (InputProcessorException ipe) {
                             throw new IllegalStateException("Unable to secure transaction for collection '"
                                     + componentCollection + "' with plugin '"+securityPlugin+"'", ipe);

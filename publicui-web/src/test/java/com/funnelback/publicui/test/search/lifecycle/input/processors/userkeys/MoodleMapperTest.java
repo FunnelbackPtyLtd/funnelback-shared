@@ -33,7 +33,7 @@ public class MoodleMapperTest {
         question.setCollection(c);
         SearchTransaction st = new SearchTransaction(question, null);
         MoodleMapper mm = new MoodleMapper();
-        Assert.assertEquals("", mm.getUserKeys(st).get(0));
+        Assert.assertEquals("", mm.getUserKeys(c, st).get(0));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class MoodleMapperTest {
                 .put(MoodleMapper.MOODLE_PARAMETER_NAME,
                         new String[] { "Mad user" });
         SearchTransaction st = new SearchTransaction(question, null);
-        Assert.assertEquals("", mm.getUserKeys(st).get(0));
+        Assert.assertEquals("", mm.getUserKeys(c, st).get(0));
     }
 
     @Test
@@ -59,27 +59,27 @@ public class MoodleMapperTest {
         Assert.assertEquals(
                 new ArrayList<String>(
                         Arrays.asList("C1_R5_C2_R5_C3_R5_C5_R5_C2_M10_R3_C2_M22_R3_C3_M42_R3_")),
-                mm.getUserKeys(st));
+                mm.getUserKeys(c, st));
 
         question.getRawInputParameters().put(
                 MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "user2" });
         Assert.assertEquals(
                 new ArrayList<String>(Arrays
                         .asList("C1_R5_C3_R5_C4_R5_C5_R5_C4_M39_R3_")), mm
-                        .getUserKeys(st));
+                        .getUserKeys(c, st));
 
         question.getRawInputParameters().put(
                 MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "user3" });
         Assert.assertEquals(
                 new ArrayList<String>(Arrays
                         .asList("C1_R3_C2_R3_C5_R3_C3_R5_C2_M9_R3_")), mm
-                        .getUserKeys(st));
+                        .getUserKeys(c, st));
 
         question.getRawInputParameters().put(
                 MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "user4" });
         Assert.assertEquals(
                 new ArrayList<String>(Arrays.asList("C1_R3_C3_R3_C4_R3_C5_R4_")),
-                mm.getUserKeys(st));
+                mm.getUserKeys(c, st));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class MoodleMapperTest {
         question.getRawInputParameters().put(
                 MoodleMapper.MOODLE_PARAMETER_NAME, new String[] { "user1" });
         SearchTransaction st = new SearchTransaction(question, null);
-        Assert.assertTrue(mm.getUserKeys(st).get(0).contains("C"));
-        Assert.assertTrue(mm.getUserKeys(st).get(0).contains("R"));
+        Assert.assertTrue(mm.getUserKeys(c, st).get(0).contains("C"));
+        Assert.assertTrue(mm.getUserKeys(c, st).get(0).contains("R"));
     }
 }

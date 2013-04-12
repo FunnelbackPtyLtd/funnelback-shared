@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -19,7 +20,7 @@ public class PortalMapper implements UserKeysMapper {
     public static final String PORTAL_PARAMETER_NAME = "userkeys";
     
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         String[] userKeys = transaction.getQuestion().getRawInputParameters().get(PORTAL_PARAMETER_NAME);
         List<String> result = new ArrayList<String>();
         if (userKeys != null) {

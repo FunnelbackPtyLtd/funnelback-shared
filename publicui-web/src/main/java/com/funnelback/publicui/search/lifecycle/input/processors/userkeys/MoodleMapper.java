@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
+
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -62,7 +65,7 @@ public class MoodleMapper implements UserKeysMapper {
      *            The way to get the configuration of the collection
      * @return The userkeys
      */
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
 
         List<String> rc = new ArrayList<String>();
         Connection connection = null;
@@ -73,8 +76,7 @@ public class MoodleMapper implements UserKeysMapper {
 
             // Get the configuration of the collection to reach the Moodle's db
             // And open database connection
-            connection = this.getJdbcConnection(transaction.getQuestion()
-                    .getCollection().getConfiguration());
+            connection = this.getJdbcConnection(collection.getConfiguration());
 
             statCourse = connection.createStatement(
                     java.sql.ResultSet.TYPE_FORWARD_ONLY,

@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.plus.jaas.JAASUserPrincipal;
 
 import com.funnelback.jetty.jaas.session.UserKeys;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -37,7 +38,7 @@ public class NovellMapper implements UserKeysMapper {
      * processing. If none, returns an empty list.
      */
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         List<String> keys = new LinkedList<>();
 
         Principal principal = transaction.getQuestion().getPrincipal();

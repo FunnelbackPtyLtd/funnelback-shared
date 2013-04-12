@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 import java.util.Arrays;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -14,7 +15,7 @@ public class MasterKeyMapper implements UserKeysMapper {
     public static final String MASTER_KEY = "master";
     
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction transaction) {
         return Arrays.asList(new String[] {MASTER_KEY});
     }
 

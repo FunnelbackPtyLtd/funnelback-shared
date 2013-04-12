@@ -14,6 +14,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.ExecutionReturn;
@@ -64,7 +65,7 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
 
     
     @Override
-    public List<String> getUserKeys(SearchTransaction st) {
+    public List<String> getUserKeys(Collection collection, SearchTransaction st) {
         List<String> out = new ArrayList<String>();
         
         if (SearchTransactionUtils.hasQuestion(st)) {
@@ -85,11 +86,11 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                 
                 String cmdLine = getUserKeysBinary.getAbsolutePath()
                     + " -f " + getKeyStringFormat().name()
-                    + " " + st.getQuestion().getCollection().getId();
+                    + " " + collection.getId();
                 
                 try {
                     log.debug("Running user keys collector on collection '"
-                        + st.getQuestion().getCollection().getId()+ "' for user '"
+                        + collection.getId()+ "' for user '"
                         + st.getQuestion().getPrincipal().getName()
                         + "' with command line '" + cmdLine + "'");
                     

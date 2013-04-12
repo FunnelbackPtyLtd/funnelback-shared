@@ -212,7 +212,7 @@ public class UserKeysTests {
 
     public static class RandomMapper implements UserKeysMapper {
         @Override
-        public List<String> getUserKeys(SearchTransaction transaction) {
+        public List<String> getUserKeys(Collection c, SearchTransaction transaction) {
             List<String> out = new ArrayList<String>();
             out.add(Integer.toString(Math.abs(new Random().nextInt())));
             return out;

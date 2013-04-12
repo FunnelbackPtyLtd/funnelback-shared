@@ -54,7 +54,7 @@ public class GroovyMapperTest {
         transaction.getQuestion().getCollection().getConfiguration().setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, null);
         
         try {
-            mapper.getUserKeys(transaction);
+            mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
             Assert.fail();
         } catch (IllegalArgumentException iae) {
             Assert.assertEquals("inputprocessor.userkeys.groovy.undefined", iae.getMessage());
@@ -66,7 +66,7 @@ public class GroovyMapperTest {
         transaction.getQuestion().getCollection().getConfiguration().setValue(Keys.SecurityEarlyBinding.GROOVY_CLASS, "invalid");
         
         try {
-            mapper.getUserKeys(transaction);
+            mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
             Assert.fail();
         } catch (IllegalArgumentException iae) {
             Assert.assertEquals(ClassNotFoundException.class, iae.getCause().getClass());
@@ -76,28 +76,28 @@ public class GroovyMapperTest {
     @Test
     public void testNullReturn() throws IOException {
         FileUtils.writeStringToFile(script, "return null");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         Assert.assertTrue(l.isEmpty());
     }
 
     @Test
     public void testInvalidReturn() throws IOException {
         FileUtils.writeStringToFile(script, "return 12");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         Assert.assertTrue(l.isEmpty());
     }
 
     @Test
     public void testNoReturn() throws IOException {
         FileUtils.writeStringToFile(script, "def x = 12");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         Assert.assertTrue(l.isEmpty());
     }
 
     @Test
     public void testStringReturn() throws IOException {
         FileUtils.writeStringToFile(script, "return \"user key\"");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         
         Assert.assertEquals(1, l.size());
         Assert.assertEquals("user key", l.get(0));
@@ -106,7 +106,7 @@ public class GroovyMapperTest {
     @Test
     public void testListReturn() throws IOException {
         FileUtils.writeStringToFile(script, "return [\"key 1\", \"key 2\"]");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         
         Assert.assertEquals(2, l.size());
         Assert.assertEquals("key 1", l.get(0));
@@ -116,14 +116,14 @@ public class GroovyMapperTest {
     @Test
     public void testCompilationError() throws IOException {
         FileUtils.writeStringToFile(script, "invalid");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         Assert.assertTrue(l.isEmpty());
     }
 
     @Test
     public void testExecutionError() throws IOException {
         FileUtils.writeStringToFile(script, "return 12/0");
-        List<String> l = mapper.getUserKeys(transaction);
+        List<String> l = mapper.getUserKeys(transaction.getQuestion().getCollection(), transaction);
         Assert.assertTrue(l.isEmpty());
     }
 
