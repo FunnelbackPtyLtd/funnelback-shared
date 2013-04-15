@@ -47,14 +47,8 @@ public class ManifoldCFMapper implements UserKeysMapper {
             }
             
             // TODO - remove after debugging
-            System.err.println(authorityInfo);
-            
-            List<String> result = new ArrayList<String>();
-            if (authorityInfo != null) {
-                for (String key: authorityInfo.split("\n")) {
-                    result.addAll(Arrays.asList(key.split(",")));
-                }
-            }
+            System.err.println("Authority output\n\n" + authorityInfo);
+            List<String> result = getKeysFromAuthorityInfo(authorityInfo);
             
             return result;
         } catch (MalformedURLException e) {
@@ -62,5 +56,24 @@ public class ManifoldCFMapper implements UserKeysMapper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<String> getKeysFromAuthorityInfo(String authorityInfo) {
+        List<String> result = new ArrayList<String>();
+        if (authorityInfo != null) {
+            for (String line: authorityInfo.split("\n")) {
+                String[] fields = line.split(":");
+                
+                if (fields.length == 3 && "TOKEN".equals(fields[0])) {
+                    result.add(fields[2]);
+                } else if (fields.length == 2 && "AUTHORIZED".equals(fields[0])) {
+                    // Not sure what to do with these
+                } else {
+                    // TODO - Work out what other cases are possible and handle them
+                    throw new RuntimeException("Unrecognised authority output: " + line);
+                }
+            }
+        }
+        return result;
     }
 }
