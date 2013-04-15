@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -28,12 +29,15 @@ public class ManifoldCFMapper implements UserKeysMapper {
     public static final String USERNAME_PARAMETER_NAME = "user";
     
     @Override
-    public List<String> getUserKeys(SearchTransaction transaction) {
+    public List<String> getUserKeys(Collection currentCollection, SearchTransaction transaction) {
         try {
             String username = transaction.getQuestion().getInputParameterMap().get(USERNAME_PARAMETER_NAME);
             // TODO - Get the remote user instead somehow
             
-            InputStream in = new URL(Keys.ManifoldCF.AUTHORITY_URL_PREFIX + "/UserACLs?username=" + username).openStream();
+            // TODO - Respect the currentCollection
+            String authority = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
+            String domain = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
+            InputStream in = new URL(authority + "/UserACLs?username=" + username + "@" + domain).openStream();
             
             String authorityInfo;
             try {
@@ -59,6 +63,4 @@ public class ManifoldCFMapper implements UserKeysMapper {
             throw new RuntimeException(e);
         }
     }
-
-
 }
