@@ -114,7 +114,7 @@ public class GetFilecopyDocumentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType(ContentConstants.TEXT_PLAIN_MIME_TYPE);
             response.getWriter().write(i18n.tr("serve.bad_token"));
-            log.warn("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
+            log.debug("Invalid auth. token '"+authToken+"' for URI '"+uri+"' on collection '"+collectionId+"'");
         } else {
             
             boolean withDls = false;
@@ -184,7 +184,6 @@ public class GetFilecopyDocumentController {
     private void exceptionHandler(IOException e, HttpServletResponse response)
         throws IOException {
         response.setContentType("text/plain");
-        log.error("I/O error while streaming file", e);
         if (e instanceof AccessDeniedException) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getOutputStream().write(i18n.tr("serve.filecopy.access_denied").getBytes());
@@ -192,6 +191,7 @@ public class GetFilecopyDocumentController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getOutputStream().write(i18n.tr("serve.filecopy.file_not_found").getBytes());
         } else {
+            log.warn("Unknown I/O error while streaming file", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getOutputStream().write(i18n.tr("serve.filecopy.unknown_error").getBytes());
         }
