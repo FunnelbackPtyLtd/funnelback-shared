@@ -124,7 +124,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals("X", cv.getConstraint());
         Assert.assertEquals(2137, cv.getCount());
         Assert.assertEquals("X", cv.getData());
-        Assert.assertEquals("In the past 6 months", cv.getLabel());
+        Assert.assertEquals("Past 6 months", cv.getLabel());
         Assert.assertEquals("f.By date on X|X=d%3C25Jun2003%3E26Dec2002", cv.getQueryStringParam());
 
     }

@@ -50,15 +50,15 @@
 <rmc item="Y:sa">4</rmc>
 <rmc item="Y:nt">2</rmc>
 <rmc item="Z:australia">27</rmc>
-<datecount item="d:In the past 3 months" qterm="d&lt;25Jun2003&gt;24Mar2003">1</datecount>
+<datecount item="d:Past 3 months" qterm="d&lt;25Jun2003&gt;24Mar2003">1</datecount>
 <datecount item="d:2003" qterm="d=2003">2</datecount>
 <datecount item="d:Yesterday" qterm="d=23Jun2003">3</datecount>
-<datecount item="d:In the past year" qterm="d&lt;25Jun2003&gt;29Jun2002">4</datecount>
-<datecount item="d:In the past month" qterm="d&lt;25Jun2003&gt;23May2003">5</datecount>
-<datecount item="d:In the past 7 days" qterm="d&lt;25Jun2003&gt;16Jun2003">6</datecount>
-<datecount item="d:In the past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">7</datecount>
+<datecount item="d:Past year" qterm="d&lt;25Jun2003&gt;29Jun2002">4</datecount>
+<datecount item="d:Past month" qterm="d&lt;25Jun2003&gt;23May2003">5</datecount>
+<datecount item="d:Past week" qterm="d&lt;25Jun2003&gt;16Jun2003">6</datecount>
+<datecount item="d:Past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">7</datecount>
 <datecount item="d:Today" qterm="d=24Jun2003">8</datecount>
-<datecount item="X:In the past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">2137</datecount>
+<datecount item="X:Past 6 months" qterm="d&lt;25Jun2003&gt;26Dec2002">2137</datecount>
 <datecount item="X:Today" qterm="d=24Jun2003">85</datecount>
 <datecount item="O:2005" qterm="O=2005">12</datecount>
 <datecount item="O:2006" qterm="O=2006">52</datecount>
