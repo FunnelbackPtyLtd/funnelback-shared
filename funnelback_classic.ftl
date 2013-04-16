@@ -865,7 +865,7 @@
     @param options List of option, either single strings that will be used as the name and value, or <code>value=label</code> strings.
     @param range Optional range expression to generate options.
     @param defaultValue Default value to set when there's no CGI value.
-    @param additional : Any additional HTML attributes to set to the select tag.
+    @param additional : Any additional HTML attributes to set to the select tag (e.g. <code>&lt;@s.Select ... class=&quot;...&quot; onchange=&quot;...&quot; /&gt;</code>)
 -->
 <#macro Select name options=[] range="" defaultValue="" additional...>
     <#assign selectedValue = defaultValue />
