@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -36,7 +35,7 @@ public class ManifoldCFMapper implements UserKeysMapper {
             
             // TODO - Respect the currentCollection
             String authority = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
-            String domain = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
+            String domain = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.DOMAIN);
             InputStream in = new URL(authority + "/UserACLs?username=" + username + "@" + domain).openStream();
             
             String authorityInfo;
