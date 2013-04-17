@@ -67,6 +67,8 @@ public class ManifoldCFMapper implements UserKeysMapper {
                     result.add(fields[2]);
                 } else if (fields.length == 2 && "AUTHORIZED".equals(fields[0])) {
                     // Not sure what to do with these
+                } else if (fields.length == 2 && "USERNOTFOUND".equals(fields[0])) {
+                    // No keys for unknown users
                 } else {
                     // TODO - Work out what other cases are possible and handle them
                     throw new RuntimeException("Unrecognised authority output: " + line);
