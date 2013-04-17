@@ -24,6 +24,17 @@ import com.funnelback.publicui.search.service.ConfigRepository.GlobalConfigurati
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTestBase {
 
+    
+    @Test
+    public void testAllCollectionsWithOneInvalid() throws IOException {
+        // Create a collection with no data_root
+        new File(SEARCH_HOME, "conf/invalid-collection/").mkdirs();
+        new File(SEARCH_HOME, "conf/invalid-collection/collection.cfg").createNewFile();
+        
+        List<Collection> all = configRepository.getAllCollections();
+        Assert.assertEquals(1, all.size());
+    }
+    
     @Test
     public void testAllCollections() throws Exception {
         List<String> ids = configRepository.getAllCollectionIds();

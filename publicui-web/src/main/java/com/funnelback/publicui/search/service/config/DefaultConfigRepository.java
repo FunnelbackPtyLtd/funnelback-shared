@@ -4,6 +4,7 @@ import groovy.lang.Script;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -319,10 +320,14 @@ public class DefaultConfigRepository implements ConfigRepository {
     public List<Collection> getAllCollections() {
         List<Collection> collections = new ArrayList<Collection>();
         for (String collectionId: getAllCollectionIds()) {
-            Collection collection = getCollection(collectionId);
-            if (collection != null) {
-                collections.add(collection);
-            }            
+            try {
+                Collection collection = getCollection(collectionId);
+                if (collection != null) {
+                    collections.add(collection);
+                }
+            } catch (Exception e) {
+                log.warn("Error while loading collection '"+collectionId+"'", e);
+            }
         }
         return collections;
     }
