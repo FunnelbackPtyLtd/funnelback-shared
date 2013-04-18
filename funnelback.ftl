@@ -555,6 +555,19 @@
 </#macro>
 
 <#---
+
+    Generates a link to show the results that were collapsed with this specific result.
+
+    @param label Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results.
+
+-->
+<#macro Collapsed label="{0} very similar results">
+    <#if s.result.collapsed??>
+        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=%3F:${s.result.collapsed.signature}&amp;collapsing=off">${label?replace("{0}", s.result.collapsed.count)}</a>
+    </#if>
+</#macro>
+
+<#---
     Displays a table with the time taken by each step in the query lifecycle.
 
     @param width Width in pixels to use for the bar graphs
