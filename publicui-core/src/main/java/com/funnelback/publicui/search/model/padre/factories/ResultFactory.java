@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
 
+import com.funnelback.publicui.search.model.padre.Collapsed;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -34,11 +35,12 @@ public class ResultFactory {
      * 
      * @param data
      *            The map containing the values
-     * @param metadata
-     *            A map containing the metadata values (<md f="x">value</md>)
+     * @param ql Quick links for the results
+     * @param explain Explain data for the result
+     * @param collapsed Collapsing information for the result
      * @return A result with populated values
      */
-    public static Result fromMap(Map<String, String> data, QuickLinks ql,Explain explain) {
+    public static Result fromMap(Map<String, String> data, QuickLinks ql, Explain explain, Collapsed collapsed) {
         Integer rank = NumberUtils.toInt(data.get(Result.Schema.RANK), 0);
         Integer score = NumberUtils.toInt(data.get(Result.Schema.SCORE), 0);
         String title = data.get(Result.Schema.TITLE);
@@ -82,6 +84,7 @@ public class ResultFactory {
                 title,
                 collection,
                 component,
+                collapsed,
                 liveUrl,
                 summary,
                 cacheUrl,
@@ -124,6 +127,7 @@ public class ResultFactory {
         Map<String, String> data = new HashMap<String, String>();
         QuickLinks ql = null;
         Explain explain = null;
+        Collapsed collapsed = null;
         
         while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
             if (xmlStreamReader.isStartElement()) {
@@ -138,6 +142,8 @@ public class ResultFactory {
                     explain = ExplainFactory.fromXmlStreamReader(xmlStreamReader);
                 } else if (Result.Schema.TAGS.equals(xmlStreamReader.getLocalName().toString())) {
                     data.put(Result.Schema.TAGS, parseTags(xmlStreamReader));
+                } else if (Result.Schema.COLLAPSED.equals(xmlStreamReader.getLocalName().toString())) {
+                    collapsed  = parseCollapsed(xmlStreamReader);
                 } else {
                     TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
                     data.put(tt.tag, tt.text);
@@ -145,7 +151,7 @@ public class ResultFactory {
             }
         }
 
-        return fromMap(data, ql,explain);
+        return fromMap(data, ql, explain, collapsed);
     }
     
     /**
@@ -172,6 +178,20 @@ public class ResultFactory {
         }
         
         return StringUtils.join(tags, ",");
+    }
+    
+    private static Collapsed parseCollapsed(XMLStreamReader reader) throws XMLStreamException {
+        if (! Result.Schema.COLLAPSED.equals(reader.getLocalName())) {
+            throw new IllegalArgumentException();
+        }
+        
+        String signature = null;
+        if (Result.Schema.COLLAPSED_SIG.equals(reader.getAttributeLocalName(0))) {
+            signature = reader.getAttributeValue(0);
+        }
+        
+        return new Collapsed(signature, Integer.parseInt(reader.getElementText()));
+ 
     }
 
 }

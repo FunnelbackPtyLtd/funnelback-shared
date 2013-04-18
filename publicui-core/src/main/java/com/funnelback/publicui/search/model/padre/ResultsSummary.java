@@ -18,6 +18,9 @@ public class ResultsSummary {
     /** Number of documents that fully matched the query terms. */
     @Getter @Setter private Integer fullyMatching;
     
+    /** Number of collapsed results */
+    @Getter @Setter private Integer collapsed;
+    
     /**
      * <p>Estimated number of hits in <code>daat</code> mode.</p>
      * 
@@ -101,6 +104,7 @@ public class ResultsSummary {
         public static final String RESULTS_SUMMARY = "results_summary";
         
         public static final String FULLY_MATCHING = "fully_matching";
+        public static final String COLLAPSED = "collapsed";
         public static final String ESTIMATED_HITS = "estimated_hits";
         public static final String PARTIALLY_MATCHING = "partially_matching";
         public static final String TOTAL_MATCHING = "total_matching";

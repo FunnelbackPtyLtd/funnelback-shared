@@ -23,16 +23,16 @@ import lombok.ToString;
 public class Result implements ResultType {
 
     /**
-     * Date formats used to parse dates in PADRE results.
-     */
-    public static final String[] DATE_PATTERNS_IN = {"d MMM yyyy", "MMM yyyy"};
-    
-    /**
      * Date format used to format a date when serialising
      * a result object.
      */
     public static final String DATE_PATTERN_OUT = "d MMM yyyy";
-    
+
+    /**
+     * Date formats used to parse dates in PADRE results.
+     */
+    public static final String[] DATE_PATTERNS_IN = {DATE_PATTERN_OUT, "MMM yyyy"};
+
     /**
      * String returned by PADRE when a result has no date.
      */
@@ -69,6 +69,16 @@ public class Result implements ResultType {
      * @see Result#collection
      */
     @Getter @Setter private Integer component;
+    
+    /**
+     * <p>Result collapsing information for this result.</p>
+     * 
+     * <p>Will be null if no results are collapsed with this
+     * one.</p>
+     * 
+     * @since 12.5
+     */
+    @Getter @Setter private Collapsed collapsed;
     
     /** URL to access the search result. */
     @Getter @Setter private String liveUrl;
@@ -177,6 +187,7 @@ public class Result implements ResultType {
         public static final String TITLE = "title";
         public static final String COLLECTION = "collection";
         public static final String COMPONENT = "component";
+        public static final String COLLAPSED = "collapsed";
         public static final String LIVE_URL = "live_url";
         public static final String SUMMARY = "summary";
         public static final String CACHE_URL = "cache_url";        
@@ -192,6 +203,8 @@ public class Result implements ResultType {
         public static final String TAGS = "tags";
         public static final String RQ = "rq";
         public static final String ATTR_METADATA_F = "f";
+        
+        public static final String COLLAPSED_SIG = "sig";
     }
 }
 

@@ -191,6 +191,7 @@ public class StaxStreamParserTests {
     @Test
     public void testResultsSummary() {
         assertEquals(200, rp.getResultsSummary().getFullyMatching().intValue());
+        assertEquals(42, rp.getResultsSummary().getCollapsed().intValue());
         assertEquals(200, rp.getResultsSummary().getEstimatedHits().intValue());
         assertEquals(0, rp.getResultsSummary().getPartiallyMatching().intValue());
         assertEquals(200, rp.getResultsSummary().getTotalMatching().intValue());
@@ -345,6 +346,8 @@ public class StaxStreamParserTests {
         assertEquals("Online visa applications", first.getTitle());
         assertEquals("info-aus", first.getCollection());
         assertEquals(0, first.getComponent().intValue());
+        assertEquals("ABCDEF", first.getCollapsed().getSignature());
+        assertEquals(12, first.getCollapsed().getCount());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getLiveUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getDisplayUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getIndexUrl());
@@ -389,6 +392,7 @@ public class StaxStreamParserTests {
         assertEquals("Australian Embassy and Permanent Mission to the United Nations", last.getTitle());
         assertEquals("info-aus", last.getCollection());
         assertEquals(0, last.getComponent().intValue());
+        assertNull(last.getCollapsed());
         assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getLiveUrl());
         assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getDisplayUrl());
         assertEquals("http://www.austria.embassy.gov.au/vien/home.html", last.getIndexUrl());

@@ -115,7 +115,7 @@ public class DefaultDocFromCacheTest {
                             new File(searchHome, "data" + File.separator + "data-repository").toString())));
         
         ContentOptimiserModel comparison = new ContentOptimiserModel();
-        comparison.setSelectedDocument(new Result(null, null, cacheCgi, cacheCgi, null, cacheCgi, cacheCgi, cacheCgi, null, null, cacheCgi, null, null, null, null, null, cacheCgi, cacheCgi, null, cacheCgi));
+        comparison.setSelectedDocument(new Result(null, null, cacheCgi, cacheCgi, null, null, cacheCgi, cacheCgi, cacheCgi, null, null, cacheCgi, null, null, null, null, null, cacheCgi, cacheCgi, null, cacheCgi));
         
         dFromC.getDocument(comparison, "cache-url", qs.getCollection().getConfiguration(),"data-repository");
         Assert.assertTrue("Unexpected messages: " + comparison.getMessages().toString(),comparison.getMessages().isEmpty());

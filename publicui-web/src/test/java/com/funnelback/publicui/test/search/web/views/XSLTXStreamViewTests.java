@@ -149,6 +149,8 @@ public class XSLTXStreamViewTests {
         oldXml = oldXml.replaceAll("(?s)<svgs>.*?</svgs>\\n", "");
         // As well as <datecount>
         oldXml = oldXml.replaceAll("(?s)<datecount.*?>.*?</datecount>\\n", "");
+        // As well as <collapsed>
+        oldXml = oldXml.replaceAll("(?s)<collapsed.*?>.*?</collapsed>\\n", "");
         
         // Remove <unexpected_tag> used for other tests
         oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\\n", "");

@@ -1,7 +1,6 @@
 package com.funnelback.publicui.xml.padre;
 
 import java.io.StringReader;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -227,7 +226,7 @@ public class StaxStreamParser implements PadreXmlParser {
      */
     private RMC parseRmc(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
         if(!ResultPacket.Schema.RMC.equals(xmlStreamReader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         if ( xmlStreamReader.getAttributeCount() == 1
@@ -251,7 +250,7 @@ public class StaxStreamParser implements PadreXmlParser {
             
             return cv;
         } else {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
     }
     
@@ -262,7 +261,7 @@ public class StaxStreamParser implements PadreXmlParser {
      */
     private RMC parseRmcFromRmcItemResults(XMLStreamReader xmlStreamReader) {
         if (!ResultPacket.Schema.RMC_ITEM_RESULTS.equals(xmlStreamReader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         if ( xmlStreamReader.getAttributeCount() == 2
@@ -295,7 +294,7 @@ public class StaxStreamParser implements PadreXmlParser {
     
     private QSup parseQSup(XMLStreamReader xmlStreamReader) throws XMLStreamException {
         if (!ResultPacket.Schema.QSUP.equals(xmlStreamReader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         if ( xmlStreamReader.getAttributeCount() == 1
@@ -314,7 +313,7 @@ public class StaxStreamParser implements PadreXmlParser {
     
     private Map<String, Integer> parseEntityList(XMLStreamReader xmlStreamReader) throws XMLStreamException {
         if (!ResultPacket.Schema.ENTITYLIST.equals(xmlStreamReader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         Map<String, Integer> out = new HashMap<String, Integer>();
@@ -359,7 +358,7 @@ public class StaxStreamParser implements PadreXmlParser {
      */
     private URLCount parseURLCount(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
         if (!ResultPacket.Schema.URLCOUNT.equals(reader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         if ( reader.getAttributeCount() == 1
@@ -382,7 +381,7 @@ public class StaxStreamParser implements PadreXmlParser {
      */
     private DateCount parseDateCount(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
         if (!ResultPacket.Schema.DATECOUNT.equals(reader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         if (reader.getAttributeCount() == 2
@@ -407,7 +406,7 @@ public class StaxStreamParser implements PadreXmlParser {
      */
     private Map<Integer, Integer> parseGScopeCounts(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
         if (!ResultPacket.Schema.GSCOPE_COUNTS.equals(reader.getLocalName())) {
-            throw new InvalidParameterException();
+            throw new IllegalArgumentException();
         }
         
         HashMap<Integer, Integer> out = new HashMap<Integer, Integer>();

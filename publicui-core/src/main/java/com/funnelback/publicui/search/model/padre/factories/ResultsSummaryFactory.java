@@ -15,6 +15,7 @@ public class ResultsSummaryFactory {
     public static ResultsSummary fromMap(Map<String, Integer> data) {
         return new ResultsSummary(
                 data.get(ResultsSummary.Schema.FULLY_MATCHING),
+                data.get(ResultsSummary.Schema.COLLAPSED),
                 data.get(ResultsSummary.Schema.ESTIMATED_HITS),
                 data.get(ResultsSummary.Schema.PARTIALLY_MATCHING),
                 data.get(ResultsSummary.Schema.TOTAL_MATCHING),

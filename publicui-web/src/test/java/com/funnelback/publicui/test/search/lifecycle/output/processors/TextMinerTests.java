@@ -95,8 +95,8 @@ public class TextMinerTests {
     @Test
     public void testNounPhrases() throws OutputProcessorException {
         ResultPacket rp = new ResultPacket();
-        rp.getResults().add(new Result(null, null, "", "", null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
-        rp.getResults().add(new Result(null, null, "", "", null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
+        rp.getResults().add(new Result(null, null, "", "", null, null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
+        rp.getResults().add(new Result(null, null, "", "", null, null, "", "", "", null, null, "", null, null, null, null, null, "", "", null, ""));
         st.getResponse().setResultPacket(rp);
         
         processor.processOutput(st);
