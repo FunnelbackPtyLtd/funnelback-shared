@@ -54,11 +54,13 @@ public class LocalLogService implements LogService {
             if(shortHostname != null) {
                 csvWriter = new CSVWriter(
                 		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT),true));
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT),true),
+                        CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
             } else {
                 csvWriter = new CSVWriter(
                 		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),true));
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),true),
+                        CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
             }
             
             String[] entry = new String[6];
