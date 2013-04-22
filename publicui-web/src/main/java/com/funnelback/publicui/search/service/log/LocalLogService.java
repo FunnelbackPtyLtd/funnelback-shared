@@ -40,6 +40,22 @@ public class LocalLogService implements LogService {
     private static final String XML_ROOT_START = "<log>";
     private static final String XML_ROOT_END = "</log>";
     
+    /** Number of columns in the CSV click logs */
+    private static final int CLICK_LOGS_COLUMNS = 6;
+    
+    /** Click log Date column offset */
+    private static final int CLICK_LOG_COL_DATE = 0;
+    /** Click log request IP column offset */
+    private static final int CLICK_LOG_COL_IP = 1;
+    /** Click log HTTP Referer column offset */
+    private static final int CLICK_LOG_COL_REFERRER = 2;
+    /** Click log rank of clicked result column offset */
+    private static final int CLICK_LOG_COL_RANK = 3;
+    /** Click log target URI column offset */
+    private static final int CLICK_LOG_COL_TARGET = 4;
+    /** Click log type column offset */
+    private static final int CLICK_LOG_COL_TYPE = 5;
+    
     @Autowired
     @Setter private File searchHome;
     
@@ -53,29 +69,39 @@ public class LocalLogService implements LogService {
             CSVWriter csvWriter;
             if(shortHostname != null) {
                 csvWriter = new CSVWriter(
-                		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR + shortHostname+ Files.Log.CLICKS_LOG_EXT),true),
-                        CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
+                    new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR
+                        + shortHostname+ Files.Log.CLICKS_LOG_EXT),
+                        true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
             } else {
                 csvWriter = new CSVWriter(
-                		new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),true),
-                        CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
+                    new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),
+                        true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
             }
             
-            String[] entry = new String[6];
+            String[] entry = new String[CLICK_LOGS_COLUMNS];
             
-            if(cl.getDate() != null) entry[0] = ClickLog.DATE_FORMAT.format(cl.getDate());
-            entry[1] = cl.getRequestIp();
-            if(cl.getReferer() != null) entry[2] = cl.getReferer().toString();
-            entry[3] = "" + cl.getRank();
-            if(cl.getTarget() != null) entry[4] = cl.getTarget().toString();
-            if(cl.getType() != null) entry[5] = cl.getType().toString();
+            if(cl.getDate() != null) {
+                entry[CLICK_LOG_COL_DATE] = ClickLog.DATE_FORMAT.format(cl.getDate());
+            }
+            
+            entry[CLICK_LOG_COL_IP] = cl.getRequestIp();
+            if(cl.getReferer() != null) {
+                entry[CLICK_LOG_COL_REFERRER] = cl.getReferer().toString();
+            }
+            entry[CLICK_LOG_COL_RANK] = Integer.toString(cl.getRank());
+            if(cl.getTarget() != null) {
+                entry[CLICK_LOG_COL_TARGET] = cl.getTarget().toString();
+            }
+            if(cl.getType() != null) {
+                entry[CLICK_LOG_COL_TYPE] = cl.getType().toString();
+            }
                         
             csvWriter.writeNext(entry);
             csvWriter.close();
         } catch (IOException e) {
-            log.error("Unable to open clicks.log", e);
+            log.error("Error while writing to click log", e);
         }
     }
 
@@ -93,7 +119,9 @@ public class LocalLogService implements LogService {
     @Override
     @Async
     public synchronized void logPublicUIWarning(PublicUIWarningLog warning) {
-        File target = new File(searchHome + File.separator + DefaultValues.FOLDER_LOG, Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
+        File target = new File(searchHome + File.separator + DefaultValues.FOLDER_LOG,
+            Files.Log.PUBLIC_UI_WARNINGS_FILENAME);
+        
         FileWriter fw = null;
         try {
             fw = new FileWriter(target, true);
@@ -201,57 +229,61 @@ public class LocalLogService implements LogService {
         }
     }
 
-	
-	
-	
-	/**
-	 * Saves an interaction log in the relevant log directory in the relevant collection.
-	 * 
-	 * @param InteractionLog 
-	 */
-	@Override
-	public void logInteraction(InteractionLog il) {
-		String shortHostname = localHostnameHolder.getShortHostname();
-		CSVWriter csvWriter;
-		try {
-			if(shortHostname != null) {
-				csvWriter = new CSVWriter(
-				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname+ Files.Log.INTERACTION_LOG_EXT),true));
-			} else {
-				csvWriter = new CSVWriter(
-				   new FileWriter(new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-						Files.Log.INTERACTION_LOG_PREFIX + Files.Log.INTERACTION_LOG_EXT),true));
-			}
-			
-			ArrayList<String> logToWrite = new ArrayList<String>();
-			
-			if(il.getDate() != null) logToWrite.add(InteractionLog.DATE_FORMAT.format(il.getDate()));
-			else logToWrite.add(null);
-			
-			logToWrite.add(il.getRequestIp());
-			
-			if(il.getReferer() != null) logToWrite.add(il.getReferer().toString());
-			else logToWrite.add(null);
-	
-			logToWrite.add(il.getLogType());
-			
-			SortedSet<String> sortedKeys = new TreeSet<String>(il.getParameters().keySet());
-			
-			for(String key : sortedKeys) {
-				String [] entry = il.getParameters().get(key);
-				for(String element : entry) {
-					logToWrite.add(key + ":" + element);
-				}
-			}
-			
-			csvWriter.writeNext(logToWrite.toArray(new String[0]));
-			csvWriter.close();
-		
-		} catch (IOException e) {
-			log.error("Unable to open clicks.log", e);
-		}
-		
-	}
+    /**
+     * Saves an interaction log in the relevant log directory in the relevant
+     * collection.
+     * 
+     * @param il
+     *            the {@link InteractionLog} to log
+     */
+    @Override
+    public void logInteraction(InteractionLog il) {
+        String shortHostname = localHostnameHolder.getShortHostname();
+        CSVWriter csvWriter;
+        try {
+            if (shortHostname != null) {
+                csvWriter = new CSVWriter(new FileWriter(new File(il.getCollection().getConfiguration()
+                    .getLogDir(DefaultValues.VIEW_LIVE), Files.Log.INTERACTION_LOG_PREFIX
+                    + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname + Files.Log.INTERACTION_LOG_EXT), true));
+            } else {
+                csvWriter = new CSVWriter(new FileWriter(new File(il.getCollection().getConfiguration()
+                    .getLogDir(DefaultValues.VIEW_LIVE), Files.Log.INTERACTION_LOG_PREFIX
+                    + Files.Log.INTERACTION_LOG_EXT), true));
+            }
+
+            ArrayList<String> logToWrite = new ArrayList<String>();
+
+            if (il.getDate() != null) {
+                logToWrite.add(InteractionLog.DATE_FORMAT.format(il.getDate()));
+            } else {
+                logToWrite.add(null);
+            }
+
+            logToWrite.add(il.getRequestIp());
+
+            if (il.getReferer() != null) {
+                logToWrite.add(il.getReferer().toString());
+            } else {
+                logToWrite.add(null);
+            }
+
+            logToWrite.add(il.getLogType());
+
+            SortedSet<String> sortedKeys = new TreeSet<String>(il.getParameters().keySet());
+
+            for (String key : sortedKeys) {
+                String[] entry = il.getParameters().get(key);
+                for (String element : entry) {
+                    logToWrite.add(key + ":" + element);
+                }
+            }
+
+            csvWriter.writeNext(logToWrite.toArray(new String[0]));
+            csvWriter.close();
+
+        } catch (IOException e) {
+            log.error("Error while writing to user interaction log", e);
+        }
+    }
 
 }
