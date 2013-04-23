@@ -139,28 +139,4 @@ public class SearchQuestionBinder {
         return request.getUserPrincipal() != null && request.getUserPrincipal() instanceof WindowsPrincipal;
     }
 
-    /**
-     * Gets the requesting IP for a given search question. Currently, this implementation returns 
-     * the first element in the X-Forwarded-For header (if present), or the value of the REMOTE_ADR header, 
-     * or null. 
-     * 
-     * @since v12.4
-     * @param question The search question associated with the request
-     * @return String String representing the request IP
-     */
-    public static String getRequestIp(SearchQuestion question) {
-        Map<String, String[]> rawInputParameters = question.getRawInputParameters();
-        String[] xForwardedFor = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString());
-        if(xForwardedFor != null) {
-            // The general format for these is "X-Forwarded-For: client, proxy1, proxy2"
-            // So we need to extract the first element, if there are commas.
-            String[] ipAddresses = xForwardedFor[0].split(",");
-            return ipAddresses[0].trim();
-        }
-        
-        String[] remoteAddr = rawInputParameters.get(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString());
-        if(remoteAddr == null) return null;
-        return remoteAddr[0];
-    }
-    
 }

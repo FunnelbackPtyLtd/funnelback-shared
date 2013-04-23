@@ -96,9 +96,9 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             env.put(EnvironmentKeys.QUERY_STRING.toString(), getQueryString(searchTransaction));
             
             // Give Padre the originating IP address, accounting for X-Forwarded-For
-            String remoteAddress = SearchQuestionBinder.getRequestIp(searchTransaction.getQuestion());
+            String remoteAddress = searchTransaction.getQuestion().getRequestIdToLog();
             if (remoteAddress != null) {
-                env.put(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(),remoteAddress);
+                env.put(PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), remoteAddress);
             }
     
             // SystemRoot environment variable is MANDATORY for TRIM DLS checks

@@ -95,9 +95,7 @@ public class ClickController {
 			String requestId = LogUtils.getRequestIdentifier(request,
 					DefaultValues.RequestIdToLog.valueOf(collection
 							.getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
-			
-			String requestIp = getRequestIP(request);
-			
+
 			URL referer = getReferrer(request);
 			
 			Set<String> boringParameters =  new HashSet<String>(Arrays.asList(BORING_INTERACTION_PARAMETERS));
@@ -185,22 +183,6 @@ public class ClickController {
 	}
 
 	/**
-	 * Helper method to get the request IP address from a request.
-	 * 
-	 * @param request
-	 * @return the string representation of the requesting IP address
-	 */
-	private String getRequestIP(HttpServletRequest request) {
-		/* TODO: We only use the SearchQuestion to get the request IP
-		 * Perhaps we should have a helper to do the same thing from the request?
-		 */
-		SearchQuestion question = new SearchQuestion();
-		SearchQuestionBinder.bind(request, question, localeResolver);
-		String requestIp = SearchQuestionBinder.getRequestIp(question);
-		return requestIp;
-	}
-
-	/**
 	 * Helper method to get the HTTP referrer out of a request
 	 * 
 	 * @param request 
@@ -208,13 +190,13 @@ public class ClickController {
 	 */
 	private URL getReferrer(HttpServletRequest request) {
 		URL referer = null;
-		if (request.getHeader("referer") != null) {
+		if (request.getHeader(REFERER) != null) {
 			try {
-				referer = new URL(request.getHeader("referer"));
+				referer = new URL(request.getHeader(REFERER));
 			} catch (MalformedURLException mue) {
 				log.warn(
 						"Unable to parse referer '"
-								+ request.getHeader("referer") + "'", mue);
+								+ request.getHeader(REFERER) + "'", mue);
 			}
 		}
 		return referer;

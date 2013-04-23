@@ -125,13 +125,13 @@ public class LocalLogServiceTests {
         logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,-\n", 
                 csvWritten);
 
         // Now check for append
         logService.logClick(cl);
         csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\nWed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,-\nWed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,-\n", 
                 csvWritten);
     }
     
@@ -169,11 +169,11 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "user-id");
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\n", 
                 csvWritten);
         
         // Now check for append.
@@ -181,7 +181,7 @@ public class LocalLogServiceTests {
 		logService.logClick(cl);
         csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\nWed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\nWed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\n", 
                 csvWritten);
     }
 
@@ -200,7 +200,7 @@ public class LocalLogServiceTests {
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,http://example.com/click,CLICK\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,http://example.com/click,CLICK,-\n", 
                 csvWritten);
     }
     
@@ -219,7 +219,7 @@ public class LocalLogServiceTests {
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
-        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,,FP\n", 
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,,FP,-\n", 
                 csvWritten);
     }
     
@@ -237,7 +237,7 @@ public class LocalLogServiceTests {
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
-        Assert.assertEquals(",,,0,,\n", 
+        Assert.assertEquals(",,,0,,,-\n", 
                 csvWritten);
     }
 
