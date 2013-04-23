@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.log.LogService;
+import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.utils.web.ModelUtils;
 
 public class SearchLogInterceptor implements HandlerInterceptor {
@@ -39,7 +40,8 @@ public class SearchLogInterceptor implements HandlerInterceptor {
                     q.getCollection().getProfiles().get(q.getProfile()),
                     q.getRequestIdToLog(),
                     q.getCnClickedCluster(),
-                    q.getCnPreviousClusters());
+                    q.getCnPreviousClusters(),
+                    LogUtils.getUserId(ModelUtils.getSearchSession(modelAndView)));
                 
             logService.logContextualNavigation(cnl);
         }

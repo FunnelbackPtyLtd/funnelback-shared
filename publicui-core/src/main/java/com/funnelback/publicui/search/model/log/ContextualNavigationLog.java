@@ -28,10 +28,11 @@ public class ContextualNavigationLog extends Log {
      * @param requestId Request identifier (IP, hash, '-')
      * @param cluster Clicked cluster
      * @param previousClusters Previously clicked cluster (breadcrumb)
+     * @param userId User identifier, may be null
      */
     public ContextualNavigationLog(Date date, Collection collection, Profile profile, String requestId,
-            String cluster, List<String> previousClusters) {
-        super(date, collection, profile, requestId);
+            String cluster, List<String> previousClusters, String userId) {
+        super(date, collection, profile, requestId, userId);
         this.cluster = cluster;
         this.previousClusters = previousClusters;
     }

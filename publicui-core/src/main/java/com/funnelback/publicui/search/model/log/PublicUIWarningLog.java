@@ -26,10 +26,11 @@ public class PublicUIWarningLog extends Log {
      * @param profile Profile
      * @param requestId Request identifier (IP, hash, '-')
      * @param message Warning message
+     * @param userId User identifier, may be null
      */
     public PublicUIWarningLog(Date date, Collection collection, Profile profile, String requestId,
-            String message) {
-        super(date, collection, profile, requestId);
+            String message, String userId) {
+        super(date, collection, profile, requestId, userId);
         this.message = message;
     }
     

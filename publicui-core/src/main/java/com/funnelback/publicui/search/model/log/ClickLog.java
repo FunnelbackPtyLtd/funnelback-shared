@@ -44,10 +44,11 @@ public class ClickLog extends Log {
      * @param rank Rank of the clicked result
      * @param target URL of the result
      * @param type Type of click
+     * @param userId User identifier, may be null
      */
     public ClickLog(Date date, Collection collection, Profile profile, String requestId,
-            URL referer, int rank, URI target, Type type) {
-        super(date, collection, profile, requestId);
+            URL referer, int rank, URI target, Type type, String userId) {
+        super(date, collection, profile, requestId, userId);
         this.referer = referer;
         this.rank = rank;
         this.target = target;

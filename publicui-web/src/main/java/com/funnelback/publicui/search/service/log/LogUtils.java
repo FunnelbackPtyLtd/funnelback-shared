@@ -11,6 +11,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.search.model.transaction.session.SearchSession;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * Utilities for queries / click logging
@@ -45,6 +47,32 @@ public class LogUtils {
                 uhe);
             return Log.REQUEST_ID_NOTHING;
         }
+    }
+    
+    /**
+     * @param s Search session to lookup the user id from
+     * @return the user id from the search session, or null if the session is
+     * null or doesn't have a user
+     */
+    public static String getUserId(SearchSession s) {
+        if (s != null) {
+            return getUserId(s.getSearchUser());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * @param user user to lookup the id from
+     * @return the user id, or null if the user is null
+     */
+    public static String getUserId(SearchUser user) {
+        if (user != null) {
+            return user.getId();
+        }
+        
+        return null;
+        
     }
     
 }

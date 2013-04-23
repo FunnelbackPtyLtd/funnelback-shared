@@ -120,7 +120,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
         
         logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
@@ -149,7 +149,7 @@ public class LocalLogServiceTests {
 
 		ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL(
 				"http://referrer.com"), 1, new URI("http://example.com/click"),
-				ClickLog.Type.CLICK);
+				ClickLog.Type.CLICK, null);
 
 		logService.logClick(cl);
 		Assert.assertFalse(clickLogFileDoesntExist.exists());
@@ -169,7 +169,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -196,7 +196,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -215,7 +215,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, null, ClickLog.Type.FP);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, null, ClickLog.Type.FP, null);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -233,7 +233,7 @@ public class LocalLogServiceTests {
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
     
-        ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null);
+        ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null, null);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -258,7 +258,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
         
             
         logService.logContextualNavigation(log);
@@ -285,7 +286,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
                 
         for (int i=0; i<250; i++) {
             new Runnable() {
@@ -315,7 +317,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
         
         logService.logContextualNavigation(log);
         
@@ -340,7 +343,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
         
             
         logService.logContextualNavigation(log);
@@ -371,7 +375,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
         
             
         logService.logContextualNavigation(log);
@@ -392,7 +397,8 @@ public class LocalLogServiceTests {
                 c,
                 null,
                 null,
-                "Test message");
+                "Test message",
+                null);
         
         logService.setSearchHome(TEST_OUT_ROOT);
         logService.logPublicUIWarning(warning);
@@ -408,7 +414,8 @@ public class LocalLogServiceTests {
                 c,
                 null,
                 null,
-                "Second message");
+                "Second message",
+                null);
         
         logService.logPublicUIWarning(warning);
         
@@ -447,7 +454,8 @@ public class LocalLogServiceTests {
                 p,
                 "userId",
                 "cluster",
-                Arrays.asList(new String[] {"previousClusters"}));
+                Arrays.asList(new String[] {"previousClusters"}),
+                null);
         
             
         logService.logContextualNavigation(log);

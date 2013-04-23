@@ -5,6 +5,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 
 /**
@@ -16,7 +17,7 @@ public class ModelUtils {
 
     /**
      * Extracts a {@link SearchQuestion} from a Model
-     * @param mav
+     * @param mav {@link ModelAndView} to extract the question from
      * @return the {@link SearchQuestion} or null if not found
      */
     public static SearchQuestion getSearchQuestion(ModelAndView mav) {
@@ -34,7 +35,7 @@ public class ModelUtils {
 
     /**
      * Extracts a {@link SearchResponse} from a Model
-     * @param mav
+     * @param mav {@link ModelAndView} to extract the response from
      * @return the {@link SearchResponse} or null if not found
      */
     public static SearchResponse getSearchResponse(ModelAndView mav) {
@@ -45,6 +46,24 @@ public class ModelUtils {
             Object o = mav.getModel().get(SearchController.ModelAttributes.response.toString());
             if (o != null && o instanceof SearchResponse) {
                 return (SearchResponse) o;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Extracts a {@link SearchSession} from a Model
+     * @param mav {@link ModelAndView} to extract the session from
+     * @return the {@link SearchSession} or null if not found
+     */
+    public static SearchSession getSearchSession(ModelAndView mav) {
+        SearchTransaction st = getSearchTransaction(mav);
+        if (st != null) {
+            return st.getSession();
+        } else if (mav != null) {
+            Object o = mav.getModel().get(SearchController.ModelAttributes.session.toString());
+            if (o != null && o instanceof SearchSession) {
+                return (SearchSession) o;
             }
         }
         return null;

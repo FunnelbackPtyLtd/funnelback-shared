@@ -26,6 +26,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
+import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
@@ -41,7 +42,7 @@ public class LocalLogService implements LogService {
     private static final String XML_ROOT_END = "</log>";
     
     /** Number of columns in the CSV click logs */
-    private static final int CLICK_LOGS_COLUMNS = 6;
+    private static final int CLICK_LOGS_COLUMNS = 7;
     
     /** Click log Date column offset */
     private static final int CLICK_LOG_COL_DATE = 0;
@@ -55,6 +56,8 @@ public class LocalLogService implements LogService {
     private static final int CLICK_LOG_COL_TARGET = 4;
     /** Click log type column offset */
     private static final int CLICK_LOG_COL_TYPE = 5;
+    /** Click log user id column offset */
+    private static final int CLICK_LOG_COL_USER_ID = 6;
     
     @Autowired
     @Setter private File searchHome;
@@ -96,6 +99,11 @@ public class LocalLogService implements LogService {
             }
             if(cl.getType() != null) {
                 entry[CLICK_LOG_COL_TYPE] = cl.getType().toString();
+            }
+            if (cl.getUserId() != null) {
+                entry[CLICK_LOG_COL_USER_ID] = cl.getUserId();
+            } else {
+                entry[CLICK_LOG_COL_USER_ID] = Log.USER_ID_NOTHING;
             }
                         
             csvWriter.writeNext(entry);
@@ -236,8 +244,9 @@ public class LocalLogService implements LogService {
      * @param il
      *            the {@link InteractionLog} to log
      */
+    @Async
     @Override
-    public void logInteraction(InteractionLog il) {
+    public synchronized void logInteraction(InteractionLog il) {
         String shortHostname = localHostnameHolder.getShortHostname();
         CSVWriter csvWriter;
         try {
@@ -276,6 +285,12 @@ public class LocalLogService implements LogService {
                 for (String element : entry) {
                     logToWrite.add(key + ":" + element);
                 }
+            }
+            
+            if (il.getUserId() != null) {
+                logToWrite.add(il.getUserId());
+            } else {
+                logToWrite.add(Log.USER_ID_NOTHING);
             }
 
             csvWriter.writeNext(logToWrite.toArray(new String[0]));

@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.model.padre.ReturnCodes;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.log.LogService;
+import com.funnelback.publicui.search.service.log.LogUtils;
 
 /**
  * Does stuff depending of the PADRE return code.
@@ -47,7 +48,8 @@ public class PadreReturnCode extends AbstractOutputProcessor {
                                 searchTransaction.getQuestion().getCollection(),
                                 searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
                                 searchTransaction.getQuestion().getRequestIdToLog(),
-                                i18n.tr("outputprocessor.padrereturncode.log.failed")));
+                                i18n.tr("outputprocessor.padrereturncode.log.failed"),
+                                LogUtils.getUserId(searchTransaction.getSession())));
                 break;
             }
         }

@@ -39,10 +39,12 @@ public class InteractionLog extends Log {
      * @param logType Type of log
      * @param referer URL of the search page
      * @param parameters log event parameters
+     * @param userId User identifier, may be null
      */
     public InteractionLog(Date date, Collection collection, Profile profile,
-        String requestId, String logType, URL referer, Map<String, String[]> parameters) {
-        super(date, collection, profile, requestId);
+        String requestId, String logType, URL referer, Map<String, String[]> parameters,
+        String userId) {
+        super(date, collection, profile, requestId, userId);
         this.logType = logType;
         this.referer = referer;
         this.parameters = Collections.unmodifiableMap(parameters);

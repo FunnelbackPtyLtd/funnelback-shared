@@ -85,7 +85,8 @@ public class ClickController {
 			HttpServletResponse response,
 			@RequestParam(required= true, value = RequestParameters.COLLECTION) String collectionId,
 			@RequestParam(required = false) String profile,
-			@RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType){
+			@RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType,
+			@ModelAttribute SearchUser user){
 	
 		Collection collection = configRepository.getCollection(collectionId);
 		
@@ -104,8 +105,10 @@ public class ClickController {
 			Map<String,String[]> parameters = new HashMap<String,String[]>(request.getParameterMap());
 			parameters.keySet().removeAll(boringParameters);
 			
-			logService.logInteraction(new InteractionLog(new Date(), collection, collection
-					.getProfiles().get(profile), requestId,logType,referer,parameters));
+			logService.logInteraction(
+			    new InteractionLog(new Date(), collection, collection.getProfiles().get(profile),
+			        requestId, logType, referer, parameters,
+			        LogUtils.getUserId(user)));
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -143,7 +146,7 @@ public class ClickController {
 			@RequestParam(value = RequestParameters.Click.NOATTACHMENT,
 			               required = false, defaultValue = "false") boolean noAttachment,
 			Result result,
-			@ModelAttribute SearchUser searchUser) throws IOException {
+			@ModelAttribute SearchUser user) throws IOException {
 
         Collection collection = configRepository.getCollection(collectionId);
         
@@ -162,15 +165,13 @@ public class ClickController {
 			
 			URL referer = getReferrer(request);
 			
-			if (searchUser != null && result != null) {
-				searchHistoryRepository.saveClick(
-						searchUser, 
-						result, collection);
+			if (user != null && result != null) {
+				searchHistoryRepository.saveClick(user,result, collection);
 			}
 			
 			logService.logClick(new ClickLog(new Date(), collection, collection
 					.getProfiles().get(profile), requestId, referer, rank,
-					redirectUrl, type));
+					redirectUrl, type, LogUtils.getUserId(user)));
 			
             response.sendRedirect(
                 redirectUrl.toString()
