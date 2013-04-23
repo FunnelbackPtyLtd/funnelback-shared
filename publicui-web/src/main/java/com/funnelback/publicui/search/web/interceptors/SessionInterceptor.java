@@ -28,7 +28,10 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  */
 public class SessionInterceptor implements HandlerInterceptor {
 
-    public static final String SEARCH_USER_ATTRIBUTE = "com.funnelback.publicui.search.model.transaction.session.SearchUser";
+    /**
+     * Name of the session attribute holding the user id
+     */
+    public static final String SEARCH_USER_ID_ATTRIBUTE = SearchUser.class.getName()+"#id";
     
     @Autowired
     private ConfigRepository configRepository;
@@ -43,10 +46,10 @@ public class SessionInterceptor implements HandlerInterceptor {
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
                     HttpSession session = request.getSession();
                     
-                    if (session == null || session.getAttribute(SEARCH_USER_ATTRIBUTE) == null) {
+                    if (session == null || session.getAttribute(SEARCH_USER_ID_ATTRIBUTE) == null) {
                         // New user
                         session.setMaxInactiveInterval(-1);
-                        session.setAttribute(SEARCH_USER_ATTRIBUTE, new SearchUser(UUID.randomUUID().toString()));
+                        session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, UUID.randomUUID().toString());
                     }
                 }
             }

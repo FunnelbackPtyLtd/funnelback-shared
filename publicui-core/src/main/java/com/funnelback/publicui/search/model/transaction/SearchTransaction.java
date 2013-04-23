@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
@@ -29,16 +30,39 @@ public class SearchTransaction {
      * <em>Internal use</em>: Keys for internal extra searches.
      */
     public static enum ExtraSearches {
-        FACETED_NAVIGATION, CONTENT_OPTIMISER_SELECT_DOCUMENT;
+        /**
+         * Faceted navigation extra search when the full facets
+         * list mode is enabled.
+         */
+        FACETED_NAVIGATION,
+        /**
+         * Extra search for the content optimiser when it selects
+         * a single document
+         */
+        CONTENT_OPTIMISER_SELECT_DOCUMENT;
     }
     
     /** The question containing the input parameters. */
     @Getter private SearchQuestion question;
+    
     /** The response containing result data. */
     @Getter private SearchResponse response;
+    
     /** Any error if the search wasn't successful. */
     @Getter @Setter private SearchError error;
+    
+    /**
+     * User session data, might be null if not enabled.
+     * 
+     * @since v12.5
+     */
+    @Getter @Setter private SearchSession session;
 
+    /**
+     * Build a new transaction
+     * @param sq {@link SearchQuestion}
+     * @param sr {@link SearchResponse}
+     */
     public SearchTransaction(SearchQuestion sq, SearchResponse sr) {
         this.question = sq;
         this.response = sr;

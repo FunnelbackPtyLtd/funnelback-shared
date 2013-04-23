@@ -22,6 +22,7 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * <p>Executes the extra searches on the input phase using the questions
@@ -47,6 +48,11 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (searchTransaction != null && searchTransaction.getExtraSearchesQuestions().size() > 0) {
+
+            final SearchUser user = (searchTransaction.getSession() != null)
+                ? searchTransaction.getSession().getSearchUser()
+                : null;
+            
             for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
                 
                 entry.getValue().setExtraSearch(true);
@@ -57,7 +63,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
                                 StopWatch sw = new StopWatch();
                                 try {
                                     sw.start();
-                                    return transactionProcessor.process(entry.getValue());
+                                    return transactionProcessor.process(entry.getValue(), user);
                                 } finally {
                                     sw.stop();
                                     log.debug("Extra search '" + entry.getKey() + "' took " + sw.toString());

@@ -35,7 +35,7 @@ public class DefaultSearchTransactionProcessorTest {
         processor.setOutputFlow(output);
         processor.setDataFetchers(fetcher);
         
-        SearchTransaction st = processor.process(new SearchQuestion());
+        SearchTransaction st = processor.process(new SearchQuestion(), null);
         
         Assert.assertNotNull(st);
         Assert.assertNotNull(st.getResponse());

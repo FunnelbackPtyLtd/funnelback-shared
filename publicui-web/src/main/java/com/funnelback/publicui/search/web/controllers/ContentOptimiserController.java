@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
@@ -28,6 +29,7 @@ import com.funnelback.contentoptimiser.ContentOptimiserUserRestrictions;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
@@ -84,7 +86,8 @@ public class ContentOptimiserController {
     public ModelAndView contentOptimiserAdvanced(
             HttpServletRequest request,
             HttpServletResponse response,
-            SearchQuestion question) throws IOException, XmlParsingException {
+            SearchQuestion question,
+            @ModelAttribute SearchUser user) throws IOException, XmlParsingException {
         question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
         if("".equals(question.getQuery())) {
@@ -96,7 +99,7 @@ public class ContentOptimiserController {
         }
 
         ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-        Map<String, Object> model = searchController.search(request, response, question).getModel();
+        Map<String, Object> model = searchController.search(request, response, question, user).getModel();
         
         if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
              String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
@@ -111,7 +114,8 @@ public class ContentOptimiserController {
     public ModelAndView contentOptimiserTextOnly(
             HttpServletRequest request,
             HttpServletResponse response,
-            SearchQuestion question) throws IOException, XmlParsingException {
+            SearchQuestion question,
+            @ModelAttribute SearchUser user) throws IOException, XmlParsingException {
         question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
         if("".equals(question.getQuery())) {
@@ -122,7 +126,7 @@ public class ContentOptimiserController {
             return buildLoadingScreen(request);
         }
         
-        Map<String, Object> model = searchController.search(request, response, question).getModel();
+        Map<String, Object> model = searchController.search(request, response, question, user).getModel();
         
         ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
     

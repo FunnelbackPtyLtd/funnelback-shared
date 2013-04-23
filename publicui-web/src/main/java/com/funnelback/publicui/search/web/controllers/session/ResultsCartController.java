@@ -44,7 +44,6 @@ import freemarker.template.Template;
  *
  */
 @Controller
-@SessionAttributes(SessionInterceptor.SEARCH_USER_ATTRIBUTE)
 public class ResultsCartController extends SessionControllerBase {
 
     @Autowired
@@ -68,7 +67,7 @@ public class ResultsCartController extends SessionControllerBase {
     @RequestMapping(value="/cart-list.json")
     public void cartList(
         @RequestParam("collection") String collectionId,
-        @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+        @ModelAttribute SearchUser user,
         HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collectionId);
@@ -99,7 +98,7 @@ public class ResultsCartController extends SessionControllerBase {
     public void cartAdd(
             Result result,
             String query,
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(result.getCollection());
@@ -125,7 +124,7 @@ public class ResultsCartController extends SessionControllerBase {
     public void cartRemove(
             @RequestParam("collection") String collectionId,
             String url,
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collectionId);
@@ -147,7 +146,7 @@ public class ResultsCartController extends SessionControllerBase {
     @RequestMapping(value="/cart-clear.json")
     public void cartClear(
             @RequestParam("collection") String collectionId,
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
         
         Collection c = configRepository.getCollection(collectionId);
@@ -163,7 +162,7 @@ public class ResultsCartController extends SessionControllerBase {
     public void cartSendEmail(
             @RequestParam("collection") String collectionId,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile, 
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             @RequestParam(value="email", required=false) String email,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {

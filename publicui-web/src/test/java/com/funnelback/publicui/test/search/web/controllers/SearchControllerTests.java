@@ -93,7 +93,7 @@ public class SearchControllerTests {
         Collection col = new Collection("test", null);
         SearchQuestion q = new SearchQuestion();
         q.setCollection(col);
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), q);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), q, null);
         ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.SearchTransaction.toString());
 
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
@@ -110,7 +110,7 @@ public class SearchControllerTests {
         sq.setCollection(col);
         sq.setQuery("");
         
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
         ModelAndViewAssert.assertModelAttributeAvailable(mav, SearchController.ModelAttributes.SearchTransaction.toString());
 
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
@@ -129,7 +129,7 @@ public class SearchControllerTests {
         sq.setQuery("test");
         
         MockHttpServletResponse response = new MockHttpServletResponse(); 
-        ModelAndView mav = searchController.search(request, response, sq);
+        ModelAndView mav = searchController.search(request, response, sq, null);
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         
         List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.ModelAttributes.AllCollections.toString());
@@ -148,7 +148,7 @@ public class SearchControllerTests {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(new Collection("test-collection", null));
         sq.setQuery("test-query");
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
         
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
         Assert.assertNotNull(st);
@@ -173,7 +173,7 @@ public class SearchControllerTests {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(new Collection("test-collection", null));
         sq.setQuery("test-query");
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
         Assert.assertNotNull(st);
@@ -193,7 +193,7 @@ public class SearchControllerTests {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(new Collection("test-collection", null));
         sq.setQuery("test-query");
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
         Assert.assertNotNull(st);
@@ -213,7 +213,7 @@ public class SearchControllerTests {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(new Collection("test-collection", null));
         sq.setQuery("test-query");
-        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq);
+        ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
         SearchTransaction st = (SearchTransaction) mav.getModel().get(SearchController.ModelAttributes.SearchTransaction.toString());
         Assert.assertNotNull(st);

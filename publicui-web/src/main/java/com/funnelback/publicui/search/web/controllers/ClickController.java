@@ -18,12 +18,12 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.funnelback.common.config.Collections;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -35,6 +35,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
+import com.funnelback.publicui.search.service.SearchUserRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
@@ -68,8 +69,7 @@ public class ClickController {
 
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
-	
-	
+    
 	/**
 	 * Binding for interaction logging. 
 	 * 
@@ -140,9 +140,10 @@ public class ClickController {
 			@RequestParam(required = false) String profile,
 			@RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
 			@RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
-			 @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
+			@RequestParam(value = RequestParameters.Click.NOATTACHMENT,
 			               required = false, defaultValue = "false") boolean noAttachment,
-			Result result) throws IOException {
+			Result result,
+			@ModelAttribute SearchUser searchUser) throws IOException {
 
         Collection collection = configRepository.getCollection(collectionId);
         
@@ -162,14 +163,12 @@ public class ClickController {
 			String requestIp = getRequestIP(request);
 			URL referer = getReferrer(request);
 			
-			// TODO: Clean up how to get the user properly
-			if (request.getSession() != null
-					&& request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null
-					&& result != null) {
+			if (searchUser != null && result != null) {
 				searchHistoryRepository.saveClick(
-						(SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE), 
+						searchUser, 
 						result, collection);
 			}
+			
 			logService.logClick(new ClickLog(new Date(), collection, collection
 					.getProfiles().get(profile), userId, referer, rank,
 					redirectUrl, type, requestIp));

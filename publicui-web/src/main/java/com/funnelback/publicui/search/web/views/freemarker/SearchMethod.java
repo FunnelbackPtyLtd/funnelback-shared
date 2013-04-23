@@ -60,7 +60,7 @@ public class SearchMethod extends AbstractTemplateMethod {
             sq.getRawInputParameters().putAll(convertSimpleHashToParmeterMap((TemplateHashModelEx) arguments.get(3)));
         }
 
-        return searchTransactionProcessor.process(sq);
+        return searchTransactionProcessor.process(sq, null);
     }
     
     

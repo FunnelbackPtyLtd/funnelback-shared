@@ -23,7 +23,6 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  * @since 12.4
  */
 @Controller
-@SessionAttributes(SessionInterceptor.SEARCH_USER_ATTRIBUTE)
 public class SearchHistoryController extends SessionControllerBase {
     
     @Autowired
@@ -43,7 +42,7 @@ public class SearchHistoryController extends SessionControllerBase {
     @RequestMapping(value="/search-history-clear.json")
     public void searchHistoryClear(
             @RequestParam("collection") String collectionId,
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collectionId);
@@ -58,7 +57,7 @@ public class SearchHistoryController extends SessionControllerBase {
     @RequestMapping(value="/click-history-clear.json")
     public void clickHistoryClear(
             @RequestParam("collection") String collectionId,
-            @ModelAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) SearchUser user,
+            @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collectionId);

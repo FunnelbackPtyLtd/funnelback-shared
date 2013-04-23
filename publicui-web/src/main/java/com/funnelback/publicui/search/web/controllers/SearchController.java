@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.VIEW_TYPE_NS;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import lombok.extern.log4j.Log4j;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +34,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
@@ -36,8 +42,6 @@ import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
-
-import static com.funnelback.publicui.utils.web.MetricsConfiguration.*;
 
 /**
  * <p>Main controller for the Modern UI.</p>
@@ -56,7 +60,7 @@ public class SearchController {
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-        extra, question, response, error, httpRequest;
+        extra, question, response, session, error, httpRequest;
         
         public static Set<String> getNames() {
             HashSet<String> out = new HashSet<String>();
@@ -150,15 +154,17 @@ public class SearchController {
     public ModelAndView search(
             HttpServletRequest request,
             HttpServletResponse response,
-            @Valid SearchQuestion question) {
+            @Valid SearchQuestion question,
+            @ModelAttribute SearchUser user) {
 
+        
         SearchTransaction transaction = null;
         SearchQuestionBinder.bind(request, question, localeResolver);
         
         if (question.getCollection() != null) {
             // This is were the magic happens. The TransactionProcessor
             // will take care of processing the search request.
-            transaction = processor.process(question);
+            transaction = processor.process(question, user);
         } else {
             // Collection is null = non existent
             if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
@@ -208,6 +214,7 @@ public class SearchController {
         case htm:
             out.put(ModelAttributes.question.toString(), st.getQuestion());
             out.put(ModelAttributes.response.toString(), st.getResponse());
+            out.put(ModelAttributes.session.toString(), st.getSession());
             out.put(ModelAttributes.error.toString(), st.getError());
             if (st.getExtraSearches().size() > 0) {
                 out.put(ModelAttributes.extra.toString(), st.getExtraSearches());

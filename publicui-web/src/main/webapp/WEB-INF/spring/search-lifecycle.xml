@@ -13,6 +13,7 @@
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
 		</bean>
+		<ref bean="session" />
 		<ref bean="userKeysInputProcessor" />
 		<ref bean="facetScopeInputProcessor" />
 		<ref bean="facetedNavigationInputProcessor" />
@@ -24,6 +25,7 @@
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
 		<ref bean="hostnameInLogFilename" />
+		<ref bean="userIdInQueryLogs" />
 		<!-- <ref bean="contentOptimiserSelectDocumentInputProcessor"/> -->
 		<ref bean="extraSearchesInputProcessor" />
 			<bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
@@ -63,7 +65,6 @@
 		<ref bean="textMinerOutputProcessor" />
 		<ref bean="getTranslationsOutputProcessor" />
 		<ref bean="searchHistoryOutputProcessor" />
-		<ref bean="resultsCartOutputProcessor" />
 		<ref bean="metricsOutputProcessor" />
 		<bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />

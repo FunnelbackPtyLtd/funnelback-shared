@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * <p>Processes a {@link SearchTransaction}. Runs the different
@@ -14,9 +15,10 @@ public interface SearchTransactionProcessor {
 
     /**
      * Processes a {@link SearchQuestion} into a {@link SearchTransaction}
-     * @param q
-     * @return
+     * @param q {@link SearchQuestion} to process
+     * @param user Current user performing the search, might be null
+     * @return The processed {@link SearchTransaction}
      */
-    public SearchTransaction process(SearchQuestion q);
+    public SearchTransaction process(SearchQuestion q, SearchUser user);
     
 }

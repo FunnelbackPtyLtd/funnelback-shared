@@ -35,7 +35,6 @@ public class SearchQuestionBinder {
         to.setProfile(from.getProfile());
         to.setImpersonated(from.isImpersonated());
         to.setUserIdToLog(from.getUserIdToLog());
-        to.setSearchUser(from.getSearchUser());
         to.setLocale(from.getLocale());
         to.setCnClickedCluster(from.getCnClickedCluster());
         to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
@@ -93,11 +92,6 @@ public class SearchQuestionBinder {
         if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
             question.setUserIdToLog(LogUtils.getUserIdentifier(request,
                     DefaultValues.UserIdToLog.valueOf(question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG))));
-        }
-        
-        // Unique user identifier
-        if (request.getSession() != null && request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE) != null) {
-            question.setSearchUser(((SearchUser) request.getSession().getAttribute(SessionInterceptor.SEARCH_USER_ATTRIBUTE))); 
         }
         
         // Last clicked cluster

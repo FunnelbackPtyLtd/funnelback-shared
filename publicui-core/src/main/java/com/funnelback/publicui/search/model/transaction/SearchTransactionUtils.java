@@ -12,7 +12,7 @@ public class SearchTransactionUtils {
 
     /**
      * Checks that a transaction has a question.
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} is non null and has a
      *  {@link SearchQuestion}
      */
@@ -22,17 +22,17 @@ public class SearchTransactionUtils {
     
     /**
      * Checks that a transaction has a question which has query.
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} is non null and has a {@link SearchQuestion} and
      * a non-null query.
      */
     public static boolean hasQuery(SearchTransaction st) {
-        return(st != null && st.getQuestion() != null && st.getQuestion().getQuery() != null);
+        return st != null && st.getQuestion() != null && st.getQuestion().getQuery() != null;
     }
     
     /**
      * Checks that a transaction has a question which has a collection.
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} is non null and has a {@link SearchQuestion} and
      * a non-null {@link Collection}.
      */
@@ -42,7 +42,7 @@ public class SearchTransactionUtils {
     
     /**
      * Checks that a transaction has question which has a query and a collection.
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} is non null and has a {@link SearchQuestion}, 
      * a non-null query and a non-null {@link Collection}.
      */
@@ -52,7 +52,7 @@ public class SearchTransactionUtils {
     
     /**
      * Checks that a transaction has a response.
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} is non null and has a {@link SearchResponse}.
      */
     public static boolean hasResponse(SearchTransaction st) {
@@ -60,8 +60,17 @@ public class SearchTransactionUtils {
     }
     
     /**
+     * Checks that a transaction has session data
+     * @param st {@link SearchTransaction} to check
+     * @return true if the {@link SearchTransaction} is non null and has a {@link SearchSession}.
+     */
+    public static boolean hasSession(SearchTransaction st) {
+        return st != null && st.getSession() != null;
+    }
+    
+    /**
      * Checks that a transaction has a response which has a result packet
-     * @param st
+     * @param st {@link SearchTransaction} to check
      * @return true if the {@link SearchTransaction} has a result packet, false otherwise
      */
     public static boolean hasResultPacket(SearchTransaction st) {

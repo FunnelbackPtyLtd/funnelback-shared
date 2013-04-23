@@ -19,6 +19,8 @@ import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchSession;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
  * Default {@link SearchTransactionProcessor} implementations
@@ -47,8 +49,12 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
     @Setter private List<OutputProcessor> outputFlow;
     // ----
 
-    public SearchTransaction process(SearchQuestion question) {
+    public SearchTransaction process(SearchQuestion question, SearchUser user) {
         SearchTransaction transaction = new SearchTransaction(question, new SearchResponse());
+        if (user != null) {
+            transaction.setSession(new SearchSession(user));
+        }
+        
         try {
             // Record the time taken by each processor
             StopWatch sw = new StopWatch();
