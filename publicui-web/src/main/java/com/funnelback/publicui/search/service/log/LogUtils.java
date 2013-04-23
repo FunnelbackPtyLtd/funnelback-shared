@@ -25,7 +25,7 @@ public class LogUtils {
      * @param idType Type of identifier needed
      * @return The transformed address
      */
-    public static String getRequestIdentifier(ServletRequest request, DefaultValues.UserIdToLog idType) {
+    public static String getRequestIdentifier(ServletRequest request, DefaultValues.RequestIdToLog idType) {
         if (request == null) {
             return Log.REQUEST_ID_NOTHING;
         }

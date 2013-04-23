@@ -52,8 +52,8 @@ public class SearchQuestionBinder {
         
         // Add any HTTP servlet specifics 
         String requestId = LogUtils.getRequestIdentifier(request,
-            DefaultValues.UserIdToLog.valueOf(question.getCollection()
-                    .getConfiguration().value(Keys.USERID_TO_LOG, DefaultValues.USERID_TO_LOG.toString())));
+            DefaultValues.RequestIdToLog.valueOf(question.getCollection()
+                    .getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString())));
 
         MapUtils.putAsStringArrayIfNotNull(
                 question.getRawInputParameters(),
@@ -95,9 +95,9 @@ public class SearchQuestionBinder {
         // User identifier to log
         if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
             question.setRequestIdToLog(LogUtils.getRequestIdentifier(request,
-                    DefaultValues.UserIdToLog.valueOf(
-                        question.getCollection().getConfiguration().value(Keys.USERID_TO_LOG,
-                            DefaultValues.USERID_TO_LOG.toString()))));
+                    DefaultValues.RequestIdToLog.valueOf(
+                        question.getCollection().getConfiguration().value(Keys.REQUEST_ID_TO_LOG,
+                            DefaultValues.REQUEST_ID_TO_LOG.toString()))));
         }
         
         // Last clicked cluster

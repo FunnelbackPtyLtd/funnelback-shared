@@ -92,8 +92,8 @@ public class ClickController {
 		if (collection != null) {
 			// Get the user id
 			String requestId = LogUtils.getRequestIdentifier(request,
-					DefaultValues.UserIdToLog.valueOf(collection
-							.getConfiguration().value(Keys.USERID_TO_LOG)));
+					DefaultValues.RequestIdToLog.valueOf(collection
+							.getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
 			
 			String requestIp = getRequestIP(request);
 			
@@ -157,8 +157,8 @@ public class ClickController {
 
 			// Get the user id
 			String requestId = LogUtils.getRequestIdentifier(request,
-					DefaultValues.UserIdToLog.valueOf(collection
-							.getConfiguration().value(Keys.USERID_TO_LOG)));
+					DefaultValues.RequestIdToLog.valueOf(collection
+							.getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
 			
 			URL referer = getReferrer(request);
 			
