@@ -10,13 +10,25 @@ import org.apache.commons.lang.time.FastDateFormat;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 
+/**
+ * Contextual navigation log
+ */
 public class ContextualNavigationLog extends Log {
 
+    /** Date format used in the logs */
     public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
     
     @Getter final private String cluster;
     @Getter final private List<String> previousClusters;
     
+    /**
+     * @param date Date of the contextual navigation query
+     * @param collection Collection
+     * @param profile Profile
+     * @param requestId Request identifier (IP, hash, '-')
+     * @param cluster Clicked cluster
+     * @param previousClusters Previously clicked cluster (breadcrumb)
+     */
     public ContextualNavigationLog(Date date, Collection collection, Profile profile, String requestId,
             String cluster, List<String> previousClusters) {
         super(date, collection, profile, requestId);
@@ -24,6 +36,9 @@ public class ContextualNavigationLog extends Log {
         this.previousClusters = previousClusters;
     }
     
+    /**
+     * @return XML representation suitable for writing to log file
+     */
     public String toXml() {
         StringBuffer out = new StringBuffer();
         out.append("<cflus>")

@@ -13,21 +13,39 @@ import lombok.ToString;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 
+/**
+ * User interaction (query completion) log
+ */
 @ToString
 public class InteractionLog extends Log {
 
-	public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("EEE MMM d HH:mm:ss yyyy");
-	
-	@Getter private final String logType;
-	@Getter private final URL referer;
-	@Getter private final Map<String,String[]> parameters;
+    /** Date format used in the logs */
+    public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("EEE MMM d HH:mm:ss yyyy");
+    
+    /** Type of log, unconstrained to permit future types */
+    @Getter private final String logType;
+    
+    /** URL of the search page where the interaction occurred */
+    @Getter private final URL referer;
+    
+    /** Log event parameters */
+    @Getter private final Map<String, String[]> parameters;
 
-	public InteractionLog(Date date, Collection collection, Profile profile,
-			String requestId, String logType, URL referer, Map<String, String[]> parameters) {
-		super(date, collection, profile, requestId);
-		this.logType = logType;
-		this.referer = referer;
-		this.parameters = Collections.unmodifiableMap(parameters);
-	}
+    /**
+     * @param date Date of the event
+     * @param collection Collection
+     * @param profile Profile
+     * @param requestId Request identifier (IP, hash, '-')
+     * @param logType Type of log
+     * @param referer URL of the search page
+     * @param parameters log event parameters
+     */
+    public InteractionLog(Date date, Collection collection, Profile profile,
+        String requestId, String logType, URL referer, Map<String, String[]> parameters) {
+        super(date, collection, profile, requestId);
+        this.logType = logType;
+        this.referer = referer;
+        this.parameters = Collections.unmodifiableMap(parameters);
+    }
 
 }
