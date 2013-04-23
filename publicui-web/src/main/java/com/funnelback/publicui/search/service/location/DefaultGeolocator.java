@@ -38,7 +38,7 @@ public class DefaultGeolocator implements Geolocator {
         updateLookupServiceIfRequired();
 
         if (lookupService != null) {
-            String remoteIpAddress = question.getRequestIdToLog();
+            String remoteIpAddress = question.getRequestId();
             
             // TODO - FUN-5392 - Just for testing - remove this before shipping.
             if (question.getAdditionalParameters().containsKey("IP_test")) {

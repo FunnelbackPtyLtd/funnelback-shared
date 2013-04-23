@@ -26,7 +26,7 @@ public class SearchQuestionBinderTest {
         from.setCollection(new Collection("coll", null));
         from.setProfile("profile");
         from.setImpersonated(true);
-        from.setRequestIdToLog("user-id");
+        from.setRequestId("user-id");
         from.setLocale(Locale.JAPANESE);
         from.setCnClickedCluster("cluster");
         from.getCnPreviousClusters().add("previous-clusters");
@@ -41,7 +41,7 @@ public class SearchQuestionBinderTest {
         Assert.assertEquals("coll", to.getCollection().getId());
         Assert.assertEquals("profile", to.getProfile());
         Assert.assertEquals(true, to.isImpersonated());
-        Assert.assertEquals("user-id", to.getRequestIdToLog());
+        Assert.assertEquals("user-id", to.getRequestId());
         Assert.assertEquals(Locale.JAPANESE, to.getLocale());
         Assert.assertEquals("cluster", to.getCnClickedCluster());
         Assert.assertEquals("previous-clusters", to.getCnPreviousClusters().get(0));

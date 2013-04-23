@@ -93,7 +93,7 @@ public class ClickController {
 		if (collection != null) {
 			// Get the user id
 			String requestId = LogUtils.getRequestIdentifier(request,
-					DefaultValues.RequestIdToLog.valueOf(collection
+					DefaultValues.RequestId.valueOf(collection
 							.getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
 
 			URL referer = getReferrer(request);
@@ -158,7 +158,7 @@ public class ClickController {
 
 			// Get the user id
 			String requestId = LogUtils.getRequestIdentifier(request,
-					DefaultValues.RequestIdToLog.valueOf(collection
+					DefaultValues.RequestId.valueOf(collection
 							.getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
 			
 			URL referer = getReferrer(request);

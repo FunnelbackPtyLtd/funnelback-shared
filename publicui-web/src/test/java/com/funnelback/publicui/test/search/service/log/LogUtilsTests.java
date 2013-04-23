@@ -13,7 +13,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.common.config.DefaultValues.RequestIdToLog;
+import com.funnelback.common.config.DefaultValues.RequestId;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -26,19 +26,19 @@ public class LogUtilsTests {
     public void testGetRequestIdentifier() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("1.2.3.4");
-        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
-        Assert.assertEquals(DigestUtils.md5Hex("1.2.3.4"), LogUtils.getRequestIdentifier(request, RequestIdToLog.ip_hash));
-        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, RequestIdToLog.nothing));
+        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestId.ip));
+        Assert.assertEquals(DigestUtils.md5Hex("1.2.3.4"), LogUtils.getRequestIdentifier(request, RequestId.ip_hash));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, RequestId.nothing));
         try {
             LogUtils.getRequestIdentifier(request, null);
             Assert.fail();
         } catch (NullPointerException npe) {}
         
-        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(null, RequestIdToLog.ip));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(null, RequestId.ip));
         
         // Invalid host
         request.setRemoteAddr("\n");
-        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
     @Test 
@@ -46,7 +46,7 @@ public class LogUtilsTests {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("1.2.3.4");
         
-        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
     @Test
@@ -55,7 +55,7 @@ public class LogUtilsTests {
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "5.6.7.8");
         
-        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
     @Test
@@ -64,7 +64,7 @@ public class LogUtilsTests {
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "5.6.7.8, 9.10.11.12, 13.14.15.16");
         
-        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class LogUtilsTests {
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "   5.6.7.8  ,   9.10.11.12    ,   13.14.15.16   ");
         
-        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
     @Test
@@ -82,7 +82,7 @@ public class LogUtilsTests {
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "10.1.2.3");
         
-        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
     @Test
@@ -91,7 +91,7 @@ public class LogUtilsTests {
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "10.1.2.3, 5.6.7.8");
         
-        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestIdToLog.ip));
+        Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestId.ip));
     }
     
 

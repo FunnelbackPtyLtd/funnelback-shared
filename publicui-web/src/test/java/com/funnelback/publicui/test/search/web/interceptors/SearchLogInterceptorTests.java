@@ -36,10 +36,10 @@ public class SearchLogInterceptorTests {
         
         st = new SearchTransaction(new SearchQuestion(), null);
         st.getQuestion().setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.REQUEST_ID_TO_LOG, DefaultValues.RequestIdToLog.ip.toString());
+        st.getQuestion().getCollection().getConfiguration().setValue(Keys.REQUEST_ID_TO_LOG, DefaultValues.RequestId.ip.toString());
         st.getQuestion().setCnClickedCluster("Clicked Cluster");
         st.getQuestion().getCnPreviousClusters().add("Previous Cluster");
-        st.getQuestion().setRequestIdToLog("1.2.3.4");
+        st.getQuestion().setRequestId("1.2.3.4");
     }
     
     @Test

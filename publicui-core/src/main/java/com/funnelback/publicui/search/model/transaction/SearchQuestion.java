@@ -186,7 +186,7 @@ public class SearchQuestion {
      *  @since 12.4 - Renamed from <code>userId</code>
      *  @since 12.5 - Renamed from <code>userIdToLog</code>
      */
-    @Getter @Setter private String requestIdToLog = Log.REQUEST_ID_NOTHING;
+    @Getter @Setter private String requestId = Log.REQUEST_ID_NOTHING;
     
     /**
      * <p>Raw input parameters</p>

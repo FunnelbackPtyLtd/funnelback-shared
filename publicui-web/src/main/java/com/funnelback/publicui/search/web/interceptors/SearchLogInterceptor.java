@@ -38,7 +38,7 @@ public class SearchLogInterceptor implements HandlerInterceptor {
                     new Date(),
                     q.getCollection(),
                     q.getCollection().getProfiles().get(q.getProfile()),
-                    q.getRequestIdToLog(),
+                    q.getRequestId(),
                     q.getCnClickedCluster(),
                     q.getCnPreviousClusters(),
                     LogUtils.getUserId(ModelUtils.getSearchSession(modelAndView)));

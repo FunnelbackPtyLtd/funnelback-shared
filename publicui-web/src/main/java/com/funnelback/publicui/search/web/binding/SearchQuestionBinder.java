@@ -34,7 +34,7 @@ public class SearchQuestionBinder {
         to.setCollection(from.getCollection());
         to.setProfile(from.getProfile());
         to.setImpersonated(from.isImpersonated());
-        to.setRequestIdToLog(from.getRequestIdToLog());
+        to.setRequestId(from.getRequestId());
         to.setLocale(from.getLocale());
         to.setCnClickedCluster(from.getCnClickedCluster());
         to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
@@ -52,7 +52,7 @@ public class SearchQuestionBinder {
         
         // Add any HTTP servlet specifics 
         String requestId = LogUtils.getRequestIdentifier(request,
-            DefaultValues.RequestIdToLog.valueOf(question.getCollection()
+            DefaultValues.RequestId.valueOf(question.getCollection()
                     .getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString())));
 
         MapUtils.putAsStringArrayIfNotNull(
@@ -94,8 +94,8 @@ public class SearchQuestionBinder {
         
         // User identifier to log
         if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
-            question.setRequestIdToLog(LogUtils.getRequestIdentifier(request,
-                    DefaultValues.RequestIdToLog.valueOf(
+            question.setRequestId(LogUtils.getRequestIdentifier(request,
+                    DefaultValues.RequestId.valueOf(
                         question.getCollection().getConfiguration().value(Keys.REQUEST_ID_TO_LOG,
                             DefaultValues.REQUEST_ID_TO_LOG.toString()))));
         }

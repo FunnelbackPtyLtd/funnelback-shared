@@ -29,7 +29,7 @@ public class LogUtils {
      * @param idType Type of identifier needed
      * @return The transformed address
      */
-    public static String getRequestIdentifier(HttpServletRequest request, DefaultValues.RequestIdToLog idType) {
+    public static String getRequestIdentifier(HttpServletRequest request, DefaultValues.RequestId idType) {
         if (request == null) {
             return Log.REQUEST_ID_NOTHING;
         }
