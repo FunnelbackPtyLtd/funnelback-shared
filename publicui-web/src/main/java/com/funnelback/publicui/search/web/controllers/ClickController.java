@@ -91,7 +91,7 @@ public class ClickController {
 		
 		if (collection != null) {
 			// Get the user id
-			String userId = LogUtils.getUserIdentifier(request,
+			String requestId = LogUtils.getRequestIdentifier(request,
 					DefaultValues.UserIdToLog.valueOf(collection
 							.getConfiguration().value(Keys.USERID_TO_LOG)));
 			
@@ -105,7 +105,7 @@ public class ClickController {
 			parameters.keySet().removeAll(boringParameters);
 			
 			logService.logInteraction(new InteractionLog(new Date(), collection, collection
-					.getProfiles().get(profile), userId,logType,requestIp,referer,parameters));
+					.getProfiles().get(profile), requestId,logType,referer,parameters));
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -156,11 +156,10 @@ public class ClickController {
             }
 
 			// Get the user id
-			String userId = LogUtils.getUserIdentifier(request,
+			String requestId = LogUtils.getRequestIdentifier(request,
 					DefaultValues.UserIdToLog.valueOf(collection
 							.getConfiguration().value(Keys.USERID_TO_LOG)));
 			
-			String requestIp = getRequestIP(request);
 			URL referer = getReferrer(request);
 			
 			if (searchUser != null && result != null) {
@@ -170,8 +169,8 @@ public class ClickController {
 			}
 			
 			logService.logClick(new ClickLog(new Date(), collection, collection
-					.getProfiles().get(profile), userId, referer, rank,
-					redirectUrl, type, requestIp));
+					.getProfiles().get(profile), requestId, referer, rank,
+					redirectUrl, type));
 			
             response.sendRedirect(
                 redirectUrl.toString()

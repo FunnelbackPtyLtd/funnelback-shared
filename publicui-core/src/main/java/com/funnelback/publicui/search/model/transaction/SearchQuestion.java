@@ -39,7 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"principal"})
+@JsonIgnoreProperties("principal")
 public class SearchQuestion {
         
     /**
@@ -180,12 +180,13 @@ public class SearchQuestion {
     @Getter @Setter private boolean impersonated;
     
     /**
-     * User identifier to log for this transaction. Depending of the collection configuration
+     * Request identifier to log for this transaction. Depending of the collection configuration
      * it can be an IP address, an md5 hash of the address, nothing ("-") or null.
      * 
-     *  @since v12.4 - Renamed from <code>userId</code>
+     *  @since 12.4 - Renamed from <code>userId</code>
+     *  @since 12.5 - Renamed from <code>userIdToLog</code>
      */
-    @Getter @Setter private String userIdToLog = Log.USERID_NOTHING;
+    @Getter @Setter private String requestIdToLog = Log.REQUEST_ID_NOTHING;
     
     /**
      * <p>Raw input parameters</p>

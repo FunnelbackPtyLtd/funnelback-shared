@@ -159,11 +159,11 @@ public class SearchController {
 
         
         SearchTransaction transaction = null;
-        SearchQuestionBinder.bind(request, question, localeResolver);
         
         if (question.getCollection() != null) {
             // This is were the magic happens. The TransactionProcessor
             // will take care of processing the search request.
+            SearchQuestionBinder.bind(request, question, localeResolver);
             transaction = processor.process(question, user);
         } else {
             // Collection is null = non existent

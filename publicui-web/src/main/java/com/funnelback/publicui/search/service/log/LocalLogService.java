@@ -86,7 +86,7 @@ public class LocalLogService implements LogService {
                 entry[CLICK_LOG_COL_DATE] = ClickLog.DATE_FORMAT.format(cl.getDate());
             }
             
-            entry[CLICK_LOG_COL_IP] = cl.getRequestIp();
+            entry[CLICK_LOG_COL_IP] = cl.getRequestId();
             if(cl.getReferer() != null) {
                 entry[CLICK_LOG_COL_REFERRER] = cl.getReferer().toString();
             }
@@ -259,7 +259,7 @@ public class LocalLogService implements LogService {
                 logToWrite.add(null);
             }
 
-            logToWrite.add(il.getRequestIp());
+            logToWrite.add(il.getRequestId());
 
             if (il.getReferer() != null) {
                 logToWrite.add(il.getReferer().toString());

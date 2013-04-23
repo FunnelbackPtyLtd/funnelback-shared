@@ -11,7 +11,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 @RequiredArgsConstructor
 public abstract class Log {
 
-    public static final String USERID_NOTHING = "-";
+    public static final String REQUEST_ID_NOTHING = "-";
     
     @Getter final protected Date date;
     
@@ -19,8 +19,8 @@ public abstract class Log {
     @Getter final protected Profile profile;
     
     /**
-     * User identifier, could be an IP, a hash, or null
+     * Request identifier, could be an IP, a hash, or null
      */
-    @Getter final protected String userId;
+    @Getter final protected String requestId;
         
 }

@@ -15,9 +15,9 @@ public class PublicUIWarningLog extends Log {
     
     @Getter private final String message;
     
-    public PublicUIWarningLog(Date date, Collection collection, Profile profile, String userId,
+    public PublicUIWarningLog(Date date, Collection collection, Profile profile, String requestId,
             String message) {
-        super(date, collection, profile, userId);
+        super(date, collection, profile, requestId);
         this.message = message;
     }
     

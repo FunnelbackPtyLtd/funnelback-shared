@@ -21,14 +21,12 @@ public class InteractionLog extends Log {
 	@Getter private final String logType;
 	@Getter private final URL referer;
 	@Getter private final Map<String,String[]> parameters;
-	@Getter private final String requestIp;
 
 	public InteractionLog(Date date, Collection collection, Profile profile,
-			String userId, String logType, String requestIp, URL referer, Map<String, String[]> parameters) {
-		super(date, collection, profile, userId);
+			String requestId, String logType, URL referer, Map<String, String[]> parameters) {
+		super(date, collection, profile, requestId);
 		this.logType = logType;
 		this.referer = referer;
-		this.requestIp = requestIp;
 		this.parameters = Collections.unmodifiableMap(parameters);
 	}
 

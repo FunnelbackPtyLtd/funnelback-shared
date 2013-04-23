@@ -46,7 +46,7 @@ public class PadreReturnCode extends AbstractOutputProcessor {
                         new PublicUIWarningLog(new Date(),
                                 searchTransaction.getQuestion().getCollection(),
                                 searchTransaction.getQuestion().getCollection().getProfiles().get(searchTransaction.getQuestion().getProfile()),
-                                searchTransaction.getQuestion().getUserIdToLog(),
+                                searchTransaction.getQuestion().getRequestIdToLog(),
                                 i18n.tr("outputprocessor.padrereturncode.log.failed")));
                 break;
             }

@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
@@ -25,7 +26,7 @@ public class SearchQuestionBinderTest {
         from.setCollection(new Collection("coll", null));
         from.setProfile("profile");
         from.setImpersonated(true);
-        from.setUserIdToLog("user-id");
+        from.setRequestIdToLog("user-id");
         from.setLocale(Locale.JAPANESE);
         from.setCnClickedCluster("cluster");
         from.getCnPreviousClusters().add("previous-clusters");
@@ -40,7 +41,7 @@ public class SearchQuestionBinderTest {
         Assert.assertEquals("coll", to.getCollection().getId());
         Assert.assertEquals("profile", to.getProfile());
         Assert.assertEquals(true, to.isImpersonated());
-        Assert.assertEquals("user-id", to.getUserIdToLog());
+        Assert.assertEquals("user-id", to.getRequestIdToLog());
         Assert.assertEquals(Locale.JAPANESE, to.getLocale());
         Assert.assertEquals("cluster", to.getCnClickedCluster());
         Assert.assertEquals("previous-clusters", to.getCnPreviousClusters().get(0));
@@ -57,23 +58,25 @@ public class SearchQuestionBinderTest {
         LocaleResolver loc = mock(LocaleResolver.class);
         SearchQuestion question = new SearchQuestion();
         HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getRemoteAddr()).thenReturn("correct.ip");
+        when(req.getRemoteAddr()).thenReturn("1.2.3.4");
+        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
 
         SearchQuestionBinder.bind(req, question, loc);        
-        Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+        Assert.assertEquals("1.2.3.4", SearchQuestionBinder.getRequestIp(question));
     }
     
     @Test
     public void testGetIpForwardedFor() {
         LocaleResolver loc = mock(LocaleResolver.class);
         SearchQuestion question = new SearchQuestion();
+        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
 
         HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getRemoteAddr()).thenReturn("bad.ip");
-        when(req.getHeader("X-Forwarded-For")).thenReturn("correct.ip");
+        when(req.getRemoteAddr()).thenReturn("1.2.3.4");
+        when(req.getHeader("X-Forwarded-For")).thenReturn("5.6.7.8");
 
         SearchQuestionBinder.bind(req, question, loc);        
-        Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+        Assert.assertEquals("5.6.7.8", SearchQuestionBinder.getRequestIp(question));
 
     }
     
@@ -81,13 +84,14 @@ public class SearchQuestionBinderTest {
     public void testGetIpForwardedForMultiple() {
         LocaleResolver loc = mock(LocaleResolver.class);
         SearchQuestion question = new SearchQuestion();
-
+        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        
         HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getRemoteAddr()).thenReturn("bad.ip");
-        when(req.getHeader("X-Forwarded-For")).thenReturn("correct.ip, bad.ip, bad.ip");
+        when(req.getRemoteAddr()).thenReturn("1.2.3.4");
+        when(req.getHeader("X-Forwarded-For")).thenReturn("5.6.7.8, 9.10.11.12, 13.14.15.16");
 
         SearchQuestionBinder.bind(req, question, loc);        
-        Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+        Assert.assertEquals("5.6.7.8", SearchQuestionBinder.getRequestIp(question));
 
     }
 
@@ -95,13 +99,14 @@ public class SearchQuestionBinderTest {
     public void testGetIpForwardedForMultipleSpaces() {
         LocaleResolver loc = mock(LocaleResolver.class);
         SearchQuestion question = new SearchQuestion();
-
+        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        
         HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getRemoteAddr()).thenReturn("bad.ip");
-        when(req.getHeader("X-Forwarded-For")).thenReturn(" correct.ip ,  bad.ip , bad.ip");
+        when(req.getRemoteAddr()).thenReturn("1.2.3.4");
+        when(req.getHeader("X-Forwarded-For")).thenReturn(" 5.6.7.8 ,  9.10.11.12 , 13.14.15.16");
 
         SearchQuestionBinder.bind(req, question, loc);        
-        Assert.assertEquals("correct.ip", SearchQuestionBinder.getRequestIp(question));
+        Assert.assertEquals("5.6.7.8", SearchQuestionBinder.getRequestIp(question));
 
     }
 

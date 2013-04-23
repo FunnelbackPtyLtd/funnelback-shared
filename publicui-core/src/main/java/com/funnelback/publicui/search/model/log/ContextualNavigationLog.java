@@ -17,9 +17,9 @@ public class ContextualNavigationLog extends Log {
     @Getter final private String cluster;
     @Getter final private List<String> previousClusters;
     
-    public ContextualNavigationLog(Date date, Collection collection, Profile profile, String userId,
+    public ContextualNavigationLog(Date date, Collection collection, Profile profile, String requestId,
             String cluster, List<String> previousClusters) {
-        super(date, collection, profile, userId);
+        super(date, collection, profile, requestId);
         this.cluster = cluster;
         this.previousClusters = previousClusters;
     }
@@ -38,7 +38,7 @@ public class ContextualNavigationLog extends Log {
         out.append("<coll>").append(collection.getId()).append("</coll>")
             .append("<fluster>").append(cluster).append("</fluster>")
             .append("<prof>").append(profile.getId()).append("</prof>")
-            .append("<requestip>").append(userId).append("</requestip>")
+            .append("<requestip>").append(requestId).append("</requestip>")
             .append("</cflus>");
         
         return out.toString();

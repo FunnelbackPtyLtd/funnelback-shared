@@ -16,19 +16,19 @@ public class LogUtilsTests {
     public void testGetUserIdentifier() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("1.2.3.4");
-        Assert.assertEquals("1.2.3.4", LogUtils.getUserIdentifier(request, UserIdToLog.ip));
-        Assert.assertEquals(DigestUtils.md5Hex("1.2.3.4"), LogUtils.getUserIdentifier(request, UserIdToLog.ip_hash));
-        Assert.assertEquals(Log.USERID_NOTHING, LogUtils.getUserIdentifier(request, UserIdToLog.nothing));
+        Assert.assertEquals("1.2.3.4", LogUtils.getRequestIdentifier(request, UserIdToLog.ip));
+        Assert.assertEquals(DigestUtils.md5Hex("1.2.3.4"), LogUtils.getRequestIdentifier(request, UserIdToLog.ip_hash));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, UserIdToLog.nothing));
         try {
-            LogUtils.getUserIdentifier(request, null);
+            LogUtils.getRequestIdentifier(request, null);
             Assert.fail();
         } catch (NullPointerException npe) {}
         
-        Assert.assertEquals(Log.USERID_NOTHING, LogUtils.getUserIdentifier(null, UserIdToLog.ip));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(null, UserIdToLog.ip));
         
         // Invalid host
         request.setRemoteAddr("\n");
-        Assert.assertEquals(Log.USERID_NOTHING, LogUtils.getUserIdentifier(request, UserIdToLog.ip));
+        Assert.assertEquals(Log.REQUEST_ID_NOTHING, LogUtils.getRequestIdentifier(request, UserIdToLog.ip));
     }
 
 }

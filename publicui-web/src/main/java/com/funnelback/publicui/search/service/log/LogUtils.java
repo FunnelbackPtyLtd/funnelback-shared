@@ -12,18 +12,22 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.log.Log;
 
+/**
+ * Utilities for queries / click logging
+ *
+ */
 @Log4j
 public class LogUtils {
     
     /**
-     * Transforms a address into a search identifier depending of the type of identifier needed.
-     * @param data The source address
+     * Get the request identifier depending of the type of identifier needed.
+     * @param request The source HTTP request
      * @param idType Type of identifier needed
      * @return The transformed address
      */
-    public static String getUserIdentifier(ServletRequest request, DefaultValues.UserIdToLog idType) {
+    public static String getRequestIdentifier(ServletRequest request, DefaultValues.UserIdToLog idType) {
         if (request == null) {
-            return Log.USERID_NOTHING;
+            return Log.REQUEST_ID_NOTHING;
         }
         
         try {
@@ -31,14 +35,15 @@ public class LogUtils {
             case ip_hash:
                 return DigestUtils.md5Hex(InetAddress.getByName(request.getRemoteAddr()).getHostAddress());
             case nothing:
-                return Log.USERID_NOTHING;
+                return Log.REQUEST_ID_NOTHING;
             case ip:
             default:
                 return InetAddress.getByName(request.getRemoteAddr()).getHostAddress();
             }
         } catch (UnknownHostException uhe) {
-            log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + idType + "'", uhe);
-            return Log.USERID_NOTHING;
+            log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + idType + "'",
+                uhe);
+            return Log.REQUEST_ID_NOTHING;
         }
     }
     

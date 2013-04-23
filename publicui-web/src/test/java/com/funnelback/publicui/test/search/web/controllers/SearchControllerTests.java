@@ -21,6 +21,7 @@ import waffle.windows.auth.IWindowsAccount;
 import waffle.windows.auth.IWindowsIdentity;
 import waffle.windows.auth.IWindowsImpersonationContext;
 
+import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
@@ -90,7 +91,7 @@ public class SearchControllerTests {
     
     @Test
     public void testNoQueryShouldReturnSearchTransactionWithResponse() {
-        Collection col = new Collection("test", null);
+        Collection col = new Collection("test", new NoOptionsConfig("dummy"));
         SearchQuestion q = new SearchQuestion();
         q.setCollection(col);
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), q, null);
@@ -105,7 +106,7 @@ public class SearchControllerTests {
     
     @Test
     public void testEmptyQueryShouldReturnSearchTransaction() {
-        Collection col = new Collection("test-collection", null);
+        Collection col = new Collection("test-collection", new NoOptionsConfig("dummy"));
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(col);
         sq.setQuery("");
@@ -122,8 +123,8 @@ public class SearchControllerTests {
     @Test
     public void testInvalidCollectionShouldShowCollectionList() {
         configRepository.removeAllCollections();
-        configRepository.addCollection(new Collection("test1", null));
-        configRepository.addCollection(new Collection("test2", null));
+        configRepository.addCollection(new Collection("test1", new NoOptionsConfig("dummy")));
+        configRepository.addCollection(new Collection("test2", new NoOptionsConfig("dummy")));
 
         SearchQuestion sq = new SearchQuestion();
         sq.setQuery("test");
@@ -146,7 +147,7 @@ public class SearchControllerTests {
         ((MockOutputProcessor) outputFlow.get(0)).setTraversed(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", null));
+        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
         
@@ -171,7 +172,7 @@ public class SearchControllerTests {
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", null));
+        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
@@ -191,7 +192,7 @@ public class SearchControllerTests {
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(false);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", null));
+        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 
@@ -211,7 +212,7 @@ public class SearchControllerTests {
         ((MockOutputProcessor)outputFlow.get(0)).setThrowError(true);
 
         SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("test-collection", null));
+        sq.setCollection(new Collection("test-collection", new NoOptionsConfig("dummy")));
         sq.setQuery("test-query");
         ModelAndView mav = searchController.search(request, new MockHttpServletResponse(), sq, null);
 

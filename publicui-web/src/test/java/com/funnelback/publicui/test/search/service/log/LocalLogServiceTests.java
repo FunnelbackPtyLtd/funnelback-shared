@@ -120,7 +120,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "userID", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
         
         logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
@@ -147,9 +147,9 @@ public class LocalLogServiceTests {
 		Profile p = new Profile("profile");
 		Date date = new Date(1361331439286L);
 
-		ClickLog cl = new ClickLog(date, c, p, "userID", new URL(
+		ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL(
 				"http://referrer.com"), 1, new URI("http://example.com/click"),
-				ClickLog.Type.CLICK, "192.168.0.1");
+				ClickLog.Type.CLICK);
 
 		logService.logClick(cl);
 		Assert.assertFalse(clickLogFileDoesntExist.exists());
@@ -169,7 +169,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "userID", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -196,7 +196,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "userID", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "192.168.0.1");
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -215,7 +215,7 @@ public class LocalLogServiceTests {
         Profile p = new Profile("profile");
         Date date = new Date(1361331439286L);
     
-        ClickLog cl = new ClickLog(date, c, p, "userID", null, 1, null, ClickLog.Type.FP, "192.168.0.1");
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, null, ClickLog.Type.FP);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         
@@ -233,7 +233,7 @@ public class LocalLogServiceTests {
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
     
-        ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null, null);
+        ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null);
 		logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
         

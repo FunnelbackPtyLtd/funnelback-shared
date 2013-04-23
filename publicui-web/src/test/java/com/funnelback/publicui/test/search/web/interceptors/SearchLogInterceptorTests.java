@@ -39,7 +39,7 @@ public class SearchLogInterceptorTests {
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.USERID_TO_LOG, DefaultValues.UserIdToLog.ip.toString());
         st.getQuestion().setCnClickedCluster("Clicked Cluster");
         st.getQuestion().getCnPreviousClusters().add("Previous Cluster");
-        st.getQuestion().setUserIdToLog("1.2.3.4");
+        st.getQuestion().setRequestIdToLog("1.2.3.4");
     }
     
     @Test
@@ -92,7 +92,7 @@ public class SearchLogInterceptorTests {
         Assert.assertNotNull(cnLog.getDate());
         Assert.assertEquals("Previous Cluster", cnLog.getPreviousClusters().get(0));
         Assert.assertNull("", cnLog.getProfile());
-        Assert.assertEquals("userId should be taken from the SearchQuestion, not the request", "1.2.3.4", cnLog.getUserId());
+        Assert.assertEquals("userId should be taken from the SearchQuestion, not the request", "1.2.3.4", cnLog.getRequestId());
     }
     
 }
