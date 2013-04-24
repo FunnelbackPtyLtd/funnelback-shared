@@ -17,6 +17,13 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.IndexRepository;
+
+/**
+ * This class reads the bldinfo for information relevant to the content optimiser, and returns a BldInfoStats object containing that info. 
+ * 
+ * @author tim
+ *
+ */
 @Log4j
 @Component
 public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {

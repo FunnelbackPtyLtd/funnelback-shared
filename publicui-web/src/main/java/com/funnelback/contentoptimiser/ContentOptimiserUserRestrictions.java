@@ -4,6 +4,13 @@ import lombok.Getter;
 
 import com.funnelback.common.config.Config;
 
+/**
+ * This class uses the config to determine whether or not a particular user (admin or non) is able to access the 
+ * content optimiser in a particular access mode.  
+ * 
+ * @author tim
+ *
+ */
 public class ContentOptimiserUserRestrictions {
     @Getter private final boolean allowNonAdminTextAccess;
     @Getter private final boolean allowNonAdminFullAccess;

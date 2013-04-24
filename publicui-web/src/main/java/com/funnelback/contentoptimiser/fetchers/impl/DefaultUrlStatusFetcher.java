@@ -21,6 +21,13 @@ import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
 import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
+/**
+ * This class obtains the "status" of the URL, as seen by the crawler and url-status.pl. This is used to determine
+ * why we may not have the document (eg, the crawler never saw it, or exclude rules prevented this document being downloaded). 
+ * 
+ * @author tim
+ *
+ */
 @Log4j
 @Component
 public class DefaultUrlStatusFetcher implements UrlStatusFetcher {

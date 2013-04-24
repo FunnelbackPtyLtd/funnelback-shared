@@ -101,6 +101,11 @@ public class DefaultDocFromCache implements DocFromCache {
         return orig.toArray(new String[0]);
     }
     
+    /**
+     * Extracts a document from the cache, and indexes it in a temporary location to find out the words in the document. 
+     * 
+     *  @return a string containing all the words in the document in the order that they appear.
+     */
     @Override
     public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config,String collectionId) {
         // Create a temp directory to store the cache copy and the index
