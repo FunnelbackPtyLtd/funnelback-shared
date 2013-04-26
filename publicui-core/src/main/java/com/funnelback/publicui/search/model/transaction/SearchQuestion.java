@@ -459,6 +459,9 @@ public class SearchQuestion {
                 
                 /** Summary of the result */
                 public static final String SUMMARY = "summary";
+                
+                /** Live URL to access the result */
+                public static final String LIVE_URL = "liveUrl";
             }
         }
 

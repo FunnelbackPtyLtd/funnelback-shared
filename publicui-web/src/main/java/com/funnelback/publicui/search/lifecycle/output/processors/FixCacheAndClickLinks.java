@@ -96,6 +96,8 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             // user click history. Only add fields we need.
             out.append("&").append(RequestParameters.Click.Result.INDEX_URL)
                 .append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
+                .append("&").append(RequestParameters.Click.Result.LIVE_URL)
+                .append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
                 .append("&").append(RequestParameters.Click.Result.TITLE)
                 .append("=").append(URLEncoder.encode(r.getTitle(), "UTF-8"))
                 .append("&").append(RequestParameters.Click.Result.SUMMARY)

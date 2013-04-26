@@ -86,6 +86,6 @@ public class ExtraSearches extends AbstractInputProcessor implements Application
     
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;        
+        this.applicationContext = applicationContext;
     }
 }

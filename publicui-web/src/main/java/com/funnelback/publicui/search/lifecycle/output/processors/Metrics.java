@@ -11,8 +11,10 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,7 @@ import com.yammer.metrics.core.MetricsRegistry;
  * Update internal performance metrics
  */
 @Component("metricsOutputProcessor")
+@Log4j
 public class Metrics extends AbstractOutputProcessor {
     
     @Autowired
@@ -95,6 +98,12 @@ public class Metrics extends AbstractOutputProcessor {
         allTotalMatchingHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false);
         allPadreElapsedTimeHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false);
         allQueriesMeter = metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS);
+    }
+    
+    @PreDestroy
+    public void preDestroy() {
+        log.debug("Shutting down Yammer metrics");
+        metrics.shutdown();
     }
     
 }

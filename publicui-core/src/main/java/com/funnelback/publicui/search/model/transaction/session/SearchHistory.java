@@ -3,6 +3,12 @@ package com.funnelback.publicui.search.model.transaction.session;
 import java.net.URL;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,9 +18,24 @@ import lombok.ToString;
  * 
  * @since v12.4
  */
+@Entity
 @ToString
 public class SearchHistory {
 
+    /**
+     * Internal database id
+     */
+    @Id
+    @GeneratedValue
+    private Long id;
+    
+    /**
+     * User that performed the search
+     */
+    @ManyToOne
+    @JoinColumn
+    private SearchUser user;
+    
     /** Collection identifier for this search event */
     @Getter @Setter private String collectionId;
     
