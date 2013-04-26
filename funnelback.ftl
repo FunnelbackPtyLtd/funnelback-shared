@@ -558,12 +558,17 @@
 
     Generates a link to show the results that were collapsed with this specific result.
 
-    @param label Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results.
+    @param label Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String. Column &quot;0&quot; will be taken as the default label.
 
 -->
-<#macro Collapsed label="{0} very similar results">
+<#macro Collapsed label={"0": "{0} very similar results"}>
     <#if s.result.collapsed??>
-        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=%3F:${s.result.collapsed.signature}&amp;collapsing=off">${label?replace("{0}", s.result.collapsed.count)}</a>
+        <#assign text = label["0"] />
+        <#if question.inputParameterMap["which_collapsing_col"]??
+            && label[question.inputParameterMap["which_collapsing_col"]]??>
+            <#assign text = label[question.inputParameterMap["which_collapsing_col"]] />
+        </#if>
+        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 
