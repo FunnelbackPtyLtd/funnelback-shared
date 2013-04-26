@@ -627,9 +627,9 @@
     or a &quot;remove&quot; link if the result is already in the cart
 -->
 <#macro ResultCart>
-    <#if question?? && question.searchUser??
-        && response?? && response.resultsCart??>
-        <a class="fb-result-cart" data-incart="<#if response.resultsCart[s.result.indexUrl]??>true<#else>false</#if>" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
+    <#if session?? && session.searchUser??
+        && session.resultsCart??>
+        <a class="fb-result-cart" data-incart="<#if session.resultsCart[s.result.indexUrl]??>true<#else>false</#if>" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
     </#if>
 </#macro>
 
@@ -643,12 +643,12 @@
     @param cssClass Class to use to style the list (UL)
 -->
 <#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5 cssClass="">
-    <#if response.searchHistory?size &gt; 0>
+    <#if session?? && session.searchHistory?size &gt; 0>
         <div id="fb-search-history">
             <h4>${lastQueriesLabel} (<a class="clear" href="search-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
             <ul<#if cssClass != ""> class="${cssClass}"</#if>>
-                <#list response.searchHistory as h>
+                <#list session.searchHistory as h>
                     <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.searchUrl}">${h.originalQuery}</a> (${h.totalMatching} ${resultsLabel}) ${h.searchDate?datetime?string}</li> 
                 </#list>
             </ul>
@@ -666,12 +666,12 @@
     @param cssClass Class to use to style the list (UL)
 -->
 <#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5 cssClass="">
-    <#if response.clickHistory?size &gt; 0>
+    <#if session?? && session.clickHistory?size &gt; 0>
         <div id="fb-click-history">
             <h4>${lastClicksLabel} (<a class="clear" href="click-history-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
 
             <ul<#if cssClass != ""> class="${cssClass}"</#if>>
-                <#list response.clickHistory as h>
+                <#list session.clickHistory as h>
                     <li<#if h_index &gt;= max> class="fb-more" </#if>>
                         <a href="${h.liveUrl}">${h.title}</a>
                         <p>${h.summary}</p>
@@ -699,7 +699,7 @@
         <form action="cart-email.json?collection=${question.collection.id}" method="get">
             <input type="hidden" name="collection" value="${question.collection.id}" />
             <input type="submit" value="Send by email to:" />
-            <input type="email" name="email" value="${question.searchUser.email!}" />
+            <input type="email" name="email" value="${session.searchUser.email!}" />
             <span class="email-result" style="display:none;"></span><img class="email-progress" style="display: none;" src="${SearchPrefix}images/ajax-loader.gif" />
         </form>
     </div>
