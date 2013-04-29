@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
-import com.funnelback.publicui.search.lifecycle.input.processors.UserIdIngQueryLogs;
+import com.funnelback.publicui.search.lifecycle.input.processors.UserIdInQueryLogs;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -14,11 +14,11 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 public class UserIdInQueryLogsTest {
 
-    private UserIdIngQueryLogs processor;
+    private UserIdInQueryLogs processor;
     
     @Before
     public void before() {
-        processor = new UserIdIngQueryLogs();
+        processor = new UserIdInQueryLogs();
     }
     
     
