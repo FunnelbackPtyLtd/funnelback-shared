@@ -654,7 +654,7 @@
 
             <ul<#if cssClass != ""> class="${cssClass}"</#if>>
                 <#list session.searchHistory as h>
-                    <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.searchUrl}">${h.originalQuery}</a> (${h.totalMatching} ${resultsLabel}) ${h.searchDate?datetime?string}</li> 
+                    <li<#if h_index &gt;= max> class="fb-more" </#if>><a href="${h.searchUrl}">${h.originalQuery?html}</a> (${h.totalMatching} ${resultsLabel}) ${h.searchDate?datetime?string}</li> 
                 </#list>
             </ul>
         </div>
