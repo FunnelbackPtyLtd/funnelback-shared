@@ -5,7 +5,6 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.sqlite.JDBC;
 
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.SearchUserRepository;
