@@ -30,14 +30,15 @@ public class SearchHistory {
     private Long id;
     
     /**
-     * User that performed the search
+     * User who performed the search
      */
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="userId")
+    @Getter @Setter
     private SearchUser user;
     
     /** Collection identifier for this search event */
-    @Getter @Setter private String collectionId;
+    @Getter @Setter private String collection;
     
     /** Date when the search was performed */
     @Getter @Setter private Date searchDate;

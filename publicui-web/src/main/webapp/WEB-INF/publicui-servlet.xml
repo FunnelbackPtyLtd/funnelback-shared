@@ -23,6 +23,12 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
+			<bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+				<property name="persistenceUnitName" value="search-session" />
+			</bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/search.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>

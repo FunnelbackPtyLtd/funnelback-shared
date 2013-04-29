@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="1" author="nguillaumin">
+		<createTable tableName="SearchHistory">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="userId" type="varchar(36)">
+				<constraints nullable="false" />
+			</column>
+			<column name="collection" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="searchDate" type="timestamp">
+				<constraints nullable="false" />
+			</column>
+			<column name="originalQuery" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="queryAsProcessed" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="totalMatching" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="currStart" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="numRanks" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="searchUrl" type="varchar(1024)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
+			<column name="userId" />
+		</createIndex>
+		<createIndex tableName="SearchHistory" indexName="SearchHistory_Collection_Idx">
+			<column name="collection" />
+		</createIndex>
+
+		<createTable tableName="ClickHistory">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="userId" type="varchar(36)">
+				<constraints nullable="false" />
+			</column>
+			<column name="collection" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="clickDate" type="timestamp">
+				<constraints nullable="false" />
+			</column>
+			<column name="indexUrl" type="varchar(1024)">
+				<constraints nullable="false" />
+			</column>
+			<column name="liveUrl" type="varchar(1024)">
+				<constraints nullable="false" />
+			</column>
+			<column name="title" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="summary" type="varchar(1024)" />
+		</createTable>
+		<createIndex tableName="ClickHistory" indexName="ClickHistory_UserId_Idx">
+			<column name="userId" />
+		</createIndex>
+		<createIndex tableName="ClickHistory" indexName="ClickHistory_Collection_Idx">
+			<column name="collection" />
+		</createIndex>
+		
+
+		<createTable tableName="SearchUser">
+			<!-- FIXME Use proper GUID type ? Integer ? -->
+			<column name="id" type="varchar(36)">
+				<constraints primaryKey="true" nullable="false"></constraints>
+			</column>
+			<column name="email" type="varchar(255)" />
+			<column name="createdDate" type="timestamp">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint referencedTableName="SearchUser"
+			referencedColumnNames="id" constraintName="search_history_search_user_fk" baseColumnNames="userId"
+			baseTableName="searchHistory" />
+
+	</changeSet>
+
+</databaseChangeLog>

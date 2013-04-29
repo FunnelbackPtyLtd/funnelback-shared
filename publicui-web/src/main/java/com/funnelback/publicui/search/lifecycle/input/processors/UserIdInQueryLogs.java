@@ -14,7 +14,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * @since 12.5
  */
 @Component("userIdInQueryLogs")
-public class UserIdIngQueryLogs extends AbstractInputProcessor {
+public class UserIdInQueryLogs extends AbstractInputProcessor {
 
     /** Name of the QP option to specify the user id */
     public static final String QP_OPT_USERNAME = "-username";

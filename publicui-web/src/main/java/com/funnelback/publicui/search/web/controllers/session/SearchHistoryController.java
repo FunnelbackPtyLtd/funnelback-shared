@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  * @since 12.4
  */
 @Controller
-public class SearchHistoryController extends SessionControllerBase {
+public class SearchHistoryController extends SessionApiControllerBase {
     
     @Autowired
     private ConfigRepository configRepository;

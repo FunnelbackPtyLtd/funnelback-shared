@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @since 12.4
  */
 @Log4j
-public class SessionControllerBase {
+public class SessionApiControllerBase extends SessionController {
 
     protected final static String STATUS = "status";
     protected final static String ERROR_MESSAGE = "error-message";

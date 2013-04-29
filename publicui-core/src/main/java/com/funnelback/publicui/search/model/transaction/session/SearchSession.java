@@ -39,7 +39,7 @@ public class SearchSession {
     /**
      * Click history of the user for the current collection.
      */
-    @Getter final private List<Result> clickHistory = new ArrayList<>();
+    @Getter final private List<ClickHistory> clickHistory = new ArrayList<>();
 
     /**
      * Results cart of the user for the current collection

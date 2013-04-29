@@ -14,5 +14,11 @@ public interface SearchUserRepository {
      * @return {@link SearchUser} for the given Id, or null if not found
      */
     public SearchUser getSearchUser(String userId);
+
+    /**
+     * Creates a new search user
+     * @param user User to create
+     */
+    public void createSearchUser(SearchUser user);
     
 }

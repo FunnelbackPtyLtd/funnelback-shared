@@ -5,5 +5,6 @@
 	<persistence-unit name="search-session" transaction-type="RESOURCE_LOCAL">
 		<class>com.funnelback.publicui.search.model.transaction.session.SearchUser</class>
 		<class>com.funnelback.publicui.search.model.transaction.session.SearchHistory</class>
+		<class>com.funnelback.publicui.search.model.transaction.session.ClickHistory</class>
 	</persistence-unit>
 </persistence> 

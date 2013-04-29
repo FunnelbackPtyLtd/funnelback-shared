@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * User performing the search.
  * 
@@ -22,6 +25,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@JsonIgnoreProperties({"searchHistory", "clickHistory"})
 public class SearchUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,14 +40,26 @@ public class SearchUser implements Serializable {
      * <p>Can be null if it's not known.</p>
      */
     @Getter @Setter private String email;
+    
+    /**
+     * Date this user was created
+     */
+    @Getter @Setter private Date createdDate;
 
     /**
      * Search history for that user
      */
-    @OneToMany
+    @OneToMany(mappedBy="user")
     @Getter
     private List<SearchHistory> searchHistory;
-    
+
+    /**
+     * Click history for that user
+     */
+    @OneToMany(mappedBy="user")
+    @Getter
+    private List<ClickHistory> clickHistory;
+
     /**
      * Creates a new user
      * @param id ID to assign to the user

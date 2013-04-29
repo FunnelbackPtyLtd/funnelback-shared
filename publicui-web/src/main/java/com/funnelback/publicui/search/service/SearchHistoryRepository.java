@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
@@ -16,14 +17,14 @@ public interface SearchHistoryRepository {
     
     /**
      * Saves a search for a given user
-     * @param u
-     * @param h
+     * @param h Search to save
      */
-    public void saveSearch(SearchUser u, SearchHistory h, Collection c);
+    public void saveSearch(SearchHistory h);
     
     /**
-     * @param u
-     * @param maxEntries
+     * @param u User to lookup the history for
+     * @param c collection to lookup the history for
+     * @param maxEntries Maximum number of search history entries to return
      * @return Latest <code>maxEntries</code> entries from the user
      * search history
      */
@@ -31,32 +32,31 @@ public interface SearchHistoryRepository {
     
     /**
      * Delete all entries for the given user on the given collection
-     * @param user
-     * @param collection
+     * @param u User to delete the history for
+     * @param c Collection to delete the history for
      */
-    public void clearSearchHistory(SearchUser user, Collection collection);
+    public void clearSearchHistory(SearchUser u, Collection c);
 
     /**
      * Saves a clicked result for a given user
-     * @param u
-     * @param r
-     * @param c
+     * @param h Click to save
      */
-    public void saveClick(SearchUser u, Result r, Collection c);
+    public void saveClick(ClickHistory h);
     
     /**
-     * @param u
-     * @param c
+     * @param u user to lookup the history for
+     * @param c Collection to lookup the history for
+     * @param maxEntries Maximum number of click history entries to return
      * @return Latest <code>maxEntries</code> results clicked
      */
-    public List<Result> getClickHistory(SearchUser u, Collection c, int maxEntries);
+    public List<ClickHistory> getClickHistory(SearchUser u, Collection c, int maxEntries);
     
     /**
      * Delete all click history entries for the given user on the given collection
-     * @param user
-     * @param c
+     * @param u User to delete the history for
+     * @param c Collection to delete the history for
      */
-    public void clearClickHistory(SearchUser user, Collection c);
+    public void clearClickHistory(SearchUser u, Collection c);
     
     
 }

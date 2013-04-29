@@ -48,13 +48,14 @@ public class SearchHistory extends AbstractOutputProcessor {
             if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {
                 com.funnelback.publicui.search.model.transaction.session.SearchHistory h =
                     new com.funnelback.publicui.search.model.transaction.session.SearchHistory();
+                h.setUser(st.getSession().getSearchUser());
                 h.setCurrStart(r.getResultPacket().getResultsSummary().getCurrStart());
                 h.setNumRanks(r.getResultPacket().getResultsSummary().getNumRanks());
                 h.setOriginalQuery(q.getOriginalQuery());
                 h.setQueryAsProcessed(r.getResultPacket().getQueryAsProcessed());
                 h.setSearchDate(new Date());
                 h.setTotalMatching(r.getResultPacket().getResultsSummary().getTotalMatching());
-                h.setCollectionId(q.getCollection().getId());
+                h.setCollection(q.getCollection().getId());
                 try {
                     h.setSearchUrl(new URL(q.getInputParameterMap()
                         .get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString())));
@@ -62,7 +63,7 @@ public class SearchHistory extends AbstractOutputProcessor {
                     log.warn("Couldn't parse search URL", mue);
                 }
                 
-                repository.saveSearch(s.getSearchUser(), h, q.getCollection());
+                repository.saveSearch(h);
                 
                 // Insert current search at the head of the list
                 s.getSearchHistory().add(0, h);

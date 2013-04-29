@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,6 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
@@ -32,7 +32,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
-import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 import com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver;
 
 import freemarker.template.Template;
@@ -44,7 +43,7 @@ import freemarker.template.Template;
  *
  */
 @Controller
-public class ResultsCartController extends SessionControllerBase {
+public class ResultsCartController extends SessionApiControllerBase {
 
     @Autowired
     private ConfigRepository configRepository;
@@ -123,7 +122,7 @@ public class ResultsCartController extends SessionControllerBase {
     @RequestMapping(value="/cart-remove.json")
     public void cartRemove(
             @RequestParam("collection") String collectionId,
-            String url,
+            URI url,
             @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 

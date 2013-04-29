@@ -39,6 +39,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
+import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricsRegistry;
@@ -56,7 +57,7 @@ import com.yammer.metrics.core.MetricsRegistry;
  */
 @Controller
 @Log4j
-public class SearchController {
+public class SearchController extends SessionController {
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,

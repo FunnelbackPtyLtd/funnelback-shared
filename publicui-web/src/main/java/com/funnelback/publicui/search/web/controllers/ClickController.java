@@ -17,7 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.URIEditor;
+import org.springframework.beans.propertyeditors.URLEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,24 +34,24 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
-import com.funnelback.publicui.search.service.SearchUserRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
-import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
-import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
+import com.funnelback.publicui.search.web.controllers.session.SessionController;
 
 /**
  * Click tracking controller
  */
 @Log4j
 @Controller
-public class ClickController {
+public class ClickController extends SessionController {
 
 	/** Parameters not to include in the payload part of interaction logs */
 	private static final String[] BORING_INTERACTION_PARAMETERS = new String[]{RequestParameters.COLLECTION,RequestParameters.Click.TYPE};
@@ -69,6 +73,17 @@ public class ClickController {
 
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
+    
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+//        binder.setAllowedFields(
+//                RequestParameters.CLIVE,
+//                RequestParameters.COLLECTION,
+//                RequestParameters.FORM,
+//                RequestParameters.PROFILE,
+//                RequestParameters.QUERY    );
+    }
+
     
 	/**
 	 * Binding for interaction logging. 
@@ -143,7 +158,7 @@ public class ClickController {
 			@RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
 			@RequestParam(value = RequestParameters.Click.NOATTACHMENT,
 			               required = false, defaultValue = "false") boolean noAttachment,
-			Result result,
+			ClickHistory clickHistory,
 			@ModelAttribute SearchUser user) throws IOException {
 
         Collection collection = configRepository.getCollection(collectionId);
@@ -163,8 +178,10 @@ public class ClickController {
 			
 			URL referer = getReferrer(request);
 			
-			if (user != null && result != null) {
-				searchHistoryRepository.saveClick(user,result, collection);
+			if (user != null && clickHistory != null) {
+			    clickHistory.setClickDate(new Date());
+			    clickHistory.setUser(user);
+				searchHistoryRepository.saveClick(clickHistory);
 			}
 			
 			logService.logClick(new ClickLog(new Date(), collection, collection

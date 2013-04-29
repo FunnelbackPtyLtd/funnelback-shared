@@ -92,7 +92,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         
         if (question.getCollection().getConfiguration().valueAsBoolean(
                 Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
-            // Add parameters to build a Result object that will be saved in the
+            // Add parameters to build a ClickHistory object that will be saved in the
             // user click history. Only add fields we need.
             out.append("&").append(RequestParameters.Click.Result.INDEX_URL)
                 .append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))

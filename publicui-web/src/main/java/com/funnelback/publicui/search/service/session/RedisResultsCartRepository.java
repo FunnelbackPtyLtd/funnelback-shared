@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.session;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,9 +47,9 @@ public class RedisResultsCartRepository implements ResultsCartRepository, Applic
 
     @Override
     public void removeFromCart(SearchUser user, Collection collection,
-            String url) {
+            URI uri) {
         try {
-            writeHashOps.delete(RedisNamespace.resultsCartForUser(collection, user), url);
+            writeHashOps.delete(RedisNamespace.resultsCartForUser(collection, user), uri.toString());
         } catch (DataAccessException dae) {
             log.error("Error while deleting from cart", dae);
         }

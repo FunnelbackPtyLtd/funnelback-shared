@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service;
 
+import java.net.URI;
 import java.util.Map;
 
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -26,9 +27,9 @@ public interface ResultsCartRepository {
      * Removes a single result to the cart for the given user and collection
      * @param user
      * @param collection
-     * @param url URL of the result to remove
+     * @param uri URI of the result to remove
      */
-    public void removeFromCart(SearchUser user, Collection collection, String url);
+    public void removeFromCart(SearchUser user, Collection collection, URI uri);
     
     /**
      * Removes all entries from the results cart for the given user and collection
