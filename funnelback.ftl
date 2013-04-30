@@ -568,7 +568,7 @@
             && label[question.inputParameterMap["which_collapsing_col"]]??>
             <#assign text = label[question.inputParameterMap["which_collapsing_col"]] />
         </#if>
-        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
+        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off&amp;which_collapsing_col=${s.result.collapsed.column}">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 
@@ -634,7 +634,14 @@
 <#macro ResultCart>
     <#if session?? && session.searchUser??
         && session.resultsCart??>
-        <a class="fb-result-cart" data-incart="<#if session.resultsCart[s.result.indexUrl]??>true<#else>false</#if>" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
+        <#assign found = false />
+        <#list session.resultsCart as r>
+            <#if r.indexUrl == s.result.indexUrl>
+                <#assign found = true />
+                <#break />
+            </#if>
+        </#list>
+        <a class="fb-result-cart" data-incart="${found?string}" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
     </#if>
 </#macro>
 
