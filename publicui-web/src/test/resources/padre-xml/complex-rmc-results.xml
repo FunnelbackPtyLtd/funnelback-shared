@@ -619,7 +619,7 @@ you
   <title><![CDATA[Online visa applications]]></title>
   <collection>info-aus</collection>
   <component>0</component>
-  <collapsed sig="ABCDEF">12</collapsed>
+  <collapsed sig="ABCDEF" col="3">12</collapsed>
   <live_url>http://www.immi.gov.au/e_visa/</live_url>
 <tags>
   <rq href='?profile=_default&amp;SF=abcdt&amp;SM=both&amp;collection=funnelback_documentation&amp;query=cat'>cat</rq>

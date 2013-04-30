@@ -205,6 +205,7 @@ public class Result implements ResultType {
         public static final String ATTR_METADATA_F = "f";
         
         public static final String COLLAPSED_SIG = "sig";
+        public static final String COLLAPSED_COL = "col";
     }
 }
 

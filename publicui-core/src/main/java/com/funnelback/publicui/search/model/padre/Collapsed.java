@@ -25,4 +25,10 @@ public class Collapsed {
      */
     @Getter @Setter private int count;
     
+    /**
+     * Column from the signature file on which
+     * the result was collapsed
+     */
+    @Getter @Setter private int column;
+    
 }

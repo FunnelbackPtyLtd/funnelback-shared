@@ -185,12 +185,12 @@ public class ResultFactory {
             throw new IllegalArgumentException();
         }
         
-        String signature = null;
-        if (Result.Schema.COLLAPSED_SIG.equals(reader.getAttributeLocalName(0))) {
-            signature = reader.getAttributeValue(0);
-        }
+        String signature = reader.getAttributeValue(null, Result.Schema.COLLAPSED_SIG);
+        String column = reader.getAttributeValue(null, Result.Schema.COLLAPSED_COL);
         
-        return new Collapsed(signature, Integer.parseInt(reader.getElementText()));
+        return new Collapsed(signature,
+            Integer.parseInt(reader.getElementText()),
+            Integer.parseInt(column));
  
     }
 
