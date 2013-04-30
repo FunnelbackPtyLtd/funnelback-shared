@@ -18,7 +18,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Basic proxy for Ajax services
+ * <p>Basic proxy for Ajax services</p>
+ * 
+ * <p>Explicitly disabled for security reasons.</p>
+ * 
  */
 @Log4j
 public class AjaxProxyController {

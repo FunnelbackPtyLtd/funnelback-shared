@@ -1,15 +1,10 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-import com.funnelback.publicui.search.model.padre.Result;
 
 /**
  * <p>Contains data associated with the current user
@@ -46,6 +41,6 @@ public class SearchSession {
      * 
      * @since 12.4
      */
-    @Getter final private Map<String, Result> resultsCart = new HashMap<String, Result>();
+    @Getter final private List<CartResult> resultsCart = new ArrayList<>();
 
 }

@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.service;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
 
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
@@ -15,35 +15,31 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 public interface ResultsCartRepository {
 
     /**
-     * Adds a single result to the cart for the given user and collection
-     * @param user
-     * @param collection
-     * @param result
-     * @param query
+     * Adds a single result to the cart
+     * @param result {@link CartResult} to add
      */
-    public void addToCart(SearchUser user, Collection collection, Result result, String query);
+    public void addToCart(CartResult result);
     
     /**
      * Removes a single result to the cart for the given user and collection
-     * @param user
-     * @param collection
+     * @param user User to remove the cart entry from
+     * @param collection Collection on which remove the cart entry
      * @param uri URI of the result to remove
      */
     public void removeFromCart(SearchUser user, Collection collection, URI uri);
     
     /**
      * Removes all entries from the results cart for the given user and collection
-     * @param user
-     * @param collection
+     * @param user User to clear the cart from
+     * @param collection Collection to clear the cart from
      */
     public void clearCart(SearchUser user, Collection collection);
     
     /**
-     * Get the user cart for the given collection
-     * @param user
-     * @param collection
-     * @return
+     * @param user User to get the cart from
+     * @param collection Collection to get the cart from
+     * @return The user results cart for the given collection 
      */
-    public Map<String, Result> getCart(SearchUser user, Collection collection);
+    public List<CartResult> getCart(SearchUser user, Collection collection);
     
 }

@@ -41,7 +41,7 @@ public class SessionApiControllerBase extends SessionController {
     @ExceptionHandler(DataAccessException.class)
     public void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
         log.error("Error while accessing session data", dae);
-        sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, getJsonErrorMap(dae.toString()));
+        sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while accessing session data");
     }
     
     @ExceptionHandler(Exception.class)

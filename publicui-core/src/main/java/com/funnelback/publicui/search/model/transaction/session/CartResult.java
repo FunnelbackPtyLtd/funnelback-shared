@@ -8,15 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A single entry in the user's click history
+ * A result in a results cart
  * 
  * @since 12.5
  */
 @Entity
-public class ClickHistory extends SessionResult {
+public class CartResult extends SessionResult {
 
-    /** Date when the click was performed */
+    /** Date when the result was added to the cart */
     @Getter @Setter
-    private Date clickDate;
-
+    private Date addedDate;
+    
 }

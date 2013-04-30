@@ -73,6 +73,38 @@
 		<createIndex tableName="ClickHistory" indexName="ClickHistory_Collection_Idx">
 			<column name="collection" />
 		</createIndex>
+
+		<createTable tableName="CartResult">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="userId" type="varchar(36)">
+				<constraints nullable="false" />
+			</column>
+			<column name="collection" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="addedDate" type="timestamp">
+				<constraints nullable="false" />
+			</column>
+			<column name="indexUrl" type="varchar(1024)">
+				<constraints nullable="false" />
+			</column>
+			<column name="liveUrl" type="varchar(1024)">
+				<constraints nullable="false" />
+			</column>
+			<column name="title" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="summary" type="varchar(1024)" />
+		</createTable>
+		<createIndex tableName="CartResult" indexName="CartResult_UserId_Idx">
+			<column name="userId" />
+		</createIndex>
+		<createIndex tableName="CartResult" indexName="CartResult_Collection_Idx">
+			<column name="collection" />
+		</createIndex>
+		<addUniqueConstraint tableName="CartResult" columnNames="userId,collection,indexUrl"/>
 		
 
 		<createTable tableName="SearchUser">

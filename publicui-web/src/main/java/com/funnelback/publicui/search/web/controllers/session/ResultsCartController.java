@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +29,8 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
@@ -71,11 +73,10 @@ public class ResultsCartController extends SessionApiControllerBase {
 
         Collection c = configRepository.getCollection(collectionId);
         if (c != null) {
-            Map<String, Result> cart = cartRepository.getCart(user, c);
+            List<CartResult> cart = cartRepository.getCart(user, c);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(STATUS, OK);
             map.put("cart", cart);
-            map.put("cart-keys", cart.keySet());
             
             sendResponse(response, HttpServletResponse.SC_OK, map);
         } else {
@@ -95,14 +96,16 @@ public class ResultsCartController extends SessionApiControllerBase {
      */
     @RequestMapping(value="/cart-add.json")
     public void cartAdd(
-            Result result,
+            CartResult result,
             String query,
             @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(result.getCollection());
         if (c != null) {
-            cartRepository.addToCart(user, c, result, query);
+            result.setUser(user);
+            result.setAddedDate(new Date());
+            cartRepository.addToCart(result);
             sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
         } else {
             sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+result.getCollection()+"'"));
@@ -173,7 +176,7 @@ public class ResultsCartController extends SessionApiControllerBase {
                 user.setEmail(email);
             }
             
-            Map<String, Result> cart = cartRepository.getCart(user, collection);
+            List<CartResult> cart = cartRepository.getCart(user, collection);
             
             if (cart.isEmpty()) {
                 sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Cart is empty"));

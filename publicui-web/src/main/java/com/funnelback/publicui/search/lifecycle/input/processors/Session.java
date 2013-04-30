@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +11,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
@@ -52,7 +49,7 @@ public class Session extends AbstractInputProcessor {
                             DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
             
             // Retrieve results cart
-            st.getSession().getResultsCart().putAll(
+            st.getSession().getResultsCart().addAll(
                 resultsCartRepository.getCart(st.getSession().getSearchUser(), st.getQuestion().getCollection()));
         }
 
