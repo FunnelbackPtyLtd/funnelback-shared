@@ -35,9 +35,9 @@ public class ConfigMapResource extends AbstractSingleFileResource<Map<String, St
     public Map<String, String> parse() throws IOException {
         log.debug("Reading configuration data from '"+file.getAbsolutePath()+"'");
         if (collectionId != null) {
-            return ConfigReader.readConfig(searchHome, collectionId, file);
+            return ConfigReader.readConfig(file, searchHome, collectionId);
         } else {
-            return ConfigReader.readConfig(searchHome, file);
+            return ConfigReader.readConfig(file, searchHome);
         }
     }    
 }
