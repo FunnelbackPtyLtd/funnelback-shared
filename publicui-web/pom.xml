@@ -31,13 +31,6 @@
             		<driver>org.h2.Driver</driver>
             		<url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</url>
             	</configuration>
-            	<dependencies>
-            		<dependency>
-            			<groupId>com.h2database</groupId>
-            			<artifactId>h2</artifactId>
-            			<version>1.3.171</version>
-            		</dependency>
-            	</dependencies>
             </plugin>
         </plugins>
     </build>
@@ -248,16 +241,6 @@
             <scope>runtime</scope>
         </dependency>
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons-core</artifactId>
-			<version>1.4.1.RELEASE</version>
-		</dependency> 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-			<version>1.0.3.RELEASE</version>
-		</dependency>	
-		<dependency>
 			<groupId>com.yammer.metrics</groupId>
 			<artifactId>metrics-core</artifactId>
 			<version>${version.yammer-metrics}</version>
@@ -290,7 +273,13 @@
 			<groupId>org.samba.jcifs</groupId>
 			<artifactId>jcifs</artifactId>
 			<scope>runtime</scope>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.171</version>
+			<scope>runtime</scope>
+		</dependency>
 	  </dependencies>
 
 </project>

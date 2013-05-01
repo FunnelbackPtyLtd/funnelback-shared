@@ -61,24 +61,6 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Redis setup to store search history -->
-	
-	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-	
-	<bean id="jedisReadConnectionFactory"
-	 	class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-	 	p:password="#{T(com.funnelback.common.Security).generateSystemPassword(T(com.funnelback.common.Security$System).REDIS, globalFunnelbackConfig.value('server_secret'))}"
-	 	p:host-name="localhost"
-	 	p:port="#{new Integer(globalFunnelbackConfig.value('redis.slave.port'))}" />
-	
-	<bean id="jedisWriteConnectionFactory"
-	 	class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-	 	p:password="#{T(com.funnelback.common.Security).generateSystemPassword(T(com.funnelback.common.Security$System).REDIS, globalFunnelbackConfig.value('server_secret'))}"
-	 	p:host-name="#{globalFunnelbackConfig.value('redis.master.host')}"
-		p:port="#{new Integer(globalFunnelbackConfig.value('redis.master.port'))}" />
-	
-	<!-- End Redis setup -->
-	
 	<bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="#{globalFunnelbackConfig.value('mail.smtp.host')}" />
 		<property name="port" value="#{globalFunnelbackConfig.value('mail.smtp.port')}" />
@@ -86,7 +68,8 @@
 		<property name="password" value="#{globalFunnelbackConfig.value('mail.smtp.password')}" />
 		<property name="javaMailProperties" value="#{globalFunnelbackConfig.properties}"></property>
 	</bean>
-	
+
+	<!-- Search session database setup -->	
 	<bean id="fallbackDataSource" class="org.h2.jdbcx.JdbcDataSource">
 		<property name="URL" value="jdbc:h2:#{searchHome.absolutePath}/databases/search-session" />
 	</bean>
@@ -112,5 +95,7 @@
         </property>
 	</bean>
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	
+	<!-- End search session database setup -->
 	
 </beans>
