@@ -87,8 +87,11 @@
 		<property name="javaMailProperties" value="#{globalFunnelbackConfig.properties}"></property>
 	</bean>
 	
+	<bean id="fallbackDataSource" class="org.h2.jdbcx.JdbcDataSource">
+		<property name="URL" value="jdbc:h2:#{searchHome.absolutePath}/databases/search-session" />
+	</bean>
+	<jee:jndi-lookup jndi-name="java:comp/env/jdbc/search-session" id="dataSource" default-ref="fallbackDataSource" />
 	
-	<jee:jndi-lookup jndi-name="java:comp/env/jdbc/search-session" id="dataSource" />
 	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
@@ -103,7 +106,7 @@
 	            <property name="showSql" value="true"/>
 	            <!--  property name="generateDdl" value="true" /-->
 	            <property name="databasePlatform">
-	            	<jee:jndi-lookup jndi-name="java:comp/env/jdbc/dialect/search-session" />
+	            	<jee:jndi-lookup jndi-name="java:comp/env/jdbc/dialect/search-session" default-value="org.hibernate.dialect.H2Dialect"/>
 	            </property>
 	        </bean>
         </property>
