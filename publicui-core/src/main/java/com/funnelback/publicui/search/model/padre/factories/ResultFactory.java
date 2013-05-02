@@ -190,7 +190,7 @@ public class ResultFactory {
         
         return new Collapsed(signature,
             Integer.parseInt(reader.getElementText()),
-            Integer.parseInt(column));
+            column);
  
     }
 

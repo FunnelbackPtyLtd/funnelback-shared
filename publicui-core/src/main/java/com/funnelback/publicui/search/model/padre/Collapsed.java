@@ -29,6 +29,6 @@ public class Collapsed {
      * Column from the signature file on which
      * the result was collapsed
      */
-    @Getter @Setter private int column;
+    @Getter @Setter private String column;
     
 }

@@ -348,7 +348,7 @@ public class StaxStreamParserTests {
         assertEquals(0, first.getComponent().intValue());
         assertEquals("ABCDEF", first.getCollapsed().getSignature());
         assertEquals(12, first.getCollapsed().getCount());
-        assertEquals(3, first.getCollapsed().getColumn());
+        assertEquals("a", first.getCollapsed().getColumn());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getLiveUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getDisplayUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getIndexUrl());
