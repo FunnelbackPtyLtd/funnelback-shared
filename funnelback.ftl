@@ -558,7 +558,8 @@
 
     Generates a link to show the results that were collapsed with this specific result.
 
-    @param label Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String. Column &quot;0&quot; will be taken as the default label.
+    @param defaultLabel Label to use when there's no label for the current collapsing column
+    @param labels Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String.
 
 -->
 <#macro Collapsed defaultLabel="{0} very similar results" labels={}>
