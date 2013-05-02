@@ -561,14 +561,13 @@
     @param label Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String. Column &quot;0&quot; will be taken as the default label.
 
 -->
-<#macro Collapsed label={"0": "{0} very similar results"}>
+<#macro Collapsed defaultLabel="{0} very similar results" labels={}>
     <#if s.result.collapsed??>
-        <#assign text = label["0"] />
-        <#if question.inputParameterMap["which_collapsing_col"]??
-            && label[question.inputParameterMap["which_collapsing_col"]]??>
-            <#assign text = label[question.inputParameterMap["which_collapsing_col"]] />
+        <#assign text = defaultLabel />
+        <#if labels[s.result.collapsed.column]??>
+            <#assign text = labels[s.result.collapsed.column] />
         </#if>
-        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off&amp;which_collapsing_col=${s.result.collapsed.column}">${text?replace("{0}", s.result.collapsed.count)}</a>
+        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off&amp;collapsing_sig=${s.result.collapsed.column}">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 
