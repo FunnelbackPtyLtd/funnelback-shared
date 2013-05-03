@@ -4,12 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
 
 import org.apache.commons.io.IOUtils;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.net.TrustAllCertsX509TrustManager;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -26,6 +35,29 @@ public class ManifoldCFMapper implements UserKeysMapper {
      * (TODO - Remove this and use the remote user, it's just for testing
      * right now.) */
     public static final String USERNAME_PARAMETER_NAME = "user";
+
+    public ManifoldCFMapper() {
+        try {
+            // Arrange to trust all SSL certificates (because the admin UI usually has a self signed one
+            SSLContext sc = SSLContext.getInstance("SSL");
+            TrustManager[] trustAllCerts = new TrustManager[] {new TrustAllCertsX509TrustManager()};
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            allHostsValidVerifier = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                  return true;
+                }
+            };
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private HostnameVerifier allHostsValidVerifier;
     
     @Override
     public List<String> getUserKeys(Collection currentCollection, SearchTransaction transaction) {
@@ -33,10 +65,19 @@ public class ManifoldCFMapper implements UserKeysMapper {
             String username = transaction.getQuestion().getInputParameterMap().get(USERNAME_PARAMETER_NAME);
             // TODO - Get the remote user instead somehow
             
-            // TODO - Respect the currentCollection
-            String authority = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
             String domain = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.DOMAIN);
-            InputStream in = new URL(authority + "/UserACLs?username=" + username + "@" + domain).openStream();
+
+            String authority = transaction.getQuestion().getCollection().getConfiguration().value(Keys.ManifoldCF.AUTHORITY_URL_PREFIX);
+            URL authorityUrl = new URL(authority + "/UserACLs?username=" + username + "@" + domain);
+            
+            InputStream in;
+            if (authority.startsWith("https://")) {
+                HttpsURLConnection connection = (HttpsURLConnection) authorityUrl.openConnection();
+                connection.setHostnameVerifier(allHostsValidVerifier);
+                in = connection.getInputStream();
+            } else {
+                in = authorityUrl.openStream();
+            }
             
             String authorityInfo;
             try {
@@ -45,8 +86,6 @@ public class ManifoldCFMapper implements UserKeysMapper {
                 IOUtils.closeQuietly(in);
             }
             
-            // TODO - remove after debugging
-            System.err.println("Authority output\n\n" + authorityInfo);
             List<String> result = getKeysFromAuthorityInfo(authorityInfo);
             
             return result;
