@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.TrustAllCertsX509TrustManager;
+import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -36,25 +37,19 @@ public class ManifoldCFMapper implements UserKeysMapper {
      * right now.) */
     public static final String USERNAME_PARAMETER_NAME = "user";
 
-    public ManifoldCFMapper() {
-        try {
-            // Arrange to trust all SSL certificates (because the admin UI usually has a self signed one
-            SSLContext sc = SSLContext.getInstance("SSL");
-            TrustManager[] trustAllCerts = new TrustManager[] {new TrustAllCertsX509TrustManager()};
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+    public ManifoldCFMapper() throws NoSuchAlgorithmException, KeyManagementException {
+        // Arrange to trust all SSL certificates (because the admin UI usually has a self signed one
+        SSLContext sc = SSLContext.getInstance("SSL");
+        TrustManager[] trustAllCerts = new TrustManager[] {new TrustAllCertsX509TrustManager()};
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
-            // Create all-trusting host name verifier
-            allHostsValidVerifier = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                  return true;
-                }
-            };
-        } catch (KeyManagementException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        // Create all-trusting host name verifier
+        allHostsValidVerifier = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+              return true;
+            }
+        };
     }
     
     private HostnameVerifier allHostsValidVerifier;
