@@ -31,6 +31,9 @@ public class Session extends AbstractInputProcessor {
     @Override
     public void processInput(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasSession(st)
+            && SearchTransactionUtils.hasCollection(st)
+            && st.getQuestion().getCollection()
+                .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
             && st.getSession().getSearchUser() != null) {
             
             SearchQuestion q = st.getQuestion();

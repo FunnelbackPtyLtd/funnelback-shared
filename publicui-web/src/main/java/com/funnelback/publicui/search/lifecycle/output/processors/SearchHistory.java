@@ -9,6 +9,8 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -38,6 +40,8 @@ public class SearchHistory extends AbstractOutputProcessor {
         if (SearchTransactionUtils.hasQuestion(st)
                 && SearchTransactionUtils.hasResponse(st)
                 && SearchTransactionUtils.hasSession(st)
+                && st.getQuestion().getCollection()
+                    .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
                 && st.getSession().getSearchUser() != null ) {
         
             SearchResponse r = st.getResponse();
