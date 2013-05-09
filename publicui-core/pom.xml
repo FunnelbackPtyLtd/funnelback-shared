@@ -74,7 +74,7 @@
             	<artifactId>liquibase-maven-plugin</artifactId>
             	<version>2.0.5</version>
             	<configuration>
-            		<changeLogFile>src/main/resources/session-db/session-db.changelog-master.xml</changeLogFile>
+            		<changeLogFile>src/main/resources/com/funnelback/publicui/search/model/transaction/session/session-db.changelog-master.xml</changeLogFile>
             		<driver>org.h2.Driver</driver>
             		<url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</url>
             	</configuration>
