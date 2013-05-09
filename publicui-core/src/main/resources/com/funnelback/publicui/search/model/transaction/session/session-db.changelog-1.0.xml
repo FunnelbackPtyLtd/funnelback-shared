@@ -3,7 +3,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<changeSet id="1" author="nguillaumin">
+	<!-- logicalFilePath required so that path will be independend from where you
+		 run liquibase (Maven, command line...) to avoid liquibase detecting a difference
+		 in the changesets that were run -->
+	<changeSet id="1" author="nguillaumin" logicalFilePath="session-db-changelog-1.0.xml">
 		<createTable tableName="SearchHistory">
 			<column name="id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
