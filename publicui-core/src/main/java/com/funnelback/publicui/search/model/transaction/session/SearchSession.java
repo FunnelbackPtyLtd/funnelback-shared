@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,5 +43,21 @@ public class SearchSession {
      * @since 12.4
      */
     @Getter final private List<CartResult> resultsCart = new ArrayList<>();
+    
+    /**
+     * Check if the cart contains a specific result
+     * @param indexUrl URL of the result from the index
+     * @return true if the cart contain this result, false otherwise
+     */
+    public boolean cartContains(String indexUrl) {
+        URI indexUri = URI.create(indexUrl);
+        for (CartResult result: resultsCart) {
+            if (result.indexUrl.equals(indexUri)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
 }

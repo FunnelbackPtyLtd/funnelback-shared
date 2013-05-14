@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -42,14 +43,17 @@ public abstract class SessionResult {
 
     /** URI of the result in the index */
     @Getter @Setter
+    @NonNull
     protected URI indexUrl;
     
     /** URL to access the result */
     @Getter @Setter
+    @NonNull
     protected URL liveUrl;
     
     /** Title of the result */
     @Getter @Setter
+    @NonNull
     protected String title;
     
     /**
@@ -57,6 +61,7 @@ public abstract class SessionResult {
      * that generated this result
      */
     @Getter @Setter
+    @NonNull
     protected String summary;
 
 }
