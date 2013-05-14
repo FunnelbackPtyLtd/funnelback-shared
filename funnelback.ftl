@@ -630,18 +630,13 @@
 <#---
     Generates a &quot;save&quot; link to save the current result in the results cart
     or a &quot;remove&quot; link if the result is already in the cart
+
+    @param labels Labels to use for &quot;Add&quot; and &quot;Remove&quote; pipe separated (i.e. &quot;Save|Remove&quot;)
 -->
-<#macro ResultCart>
+<#macro ResultCart labels="Save|Remove">
     <#if session?? && session.searchUser??
         && session.resultsCart??>
-        <#assign found = false />
-        <#list session.resultsCart as r>
-            <#if r.indexUrl == s.result.indexUrl>
-                <#assign found = true />
-                <#break />
-            </#if>
-        </#list>
-        <a class="fb-result-cart" data-incart="${found?string}" data-href-add="cart-add.json?collection=${question.collection.id}&amp;title=${s.result.title?url}&amp;liveUrl=${s.result.liveUrl?url}&amp;summary=${s.result.summary?url}&amp;displayUrl=${s.result.displayUrl}&amp;indexUrl=${s.result.indexUrl?url}" data-href-remove="cart-remove.json?collection=${question.collection.id}&amp;url=${s.result.indexUrl?url}" data-url="${s.result.indexUrl}" href="#"></a>
+        <cartlink class="ng-cloak" labels="${labels}"><a class="fb-result-cart" href="#" ng-click="toggle()">{{label}}</a></cartlink>
     </#if>
 </#macro>
 
@@ -700,20 +695,28 @@
 
     @param savedResultsLabel to use for &quot;saved results&quot;.
     @param clearLabel Label to use for the &quot;clear cart&quot; link.
-    @param cssClass Class to use to style the list (UL)
 -->
-<#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear" cssClass="">
-    <div id="fb-results-cart" style="display: none;">
-        <h4>${savedResultsLabel} (<a class="clear" href="cart-clear.json?collection=${question.collection.id}">${clearLabel}</a>) :</h4>
+<#macro ResultsCart savedResultsLabel="saved results" clearLabel="clear">
+    <div id="fb-results-cart">
+        <cart class="ng-cloak" ng-show="cart.length">
+            <h4>{{cart.length}} ${savedResultsLabel} (<a class="clear" href="#" ng-click="clear()">${clearLabel}</a>) :</h4>
 
-        <ul<#if cssClass != ""> class="${cssClass}"</#if>></ul>
+            <ul>
+                <li ng-repeat="item in cart">
+                    <a href="#" ng-click="remove(item)" class="remove"><img src="${SearchPrefix}images/trash.png" /></a>
+                    <a href="{{item.liveUrl}}">{{item.title}}</a>
+                    <p>{{item.summary}}</p>
+                    <cite>{{item.indexUrl}}</cite>
+                </li>
+            </ul>
 
-        <form action="cart-email.json?collection=${question.collection.id}" method="get">
-            <input type="hidden" name="collection" value="${question.collection.id}" />
-            <input type="submit" value="Send by email to:" />
-            <input type="email" name="email" value="${session.searchUser.email!}" />
-            <span class="email-result" style="display:none;"></span><img class="email-progress" style="display: none;" src="${SearchPrefix}images/ajax-loader.gif" />
-        </form>
+            <form action="cart-email.json?collection=${question.collection.id}" method="get">
+                <input type="hidden" name="collection" value="${question.collection.id}" />
+                <input type="submit" value="Send by email to:" />
+                <input type="email" name="email" value="${session.searchUser.email!}" />
+                <span class="email-result" style="display:none;"></span><img class="email-progress" style="display: none;" src="${SearchPrefix}images/ajax-loader.gif" />
+            </form>
+        </cart>
     </div>
 </#macro>
 <#--- @end Session -->
