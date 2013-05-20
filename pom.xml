@@ -153,6 +153,7 @@
 			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>
+				<version>${version.validation-api}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.h2database</groupId>
