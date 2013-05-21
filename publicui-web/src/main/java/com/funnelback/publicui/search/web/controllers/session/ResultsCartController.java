@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import lombok.SneakyThrows;
 
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
@@ -74,11 +76,7 @@ public class ResultsCartController extends SessionApiControllerBase {
         Collection c = configRepository.getCollection(collectionId);
         if (c != null) {
             List<CartResult> cart = cartRepository.getCart(user, c);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put(STATUS, OK);
-            map.put("cart", cart);
-            
-            sendResponse(response, HttpServletResponse.SC_OK, map);
+            sendResponse(response, HttpServletResponse.SC_OK, cart);
         } else {
             sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
         }
@@ -94,9 +92,9 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value="/cart-add.json")
+    @RequestMapping(value="/cart-add.json",method=RequestMethod.POST)
     public void cartAdd(
-            CartResult result,
+            @Valid CartResult result,
             String query,
             @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
@@ -122,7 +120,7 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value="/cart-remove.json")
+    @RequestMapping(value="/cart-remove.json",method=RequestMethod.DELETE)
     public void cartRemove(
             @RequestParam("collection") String collectionId,
             URI url,
@@ -145,7 +143,7 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value="/cart-clear.json")
+    @RequestMapping(value="/cart-clear.json",method=RequestMethod.DELETE)
     public void cartClear(
             @RequestParam("collection") String collectionId,
             @ModelAttribute SearchUser user,

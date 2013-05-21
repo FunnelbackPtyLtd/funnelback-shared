@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
@@ -39,7 +36,7 @@ public class SearchHistoryController extends SessionApiControllerBase {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value="/search-history-clear.json")
+    @RequestMapping(value="/search-history-clear.json", method=RequestMethod.DELETE)
     public void searchHistoryClear(
             @RequestParam("collection") String collectionId,
             @ModelAttribute SearchUser user,
@@ -54,7 +51,7 @@ public class SearchHistoryController extends SessionApiControllerBase {
         }
     }
     
-    @RequestMapping(value="/click-history-clear.json")
+    @RequestMapping(value="/click-history-clear.json", method=RequestMethod.DELETE)
     public void clickHistoryClear(
             @RequestParam("collection") String collectionId,
             @ModelAttribute SearchUser user,
