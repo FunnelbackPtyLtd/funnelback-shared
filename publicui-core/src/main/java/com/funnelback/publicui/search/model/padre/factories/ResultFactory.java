@@ -1,27 +1,19 @@
 package com.funnelback.publicui.search.model.padre.factories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang.time.DateUtils;
-
 import com.funnelback.publicui.search.model.padre.Collapsed;
 import com.funnelback.publicui.search.model.padre.Explain;
 import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.DateUtils;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.*;
 
 /**
  * Builds {@link Result}s from various input sources.
@@ -131,18 +123,18 @@ public class ResultFactory {
         
         while (xmlStreamReader.nextTag() != XMLStreamReader.END_ELEMENT) {
             if (xmlStreamReader.isStartElement()) {
-                if (Result.Schema.METADATA.equals(xmlStreamReader.getLocalName().toString())) {
+                if (Result.Schema.METADATA.equals(xmlStreamReader.getLocalName())) {
                     // Specific case for metadtata <md f="x">value</md>
                     String mdClass = xmlStreamReader.getAttributeValue(null, Result.Schema.ATTR_METADATA_F);
                     String value = xmlStreamReader.getElementText();
                     data.put(Result.METADATA_PREFIX + mdClass, value);
-                } else if (QuickLinks.Schema.QUICKLINKS.equals(xmlStreamReader.getLocalName().toString())) {
+                } else if (QuickLinks.Schema.QUICKLINKS.equals(xmlStreamReader.getLocalName())) {
                     ql = QuickLinksFactory.fromXmlStreamReader(xmlStreamReader);
-                } else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName().toString())) {
+                } else if(Result.Schema.EXPLAIN.equals(xmlStreamReader.getLocalName())) {
                     explain = ExplainFactory.fromXmlStreamReader(xmlStreamReader);
-                } else if (Result.Schema.TAGS.equals(xmlStreamReader.getLocalName().toString())) {
+                } else if (Result.Schema.TAGS.equals(xmlStreamReader.getLocalName())) {
                     data.put(Result.Schema.TAGS, parseTags(xmlStreamReader));
-                } else if (Result.Schema.COLLAPSED.equals(xmlStreamReader.getLocalName().toString())) {
+                } else if (Result.Schema.COLLAPSED.equals(xmlStreamReader.getLocalName())) {
                     collapsed  = parseCollapsed(xmlStreamReader);
                 } else {
                     TagAndText tt = XmlStreamUtils.getTagAndValue(xmlStreamReader);
@@ -187,9 +179,15 @@ public class ResultFactory {
         
         String signature = reader.getAttributeValue(null, Result.Schema.COLLAPSED_SIG);
         String column = reader.getAttributeValue(null, Result.Schema.COLLAPSED_COL);
-        
+        String count = reader.getAttributeValue(null, Result.Schema.COLLAPSED_COUNT);
+
+        int type = reader.getEventType();
+        while (type != XMLStreamReader.END_ELEMENT || ! Result.Schema.COLLAPSED.equals(reader.getLocalName())) {
+            type = reader.next();
+        }
+
         return new Collapsed(signature,
-            Integer.parseInt(reader.getElementText()),
+            Integer.parseInt(count),
             column);
  
     }

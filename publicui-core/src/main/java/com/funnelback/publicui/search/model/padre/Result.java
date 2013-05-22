@@ -1,16 +1,8 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.*;
 
 /**
  * A single search result.
@@ -206,6 +198,7 @@ public class Result implements ResultType {
         
         public static final String COLLAPSED_SIG = "sig";
         public static final String COLLAPSED_COL = "col";
+        public static final String COLLAPSED_COUNT = "count";
     }
 }
 

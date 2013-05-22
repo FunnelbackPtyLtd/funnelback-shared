@@ -723,7 +723,16 @@ you
   <title><![CDATA[Online visa applications]]></title>
   <collection>info-aus</collection>
   <component>0</component>
-  <collapsed sig="ABCDEF" col="a">12</collapsed>
+  <collapsed sig="ABCDEF" col="a" count="12">
+      <result>
+          <title>Plumbers family plumbing</title>
+          <live_url>file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/4/job04281.xml</live_url>
+      </result>
+      <result>
+          <title>Plumbers &amp; drainers</title>
+          <live_url>file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/4/job04281.xml</live_url>
+      </result>
+  </collapsed>
   <live_url>http://www.immi.gov.au/e_visa/</live_url>
 <tags>
   <rq href='?profile=_default&amp;SF=abcdt&amp;SM=both&amp;collection=funnelback_documentation&amp;query=cat'>cat</rq>
