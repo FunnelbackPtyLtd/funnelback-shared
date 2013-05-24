@@ -680,7 +680,8 @@
 <#macro NoClustersFound>
     <#if response?exists
         && response.resultPacket?exists
-        && ! response.resultPacket.contextualNavigation?exists>
+        && (! response.resultPacket.contextualNavigation?exists
+            || response.resultPacket.contextualNavigation.categories?size == 0)>
         <#nested>
     </#if>
 </#macro>
@@ -722,7 +723,8 @@
 <#macro ClusterLayout>
     <#if response?exists
         && response.resultPacket?exists
-        && response.resultPacket.contextualNavigation?exists>
+        && response.resultPacket.contextualNavigation?exists
+        && response.resultPacket.contextualNavigation.categories?size &gt; 0>
         <#assign contextualNavigation = response.resultPacket.contextualNavigation in s />
         <#if contextualNavigation.categories?size == 1 && contextualNavigation.categories[0].name == "site"
             && contextualNavigation.categories[0].clusters?size &lt; 2>
