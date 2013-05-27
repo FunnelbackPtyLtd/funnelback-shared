@@ -1,12 +1,11 @@
 package com.funnelback.publicui.test.search.service.auth;
 
-import static org.junit.Assert.*;
-
+import com.funnelback.publicui.search.service.auth.AuthTokenManager;
+import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.service.auth.AuthTokenManager;
-import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
+import static org.junit.Assert.*;
 
 public class DefaultAuthTokenOracleTest {
 
@@ -25,6 +24,16 @@ public class DefaultAuthTokenOracleTest {
         
         String genToken = authTokenManager.getToken(url, secret);
         
+        assertEquals(auth, genToken);
+    }
+
+    @Test
+    public void testGetTokenTrim() {
+        String url = "trim.reference?collection=Se2-TrimPush-ModernUI-DLS-Target&uri=101&url=trim://45/101&doc=C:\\funnelback\\data\\Se2-TrimPush-ModernUI-DLS-Target\\live\\content\\G47.warc";
+        String auth = "pkBz47pXFVj5CzOdW6ukMQ";
+        String secret = "autotest-server-secret";
+
+        String genToken = authTokenManager.getToken(url, secret);
         assertEquals(auth, genToken);
     }
 
