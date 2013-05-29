@@ -1,16 +1,14 @@
 package com.funnelback.publicui.search.service.index;
 
-import java.util.Date;
-import java.util.Map;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CachedLocalIndexRepository extends AbstractLocalIndexRepository {
+import java.util.Date;
+import java.util.Map;
 
+public class CachedLocalIndexRepository extends AbstractLocalIndexRepository {
 
     /** Identifier of the EHCache used */
     protected static final String CACHE = "localIndexRepository";
@@ -58,8 +56,6 @@ public class CachedLocalIndexRepository extends AbstractLocalIndexRepository {
         }
         
         return ((Map<String, String>) elt.getObjectValue()).get(key);
-        
-        
     }
 
 }

@@ -1,5 +1,9 @@
 package com.funnelback.publicui.search.service;
 
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.padre.Result;
+
+import java.net.URI;
 import java.util.Date;
 
 /**
@@ -53,4 +57,12 @@ public interface IndexRepository {
      * since they don't have a <code>.bldinfo</code> file.
      */
     public String getBuildInfoValue(String collectionId, String key) throws UnsupportedOperationException;
+
+    /**
+     * Retrieve a single result and all its data from the index
+     * @param collection Collection to get the result from
+     * @param indexUri URI of the result to get
+     * @return A result, or null if not found
+     */
+    public Result getResult(Collection collection, URI indexUri);
 }

@@ -1,24 +1,5 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -26,6 +7,12 @@ import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.maxmind.geoip.Location;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import lombok.*;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import java.security.Principal;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>This class contains all the input data related to a search.</p>
@@ -419,7 +406,7 @@ public class SearchQuestion {
             /**
              * Target URL to redirect to.
              */
-            public static final String URL = "url";
+            public static final String URL = Cache.URL;
             
             
             /** URL of the target in the index (may be different to the redirect URL).
@@ -463,6 +450,15 @@ public class SearchQuestion {
                 /** Live URL to access the result */
                 public static final String LIVE_URL = "liveUrl";
             }
+        }
+
+        /**
+         * Common request parameters used in the {@link ResultsCartController}
+         */
+        public static class Cart {
+
+            /** URL of the result being added/removed */
+            public static final String URL = Cache.URL;
         }
 
         /**

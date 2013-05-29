@@ -62,9 +62,6 @@
 			<column name="indexUrl" type="varchar(1024)">
 				<constraints nullable="false" />
 			</column>
-			<column name="liveUrl" type="varchar(1024)">
-				<constraints nullable="false" />
-			</column>
 			<column name="title" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
@@ -91,9 +88,6 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="indexUrl" type="varchar(1024)">
-				<constraints nullable="false" />
-			</column>
-			<column name="liveUrl" type="varchar(1024)">
 				<constraints nullable="false" />
 			</column>
 			<column name="title" type="varchar(255)">

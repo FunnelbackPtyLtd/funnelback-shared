@@ -1,18 +1,12 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URI;
-import java.net.URL;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.persistence.*;
+import java.net.URI;
 
 /**
  * Search result base class when used in a session context
@@ -42,14 +36,18 @@ public abstract class SessionResult {
     @Getter @Setter protected String collection;
 
     /** URI of the result in the index */
-    @Getter @Setter
     @NonNull
-    protected URI indexUrl;
-    
-    /** URL to access the result */
-    @Getter @Setter
-    @NonNull
-    protected URL liveUrl;
+    protected String indexUrl;
+
+    @Transient
+    public URI getIndexUrl() {
+        return URI.create(indexUrl);
+    }
+
+    @Transient
+    public void setIndexUrl(URI uri) {
+        this.indexUrl = uri.toString();
+    }
     
     /** Title of the result */
     @Getter @Setter

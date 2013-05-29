@@ -1,28 +1,25 @@
 package com.funnelback.publicui.search.service.index;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Details;
+import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
+import com.funnelback.publicui.search.service.index.result.ResultFetcher;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Implementation that assumes that the indexes are on the local disk.
@@ -32,6 +29,9 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
 
     @Autowired
     @Setter private ConfigRepository configRepository;
+
+    @Autowired
+    @Setter private ResultFetcher resultFetcher;
     
     /**
      * Reads the index_time file to get the last update time
@@ -124,5 +124,18 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
                 fileName);
     }
 
+    @Override
+    public Result getResult(Collection collection, URI indexUri) {
+        File indexStem = new File(collection.getConfiguration().getCollectionRoot()
+                + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + DefaultValues.FOLDER_IDX,
+                DefaultValues.INDEXFILES_PREFIX);
 
+        Result r = resultFetcher.fetchResult(indexStem, indexUri);
+        if (r != null) {
+            r.setCollection(collection.getId());
+        }
+
+        return r;
+    }
 }
