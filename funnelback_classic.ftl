@@ -650,7 +650,7 @@
             </#list>
             <#if key_has_next><#local facetScope = facetScope + "&" /></#if>
         </#list> 
-                <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="yes">
+                <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="checked">
 
         <label for="facetScope"><#nested></label>
     </#if>
