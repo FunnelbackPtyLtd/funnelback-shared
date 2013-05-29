@@ -77,7 +77,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
             .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
             .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(r.getLiveUrl(),question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
-            .append("&").append(RequestParameters.QUERY).append("=").append(queryExpr);
+            .append("&").append(RequestParameters.QUERY).append("=").append(URLEncoder.encode(queryExpr, "UTF-8"));
         
         if (question.getProfile() != null) {
             out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
