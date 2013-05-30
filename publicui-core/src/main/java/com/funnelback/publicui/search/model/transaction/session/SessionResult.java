@@ -7,6 +7,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Search result base class when used in a session context
@@ -61,5 +63,9 @@ public abstract class SessionResult {
     @Getter @Setter
     @NonNull
     protected String summary;
+
+    @Getter
+    @ElementCollection
+    protected final Map<String, String> metaData = new HashMap<>();
 
 }

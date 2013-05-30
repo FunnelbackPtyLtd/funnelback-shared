@@ -1,20 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import junit.framework.Assert;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.GlobalOnlyConfig;
@@ -30,6 +15,19 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -115,7 +113,7 @@ public class FixPseudoLiveLinksPushTests {
         ResultPacket rp = st.getResponse().getResultPacket();
         
         Assert.assertEquals(
-            "custom-prefix-document?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-document?collection=collection-push&uri=356&url=trim%3A%2F%2F45%2F356&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -131,7 +129,7 @@ public class FixPseudoLiveLinksPushTests {
         ResultPacket rp = st.getResponse().getResultPacket();
         
         Assert.assertEquals(
-            "custom-prefix-reference?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-reference?collection=collection-push&uri=356&url=trim%3A%2F%2F45%2F356&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -150,7 +148,7 @@ public class FixPseudoLiveLinksPushTests {
                 rp.getResults().get(1).getLiveUrl());
 
         Assert.assertEquals(
-                "/search/serve-trim-document.cgi?collection=collection-push&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
+                "/search/serve-trim-document.cgi?collection=collection-push&uri=356&url=trim%3A%2F%2F45%2F356&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
                 rp.getResults().get(2).getLiveUrl());
         
         Assert.assertEquals(
