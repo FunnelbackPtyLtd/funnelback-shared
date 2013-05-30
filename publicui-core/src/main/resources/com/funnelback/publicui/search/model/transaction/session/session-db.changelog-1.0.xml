@@ -102,9 +102,21 @@
 			<column name="collection" />
 		</createIndex>
 		<addUniqueConstraint tableName="CartResult" columnNames="userId,collection,indexUrl"/>
-		
 
-		<createTable tableName="SearchUser">
+        <createTable tableName="CartResultMetadata">
+            <column name="cartResultId" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="char(1)">
+                <constraints nullable="false" />
+            </column>
+            <column name="metaData" type="varchar(4096)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="CartResultMetadata" columnNames="cartResultId,key,metaData"/>
+
+        <createTable tableName="SearchUser">
 			<!-- FIXME Use proper GUID type ? Integer ? -->
 			<column name="id" type="varchar(36)">
 				<constraints primaryKey="true" nullable="false"></constraints>

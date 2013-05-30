@@ -31,6 +31,7 @@ public class CartResult extends SessionResult {
         sr.setIndexUrl(URI.create(r.getIndexUrl()));
         sr.setTitle(r.getTitle());
         sr.setSummary(r.getSummary());
+        sr.getMetaData().putAll(r.getMetaData());
 
         return sr;
     }
