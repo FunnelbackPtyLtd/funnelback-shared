@@ -1,20 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import junit.framework.Assert;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.funnelback.common.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.GlobalOnlyConfig;
@@ -23,6 +8,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -30,6 +16,20 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -116,7 +116,10 @@ public class FixPseudoLiveLinksTests {
         processor.processOutput(st);
         
         ResultPacket rp = st.getResponse().getResultPacket();
-        
+
+        // Valid URI = no exception
+        URI.create(rp.getResults().get(3).getLiveUrl());
+
         Assert.assertEquals(
             "custom.link?collection=collection-filecopy&uri="
                 +URLEncoder.encode("smb://server.funnelback.com/share/folder/file.ext", "UTF-8")
@@ -134,9 +137,12 @@ public class FixPseudoLiveLinksTests {
         processor.processOutput(st);
         
         ResultPacket rp = st.getResponse().getResultPacket();
-        
+
+        // Valid URI = no exception
+        URI.create(rp.getResults().get(2).getLiveUrl());
+
         Assert.assertEquals(
-            "custom-prefix-document?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-document?collection=collection-trim&uri=356&url=trim%3A%2F%2F45%2F356%2F&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -150,9 +156,12 @@ public class FixPseudoLiveLinksTests {
         processor.processOutput(st);
         
         ResultPacket rp = st.getResponse().getResultPacket();
-        
+
+        // Valid URI = no exception
+        URI.create(rp.getResults().get(2).getLiveUrl());
+
         Assert.assertEquals(
-            "custom-prefix-reference?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+            "custom-prefix-reference?collection=collection-trim&uri=356&url=trim%3A%2F%2F45%2F356%2F&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
             rp.getResults().get(2).getLiveUrl());
     }
 
@@ -161,6 +170,11 @@ public class FixPseudoLiveLinksTests {
         processor.processOutput(st);
         
         ResultPacket rp = st.getResponse().getResultPacket();
+
+        // Ensure valid URIs
+        for (Result r: rp.getResults()) {
+            URI.create(r.getLiveUrl());
+        }
         
         Assert.assertEquals(
                 "/search/serve-db-document.tcgi?collection=collection-db&record_id=1234/",
@@ -171,7 +185,7 @@ public class FixPseudoLiveLinksTests {
                 rp.getResults().get(1).getLiveUrl());
 
         Assert.assertEquals(
-                "/search/serve-trim-document.cgi?collection=collection-trim&uri=356&url=trim://45/356/&doc=file:///folder/file/356.pan.txt",
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=356&url=trim%3A%2F%2F45%2F356%2F&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
                 rp.getResults().get(2).getLiveUrl());
         
         Assert.assertEquals(
@@ -210,15 +224,15 @@ public class FixPseudoLiveLinksTests {
         
         Assert.assertEquals(
                 "TRIM result without cache link shouldn't have a doc parameter",
-                "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234&url=trim://45/1234/",
+                "/search/serve-trim-document.cgi?collection=collection-trim&uri=1234&url=trim%3A%2F%2F45%2F1234%2F",
                 rp.getResults().get(10).getLiveUrl());        
 
         Assert.assertEquals(
-            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim://45/356&doc=file:///folder/file/356.pan.txt",
+            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim%3A%2F%2F45%2F356&doc=file%3A%2F%2F%2Ffolder%2Ffile%2F356.pan.txt",
             rp.getResults().get(11).getLiveUrl());        
 
         Assert.assertEquals(
-            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim://45/356/attachment.png&doc=/opt/funnelback/data/collection-trimpush/live/content/G52.warc",
+            "/search/serve-trim-document.cgi?collection=collection-trimpush&uri=356&url=trim%3A%2F%2F45%2F356%2Fattachment.png&doc=C%3A%5Cfunnelback%5Cdata%5Ccollection-trimpush%5Clive%5Ccontent%5CG52.warc",
             rp.getResults().get(12).getLiveUrl());        
 
     }

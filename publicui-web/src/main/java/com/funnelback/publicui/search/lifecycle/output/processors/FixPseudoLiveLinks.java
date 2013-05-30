@@ -1,18 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -25,6 +12,17 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Fixes some "magic" URLs like "local://serve-...-document.cgi"
@@ -173,11 +171,11 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
                 
                 transformedLiveUrl = trimLinkPrefix + trimDefaultLiveLinks + trimLinkSuffix
                     + "?"+RequestParameters.COLLECTION + "=" + resultCollection.getId()
-                    + "&"+RequestParameters.Serve.URI + "=" + docUri
-                    + "&"+RequestParameters.Cache.URL + "=" + result.getLiveUrl();
+                    + "&"+RequestParameters.Serve.URI + "=" + URLEncoder.encode(docUri, "UTF-8")
+                    + "&"+RequestParameters.Cache.URL + "=" + URLEncoder.encode(result.getLiveUrl(), "UTF-8");
                     
                 if (cachedUrlMatcher.find()) {
-                    transformedLiveUrl += "&"+RequestParameters.Serve.DOC+"=" + cachedUrlMatcher.group(1);
+                    transformedLiveUrl += "&"+RequestParameters.Serve.DOC+"=" + URLEncoder.encode(cachedUrlMatcher.group(1), "UTF-8");
                 }
             
             } else {
