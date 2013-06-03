@@ -114,13 +114,17 @@ public class XSLTXStreamViewTests {
         // FIXME URL COUNT ordering
         oldXml = reOrder(oldXml, Pattern.compile("<urlcount.*</urlcount>", Pattern.DOTALL));
         actual = reOrder(actual, Pattern.compile("<urlcount.*</urlcount>", Pattern.DOTALL));
-        
+
+        // Remove <collapsed> elements which didn't exist previously and that
+        // contains sub <results> that upsets the other subsequent tests
+        oldXml = oldXml.replaceAll("(?s)<collapsed.*?>.*?</collapsed>\n", "");
+
         // <md f... needs to be tested separately because there is no easy way
         // to reorder them
         p = Pattern.compile("<md f[^\n]*</md>");
         Matcher m = p.matcher(oldXml);
         while (m.find()) {
-            Assert.assertTrue(actual.contains(m.group(0)));
+            Assert.assertTrue("Transformed XML should contain '"+m.group(0)+"'", actual.contains(m.group(0)));
         }
         // Then strip the <md> tags
         oldXml = oldXml.replaceAll("<md f[^\n]*</md>", "");
@@ -148,9 +152,7 @@ public class XSLTXStreamViewTests {
         oldXml = oldXml.replaceAll("(?s)<svgs>.*?</svgs>\n", "");
         // As well as <datecount>
         oldXml = oldXml.replaceAll("(?s)<datecount.*?>.*?</datecount>\n", "");
-        // As well as <collapsed>
-        oldXml = oldXml.replaceAll("(?s)<collapsed.*?>.*?</collapsed>\n", "");
-        
+
         // Remove <unexpected_tag> used for other tests
         oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\n", "");
 

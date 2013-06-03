@@ -181,14 +181,24 @@ public class ResultFactory {
         String column = reader.getAttributeValue(null, Result.Schema.COLLAPSED_COL);
         String count = reader.getAttributeValue(null, Result.Schema.COLLAPSED_COUNT);
 
+        Collapsed collapsed = new Collapsed(signature,
+                Integer.parseInt(count),
+                column);
+
+        // Parse collapsed results, if any
         int type = reader.getEventType();
         while (type != XMLStreamReader.END_ELEMENT || ! Result.Schema.COLLAPSED.equals(reader.getLocalName())) {
             type = reader.next();
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (Result.Schema.RESULT.equals(reader.getLocalName())) {
+                        collapsed.getResults().add(ResultFactory.fromXmlStreamReader(reader));
+                    }
+                    break;
+            }
         }
 
-        return new Collapsed(signature,
-            Integer.parseInt(count),
-            column);
+        return collapsed;
  
     }
 

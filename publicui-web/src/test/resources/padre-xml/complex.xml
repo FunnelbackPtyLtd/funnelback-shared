@@ -724,13 +724,20 @@ you
   <collection>info-aus</collection>
   <component>0</component>
   <collapsed sig="ABCDEF" col="a" count="12">
+      <!-- collapsed doc (0, 3281) -->
       <result>
-          <title>Plumbers family plumbing</title>
+          <title>PLUMBERS FAMILY PLUMBING</title>
           <live_url>file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/4/job04281.xml</live_url>
+          <md f="X"><![CDATA[NSW]]></md>
+          <md f="Y"><![CDATA[Plumbing]]></md>
+          <md f="Z"><![CDATA[DIVTrades & ServicesDIV]]></md>
       </result>
+      <!-- collapsed doc (0, 1074) -->
       <result>
-          <title>Plumbers &amp; drainers</title>
-          <live_url>file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/4/job04281.xml</live_url>
+          <title>PLUMBERS &amp;AMP; DRAINERS</title>
+          <live_url>file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/2/job02074.xml</live_url>
+          <md f="X"><![CDATA[ACT]]></md>
+          <md f="Y"><![CDATA[Plumbing]]></md>
       </result>
   </collapsed>
   <live_url>http://www.immi.gov.au/e_visa/</live_url>

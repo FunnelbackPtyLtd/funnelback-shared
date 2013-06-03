@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Information about collapsed results, for a given
  * {@link Result}
@@ -30,5 +33,9 @@ public class Collapsed {
      * the result was collapsed
      */
     @Getter @Setter private String column;
-    
+
+    /** List of collapsed results */
+    @Getter final private List<Result> results = new ArrayList<>();
+
+
 }

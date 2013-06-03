@@ -1,39 +1,20 @@
 package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import com.funnelback.publicui.search.model.padre.*;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
+import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.model.padre.BestBet;
-import com.funnelback.publicui.search.model.padre.Category;
-import com.funnelback.publicui.search.model.padre.Cluster;
-import com.funnelback.publicui.search.model.padre.ClusterNav;
-import com.funnelback.publicui.search.model.padre.ContextualNavigation;
-import com.funnelback.publicui.search.model.padre.CoolerWeighting;
-import com.funnelback.publicui.search.model.padre.DateCount;
-import com.funnelback.publicui.search.model.padre.Explain;
-import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.padre.TierBar;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
-import com.funnelback.publicui.xml.XmlParsingException;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class StaxStreamParserTests {
 
@@ -334,7 +315,32 @@ public class StaxStreamParserTests {
         assertTrue(rp.getResultsWithTierBars().get(11) instanceof Result);
 
     }
-    
+
+    @Test
+    public void testCollapsedResults() {
+        Result first = rp.getResults().get(0);
+
+        assertEquals("ABCDEF", first.getCollapsed().getSignature());
+        assertEquals(12, first.getCollapsed().getCount());
+        assertEquals("a", first.getCollapsed().getColumn());
+        assertEquals(2, first.getCollapsed().getResults().size());
+
+        Result r1 = first.getCollapsed().getResults().get(0);
+        assertEquals("PLUMBERS FAMILY PLUMBING", r1.getTitle());
+        assertEquals("file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/4/job04281.xml", r1.getLiveUrl());
+        assertEquals(3, r1.getMetaData().size());
+        assertEquals("NSW", r1.getMetaData().get("X"));
+        assertEquals("Plumbing", r1.getMetaData().get("Y"));
+        assertEquals("DIVTrades & ServicesDIV", r1.getMetaData().get("Z"));
+
+        Result r2 = first.getCollapsed().getResults().get(1);
+        assertEquals("PLUMBERS &AMP; DRAINERS", r2.getTitle());
+        assertEquals("file:///C:/Data/dev/funnelback/trunk/test/funnelback-selenium/additional-resources/faceted_navigation_test/xml_data/2/job02074.xml", r2.getLiveUrl());
+        assertEquals(2, r2.getMetaData().size());
+        assertEquals("ACT", r2.getMetaData().get("X"));
+        assertEquals("Plumbing", r2.getMetaData().get("Y"));
+    }
+
     @Test
     public void testResults() {
         assertEquals(10, rp.getResults().size());
@@ -346,9 +352,6 @@ public class StaxStreamParserTests {
         assertEquals("Online visa applications", first.getTitle());
         assertEquals("info-aus", first.getCollection());
         assertEquals(0, first.getComponent().intValue());
-        assertEquals("ABCDEF", first.getCollapsed().getSignature());
-        assertEquals(12, first.getCollapsed().getCount());
-        assertEquals("a", first.getCollapsed().getColumn());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getLiveUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getDisplayUrl());
         assertEquals("http://www.immi.gov.au/e_visa/", first.getIndexUrl());
