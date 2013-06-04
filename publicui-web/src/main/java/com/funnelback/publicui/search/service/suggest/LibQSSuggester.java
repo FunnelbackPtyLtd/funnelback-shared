@@ -1,12 +1,5 @@
 package com.funnelback.publicui.search.service.suggest;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.Suggestion;
@@ -17,6 +10,14 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Suggester that uses the <code>libqs</code> shared library to get
@@ -25,6 +26,7 @@ import com.sun.jna.Structure;
  * @since v12.0
  */
 @Component
+@Log4j
 public class LibQSSuggester implements Suggester {
     
     public interface PadreQS extends Library {
@@ -44,9 +46,23 @@ public class LibQSSuggester implements Suggester {
                 DefaultValues.INDEXFILES_PREFIX);                
         
         List<Suggestion> suggestions = new ArrayList<Suggestion>();
-        
+
+        // Trace LibQS usage (SUPPORT-1091)
+        UUID uuid = null;
+        if (log.isTraceEnabled()) {
+            uuid = UUID.randomUUID();
+        }
+
         NativeSuggestion ns = null;
         try {
+            if (log.isTraceEnabled()) {
+                log.trace(uuid.toString() + " Invoking LibQS for index='"+indexStem.getAbsolutePath()+"', "
+                        + "profile='"+profileId+"', "
+                        + "numSuggestions='"+numSuggestions+"', "
+                        + "sort="+sort.value+", "
+                        + "partialQuery='"+partialQuery+"'");
+            }
+
             ns = PadreQS.INSTANCE.generate_suggestions(
                     indexStem.getAbsolutePath(),
                     profileId,
@@ -68,7 +84,9 @@ public class LibQSSuggester implements Suggester {
         } finally {
             if (ns != null && ns.getPointer() != null) {
                 PadreQS.INSTANCE.free_suggestion_array(ns.getPointer());
+                if (log.isTraceEnabled()) { log.trace(uuid.toString() + " Called free_suggestion_array("+ns.getPointer()+")"); }
             }
+            if (log.isTraceEnabled()) { log.trace(uuid.toString() + " Completed LibQS invocation"); }
         }
         
         return suggestions;
