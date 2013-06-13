@@ -12,7 +12,7 @@ public class Suggestion {
     
     @RequiredArgsConstructor
     public enum DisplayType {
-        Unknown(""), Text("T"), HTML("H"), Javascript("C"), JSON("J");
+        Unknown(""), Text("T"), HTML("H"), Javascript("C"), JSON("J"), Experimental("X");
         
         public final String value;
         
@@ -33,7 +33,7 @@ public class Suggestion {
     
     @RequiredArgsConstructor
     public enum ActionType {
-        Unknown(""), Javascript("C"), URL("U"), Query("Q");
+        Unknown(""), Javascript("C"), URL("U"), Query("Q"), Experimental("X");
         
         public final String value;
         
