@@ -96,6 +96,7 @@
         <dependency>
             <groupId>com.github.dblock.waffle</groupId>
             <artifactId>waffle-jna</artifactId>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -137,12 +138,10 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>platform</artifactId>
-            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
