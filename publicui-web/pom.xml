@@ -28,6 +28,7 @@
     <properties>
     	<m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
     	<install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
+    	<version.yammer-metrics>2.2.0</version.yammer-metrics>
     </properties>
 
     <dependencies>
@@ -52,7 +53,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${version.spring}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,7 +64,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${version.spring}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -97,7 +96,6 @@
         <dependency>
             <groupId>com.github.dblock.waffle</groupId>
             <artifactId>waffle-jna</artifactId>
-            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -135,7 +133,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${version.spring}</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
@@ -154,11 +151,6 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${version.spring}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -215,7 +207,6 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
-            <version>${version.jetty}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
