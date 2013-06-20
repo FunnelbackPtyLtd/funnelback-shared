@@ -225,14 +225,14 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         TemplateModel param = params.get(Parameters.start.toString());
         if (param != null) {
             String regex = ((TemplateScalarModel) param).getAsString();
-            out = Pattern.compile("^.*(" + regex + ")", Pattern.DOTALL | Pattern.MULTILINE).matcher(out).replaceAll("$1");
+            out = Pattern.compile("^.*?(" + regex + ")", Pattern.DOTALL | Pattern.MULTILINE).matcher(out).replaceFirst("$1");
         }
 
         // Extract end-pattern
         param = params.get(Parameters.end.toString());
         if (param != null) {
             String regex = ((TemplateScalarModel) param).getAsString();
-            out = Pattern.compile("(" + regex + ").*$", Pattern.DOTALL | Pattern.MULTILINE).matcher(out).replaceAll("$1");
+            out = Pattern.compile("(" + regex + ").*$", Pattern.DOTALL | Pattern.MULTILINE).matcher(out).replaceFirst("$1");
         }
         
         // Convert relative URLs
