@@ -66,7 +66,8 @@ public class PadreDIResultFetcher implements ResultFetcher {
     public Result fetchResult(File indexStem, URI resultUri) {
         String str = getPadreDIOutput(indexStem, resultUri);
         if (str != null) {
-            String[] lines = str.split("\r\n");
+            log.debug("padre-di output is: '"+str+"'");
+            String[] lines = str.split("\r?\n");
 
             // FIXME If no result were found, there will be a line
             // containing the word "Field"...
