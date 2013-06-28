@@ -19,6 +19,9 @@ import java.util.Map;
 @MappedSuperclass
 public abstract class SessionResult {
     
+    /** Size of the column holding the summary */
+    private static final int MAX_LEN_SUMMARY = 1024;
+    
     /**
      * Internal database id
      */
@@ -69,5 +72,16 @@ public abstract class SessionResult {
     @MapKeyColumn(name = "key")
     @CollectionTable(name="CartResultMetadata",joinColumns = @JoinColumn(name="cartResultId"))
     protected final Map<String, String> metaData = new HashMap<>();
+    
+    /**
+     * Truncate summary to maximum size allowed in the database
+     * before saving to database
+     */
+    @PrePersist
+    private void prePersist() {
+        if (summary != null && summary.length() > MAX_LEN_SUMMARY) {
+            summary = summary.substring(0, MAX_LEN_SUMMARY-1);
+        }
+    }
 
 }

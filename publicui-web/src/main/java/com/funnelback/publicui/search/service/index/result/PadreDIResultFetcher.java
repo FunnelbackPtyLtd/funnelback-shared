@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 /**
  * Fetches result from an index using <code>padre-di</code>
  */
-@Component
 @Log4j
 public class PadreDIResultFetcher implements ResultFetcher {
 
