@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
-
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import com.maxmind.geoip.Location;
 public class Geolocation extends AbstractInputProcessor {
 
     @Autowired
-    Geolocator geolocator;
+    @Setter Geolocator geolocator;
 
     /**
      * <p>
@@ -41,19 +41,21 @@ public class Geolocation extends AbstractInputProcessor {
     @Override
     public void processInput(SearchTransaction searchTransaction)
         throws InputProcessorException {
-        if (SearchTransactionUtils.hasQuestion(searchTransaction)) {
+        if (SearchTransactionUtils.hasCollection(searchTransaction)) {
             Config config = searchTransaction.getQuestion().getCollection()
                     .getConfiguration();
             
             if (config.valueAsBoolean(Keys.ModernUI.GEOLOCATION_ENABLED)) {
-                Location location = geolocator.geolocate(searchTransaction
+                //Sets the location in the data model
+            	Location location = geolocator.geolocate(searchTransaction
                         .getQuestion());
                 searchTransaction.getQuestion().setLocation(location);
                 
                 Map<String, String[]> params = searchTransaction.getQuestion().getAdditionalParameters();
+                
                 if (config.valueAsBoolean(Keys.ModernUI.GEOLOCATION_SET_ORIGIN)
-                        && !params.containsKey("origin")) {
-                    // Set the origin only if it is not already set by CGI
+                        && !params.containsKey(RequestParameters.ORIGIN)) {
+                    // Set the origin CGI parameter for padre only if it is not already set by CGI
                     params.put(RequestParameters.ORIGIN, new String[] { location.latitude + ","
                             + location.longitude });
                 }
