@@ -47,6 +47,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+        	<groupId>com.funnelback.dataapi</groupId>
+        	<artifactId>data-api-connector-padre</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>

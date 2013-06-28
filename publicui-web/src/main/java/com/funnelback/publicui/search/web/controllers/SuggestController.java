@@ -20,12 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.Suggester;
-import com.funnelback.publicui.search.service.Suggester.Sort;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 
 /**
@@ -40,6 +40,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     @Autowired
     private ConfigRepository configRepository;
     
+    /** Format to return suggestions */
     private enum Format {
         Json("json"), JsonPlus("json++"), JsonPlusBad("json  ");
         
@@ -73,15 +74,14 @@ public class SuggestController extends AbstractRunPadreBinaryController {
 
     /**
      * Simple Wrapper around <code>padre-qs.cgi</code>
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws ServletException
+     * @param request HTTP request
+     * @param response HTTP response
+     * @throws Exception  
      * @deprecated Use {@link #suggestJava(String, String, String, int, int, String, String)} instead
      */
     @Deprecated
     @RequestMapping(value="/padre-qs.cgi", params=RequestParameters.COLLECTION)
-    public void suggest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void suggest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             runPadreBinary(PADRE_QS, null, request, response, true);
         } catch (PadreForkingException e) {
@@ -95,7 +95,11 @@ public class SuggestController extends AbstractRunPadreBinaryController {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
     }
 
-    @RequestMapping(value="/suggest.json",params="!"+RequestParameters.COLLECTION)
+    /**
+     * Get suggestions using LibQS
+     * @param response HTTP response
+     */
+    @RequestMapping(value="/suggest.json", params="!"+RequestParameters.COLLECTION)
     public void noCollection(HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
@@ -110,10 +114,11 @@ public class SuggestController extends AbstractRunPadreBinaryController {
      * @param sort Order for suggestions (See LibQS code for possible values)
      * @param format JSON or XML
      * @param callback Name of a JSONP callback if needed
-     * @return
-     * @throws IOException
+     * @param response 
+     * @return Model containing suggestions 
+     * @throws IOException 
      */
-    @RequestMapping(value="/suggest.json",params=RequestParameters.COLLECTION)
+    @RequestMapping(value="/suggest.json", params=RequestParameters.COLLECTION)
     public ModelAndView suggestJava(@RequestParam("collection") String collectionId,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam("partial_query") String partialQuery,
