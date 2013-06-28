@@ -147,8 +147,6 @@ public class GeolocationTests {
         Assert.assertNotNull(st.getQuestion().getLocation());
         Assert.assertEquals((float) 20, st.getQuestion().getLocation().latitude, 0.0); 
         Assert.assertEquals((float) 100, st.getQuestion().getLocation().longitude, 0.0); 
-        
-        //Ensure that orgin stays 
 	}
 	
 	@Test
