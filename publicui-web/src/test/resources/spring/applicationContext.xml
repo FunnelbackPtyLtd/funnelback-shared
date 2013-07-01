@@ -133,7 +133,7 @@
 	
 	<bean class="com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager" />
 
-    <bean class="com.funnelback.publicui.search.service.index.result.PadreDIResultFetcher" />
+    <bean class="com.funnelback.publicui.search.service.index.result.DefaultResultFetcher" />
 	
 	<metrics:metrics-registry id="metricsRegistry" />
 	
