@@ -23,10 +23,7 @@ import com.funnelback.publicui.test.mock.MockGeolocator;
 public class GeolocationTests {
 
 	private Geolocation processor;
-	
-	private Config getDefaultConfig() throws FileNotFoundException {
-		return new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
-	}
+	private Config conf;
 	
 	private SearchTransaction getProcessedTransaction(Config conf) throws InputProcessorException {
 		SearchQuestion question = new SearchQuestion();
@@ -38,9 +35,10 @@ public class GeolocationTests {
 	}
 	
     @Before
-    public void before() {
+    public void before() throws FileNotFoundException {
     	processor = new Geolocation();
     	processor.setGeolocator(new MockGeolocator());
+    	conf = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), "dummy");
     }
 	
 	@Test
@@ -64,7 +62,6 @@ public class GeolocationTests {
 	
 	@Test
 	public void testGeolocationEnabledAndOriginSet() throws FileNotFoundException, InputProcessorException {
-		Config conf = getDefaultConfig();
 		conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "true");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "true");
 		
@@ -87,7 +84,6 @@ public class GeolocationTests {
 	 */
 	@Test
 	public void originAlreadySetAndOriginSet() throws InputProcessorException, FileNotFoundException {
-		Config conf = getDefaultConfig();
 		conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "true");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "true");
 		//Set origin
@@ -113,7 +109,6 @@ public class GeolocationTests {
 	 */
 	@Test
 	public void originAlreadySetAndOriginNotSet() throws InputProcessorException, FileNotFoundException {
-		Config conf = getDefaultConfig();
 		conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "true");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "false");
 		//Set origin
@@ -136,7 +131,6 @@ public class GeolocationTests {
 	
 	@Test 
 	public void testGeolocationEnabled() throws FileNotFoundException, InputProcessorException{
-		Config conf = getDefaultConfig();
 		conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "true");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "false");
         
@@ -151,7 +145,6 @@ public class GeolocationTests {
 	
 	@Test
 	public void testGeolocationDisabledAndOrginEnabled() throws FileNotFoundException, InputProcessorException{
-		Config conf = getDefaultConfig();
 		conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "false");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "true");
         
@@ -165,7 +158,6 @@ public class GeolocationTests {
 	@Test
 	public void testBothDisbled() throws FileNotFoundException, InputProcessorException {
 		//Keys.ModernUI.GEOLOCATION_ENABLED == false && Keys.ModernUI.GEOLOCATION_SET_ORIGIN == false
-        Config conf = getDefaultConfig();
         conf.setValue(Keys.ModernUI.GEOLOCATION_ENABLED, "false");
         conf.setValue(Keys.ModernUI.GEOLOCATION_SET_ORIGIN, "false");
         SearchTransaction st = getProcessedTransaction(conf);
