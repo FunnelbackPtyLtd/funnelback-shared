@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.service.location;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import lombok.Setter;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.maxmind.geoip.LookupService;
 public class DefaultGeolocator implements Geolocator {
 
     @Autowired
+    @Setter
     private ConfigRepository configRepository;
 
     private LookupService lookupService = null;
@@ -61,7 +63,12 @@ public class DefaultGeolocator implements Geolocator {
         try {
             String newLookupServiceDatabase = configRepository
                     .getGlobalConfiguration().value(Keys.GEOLOCATION_DATABASE_KEY);
-            if (!lookupServiceDatabase.equals(newLookupServiceDatabase)) {
+            if (newLookupServiceDatabase == null){
+            	log.error("Error cannot create lookup service when " 
+            				+ Keys.GEOLOCATION_DATABASE_KEY + " is null." );
+            	lookupServiceDatabase = "";
+            	lookupService = null;
+            } else if (!lookupServiceDatabase.equals(newLookupServiceDatabase)) {
                 // Recreate the lookup service
 
                 lookupServiceDatabase = newLookupServiceDatabase;
