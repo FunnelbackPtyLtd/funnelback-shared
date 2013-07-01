@@ -10,20 +10,25 @@ import lombok.extern.log4j.Log4j;
 
 import com.funnelback.dataapi.connector.padre.PadreConnector;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.search.model.padre.Result;
 
 /**
- * Fetches result using the Padre Data Api connector
+ * Fetches result using the Padre Data Api connector.
  */
 @Component
 @Log4j
 public class DefaultResultFetcher implements ResultFetcher {
 
+    /**
+     * Will fetch all existing metadata for a given result
+     */
     @Override
     public Result fetchResult(File indexStem, URI resultUri) {
         
         List<DocInfo> dis = new PadreConnector(indexStem)
             .docInfo(resultUri)
+            .withMetadata(DocInfoQuery.ALL_METADATA)
             .fetch();
 
         if (dis.size() < 1) {
