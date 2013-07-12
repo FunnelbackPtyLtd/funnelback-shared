@@ -62,5 +62,23 @@ public class FacetedNavigationCombinedTests {
         
     }
     
+    @Test
+    public void testMissingParameter() {
+        Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
+        
+        st.getQuestion().getRawInputParameters().put("f.By URL|", new String[] {"Shakespeare/cleopatra"});
+        st.getQuestion().getRawInputParameters().put("f.By URL", new String[] {"Shakespeare/cleopatra"});
+        st.getQuestion().getRawInputParameters().put("f.By Date|", new String[] {"1500-01-01", "1600-01-01"});
+        st.getQuestion().getRawInputParameters().put("f.By Date", new String[] {"1500-01-01", "1600-01-01"});
+        st.getQuestion().getRawInputParameters().put("f.By Query|", new String[] {"King"});
+        st.getQuestion().getRawInputParameters().put("f.By Query", new String[] {"King"});
+        st.getQuestion().getRawInputParameters().put("f.By Play|", new String[] {"Coriolanus"});
+        st.getQuestion().getRawInputParameters().put("f.By Play", new String[] {"Henry IV"});
+        processor.processInput(st);
+        
+        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());       
+    }
+    
     
 }

@@ -320,7 +320,7 @@ public class SearchQuestion {
         /**
          * Pattern to use to find faceted navigation parameters.
          */
-        public static final Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.*))?");
+        public static final Pattern FACET_PARAM_PATTERN = Pattern.compile("^" + FACET_PREFIX.replaceAll("\\.", "\\\\.") + "([^\\|]+)(\\|(.+))");
         
         /**
          * Content Optimiser: URL of the document to optimise.
