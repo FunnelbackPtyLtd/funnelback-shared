@@ -192,17 +192,17 @@
     @param name Name of the extra search results to process, as configured in <code>collection.cfg</code>.
 -->
 <#macro ExtraResults name>
-    <#if extra?exists && extra[name]?exists>
+    <#if extraSearches?exists && extraSearches[name]?exists>
         <#local questionBackup = question!{} />
         <#local responseBackup = response!{} />
         <#if error?exists>
             <#local errorBackup = error />
         </#if>
 
-        <#global question = extra[name].question!{} />
-        <#global response = extra[name].response!{} />
-        <#if extra[name].error?exists>
-            <#global error = extra[name].error />
+        <#global question = extraSearches[name].question!{} />
+        <#global response = extraSearches[name].response!{} />
+        <#if extraSearches[name].error?exists>
+            <#global error = extraSearches[name].error />
         </#if>
 
         <#nested>
