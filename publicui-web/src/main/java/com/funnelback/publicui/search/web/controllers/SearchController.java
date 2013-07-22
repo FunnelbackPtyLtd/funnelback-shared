@@ -61,7 +61,7 @@ public class SearchController extends SessionController {
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-        extra, question, response, session, error, httpRequest;
+        extraSearches, question, response, session, error, httpRequest;
         
         public static Set<String> getNames() {
             HashSet<String> out = new HashSet<String>();
@@ -213,12 +213,14 @@ public class SearchController extends SessionController {
         case json:
         case html:
         case htm:
+            // WARNING: Make sure keys used here match the name of
+            // the field on the SearchTransaction class
             out.put(ModelAttributes.question.toString(), st.getQuestion());
             out.put(ModelAttributes.response.toString(), st.getResponse());
             out.put(ModelAttributes.session.toString(), st.getSession());
             out.put(ModelAttributes.error.toString(), st.getError());
             if (st.getExtraSearches().size() > 0) {
-                out.put(ModelAttributes.extra.toString(), st.getExtraSearches());
+                out.put(ModelAttributes.extraSearches.toString(), st.getExtraSearches());
             }
             out.put(ModelAttributes.QueryString.toString(), request.getQueryString());
             
