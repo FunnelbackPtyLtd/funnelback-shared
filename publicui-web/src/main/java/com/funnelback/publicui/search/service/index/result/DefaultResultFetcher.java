@@ -43,13 +43,13 @@ public class DefaultResultFetcher implements ResultFetcher {
         DocInfo di = dis.get(0);
         
         Result r = new Result();
-        r.setIndexUrl(di.uri.toString());
-        r.setDate(di.date);
-        r.setFileType(di.fileType);
-        r.setFileSize(di.unfilteredLength);
-        r.setSummary(di.summaryText);
-        r.setTitle(di.title);
-        r.getMetaData().putAll(di.metaData);
+        r.setIndexUrl(di.getUri().toString());
+        r.setDate(di.getDate());
+        r.setFileType(di.getFileType());
+        r.setFileSize(di.getUnfilteredLength());
+        r.setSummary(di.getSummaryText());
+        r.setTitle(di.getTitle());
+        r.getMetaData().putAll(di.getMetaData());
         
         return r;        
     }
