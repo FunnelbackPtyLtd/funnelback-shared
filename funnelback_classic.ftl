@@ -255,7 +255,7 @@
 <#macro cut cut><#compress>
     <#if cut?exists>
         <#local value><#nested></#local>
-        ${value?replace(cut, "", "r")}
+        ${value?replace("^"+cut, "", "r")}
     </#if>
 </#compress></#macro>
 
