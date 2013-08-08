@@ -23,7 +23,7 @@ public class LibQSSuggester implements Suggester {
     
     @Override
     public List<Suggestion> suggest(Collection c, String profileId, String partialQuery,
-        int numSuggestions, Sort sort) {
+        int numSuggestions, Sort sort, double alpha, String category) {
 
         File indexStem = new File(c.getConfiguration().getCollectionRoot()
             + File.separator + DefaultValues.VIEW_LIVE
@@ -33,6 +33,8 @@ public class LibQSSuggester implements Suggester {
         return new PadreConnector(indexStem)
             .suggest(partialQuery)
             .suggestionCount(numSuggestions)
+            .alpha(alpha)
+            .forCategory(category)
             .forProfile(profileId)
             .sortBy(sort)
             .fetch();

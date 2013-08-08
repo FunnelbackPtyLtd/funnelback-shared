@@ -18,9 +18,11 @@ public interface Suggester {
      * @param partialQuery Partial query to get suggestions for
      * @param numSuggestions Max. number of suggestions to return
      * @param sort How to sort returned suggestions
+     * @param alpha Alpha value to tune the suggestions
+     * @param category Category to scope the suggestions, or null if no scope
      * @return A list of suggestions, possibly empty if there are none.
      */
     public List<Suggestion> suggest(Collection collection, String profileId, String partialQuery,
-        int numSuggestions, Sort sort);
+        int numSuggestions, Sort sort, double alpha, String category);
     
 }

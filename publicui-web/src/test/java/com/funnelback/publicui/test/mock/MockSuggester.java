@@ -11,7 +11,7 @@ public class MockSuggester implements Suggester {
 
     @Override
     public List<Suggestion> suggest(Collection collection, String profileId,
-            String partialQuery, int numSuggestions, Sort sort) {
+            String partialQuery, int numSuggestions, Sort sort, double alpha, String category) {
         return null;
     }
 

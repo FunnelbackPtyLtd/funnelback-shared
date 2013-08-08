@@ -124,14 +124,16 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             @RequestParam("partial_query") String partialQuery,
             @RequestParam(defaultValue="10") int show,
             @RequestParam(defaultValue="0") int sort,
-            @RequestParam(value="fmt",defaultValue="json") String format,
+            @RequestParam(value="fmt", defaultValue="json") String format,
+            @RequestParam(defaultValue="0.5") double alpha,
+            @RequestParam(required=false) String category,
             String callback,
             HttpServletResponse response) throws IOException {
         
         Collection c = configRepository.getCollection(collectionId);
         if (c != null) {
             ModelAndView mav = new ModelAndView();
-            mav.addObject("suggestions", suggester.suggest(c, profile, partialQuery, show, Sort.valueOf(sort)));
+            mav.addObject("suggestions", suggester.suggest(c, profile, partialQuery, show, Sort.valueOf(sort), alpha, category));
             mav.addObject("callback", callback);
             
             switch(Format.fromValue(format)) {

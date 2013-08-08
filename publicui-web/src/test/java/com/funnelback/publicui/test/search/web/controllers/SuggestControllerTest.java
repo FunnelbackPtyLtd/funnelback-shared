@@ -38,7 +38,7 @@ public class SuggestControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         suggestController.suggestJava("invalid",
                 DefaultValues.DEFAULT_PROFILE,
-                "ab", 0, 0, "json", "cb", response);
+                "ab", 0, 0, "json", 0.5, "abc", "cb", response);
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
