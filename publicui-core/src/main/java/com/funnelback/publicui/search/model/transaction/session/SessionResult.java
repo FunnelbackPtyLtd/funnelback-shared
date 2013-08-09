@@ -30,12 +30,10 @@ public abstract class SessionResult {
     protected Long id;
 
     /**
-     * User who clicked on the result
+     * ID of the user who clicked on the result
      */
-    @ManyToOne
-    @JoinColumn(name="userId")
     @Getter @Setter
-    protected SearchUser user;
+    protected String userId;
 
     /** Collection identifier for this click event */
     @Getter @Setter protected String collection;

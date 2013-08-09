@@ -33,10 +33,10 @@ public class ResultsCartDao implements ResultsCartRepository {
         try {
             CartResult existing = em.createQuery("from "+CartResult.class.getSimpleName()
                     + " where indexUrl = :uri"
-                    + " and user.id = :userId"
+                    + " and userId = :userId"
                     + " and collection = :collectionId", CartResult.class)
                     .setParameter("uri", result.getIndexUrl().toString())
-                    .setParameter("userId", result.getUser().getId())
+                    .setParameter("userId", result.getUserId())
                     .setParameter("collectionId", result.getCollection())
                     .getSingleResult();
 
@@ -53,7 +53,7 @@ public class ResultsCartDao implements ResultsCartRepository {
         // CHECKSTYLE:OFF
         Query q = em.createQuery("delete from " + CartResult.class.getSimpleName()
                 + " where indexUrl = :uri"
-                + " and user.id = :userId"
+                + " and userId = :userId"
                 + " and collection = :collectionId")
             .setParameter("uri", uri.toString())
             .setParameter("userId", user.getId())
@@ -69,7 +69,7 @@ public class ResultsCartDao implements ResultsCartRepository {
     public void clearCart(SearchUser user, Collection collection) {
         // CHECKSTYLE:OFF
         em.createQuery("delete from "+CartResult.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId")
             .setParameter("userId", user.getId())
             .setParameter("collectionId", collection.getId())
@@ -81,7 +81,7 @@ public class ResultsCartDao implements ResultsCartRepository {
     public List<CartResult> getCart(SearchUser user, Collection collection) {
         // CHECKSTYLE:OFF
         return em.createQuery("from "+CartResult.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId"
             + " order by addedDate desc", CartResult.class)
             .setParameter("userId", user.getId())

@@ -52,7 +52,7 @@ public class SearchHistory extends AbstractOutputProcessor {
             if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {
                 com.funnelback.publicui.search.model.transaction.session.SearchHistory h =
                     new com.funnelback.publicui.search.model.transaction.session.SearchHistory();
-                h.setUser(st.getSession().getSearchUser());
+                h.setUserId(st.getSession().getSearchUser().getId());
                 h.setCurrStart(r.getResultPacket().getResultsSummary().getCurrStart());
                 h.setNumRanks(r.getResultPacket().getResultsSummary().getNumRanks());
                 h.setOriginalQuery(q.getOriginalQuery());

@@ -18,6 +18,7 @@
 	<mvc:interceptors>
             <mvc:interceptor>
             <mvc:mapping path="/cart.*" />
+            <mvc:mapping path="/cart-process.*" />
             <mvc:mapping path="/search.*" />
             <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
                 <property name="persistenceUnitName" value="search-session" />

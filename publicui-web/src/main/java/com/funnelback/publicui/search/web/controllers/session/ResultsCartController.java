@@ -1,5 +1,24 @@
 package com.funnelback.publicui.search.web.controllers.session;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.SneakyThrows;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -10,22 +29,6 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Controller for the results shopping cart.
@@ -45,7 +48,7 @@ public class ResultsCartController extends SessionApiControllerBase {
 
     @Autowired
     private IndexRepository indexRepository;
-
+    
     @RequestMapping(method = RequestMethod.GET)
     public void cartList(
         @RequestParam("collection") String collectionId,
@@ -84,7 +87,7 @@ public class ResultsCartController extends SessionApiControllerBase {
             Result r = indexRepository.getResult(c, url);
 
             CartResult result = CartResult.fromResult(r);
-            result.setUser(user);
+            result.setUserId(user.getId());
             result.setAddedDate(new Date());
             cartRepository.addToCart(result);
             cartList(collection, user, response);

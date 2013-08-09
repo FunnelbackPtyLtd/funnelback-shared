@@ -4,7 +4,6 @@ import groovy.lang.Script;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -185,6 +184,8 @@ public class DefaultConfigRepository implements ConfigRepository {
                 }
             }
         }
+        
+        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(configFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))));
         
         return c;
     }

@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses"})
+@JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses", "cartProcessClass"})
 @Log4j
 public class Collection {
 
@@ -146,6 +146,14 @@ public class Collection {
      */
     @XStreamOmitField
     @Getter private final Map<Hook, Class<Script>> hookScriptsClasses = new HashMap<Hook, Class<Script>>();
+    
+    /**
+     * <p><em>Internal use</em>: Groovy class to use to process the results cart</p>
+     * 
+     * @since 13.0
+     */
+    @XStreamOmitField
+    @Getter @Setter private Class<?> cartProcessClass;
     
     /**
      * Get the collection type.

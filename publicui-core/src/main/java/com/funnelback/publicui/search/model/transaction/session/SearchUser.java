@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 /**
  * User performing the search.
  * 
@@ -25,7 +23,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties({"searchHistory", "clickHistory"})
 public class SearchUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,14 +46,14 @@ public class SearchUser implements Serializable {
     /**
      * Search history for that user
      */
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="userId")
     @Getter
     private List<SearchHistory> searchHistory;
 
     /**
      * Click history for that user
      */
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="userId")
     @Getter
     private List<ClickHistory> clickHistory;
 

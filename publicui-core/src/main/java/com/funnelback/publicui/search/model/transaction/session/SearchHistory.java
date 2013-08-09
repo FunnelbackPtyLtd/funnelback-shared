@@ -6,8 +6,6 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,12 +28,10 @@ public class SearchHistory {
     private Long id;
     
     /**
-     * User who performed the search
+     * ID of the User who performed the search
      */
-    @ManyToOne
-    @JoinColumn(name="userId")
     @Getter @Setter
-    private SearchUser user;
+    private String userId;
     
     /** Collection identifier for this search event */
     @Getter @Setter private String collection;

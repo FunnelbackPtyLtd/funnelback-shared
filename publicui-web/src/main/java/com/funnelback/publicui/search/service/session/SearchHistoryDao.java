@@ -35,7 +35,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
     public List<SearchHistory> getSearchHistory(SearchUser u, Collection c, int maxEntries) {
         // CHECKSTYLE:OFF
         return em.createQuery("from "+SearchHistory.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId"
             + " order by searchDate desc", SearchHistory.class)
             .setParameter("userId", u.getId())
@@ -49,7 +49,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
     public void clearSearchHistory(SearchUser user, Collection c) {
         // CHECKSTYLE:OFF
         em.createQuery("delete from "+SearchHistory.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId")
             .setParameter("userId", user.getId())
             .setParameter("collectionId", c.getId())
@@ -66,7 +66,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
     public List<ClickHistory> getClickHistory(SearchUser u, Collection c, int maxEntries) {
         // CHECKSTYLE:OFF
         return em.createQuery("from "+ClickHistory.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId"
             + " order by clickDate desc", ClickHistory.class)
             .setParameter("userId", u.getId())
@@ -80,7 +80,7 @@ public class SearchHistoryDao implements SearchHistoryRepository {
     public void clearClickHistory(SearchUser u, Collection c) {
         // CHECKSTYLE:OFF
         em.createQuery("delete from "+ClickHistory.class.getSimpleName()
-            + " where user.id = :userId"
+            + " where userId = :userId"
             + " and collection = :collectionId")
             .setParameter("userId", u.getId())
             .setParameter("collectionId", c.getId())

@@ -65,13 +65,15 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             }
         } else if (model.containsKey(RequestParameters.COLLECTION)
                 && model.get(RequestParameters.COLLECTION) instanceof Collection) {
-            // Model contains a Collection object, possibly a cache request
+            // Model contains a Collection object, possibly another non-search controller
             Collection c = (Collection) model.get(RequestParameters.COLLECTION);
             if (c.getConfiguration() != null) {
                 config = c.getConfiguration();
-                settingPrefix = Keys.ModernUI.Cache.FORM_PREFIX;
-                // Strip off ".cache" suffix from form name
+                settingPrefix = Keys.ModernUI.FORM_PREFIX;
+                
                 if (name.endsWith(DefaultValues.CACHE_FORM_SUFFIX)) {
+                    // Strip off ".cache" suffix from form name
+                    settingPrefix = Keys.ModernUI.Cache.FORM_PREFIX;
                     name = name.substring(0, name.lastIndexOf(DefaultValues.CACHE_FORM_SUFFIX));
                 }
             }
