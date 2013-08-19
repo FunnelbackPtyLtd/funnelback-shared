@@ -15,7 +15,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.location.Geolocator;
-import com.maxmind.geoip.Location;
 
 /**
  * <p>
@@ -47,9 +46,9 @@ public class Geolocation extends AbstractInputProcessor {
             
             if (config.valueAsBoolean(Keys.ModernUI.GEOLOCATION_ENABLED)) {
                 //Sets the location in the data model
-            	Location location = geolocator.geolocate(searchTransaction
+                com.maxmind.geoip.Location location = geolocator.geolocate(searchTransaction
                         .getQuestion());
-                searchTransaction.getQuestion().setLocation(location);
+                searchTransaction.getQuestion().setLocation(new com.funnelback.publicui.search.model.geolocation.Location(location));
                 
                 Map<String, String[]> params = searchTransaction.getQuestion().getAdditionalParameters();
                 

@@ -70,8 +70,8 @@ public class GeolocationTests {
 		Assert.assertNotNull(st.getQuestion().getAdditionalParameters());
 		Assert.assertTrue(st.getQuestion().getAdditionalParameters().containsKey(RequestParameters.ORIGIN));
         Assert.assertNotNull(st.getQuestion().getLocation());
-        Assert.assertEquals((float) 20, st.getQuestion().getLocation().latitude, 0.0); 
-        Assert.assertEquals((float) 100, st.getQuestion().getLocation().longitude, 0.0); 
+        Assert.assertEquals((float) 20, st.getQuestion().getLocation().getLatitude(), 0.0); 
+        Assert.assertEquals((float) 100, st.getQuestion().getLocation().getLongitude(), 0.0); 
         
         //
        
@@ -98,8 +98,8 @@ public class GeolocationTests {
 		Assert.assertTrue(st.getQuestion().getAdditionalParameters().containsKey(RequestParameters.ORIGIN));
 		Assert.assertNull("The processor should have left this as null", st.getQuestion().getAdditionalParameters().get(RequestParameters.ORIGIN));
         Assert.assertNotNull(st.getQuestion().getLocation());
-        Assert.assertEquals((float) 20, st.getQuestion().getLocation().latitude, 0.0); 
-        Assert.assertEquals((float) 100, st.getQuestion().getLocation().longitude, 0.0);
+        Assert.assertEquals((float) 20, st.getQuestion().getLocation().getLatitude(), 0.0); 
+        Assert.assertEquals((float) 100, st.getQuestion().getLocation().getLongitude(), 0.0);
 	}
 	
 	/**
@@ -123,8 +123,8 @@ public class GeolocationTests {
 		Assert.assertTrue(st.getQuestion().getAdditionalParameters().containsKey(RequestParameters.ORIGIN));
 		Assert.assertNull("The processor should have left this as null", st.getQuestion().getAdditionalParameters().get(RequestParameters.ORIGIN));
         Assert.assertNotNull(st.getQuestion().getLocation());
-        Assert.assertEquals((float) 20, st.getQuestion().getLocation().latitude, 0.0); 
-        Assert.assertEquals((float) 100, st.getQuestion().getLocation().longitude, 0.0);
+        Assert.assertEquals((float) 20, st.getQuestion().getLocation().getLatitude(), 0.0); 
+        Assert.assertEquals((float) 100, st.getQuestion().getLocation().getLongitude(), 0.0);
 	}
 	
 	
@@ -139,8 +139,8 @@ public class GeolocationTests {
 		if (null != st.getQuestion().getAdditionalParameters())
 			Assert.assertFalse(st.getQuestion().getAdditionalParameters().containsKey(RequestParameters.ORIGIN));
         Assert.assertNotNull(st.getQuestion().getLocation());
-        Assert.assertEquals((float) 20, st.getQuestion().getLocation().latitude, 0.0); 
-        Assert.assertEquals((float) 100, st.getQuestion().getLocation().longitude, 0.0); 
+        Assert.assertEquals((float) 20, st.getQuestion().getLocation().getLatitude(), 0.0); 
+        Assert.assertEquals((float) 100, st.getQuestion().getLocation().getLongitude(), 0.0); 
 	}
 	
 	@Test

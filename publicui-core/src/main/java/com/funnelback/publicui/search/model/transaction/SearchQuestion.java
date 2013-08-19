@@ -5,7 +5,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
-import com.maxmind.geoip.Location;
+import com.funnelback.publicui.search.model.geolocation.Location;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import lombok.*;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
