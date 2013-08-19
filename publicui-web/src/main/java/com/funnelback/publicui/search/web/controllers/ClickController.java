@@ -179,7 +179,8 @@ public class ClickController extends SessionController {
 			
 			URL referer = getReferrer(request);
 			
-			if (user != null && clickHistory != null) {
+			if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+			    && user != null && clickHistory != null) {
 			    clickHistory.setClickDate(new Date());
 			    clickHistory.setUserId(user.getId());
 				searchHistoryRepository.saveClick(clickHistory);
