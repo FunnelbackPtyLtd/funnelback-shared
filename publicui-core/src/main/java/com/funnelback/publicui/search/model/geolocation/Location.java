@@ -2,20 +2,109 @@ package com.funnelback.publicui.search.model.geolocation;
 
 import lombok.Data;
 
+/**
+ * This class represents a location along with a range of 'names' which apply to
+ * it, such as countries, cities, postalCodes etc.
+ * 
+ * The available fields are based closely on the MaxMind Location object, which
+ * we wrap to provide getters and setters for the fields (allowing access to
+ * them from FreeMarker).
+ * 
+ * @since 13.0
+ */
 @Data
 public class Location {
 
+    /**
+     * The area code of the represented location if it can be determined,
+     * otherwise zero.
+     * 
+     * @since 13.0
+     */
     private final int areaCode;
+
+    /**
+     * The city name of the represented location if it can be determined,
+     * otherwise null.
+     * 
+     * @since 13.0
+     */
     private final String city;
+
+    /**
+     * The two letter country code of the represented location if it can be
+     * determined, otherwise null.
+     * 
+     * @since 13.0
+     */
     private final String countryCode;
+
+    /**
+     * The full country name of the represented location if it can be
+     * determined, otherwise null.
+     * 
+     * @since 13.0
+     */
     private final String countryName;
+
+    /**
+     * The designated market area code of the represented location if it can be
+     * determined, otherwise zero.
+     * 
+     * @since 13.0
+     */
     private final int dmaCode;
+
+    /**
+     * The latitude of the represented location.
+     * 
+     * Defaults to zero if it cannot be determined even though that represents a
+     * legitimate location.
+     * 
+     * @since 13.0
+     */
     private final float latitude;
+
+    /**
+     * The longitude of the represented location.
+     * 
+     * Defaults to zero if it cannot be determined even though that represents a
+     * legitimate location.
+     * 
+     * @since 13.0
+     */
     private final float longitude;
+
+    /**
+     * The metro code of the represented location if it can be determined,
+     * otherwise zero.
+     * 
+     * @since 13.0
+     */
     private final int metroCode;
+
+    /**
+     * The postal code of the represented location if it can be determined,
+     * otherwise null.
+     * 
+     * @since 13.0
+     */
     private final String postalCode;
+
+    /**
+     * The region name of the represented location if it can be determined,
+     * otherwise null.
+     * 
+     * @since 13.0
+     */
     private final String region;
 
+    /**
+     * Construct a new Location object based on a MaxMind Location object (which
+     * is generally produced based on the source user's IP address).
+     * 
+     * @since 13.0
+     */
     public Location(com.maxmind.geoip.Location location) {
         this.areaCode = location.area_code;
         this.city = location.city;
