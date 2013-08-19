@@ -1,7 +1,11 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
 
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Component;
@@ -31,11 +35,40 @@ public class FacetScope extends AbstractInputProcessor {
                         RequestParameters.FACET_SCOPE, null);
                 
                 if (facetScope != null && ! "".equals(facetScope)) {
-                    Map<String, String> qs = QueryStringUtils.toSingleMap(facetScope, false);
-                    searchTransaction.getQuestion().getRawInputParameters().putAll(QueryStringUtils.toArrayMap(facetScope, false));
-                    log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + qs + "'");
+                    Map<String, String[]> params = convertFacetScopeToParameters(facetScope);
+                    searchTransaction.getQuestion().getRawInputParameters().putAll(params);
+                    log.debug("Transformed facetScope '" + facetScope + "' to question parameters '" + params + "'");
                 }
             }
+        }
+    }
+    
+    /**
+     * Converts a <code>facetScope</code> query string parameters into
+     * actual query strings parameters.
+     * @param facetScope Query string value for the <code>facetScope</code> parameter
+     * @return Query string parameters
+     */
+    public static Map<String, String[]> convertFacetScopeToParameters(String facetScope) {
+        return QueryStringUtils.toArrayMap(facetScope);
+    }
+    
+    /**
+     * Converts the <code>facetScope</code> parameter within an URL to actual facets parameters
+     * @param u URL to convert
+     * @return Converted URL. Will be identical to the input one if it didn't contain a <code>facetScope</code>
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public static String convertFacetScopeParameters(String parameters) {
+        Map<String, List<String>> qs = QueryStringUtils.toMap(parameters);
+        if (qs.containsKey(RequestParameters.FACET_SCOPE)) {
+                Map<String, String[]> params = convertFacetScopeToParameters(URLDecoder.decode(qs.get(RequestParameters.FACET_SCOPE).get(0), "UTF-8"));
+                qs.remove(RequestParameters.FACET_SCOPE);
+                qs.putAll(MapUtils.convertMapList(params));
+            
+                return QueryStringUtils.toString(qs, false);
+        } else {
+            return parameters;
         }
     }
 }

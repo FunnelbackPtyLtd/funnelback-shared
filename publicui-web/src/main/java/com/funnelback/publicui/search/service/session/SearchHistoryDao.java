@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.service.session;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,21 @@ public class SearchHistoryDao implements SearchHistoryRepository {
 
     @Override
     public void saveSearch(SearchHistory h) {
-        em.persist(h);
+        // Only insert new entries
+        // CHECKSTYLE:OFF
+        try {
+            em.createQuery("from "+SearchHistory.class.getSimpleName()
+                + " where searchUrl = :url"
+                + " and collection = :collectionId"
+                + " and userId = :userId", SearchHistory.class)
+                .setParameter("url", h.getSearchUrl())
+                .setParameter("collectionId", h.getCollection())
+                .setParameter("userId", h.getUserId())
+                .getSingleResult();
+        } catch (NoResultException nre) {
+            em.persist(h);
+        }
+        // CHECKSTYLE:ON
     }
 
     @Override

@@ -55,6 +55,6 @@ public class SearchHistory {
     @Getter @Setter private int numRanks;
     
     /** URL used to perform the search */
-    @Getter @Setter private URL searchUrl;
+    @Getter @Setter private String searchUrl;
 
 }

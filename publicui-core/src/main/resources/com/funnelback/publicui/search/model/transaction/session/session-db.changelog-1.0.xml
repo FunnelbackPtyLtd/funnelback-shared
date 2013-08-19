@@ -39,6 +39,7 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
+		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchUrl"/>
 		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
 			<column name="userId" />
 		</createIndex>

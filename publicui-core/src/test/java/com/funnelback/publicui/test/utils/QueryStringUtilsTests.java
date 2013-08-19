@@ -56,7 +56,7 @@ public class QueryStringUtilsTests {
         Assert.assertEquals(Arrays.asList(new String[0]), map.get("param4"));
         Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
         
-        map = QueryStringUtils.toMap(input, false);
+        map = QueryStringUtils.toMap(input);
 
         Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
         Assert.assertEquals(Arrays.asList(new String[] {"first value", "second value"}), map.get("param2"));

@@ -49,8 +49,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         List<String> currentConstraints = st.getQuestion().getSelectedCategoryValues().get(getQueryStringParamName());
         if (currentConstraints != null) {
             if (currentConstraints.size() > 1) {
-                log.warn("More than one URL constraint was selected: '"+StringUtils.join(currentConstraints, ",")+"'. This is not supported, only '"
-                        + currentConstraints.get(0) + "' will be considered");
+                log.warn("More than one URL constraint was selected: '"+StringUtils.join(currentConstraints, ",")
+                    +"'. This is not supported, only '" + currentConstraints.get(0) + "' will be considered");
             }
             currentConstraint = currentConstraints.get(0);
         }
@@ -89,7 +89,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                         item,
                         label,
                         count,
-                        getQueryStringParamName() + "=" + URLEncoder.encode(vValue, "UTF-8"),
+                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                            + "=" + URLEncoder.encode(vValue, "UTF-8"),
                         getMetadataClass()));
             }
         }

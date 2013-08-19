@@ -1,6 +1,8 @@
 package com.funnelback.publicui.utils;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -51,8 +53,8 @@ public class MapUtils {
     
     /**
      * Converts a {@link Properties} to a {@link Map}
-     * @param p
-     * @return
+     * @param p Properties to convert
+     * @return A {@link Map}
      */
     public static Map<String, String> fromProperties(Properties p) {
         Map<String, String> out = new HashMap<String, String>();
@@ -60,6 +62,25 @@ public class MapUtils {
             out.put(entry.getKey().toString(), entry.getValue().toString());
         }
         return out;        
+    }
+    
+    /**
+     * Converts a <code>{@link Map}&lt;String, String[]&gt;</code>
+     * into a <code>{@link Map}&lt;String, List&lt;&lt;String&gt;&gt;</code>
+     * @param map Map to convert
+     * @return Converted Map
+     */
+    public static Map<String, List<String>> convertMapList(Map<String, String[]> map) {
+        Map<String, List<String>> out = new HashMap<String, List<String>>();
+        for (Entry<String, String[]> entry: map.entrySet()) {
+            if (entry.getValue() != null) {
+                out.put(entry.getKey(), Arrays.asList(entry.getValue()));
+            } else {
+                out.put(entry.getKey(), null);
+            }
+        }
+        
+        return out;
     }
     
 }

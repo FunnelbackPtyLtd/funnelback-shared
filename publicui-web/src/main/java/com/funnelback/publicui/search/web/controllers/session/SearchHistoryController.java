@@ -36,7 +36,7 @@ public class SearchHistoryController extends SessionApiControllerBase {
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value="/search-history-clear.json", method=RequestMethod.DELETE)
+    @RequestMapping(value="/search-history.json", method=RequestMethod.DELETE)
     public void searchHistoryClear(
             @RequestParam("collection") String collectionId,
             @ModelAttribute SearchUser user,
@@ -51,7 +51,7 @@ public class SearchHistoryController extends SessionApiControllerBase {
         }
     }
     
-    @RequestMapping(value="/click-history-clear.json", method=RequestMethod.DELETE)
+    @RequestMapping(value="/click-history.json", method=RequestMethod.DELETE)
     public void clickHistoryClear(
             @RequestParam("collection") String collectionId,
             @ModelAttribute SearchUser user,

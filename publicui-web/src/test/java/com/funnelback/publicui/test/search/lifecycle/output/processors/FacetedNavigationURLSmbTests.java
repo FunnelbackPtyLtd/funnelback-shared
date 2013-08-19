@@ -69,7 +69,7 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals(46, cv.getCount());
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By URL|url=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category

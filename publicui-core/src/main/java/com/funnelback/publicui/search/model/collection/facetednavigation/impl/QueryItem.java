@@ -42,7 +42,7 @@ public class QueryItem extends CategoryDefinition implements GScopeBasedCategory
                     Integer.toString(gscopefield),
                     data,
                     rp.getGScopeCounts().get(gscopefield),
-                    getQueryStringParamName() + "=" + URLEncoder.encode(data, "UTF-8"),
+                    URLEncoder.encode(getQueryStringParamName(), "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8"),
                     Integer.toString(getGScopeNumber())));
         }
         return categories;

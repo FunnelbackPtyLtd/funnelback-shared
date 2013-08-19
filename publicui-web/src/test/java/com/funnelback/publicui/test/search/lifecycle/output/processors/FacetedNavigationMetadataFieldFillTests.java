@@ -104,7 +104,7 @@ public class FacetedNavigationMetadataFieldFillTests {
         Assert.assertEquals(27, cv.getCount());
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
-        Assert.assertEquals("f.Location|Z=australia", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -124,7 +124,7 @@ public class FacetedNavigationMetadataFieldFillTests {
         Assert.assertEquals(26, cv.getCount());
         Assert.assertEquals("divtrades & servicesdiv", cv.getData());
         Assert.assertEquals("divtrades & servicesdiv", cv.getLabel());
-        Assert.assertEquals("f.Job Category|W=divtrades+%26+servicesdiv", cv.getQueryStringParam());
+        Assert.assertEquals("f.Job+Category%7CW=divtrades+%26+servicesdiv", cv.getQueryStringParam());
         
     }
     
@@ -154,7 +154,7 @@ public class FacetedNavigationMetadataFieldFillTests {
         Assert.assertEquals(27, cv.getCount());
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
-        Assert.assertEquals("f.Location|Z=australia", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
         
         // Nested category: Location= australia + state
         Assert.assertEquals(1, c.getCategories().size());
@@ -168,7 +168,7 @@ public class FacetedNavigationMetadataFieldFillTests {
         Assert.assertEquals(5, cv.getCount());
         Assert.assertEquals("nsw", cv.getData());
         Assert.assertEquals("nsw", cv.getLabel());
-        Assert.assertEquals("f.Location|Y=nsw", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CY=nsw", cv.getQueryStringParam());
         
         // Nested-nested category: Location = australia + state + city
         // shouldn't be selected

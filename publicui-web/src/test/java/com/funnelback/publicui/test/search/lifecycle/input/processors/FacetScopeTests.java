@@ -1,7 +1,10 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
 
 import lombok.SneakyThrows;
 
@@ -14,6 +17,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.FacetScope;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.QueryStringUtils;
 
 public class FacetScopeTests {
 
@@ -84,5 +88,18 @@ public class FacetScopeTests {
         return URLEncoder.encode(s, "UTF-8");
     }
 
+    @Test
+    public void testConvertFacetScopeUrl() throws MalformedURLException {
+        String s = FacetScope.convertFacetScopeParameters(
+            "collection=test-coursefinder-mq&form=coursefinder&query=science&facetScope=f.ATAR%2520cut-off%257CA%3D82.30&profile=_default");
+        
+        Map<String, String> qs = QueryStringUtils.toSingleMap(s);
+        Assert.assertEquals(5, qs.size());
+        Assert.assertEquals("test-coursefinder-mq", qs.get("collection"));
+        Assert.assertEquals("coursefinder", qs.get("form"));
+        Assert.assertEquals("science", qs.get("query"));
+        Assert.assertEquals("82.30", qs.get("f.ATAR cut-off|A"));
+        Assert.assertEquals("_default", qs.get("profile"));
+    }
     
 }

@@ -106,7 +106,7 @@ public class ParamTransformRuleFactory {
         ArrayList<Operation> operations = new ArrayList<Operation>();
         
         if (remove) {
-            Map<String, List<String>> params = QueryStringUtils.toMap(paramString, false);
+            Map<String, List<String>> params = QueryStringUtils.toMap(paramString);
             for (String name : params.keySet()) {
                 if (params.get(name) != null && params.get(name).size() > 0) {
                     operations.add(new RemoveSpecificValuesOperation(name, params.get(name)));
@@ -115,7 +115,7 @@ public class ParamTransformRuleFactory {
                 }
             }
         } else {
-            Map<String, List<String>> params = QueryStringUtils.toMap(paramString, false);
+            Map<String, List<String>> params = QueryStringUtils.toMap(paramString);
             for (String name : params.keySet()) {
                 operations.add(new AddParameterOperation(name, params.get(name)));
             }

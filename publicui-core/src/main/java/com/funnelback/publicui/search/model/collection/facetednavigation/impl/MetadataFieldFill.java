@@ -39,7 +39,8 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
                         mdv.value,
                         mdv.value,
                         count,
-                        getQueryStringParamName() + "=" + URLEncoder.encode(mdv.value, "UTF-8"),
+                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                            + "=" + URLEncoder.encode(mdv.value, "UTF-8"),
                         getMetadataClass()));
             }
         }

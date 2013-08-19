@@ -103,7 +103,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals(108, cv.getCount());
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full", cv.getLabel());
-        Assert.assertEquals("f.By Story|40=Full", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+Story%7C40=Full", cv.getQueryStringParam());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -120,7 +120,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals(22, cv.getCount());
         Assert.assertEquals("1", cv.getData());
         Assert.assertEquals("Henry IV", cv.getLabel());
-        Assert.assertEquals("f.By Story|1=Henry+IV", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+Story%7C1=Henry+IV", cv.getQueryStringParam());
         
         Assert.assertEquals(0, c.getCategories().size());
         
@@ -156,7 +156,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals(46, cv.getCount());
         Assert.assertEquals("8", cv.getData());
         Assert.assertEquals("Cleopatra", cv.getLabel());
-        Assert.assertEquals("f.By Story|8=Cleopatra", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+Story%7C8=Cleopatra", cv.getQueryStringParam());
         
         Assert.assertEquals(0, c.getCategories().size());        
     }
@@ -191,7 +191,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals(33, cv.getCount());
         Assert.assertEquals("10", cv.getData());
         Assert.assertEquals("Coriolanus", cv.getLabel());
-        Assert.assertEquals("f.By Story|10=Coriolanus", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+Story%7C10=Coriolanus", cv.getQueryStringParam());
         
         Assert.assertEquals(1, c.getCategories().size());
         
@@ -206,7 +206,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals(3, cv.getCount());
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full (nested)", cv.getLabel());
-        Assert.assertEquals("f.By Story|40=Full+%28nested%29", cv.getQueryStringParam());
+        Assert.assertEquals("f.By+Story%7C40=Full+%28nested%29", cv.getQueryStringParam());
         
         Assert.assertEquals(0, c.getCategories().size());
 

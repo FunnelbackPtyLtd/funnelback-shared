@@ -44,20 +44,6 @@ public class SearchUser implements Serializable {
     @Getter @Setter private Date createdDate;
 
     /**
-     * Search history for that user
-     */
-    @OneToMany(mappedBy="userId")
-    @Getter
-    private List<SearchHistory> searchHistory;
-
-    /**
-     * Click history for that user
-     */
-    @OneToMany(mappedBy="userId")
-    @Getter
-    private List<ClickHistory> clickHistory;
-
-    /**
      * Creates a new user
      * @param id ID to assign to the user
      */

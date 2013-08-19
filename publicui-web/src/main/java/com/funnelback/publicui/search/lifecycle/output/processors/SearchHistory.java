@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.lifecycle.input.processors.FacetScope;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -61,16 +62,15 @@ public class SearchHistory extends AbstractOutputProcessor {
                 h.setTotalMatching(r.getResultPacket().getResultsSummary().getTotalMatching());
                 h.setCollection(q.getCollection().getId());
                 try {
-                    h.setSearchUrl(new URL(q.getInputParameterMap()
-                        .get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString())));
-                } catch (MalformedURLException mue) {
-                    log.warn("Couldn't parse search URL", mue);
+                    String url = q.getInputParameterMap()
+                        .get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString());
+                    // Convert 'facetScope' parameter into actual facets parameters
+                    h.setSearchUrl(FacetScope.convertFacetScopeParameters(new URL(url).getQuery()));
+                } catch (MalformedURLException e) {
+                    log.warn("Couldn't parse search URL", e);
                 }
                 
                 repository.saveSearch(h);
-                
-                // Insert current search at the head of the list
-                s.getSearchHistory().add(0, h);
             }
         }
 

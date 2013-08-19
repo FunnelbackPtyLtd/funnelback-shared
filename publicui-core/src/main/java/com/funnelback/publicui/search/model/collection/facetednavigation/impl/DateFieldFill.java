@@ -41,7 +41,8 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
                         mdv.metadata,
                         mdv.value,
                         dc.getCount(),
-                        getQueryStringParamName() + "=" + URLEncoder.encode(dc.getQueryTerm(), "UTF-8"),
+                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                            + "=" + URLEncoder.encode(dc.getQueryTerm(), "UTF-8"),
                         getMetadataClass()));
             }
         }
