@@ -72,6 +72,18 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
         Assert.assertEquals("Value 1", response.getHeader("First-Header"));
         Assert.assertEquals("second value...", response.getHeader("Second-Header"));
     }
+    
+    @Test
+    public void testCustomHeaderColon() {
+        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "1");
+        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "Access-Control-Allow-Origin: http://server.com/");
+        
+        customiseOutput("conf/dummy/_default/simple.ftl", model, response);
+
+        Assert.assertEquals("text/html", response.getContentType());
+        Assert.assertEquals(2, response.getHeaderNames().size());
+        Assert.assertEquals("http://server.com/", response.getHeader("Access-Control-Allow-Origin"));
+    }
 
     @Test
     public void testBoth() {

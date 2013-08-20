@@ -102,8 +102,8 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             for (int i=0; i<nbHeaders; i++) {
                 String header = config.value(propertyPrefix+"."+Keys.ModernUI.HEADERS_SUFFIX+"."+(i+1), null);
                 if (header != null && header.contains(":")) {
-                    String[] kv = header.split(":");
-                    response.setHeader(kv[0].trim(), kv[1].trim());
+                    response.setHeader(header.substring(0, header.indexOf(':')).trim(),
+                        header.substring(header.indexOf(':')+1).trim());
                     sent++;
                 }
             }
