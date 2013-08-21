@@ -47,7 +47,6 @@ public class SearchHistory extends AbstractOutputProcessor {
         
             SearchResponse r = st.getResponse();
             SearchQuestion q = st.getQuestion();
-            SearchSession  s = st.getSession();
 
             // Save current search
             if (r.getResultPacket() != null && r.getResultPacket().getError() == null) {

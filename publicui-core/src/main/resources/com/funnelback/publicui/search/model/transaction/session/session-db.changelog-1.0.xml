@@ -38,8 +38,11 @@
 			<column name="searchUrl" type="varchar(1024)">
 				<constraints nullable="false" />
 			</column>
+			<column name="searchUrlSignature" type="int">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
-		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchUrl"/>
+		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchUrlSignature"/>
 		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
 			<column name="userId" />
 		</createIndex>

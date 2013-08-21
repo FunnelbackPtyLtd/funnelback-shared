@@ -32,14 +32,16 @@ public class SearchHistoryDao implements SearchHistoryRepository {
         // Only insert new entries
         // CHECKSTYLE:OFF
         try {
-            em.createQuery("from "+SearchHistory.class.getSimpleName()
-                + " where searchUrl = :url"
+            SearchHistory existing = em.createQuery("from "+SearchHistory.class.getSimpleName()
+                + " where searchUrlSignature = :signature"
                 + " and collection = :collectionId"
                 + " and userId = :userId", SearchHistory.class)
-                .setParameter("url", h.getSearchUrl())
+                .setParameter("signature", h.getSearchUrlSignature())
                 .setParameter("collectionId", h.getCollection())
                 .setParameter("userId", h.getUserId())
                 .getSingleResult();
+            existing.setSearchDate(h.getSearchDate());
+            em.persist(existing);
         } catch (NoResultException nre) {
             em.persist(h);
         }

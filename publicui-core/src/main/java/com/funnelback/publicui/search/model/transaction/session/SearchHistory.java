@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.funnelback.publicui.utils.URLSignature;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -55,6 +57,17 @@ public class SearchHistory {
     @Getter @Setter private int numRanks;
     
     /** URL used to perform the search */
-    @Getter @Setter private String searchUrl;
+    @Getter private String searchUrl;
+    
+    public void setSearchUrl(String searchUrl) {
+        this.searchUrl = searchUrl;
+        this.searchUrlSignature = URLSignature.computeQueryStringSignature(searchUrl);
+    }
+    
+    /**
+     * Signature identifying the search URL regardless
+     * of the order of the parameters or their encoding
+     */
+    @Getter private int searchUrlSignature;
 
 }
