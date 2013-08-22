@@ -2,11 +2,9 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
-import com.funnelback.publicui.search.service.SearchUserRepository;
 import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 
 /**
@@ -15,9 +13,6 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  * @since 12.5
  */
 public class SessionController {
-
-    @Autowired
-    private SearchUserRepository searchUserRepository;
 
     /**
      * Retrieve the current search user from its ID stored in
@@ -30,7 +25,7 @@ public class SessionController {
     public SearchUser getSearchUser(HttpServletRequest request) {
         if (request.getSession(false) != null
             && request.getSession(false).getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE) != null) {
-            return searchUserRepository.getSearchUser((String) request.getSession(false)
+            return new SearchUser((String) request.getSession()
                 .getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
         }
         

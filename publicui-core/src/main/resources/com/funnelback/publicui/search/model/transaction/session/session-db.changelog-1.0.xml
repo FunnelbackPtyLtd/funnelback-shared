@@ -120,21 +120,6 @@
         </createTable>
         <addUniqueConstraint tableName="CartResultMetadata" columnNames="cartResultId,key,metaData"/>
 
-        <createTable tableName="SearchUser">
-			<!-- FIXME Use proper GUID type ? Integer ? -->
-			<column name="id" type="varchar(36)">
-				<constraints primaryKey="true" nullable="false"></constraints>
-			</column>
-			<column name="email" type="varchar(255)" />
-			<column name="createdDate" type="timestamp">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-
-		<addForeignKeyConstraint referencedTableName="SearchUser"
-			referencedColumnNames="id" constraintName="search_history_search_user_fk" baseColumnNames="userId"
-			baseTableName="searchHistory" />
-
 	</changeSet>
 
 </databaseChangeLog>

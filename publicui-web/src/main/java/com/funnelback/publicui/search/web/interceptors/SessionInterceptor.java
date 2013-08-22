@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.web.interceptors;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,22 +16,15 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.SearchUserRepository;
 
 /**
  * <p>Manage sessions and users.</p>
- * 
- * <p>Retrieve the user if we know about him/her, otherwise
- * creates a new user and a new session.</p>
  * 
  * @since v12.4
  *
  */
 public class SessionInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private SearchUserRepository searchUserRepository;
-    
     /**
      * Name of the session attribute holding the user id
      */
@@ -48,25 +40,14 @@ public class SessionInterceptor implements HandlerInterceptor {
         if (request.getParameter(RequestParameters.COLLECTION) != null) {
             Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
             if (collection != null) {
-                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)) {
+                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION,
+                    DefaultValues.ModernUI.SESSION)) {
                     HttpSession session = request.getSession();
-                    
-                    // Try to fetch existing user
-                    SearchUser user = null;
-                    if (session != null && session.getAttribute(SEARCH_USER_ID_ATTRIBUTE) != null) {
-                        user = searchUserRepository.getSearchUser((String) session.getAttribute(SEARCH_USER_ID_ATTRIBUTE));
+                    if (session.getAttribute(SEARCH_USER_ID_ATTRIBUTE) == null) {
+                        session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, UUID.randomUUID().toString());
                     }
-                    
-                    if (user == null) {
-                        // New or not found user
-                        user = new SearchUser(UUID.randomUUID().toString());
-                        user.setCreatedDate(new Date());
-                        searchUserRepository.createSearchUser(user);
-                    }
-                    
+ 
                     session.setMaxInactiveInterval(-1);
-                    session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, user.getId());
-
                 }
             }
         }
