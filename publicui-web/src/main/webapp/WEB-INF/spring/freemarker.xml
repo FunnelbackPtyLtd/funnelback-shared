@@ -124,6 +124,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ComputeQueryStringSignatureMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.ComputeQueryStringSignatureMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.PrettyTimeMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.PrettyTimeMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>

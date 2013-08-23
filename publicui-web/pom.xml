@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>publicui-web</artifactId>
     <packaging>war</packaging>
@@ -11,7 +11,8 @@
     </parent>
 
     <build>
-        <!-- No version in WAR filename as it's dropped in web/webapps/ and auto-deployed -->
+        <!-- No version in WAR filename as it's dropped in web/webapps/ and 
+            auto-deployed -->
         <finalName>funnelback-publicui</finalName>
         <plugins>
             <plugin>
@@ -24,11 +25,11 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <properties>
-    	<m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
-    	<install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-    	<version.yammer-metrics>2.2.0</version.yammer-metrics>
+        <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
+        <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
+        <version.yammer-metrics>2.2.0</version.yammer-metrics>
     </properties>
 
     <dependencies>
@@ -47,9 +48,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-        	<groupId>com.funnelback.dataapi</groupId>
-        	<artifactId>data-api-connector-padre</artifactId>
-        	<version>${project.version}</version>
+            <groupId>com.funnelback.dataapi</groupId>
+            <artifactId>data-api-connector-padre</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -111,7 +112,7 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.0-rc1</version>
             <scope>test</scope>
-        </dependency>		
+        </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
@@ -188,11 +189,11 @@
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.1.0.Final</version>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.1.0.Final</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -223,44 +224,49 @@
             <artifactId>slf4j-log4j12</artifactId>
             <scope>runtime</scope>
         </dependency>
-		<dependency>
-			<groupId>com.yammer.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-			<version>${version.yammer-metrics}</version>
-		</dependency>
-				<dependency>
-			<groupId>com.yammer.metrics</groupId>
-			<artifactId>metrics-spring</artifactId>
-			<version>${version.yammer-metrics}</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.yammer.metrics</groupId>
-		    <artifactId>metrics-web</artifactId>
-		    <version>${version.yammer-metrics}</version>
-		</dependency>		
-		<dependency>
-		    <groupId>com.yammer.metrics</groupId>
-		    <artifactId>metrics-servlet</artifactId>
-		    <version>${version.yammer-metrics}</version>
-		</dependency>		
-		<dependency>
-		    <groupId>com.yammer.metrics</groupId>
-		    <artifactId>metrics-graphite</artifactId>
-		    <version>${version.yammer-metrics}</version>
-		</dependency>
-			<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-vfs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.samba.jcifs</groupId>
-			<artifactId>jcifs</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-	  </dependencies>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-spring</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-web</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-servlet</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-graphite</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-vfs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.samba.jcifs</groupId>
+            <artifactId>jcifs</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+            <version>3.0.2.Final</version>
+        </dependency>
+    </dependencies>
 
 </project>
