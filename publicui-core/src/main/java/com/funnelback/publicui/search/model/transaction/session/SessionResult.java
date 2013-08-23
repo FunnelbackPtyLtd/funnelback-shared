@@ -68,7 +68,7 @@ public abstract class SessionResult {
     @Getter
     @ElementCollection
     @MapKeyColumn(name = "key")
-    @CollectionTable(name="CartResultMetadata",joinColumns = @JoinColumn(name="cartResultId"))
+    @CollectionTable(name="CartResultMetadata", joinColumns = @JoinColumn(name="cartResultId"))
     protected final Map<String, String> metaData = new HashMap<>();
     
     /**
