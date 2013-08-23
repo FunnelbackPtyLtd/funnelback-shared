@@ -220,7 +220,7 @@ public class SuggestController extends AbstractRunPadreBinaryController {
                 Suggestion s = new Suggestion();
                 s.setKey(h.getOriginalQuery());
                 
-                s.setAction(searchUrl + "?" + h.getSearchUrl());
+                s.setAction(searchUrl + "?" + h.getSearchParams());
                 s.setActionType(ActionType.URL);
                 
                 // Display is templated from a collection.cfg parameter

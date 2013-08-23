@@ -35,14 +35,14 @@
 			<column name="numRanks" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="searchUrl" type="varchar(1024)">
+			<column name="searchParams" type="varchar(1024)">
 				<constraints nullable="false" />
 			</column>
-			<column name="searchUrlSignature" type="int">
+			<column name="searchParamsSignature" type="int">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchUrlSignature"/>
+		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchParamsSignature"/>
 		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
 			<column name="userId" />
 		</createIndex>

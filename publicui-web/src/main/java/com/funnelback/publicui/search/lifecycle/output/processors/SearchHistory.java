@@ -64,7 +64,7 @@ public class SearchHistory extends AbstractOutputProcessor {
                     String url = q.getInputParameterMap()
                         .get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString());
                     // Convert 'facetScope' parameter into actual facets parameters
-                    h.setSearchUrl(FacetScope.convertFacetScopeParameters(new URL(url).getQuery()));
+                    h.setSearchParams(FacetScope.convertFacetScopeParameters(new URL(url).getQuery()));
                 } catch (MalformedURLException e) {
                     log.warn("Couldn't parse search URL", e);
                 }

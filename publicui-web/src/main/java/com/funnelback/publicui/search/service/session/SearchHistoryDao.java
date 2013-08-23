@@ -33,10 +33,10 @@ public class SearchHistoryDao implements SearchHistoryRepository {
         // CHECKSTYLE:OFF
         try {
             SearchHistory existing = em.createQuery("from "+SearchHistory.class.getSimpleName()
-                + " where searchUrlSignature = :signature"
+                + " where searchParamsSignature = :signature"
                 + " and collection = :collectionId"
                 + " and userId = :userId", SearchHistory.class)
-                .setParameter("signature", h.getSearchUrlSignature())
+                .setParameter("signature", h.getSearchParamsSignature())
                 .setParameter("collectionId", h.getCollection())
                 .setParameter("userId", h.getUserId())
                 .getSingleResult();

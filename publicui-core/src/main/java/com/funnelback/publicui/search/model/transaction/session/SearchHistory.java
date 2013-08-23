@@ -1,17 +1,16 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
-import java.net.URL;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.funnelback.publicui.utils.URLSignature;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import com.funnelback.publicui.utils.URLSignature;
 
 /**
  * A single entry in the {@link SearchUser} search history
@@ -56,18 +55,22 @@ public class SearchHistory {
     /** Number of results per page */
     @Getter @Setter private int numRanks;
     
-    /** URL used to perform the search */
-    @Getter private String searchUrl;
+    /** URL parameters used to perform the search */
+    @Getter private String searchParams;
     
-    public void setSearchUrl(String searchUrl) {
-        this.searchUrl = searchUrl;
-        this.searchUrlSignature = URLSignature.computeQueryStringSignature(searchUrl);
+    /**
+     * Set the search parameters
+     * @param params 
+     */
+    public void setSearchParams(String params) {
+        this.searchParams = params;
+        this.searchParamsSignature = URLSignature.computeQueryStringSignature(searchParams);
     }
     
     /**
-     * Signature identifying the search URL regardless
+     * Signature identifying the search URL parameters regardless
      * of the order of the parameters or their encoding
      */
-    @Getter private int searchUrlSignature;
+    @Getter private int searchParamsSignature;
 
 }
