@@ -121,6 +121,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.ComputeQueryStringSignatureMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.ComputeQueryStringSignatureMethod" />
+				</entry>
 			</map>
 		</property>
 	</bean>
