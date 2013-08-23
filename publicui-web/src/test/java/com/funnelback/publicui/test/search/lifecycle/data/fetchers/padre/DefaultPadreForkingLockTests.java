@@ -6,6 +6,9 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
@@ -59,7 +62,9 @@ public class DefaultPadreForkingLockTests {
         lockFile.delete();
         Assert.assertFalse(lockFile.exists());
         
-        String qp = "mock-padre-wait.sh 2 src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        String qp = "mock-padre-wait.sh";
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"2","src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         if (OS.isFamilyWindows()) {
             // Can't sleep/wait in a batch script except when using PING or TIMEOUT,
@@ -68,15 +73,22 @@ public class DefaultPadreForkingLockTests {
             // interpreter.
             forking.setAbsoluteQueryProcessorPath(true);
             
-            qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe /NoLogo "
-                    + new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath()
-                    + " 2 "
-                    + new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath();
-        }
+            qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe";
+            
+            qpOptions = new ArrayList<String>(Arrays.asList(
+                new String[]{
+                    "/NoLogo",
+                    new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath(),
+                    "2",
+                    new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath()}));
 
+        }
         
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setCollection(new Collection("padre-forking", 
+            new NoOptionsConfig("padre-forking")
+            .setValue("query_processor", qp)));
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
                 
         final SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
@@ -98,7 +110,7 @@ public class DefaultPadreForkingLockTests {
         // Wait a bit so the main search acquire the lock
         Thread.sleep(50);
         
-        // Run a second forker with a differnt query processor, but on the
+        // Run a second forker with a different query processor, but on the
         // same collection
         DefaultPadreForking forking2 = new DefaultPadreForking();
         forking2.setI18n(i18n);
@@ -106,9 +118,14 @@ public class DefaultPadreForkingLockTests {
         forking2.setPadreXmlParser(new StaxStreamParser());
         forking2.setSearchHome(new File("src/test/resources/dummy-search_home"));
 
-        qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        qp = "mock-padre"+getExtension();
+        qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{
+                "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
+
         qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
         
         SearchTransaction st2 = null;
@@ -136,11 +153,15 @@ public class DefaultPadreForkingLockTests {
     public void testLockCreated() throws DataFetchException, EnvironmentVariableException, IOException {
         File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
         
-        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        String qp = "mock-padre"+getExtension();
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{
+                "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
         qs.setQuery("test");
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
         
         forking.fetchData(st);
@@ -154,23 +175,31 @@ public class DefaultPadreForkingLockTests {
     public void testLockWaits() throws Exception {
         File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
         
-        String qp = "mock-padre-wait.sh 2 src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        String qp = "mock-padre-wait.sh";
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"2","src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         if (OS.isFamilyWindows()) {
             // Can't sleep/wait in a batch script except when using PING or TIMEOUT,
             // but those weren't working when forked from Java for some reason (error code 9009).
-            // I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.eEXE
+            // I had to create a VBS script, but to run it it needs the full path to the CSCRIPT.EXE
             // interpreter.
             forking.setAbsoluteQueryProcessorPath(true);
             
-            qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe /NoLogo "
-                    + new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath()
-                    + " 2 "
-                    + new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath();
+            qp = System.getenv("SystemRoot") + "\\System32\\cscript.exe";
+            
+            qpOptions = new ArrayList<String>(Arrays.asList(
+                new String[]{
+                    "/NoLogo",
+                    new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath(),
+                    "2",
+                    new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath()}));
+
         }
 
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
                 
         final SearchTransaction st = new SearchTransaction(qs, new SearchResponse());

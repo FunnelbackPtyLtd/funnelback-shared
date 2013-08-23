@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,16 @@ public class JavaPadreForker implements PadreForker {
     protected final long padreWaitTimeout;
     
     @Override
-    public ExecutionReturn execute(String commandLine, Map<String, String> environment) throws PadreForkingException {
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment) throws PadreForkingException {
         
-        CommandLine padreCmdLine = CommandLine.parse(commandLine);
+        if (commandLine == null || commandLine.size() < 1) {
+            throw new PadreForkingException(i18n.tr("padre.forking.java.failed", ""), new IllegalArgumentException("No commandLine specified"));
+        }
+        
+        CommandLine padreCmdLine = new CommandLine(commandLine.get(0));
+        if (commandLine.size() > 1) {
+            padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}));
+        }
         
         ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
         ByteArrayOutputStream padreError = new ByteArrayOutputStream(AVG_PADRE_ERR_SIZE);

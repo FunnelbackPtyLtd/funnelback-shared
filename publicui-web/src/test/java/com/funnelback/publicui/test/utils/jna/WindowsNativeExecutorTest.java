@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.utils.jna;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class WindowsNativeExecutorTest {
     public void testNoEnvironment() throws ExecutionException {
         WindowsNativeExecutor executor = new WindowsNativeExecutor(new I18n(), 1000*30);
         
-        ExecutionReturn er = executor.execute("net.exe", null);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null);
         
         Assert.assertEquals(1, er.getReturnCode());
         Assert.assertTrue(er.getOutput().contains("The syntax of this command is"));
@@ -37,7 +38,7 @@ public class WindowsNativeExecutorTest {
         
         Map<String, String> env = new HashMap<String, String>();
         env.put("TEST_VAR", "test value");
-        ExecutionReturn er = executor.execute("cmd.exe /c echo %TEST_VAR%", env);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"cmd.exe","/c","echo","%TEST_VAR%"}), env);
         
         Assert.assertEquals(0, er.getReturnCode());
         Assert.assertEquals("test value", er.getOutput().trim());

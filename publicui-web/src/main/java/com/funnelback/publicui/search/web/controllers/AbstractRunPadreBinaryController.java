@@ -2,6 +2,8 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +64,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
      * @throws PadreForkingException
      */
     protected final void runPadreBinary(String padreBinary,
-            String options,
+            List<String> options,
             HttpServletRequest request, HttpServletResponse response,
             boolean detectHeaders) throws IOException, PadreForkingException {
         CGIEnvironment cgi = new CGIEnvironment(request);
@@ -70,12 +72,12 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         Map<String, String> env = cgi.getEnvironment();
         env.put(EnvironmentKeys.SEARCH_HOME.toString(), getSearchHome().getAbsolutePath());
 
-        String commandLine = new File(getSearchHome(),
-                DefaultValues.FOLDER_BIN + File.separator
-                + padreBinary + ((OS.isFamilyWindows()) ? ".exe" : "")).getAbsolutePath();
+        List<String> commandLine = new ArrayList<String>();
+        commandLine.add(new File(getSearchHome(), DefaultValues.FOLDER_BIN + File.separator + padreBinary
+            + ((OS.isFamilyWindows()) ? ".exe" : "")).getAbsolutePath());
         
         if (options != null) {
-            commandLine += " " + options;
+            commandLine.addAll(options);
         }
 
         try {

@@ -3,6 +3,9 @@ package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
@@ -73,10 +76,13 @@ public class DefaultPadreForkingTests {
     
     @Test
     public void testNoExplicitQueryShouldReturnResults() throws Exception {
-        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        String qp = "mock-padre"+getExtension();
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        st.getQuestion().getDynamicQueryProcessorOptions().addAll(qpOptions);
         st.getQuestion().getMetaParameters().add("t:test");
         forking.fetchData(st);
         Assert.assertNotNull(st.getResponse());
@@ -87,10 +93,13 @@ public class DefaultPadreForkingTests {
     
     @Test
     public void test() throws DataFetchException, EnvironmentVariableException, IOException {
-        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+        String qp = "mock-padre"+getExtension();
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
         SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
         
@@ -105,11 +114,14 @@ public class DefaultPadreForkingTests {
     
     @Test
     public void testInvalidPacket() throws Exception {
-        String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad";
+        String qp = "mock-padre"+getExtension();
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad"}));
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
         qs.setQuery("test");
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
         
@@ -156,10 +168,13 @@ public class DefaultPadreForkingTests {
     public void testWindowsNative() throws Exception {
         if (OS.isFamilyWindows()) {
             
-            String qp = "mock-padre"+getExtension()+" src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml";
+            String qp = "mock-padre"+getExtension();
+            List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+                new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
             SearchQuestion qs = new SearchQuestion();
             qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
             qs.setQuery("test");
             qs.setImpersonated(true);
             SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());

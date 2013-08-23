@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
@@ -75,20 +77,23 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).hasQuery()) {
             
-            String commandLine = new File(searchHome,
-                    DefaultValues.FOLDER_BIN                 
-                    + File.separator
-                    + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath()
-                    + " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+            List<String> commandLine = new ArrayList<String>();
+            
+            
             
             if (absoluteQueryProcessorPath) {
-                commandLine = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)
-                    + " " + StringUtils.join(searchTransaction.getQuestion().getDynamicQueryProcessorOptions().toArray(new String[0]), " ");
+                commandLine.add(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR));
+            } else {
+                commandLine.add(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
+                    + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath());
             }
-            
+
+            commandLine.addAll(searchTransaction.getQuestion().getDynamicQueryProcessorOptions());
+
             if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
-                commandLine += " " + OPT_USER_KEYS + "=\""
-                + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), ",") + "\"";
+                commandLine.add(OPT_USER_KEYS + "=\""
+                    + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), ",")
+                    + "\"");
             }
     
             Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());

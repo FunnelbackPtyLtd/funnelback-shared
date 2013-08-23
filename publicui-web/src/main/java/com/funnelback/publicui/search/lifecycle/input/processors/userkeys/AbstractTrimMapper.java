@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +85,9 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                         System.getenv(EnvironmentKeys.SystemRoot.toString()));
                 }
                 
-                String cmdLine = getUserKeysBinary.getAbsolutePath()
-                    + " -f " + getKeyStringFormat().name()
-                    + " " + collection.getId();
+                List<String> cmdLine = new ArrayList<String>(Arrays.asList(new String[] {
+                                getUserKeysBinary.getAbsolutePath(), "-f", getKeyStringFormat().name(),
+                                collection.getId() }));
                 
                 try {
                     log.debug("Running user keys collector on collection '"

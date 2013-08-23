@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class WindowsNativePadreForker implements PadreForker {
     private final int execTimeout;
     
     @Override
-    public ExecutionReturn execute(String commandLine, Map<String, String> environment)
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment)
         throws PadreForkingException {
 
         try {

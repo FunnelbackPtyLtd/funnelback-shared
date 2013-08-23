@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -166,10 +169,8 @@ public class LocalDataRepository implements DataRepository {
             + File.separator + DefaultValues.VIEW_LIVE,
             File.separator + DefaultValues.FOLDER_TMP);
         
-        String cmdLine = getDocumentBinary.getAbsolutePath()
-            + " -i " + Integer.toString(trimUri)
-            + " -f " + tempFolder.getAbsolutePath()
-            + " " + collection.getId();
+        List<String> cmdLine = new ArrayList<String>(Arrays.asList(new String[] { getDocumentBinary.getAbsolutePath(),
+                        "-i", Integer.toString(trimUri), "-f", tempFolder.getAbsolutePath(), collection.getId() }));
 
         try {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)

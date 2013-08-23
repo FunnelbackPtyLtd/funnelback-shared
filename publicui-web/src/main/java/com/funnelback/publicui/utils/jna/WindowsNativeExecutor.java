@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(String commandLine, Map<String, String> environment) throws ExecutionException {
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment) throws ExecutionException {
         return execute(commandLine, environment, null);
     }
     
@@ -65,7 +66,7 @@ public class WindowsNativeExecutor {
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(String commandLine, Map<String, String> environment, File dir)
+    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, File dir)
         throws ExecutionException {
 
         if (log.isDebugEnabled()) {
@@ -152,6 +153,19 @@ public class WindowsNativeExecutor {
             si.hStdOutput = hChildOutWrite.getValue();
             si.dwFlags = WinBase.STARTF_USESTDHANDLES;
 
+            StringBuilder commandLineBuilder = new StringBuilder();
+            for (String element : commandLineList) {
+                // Quote literal quotes and backslashes with backslashes as suggested at
+                // http://msdn.microsoft.com/en-us/library/a1y7w461.aspx
+                element = element.replace("\\", "\\\\");
+                element = element.replace("\"", "\\\"");
+                
+                // Quote whole string with double quotes as suggested at
+                // http://msdn.microsoft.com/en-us/library/windows/desktop/ms682429%28v=vs.85%29.aspx
+                commandLineBuilder.append("\"" + element + "\"");
+            }
+            String commandLine = commandLineBuilder.toString();
+            
             // Actually fork
             log.debug("Calling CreateProcessAsUser() for command line '" + commandLine.trim()
                 + "' with environment '" + environment + "'");

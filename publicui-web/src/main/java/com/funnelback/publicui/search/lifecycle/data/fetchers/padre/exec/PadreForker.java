@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
+import java.util.List;
 import java.util.Map;
 
 import com.funnelback.publicui.utils.ExecutionReturn;
@@ -16,6 +17,6 @@ public interface PadreForker {
      * @return Output of the command.
      * @throws PadreForkingException if something goes wrong
      */
-    public ExecutionReturn execute(String commandLine, Map<String, String> environment) throws PadreForkingException;  
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment) throws PadreForkingException;  
     
 }
