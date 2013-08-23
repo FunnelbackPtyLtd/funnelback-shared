@@ -42,7 +42,7 @@ public class JavaPadreForker implements PadreForker {
         
         CommandLine padreCmdLine = new CommandLine(commandLine.get(0));
         if (commandLine.size() > 1) {
-            padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}));
+            padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}), false);
         }
         
         ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
