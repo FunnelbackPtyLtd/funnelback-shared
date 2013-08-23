@@ -5,9 +5,11 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,8 +25,13 @@ public class SuggestControllerTest {
     @Autowired
     private MockConfigRepository configRepository;
 
-    @Autowired
     private SuggestController suggestController;
+    
+    @Before
+    public void before() {
+        suggestController = new SuggestController();
+        suggestController.setConfigRepository(configRepository);
+    }
     
     @Test
     public void testNoCollection() {
@@ -38,7 +45,7 @@ public class SuggestControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         suggestController.suggestJava("invalid",
                 DefaultValues.DEFAULT_PROFILE,
-                "ab", 0, 0, "json", 0.5, "abc", "cb", response);
+                "ab", 0, 0, "json", 0.5, "abc", "cb", null, new MockHttpServletRequest(), response);
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }

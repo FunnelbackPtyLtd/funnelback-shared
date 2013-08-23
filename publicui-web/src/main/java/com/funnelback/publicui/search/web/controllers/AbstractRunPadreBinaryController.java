@@ -21,6 +21,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
+import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.web.CGIEnvironment;
 
@@ -33,13 +34,16 @@ import com.funnelback.publicui.utils.web.CGIEnvironment;
  * Controllers can subclass it to easily map an URL to a PADRE binary.
  */
 @Log4j
-public abstract class AbstractRunPadreBinaryController {
+public abstract class AbstractRunPadreBinaryController extends SessionController {
 
     protected abstract File getSearchHome();
     
     private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
     private static final String HEADER_NAME_SEPARATOR = ": ";
 
+    /**
+     * Timeout to wait for the padre binary to complete
+     */
     @Value("#{appProperties['padre.fork.timeout']?:30000}")
     @Setter
     protected int padreWaitTimeout;

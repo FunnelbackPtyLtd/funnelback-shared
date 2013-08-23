@@ -75,8 +75,6 @@
 	<bean id="autoRefreshLocalIndexRepository" class="com.funnelback.publicui.search.service.index.AutoRefreshLocalIndexRepository" />
 		<bean id="mockConfigRepository" class="com.funnelback.publicui.test.mock.MockConfigRepository" />
 
-	<bean id="searchUserRepository" class="com.funnelback.publicui.test.mock.MockSearchUserRepository" />
-	
 	<bean id="resourceManager" class="com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager" />
 
 	<bean id="localDataRepository" class="com.funnelback.publicui.search.service.data.LocalDataRepository" />
@@ -90,9 +88,8 @@
 	<bean id="serveTrimDocumentController"
 		class="com.funnelback.publicui.search.web.controllers.content.GetTrimDocumentController"/>
 
-	<bean class="com.funnelback.publicui.test.mock.MockSuggester" />		
-	<bean id="suggestController"
-		class="com.funnelback.publicui.search.web.controllers.SuggestController" />
+	<bean class="com.funnelback.publicui.test.mock.MockSuggester" />
+			
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="suggestViewSimple">
 		<property name="url" value="suggest/simple.ftl" />
 		<property name="contentType" value="application/json;charset=UTF-8" />
@@ -141,5 +138,7 @@
 		<property name="url" value="trim-reference.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
+	
+	<bean class="com.funnelback.publicui.test.mock.MockSearchHistoryRepository" />
 	
 </beans>

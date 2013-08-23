@@ -42,14 +42,14 @@ public class Session extends AbstractInputProcessor {
             // Retrieve previous search history
             s.getSearchHistory().addAll(searchHistoryRepository.getSearchHistory(s.getSearchUser(),
                     q.getCollection(), 
-                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
-                            DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
+                            DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
             
             // Retrieve previous click history
             s.getClickHistory().addAll(searchHistoryRepository.getClickHistory(s.getSearchUser(),
                     q.getCollection(),
-                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SEARCH_HISTORY_SIZE,
-                            DefaultValues.ModernUI.Session.SEARCH_HISTORY_SIZE)));
+                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
+                            DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
             
             // Retrieve results cart
             st.getSession().getResultsCart().addAll(
