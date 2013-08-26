@@ -51,6 +51,25 @@ public class FacetScopeTests {
     }
     
     @Test
+    public void testNoValue() throws InputProcessorException {
+        st.getQuestion().getRawInputParameters().put("facetScope", new String[0]);
+        processor.processInput(st);
+        Assert.assertEquals(1, st.getQuestion().getRawInputParameters().size());
+        Assert.assertTrue(st.getQuestion().getRawInputParameters().containsKey("facetScope"));
+        Assert.assertEquals(0, st.getQuestion().getRawInputParameters().get("facetScope").length);
+    }
+
+    @Test
+    public void testEmptyValue() throws InputProcessorException {
+        st.getQuestion().getRawInputParameters().put("facetScope", new String[] {""});
+        processor.processInput(st);
+        Assert.assertEquals(1, st.getQuestion().getRawInputParameters().size());
+        Assert.assertTrue(st.getQuestion().getRawInputParameters().containsKey("facetScope"));
+        Assert.assertEquals(1, st.getQuestion().getRawInputParameters().get("facetScope").length);
+        Assert.assertEquals("", st.getQuestion().getRawInputParameters().get("facetScope")[0]);
+    }
+
+    @Test
     public void test() throws Exception {
         st.getQuestion().getRawInputParameters().put("facetScope", new String[] {
                 //encode(

@@ -54,19 +54,21 @@ public class FacetScope extends AbstractInputProcessor {
     }
     
     /**
-     * Converts the <code>facetScope</code> parameter within an URL to actual facets parameters
-     * @param u URL to convert
+     * Converts the <code>facetScope</code> parameter from a query string to actual facets parameters
+     * @param parameters Query string to convert
      * @return Converted URL. Will be identical to the input one if it didn't contain a <code>facetScope</code>
      */
     @SneakyThrows(UnsupportedEncodingException.class)
     public static String convertFacetScopeParameters(String parameters) {
         Map<String, List<String>> qs = QueryStringUtils.toMap(parameters);
-        if (qs.containsKey(RequestParameters.FACET_SCOPE)) {
-                Map<String, String[]> params = convertFacetScopeToParameters(URLDecoder.decode(qs.get(RequestParameters.FACET_SCOPE).get(0), "UTF-8"));
-                qs.remove(RequestParameters.FACET_SCOPE);
-                qs.putAll(MapUtils.convertMapList(params));
-            
-                return QueryStringUtils.toString(qs, false);
+        if (qs.containsKey(RequestParameters.FACET_SCOPE)
+            && qs.get(RequestParameters.FACET_SCOPE).size() > 0) {
+            Map<String, String[]> params = convertFacetScopeToParameters(
+                URLDecoder.decode(qs.get(RequestParameters.FACET_SCOPE).get(0), "UTF-8"));
+            qs.remove(RequestParameters.FACET_SCOPE);
+            qs.putAll(MapUtils.convertMapList(params));
+        
+            return QueryStringUtils.toString(qs, false);
         } else {
             return parameters;
         }
