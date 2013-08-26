@@ -17,12 +17,14 @@
 
 	<mvc:interceptors>
             <mvc:interceptor>
-            <mvc:mapping path="/cart.*" />
-            <mvc:mapping path="/cart-process.*" />
-            <mvc:mapping path="/search.*" />
+            <mvc:mapping path="/*" />
             <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
                 <property name="persistenceUnitName" value="search-session" />
             </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/*" />
+            <bean class="com.funnelback.publicui.search.web.interceptors.SessionInterceptor" />
         </mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
@@ -30,30 +32,14 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
+            <mvc:mapping path="/anchors.*" />
+            <mvc:mapping path="/content-optimiser/*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/search.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.SessionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/cache.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/anchors.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/content-optimiser/*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/anchors.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/content-optimiser/*" />
+            <mvc:mapping path="/anchors.*" />
+            <mvc:mapping path="/content-optimiser/*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>

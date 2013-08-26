@@ -18,7 +18,7 @@ public class EntityDefinition {
     /** A definition e.g. <em>"The Australian Broadcasting Corporation"</em> */
     @Getter @Setter private String definition;
     
-    /** A URL that the entity and definition came from e.g. <em>http://www.abc.net.au/</em< */
+    /** A URL that the entity and definition came from e.g. <em>http://www.abc.net.au/</em> */
     @Getter @Setter private String url;
     
 }

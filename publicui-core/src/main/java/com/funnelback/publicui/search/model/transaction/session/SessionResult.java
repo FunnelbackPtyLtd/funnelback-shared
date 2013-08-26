@@ -1,14 +1,17 @@
 package com.funnelback.publicui.search.model.transaction.session;
 
+import java.net.URI;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.Transient;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Search result base class when used in a session context
@@ -27,26 +30,33 @@ public abstract class SessionResult {
      */
     @Id
     @GeneratedValue
-    protected Long id;
+    private Long id;
+
+    @NonNull
+    @Getter @Setter
+    private String collection;
 
     /**
      * ID of the user who clicked on the result
      */
     @Getter @Setter
-    protected String userId;
-
-    /** Collection identifier for this click event */
-    @Getter @Setter protected String collection;
+    private String userId;
 
     /** URI of the result in the index */
     @NonNull
-    protected String indexUrl;
+    private String indexUrl;
 
+    /**
+     * @return URI of the result in the index
+     */
     @Transient
     public URI getIndexUrl() {
         return URI.create(indexUrl);
     }
 
+    /**
+     * @param uri Sets the URI of the result in the index
+     */
     @Transient
     public void setIndexUrl(URI uri) {
         this.indexUrl = uri.toString();
@@ -55,7 +65,7 @@ public abstract class SessionResult {
     /** Title of the result */
     @Getter @Setter
     @NonNull
-    protected String title;
+    private String title;
     
     /**
      * Summary of the results biased towards the query
@@ -63,13 +73,8 @@ public abstract class SessionResult {
      */
     @Getter @Setter
     @NonNull
-    protected String summary;
+    private String summary;
 
-    @Getter
-    @ElementCollection
-    @MapKeyColumn(name = "key")
-    @CollectionTable(name="CartResultMetadata", joinColumns = @JoinColumn(name="cartResultId"))
-    protected final Map<String, String> metaData = new HashMap<>();
     
     /**
      * Truncate summary to maximum size allowed in the database

@@ -52,7 +52,7 @@ public class SearchSession {
     public boolean cartContains(String indexUrl) {
         URI indexUri = URI.create(indexUrl);
         for (CartResult result: resultsCart) {
-            if (result.indexUrl.equals(indexUri)) {
+            if (result.getIndexUrl().equals(indexUri)) {
                 return true;
             }
         }

@@ -176,7 +176,9 @@ public class ClickController extends SessionController {
                 && user != null) {
                 // Save the click in the user history
                 Result r = indexRepository.getResult(collection, redirectUrl);
+                
                 ClickHistory h = ClickHistory.fromResult(r);
+                h.setCollection(collection.getId());
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
                 

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,7 @@ import com.funnelback.publicui.search.service.ResultsCartRepository;
  */
 @Controller
 @RequestMapping("/cart.json")
+@Log4j
 public class ResultsCartController extends SessionApiControllerBase {
 
     @Autowired
@@ -85,11 +87,16 @@ public class ResultsCartController extends SessionApiControllerBase {
         if (c != null) {
 
             Result r = indexRepository.getResult(c, url);
-
-            CartResult result = CartResult.fromResult(r);
-            result.setUserId(user.getId());
-            result.setAddedDate(new Date());
-            cartRepository.addToCart(result);
+            if (r != null) {
+                CartResult cart = CartResult.fromResult(r);
+                cart.setCollection(c.getId());
+                cart.setUserId(user.getId());
+                cart.setAddedDate(new Date());
+                
+                cartRepository.addToCart(cart);
+            } else {
+                log.warn("Result with URL '"+url+"' not found in collection '"+c.getId()+"'");
+            }
             cartList(collection, user, response);
         } else {
             sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collection+"'"));

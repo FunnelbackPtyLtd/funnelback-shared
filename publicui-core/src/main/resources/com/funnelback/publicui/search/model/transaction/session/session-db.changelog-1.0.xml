@@ -63,13 +63,13 @@
 			<column name="clickDate" type="timestamp">
 				<constraints nullable="false" />
 			</column>
-			<column name="indexUrl" type="varchar(1024)">
-				<constraints nullable="false" />
-			</column>
-			<column name="title" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="summary" type="varchar(1024)" />
+            <column name="indexUrl" type="varchar(1024)">
+                <constraints nullable="false" />
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="summary" type="varchar(1024)" />
 		</createTable>
 		<createIndex tableName="ClickHistory" indexName="ClickHistory_UserId_Idx">
 			<column name="userId" />
@@ -77,6 +77,23 @@
 		<createIndex tableName="ClickHistory" indexName="ClickHistory_Collection_Idx">
 			<column name="collection" />
 		</createIndex>
+        <createIndex tableName="ClickHistory" indexName="ClickHistory_IndexUrl_Idx">
+            <column name="indexUrl" />
+        </createIndex>
+        <addUniqueConstraint tableName="ClickHistory" columnNames="userId,collection,indexUrl"/>
+
+        <createTable tableName="ClickHistoryMetadata">
+            <column name="clickHistoryId" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="char(1)">
+                <constraints nullable="false" />
+            </column>
+            <column name="metaData" type="varchar(4096)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="ClickHistoryMetadata" columnNames="clickHistoryId,key,metaData"/>
 
 		<createTable tableName="CartResult">
 			<column name="id" type="int" autoIncrement="true">
@@ -91,13 +108,13 @@
 			<column name="addedDate" type="timestamp">
 				<constraints nullable="false" />
 			</column>
-			<column name="indexUrl" type="varchar(1024)">
-				<constraints nullable="false" />
-			</column>
-			<column name="title" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="summary" type="varchar(1024)" />
+            <column name="indexUrl" type="varchar(1024)">
+                <constraints nullable="false" />
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="summary" type="varchar(1024)" />
 		</createTable>
 		<createIndex tableName="CartResult" indexName="CartResult_UserId_Idx">
 			<column name="userId" />
@@ -105,6 +122,9 @@
 		<createIndex tableName="CartResult" indexName="CartResult_Collection_Idx">
 			<column name="collection" />
 		</createIndex>
+        <createIndex tableName="CartResult" indexName="CartResult_IndexUrl_Idx">
+            <column name="indexUrl" />
+        </createIndex>
 		<addUniqueConstraint tableName="CartResult" columnNames="userId,collection,indexUrl"/>
 
         <createTable tableName="CartResultMetadata">

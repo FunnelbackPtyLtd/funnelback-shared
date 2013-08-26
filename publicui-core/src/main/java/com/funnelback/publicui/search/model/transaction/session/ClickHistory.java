@@ -2,8 +2,14 @@ package com.funnelback.publicui.search.model.transaction.session;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 
 import com.funnelback.publicui.search.model.padre.Result;
 
@@ -21,21 +27,31 @@ public class ClickHistory extends SessionResult {
     /** Date when the click was performed */
     @Getter @Setter
     private Date clickDate;
+    
+    /**
+     * Metadata values for the result
+     */
+    @Getter
+    @ElementCollection
+    @MapKeyColumn(name = "key")
+    @CollectionTable(name="ClickHistoryMetadata", joinColumns = @JoinColumn(name="clickHistoryId"))
+    private final Map<String, String> metaData = new HashMap<>();
 
     /**
-     * Creates a {@link ClickHistory} from a {@link com.funnelback.publicui.search.model.padre.Result}
-     * @param r {@link com.funnelback.publicui.search.model.padre.Result} to clone
-     * @return A {@link ClickHistory} with copied fields
+     * Builds a {@link ClickHistory} from a {@link Result}
+     * @param r The {@link Result} to build from
+     * @return A {@link ClickHistory}
      */
     public static ClickHistory fromResult(Result r) {
-        ClickHistory h = new ClickHistory();
-        h.setCollection(r.getCollection());
-        h.setIndexUrl(URI.create(r.getIndexUrl()));
-        h.setTitle(r.getTitle());
-        h.setSummary(r.getSummary());
-        h.getMetaData().putAll(r.getMetaData());
+        ClickHistory ch = new ClickHistory();
+        ch.setCollection(r.getCollection());
+        ch.setIndexUrl(URI.create(r.getIndexUrl()));
+        ch.setTitle(r.getTitle());
+        ch.setSummary(r.getSummary());
+        ch.getMetaData().putAll(r.getMetaData());
+        
+        return ch;
 
-        return h;
     }
 
 }
