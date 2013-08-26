@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -182,7 +183,11 @@ public class ClickController extends SessionController {
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
                 
-                searchHistoryRepository.saveClick(h);
+                try {
+                    searchHistoryRepository.saveClick(h);
+                } catch (DataAccessException dae) {
+                    log.error("Error while saving click history", dae);
+                }
             }
             
             logService.logClick(new ClickLog(new Date(), collection, collection

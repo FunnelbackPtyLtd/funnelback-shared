@@ -1,6 +1,9 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import lombok.extern.log4j.Log4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
@@ -20,6 +23,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
  * @since 12.5
  */
 @Component("session")
+@Log4j
 public class Session extends AbstractInputProcessor {
 
     @Autowired
@@ -39,21 +43,25 @@ public class Session extends AbstractInputProcessor {
             SearchQuestion q = st.getQuestion();
             SearchSession  s = st.getSession();
 
-            // Retrieve previous search history
-            s.getSearchHistory().addAll(searchHistoryRepository.getSearchHistory(s.getSearchUser(),
-                    q.getCollection(), 
-                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
-                            DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
-            
-            // Retrieve previous click history
-            s.getClickHistory().addAll(searchHistoryRepository.getClickHistory(s.getSearchUser(),
-                    q.getCollection(),
-                    q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
-                            DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
-            
-            // Retrieve results cart
-            st.getSession().getResultsCart().addAll(
-                resultsCartRepository.getCart(st.getSession().getSearchUser(), st.getQuestion().getCollection()));
+            try {
+                // Retrieve previous search history
+                s.getSearchHistory().addAll(searchHistoryRepository.getSearchHistory(s.getSearchUser(),
+                        q.getCollection(), 
+                        q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
+                                DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
+                
+                // Retrieve previous click history
+                s.getClickHistory().addAll(searchHistoryRepository.getClickHistory(s.getSearchUser(),
+                        q.getCollection(),
+                        q.getCollection().getConfiguration().valueAsInt(Keys.ModernUI.Session.SearchHistory.SIZE,
+                                DefaultValues.ModernUI.Session.SearchHistory.SIZE)));
+                
+                // Retrieve results cart
+                st.getSession().getResultsCart().addAll(
+                    resultsCartRepository.getCart(st.getSession().getSearchUser(), st.getQuestion().getCollection()));
+            } catch (DataAccessException dae) {
+                log.error("Error while retrieving session data", dae);
+            }
         }
 
     }

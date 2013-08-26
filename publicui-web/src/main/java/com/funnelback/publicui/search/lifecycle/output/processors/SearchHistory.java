@@ -7,6 +7,7 @@ import java.util.Date;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.DefaultValues;
@@ -19,7 +20,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
 /**
@@ -69,7 +69,11 @@ public class SearchHistory extends AbstractOutputProcessor {
                     log.warn("Couldn't parse search URL", e);
                 }
                 
-                repository.saveSearch(h);
+                try {
+                    repository.saveSearch(h);
+                } catch (DataAccessException dae) {
+                    log.error("Error while saving search history", dae);
+                }
             }
         }
 
