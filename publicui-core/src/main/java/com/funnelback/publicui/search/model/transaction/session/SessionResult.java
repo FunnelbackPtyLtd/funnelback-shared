@@ -2,8 +2,8 @@ package com.funnelback.publicui.search.model.transaction.session;
 
 import java.net.URI;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
@@ -20,30 +20,25 @@ import lombok.ToString;
  */
 @ToString
 @MappedSuperclass
+@IdClass(SessionResultPK.class)
 public abstract class SessionResult {
     
     /** Size of the column holding the summary */
     private static final int MAX_LEN_SUMMARY = 1024;
-    
-    /**
-     * Internal database id
-     */
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @NonNull
-    @Getter @Setter
-    private String collection;
 
     /**
      * ID of the user who clicked on the result
      */
+    @Id
     @Getter @Setter
     private String userId;
 
+    @Id
+    @Getter @Setter
+    private String collection;
+
     /** URI of the result in the index */
-    @NonNull
+    @Id
     private String indexUrl;
 
     /**

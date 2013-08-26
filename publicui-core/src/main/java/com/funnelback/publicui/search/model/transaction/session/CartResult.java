@@ -34,7 +34,11 @@ public class CartResult extends SessionResult {
     @Getter
     @ElementCollection
     @MapKeyColumn(name = "key")
-    @CollectionTable(name="CartResultMetadata", joinColumns = @JoinColumn(name="cartResultId"))
+    @CollectionTable(name="CartResultMetadata", joinColumns = {
+        @JoinColumn(name="userId"),
+        @JoinColumn(name="collection"),
+        @JoinColumn(name="indexUrl")
+        })
     private final Map<String, String> metaData = new HashMap<>();
     
     /**

@@ -8,9 +8,6 @@
 		 in the changesets that were run -->
 	<changeSet id="1" author="nguillaumin" logicalFilePath="session-db-changelog-1.0.xml">
 		<createTable tableName="SearchHistory">
-			<column name="id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
 			<column name="userId" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
@@ -42,28 +39,28 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addUniqueConstraint tableName="SearchHistory" columnNames="userId,collection,searchParamsSignature"/>
+        <addPrimaryKey tableName="SearchHistory" columnNames="userId,collection,searchParamsSignature"/>
 		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
 			<column name="userId" />
 		</createIndex>
 		<createIndex tableName="SearchHistory" indexName="SearchHistory_Collection_Idx">
 			<column name="collection" />
 		</createIndex>
+        <createIndex tableName="SearchHistory" indexName="SearchHistory_SearchParamsSignature_Idx">
+            <column name="searchParamsSignature" />
+        </createIndex>
 
 		<createTable tableName="ClickHistory">
-			<column name="id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
 			<column name="userId" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="clickDate" type="timestamp">
-				<constraints nullable="false" />
-			</column>
             <column name="indexUrl" type="varchar(1024)">
+                <constraints nullable="false" />
+            </column>
+            <column name="clickDate" type="timestamp">
                 <constraints nullable="false" />
             </column>
             <column name="title" type="varchar(255)">
@@ -71,6 +68,7 @@
             </column>
             <column name="summary" type="varchar(1024)" />
 		</createTable>
+        <addPrimaryKey tableName="ClickHistory" columnNames="userId,collection,indexUrl"/>
 		<createIndex tableName="ClickHistory" indexName="ClickHistory_UserId_Idx">
 			<column name="userId" />
 		</createIndex>
@@ -80,10 +78,15 @@
         <createIndex tableName="ClickHistory" indexName="ClickHistory_IndexUrl_Idx">
             <column name="indexUrl" />
         </createIndex>
-        <addUniqueConstraint tableName="ClickHistory" columnNames="userId,collection,indexUrl"/>
 
         <createTable tableName="ClickHistoryMetadata">
-            <column name="clickHistoryId" type="int">
+            <column name="userId" type="varchar(36)">
+                <constraints nullable="false" />
+            </column>
+            <column name="collection" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="indexUrl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="char(1)">
@@ -93,22 +96,19 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addUniqueConstraint tableName="ClickHistoryMetadata" columnNames="clickHistoryId,key,metaData"/>
+        <addPrimaryKey tableName="ClickHistoryMetadata" columnNames="userId,collection,indexUrl,key,metaData"/>
 
 		<createTable tableName="CartResult">
-			<column name="id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
 			<column name="userId" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="addedDate" type="timestamp">
-				<constraints nullable="false" />
-			</column>
             <column name="indexUrl" type="varchar(1024)">
+                <constraints nullable="false" />
+            </column>
+            <column name="addedDate" type="timestamp">
                 <constraints nullable="false" />
             </column>
             <column name="title" type="varchar(255)">
@@ -116,6 +116,7 @@
             </column>
             <column name="summary" type="varchar(1024)" />
 		</createTable>
+        <addPrimaryKey tableName="CartResult" columnNames="userId,collection,indexUrl"/>
 		<createIndex tableName="CartResult" indexName="CartResult_UserId_Idx">
 			<column name="userId" />
 		</createIndex>
@@ -125,10 +126,15 @@
         <createIndex tableName="CartResult" indexName="CartResult_IndexUrl_Idx">
             <column name="indexUrl" />
         </createIndex>
-		<addUniqueConstraint tableName="CartResult" columnNames="userId,collection,indexUrl"/>
 
         <createTable tableName="CartResultMetadata">
-            <column name="cartResultId" type="int">
+			<column name="userId" type="varchar(36)">
+				<constraints nullable="false" />
+			</column>
+			<column name="collection" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+            <column name="indexUrl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="char(1)">
@@ -138,7 +144,7 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addUniqueConstraint tableName="CartResultMetadata" columnNames="cartResultId,key,metaData"/>
+        <addPrimaryKey tableName="CartResultMetadata" columnNames="userId,collection,indexUrl,key,metaData"/>
 
 	</changeSet>
 

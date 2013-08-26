@@ -3,8 +3,8 @@ package com.funnelback.publicui.search.model.transaction.session;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,25 +18,28 @@ import com.funnelback.publicui.utils.URLSignature;
  * @since v12.4
  */
 @Entity
+@IdClass(SearchHistoryPK.class)
 @ToString
 public class SearchHistory {
 
     /**
-     * Internal database id
-     */
-    @Id
-    @GeneratedValue
-    private Long id;
-    
-    /**
      * ID of the User who performed the search
      */
+    @Id
     @Getter @Setter
     private String userId;
     
     /** Collection identifier for this search event */
+    @Id
     @Getter @Setter private String collection;
-    
+
+    /**
+     * Signature identifying the search URL parameters regardless
+     * of the order of the parameters or their encoding
+     */
+    @Id
+    @Getter private int searchParamsSignature;
+
     /** Date when the search was performed */
     @Getter @Setter private Date searchDate;
     
@@ -67,10 +70,4 @@ public class SearchHistory {
         this.searchParamsSignature = URLSignature.computeQueryStringSignature(searchParams);
     }
     
-    /**
-     * Signature identifying the search URL parameters regardless
-     * of the order of the parameters or their encoding
-     */
-    @Getter private int searchParamsSignature;
-
 }

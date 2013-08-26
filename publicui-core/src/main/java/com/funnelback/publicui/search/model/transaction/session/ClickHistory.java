@@ -34,7 +34,11 @@ public class ClickHistory extends SessionResult {
     @Getter
     @ElementCollection
     @MapKeyColumn(name = "key")
-    @CollectionTable(name="ClickHistoryMetadata", joinColumns = @JoinColumn(name="clickHistoryId"))
+    @CollectionTable(name="ClickHistoryMetadata", joinColumns = {
+        @JoinColumn(name="userId"),
+        @JoinColumn(name="collection"),
+        @JoinColumn(name="indexUrl")
+        })
     private final Map<String, String> metaData = new HashMap<>();
 
     /**
