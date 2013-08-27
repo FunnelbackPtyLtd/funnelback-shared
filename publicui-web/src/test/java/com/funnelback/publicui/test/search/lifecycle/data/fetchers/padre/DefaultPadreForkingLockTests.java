@@ -253,7 +253,7 @@ public class DefaultPadreForkingLockTests {
         if (OS.isFamilyWindows()) {
             return "readfile.exe";
         } else {
-            return "mock-padre-wait";
+            return "mock-padre-wait.sh";
         }
     }
     
