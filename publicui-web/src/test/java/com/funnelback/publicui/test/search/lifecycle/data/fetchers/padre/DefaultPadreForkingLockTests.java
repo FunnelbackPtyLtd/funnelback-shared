@@ -156,7 +156,7 @@ public class DefaultPadreForkingLockTests {
         
         String qp = "mock-padre-wait.sh";
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-            new String[]{"2","src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2"}));
         
         if (OS.isFamilyWindows()) {
             // Can't sleep/wait in a batch script except when using PING or TIMEOUT,
