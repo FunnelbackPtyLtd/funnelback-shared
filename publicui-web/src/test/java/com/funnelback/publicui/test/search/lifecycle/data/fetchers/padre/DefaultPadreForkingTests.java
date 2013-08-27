@@ -150,6 +150,8 @@ public class DefaultPadreForkingTests {
         String qp = "mock-padre-error";
         if (OS.isFamilyWindows()) {
             qp += ".bat";
+        } else {
+            qp += ".sh";
         }
 
         SearchQuestion qs = new SearchQuestion();
