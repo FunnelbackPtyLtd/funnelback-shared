@@ -1,18 +1,22 @@
 package com.funnelback.publicui.test.mock;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assume;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.junit.Assume;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -24,6 +28,7 @@ public class MockConfigRepository implements ConfigRepository {
     @Getter private Map<GlobalConfiguration, Map<String, String>> globalConfigs = new HashMap<GlobalConfiguration, Map<String, String>>();
     @Getter private final Map<String, String> translations = new HashMap<String, String>();
     @Getter @Setter private File xslTemplate;
+    private Map<String, Map<String, String>> extraSearchesConfigurations = new HashMap<>();
     
     @Getter @Setter private Config globalConfiguration;
         
@@ -66,7 +71,11 @@ public class MockConfigRepository implements ConfigRepository {
     
     @Override
     public Map<String, String> getExtraSearchConfiguration(Collection collection, String extraSearchId) {
-        throw new IllegalStateException("Not yet implemented");
+        return extraSearchesConfigurations.get(collection.getId()+":"+extraSearchId);
+    }
+    
+    public void addExtraSearchConfiguration(String collectionId, String extraSearchId, Map<String, String> m) {
+        extraSearchesConfigurations.put(collectionId+":"+extraSearchId, m);
     }
 
     private final static Pattern WIN_PATH_PATTERN = Pattern.compile("([^;]*?Perl[^;]*?)[;$]");

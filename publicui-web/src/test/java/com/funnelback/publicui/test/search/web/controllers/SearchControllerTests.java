@@ -85,8 +85,8 @@ public class SearchControllerTests {
         
         List<Collection> collections = (List<Collection>) mav.getModelMap().get(SearchController.ModelAttributes.AllCollections.toString());
         Assert.assertEquals(2, collections.size());
-        Assert.assertEquals("test1", collections.get(0).getId());
-        Assert.assertEquals("test2", collections.get(1).getId());
+        Assert.assertTrue("test1".equals(collections.get(0).getId()) || "test1".equals(collections.get(1).getId()));
+        Assert.assertTrue("test2".equals(collections.get(0).getId()) || "test2".equals(collections.get(1).getId()));
     }
     
     @Test
@@ -136,8 +136,8 @@ public class SearchControllerTests {
         List<Collection> collections = (List<Collection>) mav.getModel().get(SearchController.ModelAttributes.AllCollections.toString());
         Assert.assertNotNull(collections);
         Assert.assertEquals(2, collections.size());
-        Assert.assertEquals("test1", collections.get(0).getId());
-        Assert.assertEquals("test2", collections.get(1).getId());
+        Assert.assertTrue("test1".equals(collections.get(0).getId()) || "test1".equals(collections.get(1).getId()));
+        Assert.assertTrue("test2".equals(collections.get(0).getId()) || "test2".equals(collections.get(1).getId()));
     }
     
     @Test

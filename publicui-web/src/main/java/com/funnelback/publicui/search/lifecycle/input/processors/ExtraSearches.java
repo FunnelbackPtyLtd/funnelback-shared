@@ -2,9 +2,9 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Map;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -33,21 +33,25 @@ public class ExtraSearches extends AbstractInputProcessor implements Application
      */
     private static final String KEY_CLASS = "class";
     
-    private static final Class<? extends ExtraSearchQuestionFactory> DEFAULT_CLASS = ChangeCollectionQuestionFactory.class;
+    private static final Class<? extends ExtraSearchQuestionFactory> DEFAULT_CLASS =
+        ChangeCollectionQuestionFactory.class;
     
     @Autowired
+    @Setter
     private ConfigRepository configRepository;
     
-    private ApplicationContext applicationContext;
+    @Setter private ApplicationContext applicationContext;
     
     @SuppressWarnings("unchecked")
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
-                && searchTransaction.getQuestion().getCollection().getConfiguration().hasValue(Keys.ModernUI.EXTRA_SEARCHES)
+                && searchTransaction.getQuestion().getCollection().getConfiguration()
+                    .hasValue(Keys.ModernUI.EXTRA_SEARCHES)
                 && ! searchTransaction.getQuestion().isExtraSearch() ) {
             
-            String[] extraSearches = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
+            String[] extraSearches = searchTransaction.getQuestion().getCollection()
+                .getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
             
             for (final String extraSearch: extraSearches) {
                 log.trace("Configuring extra search '" + extraSearch + "'");
@@ -63,10 +67,13 @@ public class ExtraSearches extends AbstractInputProcessor implements Application
                         
                         if (extraSearchConfiguration.get(KEY_CLASS) != null) {
                             // Try to use user defined class
-                            clazz = (Class<? extends ExtraSearchQuestionFactory>) Class.forName(extraSearchConfiguration.get(KEY_CLASS));
+                            clazz = (Class<? extends ExtraSearchQuestionFactory>) Class
+                                .forName(extraSearchConfiguration.get(KEY_CLASS));
                         }
-                        ExtraSearchQuestionFactory factory = applicationContext.getAutowireCapableBeanFactory().createBean(clazz);
-                        final SearchQuestion q = factory.buildQuestion(searchTransaction.getQuestion(), extraSearchConfiguration);
+                        ExtraSearchQuestionFactory factory = applicationContext.getAutowireCapableBeanFactory()
+                            .createBean(clazz);
+                        final SearchQuestion q = factory.buildQuestion(searchTransaction.getQuestion(),
+                            extraSearchConfiguration);
                         
                         log.trace("Adding extra search '" + extraSearch
                                 + "' on collection '" + q.getCollection().getId() + "'"
@@ -84,8 +91,4 @@ public class ExtraSearches extends AbstractInputProcessor implements Application
         }
     }
     
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }
