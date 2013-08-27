@@ -40,7 +40,7 @@ public class MultiFacetedNavigationTest {
         SearchQuestion question = new SearchQuestion();
         SearchTransaction st = new SearchTransaction(question, null);
         processor.processInput(st);
-        Assert.assertNull(st.getQuestion().getQuery());
+        Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
     }
     
     @Test

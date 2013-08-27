@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 public class Session extends AbstractInputProcessor {
 
     @Autowired
-    private SearchHistoryRepository searchHistoryRepository;
+    @Setter private SearchHistoryRepository searchHistoryRepository;
     
     @Autowired
-    private ResultsCartRepository resultsCartRepository;
+    @Setter private ResultsCartRepository resultsCartRepository;
 
     @Override
     public void processInput(SearchTransaction st) throws InputProcessorException {

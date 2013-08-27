@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.ExtraSearches;
@@ -82,12 +81,12 @@ public class ExtraSearchesTest {
         SearchQuestion question = new SearchQuestion();
         SearchTransaction st = new SearchTransaction(question, null);
         processor.processInput(st);
-        Assert.assertNull(st.getQuestion().getQuery());
+        Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
         
         // No query
         question.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processInput(new SearchTransaction(question, null));
-        Assert.assertNull(st.getQuestion().getQuery());
+        Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
     }
     
     @Test
