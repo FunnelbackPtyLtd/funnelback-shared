@@ -10,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class ExecutionReturn {
     @Getter private final int returnCode;
     @Getter private final String output;
+    @Getter private final String err;
 }

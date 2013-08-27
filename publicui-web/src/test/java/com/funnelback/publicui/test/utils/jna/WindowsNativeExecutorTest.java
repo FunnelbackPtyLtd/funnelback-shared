@@ -33,14 +33,14 @@ public class WindowsNativeExecutorTest {
     }
 
     @Test
-    public void testEnvironmentAndUnicode() throws ExecutionException {
+    public void testEnvironment() throws ExecutionException {
         WindowsNativeExecutor executor = new WindowsNativeExecutor(new I18n(), 1000*30);
         
         Map<String, String> env = new HashMap<String, String>();
         env.put("TEST_VAR", "test value");
-        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"cmd.exe","/c","echo","%TEST_VAR%"}), env);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env);
         
-        Assert.assertEquals(0, er.getReturnCode());
+        Assert.assertEquals(er.getOutput(), 0, er.getReturnCode());
         Assert.assertEquals("test value", er.getOutput().trim());
     }
 

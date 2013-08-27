@@ -64,7 +64,7 @@ public class JavaPadreForker implements PadreForker {
             if (rc != 0) {
                 log.debug("PADRE returned a non-zero exit code: " + rc);
             }
-            return new ExecutionReturn(rc, padreOutput.toString());
+            return new ExecutionReturn(rc, padreOutput.toString(), padreError.toString());
         } catch (ExecuteException ee) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
         } catch (IOException ioe) {

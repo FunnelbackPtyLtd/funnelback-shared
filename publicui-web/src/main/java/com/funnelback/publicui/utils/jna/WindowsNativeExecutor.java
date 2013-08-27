@@ -4,11 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.ExecutionReturn;
@@ -153,18 +156,18 @@ public class WindowsNativeExecutor {
             si.hStdOutput = hChildOutWrite.getValue();
             si.dwFlags = WinBase.STARTF_USESTDHANDLES;
 
-            StringBuilder commandLineBuilder = new StringBuilder();
+            List<String> quotedCommandLine = new ArrayList<String>();
             for (String element : commandLineList) {
                 // Quote literal quotes and backslashes with backslashes as suggested at
                 // http://msdn.microsoft.com/en-us/library/a1y7w461.aspx
                 element = element.replace("\\", "\\\\");
                 element = element.replace("\"", "\\\"");
-                
+
                 // Quote whole string with double quotes as suggested at
                 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms682429%28v=vs.85%29.aspx
-                commandLineBuilder.append("\"" + element + "\"");
+                quotedCommandLine.add("\"" + element + "\"");
             }
-            String commandLine = commandLineBuilder.toString();
+            String commandLine = StringUtils.join(quotedCommandLine, " ");
             
             // Actually fork
             log.debug("Calling CreateProcessAsUser() for command line '" + commandLine.trim()
@@ -239,7 +242,7 @@ public class WindowsNativeExecutor {
         if (log.isTraceEnabled()) {
             log.trace("Process result is: '" + result + "'");
         }
-        return new ExecutionReturn(returnCode, result);
+        return new ExecutionReturn(returnCode, result, null);
     }
 
     /**

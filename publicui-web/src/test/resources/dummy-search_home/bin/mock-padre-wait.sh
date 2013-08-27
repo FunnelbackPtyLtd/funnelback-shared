@@ -1,3 +1,3 @@
 #!/bin/sh
-sleep $1
-cat $2
+sleep $2
+cat $1
