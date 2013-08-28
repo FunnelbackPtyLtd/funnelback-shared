@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.TransactionException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -40,7 +41,7 @@ public class SessionApiControllerBase extends SessionController {
         }
     }
     
-    @ExceptionHandler(DataAccessException.class)
+    @ExceptionHandler({DataAccessException.class, TransactionException.class})
     public void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
         log.error("Error while accessing session data", dae);
         sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while accessing session data");

@@ -39,6 +39,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
+import com.funnelback.publicui.search.web.binding.StringDefaultValueEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import com.yammer.metrics.core.MetricName;
@@ -110,6 +111,7 @@ public class SearchController extends SessionController {
                 RequestParameters.QUERY    );
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
         binder.registerCustomEditor(String.class, RequestParameters.PROFILE, new StringArrayFirstSlotEditor());
+        binder.registerCustomEditor(String.class, RequestParameters.FORM, new StringDefaultValueEditor(DefaultValues.DEFAULT_FORM));
     }
     
     @RequestMapping(value={"/"})

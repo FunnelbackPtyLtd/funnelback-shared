@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionException;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -60,8 +61,8 @@ public class Session extends AbstractInputProcessor {
                 // Retrieve results cart
                 st.getSession().getResultsCart().addAll(
                     resultsCartRepository.getCart(st.getSession().getSearchUser(), st.getQuestion().getCollection()));
-            } catch (DataAccessException dae) {
-                log.error("Error while retrieving session data", dae);
+            } catch (DataAccessException | TransactionException e) {
+                log.error("Error while retrieving session data", e);
             }
         }
 
