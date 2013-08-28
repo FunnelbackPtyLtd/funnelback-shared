@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.io.IOUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
@@ -92,7 +93,13 @@ public class CuratorConifgResource extends AbstractSingleFileResource<CuratorCon
      * into a CuratorConfig.
      */
     public static CuratorConfig loadYamlConfig(String filename) throws FileNotFoundException {
-        return getYamlObject().loadAs(new FileReader(filename), CuratorConfig.class);
+        FileReader reader = null;
+        try {
+            reader = new FileReader(filename);
+            return getYamlObject().loadAs(reader, CuratorConfig.class);
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 
     /**
