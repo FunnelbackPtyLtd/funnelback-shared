@@ -4,12 +4,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:metrics="http://www.yammer.com/schema/metrics"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd
-				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-
-
-
-				http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!-- context:component-scan base-package="com.funnelback.publicui" / -->
 	<!-- aop:aspectj-autoproxy / -->
@@ -140,5 +139,29 @@
 	</bean>
 	
 	<bean class="com.funnelback.publicui.test.mock.MockSearchHistoryRepository" />
+    
+    <bean id="dataSource" class="org.h2.jdbcx.JdbcDataSource">
+        <property name="URL" value="jdbc:h2:file:target/test-output/session-db" />
+    </bean>
+    
+    <bean class="com.funnelback.publicui.search.service.session.ResultsCartDao" />
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <tx:annotation-driven />
+    
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="search-session" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true"/>
+                <!--  property name="generateDdl" value="true" /-->
+                <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect" />
+            </bean>
+        </property>
+    </bean>
+    
+    
 	
 </beans>
