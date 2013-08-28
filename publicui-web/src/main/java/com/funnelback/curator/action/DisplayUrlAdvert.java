@@ -33,7 +33,7 @@ public class DisplayUrlAdvert implements Action {
             RemoveUrls.addUrlsStringToRemoveList(searchTransaction, advert.getDisplayUrl());
         } else if (phase.equals(Phase.OUTPUT)) {
             // Add the new URL advert
-            searchTransaction.getResponse().getCuratorModel().getExhibits().add(advert);
+            searchTransaction.getResponse().getCurator().getExhibits().add(advert);
         }
     }
 

@@ -16,8 +16,8 @@ public class DisplayUrlAdvertTests {
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dua);
         
-        Assert.assertTrue("Expected url advert to be added to the response", st.getResponse().getCuratorModel().getExhibits().contains(advert));
-        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertTrue("Expected url advert to be added to the response", st.getResponse().getCurator().getExhibits().contains(advert));
+        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCurator().getExhibits().size());
     }
 
     @Test
@@ -31,9 +31,9 @@ public class DisplayUrlAdvertTests {
         SearchTransaction st = ActionTestUtils.runAllPhases(dua1);
         ActionTestUtils.runAllPhases(dua2, st);
         
-        Assert.assertTrue("Expected url advert1 to be added to the response", st.getResponse().getCuratorModel().getExhibits().contains(advert1));
-        Assert.assertTrue("Expected url advert2 to be added to the response", st.getResponse().getCuratorModel().getExhibits().contains(advert2));
-        Assert.assertEquals("Expected only two exhibits in the response", 2, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertTrue("Expected url advert1 to be added to the response", st.getResponse().getCurator().getExhibits().contains(advert1));
+        Assert.assertTrue("Expected url advert2 to be added to the response", st.getResponse().getCurator().getExhibits().contains(advert2));
+        Assert.assertEquals("Expected only two exhibits in the response", 2, st.getResponse().getCurator().getExhibits().size());
     }
     
     @Test

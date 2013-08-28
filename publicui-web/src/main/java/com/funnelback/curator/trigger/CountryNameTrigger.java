@@ -13,11 +13,15 @@ import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * A trigger which activates only when the current request originates from a
  * country whose name exists in the targetCountries list.
+ * </p>
  * 
+ * <p>
  * The detection of the originating country requires geolocation to be active
  * (otherwise this trigger will never activate).
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

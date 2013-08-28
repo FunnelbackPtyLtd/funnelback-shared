@@ -9,12 +9,18 @@ import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * A trigger which activates only when the current query exactly matches the
  * given trigger query.
+ * </p>
  * 
+ * <p>
  * Case between the queries may optionally be ignored.
+ * </p>
  * 
+ * <p>
  * The word order within the query is always considered significant.
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

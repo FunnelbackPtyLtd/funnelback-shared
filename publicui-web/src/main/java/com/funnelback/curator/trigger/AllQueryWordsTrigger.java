@@ -14,11 +14,15 @@ import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * A trigger which activates only when the current query contains all the words
  * given as triggers.
+ * </p>
  * 
+ * <p>
  * The query may contain other words without affecting the trigger, and the
  * order of the words within the query is not considered important.
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

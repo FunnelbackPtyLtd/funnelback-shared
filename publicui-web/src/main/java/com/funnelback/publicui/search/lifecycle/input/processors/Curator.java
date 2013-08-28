@@ -14,16 +14,22 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
+ * <p>
  * The curator input processor performs curator actions which should occur
  * before the padre request is executed (such as asking padre to promote or
  * remove URLs).
+ * </p>
  * 
+ * <p>
  * The actions to run are based on the content of the curator.yaml file within
  * the profile being queried and the matching (or not) of the triggers defined
  * for each set of actions.
+ * </p>
  * 
+ * <p>
  * The curator actions can be disabled as a whole by setting curator=false as a
  * URL parameter.
+ * </p>
  * 
  */
 @Component("curatorInputProcessor")

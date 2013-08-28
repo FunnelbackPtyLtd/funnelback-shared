@@ -12,10 +12,14 @@ import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * A trigger which activates only when all of the given 'sub' triggers activate.
+ * </p>
  * 
+ * <p>
  * This trigger can be used to combine the effects of other triggers, e.g. a
  * trigger requiring both some query word and some date range.
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -16,8 +16,8 @@ public class DisplayMessageTests {
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dm);
         
-        Assert.assertTrue("Expected message to be added to the response", st.getResponse().getCuratorModel().getExhibits().contains(message));
-        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertTrue("Expected message to be added to the response", st.getResponse().getCurator().getExhibits().contains(message));
+        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCurator().getExhibits().size());
     }
 
     @Test

@@ -41,7 +41,7 @@ public class CuratorTests {
         Assert.assertFalse("There should be no URLs promoted (that's done by the input processor).",
             st.getQuestion().getAdditionalParameters().containsKey(RequestParameters.PROMOTE_URLS));
 
-        Assert.assertEquals("Expected exactly one exhibit (a message).", 1, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertEquals("Expected exactly one exhibit (a message).", 1, st.getResponse().getCurator().getExhibits().size());
     }
 
     @Test

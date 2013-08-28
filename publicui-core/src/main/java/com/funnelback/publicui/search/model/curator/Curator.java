@@ -10,7 +10,7 @@ import lombok.Setter;
  * A CuratorModel will contain and additional information (exhibits) which has
  * been added to the result packet by curator actions.
  */
-public class CuratorModel {
+public class Curator {
 
     /**
      * Contains the list of additional elements (exhibits) which curator actions

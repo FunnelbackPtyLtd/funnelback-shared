@@ -24,7 +24,7 @@ public class DisplayProperties implements Action {
     /** Adds the action's properties object to the curator model's exhibits. */
     @Override
     public void performAction(SearchTransaction searchTransaction, Phase phase) {
-        searchTransaction.getResponse().getCuratorModel().getExhibits().add(properties);
+        searchTransaction.getResponse().getCurator().getExhibits().add(properties);
     }
 
     /**

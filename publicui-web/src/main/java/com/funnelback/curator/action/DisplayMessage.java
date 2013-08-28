@@ -27,7 +27,7 @@ public class DisplayMessage implements Action {
      */
     @Override
     public void performAction(SearchTransaction searchTransaction, Phase phase) {
-        searchTransaction.getResponse().getCuratorModel().getExhibits().add(message);
+        searchTransaction.getResponse().getCurator().getExhibits().add(message);
     }
 
     /**

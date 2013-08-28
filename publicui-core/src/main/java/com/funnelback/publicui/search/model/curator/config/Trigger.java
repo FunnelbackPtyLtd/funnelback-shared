@@ -3,15 +3,21 @@ package com.funnelback.publicui.search.model.curator.config;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * Triggers control when curator actions are performed (or not).
+ * </p>
  * 
+ * <p>
  * Implementing classes must define, based on the current search transaction,
  * whether the trigger activates or not.
+ * </p>
  * 
+ * <p>
  * NOTE: To avoid displaying the full package name for the implementing class in
  * the curator config file add the implementing class to the aliasedTriggers
- * array in
+ * array in publicui-web's
  * com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource
+ * </p>
  */
 public interface Trigger {
 

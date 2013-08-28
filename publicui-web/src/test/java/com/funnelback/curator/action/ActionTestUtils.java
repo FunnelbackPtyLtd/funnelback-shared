@@ -1,6 +1,6 @@
 package com.funnelback.curator.action;
 
-import com.funnelback.publicui.search.model.curator.CuratorModel;
+import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -10,7 +10,7 @@ public class ActionTestUtils {
 
     public static SearchTransaction runAllPhases(Action action) {
         SearchResponse response = new SearchResponse();
-        response.setCuratorModel(new CuratorModel());
+        response.setCurator(new Curator());
         SearchTransaction searchTransaction = new SearchTransaction(new SearchQuestion(), response);
         return runAllPhases(action, searchTransaction);
     }

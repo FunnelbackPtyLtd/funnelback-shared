@@ -3,12 +3,16 @@ package com.funnelback.publicui.search.model.geolocation;
 import lombok.Data;
 
 /**
+ * <p>
  * This class represents a location along with a range of 'names' which apply to
  * it, such as countries, cities, postalCodes etc.
+ * </p>
  * 
+ * <p>
  * The available fields are based closely on the MaxMind Location object, which
  * we wrap to provide getters and setters for the fields (allowing access to
  * them from FreeMarker).
+ * </p>
  * 
  * @since 13.0
  */
@@ -56,20 +60,28 @@ public class Location {
     private final int dmaCode;
 
     /**
+     * <p>
      * The latitude of the represented location.
+     * </p>
      * 
+     * <p>
      * Defaults to zero if it cannot be determined even though that represents a
      * legitimate location.
+     * </p>
      * 
      * @since 13.0
      */
     private final float latitude;
 
     /**
+     * <p>
      * The longitude of the represented location.
+     * </p>
      * 
+     * <p>
      * Defaults to zero if it cannot be determined even though that represents a
      * legitimate location.
+     * </p>
      * 
      * @since 13.0
      */

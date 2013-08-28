@@ -40,7 +40,7 @@ public class CuratorTests {
         Assert.assertEquals("uniqueurl",
             st.getQuestion().getAdditionalParameters().get(RequestParameters.PROMOTE_URLS)[0]);
 
-        Assert.assertEquals("Expected no exhibits (done by output processor).", 0, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertEquals("Expected no exhibits (done by output processor).", 0, st.getResponse().getCurator().getExhibits().size());
     }
 
     @Test

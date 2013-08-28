@@ -9,11 +9,15 @@ import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
+ * <p>
  * A trigger which activates when the given substring is contained within the
  * current query.
+ * </p>
  * 
+ * <p>
  * Case is considered important in the matching (so a trigger with substring
  * "Bob" will not match the query "bob and jane", but "bob" would).
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -12,21 +12,28 @@ import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
- * A trigger which activates only when at least one of the 'sub' triggers activates.
+ * <p>
+ * A trigger which activates only when at least one of the 'sub' triggers
+ * activates.
+ * </p>
  * 
+ * <p>
  * This trigger can be used to combine the effects of other triggers, e.g. a
  * trigger requiring either some query word or some date range.
+ * </p>
  */
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrTrigger implements Trigger {
 
     /**
-     * The list of 'sub' triggers one of which must activate for this trigger
-     * to activate.
+     * The list of 'sub' triggers one of which must activate for this trigger to
+     * activate.
      */
-    @Getter @Setter
-    private List<Trigger> triggers = new ArrayList<Trigger>();    
-    
+    @Getter
+    @Setter
+    private List<Trigger> triggers = new ArrayList<Trigger>();
+
     /**
      * Check each 'sub' trigger in turn to see if it activates on the given
      * searchTransaction, and return true only if one of them does (otherwise

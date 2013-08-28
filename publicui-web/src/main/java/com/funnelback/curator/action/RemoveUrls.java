@@ -13,15 +13,19 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Joiner;
 
 /**
+ * <p>
  * Action to remove a set of URLs within the search results, causing them to be
  * excluded from the result set even if they match the given query. This would
  * generally be done to eliminate a duplicate result which is being displayed
  * through a UrlAdvert or similar. If a URL should be permanently removed it is
  * preferable to either kill it in the index or to avoid gathering it in the
  * first place.
+ * </p>
  * 
+ * <p>
  * If this action is performed multiple times the list of URLs to be removed
  * will be combined.
+ * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor

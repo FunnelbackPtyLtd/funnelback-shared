@@ -16,8 +16,8 @@ public class DisplayPropertiesTests {
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dp);
         
-        Assert.assertTrue("Expected properties to be added to the response", st.getResponse().getCuratorModel().getExhibits().contains(properties));
-        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCuratorModel().getExhibits().size());
+        Assert.assertTrue("Expected properties to be added to the response", st.getResponse().getCurator().getExhibits().contains(properties));
+        Assert.assertEquals("Expected only one exhibit in the response", 1, st.getResponse().getCurator().getExhibits().size());
     }
 
     @Test

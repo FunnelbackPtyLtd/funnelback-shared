@@ -13,15 +13,15 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Joiner;
 
 /**
- * Action to promote a set of URLs within the search results, causing them to be
- * displayed at the top of the result set in the order given.
+ * <p>Action to promote a set of URLs within the search results, causing them to be
+ * displayed at the top of the result set in the order given.</p>
  * 
- * If this action is performed multiple times the list of URLs to be promoted
+ * <p>If this action is performed multiple times the list of URLs to be promoted
  * will be appended to, meaning that the earliest invocation will 'win' in terms
- * of the final result ordering.
+ * of the final result ordering.</p>
  * 
- * Note - Result promoting has no effect if sorting modes other than relevance
- * are used (e.g. date sorting is unaffected).
+ * <p>Note - Result promoting has no effect if sorting modes other than relevance
+ * are used (e.g. date sorting is unaffected).</p>
  */
 @AllArgsConstructor
 @NoArgsConstructor
