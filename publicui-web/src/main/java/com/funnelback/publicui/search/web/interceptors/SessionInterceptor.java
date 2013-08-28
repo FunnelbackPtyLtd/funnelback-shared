@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     public static final String USER_ID_COOKIE_NAME = "user-id";
     
     @Autowired
-    private ConfigRepository configRepository;
+    @Setter private ConfigRepository configRepository;
     
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -56,9 +57,7 @@ public class SessionInterceptor implements HandlerInterceptor {
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION,
                     DefaultValues.ModernUI.SESSION)) {
                     HttpSession session = request.getSession();
-                    if (session.getAttribute(SEARCH_USER_ID_ATTRIBUTE) == null) {
-                        session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-                    }
+                    session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
                     session.setMaxInactiveInterval(-1);
                 }
                 
@@ -70,8 +69,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     response.addCookie(c);
                     
                     // Also set it as a request attribute so that it can be accessed
-                    // by controllers further down
-                    request.setAttribute(USER_ID_COOKIE_NAME, uuid.toString());
+                    // by controllers further down, the first time the cookie is set
+                    request.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
                 }
             }
         }

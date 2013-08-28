@@ -17,7 +17,8 @@ public class SessionController {
 
     /**
      * Retrieve the current search user from its ID stored in
-     * the J2EE session, or directly in a cookie as a fallback.
+     * the J2EE session, or directly in a cookie, or in a HTTP request
+     * attribute.
      * @param request HTTP request
      * @return The corresponding search user, or null if there's no user
      * for the ID
@@ -38,9 +39,11 @@ public class SessionController {
                 }
             }
             
-            // Finally fallback to request attribute
-            if (request.getAttribute(SessionInterceptor.USER_ID_COOKIE_NAME) != null) {
-                return new SearchUser((String) request.getAttribute(SessionInterceptor.USER_ID_COOKIE_NAME));
+            // Finally fallback to request attribute, this will be set the first
+            // time the cookie is generated, since it has not be sent back by the
+            // browser yet.
+            if (request.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE) != null) {
+                return new SearchUser((String) request.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
             }
         }
         
