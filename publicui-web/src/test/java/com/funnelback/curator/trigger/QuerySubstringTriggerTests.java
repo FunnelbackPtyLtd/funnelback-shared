@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResourc
 public class QuerySubstringTriggerTests {
 
     @Test
-    public void testAllQueryWordsTrigger() {
+    public void testQuerySubstringTrigger() {
         QuerySubstringTrigger qst = new QuerySubstringTrigger();
         
         SearchQuestion question = new SearchQuestion();
@@ -29,7 +29,7 @@ public class QuerySubstringTriggerTests {
     }
 
     @Test
-    public void testSerializeAllQueryWordsTrigger() {
+    public void testSerializeQuerySubstringTrigger() {
         QuerySubstringTrigger qst = new QuerySubstringTrigger();
         qst.setTriggerSubstring("uniqueword");
         
