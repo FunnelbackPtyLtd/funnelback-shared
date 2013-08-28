@@ -2,9 +2,12 @@ package com.funnelback.publicui.search.web.interceptors;
 
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,17 +21,23 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 /**
- * <p>Manage sessions and users.</p>
+ * <p>Manage sessions and users, using the J2EE session and/or Cookies</p>
  * 
  * @since v12.4
  *
  */
+@Log4j
 public class SessionInterceptor implements HandlerInterceptor {
 
     /**
      * Name of the session attribute holding the user id
      */
     public static final String SEARCH_USER_ID_ATTRIBUTE = SearchUser.class.getName()+"#id";
+    
+    /**
+     * Name of the user ID cookie to set
+     */
+    public static final String USER_ID_COOKIE_NAME = "user-id";
     
     @Autowired
     private ConfigRepository configRepository;
@@ -39,21 +48,64 @@ public class SessionInterceptor implements HandlerInterceptor {
         
         if (request.getParameter(RequestParameters.COLLECTION) != null) {
             Collection collection = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
+            
             if (collection != null) {
+                UUID uuid = getExistingOrNewUserId(request);
+                
+                // Store user in the J2EE session
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION,
                     DefaultValues.ModernUI.SESSION)) {
                     HttpSession session = request.getSession();
                     if (session.getAttribute(SEARCH_USER_ID_ATTRIBUTE) == null) {
-                        session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, UUID.randomUUID().toString());
+                        session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
                     }
- 
                     session.setMaxInactiveInterval(-1);
+                }
+                
+                // Set a simple cookie, re-using the Session User ID if it exists
+                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.Session.SET_USERID_COOKIE,
+                    DefaultValues.ModernUI.Session.SET_USERID_COOKIE)) {
+                    Cookie c = new Cookie(USER_ID_COOKIE_NAME, uuid.toString());
+                    c.setMaxAge(Integer.MAX_VALUE);
+                    response.addCookie(c);
+                    
+                    // Also set it as a request attribute so that it can be accessed
+                    // by controllers further down
+                    request.setAttribute(USER_ID_COOKIE_NAME, uuid.toString());
                 }
             }
         }
 
         return true;
     }
+    
+    /**
+     * Get an existing user id either from the J2EE session or from a cookie. If not
+     * found, a new UUID is generated.
+     * @param request HTTP request
+     * @return The existing user ID, or a new one if not found.
+     */
+    private UUID getExistingOrNewUserId(HttpServletRequest request) {
+        try {
+            if (request.getSession(false) != null
+                && request.getSession().getAttribute(SEARCH_USER_ID_ATTRIBUTE) != null) {
+                return UUID.fromString((String) request.getSession().getAttribute(SEARCH_USER_ID_ATTRIBUTE));
+            } else {
+                if (request.getCookies() != null) {
+                    for (Cookie c: request.getCookies()) {
+                        if (c.getName().equals(USER_ID_COOKIE_NAME)) {
+                            return UUID.fromString(c.getValue());
+                        }
+                    }
+                }
+            }
+        } catch (IllegalArgumentException iae) {
+            log.warn("Invalid UUID value for user identifer", iae);
+        }
+        
+        return UUID.randomUUID();
+    }
+    
 
     @Override
     public void postHandle(HttpServletRequest request,
