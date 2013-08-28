@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResourc
 public class ExactQueryTriggerTests {
 
     @Test
-    public void testAllQueryWordsTrigger() {
+    public void testExactQueryTrigger() {
         ExactQueryTrigger eqt = new ExactQueryTrigger();
         
         SearchQuestion question = new SearchQuestion();
