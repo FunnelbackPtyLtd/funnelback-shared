@@ -32,14 +32,6 @@
         <version.yammer-metrics>2.2.0</version.yammer-metrics>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>Sonatype-public</id>
-            <name>SnakeYAML repository</name>
-            <url>http://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.funnelback.publicui</groupId>
@@ -278,7 +270,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.13-SNAPSHOT</version>
+            <version>1.12</version>
         </dependency>
     </dependencies>
 
