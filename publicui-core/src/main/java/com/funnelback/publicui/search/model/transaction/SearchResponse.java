@@ -12,7 +12,7 @@ import lombok.ToString;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
-import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.curator.CuratorModel;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -66,6 +66,13 @@ public class SearchResponse {
      * @since 12.0
      */    
     @Getter @Setter private EntityDefinition entityDefinition;
+    
+    /**
+     * Curator: Curated result packet data data.
+     * 
+     * @since 13.0
+     */
+    @Getter @Setter private CuratorModel curatorModel = new CuratorModel();
     
     /**
      * Contains translation messages for the UI, for the locale

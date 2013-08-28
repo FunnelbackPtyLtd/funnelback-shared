@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.model.collection;
 
+import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +41,11 @@ public class Profile {
      * <code>data/[collection]/live/idx/[profile]/faceted_navigation.cfg</code>
      */
     @Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
-    
+
+    /** Curator configuration in <code>conf/[collection]/[profile]/curator.yaml</code> */
+    @XStreamOmitField
+    @Getter @Setter private CuratorConfig curatorConfig;
+
     /**
      * <p>Specific query processor options for this profile.</p>
      * 

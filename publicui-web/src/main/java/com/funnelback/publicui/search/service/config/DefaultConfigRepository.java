@@ -37,11 +37,13 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.ResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.AbstractSingleFileResource;
 import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.ConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.GlobalConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.GroovyScriptResource;
@@ -170,7 +172,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 collectionId,
                 searchHome,
                 new File(configFolder, Files.QUICKLINKS_CONFIG_FILENAME)), new HashMap<String, String>(0)));
-
+        
         c.getProfiles().putAll(loadProfiles(c));
         
         for (Hook hook: Hook.values()) {
@@ -211,6 +213,14 @@ public class DefaultConfigRepository implements ConfigRepository {
                     }));
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
+            }
+            
+            File curatorConfigFile = new File(profileDir, Files.CURATOR_CONFIG_FILENAME);
+            try {
+                p.setCuratorConfig(resourceManager.load(new CuratorConifgResource(curatorConfigFile),
+                    new CuratorConfig()));
+            } catch (IOException e) {
+                log.error("Could not read curator file from '"+curatorConfigFile+"'",e);
             }
 
             out.put(p.getId(), p);

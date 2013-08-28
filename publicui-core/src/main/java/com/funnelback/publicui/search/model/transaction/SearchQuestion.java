@@ -339,6 +339,15 @@ public class SearchQuestion {
         /** PADRE debug mode */
         public static final String DEBUG = "debug";
 
+        /** Parameter for promoting individual URLs */
+        public static final String PROMOTE_URLS = "promote_urls";
+
+        /** Parameter for removing individual URLs */
+        public static final String REMOVE_URLS = "remove_urls";
+
+        /** Parameter for enabling/disabling curator */
+        public static final String CURATOR = "curator";
+
         /**
          * Common request header names
          * 

@@ -1,0 +1,13 @@
+triggerActions:
+  ? !AllQueryWords
+    triggerWords:
+    - uniquequery
+  : actions:
+    - !DisplayMessage
+      message:
+        additionalProperties: null
+        category: no-category
+        messageHtml: uniquemessage
+    - !PromoteUrls
+      urlsToPromote:
+      - uniqueurl

@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Files;
+import com.funnelback.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
+import com.funnelback.publicui.search.model.curator.config.ActionSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -171,11 +173,40 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         writeAndTouchFuture(new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS), "-rmcfABC");
         coll = configRepository.getCollection("config-repository");
         Assert.assertEquals("-rmcfABC", coll.getProfiles().get("profile2").getPadreOpts());
-        
+
         // Delete padre-opts
         new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS).delete();
         coll = configRepository.getCollection("config-repository");
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+
+        String curatorConfig1 = 
+            "triggerActions:\n  ? !AllQueryWords\n    triggerWords:\n    - best\n    - king\n" + 
+            "  : actions:\n    - !DisplayMessage\n      message:\n        additionalProperties: null\n" + "" +
+            "        category: no-category\n        messageHtml: message1html\n";
+        String curatorConfig2 = curatorConfig1.replace("message1html", "message2html");
+        
+        // Create curator.yaml file
+        Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+        FileUtils.writeStringToFile(new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME), curatorConfig1);
+        coll = configRepository.getCollection("config-repository");
+        ActionSet as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
+            .values().toArray()[0];
+        DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
+        Assert.assertEquals("message1html", dm.getMessage().getMessageHtml());
+
+        // Update curator.yaml
+        writeAndTouchFuture(new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME), curatorConfig2);
+        coll = configRepository.getCollection("config-repository");
+        ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
+            .values().toArray()[0];
+        DisplayMessage dm2 = (DisplayMessage) as2.getActions().get(0);
+        Assert.assertEquals("message2html", dm2.getMessage().getMessageHtml());
+
+        // Delete curator.yaml
+        new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME).delete();
+        coll = configRepository.getCollection("config-repository");
+        Assert.assertTrue("Expected curatorConfig to be empty", coll.getProfiles().get("profile2").getCuratorConfig()
+            .getTriggerActions().isEmpty());
     }
     
     @Test

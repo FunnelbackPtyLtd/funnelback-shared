@@ -21,6 +21,7 @@
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
 		<ref bean="metaDatesInputProcessor" />
+        <ref bean="curatorInputProcessor" />
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
@@ -62,6 +63,7 @@
 		<ref bean="queryCleanOutputProcessor" />
 		<ref bean="extraSearchesExecutor" />
 		<ref bean="contentOptimiserOutputProcessor" />
+        <ref bean="curatorOutputProcessor" />
 		<ref bean="textMinerOutputProcessor" />
 		<ref bean="getTranslationsOutputProcessor" />
 		<ref bean="searchHistoryOutputProcessor" />
