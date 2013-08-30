@@ -1,28 +1,20 @@
 package com.funnelback.publicui.test.search.service.session;
 
-import java.io.File;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,12 +50,13 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         
         assertEquals(3, cart.size());
         CartResult previous = null;
-        for (CartResult cr: cart) {
+        for (int i=2,j=0; j<3; i--,j++) {
+            CartResult cr = cart.get(j);
             assertEquals(user.getId(), cr.getUserId());
             assertEquals(collection.getId(), cr.getCollection());
-            assertTrue(cr.getIndexUrl().toString().matches("funnelback://test.result/[0-2]"));
-            assertTrue(cr.getSummary().matches("Summary #[0-2]"));
-            assertTrue(cr.getTitle().matches("Title #[0-2]"));
+            assertTrue(cr.getIndexUrl().toString().matches("funnelback://test.result/"+i));
+            assertTrue(cr.getSummary().matches("Summary #"+i));
+            assertTrue(cr.getTitle().matches("Title #"+i));
             if (previous != null) {
                 assertTrue("Should be sorted by descending date", previous.getAddedDate().after(cr.getAddedDate()));
             }

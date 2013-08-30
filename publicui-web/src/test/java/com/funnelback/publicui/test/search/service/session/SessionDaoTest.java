@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.sql.Connection;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
+import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
+import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
@@ -61,12 +64,41 @@ public abstract class SessionDaoTest {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());
         cr.setCollection(UUID.randomUUID().toString());
-        cr.setIndexUrl(URI.create("url:uuid:"+UUID.randomUUID().toString()));
+        cr.setIndexUrl(URI.create("urn:uuid:"+UUID.randomUUID().toString()));
         cr.setSummary(UUID.randomUUID().toString());
         cr.setUserId(UUID.randomUUID().toString());
         cr.setTitle(UUID.randomUUID().toString());
         
         return cr;
     }
+    
+    protected ClickHistory generateRandomClickHistory() {
+        ClickHistory ch = new ClickHistory();
+        ch.setClickDate(new Date());
+        ch.setCollection(UUID.randomUUID().toString());
+        ch.setIndexUrl(URI.create("urn:uuid:"+UUID.randomUUID().toString()));
+        ch.setSummary(UUID.randomUUID().toString());
+        ch.setTitle(UUID.randomUUID().toString());
+        ch.setUserId(UUID.randomUUID().toString());
+        
+        return ch;
+    }
+
+    protected SearchHistory generateRandomSearchHistory() {
+        Random r = new Random();
+        SearchHistory sh = new SearchHistory();
+        sh.setCollection(UUID.randomUUID().toString());
+        sh.setCurrStart(r.nextInt());
+        sh.setNumRanks(r.nextInt());
+        sh.setOriginalQuery(UUID.randomUUID().toString());
+        sh.setQueryAsProcessed(UUID.randomUUID().toString());
+        sh.setSearchDate(new Date());
+        sh.setSearchParams("&param1="+UUID.randomUUID().toString()+"&param2="+r.nextInt());
+        sh.setTotalMatching(r.nextInt());
+        sh.setUserId(UUID.randomUUID().toString());
+        
+        return sh;
+    }
+    
     
 }

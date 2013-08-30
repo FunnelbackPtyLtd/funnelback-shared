@@ -76,7 +76,20 @@ public class SearchHistoryDao implements SearchHistoryRepository {
 
     @Override
     public void saveClick(ClickHistory h) {
-        em.persist(h);
+        try {
+            ClickHistory existing = em.createQuery("from "+ClickHistory.class.getSimpleName()
+                + " where userId = :userId"
+                + " and collection = :collectionId"
+                + " and indexUrl = :indexUrl", ClickHistory.class)
+                .setParameter("userId", h.getUserId())
+                .setParameter("collectionId", h.getCollection())
+                .setParameter("indexUrl", h.getIndexUrl().toString())
+                .getSingleResult();
+            existing.setClickDate(h.getClickDate());
+            em.persist(existing);
+        } catch (NoResultException nre) {
+            em.persist(h);
+        }
     }
 
     @Override

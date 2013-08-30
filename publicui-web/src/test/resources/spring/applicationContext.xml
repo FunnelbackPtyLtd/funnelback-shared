@@ -138,13 +138,12 @@
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 	
-	<bean class="com.funnelback.publicui.test.mock.MockSearchHistoryRepository" />
-    
     <bean id="dataSource" class="org.h2.jdbcx.JdbcDataSource">
         <property name="URL" value="jdbc:h2:file:target/test-output/session-db" />
     </bean>
     
     <bean class="com.funnelback.publicui.search.service.session.ResultsCartDao" />
+    <bean class="com.funnelback.publicui.search.service.session.SearchHistoryDao" />
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
