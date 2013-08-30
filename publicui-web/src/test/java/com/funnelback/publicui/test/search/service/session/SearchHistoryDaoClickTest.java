@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
