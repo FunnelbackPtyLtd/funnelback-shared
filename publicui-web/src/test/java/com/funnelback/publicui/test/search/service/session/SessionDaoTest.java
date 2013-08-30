@@ -61,33 +61,43 @@ public abstract class SessionDaoTest {
     public abstract void before() throws Exception;
     
     protected CartResult generateRandomCartResult() {
+        return generateRandomCartResult(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    }
+    
+    protected CartResult generateRandomCartResult(String collectionId, String userId) {
         CartResult cr = new CartResult();
         cr.setAddedDate(new Date());
-        cr.setCollection(UUID.randomUUID().toString());
+        cr.setCollection(collectionId);
         cr.setIndexUrl(URI.create("urn:uuid:"+UUID.randomUUID().toString()));
         cr.setSummary(UUID.randomUUID().toString());
-        cr.setUserId(UUID.randomUUID().toString());
+        cr.setUserId(userId);
         cr.setTitle(UUID.randomUUID().toString());
         
         return cr;
     }
     
     protected ClickHistory generateRandomClickHistory() {
+        return generateRandomClickHistory(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    }
+    protected ClickHistory generateRandomClickHistory(String collectionId, String userId) {
         ClickHistory ch = new ClickHistory();
         ch.setClickDate(new Date());
-        ch.setCollection(UUID.randomUUID().toString());
+        ch.setCollection(collectionId);
         ch.setIndexUrl(URI.create("urn:uuid:"+UUID.randomUUID().toString()));
         ch.setSummary(UUID.randomUUID().toString());
         ch.setTitle(UUID.randomUUID().toString());
-        ch.setUserId(UUID.randomUUID().toString());
+        ch.setUserId(userId);
         
         return ch;
     }
 
     protected SearchHistory generateRandomSearchHistory() {
+        return generateRandomSearchHistory(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    }
+    protected SearchHistory generateRandomSearchHistory(String collectionId, String userId) {
         Random r = new Random();
         SearchHistory sh = new SearchHistory();
-        sh.setCollection(UUID.randomUUID().toString());
+        sh.setCollection(collectionId);
         sh.setCurrStart(r.nextInt());
         sh.setNumRanks(r.nextInt());
         sh.setOriginalQuery(UUID.randomUUID().toString());
@@ -95,7 +105,7 @@ public abstract class SessionDaoTest {
         sh.setSearchDate(new Date());
         sh.setSearchParams("&param1="+UUID.randomUUID().toString()+"&param2="+r.nextInt());
         sh.setTotalMatching(r.nextInt());
-        sh.setUserId(UUID.randomUUID().toString());
+        sh.setUserId(userId);
         
         return sh;
     }

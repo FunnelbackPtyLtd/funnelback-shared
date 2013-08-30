@@ -18,18 +18,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 /**
  * Base class for session related controllers
  * 
- * @since 12.4
+ * @since 13.0
  */
 @Log4j
 public class SessionApiControllerBase extends SessionController {
 
+    /** Key used in the JSON output for the status message */
     protected final static String STATUS = "status";
+    /** Key used in the JSON output for the error message */
     protected final static String ERROR_MESSAGE = "error-message";
+    
+    /** Value for the OK status in the JSON output */
     protected final static String OK = "ok";
+    /** Value for the KO status in the JSON output */
     protected final static String KO = "ko";
     
+    /** Predefined success Map for the JSON output */
     protected final static Map<String, String> OK_STATUS_MAP = new HashMap<>();
     static { OK_STATUS_MAP.put(STATUS, OK); }
+    
+    /** Predefined error Map for the JSON output */
+    protected final static Map<String, String> KO_STATUS_MAP = new HashMap<>();
+    static { KO_STATUS_MAP.put(STATUS, KO); }
     
     private ObjectMapper jsonMapper = new ObjectMapper();
     
@@ -42,24 +52,25 @@ public class SessionApiControllerBase extends SessionController {
     }
     
     @ExceptionHandler({DataAccessException.class, TransactionException.class})
-    public void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
+    private void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
         log.error("Error while accessing session data", dae);
-        sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while accessing session data");
+        sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Error while accessing session data: " + dae.getMessage());
     }
     
     @ExceptionHandler(value={DataBindingException.class, BindException.class})
-    public void dbeExceptionHandler(Exception e, HttpServletResponse response) throws IOException {
+    private void dbeExceptionHandler(Exception e, HttpServletResponse response) throws IOException {
         log.error("Data binding error", e);
-        sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Bad request " + e.getMessage());
+        sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Bad request: " + e.getMessage());
     }
     
     @ExceptionHandler(Exception.class)
-    public void exceptionHandler(Exception e, HttpServletResponse response) throws IOException {
+    private void exceptionHandler(Exception e, HttpServletResponse response) throws IOException {
         log.error("Unknown session error", e);
         sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, getJsonErrorMap(e.toString()));
     }
     
-    protected Map<String, String> getJsonErrorMap(String errorMessage) {
+    private Map<String, String> getJsonErrorMap(String errorMessage) {
         Map<String, String> json = new HashMap<>();
         json.put(STATUS, KO);
         json.put(ERROR_MESSAGE, errorMessage);

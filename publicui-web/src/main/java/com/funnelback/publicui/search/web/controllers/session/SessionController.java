@@ -11,7 +11,7 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 /**
  * Common session methods that will apply to all controllers.
  * 
- * @since 12.5
+ * @since 13.0
  */
 public class SessionController {
 

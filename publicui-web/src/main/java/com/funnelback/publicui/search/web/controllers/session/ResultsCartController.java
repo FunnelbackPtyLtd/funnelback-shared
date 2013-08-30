@@ -1,16 +1,13 @@
 package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.SneakyThrows;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -34,7 +29,7 @@ import com.funnelback.publicui.search.service.ResultsCartRepository;
 /**
  * Controller for the results shopping cart.
  * 
- * @since 12.4
+ * @since 13.0
  *
  */
 @Controller
@@ -49,8 +44,16 @@ public class ResultsCartController extends SessionApiControllerBase {
     private ResultsCartRepository cartRepository;
 
     @Autowired
-    private IndexRepository indexRepository;
+    @Setter private IndexRepository indexRepository;
     
+    /**
+     * List the cart
+     * 
+     * @param collectionId Collection to list the cart for
+     * @param user User to list the cart for
+     * @param response HTTP response
+     * @throws IOException 
+     */
     @RequestMapping(method = RequestMethod.GET)
     public void cartList(
         @RequestParam("collection") String collectionId,
@@ -58,23 +61,22 @@ public class ResultsCartController extends SessionApiControllerBase {
         HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collectionId);
-        if (c != null) {
+        if (c != null && user != null) {
             List<CartResult> cart = cartRepository.getCart(user, c);
             sendResponse(response, HttpServletResponse.SC_OK, cart);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collectionId+"'"));
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
         }
     }
     
     /**
-     * Adds a single result to the cart. Related collection is taken
-     * from the result itself.
+     * Add a result to the cart
      * 
-     * @param result
-     * @param query
-     * @param user
-     * @param response
-     * @throws IOException
+     * @param collection Collection the result belongs to
+     * @param url URL of the result, identical to the index one
+     * @param user User for which to update the cart
+     * @param response HTTP response
+     * @throws IOException 
      */
     @RequestMapping(method=RequestMethod.POST)
     public void cartAdd(
@@ -84,7 +86,7 @@ public class ResultsCartController extends SessionApiControllerBase {
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collection);
-        if (c != null) {
+        if (c != null && user != null) {
 
             Result r = indexRepository.getResult(c, url);
             if (r != null) {
@@ -99,19 +101,18 @@ public class ResultsCartController extends SessionApiControllerBase {
             }
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collection+"'"));
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
         }
     }
     
     /**
-     * Remove a single entry from the cart, for the given collection and based
-     * on the result URL.
+     * Remove a single result from the cart
      * 
-     * @param collection
-     * @param url
-     * @param user
-     * @param response
-     * @throws IOException
+     * @param collection Collection the result belongs to
+     * @param url URL of the result to remove
+     * @param user User for which to update the cart
+     * @param response HTTP response
+     * @throws IOException 
      */
     @RequestMapping(method=RequestMethod.DELETE, params = RequestParameters.Cart.URL)
     public void cartRemove(
@@ -121,20 +122,20 @@ public class ResultsCartController extends SessionApiControllerBase {
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collection);
-        if (c != null) {
+        if (c != null && user != null) {
             cartRepository.removeFromCart(user, c, url);
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collection+"'"));
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
         }
     }
-    
+
     /**
-     * Completely clear the result cart for the given collection
-     * @param collection
-     * @param user
-     * @param response
-     * @throws IOException
+     * Completely clear the result cart
+     * @param collection Collection to clear the cart for
+     * @param user User to clear the cart for
+     * @param response HTTP response
+     * @throws IOException 
      */
     @RequestMapping(method=RequestMethod.DELETE, params = "!"+RequestParameters.Cart.URL)
     public void cartClear(
@@ -143,25 +144,12 @@ public class ResultsCartController extends SessionApiControllerBase {
             HttpServletResponse response) throws IOException {
         
         Collection c = configRepository.getCollection(collection);
-        if (c != null) {
+        if (c != null && user != null) {
             cartRepository.clearCart(user, c);
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, getJsonErrorMap("Invalid collection '"+collection+"'"));
+            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
         }
     }
-
-    @SneakyThrows(MalformedURLException.class)
-    private String getSearchUrl(HttpServletRequest request, Collection c) {
-        URL u = new URL(request.getRequestURL().toString());
-        
-        return u.getProtocol() + "://"
-                + u.getHost()
-                + ((u.getPort() > 0) ? ":"+u.getPort() : "")
-                + u.getPath().substring(0, u.getPath().lastIndexOf('/')+1)
-                + c.getConfiguration().value(Keys.ModernUI.SEARCH_LINK, DefaultValues.ModernUI.SEARCH_LINK)
-                + "?" + RequestParameters.COLLECTION + "=" + c.getId();        
-    }
-    
     
 }

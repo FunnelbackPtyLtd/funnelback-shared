@@ -161,6 +161,8 @@
         </property>
     </bean>
     
+    <bean class="com.funnelback.publicui.search.web.controllers.session.SearchHistoryController" />
+    <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartController" />
     
 	
 </beans>
