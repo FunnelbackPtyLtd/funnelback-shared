@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Files;
-import com.funnelback.curator.action.DisplayMessage;
+import com.funnelback.publicui.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.curator.config.ActionSet;
@@ -185,9 +185,11 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
             "        category: no-category\n        messageHtml: message1html\n";
         String curatorConfig2 = curatorConfig1.replace("message1html", "message2html");
         
+        File curatorConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME);
+        
         // Create curator.yaml file
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
-        FileUtils.writeStringToFile(new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME), curatorConfig1);
+        FileUtils.writeStringToFile(curatorConfigFile, curatorConfig1);
         coll = configRepository.getCollection("config-repository");
         ActionSet as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
             .values().toArray()[0];
@@ -195,7 +197,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertEquals("message1html", dm.getMessage().getMessageHtml());
 
         // Update curator.yaml
-        writeAndTouchFuture(new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME), curatorConfig2);
+        writeAndTouchFuture(curatorConfigFile, curatorConfig2);
         coll = configRepository.getCollection("config-repository");
         ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
             .values().toArray()[0];
@@ -203,7 +205,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertEquals("message2html", dm2.getMessage().getMessageHtml());
 
         // Delete curator.yaml
-        new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME).delete();
+        Assert.assertTrue("Expected successful deletion of " + curatorConfigFile.getAbsolutePath(), curatorConfigFile.delete());
         coll = configRepository.getCollection("config-repository");
         Assert.assertTrue("Expected curatorConfig to be empty", coll.getProfiles().get("profile2").getCuratorConfig()
             .getTriggerActions().isEmpty());
