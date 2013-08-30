@@ -106,26 +106,27 @@ public class SearchHistoryDaoSearchTest extends SessionDaoTest {
     
     @Test
     public void addExistingEntry() {
-        Date d1 = new Date();
+        Calendar c = Calendar.getInstance();
+        
         SearchHistory sh1 = new SearchHistory();
         sh1.setCollection(collection.getId());
         sh1.setCurrStart(1);
         sh1.setNumRanks(2);
         sh1.setOriginalQuery("a query");
         sh1.setQueryAsProcessed("a processed query");
-        sh1.setSearchDate(d1);
+        sh1.setSearchDate(c.getTime());
         sh1.setSearchParams("&a+param=a+value&another%20one=a+different%20value");
         sh1.setTotalMatching(3);
         sh1.setUserId(user.getId());
 
-        Date d2 = new Date();
+        c.add(Calendar.DAY_OF_MONTH, 1);
         SearchHistory sh2 = new SearchHistory();
         sh2.setCollection(collection.getId());
         sh2.setCurrStart(1);
         sh2.setNumRanks(2);
         sh2.setOriginalQuery("a query");
         sh2.setQueryAsProcessed("a processed query");
-        sh2.setSearchDate(d2);
+        sh2.setSearchDate(c.getTime());
         sh2.setSearchParams("&a+param=a+value&another%20one=a+different%20value");
         sh2.setTotalMatching(3);
         sh2.setUserId(user.getId());
@@ -137,7 +138,7 @@ public class SearchHistoryDaoSearchTest extends SessionDaoTest {
         assertEquals(1, history.size());
         
         SearchHistory sh = history.get(0);
-        assertEquals("The date should have been updated", d2, sh.getSearchDate());
+        assertEquals("The date should have been updated", c.getTime(), sh.getSearchDate());
         assertEquals(collection.getId(), sh.getCollection());
         assertEquals(1, sh.getCurrStart());
         assertEquals(2, sh.getNumRanks());

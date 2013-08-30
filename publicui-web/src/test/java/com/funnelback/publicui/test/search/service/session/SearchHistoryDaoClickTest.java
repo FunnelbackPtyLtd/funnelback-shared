@@ -95,18 +95,18 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
     
     @Test
     public void addExistingEntry() {
-        Date d1 = new Date();
+        Calendar c = Calendar.getInstance();
         ClickHistory ch1 = new ClickHistory();
-        ch1.setClickDate(d1);
+        ch1.setClickDate(c.getTime());
         ch1.setCollection(collection.getId());
         ch1.setIndexUrl(URI.create("funnelback://test.result/"));
         ch1.setSummary("Summary");
         ch1.setTitle("Title");
         ch1.setUserId(user.getId());
 
-        Date d2 = new Date();
+        c.add(Calendar.DAY_OF_MONTH, 1);
         ClickHistory ch2 = new ClickHistory();
-        ch2.setClickDate(d1);
+        ch2.setClickDate(c.getTime());
         ch2.setCollection(collection.getId());
         ch2.setIndexUrl(URI.create("funnelback://test.result/"));
         ch2.setSummary("Summary updated");
@@ -120,7 +120,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         assertEquals(1, history.size());
         
         ClickHistory ch = history.get(0);
-        assertEquals("The date should have been updated", d2, ch.getClickDate());
+        assertEquals("The date should have been updated", c.getTime(), ch.getClickDate());
         assertEquals(collection.getId(), ch.getCollection());
         assertEquals(URI.create("funnelback://test.result/"), ch.getIndexUrl());
         assertEquals("Summary", ch.getSummary());
