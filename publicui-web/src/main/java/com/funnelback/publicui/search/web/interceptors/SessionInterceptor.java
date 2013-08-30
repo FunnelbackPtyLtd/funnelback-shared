@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 /**
  * <p>Manage sessions and users, using the J2EE session and/or Cookies</p>
  * 
- * @since v12.4
+ * @since v13
  *
  */
 @Log4j
@@ -52,6 +52,9 @@ public class SessionInterceptor implements HandlerInterceptor {
             
             if (collection != null) {
                 UUID uuid = getExistingOrNewUserId(request);
+                if (uuid == null) {
+                    uuid = UUID.randomUUID();
+                }
                 
                 // Store user in the J2EE session
                 if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION,
@@ -80,11 +83,11 @@ public class SessionInterceptor implements HandlerInterceptor {
     
     /**
      * Get an existing user id either from the J2EE session or from a cookie. If not
-     * found, a new UUID is generated.
+     * found, null is return
      * @param request HTTP request
-     * @return The existing user ID, or a new one if not found.
+     * @return The existing user ID, or null if not found.
      */
-    private UUID getExistingOrNewUserId(HttpServletRequest request) {
+    public static UUID getExistingOrNewUserId(HttpServletRequest request) {
         try {
             if (request.getSession(false) != null
                 && request.getSession().getAttribute(SEARCH_USER_ID_ATTRIBUTE) != null) {
@@ -92,7 +95,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             } else {
                 if (request.getCookies() != null) {
                     for (Cookie c: request.getCookies()) {
-                        if (c.getName().equals(USER_ID_COOKIE_NAME)) {
+                        if (c.getName().equals(USER_ID_COOKIE_NAME) && c.getValue() != null) {
                             return UUID.fromString(c.getValue());
                         }
                     }
@@ -102,7 +105,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             log.warn("Invalid UUID value for user identifer", iae);
         }
         
-        return UUID.randomUUID();
+        return null;
     }
     
 

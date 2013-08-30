@@ -1,7 +1,10 @@
 package com.funnelback.publicui.search.web.controllers.session;
 
-import javax.servlet.http.Cookie;
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.extern.log4j.Log4j;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -13,7 +16,8 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  * 
  * @since 13.0
  */
-public class SessionController {
+@Log4j
+public abstract class SessionController {
 
     /**
      * Retrieve the current search user from its ID stored in
@@ -25,26 +29,21 @@ public class SessionController {
      */
     @ModelAttribute
     public SearchUser getSearchUser(HttpServletRequest request) {
-        if (request.getSession(false) != null
-            && request.getSession(false).getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE) != null) {
-            return new SearchUser((String) request.getSession()
-                .getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
-        } else {
-            // Fallback to looking up cookie values
-            if (request.getCookies() != null) {
-                for (Cookie c: request.getCookies()) {
-                    if (c.getName().equals(SessionInterceptor.USER_ID_COOKIE_NAME)) {
-                        return new SearchUser(c.getValue());
-                    }
-                }
-            }
-            
-            // Finally fallback to request attribute, this will be set the first
+        UUID uuid = SessionInterceptor.getExistingOrNewUserId(request);
+        if (uuid == null) {
+            // Fall back to request attribute, this will be set the first
             // time the cookie is generated, since it has not be sent back by the
             // browser yet.
             if (request.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE) != null) {
-                return new SearchUser((String) request.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE));
+                String attr = (String) request.getAttribute(SessionInterceptor.SEARCH_USER_ID_ATTRIBUTE);
+                try {
+                    return new SearchUser(UUID.fromString(attr).toString());
+                } catch (IllegalArgumentException iae) {
+                    log.warn("User ID request attribute '"+attr+"' is not a UUID", iae);
+                }
             }
+        } else {
+            return new SearchUser(uuid.toString());
         }
         
         return null;
