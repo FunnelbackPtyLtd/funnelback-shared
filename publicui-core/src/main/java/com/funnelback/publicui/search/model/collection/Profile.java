@@ -47,7 +47,7 @@ public class Profile {
 
     /** Curator configuration in <code>conf/[collection]/[profile]/curator.yaml</code> */
     @XStreamOmitField
-    @Getter @Setter private CuratorConfig curatorConfig;
+    @Getter @Setter private CuratorConfig curatorConfig = new CuratorConfig();
 
     /**
      * <p>Specific query processor options for this profile.</p>
