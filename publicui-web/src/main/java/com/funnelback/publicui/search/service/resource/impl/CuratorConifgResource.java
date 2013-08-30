@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -91,12 +92,15 @@ public class CuratorConifgResource extends AbstractSingleFileResource<CuratorCon
     /**
      * Read filename and parse it (with the object returned by getYamlObject())
      * into a CuratorConfig.
+     * @throws IOException 
      */
-    public static CuratorConfig loadYamlConfig(String filename) throws FileNotFoundException {
+    public static CuratorConfig loadYamlConfig(String filename) throws IOException {
         FileReader reader = null;
         try {
             reader = new FileReader(filename);
             return getYamlObject().loadAs(reader, CuratorConfig.class);
+        } catch (YAMLException e) {
+            throw new IOException("Invalid YAML Curator config file", e);
         } finally {
             IOUtils.closeQuietly(reader);
         }
