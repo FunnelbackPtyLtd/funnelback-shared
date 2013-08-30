@@ -1,4 +1,4 @@
-package com.funnelback.publicui.curator.action;
+package com.funnelback.publicui.test.curator.action;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package com.funnelback.publicui.curator.trigger;
+package com.funnelback.publicui.test.curator.trigger;
 
 import java.util.Calendar;
 

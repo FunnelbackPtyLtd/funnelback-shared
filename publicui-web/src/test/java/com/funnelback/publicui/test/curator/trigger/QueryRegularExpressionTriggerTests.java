@@ -1,4 +1,4 @@
-package com.funnelback.publicui.curator.trigger;
+package com.funnelback.publicui.test.curator.trigger;
 
 import org.junit.Assert;
 import org.junit.Test;

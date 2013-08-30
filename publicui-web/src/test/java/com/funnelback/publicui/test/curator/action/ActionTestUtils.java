@@ -1,4 +1,4 @@
-package com.funnelback.publicui.curator.action;
+package com.funnelback.publicui.test.curator.action;
 
 import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.config.Action;
