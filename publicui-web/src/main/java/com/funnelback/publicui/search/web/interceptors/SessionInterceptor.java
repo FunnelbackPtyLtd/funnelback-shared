@@ -61,7 +61,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     DefaultValues.ModernUI.SESSION)) {
                     HttpSession session = request.getSession();
                     session.setAttribute(SEARCH_USER_ID_ATTRIBUTE, uuid.toString());
-                    session.setMaxInactiveInterval(-1);
+                    session.setMaxInactiveInterval(collection.getConfiguration()
+                        .valueAsInt(Keys.ModernUI.Session.TIMEOUT, DefaultValues.ModernUI.Session.TIMEOUT));
                 }
                 
                 // Set a simple cookie, re-using the Session User ID if it exists
