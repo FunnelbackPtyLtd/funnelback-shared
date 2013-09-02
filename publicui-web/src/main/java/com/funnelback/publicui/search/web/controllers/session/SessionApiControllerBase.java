@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @since 13.0
  */
 @Log4j
-public class SessionApiControllerBase extends SessionController {
+public abstract class SessionApiControllerBase extends SessionController {
 
     /** Key used in the JSON output for the status message */
     protected final static String STATUS = "status";
@@ -70,7 +70,7 @@ public class SessionApiControllerBase extends SessionController {
         sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, getJsonErrorMap(e.toString()));
     }
     
-    private Map<String, String> getJsonErrorMap(String errorMessage) {
+    protected Map<String, String> getJsonErrorMap(String errorMessage) {
         Map<String, String> json = new HashMap<>();
         json.put(STATUS, KO);
         json.put(ERROR_MESSAGE, errorMessage);

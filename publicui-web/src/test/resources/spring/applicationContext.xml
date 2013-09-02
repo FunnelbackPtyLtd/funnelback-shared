@@ -163,6 +163,7 @@
     
     <bean class="com.funnelback.publicui.search.web.controllers.session.SearchHistoryController" />
     <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartController" />
+    <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartProcessController" />
     
 	
 </beans>

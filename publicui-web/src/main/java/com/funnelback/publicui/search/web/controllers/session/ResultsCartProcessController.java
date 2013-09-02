@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,8 @@ public class ResultsCartProcessController extends SessionController {
      * @param collection Collection to process the cart for
      * @param profile Profile to process the cart for
      * @param user Current user
-     * @param response {@link HttpServletResponse}
+     * @param request HTTP request
+     * @param response HTTP response
      * @return A {@link ModelAndView} to render 
      * @throws InstantiationException If something went wrong initializing the custom processing class
      * @throws IllegalAccessException If something went wrong initializing the custom processing class
@@ -56,10 +58,11 @@ public class ResultsCartProcessController extends SessionController {
         @RequestParam(required=true) String collection,
         @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
         @ModelAttribute SearchUser user,
+        HttpServletRequest request,
         HttpServletResponse response) throws InstantiationException, IllegalAccessException {
         
         Collection c = configRepository.getCollection(collection);
-        if (c != null) {
+        if (c != null && user != null) {
             Class<?> clazz = c.getCartProcessClass();
             if (clazz == null) {
                 // Default empty implementation
@@ -68,7 +71,7 @@ public class ResultsCartProcessController extends SessionController {
             
             CustomCartProcessor ctrl = (CustomCartProcessor) clazz.newInstance();
             List<CartResult> cart = cartRepository.getCart(user, c);
-            ModelAndView mav = ctrl.process(c, user, cart);
+            ModelAndView mav = ctrl.process(c, user, cart, request, response);
             
             mav.addObject(RequestParameters.COLLECTION, c);
             mav.addObject("user", user);
@@ -81,7 +84,7 @@ public class ResultsCartProcessController extends SessionController {
                 + mav.getViewName());
             return mav;
         } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
     }

@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -34,16 +35,17 @@ public class CustomCartProcessor {
     }
     
     /**
-     * Processes the cart, giving access to the HTTP response for fine grained control of the output
+     * Processes the cart, giving access to the HTTP request/response for fine grained control of the output
      * 
      * @param collection Collection where processing takes place
      * @param user Current user from session
      * @param cart Results cart, for the given collection and user
+     * @param request HTTP request
      * @param response HTTP response
      * @return A {@link ModelAndView} containing the data and the view to use
      */
     public ModelAndView process(Collection collection, SearchUser user, List<CartResult> cart,
-        HttpServletResponse response) {
+        HttpServletRequest request, HttpServletResponse response) {
         return process(collection, user, cart);
     }
     
