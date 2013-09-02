@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 public class SearchHistory extends AbstractOutputProcessor {
 
     @Autowired
-    private SearchHistoryRepository repository;
+    @Setter private SearchHistoryRepository searchHistoryRepository;
 
     @Override
     public void processOutput(SearchTransaction st)
@@ -66,12 +67,10 @@ public class SearchHistory extends AbstractOutputProcessor {
                         .get(PassThroughEnvironmentVariables.Keys.REQUEST_URL.toString());
                     // Convert 'facetScope' parameter into actual facets parameters
                     h.setSearchParams(FacetScope.convertFacetScopeParameters(new URL(url).getQuery()));
+                    
+                    searchHistoryRepository.saveSearch(h);
                 } catch (MalformedURLException e) {
                     log.warn("Couldn't parse search URL", e);
-                }
-                
-                try {
-                    repository.saveSearch(h);
                 } catch (DataAccessException | TransactionException e) {
                     log.error("Error while saving search history", e);
                 }
