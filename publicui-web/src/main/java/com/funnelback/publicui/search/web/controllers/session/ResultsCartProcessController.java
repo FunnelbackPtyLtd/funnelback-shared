@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,9 +19,16 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 
+/**
+ * <p>Controller to process a result cart.</p>
+ * 
+ * <p>Processing the cart can be customised by implementing {@link CustomCartProcessor},
+ * and the resulting view can use a FreeMarker template defined in <tt>collection.cfg</tt></p>
+ * 
+ * @since v13.0
+ */
 @Controller
-@Log4j
-public class ResultCartProcessController extends SessionController {
+public class ResultsCartProcessController extends SessionController {
 
     @Autowired
     private ConfigRepository configRepository;
@@ -32,14 +37,19 @@ public class ResultCartProcessController extends SessionController {
     private ResultsCartRepository cartRepository;
 
     /**
-     * Processes the cart
+     * <p>Processes the cart</p>
+     * 
+     * <p>Uses the default {@link CustomCartProcessor} or a custom one
+     * if configured, then renders a FreeMarker view (Default or configured
+     * one)</p>
+     * 
      * @param collection Collection to process the cart for
      * @param profile Profile to process the cart for
      * @param user Current user
      * @param response {@link HttpServletResponse}
-     * @return 
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @return A {@link ModelAndView} to render 
+     * @throws InstantiationException If something went wrong initializing the custom processing class
+     * @throws IllegalAccessException If something went wrong initializing the custom processing class
      */
     @RequestMapping(value="/cart-process.html")
     public ModelAndView cartProcess(
@@ -53,10 +63,10 @@ public class ResultCartProcessController extends SessionController {
             Class<?> clazz = c.getCartProcessClass();
             if (clazz == null) {
                 // Default empty implementation
-                clazz = CartProcessController.class;
+                clazz = CustomCartProcessor.class;
             }
             
-            CartProcessController ctrl = (CartProcessController) clazz.newInstance();
+            CustomCartProcessor ctrl = (CustomCartProcessor) clazz.newInstance();
             List<CartResult> cart = cartRepository.getCart(user, c);
             ModelAndView mav = ctrl.process(c, user, cart);
             
@@ -71,12 +81,9 @@ public class ResultCartProcessController extends SessionController {
                 + mav.getViewName());
             return mav;
         } else {
-            // FIXME: Error page? Collection list?
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
-        
-        return null;
-        
     }
 
 }

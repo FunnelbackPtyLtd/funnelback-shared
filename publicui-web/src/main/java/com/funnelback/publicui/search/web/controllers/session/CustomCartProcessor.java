@@ -12,14 +12,18 @@ import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
- * Class to be implemented to process a results cart.
+ * <p>Class to be implemented to process a results cart.</p>
+ * 
+ * <p>The default implementation just renders the default view
+ * {@link Files#CART_PROCESS_PREFIX}.</p>
  * 
  * @since 13.0
  */
-public class CartProcessController {
+public class CustomCartProcessor {
 
     /**
      * Processes the cart
+     * 
      * @param collection Collection where processing takes place
      * @param user Current user from session
      * @param cart Results cart, for the given collection and user
@@ -31,13 +35,15 @@ public class CartProcessController {
     
     /**
      * Processes the cart, giving access to the HTTP response for fine grained control of the output
+     * 
      * @param collection Collection where processing takes place
      * @param user Current user from session
      * @param cart Results cart, for the given collection and user
      * @param response HTTP response
      * @return A {@link ModelAndView} containing the data and the view to use
      */
-    public ModelAndView process(Collection collection, SearchUser user, List<CartResult> cart, HttpServletResponse response) {
+    public ModelAndView process(Collection collection, SearchUser user, List<CartResult> cart,
+        HttpServletResponse response) {
         return process(collection, user, cart);
     }
     
