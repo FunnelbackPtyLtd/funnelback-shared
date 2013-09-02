@@ -85,10 +85,8 @@
     Conditional display, content is evaluated only when there are results.
 -->
 <#macro AfterSearchOnly>
-    <#if response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.resultsSummary?exists
-        && response.resultPacket.resultsSummary.totalMatching?exists>
+    <#if (response.resultPacket.resultsSummary.totalMatching)??
+		|| error?? || (response.resultPacket.error)??>
         <#nested>
     </#if>
 </#macro>
@@ -97,10 +95,8 @@
     Conditional display, content is evaluated only when there is no search.
 -->
 <#macro InitialFormOnly><#compress>
-    <#if response?exists
-        && response.resultPacket?exists
-        && response.resultPacket.resultsSummary?exists
-        && response.resultPacket.resultsSummary.totalMatching?exists>
+    <#if (response.resultPacket.resultsSummary.totalMatching)??
+		|| error?? || (response.resultPacket.error)??>
     <#else>
         <#nested>
     </#if>
@@ -404,11 +400,20 @@
 
     <p>The content will be evaluated only if faceted navigation
     is configured.</p>
+	
+	@param negate Whether to negate the tag, i.e. evaluate the content if faceted navigation is not configured.
 -->
-<#macro FacetedSearch>
-    <#if question?exists
-        && facetedNavigationConfig(question.collection, question.profile)?exists >
-        <#nested>
+<#macro FacetedSearch negate=false>
+	<#if !negate>
+		<#if question?exists
+			&& facetedNavigationConfig(question.collection, question.profile)?exists >
+			<#nested>
+		</#if>
+	<#else>
+		<#if !question?exists
+			|| !facetedNavigationConfig(question.collection, question.profile)?exists >
+			<#nested>
+		</#if>
     </#if>
 </#macro>
 
@@ -751,10 +756,11 @@
     @param max Maximum number of categories to display, for faceted navigation.
     @param nbCategories (Internal parameter, do not use) Current number of categories displayed (used in recursion for faceted navigation).
     @param recursionCategories (Internal parameter, do not use) List of categories to process when recursing for faceted navigation).
+	@param tag HTML tag to wrap faceted navigation categories (defaults to DIV).
 
     @provides The category as <code>${s.category}</code>.
 -->
-<#macro Category max=16 nbCategories=0 recursionCategories=[] name...>
+<#macro Category max=16 nbCategories=0 recursionCategories=[] tag="div" name...>
     <#--
         We use a trick to set the 'name' parameter optional: The argument
         is set as an optional multivalued argument. If we don't use that FM
@@ -805,9 +811,9 @@
                         <#local nbCategories = nbCategories+1 />
                         <#if nbCategories &gt; max><#return></#if>
 
-                        <div class="${class}">
+                        <${tag} class="${class}">
                             <#nested>
-                        </div>
+                        </${tag}>
                     </#if>
                 </#list>
                 <#-- Recurse in sub categories -->
