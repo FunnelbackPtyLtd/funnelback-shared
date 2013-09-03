@@ -462,8 +462,9 @@
     @param class Optional class to affect to the div containing the facet and breadcrumb.
     @param separator Separator to use in the breadcrumb.
     @param summary Set to true if you want this tag to display the summary + breadcrumb, otherwise use <code>&lt;@s.FacetSummary /&gt;</code>.
+    @param tag HTML tag to wrap the name and summary
 -->
-<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true>
+<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div">
     <#local fn = facetedNavigationConfig(question.collection, question.profile) >
     <#if fn?exists>
         <#-- Find facet definition in the configuration corresponding
@@ -473,9 +474,9 @@
                 <#assign facetDef = fdef in s />
                 <#assign facetDef_index = fdef_index in s />
                 <#assign facetDef_has_next = fdef_has_next in s />
-                <div class="${class}"> ${s.facet.name}
+                <${tag} class="${class}"> ${s.facet.name}
                     <#if summary><@FacetSummary separator=separator alltext="all" /></#if>
-                </div>
+                </${tag}>
             </#if>
         </#list> 
     </#if>
@@ -653,7 +654,7 @@
             </#list>
             <#if key_has_next><#local facetScope = facetScope + "&" /></#if>
         </#list> 
-                <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="checked">
+        <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="checked">
 
         <label for="facetScope"><#nested></label>
     </#if>
