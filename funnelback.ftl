@@ -569,7 +569,7 @@
         <#if labels[s.result.collapsed.column]??>
             <#assign text = labels[s.result.collapsed.column] />
         </#if>
-        <a class="fb-collapsed" href="?collection=${question.collection.id}&amp;query=${question.query}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off&amp;collapsing_sig=${s.result.collapsed.column}">${text?replace("{0}", s.result.collapsed.count)}</a>
+        <a class="fb-collapsed" href="?${QueryString}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 
