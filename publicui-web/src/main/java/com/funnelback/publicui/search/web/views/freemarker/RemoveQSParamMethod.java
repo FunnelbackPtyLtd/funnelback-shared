@@ -15,7 +15,9 @@ import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
 /**
- * Removes a set of parameters from a query string.
+ * <p>Removes a set of parameters from a query string.</p>
+ * 
+ * <p>Deals with various possible encodings of the parameters.</p>
  */
 public class RemoveQSParamMethod extends AbstractTemplateMethod {
 
@@ -44,13 +46,13 @@ public class RemoveQSParamMethod extends AbstractTemplateMethod {
             Matcher m = p.matcher(qs);
             qs = m.replaceAll("");            
             
-            // Try with the same parameter, but with encoded spaces
-            p = Pattern.compile("([&;]|^)\\Q" + paramNames.get(i).toString().replace(" ", "%20") + "\\E=[^&]*");
+            // Try with the same parameter, but with encoded spaces in both forms (+ / %20)
+            p = Pattern.compile("([&;]|^)\\Q" + paramNames.get(i).toString().replace(" ", "\\E(%20|\\+)\\Q") + "\\E=[^&]*");
             m = p.matcher(qs);
             qs = m.replaceAll("");
             
-            // And with encoded form
-            p = Pattern.compile("([&;]|^)\\Q" + URLEncoder.encode(paramNames.get(i).toString(), "UTF-8").replace("+", "%20") + "\\E=[^&]*");
+            // And with encoded form, with spaces in both forms (+ / %20)
+            p = Pattern.compile("([&;]|^)\\Q" + URLEncoder.encode(paramNames.get(i).toString(), "UTF-8").replaceAll("(\\+|%20)", "\\\\E(%20|\\\\+)\\\\Q") + "\\E=[^&]*");
             m = p.matcher(qs);
             qs = m.replaceAll("");
 

@@ -44,6 +44,22 @@ public class RemoveQSParamMethodTests extends AbstractMethodTest {
         Assert.assertEquals("key1=value1&key2=value2&key3=value3", result);
     }
 
+    @Test
+    public void testEncodedParam() throws TemplateModelException {
+        for (String s: new String[] {
+            "f.ATAR cut-off|A", "f.ATAR+cut-off|A", "f.ATAR%20cut-off|A",
+            "f.ATAR+cut-off%7CA", "f.ATAR%20cut-off%7CA"
+        }) {
+            String result = (String) method.exec(
+                buildArguments(
+                        new SimpleScalar("key1=value1&"+s+"=100&key3=value3"),
+                        buildSequenceArguments("f.ATAR cut-off|A")
+                        )
+                );
+            Assert.assertEquals("Removing '"+s+"' failed", "key1=value1&key3=value3", result);
+        }
+    }
+
     @Override
     protected AbstractTemplateMethod buildMethod() {
         return new RemoveQSParamMethod();
