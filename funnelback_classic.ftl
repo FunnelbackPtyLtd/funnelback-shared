@@ -85,8 +85,7 @@
     Conditional display, content is evaluated only when there are results.
 -->
 <#macro AfterSearchOnly>
-    <#if (response.resultPacket.resultsSummary.totalMatching)??
-		|| error?? || (response.resultPacket.error)??>
+    <#if (response.resultPacket.resultsSummary.totalMatching)??>
         <#nested>
     </#if>
 </#macro>
@@ -95,8 +94,7 @@
     Conditional display, content is evaluated only when there is no search.
 -->
 <#macro InitialFormOnly><#compress>
-    <#if (response.resultPacket.resultsSummary.totalMatching)??
-		|| error?? || (response.resultPacket.error)??>
+    <#if (response.resultPacket.resultsSummary.totalMatching)??>
     <#else>
         <#nested>
     </#if>
