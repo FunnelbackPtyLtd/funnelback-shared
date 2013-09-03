@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.service.resource.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -50,6 +49,7 @@ public class CuratorConifgResource extends AbstractSingleFileResource<CuratorCon
                     com.funnelback.publicui.curator.trigger.CountryNameTrigger.class,
                     com.funnelback.publicui.curator.trigger.DateRangeTrigger.class,
                     com.funnelback.publicui.curator.trigger.ExactQueryTrigger.class,
+                    com.funnelback.publicui.curator.trigger.GroovyTrigger.class,
                     com.funnelback.publicui.curator.trigger.OrTrigger.class,
                     com.funnelback.publicui.curator.trigger.QueryRegularExpressionTrigger.class,
                     com.funnelback.publicui.curator.trigger.QuerySubstringTrigger.class };
@@ -57,7 +57,9 @@ public class CuratorConifgResource extends AbstractSingleFileResource<CuratorCon
     public static final Class<?>[] aliasedActions = new Class<?>[] {
                     com.funnelback.publicui.curator.action.DisplayMessage.class,
                     com.funnelback.publicui.curator.action.DisplayUrlAdvert.class,
-                    com.funnelback.publicui.curator.action.PromoteUrls.class, com.funnelback.publicui.curator.action.RemoveUrls.class };
+                    com.funnelback.publicui.curator.action.GroovyAction.class,
+                    com.funnelback.publicui.curator.action.PromoteUrls.class,
+                    com.funnelback.publicui.curator.action.RemoveUrls.class };
 
     /**
      * Get a snakeyaml parsing/serializing object which is already configured
