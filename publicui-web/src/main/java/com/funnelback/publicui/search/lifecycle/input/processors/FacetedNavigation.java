@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,8 @@ public class FacetedNavigation extends AbstractInputProcessor {
             if (config != null) {
                 if (config.getQpOptions() != null && ! "".equals(config.getQpOptions())) {
                     // Query Processor options are embedded in the faceted_navigation.cfg file
-                    searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(config.getQpOptions());
+                    searchTransaction.getQuestion().getDynamicQueryProcessorOptions()
+                        .addAll(Arrays.asList(config.getQpOptions().split("\\s")));
                     log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
                 }
                 
