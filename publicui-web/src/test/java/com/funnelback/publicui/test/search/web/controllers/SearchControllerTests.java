@@ -129,6 +129,7 @@ public class SearchControllerTests {
         SearchQuestion sq = new SearchQuestion();
         sq.setQuery("test");
         
+        request.setRequestURI("search.html");
         MockHttpServletResponse response = new MockHttpServletResponse(); 
         ModelAndView mav = searchController.search(request, response, sq, null);
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
@@ -138,6 +139,22 @@ public class SearchControllerTests {
         Assert.assertEquals(2, collections.size());
         Assert.assertTrue("test1".equals(collections.get(0).getId()) || "test1".equals(collections.get(1).getId()));
         Assert.assertTrue("test2".equals(collections.get(0).getId()) || "test2".equals(collections.get(1).getId()));
+    }
+    
+    @Test
+    public void testInvalidCollectionShouldNotReturnListForNonHtml() {
+        SearchQuestion sq = new SearchQuestion();
+        sq.setQuery("test");
+        
+        request.setRequestURI("search.xml");
+        MockHttpServletResponse response = new MockHttpServletResponse(); 
+        Assert.assertNull(searchController.search(request, response, sq, null));
+        Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+
+        request.setRequestURI("search.json");
+        response = new MockHttpServletResponse(); 
+        Assert.assertNull(searchController.search(request, response, sq, null));
+        Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
     }
     
     @Test

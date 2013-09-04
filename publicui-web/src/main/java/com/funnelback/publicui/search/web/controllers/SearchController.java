@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import lombok.extern.log4j.Log4j;
@@ -60,6 +59,9 @@ import com.yammer.metrics.core.MetricsRegistry;
 @Log4j
 public class SearchController extends SessionController {
 
+    /**
+     * Attribute keys used in the Spring model
+     */
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
         extraSearches, question, response, session, error, httpRequest;
@@ -72,7 +74,11 @@ public class SearchController extends SessionController {
             return out;
         }
     }
-    
+
+    /**
+     * Supported view types to return results. Tied to the
+     * extension used in the HTTP request (e.g. <tt>search.xml</tt>)
+     */
     public enum ViewTypes {
         html, htm, xml, json, classic;
     }
@@ -114,7 +120,7 @@ public class SearchController extends SessionController {
         binder.registerCustomEditor(String.class, RequestParameters.FORM, new StringDefaultValueEditor(DefaultValues.DEFAULT_FORM));
     }
     
-    @RequestMapping(value={"/"})
+    @RequestMapping(value="/")
     public String index() {
         return "redirect:/search.html";
     }
@@ -160,6 +166,15 @@ public class SearchController extends SessionController {
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user) {
 
+        // Put the relevant objects in the model, depending
+        // of the view requested
+        ViewTypes vt;
+        try {
+            vt = ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI()));
+        } catch (IllegalArgumentException iae) {
+            log.warn("Search called with an unknown extension '"+request.getRequestURL()+"'.");
+            throw new ViewTypeNotFoundException(FilenameUtils.getExtension(request.getRequestURI()));
+        }
         
         SearchTransaction transaction = null;
         
@@ -173,25 +188,18 @@ public class SearchController extends SessionController {
             if (request.getParameter(SearchQuestion.RequestParameters.COLLECTION) != null) {
                 log.warn("Collection '" + request.getParameter(SearchQuestion.RequestParameters.COLLECTION) + "' not found");
             }
-            return noCollection(response, HttpStatus.NOT_FOUND);
+            if (ViewTypes.htm.equals(vt) || ViewTypes.html.equals(vt)) {
+                return noCollection(response, HttpStatus.NOT_FOUND);
+            } else {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                return null;
+            }
         }
         
         if (transaction.getError() != null) {
             // Error occurred while processing the transaction, set the
             // response status code accordingly
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        
-
-        // Put the relevant objects in the model, depending
-        // of the view requested
-        ViewTypes vt;
-        try {
-            vt = ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI()));
-        } catch (IllegalArgumentException iae) {
-            log.warn("Search on collection '" + question.getCollection().getId()
-                    + "' called with an unknown extension '"+request.getRequestURI()+"'.");
-            throw new ViewTypeNotFoundException(FilenameUtils.getExtension(request.getRequestURI()));
         }
         
         metrics.newCounter(new MetricName(ALL_NS, VIEW_TYPE_NS, vt.name())).inc();
