@@ -581,7 +581,7 @@
     @totalLabel Label to use for the &quot;Total&quot; summary row
     @jsOnly Do not display the metrics, only output the processing time in the JS console.
 -->
-<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false>
+<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false class="search-metrics">
     <#if response?? && response.performanceMetrics??>
         ${response.performanceMetrics.stop()}
         <script type="text/javascript">
@@ -594,7 +594,7 @@
             <#assign scale= width / response.performanceMetrics.totalTimeMillis />
             <#assign offset=0 />
 
-            <table class="fb-metrics">
+            <table class="${class}">
             <#list response.performanceMetrics.taskInfo as ti>
                 <#assign timeTaken = ti.timeMillis * scale />
                 <#assign kv = (ti.taskName!":")?split(":") />
