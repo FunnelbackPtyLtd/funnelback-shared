@@ -2,8 +2,10 @@ package com.funnelback.publicui.recommender.web.controllers;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +21,11 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.FBRecommender;
 import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.RecommendationResponse;
 import com.funnelback.publicui.recommender.SortType;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 //import javax.ejb.Stateless;
+import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
@@ -48,6 +52,19 @@ public class RecommenderController {
         fbRecommender = FBRecommender.getInstance();
 	}
 	
+	 public enum ModelAttributes {
+	        SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
+	        extraSearches, question, response, session, error, httpRequest;
+	        
+	        public static Set<String> getNames() {
+	            HashSet<String> out = new HashSet<String>();
+	            for (ModelAttributes name: values()) {
+	                out.add(name.toString());
+	            }
+	            return out;
+	        }
+	 }
+	 
 	@Resource(name="jsonView")
 	private View view;
 
@@ -91,12 +108,13 @@ public class RecommenderController {
 
         List<Recommendation> recommendations =
                 RecommenderUtils.getRecommendationsForItem(fbRecommender, seedItem, collection, scope, 5);
-        List<Recommendation> sortedRecommendations
-                = RecommenderUtils.sortRecommendations(recommendations, comparator);
+        
+         RecommendationResponse recomendationResponse = new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator));
+         
          
          Map<String, Object> model = new HashMap<String, Object>();
-         model.put("soretedRecomendations", sortedRecommendations);
-     
+         model.put("RecommendationResponse", recomendationResponse);
+         
  		return new ModelAndView(view, model);
     }
 
