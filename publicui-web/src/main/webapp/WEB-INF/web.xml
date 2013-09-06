@@ -34,19 +34,30 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
+ 	<servlet>
+        <servlet-name>recommender</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>recommender</servlet-name>
+        <url-pattern>/recommender/similarItems.json</url-pattern>
+        <url-pattern>/recommender/itemEntry.html</url-pattern>
+        <url-pattern>/recommender/searchRecommendations.html</url-pattern>
+        <url-pattern>/recommender/sessions.html</url-pattern>
+        <url-pattern>/recommender/queryEntry.html</url-pattern>
+    </servlet-mapping>
+     
 	<servlet>
 		<servlet-name>publicui</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	
+	<!-- SRV-11-2 for why full urls are used.-->
 	<servlet-mapping>
-		<servlet-name>publicui</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
-
-	<!--  servlet-mapping>
 		<servlet-name>publicui</servlet-name>
 		<url-pattern>/search.html</url-pattern>
 		<url-pattern>/search.json</url-pattern>
@@ -58,7 +69,7 @@
 		<url-pattern>/content-optimiser/*/*</url-pattern>
 		<url-pattern>/content-optimiser.html</url-pattern>
 		<url-pattern>/content-optimiser-kickoff.html</url-pattern>
-	</servlet-mapping -->
+	</servlet-mapping>
 	
 	<filter>
 		<filter-name>encodingFilter</filter-name>
