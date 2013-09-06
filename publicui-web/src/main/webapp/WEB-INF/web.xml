@@ -35,6 +35,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
+	<!--
  	<servlet>
         <servlet-name>recommender</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -49,14 +50,14 @@
         <url-pattern>/recommender/sessions.html</url-pattern>
         <url-pattern>/recommender/queryEntry.html</url-pattern>
     </servlet-mapping>
-     
+    -->
+    
 	<servlet>
 		<servlet-name>publicui</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	
-	<!-- SRV-11-2 for why full urls are used.-->
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
 		<url-pattern>/search.html</url-pattern>
@@ -69,6 +70,17 @@
 		<url-pattern>/content-optimiser/*/*</url-pattern>
 		<url-pattern>/content-optimiser.html</url-pattern>
 		<url-pattern>/content-optimiser-kickoff.html</url-pattern>
+        <url-pattern>/cache.*</url-pattern>
+        <url-pattern>/log</url-pattern>
+        <url-pattern>/redirect</url-pattern>
+        <url-pattern>/scale</url-pattern>
+        <url-pattern>/padre-sw.cgi</url-pattern>
+        <url-pattern>/preview</url-pattern>
+        <url-pattern>/resources/*</url-pattern>
+        <url-pattern>/search-history.json</url-pattern>
+        <url-pattern>/click-history.json</url-pattern>
+        <url-pattern>/click-process.*</url-pattern>
+        <url-pattern>/cart.json</url-pattern>
 	</servlet-mapping>
 	
 	<filter>
