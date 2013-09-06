@@ -46,6 +46,10 @@
 		</profile>
 	</profiles>
 
+	<properties>
+		<liquibase.url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</liquibase.url>
+	</properties>
+
 	<build>
 		<finalName>funnelback-${project.artifactId}-${project.version}</finalName>
 		<plugins>
@@ -85,23 +89,23 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-            	<groupId>org.liquibase</groupId>
-            	<artifactId>liquibase-maven-plugin</artifactId>
-            	<version>2.0.5</version>
-            	<configuration>
-            		<changeLogFile>src/main/resources/com/funnelback/publicui/search/model/transaction/session/session-db.changelog-master.xml</changeLogFile>
-            		<driver>org.h2.Driver</driver>
-            		<url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</url>
-            	</configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.liquibase</groupId>
-                        <artifactId>liquibase-core</artifactId>
-                        <version>2.0.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>2.0.5</version>
+				<configuration>
+					<changeLogFile>src/main/resources/com/funnelback/publicui/search/model/transaction/session/session-db.changelog-master.xml</changeLogFile>
+					<driver>org.h2.Driver</driver>
+					<url>${liquibase.url}</url>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.liquibase</groupId>
+						<artifactId>liquibase-core</artifactId>
+						<version>2.0.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 

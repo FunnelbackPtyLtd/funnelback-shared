@@ -13,6 +13,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.search.model.transaction.session.SessionResultPK;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 
 /**
@@ -76,18 +77,12 @@ public class SearchHistoryDao implements SearchHistoryRepository {
 
     @Override
     public void saveClick(ClickHistory h) {
-        try {
-            ClickHistory existing = em.createQuery("from "+ClickHistory.class.getSimpleName()
-                + " where userId = :userId"
-                + " and collection = :collectionId"
-                + " and indexUrl = :indexUrl", ClickHistory.class)
-                .setParameter("userId", h.getUserId())
-                .setParameter("collectionId", h.getCollection())
-                .setParameter("indexUrl", h.getIndexUrl().toString())
-                .getSingleResult();
+        SessionResultPK pk = new SessionResultPK(h.getUserId(), h.getCollection(), h.getIndexUrl().toString());
+        ClickHistory existing = em.find(ClickHistory.class, pk);
+        if (existing != null) {
             existing.setClickDate(h.getClickDate());
             em.persist(existing);
-        } catch (NoResultException nre) {
+        } else {
             em.persist(h);
         }
     }
@@ -109,13 +104,16 @@ public class SearchHistoryDao implements SearchHistoryRepository {
     @Override
     public void clearClickHistory(SearchUser u, Collection c) {
         // CHECKSTYLE:OFF
-        em.createQuery("delete from "+ClickHistory.class.getSimpleName()
+        List<ClickHistory> history = em.createQuery("from "+ClickHistory.class.getSimpleName()
             + " where userId = :userId"
-            + " and collection = :collectionId")
+            + " and collection = :collectionId", ClickHistory.class)
             .setParameter("userId", u.getId())
             .setParameter("collectionId", c.getId())
-            .executeUpdate();
-        // CHECKSTYLE:ON       
+            .getResultList();
+        // CHECKSTYLE:ON    
+        for (ClickHistory ch: history) {
+            em.remove(ch);
+        }
     }
     
 }

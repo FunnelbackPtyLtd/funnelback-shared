@@ -96,7 +96,7 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName="ClickHistoryMetadata" columnNames="userId,collection,indexUrl,key,metaData"/>
+        <addPrimaryKey tableName="ClickHistoryMetadata" columnNames="userId,collection,indexUrl,key"/>
 
 		<createTable tableName="CartResult">
 			<column name="userId" type="varchar(36)">
@@ -144,7 +144,7 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName="CartResultMetadata" columnNames="userId,collection,indexUrl,key,metaData"/>
+        <addPrimaryKey tableName="CartResultMetadata" columnNames="userId,collection,indexUrl,key"/>
 
 	</changeSet>
 

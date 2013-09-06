@@ -47,7 +47,7 @@ public class SearchSession {
     /**
      * Check if the cart contains a specific result
      * @param indexUrl URL of the result from the index
-     * @return true if the cart contain this result, false otherwise
+     * @return true if the cart contains this result, false otherwise
      */
     public boolean cartContains(String indexUrl) {
         URI indexUri = URI.create(indexUrl);
@@ -58,6 +58,23 @@ public class SearchSession {
         }
         
         return false;
+    }
+
+    /**
+     * Retrieve the clich history for a specific result
+     * @param indexUrl URL of the result from the index
+     * @return The click history, or null if this result wasn't clicked.
+     */
+    public ClickHistory getClickHistory(String indexUrl) {
+        URI indexUri = URI.create(indexUrl);
+        
+        for (ClickHistory ch: clickHistory) {
+            if (ch.getIndexUrl().equals(indexUri)) {
+                return ch;
+            }
+        }
+        
+        return null;
     }
 
 }
