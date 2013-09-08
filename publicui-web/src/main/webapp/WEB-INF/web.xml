@@ -70,6 +70,9 @@
 		<url-pattern>/content-optimiser/*/*</url-pattern>
 		<url-pattern>/content-optimiser.html</url-pattern>
 		<url-pattern>/content-optimiser-kickoff.html</url-pattern>
+        <url-pattern>/filecopy.document</url-pattern>
+        <url-pattern>/trim.document</url-pattern>
+        <url-pattern>/trim.reference</url-pattern>
         <url-pattern>/cache.*</url-pattern>
         <url-pattern>/log</url-pattern>
         <url-pattern>/redirect</url-pattern>
