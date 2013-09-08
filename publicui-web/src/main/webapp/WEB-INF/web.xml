@@ -60,6 +60,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
+        <url-pattern>/</url-pattern>
 		<url-pattern>/search.html</url-pattern>
 		<url-pattern>/search.json</url-pattern>
 		<url-pattern>/search.classic</url-pattern>
