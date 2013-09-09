@@ -581,7 +581,7 @@
     @totalLabel Label to use for the &quot;Total&quot; summary row
     @jsOnly Do not display the metrics, only output the processing time in the JS console.
 -->
-<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false class="search-metrics">
+<#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false class="search-metrics" tdClass="" title="<h3>Performance</h3>">
     <#if response?? && response.performanceMetrics??>
         ${response.performanceMetrics.stop()}
         <script type="text/javascript">
@@ -594,16 +594,26 @@
             <#assign scale= width / response.performanceMetrics.totalTimeMillis />
             <#assign offset=0 />
 
+            ${title}
+
             <table class="${class}">
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Time</th>
+                    <th>Chart</th>
+                </tr>
+            </thead>
+            <tbody>
             <#list response.performanceMetrics.taskInfo as ti>
                 <#assign timeTaken = ti.timeMillis * scale />
                 <#assign kv = (ti.taskName!":")?split(":") />
-                <#assign class=kv[0]! />
+                <#assign valueClass=kv[0]! />
                 <#assign name=kv[1]! />
                 <tr>
                     <td>${name}</td>
                     <td>${ti.timeMillis!} ${msLabel}</td>
-                    <td><div class="metric ${class}" style="width: ${timeTaken?round}px; margin-left: ${offset}px;">&nbsp;</div></td>
+                    <td><div class="metric ${tdClass} ${valueClass}" style="width: ${timeTaken?round}px; margin-left: ${offset}px;">&nbsp;</div></td>
                 </tr>
                 <#assign offset = offset+(timeTaken) />
             </#list>
@@ -611,6 +621,7 @@
                     <th>${totalLabel}</th>
                     <th colspan="2">${response.performanceMetrics.totalTimeMillis} ${msLabel}</th>
                 </tr>
+            </tbody>
             </table>
         </#if>
     </#if>
