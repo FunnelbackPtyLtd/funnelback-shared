@@ -45,7 +45,13 @@ public final class DataModelUtils {
             if (!preferenceTuples.isEmpty()) {
                 // Store a mapping between the session ID and all preferenceTuples for this session
                 sessionID = preferenceTuples.get(0).getUserID();
-                sessionsMap.put(sessionID, preferenceTuples);
+
+                if (sessionID != null) {
+                    sessionsMap.put(sessionID, preferenceTuples);
+                }
+                else {
+                    System.out.println("Unable to get session ID from preference: " + preferenceTuples);
+                }
             }
 
             for (PreferenceTuple tuple : preferenceTuples) {

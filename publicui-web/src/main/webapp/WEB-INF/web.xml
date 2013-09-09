@@ -34,8 +34,7 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
-	<!--
+
  	<servlet>
         <servlet-name>recommender</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -50,7 +49,6 @@
         <url-pattern>/recommender/sessions.html</url-pattern>
         <url-pattern>/recommender/queryEntry.html</url-pattern>
     </servlet-mapping>
-    -->
     
 	<servlet>
 		<servlet-name>publicui</servlet-name>

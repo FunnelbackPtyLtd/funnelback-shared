@@ -1,17 +1,16 @@
 package com.funnelback.publicui.recommender.web.controllers;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
+import com.funnelback.publicui.recommender.FBRecommender;
+import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.SortType;
+import com.funnelback.publicui.recommender.tuple.ItemTuple;
+import com.funnelback.publicui.recommender.tuple.PreferenceTuple;
+import com.funnelback.publicui.recommender.utils.HTMLUtils;
+import com.funnelback.publicui.recommender.utils.ItemUtils;
+import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,22 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
-import com.funnelback.publicui.recommender.FBRecommender;
-import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.SortType;
-import com.funnelback.publicui.recommender.compare.MetaDataComparator;
-import com.funnelback.publicui.recommender.tuple.ItemTuple;
-import com.funnelback.publicui.recommender.tuple.PreferenceTuple;
-import com.funnelback.publicui.recommender.utils.HTMLUtils;
-import com.funnelback.publicui.recommender.utils.ItemUtils;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.*;
 
 @Controller
 @RequestMapping("/recommender")
 public class DevRecommenderController {
-
+    public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "recommender/";
     private static final String RECOMMENDATIONS_DOC_HEADER = "<html><head><title>Recommendations</title><head><body><h1>Recommendations</h1>";
     private static final String SESSIONS_DOC_HEADER = "<html><head><title>Sessions</title><head><body><h1>Sessions</h1>";
     private static final String SCOPE = "handbook.curtin.edu.au/units,courses.curtin.edu.au/course_overview";
@@ -45,13 +39,13 @@ public class DevRecommenderController {
     private static final String SEARCH_URL = CURTIN_SEARCH_PREFIX;
 	private static FBRecommender fbRecommender;
     private static final int DEFAULT_MAX_RECOMMENDATIONS = 10;
+    private static final int MIN_CLICKS_PER_SESSION = 2;
     
     static {
 		// Get a single instance of the Recommender.
         fbRecommender = FBRecommender.getInstance();
 	}
 
-	
 	@Resource(name="jsonView")
 	private View view;
 	
@@ -74,23 +68,13 @@ public class DevRecommenderController {
     		@RequestParam("collection") String collection,
     		@RequestParam("scope") String scope,
     		@RequestParam("maxRecommendations") int maxRecommendations,
-    		@RequestParam("dsort") String dsort,
-    		@RequestParam("asort") String asort,
-    		@RequestParam("metadataClass") String metadataClass)
+    		@RequestParam(value = "dsort", required = false) String dsort,
+    		@RequestParam(value = "asort", required = false) String asort,
+    		@RequestParam(value = "metadataClass", required = false) String metadataClass)
                                             throws UnsupportedEncodingException {
         Comparator<Recommendation> comparator;
         List<Map<String, Object>> results = null;
         String searchService;
-        String encodedScope;
-
-        // Validate/normalize input parameters
-        if (query == null || ("").equals(query)) {
-            return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, "Query term(s) must be provided.");
-        }
-
-        if (collection == null || ("").equals(collection)) {
-            return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, "collection parameter must be provided.");
-        }
 
         if (metadataClass != null || ("").equals(metadataClass)) {
             if (!DocInfoQuery.isValidMetadataClass(metadataClass)) {
@@ -100,8 +84,8 @@ public class DevRecommenderController {
         }
 
         if (scope != null && !("").equals(scope)) {
-            encodedScope = URLEncoder.encode(scope, "utf-8");
-            searchService = new String((SEARCH_URL + "&scope=" + encodedScope));
+            String utf8Scope = URLEncoder.encode(scope, "utf-8");
+            searchService = new String((SEARCH_URL + "&scope=" + utf8Scope));
         }
         else {
             searchService = SEARCH_URL;
@@ -113,10 +97,6 @@ public class DevRecommenderController {
         catch (Exception exception) {
             System.out.println("searchRecommendations(): " + exception);
             return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, exception.toString());
-        }
-
-        if (!(comparator instanceof MetaDataComparator))  {
-            metadataClass = "";
         }
 
         long startTime = System.currentTimeMillis();
@@ -146,14 +126,24 @@ public class DevRecommenderController {
                 resultURL = resultURL.trim();
                 title = title.trim();
 
+                String encodedCollection = HTMLUtils.getEncodedParameter("collection", collection);
+                String encodedScope = HTMLUtils.getEncodedParameter("scope", scope);
+                String encodedDSort = HTMLUtils.getEncodedParameter("dsort", dsort);
+                String encodedASort = HTMLUtils.getEncodedParameter("asort", asort);
+                String encodedMetadataClass = HTMLUtils.getEncodedParameter("metadataClass", metadataClass);
+
                 buf.append("<ul><li><a href=\"" + resultURL + "\">" + title
                         + "</a> ");
 
                 if (fbRecommender.knownItem(resultURL)) {
                     String encodedResultURL = URLEncoder.encode(resultURL, "utf-8");
-                    buf.append("[<a href=\"" + RecommenderController.RECOMMENDER_PREFIX + RecommenderController.sessionsHtml + "?itemName="
-                            + encodedResultURL + "&seedItem=" + encodedResultURL + "&collection=" + collection
-                            + "&minClicks=" + RecommenderController.MIN_CLICKS_PER_SESSION + "\">Sessions</a>]</li>\n");
+                    buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.similarItemsJson + "?seedItem="
+                            + encodedResultURL + encodedCollection + encodedScope
+                            + "&maxRecommendations=" + maxRecommendations + encodedDSort + encodedASort
+                            + encodedMetadataClass + "\">JSON</a>] \n");
+                    buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.sessionsHtml + "?itemName="
+                            + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
+                            + "&minClicks=" + MIN_CLICKS_PER_SESSION + "\">Sessions</a>]</li>\n");
                 } else {
                     buf.append(" [Item was not clicked on]</li>");
                 }
@@ -179,8 +169,7 @@ public class DevRecommenderController {
         }
 
         buf.append("</body></html>");
-        return buf.toString();
-    }
+        return buf.toString();    }
 
     /**
      * Return a HTML page displaying sessions which included the given item (clicked URL).
@@ -206,8 +195,14 @@ public class DevRecommenderController {
             keyTitle = itemName;
         }
 
-        buf.append("<p>Sessions with " + minClicks + " or more clicks for: <a href=\""
+        buf.append("<p>Sessions with " + minClicks + " or more clicks for item: <a href=\""
                 + itemName + "\">" + keyTitle + "</a></p>");
+
+        buf.append("<p>Item that appears in each session is highlighted in <font color=\"green\">green</font>.</p>");
+
+        if (!itemName.equals(seedItem)) {
+            buf.append("<p>Item it was recommended for is highlighted in <font color=\"red\">red</font>.</p>");
+        }
 
         Set<List<PreferenceTuple>> sessions = fbRecommender.getSessions(itemName);
 
@@ -238,7 +233,10 @@ public class DevRecommenderController {
                                 qieScore = docInfo.getQieScore();
                             }
 
-                            if (url.equals(seedItem)) {
+                            if (url.equals(itemName)) {
+                                url = "<font color=\"green\">" + url + "</font>";
+                            }
+                            else if (url.equals(seedItem)) {
                                 url = "<font color=\"red\">" + url + "</font>";
                             }
 
@@ -275,12 +273,11 @@ public class DevRecommenderController {
         StringBuffer buf = new StringBuffer();
         
         buf.append(RECOMMENDATIONS_DOC_HEADER);
-        buf.append("<form action=\"" + RecommenderController.RECOMMENDER_PREFIX + RecommenderController.similarItemsJson + "\" method=\"GET\">");
+        buf.append("<form action=\"" + RECOMMENDER_PREFIX + RecommenderController.similarItemsJson + "\" method=\"GET\">");
         buf.append("<label for=\"seedItem\">Recommend URLs for URL: </label>\n" +
                 "<input id=\"seedItem\" class=\"text\" type=\"text\" title=\"Item\" name=\"seedItem\" size=\"70\"/>" +
                 "<input type=\"hidden\" name=\"collection\" value=\"" + URLEncoder.encode(collection, "utf-8") + "\">\n"
                 + "<input type=\"hidden\" name=\"maxRecommendations\" value=\"" + DEFAULT_MAX_RECOMMENDATIONS + "\">"
-                + "<input type=\"hidden\" name=\"sort\" value=\"" + SortType.Type.cooccurrence + "\"><br>"
                 + "<input type=\"hidden\" name=\"scope\" value=\"" + SCOPE + "\"><br>"
                 + "<input type=\"submit\" value=\"Submit\" /></form></body></html>");
         return buf.toString();
@@ -298,7 +295,8 @@ public class DevRecommenderController {
         
         buf.append(RECOMMENDATIONS_DOC_HEADER);
         buf.append("<h3>Source: " + SOURCE + "</h3>\n");
-        buf.append("<form action=\"" + RecommenderController.RECOMMENDER_PREFIX + RecommenderController.searchRecommendationsHtml + "\" method=\"GET\">");
+        buf.append("<form action=\"" + RECOMMENDER_PREFIX + RecommenderController.searchRecommendationsHtml
+                + "\" method=\"GET\">");
         buf.append("<label for=\"query\">Query: </label>" +
                 "<input id=\"query\" class=\"text\" type=\"text\" title=\"Query\" name=\"query\" size=\"70\"/>" +
                 "<input type=\"hidden\" name=\"collection\" value=\"" + URLEncoder.encode(collection, "utf-8") + "\">" +
@@ -333,6 +331,4 @@ public class DevRecommenderController {
         buf.append("</form></body></html>");
         return buf.toString();
     }
-
-
 }

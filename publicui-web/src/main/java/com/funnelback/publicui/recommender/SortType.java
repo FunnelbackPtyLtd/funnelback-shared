@@ -13,7 +13,6 @@ public class SortType {
     public final static String DEFAULT_METADATA_CLASS = "x";
 
     public static enum Type {
-        cooccurrence("cooccurrence"),
         recency("recency"),
         popularity("popularity"),
         title("title"),
@@ -88,9 +87,6 @@ public class SortType {
 
         // Default order for all except "title" is descending
         switch(sortType) {
-            case cooccurrence:
-                comparator = new QIEComparator();
-                break;
             case title:
                 comparator = new TitleComparator();
                 break;
@@ -138,7 +134,7 @@ public class SortType {
      */
     public static Comparator<Recommendation> getComparator(String asort, String dsort,
                                                            String metadataClass) throws Exception {
-        Comparator<Recommendation> comparator = getComparator(Type.cooccurrence);
+        Comparator<Recommendation> comparator = null;
         Type sortType;
 
         if (dsort != null && !("").equals(dsort)) {

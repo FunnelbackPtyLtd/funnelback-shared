@@ -1,5 +1,11 @@
 package com.funnelback.publicui.recommender.utils;
 
+import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.SortType;
+import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -7,21 +13,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-
-import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.SortType;
-import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
-
 /**
  * Utilities for generating HTML output.
  * @author fcrimmins@funnelback.com
  */
 public final class HTMLUtils {
+    public static final int MIN_CLICKS_PER_SESSION = 2;
 
-    
-    
     public static enum ResultFormat {
         html("html"),
         json("json");
@@ -57,7 +55,14 @@ public final class HTMLUtils {
         return buf.toString();
     }
 
-    private static String getEncodedParameter(String name, String value) throws UnsupportedEncodingException {
+    /**
+     * Return an encoded version of the given parameter in "name=value" form
+     * @param name name of parameter
+     * @param value value of parameter
+     * @return encoded version or the empty string
+     * @throws UnsupportedEncodingException
+     */
+    public static String getEncodedParameter(String name, String value) throws UnsupportedEncodingException {
         String parameter = "";
 
         if (value != null && !("").equals(value)) {
@@ -86,6 +91,7 @@ public final class HTMLUtils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         String timeStamp = "N/A";
         int numRecommendations = 0;
+        String encodedMetadataClass;
 
         if (maxRecommendations < 1) {
             maxRecommendations = 10;
@@ -94,56 +100,58 @@ public final class HTMLUtils {
         if (recommendations != null && recommendations.size() > 0) {
             buf.append("<ul>\n");
 
-            for (Recommendation recommendation : recommendations) {
-                String item = recommendation.getItemID();
-                String title = recommendation.getTitle();
-                Date date = recommendation.getDate();
-                long popularity = recommendation.getPopularity();
-                float confidence = recommendation.getConfidence();
-                float qieScore = recommendation.getQieScore();
-                String format = recommendation.getFormat();
-                String metaData = recommendation.getMetaData().get(metadataClass);
+            try {
+                collection = getEncodedParameter("collection", collection);
+                scope = getEncodedParameter("scope", scope);
+                seedItem = getEncodedParameter("seedItem", seedItem);
+                dsort = getEncodedParameter("dsort", dsort);
+                asort = getEncodedParameter("asort", asort);
+                encodedMetadataClass = getEncodedParameter("metadataClass", metadataClass);
 
-                if (metaData != null) {
-                    metaData = StringEscapeUtils.escapeHtml(metaData);
-                    metaData = " <b>Metadata class " + metadataClass + "</b>: " + metaData;
-                }
-                else {
-                    metaData = "";
-                }
+                for (Recommendation recommendation : recommendations) {
+                    String item = recommendation.getItemID();
+                    String title = recommendation.getTitle();
+                    Date date = recommendation.getDate();
+                    long popularity = recommendation.getPopularity();
+                    float confidence = recommendation.getConfidence();
+                    float qieScore = recommendation.getQieScore();
+                    String format = recommendation.getFormat();
+                    String metaData = recommendation.getMetaData().get(metadataClass);
 
-                if (date != null) {
-                    timeStamp = df.format(date);
-                }
+                    if (metaData != null) {
+                        metaData = StringEscapeUtils.escapeHtml(metaData);
+                        metaData = " <b>Metadata class " + metadataClass + "</b>: " + metaData;
+                    }
+                    else {
+                        metaData = "";
+                    }
 
-                try {
+                    if (date != null) {
+                        timeStamp = df.format(date);
+                    }
+
                     String encodedItem = URLEncoder.encode(item, "utf-8");
-                    collection = getEncodedParameter("collection", collection);
-                    scope = getEncodedParameter("scope", scope);
-                    seedItem = getEncodedParameter("seedItem", seedItem);
-                    dsort = getEncodedParameter("dsort", dsort);
-                    asort = getEncodedParameter("asort", asort);
-                    metadataClass = getEncodedParameter("metadataClass", metadataClass);
 
-                    String similarLink = RecommenderController.RECOMMENDER_PREFIX + RecommenderController.similarItemsJson + "?seedItem="
-                        + encodedItem + collection + scope + "&maxRecommendations="
-                        + maxRecommendations + dsort + asort + metadataClass;
+                    String similarLink =  RecommenderController.similarItemsJson + "?seedItem="
+                            + encodedItem + collection + scope + "&maxRecommendations="
+                            + maxRecommendations + dsort + asort + encodedMetadataClass;
 
-                    String sessionsLink = RecommenderController.RECOMMENDER_PREFIX + "sessions?itemName=" + encodedItem
-                        + seedItem + collection + "&minClicks=" + RecommenderController.MIN_CLICKS_PER_SESSION;
+                    String sessionsLink = RecommenderController.sessionsHtml + "?itemName=" + encodedItem
+                            + seedItem + collection + "&minClicks=" + MIN_CLICKS_PER_SESSION;
 
                     buf.append("<li><a href=\"" + item + "\">" + title + "</a> <small>"
-                            + item + "</small> [<a href=\"" + similarLink + "\">Recommendations</a>] "
+                            + item + "</small> [<a href=\"" + similarLink + "\">JSON</a>] "
                             + "[<a href=\"" + sessionsLink + "\">Sessions</a>] <small> <b>Confidence</b>: "
                             + confidence + " <b>Date</b>: " + timeStamp + " <b>Popularity</b>: " + popularity
                             + " <b>QIE Score</b>: " + qieScore + " <b>Format</b>: " + format
                             + metaData + "</small></li>\n");
                     numRecommendations++;
-                } catch (UnsupportedEncodingException exception) {
-                    System.out.println(exception);
                 }
+                buf.append("</ul>");
             }
-            buf.append("</ul>");
+            catch (UnsupportedEncodingException exception) {
+
+            }
         }
 
         if (numRecommendations == 0) {
@@ -189,11 +197,6 @@ public final class HTMLUtils {
 
         for (SortType.Type sortType : SortType.Type.values())  {
             String humanReadable = StringUtils.capitalize(sortType.toString());
-
-            if (sortType.equals((SortType.Type.cooccurrence))) {
-                humanReadable = "Co-Occurrence";
-            }
-
             buf.append("<input type=\"radio\" name=\"" + parameter.toString() + "\" value=\""
                     + sortType + "\"> " +  humanReadable + " \n");
         }

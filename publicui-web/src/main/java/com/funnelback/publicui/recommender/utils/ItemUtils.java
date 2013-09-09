@@ -44,6 +44,12 @@ public final class ItemUtils {
         return docInfoMap;
     }
 
+    /**
+     * Return the title of the given URL from the given collection.
+     * @param url URL to get title for
+     * @param collection collection that URL is in
+     * @return title or empty string if title is not available
+     */
     public static String getTitle(String url, String collection) {
         String title = "";
         List<ItemTuple> items = new ArrayList<>();

@@ -8,7 +8,6 @@ import com.funnelback.publicui.recommender.tuple.PreferenceTuple;
 import com.funnelback.publicui.recommender.utils.DataModelUtils;
 import com.funnelback.publicui.recommender.utils.ItemUtils;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
-
 import lombok.Data;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.mahout.cf.taste.common.NoSuchItemException;
@@ -25,7 +24,7 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.apache.mahout.cf.taste.recommender.ItemBasedRecommender;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 
-import java.io.*;
+import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -82,6 +81,18 @@ public class FBRecommender {
     }
 
     /**
+     * Initialize key data structures in case we were unable to restore them from checkpoint.
+     */
+    private void initializeDataStructures() {
+        memoryIDMigrator = new MemoryIDMigrator();
+        userIDPreferencesMap = new HashMap<>();
+        itemUserMap = new HashMap<>();
+        userSessionsMap = new HashMap<>();
+        IDStringMap = new HashMap<>();
+        itemFrequencyMap = new HashMap<>();
+    }
+
+    /**
      * Restore data structures for the given collection.
      * @param collectionConfig Configuration details for the collection
      * @return true if all relevant data structures were correctly restored
@@ -119,6 +130,7 @@ public class FBRecommender {
         else {
             System.out.println("Problem restoring checkpointed data structures from file - will have " +
                     "to regenerate all data structures from scratch.");
+            initializeDataStructures();
         }
 
         return restored;
@@ -191,10 +203,8 @@ public class FBRecommender {
 
                 // Instantiate the recommender
                 recommender = new GenericBooleanPrefItemBasedRecommender(dataModel, new LogLikelihoodSimilarity(dataModel));
-            } catch (FileNotFoundException e) {
-                log.log(Level.SEVERE, DATA_FILE_NAME+" was not found", e);
-            } catch (IOException e) {
-                log.log(Level.SEVERE, "Error during reading line of file", e);
+            } catch (Exception exception) {
+                log.log(Level.WARNING, "Exception starting up recommender", exception);
             }
         }
     }

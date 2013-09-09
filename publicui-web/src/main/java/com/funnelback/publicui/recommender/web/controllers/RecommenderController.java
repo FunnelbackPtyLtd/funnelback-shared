@@ -1,15 +1,11 @@
 package com.funnelback.publicui.recommender.web.controllers;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
+import com.funnelback.publicui.recommender.FBRecommender;
+import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.RecommendationResponse;
+import com.funnelback.publicui.recommender.SortType;
+import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,15 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
-import com.funnelback.publicui.recommender.FBRecommender;
-import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.recommender.SortType;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
-//import javax.ejb.Stateless;
-import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
@@ -34,13 +24,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttr
 @Controller
 @RequestMapping("/recommender")
 public class RecommenderController {
-    
-    
-	private static FBRecommender fbRecommender;
-   
-    public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "/recommender/";
-    public static final int MIN_CLICKS_PER_SESSION = 2;
-    //private ObjectMapper mapper = ObjectMapperSingleton.getInstance();
+  	private static FBRecommender fbRecommender;
 	public static final String searchRecommendationsHtml = "searchRecommendations.html";
 	public static final String queryEntryHtml = "queryEntry.html";
     public static final String itemEntryHtml = "itemEntry.html";
@@ -57,7 +41,7 @@ public class RecommenderController {
 	        extraSearches, question, response, session, error, httpRequest;
 	        
 	        public static Set<String> getNames() {
-	            HashSet<String> out = new HashSet<String>();
+	            HashSet<String> out = new HashSet<>();
 	            for (ModelAttributes name: values()) {
 	                out.add(name.toString());
 	            }
@@ -83,10 +67,10 @@ public class RecommenderController {
     public ModelAndView similarItems(HttpServletResponse response,
     		@RequestParam("seedItem") String seedItem,
     		@RequestParam("collection") String collection,
-    		@RequestParam("scope") String scope,
-    		@RequestParam("dsort") String dsort,
-    		@RequestParam("asort") String asort,
-    		@RequestParam("metadataClass") String metadataClass) throws Exception {
+    		@RequestParam(value = "scope", required = false) String scope,
+            @RequestParam(value = "dsort", required = false) String dsort,
+            @RequestParam(value = "asort", required = false) String asort,
+            @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
     	response.setContentType("application/json");
         Comparator<Recommendation> comparator;
 
@@ -109,13 +93,11 @@ public class RecommenderController {
         List<Recommendation> recommendations =
                 RecommenderUtils.getRecommendationsForItem(fbRecommender, seedItem, collection, scope, 5);
         
-         RecommendationResponse recomendationResponse = new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator));
-         
-         
-         Map<String, Object> model = new HashMap<String, Object>();
-         model.put("RecommendationResponse", recomendationResponse);
+        RecommendationResponse recommendationResponse =
+                new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator));
+        Map<String, Object> model = new HashMap<>();
+        model.put("RecommendationResponse", recommendationResponse);
          
  		return new ModelAndView(view, model);
     }
-
 }
