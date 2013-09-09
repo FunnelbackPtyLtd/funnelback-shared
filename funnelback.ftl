@@ -626,3 +626,17 @@
     <#assign content><#nested></#assign>
     ${authToken(content)}
 </#compress></#macro>
+
+<#-- @begin Session features -->
+
+<#---
+    Check if the user click history is empty or not. Writes 'true' if it is, 'false' otherwise.
+-->
+<#macro HasClickHistory><#if session?? && session.clickHistory?size &gt; 0>true<#else>false</#if></#macro>
+
+<#---
+    Check if the user search history is empty or not. Writes 'true' if it is, 'false' otherwise.
+-->
+<#macro HasSearchHistory><#if session?? && session.searchHistory?size &gt; 0>true<#else>false</#if></#macro>
+
+<#-- @end -->
