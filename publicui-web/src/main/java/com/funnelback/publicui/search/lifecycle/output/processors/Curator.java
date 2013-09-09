@@ -2,6 +2,10 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.Map.Entry;
 
+import lombok.Setter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -35,6 +39,15 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 public class Curator extends AbstractOutputProcessor {
 
     /**
+     * The Spring application context to provide to triggers and actions which
+     * might require it.
+     */
+    @Autowired
+    @Setter
+    private ApplicationContext context;
+
+    
+    /**
      * Find all curator actions (in the current profile's CuratorConfig) which
      * are triggered on output for this searchTranscation, and perform them in
      * turn.
@@ -55,8 +68,8 @@ public class Curator extends AbstractOutputProcessor {
                         .get(profileName).getCuratorConfig();
 
                     for (Entry<Trigger, ActionSet> e : config.getTriggerActions().entrySet()) {
-                        if (e.getValue().hasActionForPhase(Phase.OUTPUT) && e.getKey().activatesOn(searchTransaction)) {
-                            e.getValue().performActions(searchTransaction, Phase.OUTPUT);
+                        if (e.getValue().hasActionForPhase(Phase.OUTPUT, context) && e.getKey().activatesOn(searchTransaction, context)) {
+                            e.getValue().performActions(searchTransaction, Phase.OUTPUT, context);
                         }
                     }
                 }

@@ -21,23 +21,23 @@ public class CountryNameTriggerTests {
         question.setLocation(new Location(maxmind));
         SearchTransaction st = new SearchTransaction(question, null);
         
-        Assert.assertFalse("Expected not to activate with an empty country set", cnt.activatesOn(st)); 
+        Assert.assertFalse("Expected not to activate with an empty country set", cnt.activatesOn(st, null)); 
 
         cnt.getTargetCounties().add("China");
         
-        Assert.assertFalse("Expected not to activate when countries don't match", cnt.activatesOn(st)); 
+        Assert.assertFalse("Expected not to activate when countries don't match", cnt.activatesOn(st, null)); 
 
         cnt.getTargetCounties().add("australia");
         
-        Assert.assertFalse("Expected not to activate when countries don't match in case", cnt.activatesOn(st)); 
+        Assert.assertFalse("Expected not to activate when countries don't match in case", cnt.activatesOn(st, null)); 
 
         cnt.getTargetCounties().add("Aust");
         
-        Assert.assertFalse("Expected not to activate when countries don't match (even prefixes)", cnt.activatesOn(st)); 
+        Assert.assertFalse("Expected not to activate when countries don't match (even prefixes)", cnt.activatesOn(st, null)); 
 
         cnt.getTargetCounties().add("Australia");
         
-        Assert.assertTrue("Expected to activate when countries do match", cnt.activatesOn(st)); 
+        Assert.assertTrue("Expected to activate when countries do match", cnt.activatesOn(st, null)); 
     }
     
     @Test

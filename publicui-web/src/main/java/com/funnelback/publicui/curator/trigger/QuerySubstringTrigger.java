@@ -1,5 +1,7 @@
 package com.funnelback.publicui.curator.trigger;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +37,7 @@ public class QuerySubstringTrigger implements Trigger {
      * triggerSubstring, otherwise return false.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         String query = searchTransaction.getQuestion().getQuery();
         return query.contains(triggerSubstring);
     }

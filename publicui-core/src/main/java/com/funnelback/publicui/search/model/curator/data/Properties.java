@@ -26,7 +26,7 @@ public class Properties implements Exhibit {
      */
     @Getter
     @Setter
-    private Map<String, String> properties = new HashMap<String, String>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
      * A category for the properties which may be used by an ftl file to display

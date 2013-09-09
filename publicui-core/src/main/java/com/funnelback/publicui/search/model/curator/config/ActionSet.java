@@ -3,6 +3,8 @@ package com.funnelback.publicui.search.model.curator.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,10 +24,10 @@ public class ActionSet {
     /**
      * Perform any actions within the set should be run in the given phase.
      */
-    public void performActions(SearchTransaction searchTransaction, Phase phase) {
+    public void performActions(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
         for (Action action : actions) {
-            if (action.runsInPhase(phase)) {
-                action.performAction(searchTransaction, phase);
+            if (action.runsInPhase(phase, context)) {
+                action.performAction(searchTransaction, phase, context);
             }
         }
     }
@@ -33,10 +35,10 @@ public class ActionSet {
     /**
      * Return true if any of the actions in this set should be run within the specified phase.
      */
-    public boolean hasActionForPhase(Phase phase) {
+    public boolean hasActionForPhase(Phase phase, ApplicationContext context) {
         // Perhaps should keep track of this when things are added to save time
         for (Action action : actions) {
-            if (action.runsInPhase(phase)) {
+            if (action.runsInPhase(phase, context)) {
                 return true;
             }
         }

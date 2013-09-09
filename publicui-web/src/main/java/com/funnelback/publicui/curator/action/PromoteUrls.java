@@ -2,6 +2,8 @@ package com.funnelback.publicui.curator.action;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +42,7 @@ public class PromoteUrls implements Action {
      * which will be given to padre.
      */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase) {
+    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
         String newPromotedUrls = Joiner.on(" ").join(urlsToPromote);
 
         String oldPromotedUrls = "";
@@ -60,7 +62,7 @@ public class PromoteUrls implements Action {
      * performed.
      */
     @Override
-    public boolean runsInPhase(Phase phase) {
+    public boolean runsInPhase(Phase phase, ApplicationContext context) {
         return phase.equals(Phase.INPUT);
     }
 

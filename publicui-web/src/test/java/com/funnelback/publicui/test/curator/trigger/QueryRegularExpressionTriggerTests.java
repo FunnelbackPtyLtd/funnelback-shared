@@ -20,10 +20,10 @@ public class QueryRegularExpressionTriggerTests {
         qret.setTriggerPattern("(?i)\\bFoo\\b");
 
         question.setQuery("Food");
-        Assert.assertFalse("Expected to fail because regex doesn't match", qret.activatesOn(st));
+        Assert.assertFalse("Expected to fail because regex doesn't match", qret.activatesOn(st, null));
 
         question.setQuery("foo");
-        Assert.assertTrue("Expected to pass because regex matches", qret.activatesOn(st));
+        Assert.assertTrue("Expected to pass because regex matches", qret.activatesOn(st, null));
     }
 
     @Test

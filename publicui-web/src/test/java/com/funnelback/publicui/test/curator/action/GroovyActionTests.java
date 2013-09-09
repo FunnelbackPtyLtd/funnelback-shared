@@ -32,11 +32,11 @@ public class GroovyActionTests {
         SearchQuestion question = new SearchQuestion();
         SearchTransaction st = new SearchTransaction(question, null);
 
-        Assert.assertTrue("Expected to run in INPUT phase", ga.runsInPhase(Phase.INPUT));
-        Assert.assertFalse("Expected not to run in OUTPUT phase", ga.runsInPhase(Phase.OUTPUT));
+        Assert.assertTrue("Expected to run in INPUT phase", ga.runsInPhase(Phase.INPUT, null));
+        Assert.assertFalse("Expected not to run in OUTPUT phase", ga.runsInPhase(Phase.OUTPUT, null));
 
         question.setQuery("initialquery");
-        ga.performAction(st, Phase.INPUT);
+        ga.performAction(st, Phase.INPUT, null);
         
         Assert.assertEquals("Expected query to be modified to 'modified' by the groovy action.", "modified" , st.getQuestion().getQuery());
     }

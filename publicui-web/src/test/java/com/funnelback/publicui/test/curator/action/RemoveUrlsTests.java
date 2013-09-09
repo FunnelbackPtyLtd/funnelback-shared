@@ -27,7 +27,7 @@ public class RemoveUrlsTests {
         RemoveUrls ru2 = new RemoveUrls(Arrays.asList(new String[]{"c", "d"}));
         
         SearchTransaction st = ActionTestUtils.runAllPhases(ru1);
-        ActionTestUtils.runAllPhases(ru2, st);
+        ActionTestUtils.runAllPhases(ru2, st, null);
         
         Assert.assertEquals("Expected 'a b c d' as the list of URLs to remove",  "a b c d", st.getQuestion().getAdditionalParameters().get(RequestParameters.REMOVE_URLS)[0]);
     }

@@ -10,7 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -22,6 +23,7 @@ import com.funnelback.publicui.search.service.resource.impl.GroovyObjectResource
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Component
 public class GroovyAction implements Action {
 
     /**
@@ -34,13 +36,6 @@ public class GroovyAction implements Action {
     @Getter
     @Setter
     private String classFile;
-
-    /**
-     * Resource manager used to reload the Groovy class when it changes
-     */
-    @Autowired
-    @Setter
-    protected ResourceManager resourceManager;
     
     /**
      * Any properties associated with the action (passed to the performAction
@@ -51,10 +46,20 @@ public class GroovyAction implements Action {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
+     * Resource manager used to reload the Groovy class when it changes
+     */
+    @Setter
+    private ResourceManager resourceManager;
+
+    /**
      * Loads the GroovyActionInterface implementation from the resourceManager (which will cache it between
      * requests until the file changes) and returns it for use.
      */
-    private GroovyActionInterface getActionImplementation() {
+    private GroovyActionInterface getActionImplementation(ApplicationContext context) {
+        if (resourceManager == null) {
+            resourceManager = context.getBean(ResourceManager.class);
+        }
+
         GroovyActionInterface result;
         try {
             result = resourceManager.load(new GroovyObjectResource<GroovyActionInterface>(new File(classFile)));
@@ -70,8 +75,8 @@ public class GroovyAction implements Action {
      * the specified Groovy class).
      */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase) {
-        getActionImplementation().performAction(searchTransaction, phase, properties);
+    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+        getActionImplementation(context).performAction(searchTransaction, phase, properties);
     }
 
     /**
@@ -79,7 +84,7 @@ public class GroovyAction implements Action {
      * calling runsInPhase on an instance of the specified Groovy class).
      */
     @Override
-    public boolean runsInPhase(Phase phase) {
-        return getActionImplementation().runsInPhase(phase, properties);
+    public boolean runsInPhase(Phase phase, ApplicationContext context) {
+        return getActionImplementation(context).runsInPhase(phase, properties);
     }
 }

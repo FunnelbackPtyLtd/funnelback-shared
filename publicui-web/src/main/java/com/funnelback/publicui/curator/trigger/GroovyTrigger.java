@@ -10,7 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -31,6 +32,7 @@ import com.funnelback.publicui.search.service.resource.impl.GroovyObjectResource
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class GroovyTrigger implements Trigger {
 
     /**
@@ -45,13 +47,6 @@ public class GroovyTrigger implements Trigger {
     private String classFile;
 
     /**
-     * Resource manager used to reload the Groovy class when it changes
-     */
-    @Autowired
-    @Setter
-    protected ResourceManager resourceManager;
-    
-    /**
      * Any properties associated with the action (passed to the performAction
      * and runsInPhase methods).
      */
@@ -60,10 +55,20 @@ public class GroovyTrigger implements Trigger {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
+     * Resource manager used to reload the Groovy class when it changes
+     */
+    @Setter
+    private ResourceManager resourceManager;
+    
+    /**
      * Loads the GroovyActionInterface implementation from the resourceManager (which will cache it between
      * requests until the file changes) and returns it for use.
      */
-    private GroovyTriggerInterface getTriggerImplementation() {
+    private GroovyTriggerInterface getTriggerImplementation(ApplicationContext context) {
+        if (resourceManager == null) {
+            resourceManager = context.getBean(ResourceManager.class);
+        }
+        
         GroovyTriggerInterface result;
         try {
             result = resourceManager.load(new GroovyObjectResource<GroovyTriggerInterface>(new File(classFile)));
@@ -81,8 +86,8 @@ public class GroovyTrigger implements Trigger {
      * Check the given searchTransaction to see if the trigger activates on this request.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
-        return getTriggerImplementation().activatesOn(searchTransaction, properties);
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
+        return getTriggerImplementation(context).activatesOn(searchTransaction, properties);
     }
 
 }

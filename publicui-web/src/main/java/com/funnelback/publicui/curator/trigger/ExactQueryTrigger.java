@@ -1,5 +1,7 @@
 package com.funnelback.publicui.curator.trigger;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +46,7 @@ public class ExactQueryTrigger implements Trigger {
      * triggerQuery (subject to ignoreCase), otherwise return false.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         String query = searchTransaction.getQuestion().getQuery();
         if (ignoreCase) {
             return query.equalsIgnoreCase(triggerQuery);

@@ -27,7 +27,7 @@ public class PromoteUrlsTests {
         PromoteUrls pu2 = new PromoteUrls(Arrays.asList(new String[]{"c", "d"}));
         
         SearchTransaction st = ActionTestUtils.runAllPhases(pu1);
-        ActionTestUtils.runAllPhases(pu2, st);
+        ActionTestUtils.runAllPhases(pu2, st, null);
         
         Assert.assertEquals("Expected 'a b c d' as the list of URLs to promote",  "a b c d", st.getQuestion().getAdditionalParameters().get(RequestParameters.PROMOTE_URLS)[0]);
     }

@@ -2,6 +2,8 @@ package com.funnelback.publicui.curator.trigger;
 
 import java.util.Date;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,7 +64,7 @@ public class DateRangeTrigger implements Trigger {
      * boundary.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         Date currentTime = new Date();
 
         if ((startDate == null || currentTime.after(startDate)) && (endDate == null || currentTime.before(endDate))) {

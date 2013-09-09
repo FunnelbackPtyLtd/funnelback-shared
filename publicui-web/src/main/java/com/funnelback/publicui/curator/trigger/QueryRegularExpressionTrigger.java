@@ -2,6 +2,8 @@ package com.funnelback.publicui.curator.trigger;
 
 import java.util.regex.Pattern;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ public class QueryRegularExpressionTrigger implements Trigger {
      * triggerPatter, otherwise return false
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         String query = searchTransaction.getQuestion().getQuery();
         return Pattern.compile(triggerPattern).matcher(query).find();
     }

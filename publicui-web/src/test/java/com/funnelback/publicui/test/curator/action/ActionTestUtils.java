@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.curator.action;
 
+import org.springframework.context.ApplicationContext;
+
 import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -12,13 +14,13 @@ public class ActionTestUtils {
         SearchResponse response = new SearchResponse();
         response.setCurator(new Curator());
         SearchTransaction searchTransaction = new SearchTransaction(new SearchQuestion(), response);
-        return runAllPhases(action, searchTransaction);
+        return runAllPhases(action, searchTransaction, null);
     }
     
-    public static SearchTransaction runAllPhases(Action action, SearchTransaction searchTransaction) {
+    public static SearchTransaction runAllPhases(Action action, SearchTransaction searchTransaction, ApplicationContext context) {
         for (Action.Phase phase : Action.Phase.values()) {
-            if (action.runsInPhase(phase)) {
-                action.performAction(searchTransaction, phase);
+            if (action.runsInPhase(phase, context)) {
+                action.performAction(searchTransaction, phase, context);
             }
         }
         

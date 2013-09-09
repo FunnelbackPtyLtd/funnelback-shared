@@ -3,6 +3,8 @@ package com.funnelback.publicui.curator.trigger;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +42,7 @@ public class CountryNameTrigger implements Trigger {
      * listed in targetCountries. If it does, return true, otherwise false.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         Location location = searchTransaction.getQuestion().getLocation();
         return targetCounties.contains(location.getCountryName());
     }

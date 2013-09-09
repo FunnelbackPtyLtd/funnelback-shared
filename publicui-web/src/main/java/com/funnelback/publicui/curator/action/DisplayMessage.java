@@ -1,5 +1,7 @@
 package com.funnelback.publicui.curator.action;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,7 @@ public class DisplayMessage implements Action {
      * searchTransaction.
      */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase) {
+    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
         searchTransaction.getResponse().getCurator().getExhibits().add(message);
     }
 
@@ -35,7 +37,7 @@ public class DisplayMessage implements Action {
      * been created from Padre's output).
      */
     @Override
-    public boolean runsInPhase(Phase phase) {
+    public boolean runsInPhase(Phase phase, ApplicationContext context) {
         return phase.equals(Phase.OUTPUT);
     }
 }

@@ -32,9 +32,9 @@ public class GroovyTriggerTests {
         SearchTransaction st = new SearchTransaction(question, null);
         
         question.setQuery("triggertrue");
-        Assert.assertTrue("Expected groovy to return true", gt.activatesOn(st));
+        Assert.assertTrue("Expected groovy to return true", gt.activatesOn(st, null));
 
         question.setQuery("triggerfalse");
-        Assert.assertFalse("Expected groovy to return false", gt.activatesOn(st));
+        Assert.assertFalse("Expected groovy to return false", gt.activatesOn(st, null));
     }
 }

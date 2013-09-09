@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import org.springframework.context.ApplicationContext;
+
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -44,11 +46,11 @@ public interface Action {
      *            The phase being processed (Some actions may wish to behave
      *            differently depending on the current phase of processing).
      */
-    public void performAction(SearchTransaction searchTransaction, Phase phase);
+    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context);
 
     /**
      * @return true if this action should be run in the given phase, otherwise
      *         return false.
      */
-    public boolean runsInPhase(Phase phase);
+    public boolean runsInPhase(Phase phase, ApplicationContext context);
 }

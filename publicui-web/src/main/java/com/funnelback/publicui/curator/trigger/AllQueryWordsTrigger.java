@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +44,7 @@ public class AllQueryWordsTrigger implements Trigger {
      * false.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction) {
+    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         Set<String> queryWords = new HashSet<String>();
         queryWords.addAll(Arrays.asList(searchTransaction.getQuestion().getQuery().split("\\b")));
         return queryWords.containsAll(triggerWords);

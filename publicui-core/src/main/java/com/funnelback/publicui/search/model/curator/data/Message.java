@@ -27,7 +27,7 @@ public class Message implements Exhibit {
      */
     @Getter
     @Setter
-    private Map<String, String> additionalProperties;
+    private Map<String, Object> additionalProperties;
 
     /**
      * A category for the message which may be used by an ftl file to display
