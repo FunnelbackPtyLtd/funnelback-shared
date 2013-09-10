@@ -67,7 +67,7 @@ public class DefaultPadreForkingLockTests {
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", 
-            new NoOptionsConfig("padre-forking")
+	            new NoOptionsConfig(searchHome, "padre-forking")
             .setValue("query_processor", getMockPadre())));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
@@ -104,7 +104,7 @@ public class DefaultPadreForkingLockTests {
                 "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
 
         qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
         
@@ -138,7 +138,7 @@ public class DefaultPadreForkingLockTests {
                 "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.setQuery("test");
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
@@ -177,7 +177,7 @@ public class DefaultPadreForkingLockTests {
         }
 
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", qp)));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
                 
