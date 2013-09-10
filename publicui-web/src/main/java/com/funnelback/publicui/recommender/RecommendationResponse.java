@@ -1,10 +1,13 @@
 package com.funnelback.publicui.recommender;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
+/**
+ * Response from the recommendations system.
+ */
 @AllArgsConstructor
 public class RecommendationResponse {
 

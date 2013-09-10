@@ -25,6 +25,10 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.*;
 
+/**
+ * Controller for developer access to Recommender system.
+ */
+
 @Controller
 @RequestMapping("/recommender")
 public class DevRecommenderController {

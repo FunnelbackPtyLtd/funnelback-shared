@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 public class Recommendation {
 	/**
-	 * The canonical name or ID for the item e.g. URL address, musician name etc.
+	 * The canonical name or ID for the item e.g. URL address, musician name, product ID etc.
 	 */
     private String itemID = "";
 

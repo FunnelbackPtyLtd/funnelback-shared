@@ -71,7 +71,7 @@ public class FBRecommender {
      * Return a single instance of a FBRecommender to all callers.
      * @return FBRecommender instance.
      */
-    public static FBRecommender getInstance() {
+    public synchronized static FBRecommender getInstance() {
     	
         if (instance == null) {
             instance = new FBRecommender();

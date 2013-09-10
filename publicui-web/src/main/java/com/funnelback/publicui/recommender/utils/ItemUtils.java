@@ -67,7 +67,7 @@ public final class ItemUtils {
     }
 
     /**
-     * Get a list of item tuples from the given list of preferences.
+     * Get a list of item tuples from the given list of preferences tuples.
      * @param preferences list of preference tuples
      * @return List of item tuples (which may be empty)
      */
@@ -86,7 +86,6 @@ public final class ItemUtils {
      * Return a list of DocInfo objects for the given URL items in the given collection.
      * Document information for any URLs which are not in the index will not be
      * present in the returned list.
-     *
      *
      * @param items list of URL items
      * @param collection collection to get document information from
