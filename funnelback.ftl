@@ -275,7 +275,7 @@
                         }
                     }
                     script.onload = loadPublishLink;
-                    script.src = "js/jquery/jquery-1.4.2.min.js";
+                    script.src = "${SearchPrefix}js/jquery/jquery-1.10.2.min.js";
                     head.appendChild(script);
                 } else {
                     loadPublishLink();
@@ -305,7 +305,7 @@
     <#-- PADRE error -->
     <#if response?exists && response.resultPacket?exists
         && response.resultPacket.error?exists>
-        <p class="fb-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
+        <p class="search-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
         <!-- PADRE return code: [${response.returnCode!"Unkown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
         <@ErrorMessageJS message="PADRE return code: "+response.returnCode!"Unknown" messageData=response.resultPacket.error.adminMsg! />
     </#if>
@@ -313,11 +313,11 @@
     <#if error?exists>
         <!-- ERROR status: ${error.reason!?html} -->
         <#if error.additionalData?exists>
-            <p class="fb-error">${error.additionalData.message!defaultMessage?html}</p>
+            <p class="search-error">${error.additionalData.message!defaultMessage?html}</p>
             <!-- ERROR cause: ${error.additionalData.cause!?html} --> 
             <@ErrorMessageJS message=error.additionalData.message! messageData=error.additionalData.cause! />
         <#else>
-            <p class="fb-error">${defaultMessage}</p>
+            <p class="search-error">${defaultMessage}</p>
         </#if>
     </#if>
 </#macro>
@@ -507,7 +507,7 @@
 -->
 <#macro TextMiner>
     <#if response.entityDefinition?exists>
-        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> <span id="entity-definition">${response.entityDefinition.definition?html}</span>     
+        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> <span>${response.entityDefinition.definition?html}</span>     
     </#if>  
 </#macro>
 
@@ -551,7 +551,7 @@
 -->
 <#macro Optimise label="Optimise">
     <@AdminUIOnly>
-        <a class="fb-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">${label}</a>
+        <a class="search-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">${label}</a>
     </@AdminUIOnly>
 </#macro>
 
@@ -569,7 +569,7 @@
         <#if labels[s.result.collapsed.column]??>
             <#assign text = labels[s.result.collapsed.column] />
         </#if>
-        <a class="fb-collapsed" href="?${QueryString}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
+        <a class="search-collapsed" href="?${QueryString}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 

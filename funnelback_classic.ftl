@@ -294,7 +294,7 @@
     @param label Label to use for the link.
 -->
 <#macro Explore label="Explore">
-    <a class="fb-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl)?html}">${label}</a>
+    <a class="search-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl)?html}">${label}</a>
 </#macro>
 
 <#---
