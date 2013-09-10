@@ -77,10 +77,12 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             
             
             if (absoluteQueryProcessorPath) {
-                commandLine.add(searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR));
+                commandLine.add(searchTransaction.getQuestion().getCollection().getConfiguration()
+                		.value(Keys.QUERY_PROCESSOR));
             } else {
                 commandLine.add(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
-                    + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)).getAbsolutePath());
+                		+ searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR))
+                	.getAbsolutePath());
             }
 
             commandLine.addAll(searchTransaction.getQuestion().getDynamicQueryProcessorOptions());
@@ -91,7 +93,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                     + "\"");
             }
     
-            Map<String, String> env = new HashMap<String, String>(searchTransaction.getQuestion().getEnvironmentVariables());
+            Map<String, String> env = new HashMap<String, String>(
+            		searchTransaction.getQuestion().getEnvironmentVariables());
             env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
             env.put(EnvironmentKeys.QUERY_STRING.toString(), getQueryString(searchTransaction));
             
@@ -110,7 +113,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     
             ExecutionReturn padreOutput = null;
             
-            IndexUpdateLock.getIndexUpdateLockInstance().lock(searchTransaction.getQuestion().getCollection().getConfiguration());
+            IndexUpdateLock.getIndexUpdateLockInstance()
+            	.lock(searchTransaction.getQuestion().getCollection().getConfiguration());
             
             try {
                 if (searchTransaction.getQuestion().isImpersonated()) {
@@ -119,7 +123,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                     padreOutput = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
                 }
                 if (log.isTraceEnabled()) {
-                    log.trace("\n---- RAW result packet BEGIN ----:\n\n"+padreOutput.getOutput()+"\n---- RAW result packet END ----");
+                    log.trace("\n---- RAW result packet BEGIN ----:\n\n"
+                    		+padreOutput.getOutput()+"\n---- RAW result packet END ----");
                 }
 
                 updateTransaction(searchTransaction, padreOutput);
@@ -133,7 +138,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
             } finally {
-            	IndexUpdateLock.getIndexUpdateLockInstance().release(searchTransaction.getQuestion().getCollection().getConfiguration());
+            	IndexUpdateLock.getIndexUpdateLockInstance()
+            		.release(searchTransaction.getQuestion().getCollection().getConfiguration());
             }
         }
     }
