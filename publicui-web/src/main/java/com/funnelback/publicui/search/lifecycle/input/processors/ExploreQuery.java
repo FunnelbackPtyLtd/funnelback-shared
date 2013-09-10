@@ -37,7 +37,8 @@ public class ExploreQuery extends AbstractInputProcessor {
             
             Integer nbOfTerms = null;
             if (searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.EXP) != null) {
-                String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.EXP, null);
+                String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(),
+                		RequestParameters.EXP, null);
                 try {
                     nbOfTerms = Integer.parseInt(exp);
                 } catch (Throwable t) {
@@ -50,7 +51,8 @@ public class ExploreQuery extends AbstractInputProcessor {
             for(int i=0; i<queries.length; i++) {
                 if (queries[i].startsWith(EXPLORE_PREFIX)) {
                     String url = queries[i].substring(EXPLORE_PREFIX.length());
-                    String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(), url, nbOfTerms);
+                    String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(),
+                    		url, nbOfTerms);
                     if (exploreQuery != null) {
                         queries[i] = exploreQuery;
                         queryChanged = true;
