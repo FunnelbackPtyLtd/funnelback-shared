@@ -1,10 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
@@ -30,7 +25,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.Windows
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.search.service.index.IndexUpdateLock;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
@@ -114,29 +109,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             }
     
             ExecutionReturn padreOutput = null;
-            File indexUpdateLockFile = new File(searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
-                    + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX, Files.Index.UPDATE_LOCK);
-            RandomAccessFile indexUpdateLockRandomFile = null;
-            FileLock indexUpdateLock = null;
             
-            try {
-                indexUpdateLockRandomFile = new RandomAccessFile(indexUpdateLockFile, "rw");
-                // Ask for a shared lock as multiple queries can happen at the same time
-                indexUpdateLock = indexUpdateLockRandomFile.getChannel().lock(0, Long.MAX_VALUE, true);
-                
-                if (indexUpdateLock == null || ! indexUpdateLock.isValid()) {
-                    log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'");
-                    indexUpdateLockRandomFile.close();
-                    throw new DataFetchException(i18n.tr("padre.forking.lock.error"), null);
-                }
-            } catch (IOException ioe) {
-                log.error("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"'", ioe);
-                throw new DataFetchException(i18n.tr("padre.forking.lock.error"), ioe);
-            } catch (OverlappingFileLockException ofle) {
-                // This can happen if the lock for this collection has already been acquired
-                // by another thread or an extra search
-                log.trace("Unable to obtain lock '"+indexUpdateLockFile.getAbsolutePath()+"' because it's already acquired", ofle);
-            }
+            IndexUpdateLock.getIndexUpdateLockInstance().lock(searchTransaction.getQuestion().getCollection().getConfiguration());
             
             try {
                 if (searchTransaction.getQuestion().isImpersonated()) {
@@ -159,18 +133,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
             } finally {
-                // Close locks and associated resources.
-                
-                // indexUpdateLock might be null if we encountered an
-                // OverlappingFileLockException earlier
-                if (indexUpdateLock != null) {
-                    try { indexUpdateLock.release(); }
-                    catch (IOException ioe) { }
-                }
-                
-                // But indexUpdateLockRandomFile is not supposed to be 
-                try { indexUpdateLockRandomFile.close(); }
-                catch (IOException ioe) { }
+            	IndexUpdateLock.getIndexUpdateLockInstance().release(searchTransaction.getQuestion().getCollection().getConfiguration());
             }
         }
     }
