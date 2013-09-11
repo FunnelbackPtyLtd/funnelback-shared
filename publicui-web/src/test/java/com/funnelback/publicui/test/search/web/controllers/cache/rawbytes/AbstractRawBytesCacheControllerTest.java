@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -32,6 +33,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -52,6 +54,8 @@ public abstract class AbstractRawBytesCacheControllerTest {
     @Resource(name="localDataRepository")
     protected DataRepository dataRepository;
     
+    private MetricRegistry metrics;
+    
     protected MockHttpServletRequest request;
     protected MockHttpServletResponse response;
     
@@ -62,9 +66,12 @@ public abstract class AbstractRawBytesCacheControllerTest {
     
     @Before
     public void before() throws IOException {
+        metrics = new MetricRegistry();
+        
         cacheController = new CacheController();
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
+        cacheController.setMetricRegistry(metrics);
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
@@ -73,6 +80,9 @@ public abstract class AbstractRawBytesCacheControllerTest {
         collectionId = getCollectionId();
         rmd = buildRecordAndMetadata();
         cacheUrl = getCacheUrl(rmd.record.getPrimaryKey());
+
+        metrics.remove( MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
+            DefaultValues.DEFAULT_PROFILE, MetricsConfiguration.CACHE));
         
         liveRoot = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/live/data");
         cleanupStore();
@@ -96,6 +106,11 @@ public abstract class AbstractRawBytesCacheControllerTest {
                 "unknown-record");
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
+        Assert.assertEquals(
+            0,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
     }
     
     @SuppressWarnings("unchecked")
@@ -122,6 +137,12 @@ public abstract class AbstractRawBytesCacheControllerTest {
         Assert.assertEquals(
                 Jsoup.parse(new String(rmd.record.getContent())).html(),
                 ((Document) mav.getModel().get(CacheController.MODEL_DOCUMENT)).html());
+
+        Assert.assertEquals(
+            1,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
 
     }
 

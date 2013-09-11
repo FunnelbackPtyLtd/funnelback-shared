@@ -3,10 +3,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:metrics="http://www.yammer.com/schema/metrics"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
@@ -133,7 +131,7 @@
 
     <bean class="com.funnelback.publicui.search.service.index.result.DefaultResultFetcher" />
 	
-	<metrics:metrics-registry id="metricsRegistry" />
+    <bean class="com.codahale.metrics.MetricRegistry" />
 	
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="trimReferenceView">
 		<property name="url" value="trim-reference.ftl" />

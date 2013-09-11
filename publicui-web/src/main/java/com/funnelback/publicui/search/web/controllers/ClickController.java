@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.VIEW_TYPE_NS;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -42,6 +46,7 @@ import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 /**
  * Click tracking controller
@@ -76,7 +81,10 @@ public class ClickController extends SessionController {
 
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
-    
+
+    @Autowired
+    private MetricRegistry metrics;
+
     /**
      * Controller for interaction logging. 
      * 
@@ -144,7 +152,7 @@ public class ClickController extends SessionController {
             @RequestParam(RequestParameters.COLLECTION) String collectionId,
             @RequestParam(required = false, defaultValue = "CLICK") ClickLog.Type type,
             Integer rank,
-            @RequestParam(required = false) String profile,
+            @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
             @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
@@ -194,6 +202,10 @@ public class ClickController extends SessionController {
             logService.logClick(new ClickLog(new Date(), collection, collection
                     .getProfiles().get(profile), requestId, referer, rank,
                     redirectUrl, type, LogUtils.getUserId(user)));
+            
+            metrics.counter(MetricRegistry.name(
+                MetricsConfiguration.COLLECTION_NS, collection.getId(),
+                profile, MetricsConfiguration.CLICK)).inc();
             
             response.sendRedirect(
                 redirectUrl.toString()

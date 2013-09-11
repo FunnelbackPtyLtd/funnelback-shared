@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -45,6 +46,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 /**
  * Deal with cached copies
@@ -84,7 +86,10 @@ public class CacheController {
     
     @Autowired
     @Setter private ConfigRepository configRepository;
-    
+
+    @Autowired
+    @Setter private MetricRegistry metricRegistry;
+
     @InitBinder
     public void initBinder(DataBinder binder) {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
@@ -120,13 +125,17 @@ public class CacheController {
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
                         String charset = setContentTypeAndCharset(response, rmd.metadata);
-                        model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent(),charset)));
+                        model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent(), charset)));
                         
                         String view = DefaultValues.FOLDER_CONF
                                 + "/" + collection.getId()
                                 + "/" + profile
                                 + "/" + form + DefaultValues.CACHE_FORM_SUFFIX;
-                        
+
+                        metricRegistry.counter(MetricRegistry.name(
+                            MetricsConfiguration.COLLECTION_NS, collection.getId(),
+                            profile, MetricsConfiguration.CACHE)).inc();
+
                         return new ModelAndView(view, model);
                         
                     } else if (rmd.record instanceof XmlRecord) {
@@ -148,6 +157,10 @@ public class CacheController {
                         } else {
                             response.getWriter().write(Xml.toString(xmlRecord.getContent()));
                         }
+                        
+                        metricRegistry.counter(MetricRegistry.name(
+                            MetricsConfiguration.COLLECTION_NS, collection.getId(),
+                            profile, MetricsConfiguration.CACHE)).inc();
                         
                         return null;
                     } else {

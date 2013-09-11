@@ -29,7 +29,7 @@
     <properties>
         <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
         <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-        <version.yammer-metrics>2.2.0</version.yammer-metrics>
+        <version.yammer-metrics>3.0.1</version.yammer-metrics>
     </properties>
 
     <dependencies>
@@ -225,27 +225,22 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>${version.yammer-metrics}</version>
         </dependency>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-spring</artifactId>
-            <version>${version.yammer-metrics}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-web</artifactId>
-            <version>${version.yammer-metrics}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-servlet</artifactId>
             <version>${version.yammer-metrics}</version>
         </dependency>
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-jvm</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
             <version>${version.yammer-metrics}</version>
         </dependency>

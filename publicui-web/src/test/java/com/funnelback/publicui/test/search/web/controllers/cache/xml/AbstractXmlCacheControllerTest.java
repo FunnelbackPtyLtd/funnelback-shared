@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -27,6 +28,7 @@ import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -43,6 +45,8 @@ public abstract class AbstractXmlCacheControllerTest {
     @Resource(name="localDataRepository")
     protected DataRepository dataRepository;
     
+    private MetricRegistry metrics;
+    
     protected MockHttpServletRequest request;
     protected MockHttpServletResponse response;
     
@@ -53,9 +57,12 @@ public abstract class AbstractXmlCacheControllerTest {
     
     @Before
     public void before() throws IOException {
+        metrics = new MetricRegistry();
+        
         cacheController = new CacheController();
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
+        cacheController.setMetricRegistry(metrics);
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
@@ -87,6 +94,11 @@ public abstract class AbstractXmlCacheControllerTest {
                 "unknown-record");
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
+        Assert.assertEquals(
+            0,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
     }
     
     @Test
@@ -101,6 +113,11 @@ public abstract class AbstractXmlCacheControllerTest {
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertEquals("text/xml", response.getContentType());
         Assert.assertEquals(Xml.toString(rmd.record.getContent()), response.getContentAsString());
+        Assert.assertEquals(
+            1,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
     }
 
     /**

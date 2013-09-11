@@ -19,15 +19,14 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Histogram;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Histogram;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * Update internal performance metrics
@@ -37,7 +36,7 @@ import com.yammer.metrics.core.MetricsRegistry;
 public class Metrics extends AbstractOutputProcessor {
     
     @Autowired
-    @Setter private MetricsRegistry metrics;
+    @Setter private MetricRegistry metrics;
     
     /** Global count of search errors */
     private Counter allErrorsCounter;
@@ -62,22 +61,23 @@ public class Metrics extends AbstractOutputProcessor {
                         + "." + st.getQuestion().getProfile();
             }
         
-            metrics.newMeter(new MetricName(COLLECTION_NS, collectionAndProfile, QUERIES), QUERIES, TimeUnit.SECONDS).mark();
+            metrics.meter(MetricRegistry.name(COLLECTION_NS, collectionAndProfile, QUERIES)).mark();
         
             if (st.hasResponse()
                     && st.getResponse().hasResultPacket()) {
                 
                 if (st.getResponse().getResultPacket().getResultsSummary() != null) {
-                    allTotalMatchingHistogram.update(st.getResponse().getResultPacket().getResultsSummary().getTotalMatching());
+                    allTotalMatchingHistogram.update(st.getResponse().getResultPacket()
+                        .getResultsSummary().getTotalMatching());
                     
-                    metrics.newHistogram(new MetricName(COLLECTION_NS , collectionAndProfile, TOTAL_MATCHING), false)
+                    metrics.histogram(MetricRegistry.name(COLLECTION_NS , collectionAndProfile, TOTAL_MATCHING))
                         .update(st.getResponse().getResultPacket().getResultsSummary().getTotalMatching());
                 }
                 
                 if (st.getResponse().getResultPacket().getPadreElapsedTime() != null) {
                     allPadreElapsedTimeHistogram.update(st.getResponse().getResultPacket().getPadreElapsedTime());
                     
-                    metrics.newHistogram(new MetricName(COLLECTION_NS , collectionAndProfile, PADRE_ELAPSED_TIME), false)
+                    metrics.histogram(MetricRegistry.name(COLLECTION_NS , collectionAndProfile, PADRE_ELAPSED_TIME))
                         .update(st.getResponse().getResultPacket().getPadreElapsedTime());
 
                 }
@@ -86,7 +86,7 @@ public class Metrics extends AbstractOutputProcessor {
         
             if (st.getError() != null) {
                 allErrorsCounter.inc();
-                metrics.newCounter(new MetricName(COLLECTION_NS, collectionAndProfile, ERRORS_COUNT)).inc();
+                metrics.counter(MetricRegistry.name(COLLECTION_NS, collectionAndProfile, ERRORS_COUNT)).inc();
             }
         }
     }
@@ -94,16 +94,11 @@ public class Metrics extends AbstractOutputProcessor {
     
     @PostConstruct
     public void postConstruct() {
-        allErrorsCounter = metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT));
-        allTotalMatchingHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false);
-        allPadreElapsedTimeHistogram = metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false);
-        allQueriesMeter = metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS);
+        allErrorsCounter = metrics.counter(MetricRegistry.name(ALL_NS, ERRORS_COUNT));
+        allTotalMatchingHistogram = metrics.histogram(MetricRegistry.name(ALL_NS, TOTAL_MATCHING));
+        allPadreElapsedTimeHistogram = metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_ELAPSED_TIME));
+        allQueriesMeter = metrics.meter(MetricRegistry.name(ALL_NS, QUERIES));
     }
     
-    @PreDestroy
-    public void preDestroy() {
-        log.debug("Shutting down Yammer metrics");
-        metrics.shutdown();
-    }
     
 }

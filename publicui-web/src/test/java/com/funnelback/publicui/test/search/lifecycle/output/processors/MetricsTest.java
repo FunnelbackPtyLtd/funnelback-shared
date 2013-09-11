@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.Metrics;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -21,18 +22,16 @@ import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 
 public class MetricsTest {
 
     private SearchTransaction st;
     private Metrics processor;
-    private MetricsRegistry metrics;
+    private MetricRegistry metrics;
     
     @Before
     public void before() {
-        metrics = new MetricsRegistry();
+        metrics = new MetricRegistry();
         processor = new Metrics();
         processor.setMetrics(metrics);
         processor.postConstruct();
@@ -76,17 +75,17 @@ public class MetricsTest {
         st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(456); 
         processor.processOutput(st);
         
-        Assert.assertEquals(0, metrics.newCounter(new MetricName(ALL_NS, ALL_NS, ERRORS_COUNT)).count());
-        Assert.assertEquals(456, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, TOTAL_MATCHING), false).mean(), 0.1);
-        Assert.assertEquals(123, metrics.newHistogram(new MetricName(ALL_NS, ALL_NS, PADRE_ELAPSED_TIME), false).mean(), 0.1);
-        Assert.assertEquals(1, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).count());
-        Assert.assertNotSame(0, metrics.newMeter(new MetricName(ALL_NS, ALL_NS, QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
+        Assert.assertEquals(0, metrics.counter(MetricRegistry.name(ALL_NS, ALL_NS, ERRORS_COUNT)).getCount());
+        Assert.assertEquals(456, metrics.histogram(MetricRegistry.name(ALL_NS, TOTAL_MATCHING)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(123, metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_ELAPSED_TIME)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(1, metrics.meter(MetricRegistry.name(ALL_NS, QUERIES)).getCount());
+        Assert.assertNotSame(0, metrics.meter(MetricRegistry.name(ALL_NS, QUERIES)).getMeanRate());
         
-        Assert.assertEquals(0, metrics.newCounter(new MetricName(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).count());
-        Assert.assertEquals(456, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", TOTAL_MATCHING), false).mean(), 0.1);
-        Assert.assertEquals(123, metrics.newHistogram(new MetricName(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME), false).mean(), 0.1);
-        Assert.assertEquals(1, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).count());
-        Assert.assertNotSame(0, metrics.newMeter(new MetricName(COLLECTION_NS, "metrics._default", QUERIES), QUERIES, TimeUnit.SECONDS).meanRate());
+        Assert.assertEquals(0, metrics.counter(MetricRegistry.name(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).getCount());
+        Assert.assertEquals(456, metrics.histogram(MetricRegistry.name(COLLECTION_NS, "metrics._default", TOTAL_MATCHING)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(123, metrics.histogram(MetricRegistry.name(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(1, metrics.meter(MetricRegistry.name(COLLECTION_NS, "metrics._default", QUERIES)).getCount());
+        Assert.assertNotSame(0, metrics.meter(MetricRegistry.name(COLLECTION_NS, "metrics._default", QUERIES)).getMeanRate());
     }
     
 }

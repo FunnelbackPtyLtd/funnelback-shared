@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -41,8 +42,6 @@ import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.binding.StringDefaultValueEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * <p>Main controller for the Modern UI.</p>
@@ -93,7 +92,7 @@ public class SearchController extends SessionController {
     private LocaleResolver localeResolver;
     
     @Autowired
-    private MetricsRegistry metrics;
+    private MetricRegistry metrics;
 
     /**
      * <p>Configures the binder to:
@@ -202,7 +201,7 @@ public class SearchController extends SessionController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         
-        metrics.newCounter(new MetricName(ALL_NS, VIEW_TYPE_NS, vt.name())).inc();
+        metrics.counter(MetricRegistry.name(ALL_NS, VIEW_TYPE_NS, vt.name())).inc();
         
         Map<String, Object> model = getModel(vt, request, transaction);
 
