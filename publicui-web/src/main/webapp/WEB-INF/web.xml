@@ -6,6 +6,8 @@
 	
 	<display-name>Funnelback Public UI</display-name>
 
+	
+
 	<!-- begin SPRING setup -->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
@@ -35,21 +37,6 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
- 	<servlet>
-        <servlet-name>recommender</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>recommender</servlet-name>
-        <url-pattern>/recommender/similarItems.json</url-pattern>
-        <url-pattern>/recommender/itemEntry.html</url-pattern>
-        <url-pattern>/recommender/searchRecommendations.html</url-pattern>
-        <url-pattern>/recommender/sessions.html</url-pattern>
-        <url-pattern>/recommender/queryEntry.html</url-pattern>
-        <url-pattern>/recommender/explore.json</url-pattern>
-    </servlet-mapping>
     
 	<servlet>
 		<servlet-name>publicui</servlet-name>
@@ -59,15 +46,20 @@
 	
 	<servlet-mapping>
 		<servlet-name>publicui</servlet-name>
-        <url-pattern>/</url-pattern>
-		<url-pattern>/search.html</url-pattern>
+        <url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--servlet-mapping>
+		<servlet-name>publicui</servlet-name>
+        <url-pattern>/*</url-pattern>
+        <url-pattern>/search.html</url-pattern>
 		<url-pattern>/search.json</url-pattern>
 		<url-pattern>/search.classic</url-pattern>
 		<url-pattern>/search.xml</url-pattern>
 		<url-pattern>/open-search.xml</url-pattern>
 		<url-pattern>/suggest.json</url-pattern>
 		<url-pattern>/anchors.html</url-pattern>
-		<url-pattern>/content-optimiser/*</url-pattern>
+		<url-pattern>/content-optimiser/optimise.html</url-pattern>
         <url-pattern>/filecopy.document</url-pattern>
         <url-pattern>/trim.document</url-pattern>
         <url-pattern>/trim.reference</url-pattern>
@@ -82,7 +74,13 @@
         <url-pattern>/click-history.json</url-pattern>
         <url-pattern>/click-process.*</url-pattern>
         <url-pattern>/cart.json</url-pattern>
-	</servlet-mapping>
+        <url-pattern>/recommender/similarItems.json</url-pattern>
+        <url-pattern>/recommender/itemEntry.html</url-pattern>
+        <url-pattern>/recommender/searchRecommendations.html</url-pattern>
+        <url-pattern>/recommender/sessions.html</url-pattern>
+        <url-pattern>/recommender/queryEntry.html</url-pattern>
+        <url-pattern>/recommender/explore.json</url-pattern>
+	</servlet-mapping-->
 	
 	<filter>
 		<filter-name>encodingFilter</filter-name>

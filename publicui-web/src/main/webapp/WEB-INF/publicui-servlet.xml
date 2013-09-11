@@ -10,10 +10,14 @@
 	<import resource="spring/freemarker.xml"/>
 	<import resource="spring/search-lifecycle.xml"/>
 	
-	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle" />
+	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers" />
 	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+	
+	<bean name="jsonView"
+		class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
+	</bean>
 
 	<mvc:interceptors>
             <mvc:interceptor>
