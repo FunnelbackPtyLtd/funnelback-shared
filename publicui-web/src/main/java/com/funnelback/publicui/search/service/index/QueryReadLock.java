@@ -23,16 +23,16 @@ public interface QueryReadLock {
 	 * @param config Used to work out the collection and lock file to place the lock on.
 	 * @throws FileLockException when the lock could not be acquired on the file.
 	 */
-    public void lock(Collection collection) throws FileLockException;
-    
-    /**
-     * Signify that the shared lock no longer needs to be kept on the index update lock file for a given collection.
-     * 
-     * <p> This should only be called after a call to lock() on the given collection. This should never be called more 
-     * than the number of previous lock() calls on a given collection.<p>
-     *  
-     * @param config Used to work out the collection and lock file.
-     */
-    public void release(Collection collection);
-	 
+	public void lock(Collection collection) throws FileLockException;
+
+	/**
+	 * Signify that the shared lock no longer needs to be kept on the index update lock file for a given collection.
+	 * 
+	 * <p> This should only be called after a call to lock() on the given collection. This should never be called more 
+	 * than the number of previous lock() calls on a given collection.<p>
+	 *  
+	 * @param config Used to work out the collection and lock file.
+	 */
+	public void release(Collection collection);
+
 }
