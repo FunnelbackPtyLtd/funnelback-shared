@@ -29,6 +29,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.service.index.QueryReadLock;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,6 +44,9 @@ public class DefaultPadreForkingLockTests {
     
     private DefaultPadreForking forking;
     
+    @Autowired
+    private QueryReadLock queryReadLock;
+    
     @Before
     public void before() {
         forking = new DefaultPadreForking();
@@ -50,6 +54,7 @@ public class DefaultPadreForkingLockTests {
         forking.setPadreWaitTimeout(30000);
         forking.setPadreXmlParser(new StaxStreamParser());
         forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
+        forking.setQueryReadLock(queryReadLock);
     }
     
     /**
@@ -98,6 +103,7 @@ public class DefaultPadreForkingLockTests {
         forking2.setPadreWaitTimeout(30000);
         forking2.setPadreXmlParser(new StaxStreamParser());
         forking2.setSearchHome(new File("src/test/resources/dummy-search_home"));
+        forking2.setQueryReadLock(queryReadLock);
 
         qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{

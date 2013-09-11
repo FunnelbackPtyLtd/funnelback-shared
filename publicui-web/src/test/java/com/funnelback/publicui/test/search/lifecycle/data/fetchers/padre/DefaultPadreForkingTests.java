@@ -27,6 +27,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.service.index.QueryReadLock;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.sun.jna.platform.win32.Advapi32;
@@ -41,14 +42,20 @@ public class DefaultPadreForkingTests {
     
     private DefaultPadreForking forking;
     
+    @Autowired
+    private File searchHome;
+    
+    @Autowired
+    private QueryReadLock queryReadLock;
+    
     @Before
     public void before() {
         forking = new DefaultPadreForking();
         forking.setI18n(i18n);
         forking.setPadreWaitTimeout(30000);
         forking.setPadreXmlParser(new StaxStreamParser());
-        forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
-
+        forking.setSearchHome(searchHome);
+        forking.setQueryReadLock(queryReadLock);
     }
     
     @Test
@@ -67,7 +74,7 @@ public class DefaultPadreForkingTests {
         Assert.assertNull(st.getResponse());
         
         sq.setQuery(null);
-        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking")));
+        sq.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking")));
         forking.fetchData(st);
         Assert.assertNull(st.getResponse());
         
@@ -79,7 +86,7 @@ public class DefaultPadreForkingTests {
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+        st.getQuestion().setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(qpOptions);
         st.getQuestion().getMetaParameters().add("t:test");
         forking.fetchData(st);
@@ -95,7 +102,7 @@ public class DefaultPadreForkingTests {
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");
         SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
@@ -115,7 +122,7 @@ public class DefaultPadreForkingTests {
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-invalid.xml.bad"}));
         
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
         qs.setQuery("test");
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
@@ -132,7 +139,7 @@ public class DefaultPadreForkingTests {
     @Test
     public void testInvalidQueryProcessor() throws FileNotFoundException, EnvironmentVariableException {
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", "invalid")));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", "invalid")));
         qs.setQuery("test");
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
@@ -155,7 +162,7 @@ public class DefaultPadreForkingTests {
         }
 
         SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", qp)));
+        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", qp)));
         qs.setQuery("test");
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
@@ -173,7 +180,7 @@ public class DefaultPadreForkingTests {
                 new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
             
             SearchQuestion qs = new SearchQuestion();
-            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig("padre-forking").setValue("query_processor", getMockPadre())));
+            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
             qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
             qs.setQuery("test");
             qs.setImpersonated(true);

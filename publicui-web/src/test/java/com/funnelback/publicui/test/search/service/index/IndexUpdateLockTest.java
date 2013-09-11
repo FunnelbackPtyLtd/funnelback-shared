@@ -10,51 +10,56 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.common.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.service.index.IndexUpdateLock;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.index.DefaultQueryReadLock;
+import com.funnelback.publicui.search.service.index.QueryReadLock;
 
 public class IndexUpdateLockTest {
 	
 	private static final int COLLECTION_COUNT = 3;
 
-	private Config[] config;
+	private Collection[] collection;
 	
+	private QueryReadLock queryReadLock;
 	
-	
-	private File getLockFile(Config config) {
-		return new File(config.getCollectionRoot()
+	private File getLockFile(Collection collection) {
+		return new File(collection.getConfiguration().getCollectionRoot()
 			 	+ File.separator + DefaultValues.VIEW_LIVE 
             	+ File.separator + DefaultValues.FOLDER_IDX
             	,  Files.Index.UPDATE_LOCK);
 	}
 	
-	private Config getConfig(int i) throws FileNotFoundException{
+	private Collection getCollection(int i) throws FileNotFoundException{
 		String collectionName = "index-update-lock" + i;
 		Config config = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), collectionName);
         config.setValue("collection_root",
                 new File("src/test/resources/dummy-search_home/data/" + collectionName + "/").getAbsolutePath() );
         config.setValue("collection", collectionName );
-        return config;
+        Collection collection = new Collection(collectionName, config);
+        return collection;
 	}
 	
 	@Before
 	public void before() throws FileNotFoundException {
-		config = new Config[COLLECTION_COUNT];
+		collection = new Collection[COLLECTION_COUNT];
 		for (int i = 0; i < COLLECTION_COUNT; i++){
-			config[i] = getConfig(i);
-			Assert.assertTrue(getLockFile(config[i]).exists());
+			collection[i] = getCollection(i);
+			Assert.assertTrue(getLockFile(collection[i]).exists());
 		}
+		queryReadLock = new DefaultQueryReadLock();
 	}
 	
 	@Test
 	public void oneCollectionOneCall() throws Exception {
-		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(config[0]), "rw");
+		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(collection[0]), "rw");
 		FileLock indexUpdateLock = null;
 		try {
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
+			queryReadLock.lock(collection[0]);
 			
 			//Try to lock the file, should fail
 			try {
@@ -63,7 +68,7 @@ public class IndexUpdateLockTest {
 			} catch (OverlappingFileLockException e) {}
 			Assert.assertNull(indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[0]);
+			queryReadLock.release(collection[0]);
 			
 			//Try to lock the file, should pass
 			indexUpdateLock = indexUpdateLockRandomFile.getChannel().tryLock(0, Long.MAX_VALUE, false);			
@@ -80,11 +85,11 @@ public class IndexUpdateLockTest {
 	
 	@Test
 	public void oneCollectionThreeCalls() throws Exception {
-		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(config[0]), "rw");
+		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(collection[0]), "rw");
 		FileLock indexUpdateLock = null;
 		try {
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
+			queryReadLock.lock(collection[0]);
+			queryReadLock.lock(collection[0]);
 			
 			//Try to lock the file, should fail
 			try {
@@ -93,7 +98,7 @@ public class IndexUpdateLockTest {
 			} catch (OverlappingFileLockException e) {}
 			Assert.assertNull(indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[0]);
+			queryReadLock.release(collection[0]);
 			
 			//Try to lock the file, should fail
 			try {
@@ -102,8 +107,8 @@ public class IndexUpdateLockTest {
 			} catch (OverlappingFileLockException e) {}
 			Assert.assertNull(indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[0]);
+			queryReadLock.lock(collection[0]);
+			queryReadLock.release(collection[0]);
 			
 			//Try to lock the file, should fail
 			try {
@@ -112,7 +117,7 @@ public class IndexUpdateLockTest {
 			} catch (OverlappingFileLockException e) {}
 			Assert.assertNull(indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[0]);
+			queryReadLock.release(collection[0]);
 			
 			//Try to lock the file, should pass
 			indexUpdateLock = indexUpdateLockRandomFile.getChannel().tryLock(0, Long.MAX_VALUE, false);			
@@ -128,17 +133,24 @@ public class IndexUpdateLockTest {
 	}
 	
 	@Test
-	public void IndexUpdateLOckIsASingelton(){
-		Assert.assertTrue(IndexUpdateLock.getIndexUpdateLockInstance() == IndexUpdateLock.getIndexUpdateLockInstance());
+	public void IndexUpdateLOckIsASingelton() throws FileLockException{
+		//We test this by getting two instances if the locking service and locking on the same file.
+		//if it is not a sinleton it will through some error
+		QueryReadLock otherQueryReadLock = new DefaultQueryReadLock();
+		this.queryReadLock.lock(collection[0]);
+		//otherQueryReadLock.lock(collection[0]);
+		
+		//this.queryReadLock.release(collection[0]);
+		otherQueryReadLock.release(collection[0]);
 	}
 	
 	@Test
 	public void ensureDifferentCollectionsHaveDifferentLocks()throws Exception {
-		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(config[0]), "rw");
+		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(collection[0]), "rw");
 		FileLock indexUpdateLock = null;
 		try {
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[1]);
+			queryReadLock.lock(collection[0]);
+			queryReadLock.lock(collection[1]);
 			
 			
 			//Try to lock the file, should fail
@@ -148,13 +160,13 @@ public class IndexUpdateLockTest {
 			} catch (OverlappingFileLockException e) {}
 			Assert.assertNull(indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[0]);
+			queryReadLock.release(collection[0]);
 			
 			//Try to lock the file, should pass
 			indexUpdateLock = indexUpdateLockRandomFile.getChannel().tryLock(0, Long.MAX_VALUE, false);			
 			Assert.assertNotNull("Maybe another collection relesed this collection's lock" ,indexUpdateLock);
 			
-			IndexUpdateLock.getIndexUpdateLockInstance().release(config[1]);
+			queryReadLock.release(collection[1]);
 		} finally {
 			if (indexUpdateLock != null) {
 				indexUpdateLock.release();
@@ -170,12 +182,12 @@ public class IndexUpdateLockTest {
 	 * We really should not have the case where the instance of the Config for the same collection matters
 	 */
 	public void checkDifferentConfigObjectsGivesTheSameLock() throws Exception {
-		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(config[0]), "rw");
+		RandomAccessFile indexUpdateLockRandomFile = new RandomAccessFile(getLockFile(collection[0]), "rw");
 		FileLock indexUpdateLock = null;
-		Config otherConfig = getConfig(0);
-		Assert.assertFalse(otherConfig == config[0]);
+		Collection otherCollection = getCollection(0);
+		Assert.assertFalse(otherCollection == collection[0]);
 		try {
-			IndexUpdateLock.getIndexUpdateLockInstance().lock(config[0]);
+			queryReadLock.lock(collection[0]);
 			
 			//Try to lock the file, should fail
 			try {
@@ -185,7 +197,7 @@ public class IndexUpdateLockTest {
 			Assert.assertNull(indexUpdateLock);
 			
 			//Release with a differnt Config instance
-			IndexUpdateLock.getIndexUpdateLockInstance().release(otherConfig);
+			queryReadLock.release(otherCollection);
 			
 			//Try to lock the file, should pass
 			indexUpdateLock = indexUpdateLockRandomFile.getChannel().tryLock(0, Long.MAX_VALUE, false);			

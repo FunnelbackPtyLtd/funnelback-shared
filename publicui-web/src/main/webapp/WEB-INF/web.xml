@@ -48,6 +48,7 @@
         <url-pattern>/recommender/searchRecommendations.html</url-pattern>
         <url-pattern>/recommender/sessions.html</url-pattern>
         <url-pattern>/recommender/queryEntry.html</url-pattern>
+        <url-pattern>/recommender/explore.json</url-pattern>
     </servlet-mapping>
     
 	<servlet>
@@ -66,7 +67,7 @@
 		<url-pattern>/open-search.xml</url-pattern>
 		<url-pattern>/suggest.json</url-pattern>
 		<url-pattern>/anchors.html</url-pattern>
-		<url-pattern>/content-optimiser/*.*</url-pattern>
+		<url-pattern>/content-optimiser/*</url-pattern>
         <url-pattern>/filecopy.document</url-pattern>
         <url-pattern>/trim.document</url-pattern>
         <url-pattern>/trim.reference</url-pattern>

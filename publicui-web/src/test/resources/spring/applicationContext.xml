@@ -10,7 +10,9 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<!-- context:component-scan base-package="com.funnelback.publicui" / -->
+	<!-- We don't scan everything in our tests for efficiency, rather define a bean for each component 
+	context:component-scan base-package="com.funnelback.publicui" / -->
+	
 	<!-- aop:aspectj-autoproxy / -->
 
 	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -164,6 +166,8 @@
     <bean class="com.funnelback.publicui.search.web.controllers.session.SearchHistoryController" />
     <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartController" />
     <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartProcessController" />
+    
+    <bean class="com.funnelback.publicui.search.service.index.DefaultQueryReadLock" />
     
 	
 </beans>

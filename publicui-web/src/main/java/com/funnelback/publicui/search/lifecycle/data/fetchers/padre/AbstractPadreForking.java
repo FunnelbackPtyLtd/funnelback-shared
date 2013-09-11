@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -13,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.funnelback.common.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
@@ -25,7 +27,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.Windows
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.search.service.index.IndexUpdateLock;
+import com.funnelback.publicui.search.service.index.QueryReadLock;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.PadreXmlParser;
@@ -66,6 +68,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
     @Autowired
     protected I18n i18n;
+    
+    @Autowired
+    @Setter @Getter
+    protected QueryReadLock queryReadLock;
     
     @Override
     public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
@@ -113,8 +119,12 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     
             ExecutionReturn padreOutput = null;
             
-            IndexUpdateLock.getIndexUpdateLockInstance()
-            	.lock(searchTransaction.getQuestion().getCollection().getConfiguration());
+            try {
+            	queryReadLock.lock(searchTransaction.getQuestion().getCollection());
+    		} catch (FileLockException e) {
+    			throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
+    		}	
+            
             
             try {
                 if (searchTransaction.getQuestion().isImpersonated()) {
@@ -138,8 +148,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
             } finally {
-            	IndexUpdateLock.getIndexUpdateLockInstance()
-            		.release(searchTransaction.getQuestion().getCollection().getConfiguration());
+            	queryReadLock.release(searchTransaction.getQuestion().getCollection());
             }
         }
     }
