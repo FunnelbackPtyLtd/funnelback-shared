@@ -1,17 +1,5 @@
 package com.funnelback.publicui.search.service.textminer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import lombok.extern.log4j.Log4j;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -21,6 +9,16 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.TextMiner;
+import lombok.extern.log4j.Log4j;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Log4j
 @Component
@@ -39,11 +37,6 @@ public class SQLiteTextMiner implements TextMiner {
 
     /**
      * Looks up an entity or its variant to the the JSON String
-     * @param entity
-     * @param config
-     * @param checkpointDir
-     * @param hashKey
-     * @return
      */
     private String getEntityOrVariant(String entity, Config config, String hashKey) {
         File checkpointDir = new File(config.getCollectionRoot()
