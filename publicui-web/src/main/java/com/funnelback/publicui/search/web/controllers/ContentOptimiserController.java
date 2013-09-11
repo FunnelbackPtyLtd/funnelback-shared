@@ -26,12 +26,10 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.contentoptimiser.ContentOptimiserUserRestrictions;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
 import com.funnelback.publicui.xml.XmlParsingException;
 
@@ -59,7 +57,7 @@ public class ContentOptimiserController {
     
     @InitBinder
     public void initBinder(DataBinder binder) {
-        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+        searchController.initBinder(binder);
     }
     
     /**
