@@ -1,15 +1,16 @@
 package com.funnelback.publicui.recommender.web.controllers;
 
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
-import com.funnelback.publicui.recommender.FBRecommender;
-import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.recommender.SortType;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
-import com.funnelback.publicui.search.web.controllers.SearchController;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,12 +24,17 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import java.util.*;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
+import com.funnelback.publicui.recommender.FBRecommender;
+import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.RecommendationResponse;
+import com.funnelback.publicui.recommender.SortType;
+import com.funnelback.publicui.recommender.utils.RecommenderUtils;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.search.web.controllers.SearchController;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
@@ -134,9 +140,17 @@ public class RecommenderController {
 			) throws Exception {
 		response.setContentType("application/json");
 		
-		Map<String, Object> model = new HashMap<>();
-		//model.put("RecommendationResponse",question);
-
+		Map<String, Object> model;
+		{
+			ModelAndView modelandView = searchController.search(request, response, question, user);
+			if (modelandView == null){
+				return null;
+			}
+			model = modelandView.getModel();
+		}
+		SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
+		model.put("RecommendationResponse", RecommendationResponse.fromResults(searchResponse.getResultPacket().getResults()));
+		
 		return new ModelAndView(view, model);
 	}
 }

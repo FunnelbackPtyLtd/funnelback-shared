@@ -1,17 +1,20 @@
 package com.funnelback.publicui.recommender;
 
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.Date;
 import java.util.Map;
-
+import com.funnelback.publicui.search.model.padre.Result;
 /**
  * A recommendation in the recommender system.
  * @author fcrimmins@funnelback.com
  */
 @Data
+@AllArgsConstructor
 public class Recommendation {
 	/**
 	 * The canonical name or ID for the item e.g. URL address, musician name, product ID etc.
@@ -80,5 +83,21 @@ public class Recommendation {
         if (value != null) {
             this.format = StringEscapeUtils.escapeHtml(value);
         }
+    }
+    
+    public static Recommendation fromResult(Result result){
+    	String format = "";
+    	if (null != result.getMetaData().get("f"))
+    		format = StringEscapeUtils.escapeHtml(result.getMetaData().get("f"));
+    	Recommendation recommendation = new Recommendation(result.getDisplayUrl(), 
+    			0,//result.getExplain().getFinalScore(), 
+    			result.getTitle(), 
+    			result.getDate(), 
+    			0,
+    			0, 
+    			result.getMetaData(), 
+    			result.getSummary(), 
+    			format);
+    	return recommendation;
     }
 }
