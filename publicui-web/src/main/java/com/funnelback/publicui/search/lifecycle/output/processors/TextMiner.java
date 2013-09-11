@@ -1,14 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import java.util.List;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.lang.WordUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -17,6 +8,13 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang.WordUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component("textMinerOutputProcessor")
 @Log4j
@@ -67,7 +65,6 @@ public class TextMiner extends AbstractOutputProcessor {
 
     /**
      * Generate noun phrases for the result URLs and insert into the data model.
-     * 
      */
 
     private void generateNounPhrases(SearchTransaction searchTransaction) {
@@ -88,12 +85,7 @@ public class TextMiner extends AbstractOutputProcessor {
     }
 
     /**
-     * Generate and custom data found in Redis and insert into the response.
-     * 
-     * @param query
-     *            seed query
-     * @param searchHome
-     *            value of SEARCH_HOME environment variable
+     * Generate any custom data found in persistent storage.
      */
     private void generateCustomData(String query, SearchTransaction searchTransaction) {
         Collection collection = searchTransaction.getQuestion().getCollection();
