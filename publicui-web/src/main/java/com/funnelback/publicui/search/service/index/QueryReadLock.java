@@ -5,7 +5,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 
 /**
  * This should be used to place a lock on the index during query
- * @author luke
  *
  */
 public interface QueryReadLock {

@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import lombok.Getter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.ThreadSharedFileLock;
@@ -14,7 +13,6 @@ import com.funnelback.common.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
-import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 @Component
@@ -41,8 +39,6 @@ public class DefaultQueryReadLock implements QueryReadLock{
 	 */
 	public static class DefaultQueryReadLockSingleton {
 
-		@Autowired
-		protected static I18n i18n;
 		/*
 		 * This holds all of the locks. At most there is one lock per collection. This is initially empty
 		 * and locks must be added at most once per collection.
@@ -75,13 +71,17 @@ public class DefaultQueryReadLock implements QueryReadLock{
 			//Ensure that the lockMap knows about this file to lock on.
 			//Without this IF we would have to create a new instance of ThreadSharedFileLock even if it was already in the
 			//map on every single call. Keep in mind this is called for every query. 
-			if (null == lockMap.get(key)){
-				//We must be atomic, another thread might have completed the above IF at the same time or just before 
-				//us
-				lockMap.putIfAbsent(key, new ThreadSharedFileLock(getCollectionUpdateLockFile(config)));
+			ThreadSharedFileLock lock = lockMap.get(key);
+			if (lock == null) {
+				//THe lock did not exist, try to place it in, we must do this as an atomic action.
+				ThreadSharedFileLock newLock = new ThreadSharedFileLock(getCollectionUpdateLockFile(config));
+				lock = lockMap.putIfAbsent(key, newLock);
+				//Check if we placed our lock in the hash
+				if (lock == null) {
+					lock = newLock;
+				}
 			}
-
-			lockMap.get(key).lock();
+			lock.lock();
 		}
 
 		public void release(Collection collection) {

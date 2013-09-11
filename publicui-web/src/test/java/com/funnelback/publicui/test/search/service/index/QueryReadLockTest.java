@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.index.DefaultQueryReadLock;
 import com.funnelback.publicui.search.service.index.QueryReadLock;
 
-public class IndexUpdateLockTest {
+public class QueryReadLockTest {
 	
 	private static final int COLLECTION_COUNT = 3;
 
