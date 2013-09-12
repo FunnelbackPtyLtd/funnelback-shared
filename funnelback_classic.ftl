@@ -643,7 +643,7 @@
 
     @nested Text to display beside the checkbox.
 -->
-<#macro FacetScope>
+<#macro FacetScope input=true><#compress>
     <@AfterSearchOnly>
     <#if question?exists && question.selectedCategoryValues?size &gt; 0>
         <#local facetScope = "" />
@@ -654,12 +654,15 @@
             </#list>
             <#if key_has_next><#local facetScope = facetScope + "&" /></#if>
         </#list> 
-        <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="checked">
-
-        <label for="facetScope"><#nested></label>
+        <#if input>
+            <input type="checkbox" name="facetScope" id="facetScope" value="${facetScope}" checked="checked">
+            <label for="facetScope"><#nested></label>
+        <#else>
+            ${facetScope}
+        </#if>
     </#if>
     </@AfterSearchOnly>
-</#macro>
+</#compress></#macro>
 
 <#--- @end -->
 
