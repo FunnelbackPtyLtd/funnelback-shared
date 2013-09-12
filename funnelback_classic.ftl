@@ -817,7 +817,7 @@
                 </#list>
                 <#-- Recurse in sub categories -->
                 <#if category.categories?exists && category.categories?size &gt; 0>
-                    <@Category recursionCategories=category.categories max=max nbCategories=nbCategories><#nested></@Category>
+                    <@Category recursionCategories=category.categories max=max tag=tag nbCategories=nbCategories><#nested></@Category>
                 </#if>
             </#list>
 
