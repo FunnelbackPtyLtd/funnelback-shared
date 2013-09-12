@@ -1,12 +1,18 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.curator.action.RemoveUrls;
+import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.explore.ExploreQueryGenerator;
@@ -14,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.MapUtils;
+import com.sun.research.ws.wadl.Application;
 
 /**
  * Processes explore:... queries. Calls padre-rf to
@@ -31,6 +38,9 @@ public class ExploreQuery extends AbstractInputProcessor {
     @Autowired
     @Setter private ExploreQueryGenerator generator;
     
+    @Autowired
+    private ApplicationContext applicat;
+    
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (SearchTransactionUtils.hasQueryAndCollection(searchTransaction)) {
@@ -47,10 +57,12 @@ public class ExploreQuery extends AbstractInputProcessor {
             }
             
             String[] queries = searchTransaction.getQuestion().getQuery().split("\\s");
+            List<String> urlsToRemove = new ArrayList<>();
             boolean queryChanged = false;
             for(int i=0; i<queries.length; i++) {
                 if (queries[i].startsWith(EXPLORE_PREFIX)) {
                     String url = queries[i].substring(EXPLORE_PREFIX.length());
+                    urlsToRemove.add(url);
                     String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(),
                     		url, nbOfTerms);
                     if (exploreQuery != null) {
@@ -63,8 +75,8 @@ public class ExploreQuery extends AbstractInputProcessor {
             }
             
             if (queryChanged) {
+            	new RemoveUrls(urlsToRemove).performAction(searchTransaction, Action.Phase.INPUT, null);
                 searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_VSIMPLE);
-                searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_DAAT0);
                 log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery() + "' to '" + StringUtils.join(queries, " ") + "'");
                 searchTransaction.getQuestion().setQuery(StringUtils.join(queries, " "));
             }

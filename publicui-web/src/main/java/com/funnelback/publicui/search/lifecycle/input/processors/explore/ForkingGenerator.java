@@ -57,7 +57,7 @@ public class ForkingGenerator implements ExploreQueryGenerator {
         
         try {
             executor.execute(cmdLine);
-            return getQuery(stdOut.toString());
+            return "[" + getQuery( stdOut.toString()) + "]";
         } catch (IOException ioe) {
             log.error("Error while running '" + cmdLine.toString() + "'", ioe);
         }
