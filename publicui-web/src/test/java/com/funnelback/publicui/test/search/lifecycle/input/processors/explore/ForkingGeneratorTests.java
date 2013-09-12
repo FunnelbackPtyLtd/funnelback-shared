@@ -17,10 +17,11 @@ public class ForkingGeneratorTests {
     
     private ForkingGenerator generator;
     
+    File searchHome = new File("src/test/resources/dummy-search_home");
     @Before
     public void before() {
         generator = new ForkingGenerator();
-        generator.setSearchHome(new File("src/test/resources/dummy-search_home"));
+        generator.setSearchHome(searchHome);
         
         String ext = ".sh";
         if (OS.isFamilyWindows()) {
@@ -31,16 +32,16 @@ public class ForkingGeneratorTests {
     
     @Test
     public void test() throws FileNotFoundException, EnvironmentVariableException {
-        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", 10);
+        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")), "http://dummy.com/", 10);
         
-        Assert.assertEquals("heath^1.6158 camp^1.6158 entire^1.2664 palace^1.2084 french^1.1012 near^0.8637 tent^0.8011 play^0.7935 british^0.6693 wood^0.6365", q);
+        Assert.assertEquals("[heath^1.6158 camp^1.6158 entire^1.2664 palace^1.2084 french^1.1012 near^0.8637 tent^0.8011 play^0.7935 british^0.6693 wood^0.6365]", q);
     }
 
     @Test
     public void testBadPadreRfBinary() throws Exception {
         generator.setPadreRfBinary("Bad one");
         
-        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig("dummy")), "http://dummy.com/", null);
+        String q = generator.getExploreQuery(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")), "http://dummy.com/", null);
         Assert.assertNull(q);
     }
     
