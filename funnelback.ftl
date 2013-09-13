@@ -530,14 +530,14 @@
     @param str Use a literal string instead of a translation key. For example <em>&quot;%d results match the query %s&quot;</em>. See <tt>java.util.Formatter</tt> for the format specifier documentation.
     @param args Array of arguments to be formatted, for example <tt>[42, &quot;funnelback&quot;]</tt>.
 -->
-<#macro Format args str="" key="" locale=question.locale>
+<#macro Format args=[] str="" key="" locale=question.locale>
     <#if key != "">
         <#local s = response.translations[key]!str />
     <#else>
         <#local s = str />
     </#if>
 
-    <#if args??>
+    <#if args?? && args?size &gt; 0>
         ${format(locale, s, args)}
     <#else>
         ${format(locale, s)}
