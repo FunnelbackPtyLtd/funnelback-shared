@@ -1,17 +1,25 @@
 package com.funnelback.publicui.recommender.utils;
 
+import com.funnelback.common.utils.ObjectMapperSingleton;
 import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.SortType;
+import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utilities for generating HTML output.
@@ -19,6 +27,43 @@ import java.util.List;
  */
 public final class HTMLUtils {
     public static final int MIN_CLICKS_PER_SESSION = 2;
+
+    /**
+     * Get search results for the given query and search URL. Each result is a Map which can be queried
+     * like: result.get("liveUrl") or result.get("title");
+     *
+     * @param query         search terms.
+     * @param searchService search service URL
+     * @return List of results from the search engine result packet.
+     * @throws Exception
+     */
+    public static List<Map<String, Object>> getResults(String query, String searchService) throws IOException {
+        List<Map<String, Object>> results = null;
+        HttpURLConnection urlConnection = null;
+        ObjectMapper mapper = ObjectMapperSingleton.getInstance();
+
+        if (query != null && !query.trim().equals("")) {
+            try {
+                URL url = new URL(searchService + "&query=" + URLEncoder.encode(query, "utf-8"));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+                // Drill down through the JSON to get to the result packet
+                Map<String, Object> jsonMap = mapper.readValue(in, Map.class);
+                Map<String, Object> response = (Map<String, Object>) jsonMap.get("response");
+                Map<String, Object> resultPacket = (Map<String, Object>) response.get("resultPacket");
+                results = (List<Map<String, Object>>) resultPacket.get("results");
+            } catch (NullPointerException nullPointerException) {
+                System.out.println("FBRecommenderREST.getResults(): " + nullPointerException);
+            } catch (UnsupportedEncodingException exception) {
+                System.out.println("FBRecommenderREST.getResults(): " + exception);
+            } finally {
+                urlConnection.disconnect();
+            }
+        }
+
+        return results;
+    }
 
     public static enum ResultFormat {
         html("html"),
@@ -132,11 +177,11 @@ public final class HTMLUtils {
 
                     String encodedItem = URLEncoder.encode(item, "utf-8");
 
-                    String similarLink =  RecommenderController.similarItemsJson + "?seedItem="
+                    String similarLink =  RecommenderController.SIMILAR_ITEMS_JSON + "?seedItem="
                             + encodedItem + collection + scope + "&maxRecommendations="
                             + maxRecommendations + dsort + asort + encodedMetadataClass;
 
-                    String sessionsLink = RecommenderController.sessionsHtml + "?itemName=" + encodedItem
+                    String sessionsLink = RecommenderController.SESSIONS_HTML + "?itemName=" + encodedItem
                             + seedItem + collection + "&minClicks=" + MIN_CLICKS_PER_SESSION;
 
                     buf.append("<li><a href=\"" + item + "\">" + title + "</a> <small>"

@@ -1,6 +1,6 @@
-package com.funnelback.publicui.recommender;
+package com.funnelback.publicui.recommender.compare;
 
-import com.funnelback.publicui.recommender.compare.*;
+import com.funnelback.publicui.recommender.Recommendation;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -1,19 +1,20 @@
 package com.funnelback.publicui.recommender.utils;
 
-import com.funnelback.common.utils.FileUtils;
-import com.funnelback.common.utils.ObjectMapperSingleton;
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.utils.ObjectCache;
+import com.funnelback.common.utils.SQLiteCache;
+import com.funnelback.dataapi.connector.padre.PadreConnector;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.publicui.recommender.FBRecommender;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.tuple.ItemTuple;
-
+import com.funnelback.reporting.recommender.tuple.ItemTuple;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.File;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -21,46 +22,10 @@ import java.util.*;
  * @author fcrimmins@funnelback.com
  */
 public final class RecommenderUtils {
+    private static final Logger logger = Logger.getLogger(RecommenderUtils.class);
 
     // Private constructor to avoid unnecessary instantiation of the class
     private RecommenderUtils() {
-    }
-
-    /**
-     * Get search results for the given query and search URL. Each result is a Map which can be queried
-     * like: result.get("liveUrl") or result.get("title");
-     *
-     * @param query         search terms.
-     * @param searchService search service URL
-     * @return List of results from the search engine result packet.
-     * @throws Exception
-     */
-    public static List<Map<String, Object>> getResults(String query, String searchService) throws IOException {
-        List<Map<String, Object>> results = null;
-        HttpURLConnection urlConnection = null;
-        ObjectMapper mapper = ObjectMapperSingleton.getInstance();
-
-        if (query != null && !query.trim().equals("")) {
-            try {
-                URL url = new URL(searchService + "&query=" + URLEncoder.encode(query, "utf-8"));
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                // Drill down through the JSON to get to the result packet
-                Map<String, Object> jsonMap = mapper.readValue(in, Map.class);
-                Map<String, Object> response = (Map<String, Object>) jsonMap.get("response");
-                Map<String, Object> resultPacket = (Map<String, Object>) response.get("resultPacket");
-                results = (List<Map<String, Object>>) resultPacket.get("results");
-            } catch (NullPointerException nullPointerException) {
-                System.out.println("FBRecommenderREST.getResults(): " + nullPointerException);
-            } catch (UnsupportedEncodingException exception) {
-                System.out.println("FBRecommenderREST.getResults(): " + exception);
-            } finally {
-                urlConnection.disconnect();
-            }
-        }
-
-        return results;
     }
 
     /**
@@ -87,53 +52,60 @@ public final class RecommenderUtils {
     }
 
     /**
-     * Write out a checkpointed version of the given object to the given file.
-     * @param checkpointFile File to checkpoint to
-     * @param object Object to checkpoint
-     */
-    public static void writeCheckpoint(File checkpointFile, Object object) {
-        FileUtils.checkpoint(object, checkpointFile);
-        System.out.println("Checkpointed to file: " + checkpointFile);
-    }
-
-    /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
-     * @param recommender Recommender to get recommendations from
      * @param itemName name of item
-     * @param collection collection that item is believed to exist in
+     * @param collectionConfig collection config object
      * @param scope comma separated list of items scopes
      * @param maxRecommendations maximum number of recommendations to display (less than 1 means unlimited)
      * @return List of recommendations (which may be empty).
      */
-    public static List<Recommendation> getRecommendationsForItem(FBRecommender recommender, String itemName,
-                                                                 String collection, String scope,
-                                                                 int maxRecommendations) {
+    public static List<Recommendation> getRecommendationsForItem(String itemName, Config collectionConfig,
+            String scope, int maxRecommendations) {
         List<Recommendation> recommendations = new ArrayList<>();
-        List<ItemTuple> items = null;
+        List<ItemTuple> fullList = null;
         List<String> scopes = new ArrayList<>();
 
         if (scope != null && !("").equals(scope)) {
             scopes = Arrays.asList(scope.split(","));
         }
 
-        try {
-            items = recommender.recommendThingsForItem(itemName, maxRecommendations, scopes);
-        }
-        catch (Exception exception) {
-            System.out.println(exception);
-        }
+        fullList = getRecommendationsFromCache(itemName, collectionConfig);
 
-        if (items != null && items.size() > 0) {
+        if (fullList != null && fullList.size() > 0) {
+            List<ItemTuple> scopedList = new ArrayList<>();
+
+            int i = 0;
+			for (ItemTuple item : fullList) {
+                if (maxRecommendations > 0 && i >= maxRecommendations) {
+                    break;
+                }
+
+                String itemValue = item.getItemID();
+
+                if (itemValue != null && com.funnelback.reporting.recommender.utils.RecommenderUtils.inScope(itemValue, scopes)) {
+                    scopedList.add(item);
+                    i++;
+                }
+			}
+
             Map<String,ItemTuple> map = new HashMap<>();
-            for (ItemTuple i : items) map.put(i.getItemID(),i);
+            List<String> urls = new ArrayList<>();
 
-            List<DocInfo> dis = ItemUtils.getDocInfoList(items, collection);
+            for (ItemTuple item : scopedList) {
+                String url = item.getItemID();
+
+                map.put(url,item);
+                urls.add(url);
+            }
+
+            List<DocInfo> dis = getDocInfoList(urls, collectionConfig);
 
             if (dis != null) {
                 for(DocInfo docInfo : dis) {
                     URI uri = docInfo.getUri();
                     String itemID = uri.toString();
-                    long popularity = recommender.getNumPreferences(itemID);
+                    // long popularity = recommender.getNumPreferences(itemID);
+                    long popularity = 0;
                     float confidence = map.get(itemID).getScore();
                     Recommendation recommendation = new Recommendation(itemID, confidence, popularity, docInfo);
                     recommendations.add(recommendation);
@@ -142,5 +114,105 @@ public final class RecommenderUtils {
         }
 
         return recommendations;
+    }
+
+    /**
+     * Return a list of DocInfo objects for the given URL items in the given collection.
+     * Document information for any URLs which are not in the index will not be
+     * present in the returned list.
+     *
+     * @param urls list of URL items
+     * @param collectionConfig collection config object
+     * @return a list of DocInfo objects for each URL that was in the collection
+     */
+    public static List<DocInfo> getDocInfoList(List<String> urls, Config collectionConfig) {
+        List<DocInfo> dis;
+
+        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + "idx" + File.separator + "index");
+
+        URI[] addresses = new URI[urls.size()];
+        int i = 0;
+        for (String item : urls) {
+            addresses[i] = URI.create(item);
+            i++;
+        }
+
+        dis =
+            new PadreConnector(indexStem).docInfo(addresses).withMetadata(DocInfoQuery.ALL_METADATA).fetch().asList();
+
+        return dis;
+    }
+
+    /**
+     * Return true if the given item is considered "in scope" based on the given list
+     * of scope patterns (which may be empty).
+     * @param item String to test for display
+     * @param scopes list of scope patterns e.g. cmis.csiro.au,-vic.cmis.csiro.au
+     * @return true if item should be displayed
+     */
+    public static boolean inScope(String item, List<String> scopes) {
+        boolean inScope = false;
+
+        if (scopes != null && scopes.size() > 0) {
+            for (String scopePattern : scopes) {
+                if (scopePattern.startsWith(("-"))) {
+                    // Negative scope pattern i.e. -handbook.curtin.edu.au
+                    scopePattern = scopePattern.substring(1, scopePattern.length());
+
+                    if (item.contains(scopePattern)) {
+                        inScope = false;
+                        break;
+                    }
+                }
+                else if (item.contains(scopePattern)) {
+                    inScope = true;
+                }
+            }
+        }
+        else {
+            inScope = true;
+        }
+
+        return inScope;
+    }
+
+    /**
+     * Get a list of recommendations from a backing cache based on the given Config and hashName.
+     *
+     * @param key key to lookup in cache
+     * @param config collection config object
+     * @return value as a list, which may be null
+     */
+    public static List<ItemTuple> getRecommendationsFromCache(String key, Config config) {
+        List<ItemTuple> items = null;
+        String databaseFilename
+                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE,
+                  com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH);
+        File db = new File(databaseFilename);
+        String value;
+
+        if (db.exists()) {
+            ObjectCache database = new SQLiteCache(databaseFilename, config, true);
+
+            try {
+                value = (String) database.get(key);
+
+                if (value != null) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    // See http://wiki.fasterxml.com/JacksonInFiveMinutes#Data_Binding_with_Generics
+                    items = mapper.readValue(value, new TypeReference<List<ItemTuple>>() { });
+                }
+                else {
+                    logger.warn("No value found in cache for key: " + key);
+                }
+            } catch (Exception exception) {
+                logger.warn("Exception getting value and converting from JSON: " + exception);
+            } finally {
+                database.close();
+            }
+        }
+
+        return items;
     }
 }

@@ -72,7 +72,7 @@ public class SQLiteTextMiner implements TextMiner {
         return jsonString;
     }
     
-    private String getNountEntity(String url, Config config, String hashKey) {
+    private String getNounEntity(String url, Config config, String hashKey) {
         File checkpointDir = new File(config.getCollectionRoot()
                 + File.separator + DefaultValues.VIEW_LIVE
                 + File.separator + DefaultValues.FOLDER_CHECKPOINT);
@@ -155,7 +155,7 @@ public class SQLiteTextMiner implements TextMiner {
                 hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;                    
                 log.debug("Hash name: " + hashKey + " and field: " + url);
                 
-                jsonString = getNountEntity(url, componentConfig, hashKey);
+                jsonString = getNounEntity(url, componentConfig, hashKey);
                 
                 if (jsonString != null) {
                     break;
@@ -164,7 +164,7 @@ public class SQLiteTextMiner implements TextMiner {
         }
         else {
             log.debug("Hash name: " + hashKey + " and field: " + url);
-            jsonString = getNountEntity(url, config, hashKey);
+            jsonString = getNounEntity(url, config, hashKey);
         }
         
         if (jsonString != null) {
