@@ -537,7 +537,7 @@
         <#local s = str />
     </#if>
 
-    <#if args?? && args?size &gt; 0>
+    <#if args??>
         ${format(locale, s, args)}
     <#else>
         ${format(locale, s)}
