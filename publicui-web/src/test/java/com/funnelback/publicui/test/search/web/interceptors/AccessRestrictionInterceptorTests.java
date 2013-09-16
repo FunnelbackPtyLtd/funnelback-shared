@@ -171,7 +171,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testGetConnectingIp() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
 		Assert.assertEquals("150.203.239.15", 
 				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
@@ -181,7 +181,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testGetConnectingIpUseConnectingIP() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
 		Assert.assertEquals("1.2.3.4", 
 				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
@@ -190,7 +190,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testGetConnectingIpPreferConnecxtingIP() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17,150.203.239.15");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "false");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "false");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
 		Assert.assertEquals("1.2.3.4", 
 				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
@@ -212,7 +212,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testXForwardedForBlocked() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
 		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "100.100.239.0/24");
@@ -225,7 +225,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testGetConnectingIpXForwardedForEmpty() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "false");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "false");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
 		Assert.assertEquals("1.2.3.4", 
 				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
@@ -234,7 +234,7 @@ public class AccessRestrictionInterceptorTests {
 	@Test
 	public void testXForwardedAllowedButUsedConnectingIP() throws Exception {
 		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
-		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
 		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24,127.0.0.1/8,150.203.239.15/8");
 		
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "1.2.3.4/24");
