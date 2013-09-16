@@ -12,7 +12,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.util.IpAddressMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -79,19 +78,13 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                         
                         String[] authorized = StringUtils.split(accessRestriction, ",");
                         for (String range : authorized) {
-                        	String rangeIP = NetUtils.getIPFromCIDR(range);
                         	if (NetUtils.isCIDR(range)) {
-                        		if (NetUtils.isIPv4Address(ip) && NetUtils.isIPv4Address(rangeIP)
-                        				|| NetUtils.isIPv6Address(ip) && NetUtils.isIPv6Address(rangeIP)){
-	                        		// It's an IP range
-	                        		IpAddressMatcher ipMatcher = new IpAddressMatcher(range);
-	                        		if (ipMatcher.matches(request)) {
-	                        			return true;
-	                        		}
+                        		if (NetUtils.isIPv4AddressinCIDR(ip, range)){
+                        			return true;
                         		}
                         	}else if (OLD_IP_PATTERN.matcher(range).matches()) {
-                        		//Catch IPs that don't have a slash, ie someone has entered IPs in the old unsupported 
-                        		//format
+                        		//Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
+                        		//unsupported format
                         		denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
                         				" in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
                         		return false;
@@ -122,6 +115,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
      * @param request
      * @param response
      * @param collection
+     * @param message Message to be displayed.
      * @throws IOException
      */
     private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection, String message) throws IOException {

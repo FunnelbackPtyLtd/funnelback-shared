@@ -116,30 +116,6 @@ public class AccessRestrictionInterceptorTests {
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
 		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-		
-		response = newResponse();
-		request.setRemoteAddr("FE80:0000:0000:0000:0202:B3FF:FE1E:8322");
-		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
-		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-		Assert.assertEquals("access.collection.denied", response.getContentAsString());
-		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-	}
-	
-	@Test
-	public void testIPBasedRestrictionAllowedIpv6() throws Exception {
-		request.setRemoteAddr("FE80:0000:0000:0000:0202:B3FF:FE1E:8322");
-		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "FE80:0000:0000:0000:0202:B3FF:FE1E:8320/8");
-		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
-		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
-		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
-	}
-
-	@Test
-	public void testIPBasedRestrictionNotAllowedIpv6() throws Exception {
-		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "FE80:0000:0000:0000:0202:B3FF:FE1E:8320/120");
-		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
-		Assert.assertFalse("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
-		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 	
 
