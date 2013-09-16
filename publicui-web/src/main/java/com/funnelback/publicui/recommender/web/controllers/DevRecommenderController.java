@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.View;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -43,10 +41,6 @@ public class DevRecommenderController {
             "http://127.0.0.1:8080/s/search.json?collection=test-curtin-courses";
     private static final String SEARCH_URL = CURTIN_SEARCH_PREFIX;
     private static final int DEFAULT_MAX_RECOMMENDATIONS = 10;
-    private static final int MIN_CLICKS_PER_SESSION = 2;
-
-    @Resource(name = "jsonView")
-    private View view;
 
     @Autowired
     @Setter
@@ -147,7 +141,7 @@ public class DevRecommenderController {
                             + encodedMetadataClass + "\">JSON</a>] \n");
                     buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.SESSIONS_HTML + "?itemName="
                             + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
-                            + "&minClicks=" + MIN_CLICKS_PER_SESSION + "\">Sessions</a>]</li>\n");
+                            + "\">Sessions</a>]</li>\n");
 
                     List<Recommendation> recommendations =
                             RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig, scope, maxRecommendations);
@@ -166,8 +160,7 @@ public class DevRecommenderController {
             } else {
                 buf.append("<p>No results found for query: " + query + " </p>");
             }
-        }
-        else {
+        } else {
             return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, "Invalid collection: " + collection);
         }
 
@@ -180,51 +173,40 @@ public class DevRecommenderController {
      *
      * @param itemName   Name of item e.g. URL address
      * @param seedItem   The seed which led to this item being recommended. Could be a query or a URL.
-     * @param collection
+     * @param collection name of collection
      * @return HTML page displaying session information.
      * @throws Exception
      */
     @ResponseBody
     @RequestMapping(value = {"/" + RecommenderController.SESSIONS_HTML}, method = RequestMethod.GET)
-    public static String sessions(@RequestParam("itemName") String itemName,
-                                  @RequestParam("seedItem") String seedItem,
-                                  @RequestParam("collection") String collection,
-                                  @RequestParam("minClicks") int minClicks) throws Exception {
+    public String sessions(@RequestParam("itemName") String itemName,
+                           @RequestParam("seedItem") String seedItem,
+                           @RequestParam("collection") String collection) throws Exception {
         StringBuffer buf = new StringBuffer();
         String searchURL = SEARCH_URL.replaceAll("\\.json", "\\.html");
-        buf.append(SESSIONS_DOC_HEADER);
 
-        String keyTitle = "N/A";
+        com.funnelback.publicui.search.model.collection.Collection collectionRef
+                = configRepository.getCollection(collection);
 
-        if ("".equals(keyTitle)) {
-            keyTitle = itemName;
-        }
+        if (collectionRef != null) {
+            Config collectionConfig = collectionRef.getConfiguration();
+            buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
+            Set<List<PreferenceTuple>> sessions
+                    = com.funnelback.publicui.recommender.utils.RecommenderUtils.getSessions(itemName, collectionConfig);
 
-        buf.append("<p>Sessions with " + minClicks + " or more clicks for item: <a href=\""
-                + itemName + "\">" + keyTitle + "</a></p>");
-
-        buf.append("<p>Item that appears in each session is highlighted in <font color=\"green\">green</font>.</p>");
-
-        if (!itemName.equals(seedItem)) {
-            buf.append("<p>Item it was recommended for is highlighted in <font color=\"red\">red</font>.</p>");
-        }
-
-        Set<List<PreferenceTuple>> sessions = null;
-
-        if (sessions != null && !sessions.isEmpty()) {
-            for (List<PreferenceTuple> session : sessions) {
-                if (session.size() >= minClicks) {
+            if (sessions != null && !sessions.isEmpty()) {
+                for (List<PreferenceTuple> session : sessions) {
                     String sessionID = session.get(0).getUserID();
                     String host = session.get(0).getHost();
 
                     buf.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
 
-                    List<String> items = new ArrayList<>();
+                    List<String> urls = new ArrayList<>();
                     for (PreferenceTuple preference : session) {
-                        items.add(preference.getItemID());
+                        urls.add(preference.getItemID());
                     }
 
-                    Map<URI, DocInfo> docInfoMap = null;
+                    Map<URI, DocInfo> docInfoMap = RecommenderUtils.getDocInfoResult(urls, collectionConfig).asMap();
 
                     if (docInfoMap != null && !docInfoMap.isEmpty()) {
                         for (PreferenceTuple preference : session) {
@@ -258,13 +240,42 @@ public class DevRecommenderController {
 
                     buf.append("</ul>");
                 }
+            } else {
+                buf.append("<p>No sessions found.</p>");
             }
-        } else {
-            buf.append("<p>No sessions found.</p>");
         }
 
         buf.append("</ul></body></html>");
         return buf.toString();
+    }
+
+    /**
+     * Return a header for the sessions page for the given input parameters.
+     * @param itemName   Name of item e.g. URL address
+     * @param seedItem   The seed which led to this item being recommended. Could be a query or a URL.
+     * @param collectionConfig Collection Config object
+     * @return String containing HTML for sessions page header.
+     */
+    private String getSessionsHeader(String itemName, String seedItem, Config collectionConfig) {
+        StringBuffer buf = new StringBuffer();
+        buf.append(SESSIONS_DOC_HEADER);
+
+        String keyTitle = RecommenderUtils.getTitle(itemName, collectionConfig);
+
+        if ("".equals(keyTitle)) {
+            keyTitle = itemName;
+        }
+
+        buf.append("<p>Sessions with two or more clicks for item: <a href=\""
+                + itemName + "\">" + keyTitle + "</a></p>");
+
+        buf.append("<p>Item that appears in each session is highlighted in <font color=\"green\">green</font>.</p>");
+
+        if (!itemName.equals(seedItem)) {
+            buf.append("<p>Item it was recommended for is highlighted in <font color=\"red\">red</font>.</p>");
+        }
+
+        return buf.toString().trim();
     }
 
     /**
