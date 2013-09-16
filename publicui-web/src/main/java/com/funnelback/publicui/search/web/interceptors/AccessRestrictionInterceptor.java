@@ -7,15 +7,18 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.util.IpAddressMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.net.NetUtils;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -29,10 +32,11 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 public class AccessRestrictionInterceptor implements HandlerInterceptor {
 
     /**
-     * Pattern to check if the restriction range is IP based.
-     * Colon for ipv6 addresses.
+     * A regex to check if the supplied IP range is in the old, unsupported, format
      */
-    private final static Pattern HOSTNAME_IP_PATTERN = Pattern.compile("^[\\d\\.\\:]+$");
+	@Getter
+    private final static Pattern OLD_IP_PATTERN = Pattern.compile("^[\\d\\.]+$");
+    
     
     /**
      * Pattern to match collection id in the query string
@@ -75,19 +79,29 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                         
                         String[] authorized = StringUtils.split(accessRestriction, ",");
                         for (String range : authorized) {
-                            if (HOSTNAME_IP_PATTERN.matcher(range).matches()) {
-                                // It's an IP range
-                                if (ip.matches("^" + range + "(.*)$")) {
-                                    log.debug("'" + ip + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-                                    return true;
-                                }
-                            } else {
-                                // It's a hostname
-                                if (hostName.matches("^.*" + range + "$")) {
-                                    log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-                                    return true;
-                                }
-                            }
+                        	String rangeIP = NetUtils.getIPFromCIDR(range);
+                        	if (NetUtils.isCIDR(range)) {
+                        		if (NetUtils.isIPv4Address(ip) && NetUtils.isIPv4Address(rangeIP)
+                        				|| NetUtils.isIPv6Address(ip) && NetUtils.isIPv6Address(rangeIP)){
+	                        		// It's an IP range
+	                        		IpAddressMatcher ipMatcher = new IpAddressMatcher(range);
+	                        		if (ipMatcher.matches(request)) {
+	                        			return true;
+	                        		}
+                        		}
+                        	}else if (OLD_IP_PATTERN.matcher(range).matches()) {
+                        		//Catch IPs that don't have a slash, ie someone has entered IPs in the old unsupported 
+                        		//format
+                        		denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
+                        				" in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
+                        		return false;
+                        	} else {
+                        		// It's a hostname
+                        		if (hostName.matches("^.*" + range + "$")) {
+                        			log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
+                        			return true;
+                        		}
+                        	}
                         }
                         log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
                         denyAccess(request, response, c);
@@ -110,7 +124,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
      * @param collection
      * @throws IOException
      */
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection, String message) throws IOException {
         if (collection.getConfiguration().hasValue(Keys.ACCESS_ALTERNATE)) {
             StringBuffer out = new StringBuffer(request.getContextPath()).append(request.getPathInfo());
             
@@ -132,8 +146,12 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
             // No access_alternate. Simply deny access
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("text/plain");
-            response.getWriter().write(i18n.tr("access.collection.denied", collection.getId()));
+            response.getWriter().write(i18n.tr(message, collection.getId()));
         }
+    }
+    
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
+    	denyAccess(request, response, collection, "access.collection.denied");
     }
 
 }
