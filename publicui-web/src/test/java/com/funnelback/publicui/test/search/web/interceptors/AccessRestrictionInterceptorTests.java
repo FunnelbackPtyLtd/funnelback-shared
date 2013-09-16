@@ -20,6 +20,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
@@ -164,6 +165,81 @@ public class AccessRestrictionInterceptorTests {
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
 		Assert.assertEquals("access_restriction in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format", response.getContentAsString());
+		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+	}
+	
+	@Test
+	public void testGetConnectingIp() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		Assert.assertEquals("150.203.239.15", 
+				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
+		
+	}
+	
+	@Test
+	public void testGetConnectingIpUseConnectingIP() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		Assert.assertEquals("1.2.3.4", 
+				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
+	}
+	
+	@Test
+	public void testGetConnectingIpPreferConnecxtingIP() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "10.7.6.17,150.203.239.15");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "false");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		Assert.assertEquals("1.2.3.4", 
+				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
+	}
+	
+	@Test
+	public void testXForwardedForAllowed() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
+		this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		
+		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "150.203.239.0/24");
+		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
+		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
+		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+		
+	}
+	
+	@Test
+	public void testXForwardedForBlocked() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		
+		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "100.100.239.0/24");
+		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
+		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
+		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+	}
+	
+	@Test
+	public void testGetConnectingIpXForwardedForEmpty() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "false");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24");
+		Assert.assertEquals("1.2.3.4", 
+				interceptor.getConnectingIp(request, configRepository.getCollection(COLLECTION_ID)));
+	}
+	
+	@Test
+	public void testXForwardedAllowedButUsedConnectingIP() throws Exception {
+		request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "127.0.0.1,150.203.239.15,10.7.6.17");
+		this.testCollectionConfig.setValue("access_restriction.preffer_x_forwarded_for", "true");
+		this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "10.7.6.0/24,127.0.0.1/8,150.203.239.15/8");
+		
+		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "1.2.3.4/24");
+		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
+		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 

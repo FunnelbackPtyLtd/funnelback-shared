@@ -1,11 +1,16 @@
 package com.funnelback.publicui.search.web.interceptors;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jcifs.dcerpc.msrpc.netdfs;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -20,6 +25,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
@@ -73,7 +79,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                         denyAccess(request, response, c);
                         return false;
                     } else {
-                        String ip = request.getRemoteAddr();
+                    	String ip = getConnectingIp(request, c);
                         String hostName = request.getRemoteHost();
                         
                         String[] authorized = StringUtils.split(accessRestriction, ",");
@@ -146,6 +152,29 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     
     private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
     	denyAccess(request, response, collection, "access.collection.denied");
+    }
+    
+    public String getConnectingIp(HttpServletRequest request, Collection c) {
+    	String ip = request.getRemoteAddr();
+    	if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
+    		List<String> xForwardedForIps = new ArrayList<>(
+    					Arrays.asList(
+    						request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
+    							.split(",")
+    							)
+    				);
+    		List<String> ignoredCIDRs = new ArrayList<>(
+    					Arrays.asList(
+    						c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES)
+    							.split(",")
+    							)
+    				);
+    		NetUtils.scribIPs(xForwardedForIps, ignoredCIDRs);
+    		if (xForwardedForIps.size() > 0) {
+    			ip = xForwardedForIps.get(xForwardedForIps.size()-1);
+    		}
+    	}
+    	return ip;
     }
 
 }
