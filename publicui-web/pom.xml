@@ -41,7 +41,6 @@
         <dependency>
             <groupId>com.funnelback</groupId>
             <artifactId>funnelback-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.funnelback</groupId>
@@ -248,6 +247,11 @@
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
+            <version>${version.yammer-metrics}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-jvm</artifactId>
             <version>${version.yammer-metrics}</version>
         </dependency>
         <dependency>
