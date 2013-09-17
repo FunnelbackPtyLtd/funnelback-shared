@@ -50,11 +50,14 @@ public class SearchQuestionBinder {
     public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
         question.getRawInputParameters().putAll(request.getParameterMap());
         
-        // Add any HTTP servlet specifics 
+        // Add any HTTP servlet specifics
         String requestId = LogUtils.getRequestIdentifier(request,
             DefaultValues.RequestId.valueOf(question.getCollection()
-                    .getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString())));
+                    .getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                    question.getCollection().getConfiguration().value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                    		DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
 
+        //Environment variables for padre
         MapUtils.putAsStringArrayIfNotNull(
                 question.getRawInputParameters(),
                 PassThroughEnvironmentVariables.Keys.REMOTE_ADDR.toString(), requestId);
@@ -76,12 +79,7 @@ public class SearchQuestionBinder {
                             new String[] { request.getRequestURL().toString()
                                     + ((request.getQueryString() != null) ? "?"    + request.getQueryString() : "") });
         }
-        
-        // Originating IP address (prior to forwarding)
-        MapUtils.putAsStringArrayIfNotNull(
-                question.getRawInputParameters(),
-                PassThroughEnvironmentVariables.Keys.X_FORWARDED_FOR.toString(),
-                request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR));
+
 
         // Set locale
         question.setLocale(localeResolver.resolveLocale(request));
@@ -93,12 +91,7 @@ public class SearchQuestionBinder {
         question.setImpersonated(isRequestImpersonated(request));
         
         // User identifier to log
-        if (question.getCollection() != null && question.getCollection().getConfiguration() != null) {
-            question.setRequestId(LogUtils.getRequestIdentifier(request,
-                    DefaultValues.RequestId.valueOf(
-                        question.getCollection().getConfiguration().value(Keys.REQUEST_ID_TO_LOG,
-                            DefaultValues.REQUEST_ID_TO_LOG.toString()))));
-        }
+        question.setRequestId(requestId);
         
         // Last clicked cluster
         question.setCnClickedCluster(request.getParameter(RequestParameters.ContextualNavigation.CN_CLICKED));

@@ -1,16 +1,11 @@
 package com.funnelback.publicui.search.web.interceptors;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import jcifs.dcerpc.msrpc.netdfs;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;

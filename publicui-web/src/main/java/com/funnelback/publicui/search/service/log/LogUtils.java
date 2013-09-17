@@ -27,9 +27,12 @@ public class LogUtils {
      * Get the request identifier depending of the type of identifier needed.
      * @param request The source HTTP request
      * @param idType Type of identifier needed
+     * @param ignoredXForwardedForIPRanges The ip ranges in the X-Forwarded-For header to be ignored, in CIDR notation
      * @return The transformed address
      */
-    public static String getRequestIdentifier(HttpServletRequest request, DefaultValues.RequestId idType) {
+    public static String getRequestIdentifier(HttpServletRequest request, 
+    		DefaultValues.RequestId idType,
+    		String ignoredXForwardedForIPRanges) {
         if (request == null) {
             return Log.REQUEST_ID_NOTHING;
         }
@@ -37,12 +40,12 @@ public class LogUtils {
         try {
             switch(idType) {
             case ip_hash:
-                return DigestUtils.md5Hex(InetAddress.getByName(request.getRemoteAddr()).getHostAddress());
+                return DigestUtils.md5Hex(InetAddress.getByName(selectIp(request, ignoredXForwardedForIPRanges)).getHostAddress());
             case nothing:
                 return Log.REQUEST_ID_NOTHING;
             case ip:
             default:
-                return InetAddress.getByName(selectIp(request)).getHostAddress();
+                return InetAddress.getByName(selectIp(request, ignoredXForwardedForIPRanges)).getHostAddress();
             }
         } catch (UnknownHostException uhe) {
             log.warn("Unable to get a user id from adress '"+request.getRemoteAddr()+"', for mode '" + idType + "'",
@@ -80,18 +83,13 @@ public class LogUtils {
      * Select the first non-private IP from the X-Forwarded-For header,
      * or return the request remote address if there's no X-Forwarded-For
      * @param request HTTP request
+     * @param ignoredXForwardedForIPRanges The ip ranges in the X-Forwarded-For header to be ignored, in CIDR notation
      * @return IP address
      */
-    private static String selectIp(HttpServletRequest request) {
-        if (request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR) != null) {
-            for (String ip: request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR).split(",")) {
-                if (! NetUtils.isPrivateIp(ip.trim())) {
-                    return ip.trim();
-                }
-            }
-        }
-        
-        return request.getRemoteAddr();
+    private static String selectIp(HttpServletRequest request, String ignoredXForwardedForIPRanges) {
+        	return NetUtils.getIpPreferingXForwardedFor(request.getRemoteAddr()
+    				, request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
+    				, ignoredXForwardedForIPRanges);
     }
     
 }

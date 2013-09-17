@@ -24,7 +24,7 @@ public class PassThroughEnvironmentVariables extends AbstractInputProcessor {
     // SCRIPT_NAME, SERVER_SOFTWARE: Apparently used when PADRE outputs directly HTML
     // SITE_SEARCH_ROOT: Used for Matrix OEM
     public enum Keys {
-        REMOTE_ADDR, REQUEST_URI, REQUEST_URL, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER, X_FORWARDED_FOR;
+        REMOTE_ADDR, REQUEST_URI, REQUEST_URL, AUTH_TYPE, HTTP_HOST, REMOTE_USER, HTTP_REFERER;
     }
 
 

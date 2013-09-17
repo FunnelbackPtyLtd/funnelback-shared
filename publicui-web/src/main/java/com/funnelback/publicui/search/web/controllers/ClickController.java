@@ -36,6 +36,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
@@ -109,8 +110,12 @@ public class ClickController extends SessionController {
         if (collection != null) {
             // Get the user id
             String requestId = LogUtils.getRequestIdentifier(request,
-                    DefaultValues.RequestId.valueOf(collection
-                            .getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
+                    DefaultValues.RequestId.valueOf(collection.getConfiguration()
+                    		.value(Keys.REQUEST_ID_TO_LOG, 
+                    				DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                    collection.getConfiguration()
+                    		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                    				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
 
             URL referer = getReferrer(request);
             
@@ -177,8 +182,12 @@ public class ClickController extends SessionController {
 
             // Get the user id
             String requestId = LogUtils.getRequestIdentifier(request,
-                    DefaultValues.RequestId.valueOf(collection
-                            .getConfiguration().value(Keys.REQUEST_ID_TO_LOG)));
+                    DefaultValues.RequestId.valueOf(collection.getConfiguration()
+                    		.value(Keys.REQUEST_ID_TO_LOG, 
+                    				DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                    collection.getConfiguration()
+                    		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                    				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
             
             URL referer = getReferrer(request);
             
