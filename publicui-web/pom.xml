@@ -29,7 +29,7 @@
     <properties>
         <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
         <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-        <version.yammer-metrics>3.0.1</version.yammer-metrics>
+        <version.codahale-metrics>3.0.1</version.codahale-metrics>
     </properties>
 
     <dependencies>
@@ -232,27 +232,22 @@
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>${version.yammer-metrics}</version>
+            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-servlet</artifactId>
-            <version>${version.yammer-metrics}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${version.yammer-metrics}</version>
+            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
-            <version>${version.yammer-metrics}</version>
+            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-jvm</artifactId>
-            <version>${version.yammer-metrics}</version>
+            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
