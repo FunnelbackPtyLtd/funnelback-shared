@@ -5,10 +5,10 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.compare.DateComparator;
 import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 import lombok.Setter;
@@ -38,13 +38,10 @@ public class DevRecommenderController {
     public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "recommender/";
     private static final String RECOMMENDATIONS_DOC_HEADER = "<html><head><title>Recommendations</title><head><body><h1>Recommendations</h1>";
     private static final String SESSIONS_DOC_HEADER = "<html><head><title>Sessions</title><head><body><h1>Sessions</h1>";
-    private static final String SCOPE = "handbook.curtin.edu.au/units,courses.curtin.edu.au/course_overview";
-    private static final String CURTIN = "Curtin University";
-    private static final String SOURCE = CURTIN;
-    private static final String CURTIN_SEARCH_PREFIX =
-            "http://127.0.0.1:8080/s/search.json?collection=test-curtin-courses";
-    private static final String SEARCH_URL = CURTIN_SEARCH_PREFIX;
+    private static final String SEARCH_URL = "http://127.0.0.1:8080/s/search.json?collection=";
     private static final int DEFAULT_MAX_RECOMMENDATIONS = 10;
+    private static final String CURTIN_SCOPE = "handbook.curtin.edu.au/units,courses.curtin.edu.au/course_overview";
+    private static final String CURTIN_COLLECTION = "test-curtin-courses";
 
     @Autowired
     @Setter
@@ -75,7 +72,7 @@ public class DevRecommenderController {
             throws UnsupportedEncodingException {
         Comparator<Recommendation> comparator;
         List<Map<String, Object>> results = null;
-        String searchService;
+        String searchService = SEARCH_URL + collection;
 
         if (metadataClass != null || ("").equals(metadataClass)) {
             if (!DocInfoQuery.isValidMetadataClass(metadataClass)) {
@@ -86,9 +83,7 @@ public class DevRecommenderController {
 
         if (scope != null && !("").equals(scope)) {
             String utf8Scope = URLEncoder.encode(scope, "utf-8");
-            searchService = new String((SEARCH_URL + "&scope=" + utf8Scope));
-        } else {
-            searchService = SEARCH_URL;
+            searchService = new String((SEARCH_URL  + "&scope=" + utf8Scope));
         }
 
         try {
@@ -187,16 +182,17 @@ public class DevRecommenderController {
                            @RequestParam("seedItem") String seedItem,
                            @RequestParam("collection") String collection) throws Exception {
         StringBuffer buf = new StringBuffer();
-        String searchURL = SEARCH_URL.replaceAll("\\.json", "\\.html");
+        String searchService = SEARCH_URL + collection;
+        searchService = searchService.replaceAll("\\.json", "\\.html");
 
-        com.funnelback.publicui.search.model.collection.Collection collectionRef
+        Collection collectionRef
                 = configRepository.getCollection(collection);
 
         if (collectionRef != null) {
             Config collectionConfig = collectionRef.getConfiguration();
             buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
             Set<List<PreferenceTuple>> sessions
-                    = com.funnelback.publicui.recommender.utils.RecommenderUtils.getSessions(itemName, collectionConfig);
+                    = RecommenderUtils.getSessions(itemName, collectionConfig);
 
             if (sessions != null && !sessions.isEmpty()) {
                 for (List<PreferenceTuple> session : sessions) {
@@ -234,7 +230,7 @@ public class DevRecommenderController {
                             }
 
                             buf.append("<li><a href=\"" + address + "\">" + title + "</a> <small>"
-                                    + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchURL
+                                    + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchService
                                     + URLEncoder.encode(query, "utf-8") + "\">" + query + "</a> QIE Score: "
                                     + qieScore + "</small></li>\n");
                         }
@@ -292,6 +288,11 @@ public class DevRecommenderController {
     @RequestMapping(value = {"/" + RecommenderController.ITEM_ENTRY_HTML}, method = RequestMethod.GET)
     public String itemEntry(@RequestParam("collection") String collection) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
+        String scope = "";
+
+        if (collection.equals(CURTIN_COLLECTION)) {
+            scope = CURTIN_SCOPE;
+        }
 
         buf.append(RECOMMENDATIONS_DOC_HEADER);
         buf.append("<form action=\"" + RECOMMENDER_PREFIX + RecommenderController.SIMILAR_ITEMS_JSON + "\" method=\"GET\">");
@@ -299,7 +300,7 @@ public class DevRecommenderController {
                 "<input id=\"seedItem\" class=\"text\" type=\"text\" title=\"Item\" name=\"seedItem\" size=\"70\"/>" +
                 "<input type=\"hidden\" name=\"collection\" value=\"" + URLEncoder.encode(collection, "utf-8") + "\">\n"
                 + "<input type=\"hidden\" name=\"maxRecommendations\" value=\"" + DEFAULT_MAX_RECOMMENDATIONS + "\">"
-                + "<input type=\"hidden\" name=\"scope\" value=\"" + SCOPE + "\"><br>"
+                + "<input type=\"hidden\" name=\"scope\" value=\"" + scope + "\"><br>"
                 + "<input type=\"submit\" value=\"Submit\" /></form></body></html>");
         return buf.toString();
     }
@@ -314,15 +315,19 @@ public class DevRecommenderController {
     @RequestMapping(value = {"/" + RecommenderController.QUERY_ENTRY_HTML}, method = RequestMethod.GET)
     public String queryEntry(@RequestParam("collection") String collection) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
+        String scope = "";
+
+        if (collection.equals(CURTIN_COLLECTION)) {
+            scope = CURTIN_SCOPE;
+        }
 
         buf.append(RECOMMENDATIONS_DOC_HEADER);
-        buf.append("<h3>Source: " + SOURCE + "</h3>\n");
         buf.append("<form action=\"" + RECOMMENDER_PREFIX + RecommenderController.SEARCH_RECOMMENDATIONS_HTML
                 + "\" method=\"GET\">");
         buf.append("<label for=\"query\">Query: </label>" +
                 "<input id=\"query\" class=\"text\" type=\"text\" title=\"Query\" name=\"query\" size=\"70\"/>" +
                 "<input type=\"hidden\" name=\"collection\" value=\"" + URLEncoder.encode(collection, "utf-8") + "\">" +
-                "<input type=\"hidden\" name=\"scope\" value=\"" + SCOPE + "\">");
+                "<input type=\"hidden\" name=\"scope\" value=\"" + scope + "\">");
         buf.append("<br><br>Sort Descending: " + HTMLUtils.getSortRadioButtons(SortType.Parameter.dsort));
         buf.append("<br><br>Sort Ascending: " + HTMLUtils.getSortRadioButtons(SortType.Parameter.asort));
 
