@@ -47,7 +47,7 @@ public class RecommendationResponse {
 			recommendations.add(Recommendation.fromResult(result));
 		}
 		
-		return new RecommendationResponse(recommendations, Source.clicks, -1);
+		return new RecommendationResponse(recommendations, Source.explore, -1);
 	}
 
 }
