@@ -88,9 +88,10 @@ public class RecommenderController {
             @RequestParam(value = "dsort", required = false) String dsort,
             @RequestParam(value = "asort", required = false) String asort,
             @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
-    	response.setContentType("application/json");
+        Date startTime = new Date();
+        response.setContentType("application/json");
         Comparator<Recommendation> comparator;
-        RecommendationResponse recommendationResponse = null;
+        RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
 
         if (seedItem == null || ("").equals(seedItem)) {
@@ -116,10 +117,11 @@ public class RecommenderController {
 
             List<Recommendation> recommendations =
                     RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
+            long timeTaken = System.currentTimeMillis() - startTime.getTime();
             recommendationResponse =
-          				new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator));
+          				new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator),
+                                RecommendationResponse.Source.clicks, timeTaken);
           	model.put("RecommendationResponse", recommendationResponse);
-
         }
 
         return new ModelAndView(view, model);
@@ -128,7 +130,9 @@ public class RecommenderController {
 	@RequestMapping(value={"/" + EXPLORE_JSON}, method = RequestMethod.GET, params={RequestParameters.COLLECTION})
 	public ModelAndView similarItems(HttpServletRequest request, HttpServletResponse response,
 			@Valid SearchQuestion question, @ModelAttribute SearchUser user) throws Exception {
-		response.setContentType("application/json");
+        Date startTime = new Date();
+        RecommendationResponse recommendationResponse;
+        response.setContentType("application/json");
 		
 		Map<String, Object> model;
 		{
@@ -139,7 +143,10 @@ public class RecommenderController {
 			model = modelandView.getModel();
 		}
 		SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
-		model.put("RecommendationResponse", RecommendationResponse.fromResults(searchResponse.getResultPacket().getResults()));
+        recommendationResponse = RecommendationResponse.fromResults(searchResponse.getResultPacket().getResults());
+        long timeTaken = System.currentTimeMillis() - startTime.getTime();
+        recommendationResponse.setTimeTaken(timeTaken);
+		model.put("RecommendationResponse", recommendationResponse);
 		
 		return new ModelAndView(view, model);
 	}
