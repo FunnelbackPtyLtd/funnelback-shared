@@ -5,6 +5,8 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang.time.FastDateFormat;
+
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 
@@ -14,6 +16,9 @@ import com.funnelback.publicui.search.model.collection.Profile;
 @RequiredArgsConstructor
 public abstract class Log {
 
+    /** Date format used in the XML logs */
+    public static final FastDateFormat XML_DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
+    
     /** String to use when there's no request id */
     public static final String REQUEST_ID_NOTHING = "-";
     
@@ -39,5 +44,4 @@ public abstract class Log {
      * not enabled on the search service
      */
     @Getter final protected String userId;
-        
 }

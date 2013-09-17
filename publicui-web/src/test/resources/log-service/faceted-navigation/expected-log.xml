@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+<cfac><t>{DATE}</t><coll>log-service</coll><facet>facet</facet><prof>profile</prof><requestip>request-id</requestip><squery>query</squery></cfac>
+</log>

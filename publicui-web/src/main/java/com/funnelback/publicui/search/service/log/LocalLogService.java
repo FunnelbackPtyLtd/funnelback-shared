@@ -25,6 +25,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
+import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
@@ -58,6 +59,12 @@ public class LocalLogService implements LogService {
     private static final int CLICK_LOG_COL_TYPE = 5;
     /** Click log user id column offset */
     private static final int CLICK_LOG_COL_USER_ID = 6;
+    
+    /**
+     * Line separator. Always use <code>\n</code> for now
+     * as we need to be able to do trickery with the XML logs
+     */
+    private static final char LINE_SEP = '\n';
     
     @Autowired
     @Setter private File searchHome;
@@ -123,6 +130,18 @@ public class LocalLogService implements LogService {
                     cnl.toXml());
         }
     }
+
+    @Async
+    @Override
+    public void logFacetedNavigation(FacetedNavigationLog fnl) {
+        if (fnl != null) {
+            logLiveXmlData(fnl.getCollection(),
+                Files.Log.FACETED_NAVIGATION_LOG_PREFIX,
+                Files.Log.FACETED_NAVIGATION_LOG_EXT,
+                fnl.toXml());
+        }
+        
+    }
     
     @Override
     @Async
@@ -133,7 +152,7 @@ public class LocalLogService implements LogService {
         FileWriter fw = null;
         try {
             fw = new FileWriter(target, true);
-            fw.append(warning.toString() + "\n");
+            fw.append(warning.toString() + LINE_SEP);
         } catch (IOException ioe) {
             log.warn("Error while writing to '" + target.getAbsolutePath() + "'", ioe);
         } finally {
@@ -184,9 +203,9 @@ public class LocalLogService implements LogService {
      * @throws IOException
      */
     private synchronized void logXmlDataInNewFile(File file, String xmlData) throws IOException {
-        StringBuffer out = new StringBuffer(XML_HEADER).append("\n")
-            .append(XML_ROOT_START).append("\n")
-            .append(xmlData).append("\n")
+        StringBuffer out = new StringBuffer(XML_HEADER).append(LINE_SEP)
+            .append(XML_ROOT_START).append(LINE_SEP)
+            .append(xmlData).append(LINE_SEP)
             .append(XML_ROOT_END);
             
         FileUtils.writeStringToFile(file, out.toString());
@@ -210,7 +229,7 @@ public class LocalLogService implements LogService {
             long i = targetFile.length()-1;
             targetFile.seek(i);
             byte b = targetFile.readByte();
-            if (0x0a == b) {
+            if (LINE_SEP == b) {
                 i--;
                 targetFile.seek(i);
             }
@@ -219,7 +238,7 @@ public class LocalLogService implements LogService {
             for (; i>0; i--) {
                 targetFile.seek(i);
                 b = targetFile.readByte();
-                if (0x0a == b) {
+                if (LINE_SEP == b) {
                     break;
                 }
             }

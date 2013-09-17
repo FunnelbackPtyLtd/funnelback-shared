@@ -15,9 +15,6 @@ import com.funnelback.publicui.search.model.collection.Profile;
  */
 public class ContextualNavigationLog extends Log {
 
-    /** Date format used in the logs */
-    public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
-    
     @Getter final private String cluster;
     @Getter final private List<String> previousClusters;
     
@@ -43,7 +40,7 @@ public class ContextualNavigationLog extends Log {
     public String toXml() {
         StringBuffer out = new StringBuffer();
         out.append("<cflus>")
-            .append("<t>").append(DATE_FORMAT.format(date)).append("</t>");
+            .append("<t>").append(XML_DATE_FORMAT.format(date)).append("</t>");
         
         for (int i=0; i<previousClusters.size(); i++) {
             out.append("<cluster").append(i).append(">");

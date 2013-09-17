@@ -282,11 +282,6 @@
             <artifactId>liquibase-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-      		<groupId>org.apache.mahout</groupId>
-      		<artifactId>mahout-core</artifactId>
-      		<version>0.7</version>
-    	</dependency>
     </dependencies>
 
 </project>
