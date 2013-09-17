@@ -6,6 +6,7 @@ import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedInputStream;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @author fcrimmins@funnelback.com
  */
 public final class HTMLUtils {
+    private static final Logger logger = Logger.getLogger(HTMLUtils.class);
     public static final int MIN_CLICKS_PER_SESSION = 2;
 
     /**
@@ -54,9 +56,9 @@ public final class HTMLUtils {
                 Map<String, Object> resultPacket = (Map<String, Object>) response.get("resultPacket");
                 results = (List<Map<String, Object>>) resultPacket.get("results");
             } catch (NullPointerException nullPointerException) {
-                System.out.println("FBRecommenderREST.getResults(): " + nullPointerException);
+                logger.error("FBRecommenderREST.getResults(): " + nullPointerException);
             } catch (UnsupportedEncodingException exception) {
-                System.out.println("FBRecommenderREST.getResults(): " + exception);
+                logger.error("FBRecommenderREST.getResults(): " + exception);
             } finally {
                 urlConnection.disconnect();
             }

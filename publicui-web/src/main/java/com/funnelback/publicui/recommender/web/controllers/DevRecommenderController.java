@@ -5,12 +5,14 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.compare.DateComparator;
 import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 import lombok.Setter;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/recommender")
 public class DevRecommenderController {
+    private static final Logger logger = Logger.getLogger(DevRecommenderController.class);
+
     public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "recommender/";
     private static final String RECOMMENDATIONS_DOC_HEADER = "<html><head><title>Recommendations</title><head><body><h1>Recommendations</h1>";
     private static final String SESSIONS_DOC_HEADER = "<html><head><title>Sessions</title><head><body><h1>Sessions</h1>";
@@ -90,7 +94,7 @@ public class DevRecommenderController {
         try {
             comparator = SortType.getComparator(asort, dsort, metadataClass);
         } catch (Exception exception) {
-            System.out.println("searchRecommendations(): " + exception);
+            logger.error("searchRecommendations(): " + exception);
             return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, exception.toString());
         }
 
@@ -107,7 +111,7 @@ public class DevRecommenderController {
             try {
                 results = HTMLUtils.getResults(query, searchService);
             } catch (IOException exception) {
-                System.out.println(exception);
+                logger.error(exception);
             }
             long timeTaken = (System.currentTimeMillis() - startTime);
 

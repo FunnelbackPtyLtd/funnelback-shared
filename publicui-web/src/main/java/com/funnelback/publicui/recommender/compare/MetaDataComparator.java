@@ -1,6 +1,7 @@
 package com.funnelback.publicui.recommender.compare;
 
 import com.funnelback.publicui.recommender.Recommendation;
+import org.apache.log4j.Logger;
 
 import java.util.Comparator;
 
@@ -11,6 +12,8 @@ import java.util.Comparator;
  */
 
 public final class MetaDataComparator implements Comparator<Recommendation> {
+    private static final Logger logger = Logger.getLogger(MetaDataComparator.class);
+
     private String metadataClass;
 
     public MetaDataComparator(String metadataClass) {
@@ -22,7 +25,7 @@ public final class MetaDataComparator implements Comparator<Recommendation> {
         String field2 = o2.getMetaData().get(metadataClass);
 
         if (field1 == null || field2 == null) {
-            System.out.println("No " + metadataClass + " metadata available for one or more of: " + o1 + " " + o2);
+            logger.warn("No " + metadataClass + " metadata available for one or more of: " + o1 + " " + o2);
             return Integer.MIN_VALUE;
         }
 
