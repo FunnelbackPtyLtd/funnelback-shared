@@ -41,7 +41,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     /**
      * Pattern to match collection id in the query string
      */
-    private final static Pattern QUERY_STRING_COLLECTION_PATTERN = Pattern.compile(".*collection=(.*)?($|&)");
+    private final static Pattern QUERY_STRING_COLLECTION_PATTERN = Pattern.compile(".*collection=([^&$]*)?.*");
     
     @Autowired
     private ConfigRepository configRepository;
@@ -141,12 +141,12 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
             // No access_alternate. Simply deny access
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("text/plain");
-            response.getWriter().write(i18n.tr(message, collection.getId()));
+            response.getWriter().write(i18n.tr("access.collection.denied", collection.getId(), message));
         }
     }
     
     private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
-    	denyAccess(request, response, collection, "access.collection.denied");
+    	denyAccess(request, response, collection, "");
     }
     
     public String getConnectingIp(HttpServletRequest request, Collection c) {

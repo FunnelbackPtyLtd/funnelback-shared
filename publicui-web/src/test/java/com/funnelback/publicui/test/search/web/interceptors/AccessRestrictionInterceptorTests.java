@@ -100,6 +100,7 @@ public class AccessRestrictionInterceptorTests {
 		testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, "alternate_collection");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertTrue("Redirect URL should point to alternate collection", response.getRedirectedUrl().contains(RequestParameters.COLLECTION + "=alternate_collection"));
+		Assert.assertTrue("Redirect URL should have same query", response.getRedirectedUrl().contains("&query=dummy"));
 	}
 
 	@Test
@@ -164,7 +165,7 @@ public class AccessRestrictionInterceptorTests {
 		testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "1.2.3.4");
 		Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
 		Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-		Assert.assertEquals("access_restriction in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format", response.getContentAsString());
+		Assert.assertEquals("access.collection.denied", response.getContentAsString());
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
 	
