@@ -14,7 +14,6 @@ public class SortType {
 
     public static enum Type {
         recency("recency"),
-        popularity("popularity"),
         title("title"),
         qie("qie"),
         metadata("metadata");
@@ -92,9 +91,6 @@ public class SortType {
                 break;
             case recency:
                 comparator = new DateComparator();
-                break;
-            case popularity:
-                comparator = new PopularityComparator();
                 break;
             case qie:
                 comparator = new QIEComparator();

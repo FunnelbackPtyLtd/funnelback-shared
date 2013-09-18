@@ -109,7 +109,7 @@ public final class RecommenderUtils {
                     URI uri = docInfo.getUri();
                     String itemID = uri.toString();
                     float confidence = map.get(itemID).getScore();
-                    Recommendation recommendation = new Recommendation(itemID, confidence, -1, docInfo);
+                    Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
                     recommendations.add(recommendation);
                 }
             }

@@ -1,14 +1,13 @@
 package com.funnelback.publicui.recommender;
 
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-
+import com.funnelback.publicui.search.model.padre.Result;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.Date;
 import java.util.Map;
-import com.funnelback.publicui.search.model.padre.Result;
 /**
  * A recommendation in the recommender system.
  * @author fcrimmins@funnelback.com
@@ -38,12 +37,6 @@ public class Recommendation {
     private Date date;
 
     /**
-   	 * The popularity of the item (based on total number of preferences expressed
-     * e.g. clicks, "likes", purchases, enrollments etc.)
-   	 */
-    private long popularity = 1;
-
-    /**
    	 * The QIE score of the item (-1 if not available/applicable).
    	 */
     private float qieScore = -1;
@@ -63,10 +56,9 @@ public class Recommendation {
      */
     private String format = "";
 
-    public Recommendation(String item, float confidence, long popularity, DocInfo docInfo) {
+    public Recommendation(String item, float confidence, DocInfo docInfo) {
         this.itemID = item;
         this.confidence = confidence;
-        this.popularity = popularity;
         this.title = docInfo.getTitle();
         this.date = docInfo.getDate();
         this.qieScore = docInfo.getQieScore();
@@ -89,12 +81,13 @@ public class Recommendation {
     	String format = "";
     	if (null != result.getMetaData().get("f"))
     		format = StringEscapeUtils.escapeHtml(result.getMetaData().get("f"));
-    	Recommendation recommendation = new Recommendation(result.getDisplayUrl(), 
+
+            // This call uses the @AllArgsConstructor annotation, which fills in the object fields in order
+            Recommendation recommendation = new Recommendation(result.getDisplayUrl(),
     			0,//result.getExplain().getFinalScore(), 
     			result.getTitle(), 
     			result.getDate(), 
     			0,
-    			0, 
     			result.getMetaData(), 
     			result.getSummary(), 
     			format);
