@@ -11,6 +11,7 @@ import org.junit.Ignore;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.xml.WarcXmlStore;
+import com.funnelback.common.io.warc.WarcConstants.CompressionType;
 
 @Ignore
 public class DatabaseWarcXmlStoreTest extends AbstractXmlCacheControllerTest {
@@ -20,7 +21,7 @@ public class DatabaseWarcXmlStoreTest extends AbstractXmlCacheControllerTest {
     @Override
     protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
             throws IOException {
-        WarcXmlStore store = new WarcXmlStore(liveRoot, true);
+        WarcXmlStore store = new WarcXmlStore(liveRoot, CompressionType.contentonly);
         store.open();
         store.add(rmd.record);
         store.close();
