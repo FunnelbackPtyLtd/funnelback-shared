@@ -2,13 +2,11 @@ package com.funnelback.publicui.test.search.web.controllers.cache.xml;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
-
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.common.io.store.xml.FlatFileStore;
+import com.funnelback.common.io.store.xml.WarcXmlStore;
 
-@Ignore
 public class ConnectorWarcXmlStoreCacheTest extends
         AbstractXmlCacheControllerTest {
 
@@ -17,7 +15,7 @@ public class ConnectorWarcXmlStoreCacheTest extends
     @Override
     protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
             throws IOException {
-        FlatFileStore store = new FlatFileStore(liveRoot);
+        WarcXmlStore store = new WarcXmlStore(liveRoot, DefaultValues.Warc.WARC_COMPRESSION);
         store.open();
         store.add(rmd.record);
         store.close();

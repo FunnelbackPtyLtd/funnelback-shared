@@ -6,14 +6,11 @@ import java.net.URLEncoder;
 
 import lombok.SneakyThrows;
 
-import org.junit.Ignore;
-
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.xml.WarcXmlStore;
-import com.funnelback.common.io.warc.WarcConstants.CompressionType;
 
-@Ignore
 public class DatabaseWarcXmlStoreTest extends AbstractXmlCacheControllerTest {
 
     private static final String COLLECTION_ID = "cache-database-warcxmlstore";
@@ -21,7 +18,7 @@ public class DatabaseWarcXmlStoreTest extends AbstractXmlCacheControllerTest {
     @Override
     protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
             throws IOException {
-        WarcXmlStore store = new WarcXmlStore(liveRoot, CompressionType.contentonly);
+        WarcXmlStore store = new WarcXmlStore(liveRoot, DefaultValues.Warc.WARC_COMPRESSION);
         store.open();
         store.add(rmd.record);
         store.close();
