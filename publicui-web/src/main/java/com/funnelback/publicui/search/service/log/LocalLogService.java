@@ -75,20 +75,16 @@ public class LocalLogService implements LogService {
     @Override
     public void logClick(ClickLog cl) {
         try {
-            String shortHostname = localHostnameHolder.getShortHostname();
-            CSVWriter csvWriter;
-            if(shortHostname != null) {
-                csvWriter = new CSVWriter(
-                    new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_SEPARATOR
-                        + shortHostname+ Files.Log.CLICKS_LOG_EXT),
-                        true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
-            } else {
-                csvWriter = new CSVWriter(
-                    new FileWriter(new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
-                        Files.Log.CLICKS_LOG_PREFIX + Files.Log.CLICKS_LOG_EXT),
-                        true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
-            }
+            
+            CSVWriter csvWriter= new CSVWriter(
+            				new FileWriter(
+	            				new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+	            					getLogName(cl.getCollection(), 
+	            						Files.Log.CLICKS_LOG_PREFIX, 
+	            						Files.Log.CLICKS_LOG_SEPARATOR, 
+	            						Files.Log.CLICKS_LOG_EXT)),
+	            				true),
+            				CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
             
             String[] entry = new String[CLICK_LOGS_COLUMNS];
             
@@ -173,16 +169,7 @@ public class LocalLogService implements LogService {
                 + File.separator + DefaultValues.VIEW_LIVE
                 + File.separator + DefaultValues.FOLDER_LOG);
         
-        File targetFile = new File(targetFolder, fileName + extension);
-        
-        if (localHostnameHolder.getHostname() != null
-                && ! localHostnameHolder.isLocalhost()
-                && c.getConfiguration().valueAsBoolean(
-                        Keys.Logging.HOSTNAME_IN_FILENAME,
-                        DefaultValues.Logging.HOSTNAME_IN_FILENAME)) {
-            // Use hostname in filename
-            targetFile = new File(targetFolder, fileName + "-" + localHostnameHolder.getShortHostname() + extension);
-        }
+        File targetFile = new File(targetFolder, getLogName(c, fileName, "-", extension));
         
         try {
             if (targetFile.exists()) {
@@ -266,18 +253,15 @@ public class LocalLogService implements LogService {
     @Async
     @Override
     public synchronized void logInteraction(InteractionLog il) {
-        String shortHostname = localHostnameHolder.getShortHostname();
-        CSVWriter csvWriter;
         try {
-            if (shortHostname != null) {
-                csvWriter = new CSVWriter(new FileWriter(new File(il.getCollection().getConfiguration()
-                    .getLogDir(DefaultValues.VIEW_LIVE), Files.Log.INTERACTION_LOG_PREFIX
-                    + Files.Log.INTERACTION_LOG_SEPARATOR + shortHostname + Files.Log.INTERACTION_LOG_EXT), true));
-            } else {
-                csvWriter = new CSVWriter(new FileWriter(new File(il.getCollection().getConfiguration()
-                    .getLogDir(DefaultValues.VIEW_LIVE), Files.Log.INTERACTION_LOG_PREFIX
-                    + Files.Log.INTERACTION_LOG_EXT), true));
-            }
+            CSVWriter csvWriter = new CSVWriter(
+            		new FileWriter(
+            			new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE), 
+            					getLogName(il.getCollection(), 
+            						Files.Log.INTERACTION_LOG_PREFIX, 
+            						Files.Log.INTERACTION_LOG_SEPARATOR, 
+            						Files.Log.INTERACTION_LOG_EXT))
+            		, true));
 
             ArrayList<String> logToWrite = new ArrayList<String>();
 
@@ -317,6 +301,20 @@ public class LocalLogService implements LogService {
 
         } catch (IOException e) {
             log.error("Error while writing to user interaction log", e);
+        }
+    }
+    
+    private String getLogName(Collection c, String prefix, String seperator, String extension){
+    	String shortHostname = localHostnameHolder.getShortHostname();
+    	if (shortHostname != null
+                && ! localHostnameHolder.isLocalhost()
+                && c.getConfiguration().valueAsBoolean(
+                        Keys.Logging.HOSTNAME_IN_FILENAME,
+                        DefaultValues.Logging.HOSTNAME_IN_FILENAME)) {
+            // Use hostname in filename
+            return prefix + seperator + shortHostname + extension;
+        } else {
+        	return prefix + extension;
         }
     }
 

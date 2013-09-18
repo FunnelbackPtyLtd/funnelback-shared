@@ -1,5 +1,8 @@
 package com.funnelback.publicui.test.search.service.log;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -19,6 +22,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.utils.web.LocalHostnameHolder;
 
 public abstract class AbstractLocalLogServiceXmlTests extends AbstractLocalLogServiceTests {
 
@@ -35,6 +39,25 @@ public abstract class AbstractLocalLogServiceXmlTests extends AbstractLocalLogSe
         config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME);
         c = new Collection(COLLECTION_NAME, config);
         p = new Profile("profile");
+    }
+    
+    @Test
+    public void testLogWithHostName() throws Exception {
+    	LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+    	when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+    	when(lhh.isLocalhost()).thenReturn(false);
+    	logService.setLocalHostnameHolder(lhh);
+        config.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
+ 
+        Date now = new Date();
+        log(getLog(c, now));
+        Assert.assertTrue("Log file should have been created", getLogFile(TEST_HOSTNAME).exists());
+        
+        String actual = FileUtils.readFileToString(getLogFile(TEST_HOSTNAME)).replace("\r", "");
+        String expected = FileUtils.readFileToString(new File(getTestResourcesFolder(), "expected-log.xml")).replace("\r", "");
+        expected = expected.replace("{DATE}", Log.XML_DATE_FORMAT.format(now));
+        
+        Assert.assertEquals(expected, actual);
     }
     
     @Test
