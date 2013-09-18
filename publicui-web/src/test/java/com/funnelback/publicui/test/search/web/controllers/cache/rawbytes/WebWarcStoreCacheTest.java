@@ -6,8 +6,9 @@ import java.net.URL;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.URLStore.View;
 import com.funnelback.common.io.WARCStore;
 import com.funnelback.common.io.store.RawBytesRecord;
@@ -18,7 +19,6 @@ import com.funnelback.common.utils.DummyObjectCache;
 import com.funnelback.common.utils.Log4JPrintWriter;
 
 @Log4j
-@Ignore("FUN-5298")
 public class WebWarcStoreCacheTest extends
         AbstractRawBytesCacheControllerTest {
 
@@ -32,6 +32,12 @@ public class WebWarcStoreCacheTest extends
     @Override
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
         Log4JPrintWriter pw = new Log4JPrintWriter(log);
+        
+        // Because the WARCStore deals with views itself, we need to fake
+        // using the live view to store our test data
+        Config c = configRepository.getCollection(collectionId).getConfiguration();
+        c.setValue("crawler.checkpoint_to", c.value("crawler.checkpoint_to").replace("offline", "live"));
+        c.setValue("data_root", c.value("data_root").replace("offline", "live"));
         
         WARCStore ms = new WARCStore();
         ms.setUp(View.live,
@@ -62,6 +68,11 @@ public class WebWarcStoreCacheTest extends
                 false);
         
         ms.close();
+
+        // Restore correct paths
+        c.setValue("crawler.checkpoint_to", c.value("crawler.checkpoint_to").replace("live", "offline"));
+        c.setValue("data_root", c.value("data_root").replace("live", "offline"));
+
     }
     
     @Override

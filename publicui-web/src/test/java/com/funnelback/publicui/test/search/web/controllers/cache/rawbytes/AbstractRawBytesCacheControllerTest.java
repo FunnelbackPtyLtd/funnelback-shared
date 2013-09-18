@@ -103,7 +103,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
                 configRepository.getCollection(collectionId),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "unknown-record");
+                "http://unknown-record");
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
         Assert.assertEquals(
@@ -163,9 +163,13 @@ public abstract class AbstractRawBytesCacheControllerTest {
      * @throws IOException
      */
     protected void cleanupStore() throws IOException {
-        File storeRoot = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/live/data");
-        FileUtils.deleteDirectory(storeRoot.getParentFile());
-        storeRoot.mkdirs();
+        File storeRootLive = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/live");
+        File storeRootOffline = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/offline");
+        for (File f: new File[] {storeRootLive, storeRootOffline}) {
+            FileUtils.deleteDirectory(f);            
+            new File(f, "data").mkdirs();
+            new File(f, "checkpoint").mkdirs();
+        }
     }
         
     /**
