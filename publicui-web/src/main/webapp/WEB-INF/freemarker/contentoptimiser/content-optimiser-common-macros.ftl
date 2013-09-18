@@ -97,7 +97,7 @@
         				for the query &quot;<b><@s.QueryClean/></b>&quot;:</p>
 					
 						<#assign resolvedCacheUrl = resolveUrl(resolveUrl(httpRequest.requestURL,'../../search/'), response.optimiserModel.selectedDocument.cacheUrl)>
-					 	<p>You can also view Funnelback's <a href="${cacheUrl}">cached copy</a>,
+					 	<p>You can also view Funnelback's <a href="${resolvedCacheUrl}">cached copy</a>,
 					 	view the <a href="${ContextPath}/anchors.html?collection=${response.optimiserModel.selectedDocument.collection}&docnum=${response.optimiserModel.selectedDocument.docNum}">link information</a> for the page;
 					 	or view the 
 						<a href="${ContextPath}/search.html?query=${question.inputParameterMap["query"]?url}&collection=${question.inputParameterMap["collection"]?url}&profile=${question.profile?url}">result page</a> from this query</p>
