@@ -36,25 +36,29 @@ public class SQLiteTextMiner implements TextMiner {
     }
 
     /**
-     * Looks up an entity or its variant to the the JSON String
+     * Looks up an entity or its variant and return as a JSON string.
      */
     private String getEntityOrVariant(String entity, Config config, String hashKey) {
-        File checkpointDir = new File(config.getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE
-                + File.separator + DefaultValues.FOLDER_CHECKPOINT);
-        
         String jsonString = null;
-        File db = new File(checkpointDir, hashKey + ".sqlitedb");
+        String databaseFilename
+                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
+        File db = new File(databaseFilename);
+
         if (db.exists()) {
-            ObjectCache cache = new SQLiteCache(db.getAbsolutePath(), config, false);
+            ObjectCache cache = new SQLiteCache(databaseFilename, config, false);
             ObjectCache variantCache = null;
+
             try {
                 jsonString = (String) cache.get(entity);
                 if (jsonString == null) {
                     // Try the variant cache
-                    db = new File(checkpointDir, hashKey + "_variants.sqlitedb");
+                    hashKey = hashKey + "_variants";
+                    databaseFilename
+                                    = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
+                    db = new File(databaseFilename);
+
                     if (db.exists()) {
-                        variantCache = new SQLiteCache(db.getAbsolutePath(), config, false);
+                        variantCache = new SQLiteCache(databaseFilename, config, false);
                         String originalVariant =  (String) variantCache.get(entity);
                         if (originalVariant != null) {
                             jsonString = (String) cache.get(originalVariant); 
@@ -73,13 +77,12 @@ public class SQLiteTextMiner implements TextMiner {
     }
     
     private String getNounEntity(String url, Config config, String hashKey) {
-        File checkpointDir = new File(config.getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE
-                + File.separator + DefaultValues.FOLDER_CHECKPOINT);
+        String databaseFilename
+                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
 
-        File db = new File(checkpointDir, hashKey + ".sqlitedb");
+        File db = new File(databaseFilename);
         if (db.exists()) {
-            ObjectCache cache = new SQLiteCache(db.getAbsolutePath(), config, false);
+            ObjectCache cache = new SQLiteCache(databaseFilename, config, false);
             try {
                 return (String) cache.get(url);
             } finally {
@@ -92,7 +95,7 @@ public class SQLiteTextMiner implements TextMiner {
     
     @SuppressWarnings("unchecked")
     public EntityDefinition getEntityDefinition(String entity, Collection collection, String hashName) {
-        String hashKey = collection.getId() + TextMiner.TEXT_MINER_HASH + hashName;
+        String hashKey = DefaultValues.TEXT_MINER_HASH + hashName;
         String jsonString = null;
         
         if (Type.meta.equals(collection.getType())) {
@@ -102,7 +105,7 @@ public class SQLiteTextMiner implements TextMiner {
             for (String component : components) {
                 Config componentConfig = configRepository.getCollection(component).getConfiguration();
                 
-                hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;                    
+                hashKey = DefaultValues.TEXT_MINER_HASH + hashName;
                 log.debug("Hash name: " + hashKey + " and field: " + entity);
 
                 jsonString = getEntityOrVariant(entity, componentConfig, hashKey);
@@ -128,7 +131,7 @@ public class SQLiteTextMiner implements TextMiner {
                     return new EntityDefinition(entity, definition, source_url);
                 }
             } catch (IOException ioe) {
-                log.error("Could not unserialize JSON", ioe);
+                log.error("Could not un-serialize JSON", ioe);
             }
 
         }
@@ -142,7 +145,7 @@ public class SQLiteTextMiner implements TextMiner {
         
         Config config = collection.getConfiguration();
         
-        String hashKey = collection.getId() + TextMiner.TEXT_MINER_HASH + hashName;
+        String hashKey = DefaultValues.TEXT_MINER_HASH + hashName;
         String jsonString = null;
         
         if (Type.meta.equals(collection.getType())) {
@@ -151,8 +154,6 @@ public class SQLiteTextMiner implements TextMiner {
 
             for (String component : components) {
                 Config componentConfig = configRepository.getCollection(component).getConfiguration();
-                
-                hashKey = component + TextMiner.TEXT_MINER_HASH + hashName;                    
                 log.debug("Hash name: " + hashKey + " and field: " + url);
                 
                 jsonString = getNounEntity(url, componentConfig, hashKey);
@@ -171,7 +172,7 @@ public class SQLiteTextMiner implements TextMiner {
             try {
                 return new ObjectMapper().readValue(jsonString, ArrayList.class);
             } catch (IOException ioe) {
-                log.error("Could not unserialize JSON", ioe);
+                log.error("Could not un-serialize JSON", ioe);
             }
         }
         
