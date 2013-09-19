@@ -18,11 +18,11 @@ import javax.xml.transform.stream.StreamSource;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.http.HttpResponse;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -95,10 +95,21 @@ public class CacheController {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
     }
 
+    /**
+     * Process cache requests
+     * @param request HTTP request
+     * @param response HTTP response
+     * @param collection Collection to get a cached copy from
+     * @param profile Profile to get a cached copy for
+     * @param form Cache form to use
+     * @param url URL of the document to get a cached copy of
+     * @return {@link ModelAndView}
+     * @throws Exception 
+     */
     @RequestMapping(value="/cache", method=RequestMethod.GET)
     public ModelAndView cache(HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(value=RequestParameters.COLLECTION,required=true) Collection collection,
+            @RequestParam(value=RequestParameters.COLLECTION, required=true) Collection collection,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
             @RequestParam(required=true) String url) throws Exception {
@@ -181,7 +192,7 @@ public class CacheController {
     
     /**
      * Sets the content type on the HTTP response and return the charset
-     * @param response {@link HttpResponse} to set the header on
+     * @param response HTTP response to set the header on
      * @param headers List of headers for the content, from the store
      * @return The charset for the document, defaulting to UTF-8 is not found
      */
@@ -227,6 +238,19 @@ public class CacheController {
         }
         
         return true;
+    }
+    
+    /**
+     * Display an error message is something went wrong
+     * @param response HTTP Response, to set the status code to 500
+     * @param e Exception that occured
+     * @return {@link ModelAndView}
+     */
+    @ExceptionHandler
+    public ModelAndView handleException(HttpServletResponse response, Exception e) {
+        log.error("An error occured while processing a cache request", e);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, "exception", e);
     }
     
 }
