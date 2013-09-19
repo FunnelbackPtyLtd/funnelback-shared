@@ -189,7 +189,7 @@ public final class RecommenderUtils {
         List<ItemTuple> items = null;
         String databaseFilename
                 = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE,
-                com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH);
+                com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH + DefaultValues.SQLITEDB);
         File db = new File(databaseFilename);
         String value;
 
@@ -228,7 +228,7 @@ public final class RecommenderUtils {
         Set<List<PreferenceTuple>> sessions = new HashSet<>();
         String databaseFilename
                 = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE,
-                com.funnelback.reporting.recommender.utils.RecommenderUtils.SESSIONS_HASH);
+                com.funnelback.reporting.recommender.utils.RecommenderUtils.SESSIONS_HASH + DefaultValues.SQLITEDB);
         File db = new File(databaseFilename);
         String value;
 
