@@ -83,7 +83,7 @@ public class DevRecommenderController {
 
         if (scope != null && !("").equals(scope)) {
             String utf8Scope = URLEncoder.encode(scope, "utf-8");
-            searchService = new String((SEARCH_URL  + "&scope=" + utf8Scope));
+            searchService = searchService + "&scope=" + utf8Scope;
         }
 
         try {

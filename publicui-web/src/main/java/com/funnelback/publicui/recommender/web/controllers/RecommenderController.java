@@ -13,10 +13,8 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
-import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.validation.DataBinder;
@@ -97,7 +95,7 @@ public class RecommenderController {
         Comparator<Recommendation> comparator;
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
-        List<Recommendation> recommendations = null;
+        List<Recommendation> recommendations;
 
         if (seedItem == null || ("").equals(seedItem)) {
             throw new IllegalArgumentException("seedItem parameter must be provided.");
@@ -124,7 +122,8 @@ public class RecommenderController {
             long timeTaken = System.currentTimeMillis() - startTime.getTime();
 
             recommendationResponse =
-          				new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator),
+          				new RecommendationResponse(seedItem,
+                                RecommenderUtils.sortRecommendations(recommendations, comparator),
                                 RecommendationResponse.Source.clicks, timeTaken);
           	model.put("RecommendationResponse", recommendationResponse);
         }
@@ -148,7 +147,7 @@ public class RecommenderController {
 			model = modelandView.getModel();
 		}
 		SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
-        recommendationResponse = RecommendationResponse.fromResults(searchResponse.getResultPacket().getResults());
+        recommendationResponse = RecommendationResponse.fromResults("", searchResponse.getResultPacket().getResults());
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
 		model.put("RecommendationResponse", recommendationResponse);

@@ -31,6 +31,9 @@ public class RecommendationResponse {
         }
     }
 
+    @Getter
+    private String seedItem;
+
 	@Getter
 	private List<Recommendation> recommendations;
 
@@ -41,12 +44,12 @@ public class RecommendationResponse {
     @Getter
    	private long timeTaken;
 
-	public static RecommendationResponse fromResults(List<Result> results){
+	public static RecommendationResponse fromResults(String seedItem, List<Result> results){
 		List<Recommendation> recommendations = new ArrayList<>();
 		for (Result result : results) {
 			recommendations.add(Recommendation.fromResult(result));
 		}
 		
-		return new RecommendationResponse(recommendations, Source.explore, -1);
+		return new RecommendationResponse(seedItem, recommendations, Source.explore, -1);
 	}
 }
