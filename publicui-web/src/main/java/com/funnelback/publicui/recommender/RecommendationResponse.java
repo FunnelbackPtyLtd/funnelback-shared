@@ -49,5 +49,4 @@ public class RecommendationResponse {
 		
 		return new RecommendationResponse(recommendations, Source.explore, -1);
 	}
-
 }

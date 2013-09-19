@@ -64,7 +64,7 @@ public final class RecommenderUtils {
      * @return List of recommendations (which may be empty).
      */
     public static List<Recommendation> getRecommendationsForItem(String itemName, Config collectionConfig,
-                                                                 String scope, int maxRecommendations) {
+            String scope, int maxRecommendations) throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
         List<ItemTuple> fullList = null;
         List<String> scopes = new ArrayList<>();
@@ -185,11 +185,12 @@ public final class RecommenderUtils {
      * @param config collection config object
      * @return value as a list, which may be null
      */
-    public static List<ItemTuple> getRecommendationsFromCache(String key, Config config) {
+    public static List<ItemTuple> getRecommendationsFromCache(String key, Config config) throws IllegalStateException {
         List<ItemTuple> items = null;
+        String baseName = com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH
+                + DefaultValues.SQLITEDB;
         String databaseFilename
-                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE,
-                com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH + DefaultValues.SQLITEDB);
+                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, baseName);
         File db = new File(databaseFilename);
         String value;
 
@@ -212,6 +213,11 @@ public final class RecommenderUtils {
             } finally {
                 database.close();
             }
+        }
+        else {
+            String collectionName = config.getCollectionName();
+            throw new IllegalStateException("Expected database file does not exist: " + collectionName + baseName
+                    + " for collection " + collectionName);
         }
 
         return items;

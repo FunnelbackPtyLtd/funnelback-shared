@@ -13,9 +13,12 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -93,6 +97,7 @@ public class RecommenderController {
         Comparator<Recommendation> comparator;
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
+        List<Recommendation> recommendations = null;
 
         if (seedItem == null || ("").equals(seedItem)) {
             throw new IllegalArgumentException("seedItem parameter must be provided.");
@@ -114,10 +119,10 @@ public class RecommenderController {
             Config collectionConfig = collectionRef.getConfiguration();
 
             comparator = SortType.getComparator(asort, dsort, metadataClass);
+            recommendations = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
 
-            List<Recommendation> recommendations =
-                    RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
             long timeTaken = System.currentTimeMillis() - startTime.getTime();
+
             recommendationResponse =
           				new RecommendationResponse(RecommenderUtils.sortRecommendations(recommendations, comparator),
                                 RecommendationResponse.Source.clicks, timeTaken);
@@ -150,4 +155,13 @@ public class RecommenderController {
 		
 		return new ModelAndView(view, model);
 	}
+
+    @ExceptionHandler
+    public ModelAndView exceptionHandler(HttpServletResponse response, Exception exception) throws IOException {
+        Map<String, Object> model = new HashMap<>();
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        model.put("class", ClassUtils.getShortName(exception.getClass()));
+        model.put("message", exception.getMessage());
+        return new ModelAndView(view, model);
+    }
 }
