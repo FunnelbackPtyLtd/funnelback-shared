@@ -159,6 +159,9 @@
     <p>The extra search needs to be properly configured in
     <code>collection.cfg</code> for the results to be available.</p>
 
+    <p>Extra searches are run in parallel of the main query and take advantage
+    of multi-core machines. It's recommended to use it rather than <code>@fb.ExtraSearch</code></p>
+
     <p>An example configuration is:
         <ol>
             <li>
