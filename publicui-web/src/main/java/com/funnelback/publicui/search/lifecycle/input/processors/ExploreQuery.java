@@ -12,15 +12,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.curator.action.RemoveUrls;
-import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.explore.ExploreQueryGenerator;
+import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.MapUtils;
-import com.sun.research.ws.wadl.Application;
 
 /**
  * Processes explore:... queries. Calls padre-rf to
@@ -31,7 +30,6 @@ import com.sun.research.ws.wadl.Application;
 public class ExploreQuery extends AbstractInputProcessor {
 
     private static final String OPT_VSIMPLE = "-vsimple=on";
-    private static final String OPT_DAAT0 = "-daat=0";
     
     private final String EXPLORE_PREFIX = "explore:";
     
@@ -48,7 +46,7 @@ public class ExploreQuery extends AbstractInputProcessor {
             Integer nbOfTerms = null;
             if (searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.EXP) != null) {
                 String exp = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(),
-                		RequestParameters.EXP, null);
+                    RequestParameters.EXP, null);
                 try {
                     nbOfTerms = Integer.parseInt(exp);
                 } catch (Throwable t) {
@@ -64,7 +62,7 @@ public class ExploreQuery extends AbstractInputProcessor {
                     String url = queries[i].substring(EXPLORE_PREFIX.length());
                     urlsToRemove.add(url);
                     String exploreQuery = generator.getExploreQuery(searchTransaction.getQuestion().getCollection(),
-                    		url, nbOfTerms);
+                        url, nbOfTerms);
                     if (exploreQuery != null) {
                         queries[i] = exploreQuery;
                         queryChanged = true;
@@ -75,9 +73,10 @@ public class ExploreQuery extends AbstractInputProcessor {
             }
             
             if (queryChanged) {
-            	new RemoveUrls(urlsToRemove).performAction(searchTransaction, Action.Phase.INPUT, null);
+                new RemoveUrls(urlsToRemove).performAction(searchTransaction, Action.Phase.INPUT, null);
                 searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_VSIMPLE);
-                log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery() + "' to '" + StringUtils.join(queries, " ") + "'");
+                log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery()
+                    + "' to '" + StringUtils.join(queries, " ") + "'");
                 searchTransaction.getQuestion().setQuery(StringUtils.join(queries, " "));
             }
         }
