@@ -59,7 +59,7 @@ public class DefaultQueryReadLock implements QueryReadLock{
 		}
 
 		private String getCollectionUpdateLockFile(Config config) {
-			return Lock.collectionUpdateLockFile(config.getCollectionRoot(), config.getCollectionName());
+			return Lock.collectionInstantUpdateLockFile(config.getCollectionRoot(), config.getCollectionName());
 		}
 
 		public void lock(Collection collection) throws FileLockException {
