@@ -205,11 +205,12 @@ public final class RecommenderUtils {
      *
      * For a meta collection (and each of its components) we first check if any session information is available
      * and if there is none we check if the Data API knows about the seed item. If neither source has information
-     * we will move on to the next component.
+     * we will move on to the next component until we have exhausted the list of components or found a component
+     * that has information.
      * @param collection Collection to derive collection configuration for
      * @param configRepository handle to configuration repository
      * @param seedItem the seed item to use in detecting which component to return
-     * @return compontent collection configuration (may be null).
+     * @return collection configuration (may be null).
      */
     public static Config getCollectionConfig(com.funnelback.publicui.search.model.collection.Collection collection,
                                              ConfigRepository configRepository, String seedItem) {
