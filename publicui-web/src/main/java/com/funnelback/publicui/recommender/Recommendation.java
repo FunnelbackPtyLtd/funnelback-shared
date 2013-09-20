@@ -1,7 +1,6 @@
 package com.funnelback.publicui.recommender;
 
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.publicui.search.model.padre.Result;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -75,22 +74,5 @@ public class Recommendation {
         if (value != null) {
             this.format = StringEscapeUtils.escapeHtml(value);
         }
-    }
-    
-    public static Recommendation fromResult(Result result){
-    	String format = "";
-    	if (null != result.getMetaData().get("f"))
-    		format = StringEscapeUtils.escapeHtml(result.getMetaData().get("f"));
-
-            // This call uses the @AllArgsConstructor annotation, which fills in the object fields in order
-            Recommendation recommendation = new Recommendation(result.getDisplayUrl(),
-    			-1,//result.getExplain().getFinalScore(),
-    			result.getTitle(), 
-    			result.getDate(), 
-    			0,
-    			result.getMetaData(), 
-    			result.getSummary(), 
-    			format);
-    	return recommendation;
     }
 }

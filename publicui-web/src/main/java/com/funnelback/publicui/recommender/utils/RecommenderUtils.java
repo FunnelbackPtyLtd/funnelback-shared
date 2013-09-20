@@ -66,7 +66,7 @@ public final class RecommenderUtils {
     public static List<Recommendation> getRecommendationsForItem(String itemName, Config collectionConfig,
             String scope, int maxRecommendations) throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
-        List<ItemTuple> fullList = null;
+        List<ItemTuple> fullList;
         List<String> scopes = new ArrayList<>();
 
         if (scope != null && !("").equals(scope)) {
@@ -92,26 +92,45 @@ public final class RecommenderUtils {
                 }
             }
 
-            Map<String, ItemTuple> map = new HashMap<>();
             List<String> urls = new ArrayList<>();
+            Map<String, ItemTuple> confidenceMap = new HashMap<>();
 
             for (ItemTuple item : scopedList) {
                 String url = item.getItemID();
-
-                map.put(url, item);
                 urls.add(url);
+                confidenceMap.put(url, item);
             }
 
-            List<DocInfo> dis = getDocInfoResult(urls, collectionConfig).asList();
+            recommendations = decorateURLRecommendations(urls, confidenceMap, collectionConfig);
+        }
 
-            if (dis != null) {
-                for (DocInfo docInfo : dis) {
-                    URI uri = docInfo.getUri();
-                    String itemID = uri.toString();
-                    float confidence = map.get(itemID).getScore();
-                    Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
-                    recommendations.add(recommendation);
+        return recommendations;
+    }
+
+    /**
+     * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
+     * @param urls list of URL strings to decorate
+     * @param confidenceMap Optional map of urls to confidence scores (can be null if not available).
+     * @param collectionConfig collection config object
+     * @return list of decorated URL recommendations (which may be empty)
+     */
+    public static List<Recommendation> decorateURLRecommendations(List<String> urls,
+            Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
+        List<Recommendation> recommendations = new ArrayList<>();
+        List<DocInfo> dis = getDocInfoResult(urls, collectionConfig).asList();
+        float confidence = -1;
+
+        if (dis != null) {
+            for (DocInfo docInfo : dis) {
+                URI uri = docInfo.getUri();
+                String itemID = uri.toString();
+
+                if (confidenceMap != null) {
+                    confidence = confidenceMap.get(itemID).getScore();
                 }
+
+                Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
+                recommendations.add(recommendation);
             }
         }
 

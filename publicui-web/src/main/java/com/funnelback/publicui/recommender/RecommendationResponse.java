@@ -1,5 +1,7 @@
 package com.funnelback.publicui.recommender;
 
+import com.funnelback.common.config.Config;
+import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import com.funnelback.publicui.search.model.padre.Result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,11 +46,16 @@ public class RecommendationResponse {
     @Getter
    	private long timeTaken;
 
-	public static RecommendationResponse fromResults(String seedItem, List<Result> results){
-		List<Recommendation> recommendations = new ArrayList<>();
-		for (Result result : results) {
-			recommendations.add(Recommendation.fromResult(result));
-		}
+	public static RecommendationResponse fromResults(String seedItem, List<Result> results, Config collectionConfig){
+		List<Recommendation> recommendations;
+        List<String> urls = new ArrayList<>();
+
+        for (Result result : results) {
+            String url = result.getDisplayUrl();
+            urls.add(url);
+        }
+
+        recommendations = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig);
 		
 		return new RecommendationResponse(seedItem, recommendations, Source.explore, -1);
 	}

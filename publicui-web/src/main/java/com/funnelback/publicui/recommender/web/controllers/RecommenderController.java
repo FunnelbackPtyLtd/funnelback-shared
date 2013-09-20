@@ -6,14 +6,11 @@ import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
 import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
-import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -118,6 +115,8 @@ public class RecommenderController {
 
         if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
             question.setQuery("explore:" + seedItem);
+            // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
+            // suggestions should be automatically scoped.
             return exploreItems(request, response, question, user);
         }
 
@@ -133,7 +132,10 @@ public class RecommenderController {
     }
 
     /**
-     * Return a list of "explore" recommendations based on the given "explore:url" query.
+     * Return a list of "explore" recommendations based on the given "explore:url" query. This may come from an
+     * external HTTP request or via another controller (e.g. if no 'standard' recommendations were available).
+     * Note that the "confidence" value for all Explore suggestions is set to -1 to indicate that this information
+     * is not available.
      * @param request request from the client
      * @param response response to be sent back to the client
      * @param question a search question containing a reference to the collection etc.
@@ -147,6 +149,11 @@ public class RecommenderController {
         Date startTime = new Date();
         RecommendationResponse recommendationResponse;
         response.setContentType("application/json");
+        com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
+
+        if (collection == null) {
+            throw new IllegalArgumentException("collection parameter must be provided.");
+        }
 
         Map<String, Object> model;
         {
@@ -157,7 +164,9 @@ public class RecommenderController {
             model = modelandView.getModel();
         }
         SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
-        recommendationResponse = RecommendationResponse.fromResults("", searchResponse.getResultPacket().getResults());
+        Config collectionConfig = collection.getConfiguration();
+        recommendationResponse =
+                RecommendationResponse.fromResults("", searchResponse.getResultPacket().getResults(), collectionConfig);
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
 
