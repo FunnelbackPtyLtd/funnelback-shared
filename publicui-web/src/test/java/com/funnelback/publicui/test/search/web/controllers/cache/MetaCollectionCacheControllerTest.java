@@ -52,7 +52,7 @@ public class MetaCollectionCacheControllerTest {
                 configRepository.getCollection("cache-meta"),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "unknown-record");
+                "unknown-record", null, 0, -1);
 
     }
 }

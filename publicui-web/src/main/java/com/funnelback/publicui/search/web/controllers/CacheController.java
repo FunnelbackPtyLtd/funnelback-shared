@@ -97,12 +97,16 @@ public class CacheController {
 
     /**
      * Process cache requests
+     * 
      * @param request HTTP request
      * @param response HTTP response
      * @param collection Collection to get a cached copy from
      * @param profile Profile to get a cached copy for
      * @param form Cache form to use
      * @param url URL of the document to get a cached copy of
+     * @param doc Relative path of the document from the collection live data folder
+     * @param offset to read the content from
+     * @param length Length of content to read
      * @return {@link ModelAndView}
      * @throws Exception 
      */
@@ -112,7 +116,10 @@ public class CacheController {
             @RequestParam(value=RequestParameters.COLLECTION, required=true) Collection collection,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
-            @RequestParam(required=true) String url) throws Exception {
+            @RequestParam(required=true) String url,
+            @RequestParam String doc,
+            @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") int offset,
+            @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
         
         if (url == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -120,6 +127,10 @@ public class CacheController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             RecordAndMetadata<? extends Record<?>> rmd = dataRepository.getCachedDocument(collection, View.live, url);
+            if ((rmd == null || rmd.record == null) && doc != null) {
+                // Attempt with DOC parameter
+                rmd = dataRepository.getDocument(collection, View.live, url, doc, offset, length);
+            }
                 
             if (rmd != null && rmd.record != null) {
                 if (runHookScript(collection, Hook.pre_cache, rmd)) {
@@ -183,6 +194,7 @@ public class CacheController {
                 }
             } else {
                 // Record not found
+                log.debug("Cached copy of '"+url+"' not found on collection '"+collection.getId()+"'");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         }

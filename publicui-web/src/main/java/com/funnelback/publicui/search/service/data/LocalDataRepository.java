@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.service.data;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -17,6 +18,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -28,13 +30,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
+import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
+import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.StoreType;
+import com.funnelback.common.io.warc.WarcConstants;
 import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
@@ -120,6 +126,50 @@ public class LocalDataRepository implements DataRepository {
             getDocumentEnvironment.put(EnvironmentKeys.SystemRoot.toString(),
                 System.getenv(EnvironmentKeys.SystemRoot.toString()));
         }
+    }
+    
+    @Override
+    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, View view,
+        String url, String relativePath, int offset, int length) {
+        
+        if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath))) {
+            // FUN-5956 WARC files not supported yet
+            return null;
+        }
+        
+        File path = new File(collection.getConfiguration().getCollectionRoot()
+            + File.separator + view.toString()
+            + File.separator + DefaultValues.FOLDER_DATA,
+            relativePath);
+
+        byte[] content = null;
+        try {
+            if (length > 0) {
+                try (RandomAccessFile f = new RandomAccessFile(path, "r")) {
+                    content = new byte[length];
+                    f.seek(offset);
+                    f.readFully(content);
+                }
+            } else {
+                // Read complete file
+                content = FileUtils.readFileToByteArray(path);
+            }
+        } catch (IOException ioe) {
+            log.error("Error while accessing cached document '"+path.getAbsolutePath()+"'", ioe);
+        }
+        
+        if (content != null) {
+            if (Xml.XML.equals(FilenameUtils.getExtension(relativePath))) {
+                return new RecordAndMetadata<XmlRecord>(new XmlRecord(
+                    Xml.fromString(new String(content)), url),
+                    new HashMap<String, String>());
+            } else {
+                return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(content, url),
+                    new HashMap<String, String>());
+            }
+    }
+        
+        return null;
     }
     
     @Override

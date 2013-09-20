@@ -103,7 +103,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
                 configRepository.getCollection(collectionId),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "http://unknown-record");
+                "http://unknown-record", null, 0, -1);
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
         Assert.assertEquals(
@@ -121,7 +121,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
                 configRepository.getCollection(collectionId),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                cacheUrl.toString());
+                cacheUrl.toString(), null, 0, -1);
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 

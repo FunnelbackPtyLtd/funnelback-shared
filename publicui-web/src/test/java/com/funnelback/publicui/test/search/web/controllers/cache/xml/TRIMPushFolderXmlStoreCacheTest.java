@@ -70,7 +70,7 @@ public class TRIMPushFolderXmlStoreCacheTest extends
                 configRepository.getCollection(collectionId),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "trim://55/1234");
+                "trim://55/1234", null, 0, -1);
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }

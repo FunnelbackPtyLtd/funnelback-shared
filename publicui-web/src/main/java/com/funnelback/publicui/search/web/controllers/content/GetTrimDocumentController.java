@@ -177,7 +177,8 @@ public class GetTrimDocumentController {
                 log.debug("No attachment for record " + trimUri + ", returning cached copy");
                 return cacheController.cache(request, response, collection,
                     DefaultValues.DEFAULT_PROFILE,
-                    DefaultValues.DEFAULT_FORM, url);
+                    DefaultValues.DEFAULT_FORM, url,
+                    null, 0, -1);
                 
             } finally {
                 IOUtils.closeQuietly(fis);

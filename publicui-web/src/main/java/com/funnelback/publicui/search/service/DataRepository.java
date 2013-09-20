@@ -19,6 +19,19 @@ import com.funnelback.publicui.search.service.data.exception.TRIMException;
 public interface DataRepository {
 
     /**
+     * Gets a document from a collection by accessing the file directly
+     * @param collection Collection to lookup the document from
+     * @param view View to use
+     * @param url URL of the document
+     * @param relativePath Relative path (to the <code>view/data/</code> folder) of the document
+     * @param offset Offset to start reading data from
+     * @param length Length of the data to read
+     * @return Document The document
+     */
+    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, Store.View view, String url,
+        String relativePath, int offset, int length);
+    
+    /**
      * Gets a cached document.
      * @param collection Collection to lookup the document from
      * @param view View to lookup the document from (Usually the live view)

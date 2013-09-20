@@ -64,7 +64,7 @@ public class TRIMStoreCacheTest extends
                 configRepository.getCollection(collectionId),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "trim://12/345/");
+                "trim://12/345/", null, 0, -1);
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }

@@ -52,7 +52,7 @@ public class LocalCollectionCacheControllerTest {
                 configRepository.getCollection("cache-local"),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "unknown-record");
+                "unknown-record", null, 0, -1);
 
     }
 }

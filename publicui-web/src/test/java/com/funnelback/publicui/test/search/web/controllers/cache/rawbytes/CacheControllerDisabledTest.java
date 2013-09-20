@@ -64,7 +64,7 @@ public class CacheControllerDisabledTest {
                 configRepository.getCollection("cache-disabled"),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "unused");
+                "unused", null, 0, -1);
         Assert.assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }
