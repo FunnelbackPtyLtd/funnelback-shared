@@ -32,8 +32,8 @@ public class SearchQuestion {
     /**
      * <p>Query terms.</p>
      * 
-     * <p>This will be possibly transformed before being passed to
-     * PADRE, depending of the configuration.</p>
+     * <p>This may be transformed before being passed to
+     * PADRE, depending on the configuration.</p>
      */
     @Getter @Setter private String query;
     

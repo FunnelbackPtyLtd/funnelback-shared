@@ -15,8 +15,9 @@
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
 	
-	<bean name="jsonView"
+	<bean name="recommenderJsonView"
 		class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
+        <property name="renderedAttributes" value="RecommendationResponse" />
 	</bean>
 
 	<mvc:interceptors>

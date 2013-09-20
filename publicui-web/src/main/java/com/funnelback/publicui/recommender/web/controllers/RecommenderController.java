@@ -31,77 +31,77 @@ import java.util.*;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
+ *
  * @author fcrimmins@funnelback.com
  */
 @Controller
 @RequestMapping("/recommender")
 public class RecommenderController {
-	public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
-	public static final String QUERY_ENTRY_HTML = "queryEntry.html";
+    public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
+    public static final String QUERY_ENTRY_HTML = "queryEntry.html";
     public static final String ITEM_ENTRY_HTML = "itemEntry.html";
     public static final String SIMILAR_ITEMS_JSON = "similarItems.json";
     public static final String SESSIONS_HTML = "sessions.html";
     public static final String EXPLORE_JSON = "explore.json";
 
+    public enum ModelAttributes {
+        SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
+        extraSearches, question, response, session, error, httpRequest;
+
+        public static Set<String> getNames() {
+            HashSet<String> out = new HashSet<>();
+            for (ModelAttributes name : values()) {
+                out.add(name.toString());
+            }
+            return out;
+        }
+    }
+
     @Autowired
-    @Setter
-    private ConfigRepository configRepository;
-
-	public enum ModelAttributes {
-		SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-		extraSearches, question, response, session, error, httpRequest;
-
-		public static Set<String> getNames() {
-			HashSet<String> out = new HashSet<>();
-			for (ModelAttributes name: values()) {
-				out.add(name.toString());
-			}
-			return out;
-		}
-	}
-	
-	@Autowired
     private SearchController searchController;
-	
-	@InitBinder
+
+    @InitBinder
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
     }
 
-	@Resource(name="jsonView")
-	private View view;
+    @Resource(name = "recommenderJsonView")
+    private View view;
 
     /**
-	 * Return JSON output showing similar (recommended) items for the given item name.
-	 *
+     * Return JSON output showing similar (recommended) items for the given item name.
+     * @param request request from the client
+     * @param response response to be sent back to the client
+     * @param question a search question containing a reference to the collection etc.
+     * @param user a search user
      * @param seedItem name of seed item to get recommended items for
-     * @param collection collection ID
-     * @param scope comma separated list of scopes e.g. cmis.csiro.au,-vic.cmis.csiro.au
-     * @param dsort descending sort parameter (optional)
-     * @param asort ascending sort parameter (optional)
+     * @param scope    comma separated list of scopes e.g. cmis.csiro.au,-vic.cmis.csiro.au
+     * @param dsort    descending sort parameter (optional)
+     * @param asort    ascending sort parameter (optional)
      * @return String containing recommendations, in JSON format
-	 * @throws Exception
-	 */
-    @RequestMapping(value={"/" + SIMILAR_ITEMS_JSON}, method = RequestMethod.GET)
-    public ModelAndView similarItems(HttpServletResponse response,
-    		@RequestParam("seedItem") String seedItem,
-    		@RequestParam("collection") String collection,
-    		@RequestParam(value = "scope", required = false) String scope,
-            @RequestParam(value = "dsort", required = false) String dsort,
-            @RequestParam(value = "asort", required = false) String asort,
-            @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
+     * @throws Exception
+     */
+    @RequestMapping(value = {"/" + SIMILAR_ITEMS_JSON}, method = RequestMethod.GET, params = {RequestParameters.COLLECTION})
+    public ModelAndView similarItems(HttpServletRequest request, HttpServletResponse response,
+                                     @Valid SearchQuestion question, @ModelAttribute SearchUser user,
+                                     @RequestParam("seedItem") String seedItem,
+                                     @RequestParam(value = "scope", required = false) String scope,
+                                     @RequestParam(value = "dsort", required = false) String dsort,
+                                     @RequestParam(value = "asort", required = false) String asort,
+                                     @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
         Date startTime = new Date();
         response.setContentType("application/json");
         Comparator<Recommendation> comparator;
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
         List<Recommendation> recommendations;
+        com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
 
         if (seedItem == null || ("").equals(seedItem)) {
             throw new IllegalArgumentException("seedItem parameter must be provided.");
         }
 
-        if (collection == null || ("").equals(collection)) {
+        if (collection == null) {
             throw new IllegalArgumentException("collection parameter must be provided.");
         }
 
@@ -111,50 +111,69 @@ public class RecommenderController {
             }
         }
 
-        Collection collectionRef = configRepository.getCollection(collection);
+        Config collectionConfig = collection.getConfiguration();
 
-        if (collectionRef != null) {
-            Config collectionConfig = collectionRef.getConfiguration();
+        comparator = SortType.getComparator(asort, dsort, metadataClass);
+        recommendations = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
 
-            comparator = SortType.getComparator(asort, dsort, metadataClass);
-            recommendations = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
-
-            long timeTaken = System.currentTimeMillis() - startTime.getTime();
-
-            recommendationResponse =
-          				new RecommendationResponse(seedItem,
-                                RecommenderUtils.sortRecommendations(recommendations, comparator),
-                                RecommendationResponse.Source.clicks, timeTaken);
-          	model.put("RecommendationResponse", recommendationResponse);
+        if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
+            question.setQuery("explore:" + seedItem);
+            return exploreItems(request, response, question, user);
         }
+
+        long timeTaken = System.currentTimeMillis() - startTime.getTime();
+
+        recommendationResponse =
+                new RecommendationResponse(seedItem,
+                        RecommenderUtils.sortRecommendations(recommendations, comparator),
+                        RecommendationResponse.Source.clicks, timeTaken);
+        model.put("RecommendationResponse", recommendationResponse);
 
         return new ModelAndView(view, model);
     }
 
-	@RequestMapping(value={"/" + EXPLORE_JSON}, method = RequestMethod.GET, params={RequestParameters.COLLECTION})
-	public ModelAndView similarItems(HttpServletRequest request, HttpServletResponse response,
-			@Valid SearchQuestion question, @ModelAttribute SearchUser user) throws Exception {
+    /**
+     * Return a list of "explore" recommendations based on the given "explore:url" query.
+     * @param request request from the client
+     * @param response response to be sent back to the client
+     * @param question a search question containing a reference to the collection etc.
+     * @param user a search user
+     * @return ModelAndView containing a RecommendationResponse (which may be empty)
+     * @throws Exception
+     */
+    @RequestMapping(value = {"/" + EXPLORE_JSON}, method = RequestMethod.GET, params = {RequestParameters.COLLECTION})
+    public ModelAndView exploreItems(HttpServletRequest request, HttpServletResponse response,
+                                     @Valid SearchQuestion question, @ModelAttribute SearchUser user) throws Exception {
         Date startTime = new Date();
         RecommendationResponse recommendationResponse;
         response.setContentType("application/json");
-		
-		Map<String, Object> model;
-		{
-			ModelAndView modelandView = searchController.search(request, response, question, user);
-			if (modelandView == null){
-				return null;
-			}
-			model = modelandView.getModel();
-		}
-		SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
+
+        Map<String, Object> model;
+        {
+            ModelAndView modelandView = searchController.search(request, response, question, user);
+            if (modelandView == null) {
+                return null;
+            }
+            model = modelandView.getModel();
+        }
+        SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
         recommendationResponse = RecommendationResponse.fromResults("", searchResponse.getResultPacket().getResults());
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
-		model.put("RecommendationResponse", recommendationResponse);
-		
-		return new ModelAndView(view, model);
-	}
 
+        Map<String, Object> recommendationModel = new HashMap<>();
+        recommendationModel.put("RecommendationResponse", recommendationResponse);
+
+        return new ModelAndView(view, recommendationModel);
+    }
+
+    /**
+     * Handle exceptions thrown by other controllers.
+     * @param response response object
+     * @param exception exception that was thrown
+     * @return ModelAndView containing error details for the client
+     * @throws IOException
+     */
     @ExceptionHandler
     public ModelAndView exceptionHandler(HttpServletResponse response, Exception exception) throws IOException {
         Map<String, Object> model = new HashMap<>();

@@ -84,7 +84,7 @@ public class Recommendation {
 
             // This call uses the @AllArgsConstructor annotation, which fills in the object fields in order
             Recommendation recommendation = new Recommendation(result.getDisplayUrl(),
-    			0,//result.getExplain().getFinalScore(), 
+    			-1,//result.getExplain().getFinalScore(),
     			result.getTitle(), 
     			result.getDate(), 
     			0,
