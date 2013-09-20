@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.Lock;
 import com.funnelback.common.ThreadSharedFileLock;
 import com.funnelback.common.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.Config;
@@ -58,10 +59,7 @@ public class DefaultQueryReadLock implements QueryReadLock{
 		}
 
 		private String getCollectionUpdateLockFile(Config config) {
-			return config.getCollectionRoot()
-					+ File.separator + DefaultValues.VIEW_LIVE 
-					+ File.separator + DefaultValues.FOLDER_IDX
-					+ File.separator + Files.Index.UPDATE_LOCK;
+			return Lock.collectionUpdateLockFile(config.getCollectionRoot(), config.getCollectionName());
 		}
 
 		public void lock(Collection collection) throws FileLockException {
