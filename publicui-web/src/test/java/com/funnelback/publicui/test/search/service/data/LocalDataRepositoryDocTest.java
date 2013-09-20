@@ -19,7 +19,7 @@ import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.data.LocalDataRepository;
 
-public class LocalDataRepositryDocTest {
+public class LocalDataRepositoryDocTest {
 
     private static final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
     
