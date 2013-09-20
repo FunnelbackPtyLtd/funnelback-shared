@@ -20,7 +20,7 @@
     <p>Could not access the requested cached document.</p>
 
     <#if exception??>
-        <p>There was an error processing your request (${exception.message}). Please check the application logs.</p>
+        <p>There was an error processing your request<#if exception.message??> (${exception.message})</#if>. Please check the application logs.</p>
     <#else>
         <p>This document may have been removed, or the link to this page may be broken, or your security settings may prevent access to cached documents.</p>
     </#if>
