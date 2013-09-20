@@ -61,8 +61,10 @@ public class LocalDataRepositryDocTest {
         Assert.assertNotNull(rmd.metadata);
         
         Assert.assertEquals(
-            FileUtils.readFileToString(new File(SEARCH_HOME, "data/data-repository/live/data/sub-folder/cached-doc.xml")),
-            Xml.toString(((XmlRecord) rmd.record).getContent()));
+            FileUtils.readFileToString(new File(SEARCH_HOME, "data/data-repository/live/data/sub-folder/cached-doc.xml"))
+                .replace("\r", "\n"),
+            Xml.toString(((XmlRecord) rmd.record).getContent())
+                .replace("\r", "\n"));
         Assert.assertEquals(0, rmd.metadata.size());
     }
     
