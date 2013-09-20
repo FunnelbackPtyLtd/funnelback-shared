@@ -10,6 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ public class RecommenderController {
     public static final String SIMILAR_ITEMS_JSON = "similarItems.json";
     public static final String SESSIONS_HTML = "sessions.html";
     public static final String EXPLORE_JSON = "explore.json";
+    public static final int MAX_RECOMMENDATIONS = 5;
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
@@ -56,6 +58,9 @@ public class RecommenderController {
 
     @Autowired
     private SearchController searchController;
+
+    @Autowired
+    private ConfigRepository configRepository;
 
     @InitBinder
     public void initBinder(DataBinder binder) {
@@ -108,25 +113,28 @@ public class RecommenderController {
             }
         }
 
-        Config collectionConfig = collection.getConfiguration();
-
         comparator = SortType.getComparator(asort, dsort, metadataClass);
-        recommendations = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, 5);
+        Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 
-        if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
-            question.setQuery("explore:" + seedItem);
-            // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
-            // suggestions should be automatically scoped.
-            return exploreItems(request, response, question, user);
+        if (collectionConfig != null) {
+            recommendations
+                    = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, MAX_RECOMMENDATIONS);
+
+            if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
+                question.setQuery("explore:" + seedItem);
+                // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
+                // suggestions should be automatically scoped.
+                return exploreItems(request, response, question, user);
+            }
+
+            long timeTaken = System.currentTimeMillis() - startTime.getTime();
+
+            recommendationResponse =
+                    new RecommendationResponse(RecommendationResponse.Status.OK, seedItem,
+                            collectionConfig.getCollectionName(), RecommendationResponse.Source.clicks, timeTaken,
+                            RecommenderUtils.sortRecommendations(recommendations, comparator));
+            model.put("RecommendationResponse", recommendationResponse);
         }
-
-        long timeTaken = System.currentTimeMillis() - startTime.getTime();
-
-        recommendationResponse =
-                new RecommendationResponse(seedItem,
-                        RecommenderUtils.sortRecommendations(recommendations, comparator),
-                        RecommendationResponse.Source.clicks, timeTaken);
-        model.put("RecommendationResponse", recommendationResponse);
 
         return new ModelAndView(view, model);
     }
@@ -165,8 +173,10 @@ public class RecommenderController {
         }
         SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
         Config collectionConfig = collection.getConfiguration();
+        String query = question.getOriginalQuery();
+        String seedItem = query.replaceFirst("^explore:", "");
         recommendationResponse =
-                RecommendationResponse.fromResults("", searchResponse.getResultPacket().getResults(), collectionConfig);
+                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(), collectionConfig);
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
 

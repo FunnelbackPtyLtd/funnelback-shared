@@ -1,7 +1,6 @@
 package com.funnelback.publicui.recommender.utils;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.*;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
 import com.funnelback.dataapi.connector.padre.PadreConnector;
@@ -9,6 +8,7 @@ import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 import org.apache.log4j.Logger;
@@ -198,6 +198,63 @@ public final class RecommenderUtils {
     }
 
     /**
+     * Return the appropriate collection configuration for this collection. If the collection is a meta collection
+     * then its own configuration may be returned or one of its components, depending on which component has
+     * information on the given seed item. If this is not a meta collection then the configuration for the
+     * specified collection will always be returned.
+     *
+     * For a meta collection (and each of its components) we first check if any session information is available
+     * and if there is none we check if the Data API knows about the seed item. If neither source has information
+     * we will move on to the next component.
+     * @param collection Collection to derive collection configuration for
+     * @param configRepository handle to configuration repository
+     * @param seedItem the seed item to use in detecting which component to return
+     * @return compontent collection configuration (may be null).
+     */
+    public static Config getCollectionConfig(com.funnelback.publicui.search.model.collection.Collection collection,
+                                             ConfigRepository configRepository, String seedItem) {
+        Config componentConfig = null;
+        boolean foundComponent = false;
+
+        if (com.funnelback.common.config.Collection.Type.meta.equals(collection.getType())) {
+            List<String> components = new ArrayList<>();
+            // Make sure we add the meta collection itself as the first element of the list to be checked.
+            components.add(collection.getId());
+            components.addAll(Arrays.asList(collection.getMetaComponents()));
+
+            // Loop over all components (with parent first), until we find a component that knows about the item
+            for (String component : components) {
+                componentConfig = configRepository.getCollection(component).getConfiguration();
+                Set<List<PreferenceTuple>> sessions = getSessions(seedItem, componentConfig);
+
+                if (sessions != null && sessions.size() > 0) {
+                    // This collection has session information on the seed item - use it.
+                    foundComponent = true;
+                    break;
+                }
+                else {
+                    DocInfo docInfo = RecommenderUtils.getDocInfo(seedItem, componentConfig);
+
+                    if (docInfo != null) {
+                        // No sessions found, but we do have information from the Data API
+                        foundComponent = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!foundComponent) {
+                componentConfig = null;
+            }
+        }
+        else {
+            componentConfig = collection.getConfiguration();
+        }
+
+        return componentConfig;
+    }
+
+    /**
      * Get a list of recommendations from a backing cache based on the given Config and hashName.
      *
      * @param key    key to lookup in cache
@@ -298,6 +355,27 @@ public final class RecommenderUtils {
     }
 
     /**
+     * Return a DocInfo object for a single URL.
+     * @param url URL string to get DocInfo for
+     * @param collectionConfig collection config object
+     * @return DocInfo object (may be null if unable to get information)
+     */
+    public static DocInfo getDocInfo(String url, Config collectionConfig) {
+        DocInfo docInfo = null;
+
+        List<String> urls = new ArrayList<>();
+        urls.add(url);
+
+        List<DocInfo> dis = getDocInfoResult(urls, collectionConfig).asList();
+
+        if (dis != null && dis.size() == 1) {
+            docInfo = dis.get(0);
+        }
+
+        return docInfo;
+    }
+
+    /**
      * Return the title of the given URL from the given collection.
      * @param url URL to get title for
      * @param collectionConfig collection Config object
@@ -305,13 +383,10 @@ public final class RecommenderUtils {
      */
     public static String getTitle(String url, Config collectionConfig) {
         String title = "";
-        List<String> urls = new ArrayList<>();
-        urls.add(url);
+        DocInfo docInfo = getDocInfo(url, collectionConfig);
 
-        List<DocInfo> dis = getDocInfoResult(urls, collectionConfig).asList();
-
-        if (dis != null && dis.size() == 1) {
-            title = dis.get(0).getTitle();
+        if (docInfo != null ) {
+            title = docInfo.getTitle();
         }
 
         return title;

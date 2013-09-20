@@ -100,7 +100,6 @@ public class DevRecommenderController {
                 = configRepository.getCollection(collection);
 
         if (collectionRef != null) {
-            Config collectionConfig = collectionRef.getConfiguration();
             long startTime = System.currentTimeMillis();
 
             try {
@@ -142,12 +141,16 @@ public class DevRecommenderController {
                             + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
                             + "\">Sessions</a>]</li>\n");
 
-                    List<Recommendation> recommendations =
-                            RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig, scope, maxRecommendations);
-                    List<Recommendation> sortedRecommendations
-                            = RecommenderUtils.sortRecommendations(recommendations, comparator);
-                    buf.append(HTMLUtils.getHTMLRecommendations(sortedRecommendations, resultURL, collection,
-                            scope, maxRecommendations, dsort, asort, metadataClass));
+                    Config collectionConfig = RecommenderUtils.getCollectionConfig(collectionRef, configRepository, resultURL);
+
+                    if (collectionConfig != null) {
+                        List<Recommendation> recommendations =
+                                RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig, scope, maxRecommendations);
+                        List<Recommendation> sortedRecommendations
+                                = RecommenderUtils.sortRecommendations(recommendations, comparator);
+                        buf.append(HTMLUtils.getHTMLRecommendations(sortedRecommendations, resultURL, collection,
+                                scope, maxRecommendations, dsort, asort, metadataClass));
+                    }
                     buf.append("</ul>\n");
                     originalResults.add(resultURL);
                 }
@@ -189,59 +192,66 @@ public class DevRecommenderController {
                 = configRepository.getCollection(collection);
 
         if (collectionRef != null) {
-            Config collectionConfig = collectionRef.getConfiguration();
-            buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
-            Set<List<PreferenceTuple>> sessions
-                    = RecommenderUtils.getSessions(itemName, collectionConfig);
+            Config collectionConfig = RecommenderUtils.getCollectionConfig(collectionRef, configRepository, itemName);
 
-            if (sessions != null && !sessions.isEmpty()) {
-                for (List<PreferenceTuple> session : sessions) {
-                    String sessionID = session.get(0).getUserID();
-                    String host = session.get(0).getHost();
+            if (collectionConfig != null) {
+                buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
+                Set<List<PreferenceTuple>> sessions
+                        = RecommenderUtils.getSessions(itemName, collectionConfig);
 
-                    buf.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
+                if (sessions != null && !sessions.isEmpty()) {
+                    for (List<PreferenceTuple> session : sessions) {
+                        String sessionID = session.get(0).getUserID();
+                        String host = session.get(0).getHost();
 
-                    List<String> urls = new ArrayList<>();
-                    for (PreferenceTuple preference : session) {
-                        urls.add(preference.getItemID());
-                    }
+                        buf.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
 
-                    Map<URI, DocInfo> docInfoMap = RecommenderUtils.getDocInfoResult(urls, collectionConfig).asMap();
-
-                    if (docInfoMap != null && !docInfoMap.isEmpty()) {
+                        List<String> urls = new ArrayList<>();
                         for (PreferenceTuple preference : session) {
-                            String url = preference.getItemID();
-                            String address = url;
-                            String query = preference.getQuery();
-                            String title = url;
-                            float qieScore = -1;
-                            URI uri = new URI(url);
-                            DocInfo docInfo = docInfoMap.get(uri);
-
-                            if (docInfo != null) {
-                                title = docInfo.getTitle();
-                                qieScore = docInfo.getQieScore();
-                            }
-
-                            if (url.equals(itemName)) {
-                                url = "<font color=\"green\">" + url + "</font>";
-                            } else if (url.equals(seedItem)) {
-                                url = "<font color=\"red\">" + url + "</font>";
-                            }
-
-                            buf.append("<li><a href=\"" + address + "\">" + title + "</a> <small>"
-                                    + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchService
-                                    + URLEncoder.encode(query, "utf-8") + "\">" + query + "</a> QIE Score: "
-                                    + qieScore + "</small></li>\n");
+                            urls.add(preference.getItemID());
                         }
-                    } else {
-                        buf.append("<li>No document information available from index for URLs in this session</li>");
+
+                        Map<URI, DocInfo> docInfoMap = RecommenderUtils.getDocInfoResult(urls, collectionConfig).asMap();
+
+                        if (docInfoMap != null && !docInfoMap.isEmpty()) {
+                            for (PreferenceTuple preference : session) {
+                                String url = preference.getItemID();
+                                String address = url;
+                                String query = preference.getQuery();
+                                String title = url;
+                                float qieScore = -1;
+                                URI uri = new URI(url);
+                                DocInfo docInfo = docInfoMap.get(uri);
+
+                                if (docInfo != null) {
+                                    title = docInfo.getTitle();
+                                    qieScore = docInfo.getQieScore();
+                                }
+
+                                if (url.equals(itemName)) {
+                                    url = "<font color=\"green\">" + url + "</font>";
+                                } else if (url.equals(seedItem)) {
+                                    url = "<font color=\"red\">" + url + "</font>";
+                                }
+
+                                buf.append("<li><a href=\"" + address + "\">" + title + "</a> <small>"
+                                        + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchService
+                                        + URLEncoder.encode(query, "utf-8") + "\">" + query + "</a> QIE Score: "
+                                        + qieScore + "</small></li>\n");
+                            }
+                        } else {
+                            buf.append("<li>No document information available from index for URLs in this session</li>");
+                        }
+
+                        buf.append("</ul>");
                     }
 
-                    buf.append("</ul>");
+                } else {
+                    buf.append("<p>No sessions found.</p>");
                 }
-            } else {
-                buf.append("<p>No sessions found.</p>");
+            }
+            else {
+                buf.append("<p>Unable to get a valid collection.</p>");
             }
         }
 
@@ -251,11 +261,13 @@ public class DevRecommenderController {
 
     /**
      * Return a header for the sessions page for the given input parameters.
-     * @param itemName   Name of item e.g. URL address
-     * @param seedItem   The seed which led to this item being recommended. Could be a query or a URL.
+     *
+     * @param itemName         Name of item e.g. URL address
+     * @param seedItem         The seed which led to this item being recommended. Could be a query or a URL.
      * @param collectionConfig Collection Config object
      * @return String containing HTML for sessions page header.
      */
+
     private String getSessionsHeader(String itemName, String seedItem, Config collectionConfig) {
         StringBuffer buf = new StringBuffer();
         buf.append(SESSIONS_DOC_HEADER);

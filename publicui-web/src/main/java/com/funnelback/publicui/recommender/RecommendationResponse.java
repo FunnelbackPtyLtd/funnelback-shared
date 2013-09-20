@@ -33,11 +33,30 @@ public class RecommendationResponse {
         }
     }
 
+    public static enum Status {
+        OK("OK"),
+        NOT_FOUND("NOT_FOUND");
+
+        private final String status;
+
+        private Status(final String value) {
+        	this.status = value;
+		}
+
+        @Override
+        public String toString() {
+            return status;
+        }
+    }
+
+    @Getter
+    private Status status;
+
     @Getter
     private String seedItem;
 
-	@Getter
-	private List<Recommendation> recommendations;
+    @Getter
+   	private String sourceCollection;
 
     @Getter
    	private Source source;
@@ -46,7 +65,17 @@ public class RecommendationResponse {
     @Getter
    	private long timeTaken;
 
-	public static RecommendationResponse fromResults(String seedItem, List<Result> results, Config collectionConfig){
+    @Getter
+   	private List<Recommendation> recommendations;
+
+    /**
+     * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query.
+     * @param seedItem seed URL
+     * @param results list of results from explore query
+     * @param collectionConfig collection config object
+     * @return RecommendationResponse object (which may contain no recommendations).
+     */
+    public static RecommendationResponse fromResults(String seedItem, List<Result> results, Config collectionConfig){
 		List<Recommendation> recommendations;
         List<String> urls = new ArrayList<>();
 
@@ -56,7 +85,14 @@ public class RecommendationResponse {
         }
 
         recommendations = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig);
-		
-		return new RecommendationResponse(seedItem, recommendations, Source.explore, -1);
+
+        if (recommendations != null && recommendations.size() > 0) {
+            return new RecommendationResponse(Status.OK, seedItem, collectionConfig.getCollectionName(),
+                    Source.explore, -1, recommendations);
+        }
+        else {
+            return new RecommendationResponse(Status.NOT_FOUND, seedItem, collectionConfig.getCollectionName(),
+                    Source.none, -1, null);
+        }
 	}
 }
