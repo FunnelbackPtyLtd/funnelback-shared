@@ -15,6 +15,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -133,7 +134,12 @@ public class CacheController {
             }
                 
             if (rmd != null && rmd.record != null) {
-                if (runHookScript(collection, Hook.pre_cache, rmd)) {
+                HookScriptResult hookResult = runHookScript(collection, Hook.pre_cache, rmd);
+                if (hookResult.authorized) {
+                    if (hookResult.record != null && hookResult.metadata != null) {
+                        rmd = new RecordAndMetadata<Record<?>>(hookResult.record, hookResult.metadata);
+                    }
+                    
                     if (rmd.record instanceof RawBytesRecord) {
                         RawBytesRecord bytesRecord = (RawBytesRecord) rmd.record;
                         
@@ -146,7 +152,7 @@ public class CacheController {
                         model.put(MODEL_METADATA, rmd.metadata);
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
-                        String charset = setContentTypeAndCharset(response, rmd.metadata);
+                        String charset = getCharset(rmd.metadata);
                         model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent(), charset)));
                         
                         String view = DefaultValues.FOLDER_CONF
@@ -203,26 +209,15 @@ public class CacheController {
     }
     
     /**
-     * Sets the content type on the HTTP response and return the charset
-     * @param response HTTP response to set the header on
      * @param headers List of headers for the content, from the store
      * @return The charset for the document, defaulting to UTF-8 is not found
      */
-    private String setContentTypeAndCharset(HttpServletResponse response, Map<String, String> headers) {
-        String contentType = DEFAULT_CONTENT_TYPE;
-        String charset = DEFAULT_CHARSET;
-        if (headers.containsKey(Store.CONTENT_TYPE)) {
-            contentType = headers.get(Store.CONTENT_TYPE);
+    private String getCharset(Map<String, String> headers) {
+        if (headers.containsKey(Store.Header.Charset.toString())) {
+            return headers.get(Store.Header.Charset.toString());
+        } else {
+            return DEFAULT_CHARSET;
         }
-        
-        if (!contentType.contains(Store.CHARSET) && headers.containsKey(Store.Header.Charset.toString())) {
-            charset = headers.get(Store.Header.Charset.toString());
-            contentType += ";"+Store.CHARSET+"=" + charset;
-        }
-        
-        response.setContentType(contentType);
-        
-        return charset;
     }
     
     /**
@@ -232,24 +227,34 @@ public class CacheController {
      * @return Value returned by the hook script if it's a boolean, true otherwise. Also returns
      * true if there's no hook script to run
      */
-    private boolean runHookScript(Collection c, Hook hook, RecordAndMetadata<? extends Record<?>> rmd) {
+    private HookScriptResult runHookScript(Collection c, Hook hook, RecordAndMetadata<? extends Record<?>> rmd) {
         Class<Script> hookScriptClass = c.getHookScriptsClasses().get(hook);
         if (hookScriptClass != null) {
             try {
                 Map<String, Object> data = new HashMap<>();
                 data.put(Hook.COLLECTION_KEY, c);
+                data.put("rmd", rmd);
                 data.put(Hook.DOCUMENT_KEY, rmd.record);
                 data.put(Hook.METADATA_KEY, rmd.metadata);
                 Object value = GenericHookScriptRunner.runScript(hookScriptClass, data);
                 if (value != null && value instanceof Boolean) {
-                    return (Boolean) value;
+                    return new HookScriptResult((boolean) value, rmd.record, rmd.metadata);
+                } else {
+                    return new HookScriptResult(true, rmd.record, rmd.metadata);
                 }
             } catch (Throwable t) {
                 log.error("Error while running " + hook.toString() + " hook for collection '" + c.getId() + "'", t);
             }
         }
         
-        return true;
+        return new HookScriptResult(true, null, null);
+    }
+    
+    @RequiredArgsConstructor
+    private static class HookScriptResult {
+        public final boolean authorized;
+        public final Record<?> record;
+        public final Map<String, String> metadata;
     }
     
     /**
