@@ -39,6 +39,7 @@ import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
+import com.funnelback.common.io.store.StringRecord;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -140,8 +141,8 @@ public class CacheController {
                         rmd = new RecordAndMetadata<Record<?>>(hookResult.record, hookResult.metadata);
                     }
                     
-                    if (rmd.record instanceof RawBytesRecord) {
-                        RawBytesRecord bytesRecord = (RawBytesRecord) rmd.record;
+                    if (rmd.record instanceof RawBytesRecord || rmd.record instanceof StringRecord) {
+                        String content = getContent(rmd.record);
                         
                         Map<String, Object> model = new HashMap<String, Object>();
                         model.put(RequestParameters.Cache.URL, url);
@@ -153,7 +154,7 @@ public class CacheController {
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
                         String charset = getCharset(rmd.metadata);
-                        model.put(MODEL_DOCUMENT, Jsoup.parse(new String(bytesRecord.getContent(), charset)));
+                        model.put(MODEL_DOCUMENT, Jsoup.parse(content, charset));
                         
                         String view = DefaultValues.FOLDER_CONF
                                 + "/" + collection.getId()
@@ -221,6 +222,22 @@ public class CacheController {
     }
     
     /**
+     * Get the content of a record as a String, using the default
+     * charset.
+     * @param r The record to get the content from
+     * @return The content as a String
+     */
+    private String getContent(Record<?> r) {
+        if (r instanceof RawBytesRecord) {
+            return new String(((RawBytesRecord) r).getContent());
+        } else if (r instanceof StringRecord) {
+            return ((StringRecord) r).getContent();
+        } else {
+            throw new IllegalArgumentException("Unsupported record type " + r.getClass().getName());
+        }
+    }
+    
+    /**
      * Runs a cache hook script
      * @param c Collection to get the hook script from
      * @param hook Hook to run
@@ -233,9 +250,7 @@ public class CacheController {
             try {
                 Map<String, Object> data = new HashMap<>();
                 data.put(Hook.COLLECTION_KEY, c);
-                data.put("rmd", rmd);
-                data.put(Hook.DOCUMENT_KEY, rmd.record);
-                data.put(Hook.METADATA_KEY, rmd.metadata);
+                data.put(Hook.DOCUMENT_KEY, rmd);
                 Object value = GenericHookScriptRunner.runScript(hookScriptClass, data);
                 if (value != null && value instanceof Boolean) {
                     return new HookScriptResult((boolean) value, rmd.record, rmd.metadata);
