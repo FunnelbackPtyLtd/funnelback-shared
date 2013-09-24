@@ -5,7 +5,6 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -57,9 +56,6 @@ public class DevRecommenderController {
      * @param collection         collection ID (required)
      * @param scope              comma separated list of scope(s) to apply to suggestions (may be null or empty)
      * @param maxRecommendations maximum number of recommendations to display for each item (less than 1 means unlimited)
-     * @param dsort              descending sort parameter (optional)
-     * @param asort              ascending sort parameter (optional)
-     * @param metadataClass      metadata field ID if sorting on a metadata field (optional)
      * @return HTML page with recommendations
      * @throws Exception
      */
@@ -69,34 +65,16 @@ public class DevRecommenderController {
                                         @RequestParam("query") String query,
                                         @RequestParam("collection") String collection,
                                         @RequestParam("scope") String scope,
-                                        @RequestParam("maxRecommendations") int maxRecommendations,
-                                        @RequestParam(value = "dsort", required = false) String dsort,
-                                        @RequestParam(value = "asort", required = false) String asort,
-                                        @RequestParam(value = "metadataClass", required = false) String metadataClass)
+                                        @RequestParam("maxRecommendations") int maxRecommendations)
             throws UnsupportedEncodingException, MalformedURLException {
-        Comparator<Recommendation> comparator;
         List<Map<String, Object>> results = null;
         URL requestURL = new URL(request.getRequestURL().toString());
         String searchService = "http://" + requestURL.getAuthority() + "/s/"
                 + SEARCH_JSON + collection;
 
-        if (metadataClass != null || ("").equals(metadataClass)) {
-            if (!DocInfoQuery.isValidMetadataClass(metadataClass)) {
-                return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, "metadataClass parameter value is invalid: "
-                        + metadataClass);
-            }
-        }
-
         if (scope != null && !("").equals(scope)) {
             String utf8Scope = URLEncoder.encode(scope, "utf-8");
             searchService = searchService + "&scope=" + utf8Scope;
-        }
-
-        try {
-            comparator = SortType.getComparator(asort, dsort, metadataClass);
-        } catch (Exception exception) {
-            logger.error("searchRecommendations(): " + exception);
-            return HTMLUtils.getErrorPage(RECOMMENDATIONS_DOC_HEADER, exception.toString());
         }
 
         StringBuffer buf = new StringBuffer();
@@ -131,9 +109,6 @@ public class DevRecommenderController {
 
                     String encodedCollection = HTMLUtils.getEncodedParameter("collection", collection);
                     String encodedScope = HTMLUtils.getEncodedParameter("scope", scope);
-                    String encodedDSort = HTMLUtils.getEncodedParameter("dsort", dsort);
-                    String encodedASort = HTMLUtils.getEncodedParameter("asort", asort);
-                    String encodedMetadataClass = HTMLUtils.getEncodedParameter("metadataClass", metadataClass);
 
                     buf.append("<ul><li><a href=\"" + resultURL + "\">" + title
                             + "</a> ");
@@ -141,8 +116,7 @@ public class DevRecommenderController {
                     String encodedResultURL = URLEncoder.encode(resultURL, "utf-8");
                     buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.SIMILAR_ITEMS_JSON + "?seedItem="
                             + encodedResultURL + encodedCollection + encodedScope
-                            + "&maxRecommendations=" + maxRecommendations + encodedDSort + encodedASort
-                            + encodedMetadataClass + "\">JSON</a>] \n");
+                            + "&maxRecommendations=" + maxRecommendations + "\">JSON</a>] \n");
                     buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.SESSIONS_HTML + "?itemName="
                             + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
                             + "\">Sessions</a>]</li>\n");
@@ -153,10 +127,8 @@ public class DevRecommenderController {
                         List<Recommendation> recommendations =
                                 RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig,
                                         scope, maxRecommendations);
-                        List<Recommendation> sortedRecommendations
-                                = RecommenderUtils.sortRecommendations(recommendations, comparator);
-                        buf.append(HTMLUtils.getHTMLRecommendations(sortedRecommendations, resultURL, collection,
-                                scope, maxRecommendations, dsort, asort, metadataClass));
+                        buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
+                                scope, maxRecommendations));
                     }
                     buf.append("</ul>\n");
                     originalResults.add(resultURL);
@@ -347,20 +319,6 @@ public class DevRecommenderController {
                 "<input id=\"query\" class=\"text\" type=\"text\" title=\"Query\" name=\"query\" size=\"70\"/>" +
                 "<input type=\"hidden\" name=\"collection\" value=\"" + URLEncoder.encode(collection, "utf-8") + "\">" +
                 "<input type=\"hidden\" name=\"scope\" value=\"" + scope + "\">");
-        buf.append("<br><br>Sort Descending: " + HTMLUtils.getSortRadioButtons(SortType.Parameter.dsort));
-        buf.append("<br><br>Sort Ascending: " + HTMLUtils.getSortRadioButtons(SortType.Parameter.asort));
-
-        buf.append("<br><br>Optional metadata class to sort on: <select name=\"metadataClass\">");
-        for (String id : DocInfoQuery.ALL_METADATA) {
-            String selected = "";
-
-            if (id.equals(SortType.DEFAULT_METADATA_CLASS)) {
-                selected = "selected";
-            }
-            buf.append("<option value=\"" + id + "\" " + selected + ">" + id + "</option>");
-        }
-
-        buf.append("</select><br>");
 
         buf.append("<br><br>Maxiumum Recommendations: <select name=\"maxRecommendations\">");
         for (int i = 1; i <= 10; i++) {

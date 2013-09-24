@@ -32,34 +32,7 @@ public final class RecommenderUtils {
     }
 
     /**
-     * Sort the given list of recommendations using the specified {@link Comparator}
-     *
-     * @param recommendations list of {@link Recommendation}s
-     * @param comparator      The comparator to apply
-     * @return sorted list
-     */
-    public static List<Recommendation> sortRecommendations(List<Recommendation> recommendations,
-                                                           Comparator<Recommendation> comparator) {
-        List<Recommendation> sortedRecommendations;
-
-        if (comparator != null && recommendations != null && !recommendations.isEmpty()) {
-            int size = recommendations.size();
-            Recommendation[] recommendationsArray = recommendations.toArray(new Recommendation[size]);
-            Arrays.sort(recommendationsArray, comparator);
-            sortedRecommendations = new ArrayList<>(Arrays.asList(recommendationsArray));
-        } else {
-            sortedRecommendations = recommendations;
-        }
-
-        return sortedRecommendations;
-    }
-
-    /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
-     *
-     *
-     *
-     *
      * @param itemName           name of item
      * @param collectionConfig   collection config object
      * @param scope              comma separated list of items scopes

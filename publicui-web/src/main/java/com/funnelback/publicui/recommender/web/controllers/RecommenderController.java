@@ -1,10 +1,8 @@
 package com.funnelback.publicui.recommender.web.controllers;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.recommender.compare.SortType;
 import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -78,8 +76,7 @@ public class RecommenderController {
      * @param user a search user
      * @param seedItem name of seed item to get recommended items for
      * @param scope    comma separated list of scopes e.g. cmis.csiro.au,-vic.cmis.csiro.au
-     * @param dsort    descending sort parameter (optional)
-     * @param asort    ascending sort parameter (optional)
+     * @param maxRecommendations maximum number of recommendations to return (less than this may be available).
      * @return String containing recommendations, in JSON format
      * @throws Exception
      */
@@ -88,10 +85,8 @@ public class RecommenderController {
                                      @Valid SearchQuestion question, @ModelAttribute SearchUser user,
                                      @RequestParam("seedItem") String seedItem,
                                      @RequestParam(value = "scope", required = false) String scope,
-                                     @RequestParam(value = "maxRecommendations", required = false) Integer maxRecommendations,
-                                     @RequestParam(value = "dsort", required = false) String dsort,
-                                     @RequestParam(value = "asort", required = false) String asort,
-                                     @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
+                                     @RequestParam(value = "maxRecommendations", required = false)
+                                     Integer maxRecommendations) throws Exception {
         Date startTime = new Date();
         response.setContentType("application/json");
         Comparator<Recommendation> comparator;
@@ -108,17 +103,10 @@ public class RecommenderController {
             throw new IllegalArgumentException("collection parameter must be provided.");
         }
 
-        if (metadataClass != null || ("").equals(metadataClass)) {
-            if (!DocInfoQuery.isValidMetadataClass(metadataClass)) {
-                throw new IllegalArgumentException("metadataClass parameter value is invalid: " + metadataClass);
-            }
-        }
-
         if (maxRecommendations == null) {
             maxRecommendations = MAX_RECOMMENDATIONS;
         }
 
-        comparator = SortType.getComparator(asort, dsort, metadataClass);
         String requestCollection = collection.getId();
         Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 
@@ -140,7 +128,7 @@ public class RecommenderController {
                     new RecommendationResponse(RecommendationResponse.Status.OK, seedItem,
                             requestCollection, scope, maxRecommendations, recommendations.size(),
                             collectionConfig.getCollectionName(), RecommendationResponse.Source.clicks, timeTaken,
-                            RecommenderUtils.sortRecommendations(recommendations, comparator));
+                            recommendations);
             model.put("RecommendationResponse", recommendationResponse);
         }
 
