@@ -36,10 +36,10 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
-import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.StoreType;
+import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.warc.WarcConstants;
 import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.i18n.I18n;
@@ -130,20 +130,26 @@ public class LocalDataRepository implements DataRepository {
     
     @Override
     public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, View view,
-        String url, String relativePath, int offset, int length) {
+        String url, File relativePath, int offset, int length) {
         
-        if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath))) {
+        if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath.getName()))) {
             // FUN-5956 WARC files not supported yet
             return null;
         }
         
-        File path = new File(collection.getConfiguration().getCollectionRoot()
-            + File.separator + view.toString()
-            + File.separator + DefaultValues.FOLDER_DATA,
-            relativePath);
+        File root =  new File(collection.getConfiguration().getCollectionRoot(),
+            view.toString() + File.separator + DefaultValues.FOLDER_DATA);
+        File path = new File(root, relativePath.getPath());
 
         byte[] content = null;
         try {
+            if (relativePath.isAbsolute()
+                || ! com.funnelback.common.utils.FileUtils.isChildOf(root, path)) {
+                throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
+            } else if (! path.exists()) {
+                return null;
+            }
+
             if (length > 0) {
                 try (RandomAccessFile f = new RandomAccessFile(path, "r")) {
                     content = new byte[length];
@@ -156,10 +162,11 @@ public class LocalDataRepository implements DataRepository {
             }
         } catch (IOException ioe) {
             log.error("Error while accessing cached document '"+path.getAbsolutePath()+"'", ioe);
+            content = null;
         }
         
         if (content != null) {
-            if (Xml.XML.equals(FilenameUtils.getExtension(relativePath))) {
+            if (Xml.XML.equals(FilenameUtils.getExtension(relativePath.getName()))) {
                 return new RecordAndMetadata<XmlRecord>(new XmlRecord(
                     Xml.fromString(new String(content)), url),
                     new HashMap<String, String>());
@@ -167,7 +174,7 @@ public class LocalDataRepository implements DataRepository {
                 return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(content, url),
                     new HashMap<String, String>());
             }
-    }
+        }
         
         return null;
     }

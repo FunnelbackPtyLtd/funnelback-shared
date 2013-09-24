@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers;
 
 import groovy.lang.Script;
 
+import java.beans.PropertyEditorSupport;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Pattern;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -21,6 +23,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.FileEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,6 +51,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.RelativeFileOnlyEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 /**
@@ -95,6 +99,7 @@ public class CacheController {
     @InitBinder
     public void initBinder(DataBinder binder) {
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+        binder.registerCustomEditor(File.class, new RelativeFileOnlyEditor());
     }
 
     /**
@@ -119,7 +124,7 @@ public class CacheController {
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
             @RequestParam(required=true) String url,
-            @RequestParam String doc,
+            @RequestParam File doc,
             @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") int offset,
             @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
         

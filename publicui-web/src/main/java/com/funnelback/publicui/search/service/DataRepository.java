@@ -29,7 +29,7 @@ public interface DataRepository {
      * @return Document The document
      */
     public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, Store.View view, String url,
-        String relativePath, int offset, int length);
+        File relativePath, int offset, int length);
     
     /**
      * Gets a cached document.

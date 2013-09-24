@@ -61,20 +61,12 @@ public class Collection {
         public static final String COLLECTION_KEY = "collection";
         
         /**
-         * Name of the Groovy variable that will contain the document (key + content),
+         * Name of the Groovy variable that will contain the document (key + content + metadata),
          * from within a cache Groovy script.
          * 
          * @since v12.4
          */
         public static final String DOCUMENT_KEY = "document";
-        
-        /**
-         * Name of the Groovy variable that will contain the document metadata
-         * from within a cache Groovy script.
-         * 
-         * @since v12.4
-         */
-        public static final String METADATA_KEY = "metaData";
     }
     
     /**

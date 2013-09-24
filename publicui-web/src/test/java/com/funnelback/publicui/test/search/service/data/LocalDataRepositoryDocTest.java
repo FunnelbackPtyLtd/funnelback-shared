@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class LocalDataRepositoryDocTest {
     public void testTxt() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
             collection, View.live, "http://invalid.url/file.html",
-            "sub-folder/cached-doc.txt", 0, -1);
+            new File("sub-folder/cached-doc.txt"), 0, -1);
         
         Assert.assertNotNull(rmd);
         Assert.assertNotNull(rmd.record);
@@ -53,7 +54,7 @@ public class LocalDataRepositoryDocTest {
     public void testXml() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
             collection, View.live, "http://invalid.url/file.html",
-            "sub-folder/cached-doc.xml", 0, -1);
+            new File("sub-folder/cached-doc.xml"), 0, -1);
         
         Assert.assertNotNull(rmd);
         Assert.assertNotNull(rmd.record);
@@ -76,7 +77,7 @@ public class LocalDataRepositoryDocTest {
     public void testWarc() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
             collection, View.live, "http://invalid.url/file.html",
-            "sub-folder/cached-doc.warc", 0, -1);
+            new File("sub-folder/cached-doc.warc"), 0, -1);
         
         Assert.assertNull(rmd);
     }
@@ -85,9 +86,32 @@ public class LocalDataRepositoryDocTest {
     public void testInvalidFile() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
             collection, View.live, "http://invalid.url/file.html",
-            "invalid-file.txt", 0, -1);
+            new File("invalid-file.txt"), 0, -1);
         
         Assert.assertNull(rmd);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testParentPath() throws IOException {
+        repository.getDocument(collection, View.live, "http://ignored.url/",
+            new File("../file-outside-data.txt"), 0, -1);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testSneakyParentPath() throws IOException {
+        repository.getDocument(collection, View.live, "http://ignored.url/",
+            new File("folder/file/../../../file-outside-data.txt"), 0, -1);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testAbsolutePath() throws IOException {
+        if (OS.isFamilyWindows()) {
+            repository.getDocument(collection, View.live, "http://ignored.url/",
+                new File("C:\\Windows\\System32\\cmd.exe"), 0, -1);
+        } else {
+            repository.getDocument(collection, View.live, "http://ignored.url/",
+                new File("/etc/passwd"), 0, -1);
+        }
     }
 
 
