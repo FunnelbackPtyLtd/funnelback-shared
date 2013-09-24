@@ -89,7 +89,6 @@ public class RecommenderController {
                                      Integer maxRecommendations) throws Exception {
         Date startTime = new Date();
         response.setContentType("application/json");
-        Comparator<Recommendation> comparator;
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
         List<Recommendation> recommendations;
@@ -117,6 +116,8 @@ public class RecommenderController {
 
             if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
                 question.setQuery("explore:" + seedItem);
+                question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
+
                 // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
                 // suggestions should be automatically scoped.
                 return exploreItems(request, response, question, user);
@@ -167,12 +168,18 @@ public class RecommenderController {
             }
             model = modelandView.getModel();
         }
+
+        String requestCollection = collection.getId();
         SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
         Config collectionConfig = collection.getConfiguration();
         String query = question.getOriginalQuery();
         String seedItem = query.replaceFirst("^explore:", "");
+        String scope = question.getInputParameterMap().get("scope");
+        Integer maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
+
         recommendationResponse =
-                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(), collectionConfig, "", "", 5);
+                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(),
+                        collectionConfig, requestCollection, scope, maxRecommendations);
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
 
