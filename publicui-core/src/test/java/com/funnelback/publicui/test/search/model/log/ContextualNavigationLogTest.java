@@ -6,6 +6,7 @@ import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.common.Xml;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
@@ -27,21 +28,24 @@ public class ContextualNavigationLogTest {
             new Collection("collection", null),
             new Profile("profile"),
             "request-id",
-            "cluster",
-            Arrays.asList(new String[] {"clus1", "clus2"} ),
+            "cluster & cluster",
+            Arrays.asList(new String[] {"clus1 & clusA", "clus2 & clusB"} ),
             "user-id");
         
         Assert.assertEquals(
             "<cflus>"
             + "<t>20130915 13:25:42</t>"
-            + "<cluster0>clus1</cluster0>"
-            + "<cluster1>clus2</cluster1>"
+            + "<cluster0>clus1 &amp; clusA</cluster0>"
+            + "<cluster1>clus2 &amp; clusB</cluster1>"
             + "<coll>collection</coll>"
-            + "<fluster>cluster</fluster>"
+            + "<fluster>cluster &amp; cluster</fluster>"
             + "<prof>profile</prof>"
             + "<requestip>request-id</requestip>"
             + "</cflus>",
             l.toXml());
+        
+        // Valid XML, shouldn't throw Exceptions
+        Xml.fromString(l.toXml());
     }
     
 }

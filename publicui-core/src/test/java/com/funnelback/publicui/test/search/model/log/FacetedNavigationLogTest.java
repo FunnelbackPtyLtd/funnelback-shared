@@ -5,6 +5,7 @@ import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.common.Xml;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
@@ -27,19 +28,22 @@ public class FacetedNavigationLogTest {
             new Profile("profile"),
             "request-id",
             "user-id",
-            "facet",
-            "query");
+            "facet & facet",
+            "query & query");
         
         Assert.assertEquals(
             "<cfac>"
             + "<t>20130915 13:25:42</t>"
             + "<coll>collection</coll>"
-            + "<facet>facet</facet>"
+            + "<facet>facet &amp; facet</facet>"
             + "<prof>profile</prof>"
             + "<requestip>request-id</requestip>"
-            + "<squery>query</squery>"
+            + "<squery>query &amp; query</squery>"
             + "</cfac>",
             l.toXml());
+
+        // Valid XML, shouldn't throw Exceptions
+        Xml.fromString(l.toXml());
     }
     
 }

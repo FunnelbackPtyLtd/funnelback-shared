@@ -61,5 +61,19 @@ public class FacetedNavigationConfig {
         }
         return out;
     }
+    
+    /**
+     * @param facetName Facet name to lookup the definition for
+     * @return The {@link FacetDefinition} for this facet name, or null if not found
+     */
+    public FacetDefinition getFacetDefinition(String facetName) {
+        for (FacetDefinition fDef: facetDefinitions) {
+            if (fDef.getName().equals(facetName)) {
+                return fDef;
+            }
+        }
+        
+        return null;
+    }
         
 }
