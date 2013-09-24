@@ -47,6 +47,7 @@ import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 /**
@@ -200,6 +201,12 @@ public class ClickController extends SessionController {
                 h.setCollection(collection.getId());
                 h.setClickDate(new Date());
                 h.setUserId(user.getId());
+                if (referer != null) {
+                    Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
+                    if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
+                        h.setQuery(qs.get(RequestParameters.QUERY));
+                    }
+                }
                 
                 try {
                     searchHistoryRepository.saveClick(h);

@@ -87,6 +87,7 @@ public abstract class SessionDaoTest {
         ch.setSummary(UUID.randomUUID().toString());
         ch.setTitle(UUID.randomUUID().toString());
         ch.setUserId(userId);
+        ch.setQuery(UUID.randomUUID().toString());
         
         return ch;
     }

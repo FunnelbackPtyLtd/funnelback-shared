@@ -43,6 +43,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
             ch.setSummary("Summary #"+i);
             ch.setTitle("Title #"+i);
             ch.setUserId(user.getId());
+            ch.setQuery("query");
     
             repository.saveClick(ch);
         }
@@ -54,6 +55,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
             ClickHistory ch = history.get(j);
             assertEquals(user.getId(), ch.getUserId());
             assertEquals(collection.getId(), ch.getCollection());
+            assertEquals("query", ch.getQuery());
             assertTrue(ch.getIndexUrl().toString().matches("funnelback://test.result/"+i));
             assertTrue(ch.getSummary().matches("Summary #"+i));
             assertTrue(ch.getTitle().matches("Title #"+i));
@@ -78,6 +80,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
             ch.setSummary("Summary #"+i);
             ch.setTitle("Title #"+i);
             ch.setUserId(user.getId());
+            ch.setQuery("query");
     
             repository.saveClick(ch);
         }
@@ -103,6 +106,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         ch1.setSummary("Summary");
         ch1.setTitle("Title");
         ch1.setUserId(user.getId());
+        ch1.setQuery("query");
 
         c.add(Calendar.DAY_OF_MONTH, 1);
         ClickHistory ch2 = new ClickHistory();
@@ -112,6 +116,7 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         ch2.setSummary("Summary updated");
         ch2.setTitle("Title updated");
         ch2.setUserId(user.getId());
+        ch2.setQuery("query");
 
         repository.saveClick(ch1);
         repository.saveClick(ch2);

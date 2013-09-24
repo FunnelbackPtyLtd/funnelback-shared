@@ -29,6 +29,13 @@ public class ClickHistory extends SessionResult {
     private Date clickDate;
     
     /**
+     * <p>Query that returned this result</p>
+     * <p>Might be null if there was no referer available.</p>
+     **/
+    @Getter @Setter
+    private String query;
+    
+    /**
      * Metadata values for the result
      */
     @Getter

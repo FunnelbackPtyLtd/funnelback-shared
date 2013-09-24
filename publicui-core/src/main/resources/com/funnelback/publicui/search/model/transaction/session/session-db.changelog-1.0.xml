@@ -63,6 +63,9 @@
             <column name="clickDate" type="timestamp">
                 <constraints nullable="false" />
             </column>
+            <column name="query" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
             <column name="title" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
