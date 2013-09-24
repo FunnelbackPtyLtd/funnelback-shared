@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
@@ -39,6 +40,7 @@ public class LocalCollectionCacheControllerTest {
         cacheController = new CacheController();
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
+        cacheController.setMetricRegistry(new MetricRegistry());
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
