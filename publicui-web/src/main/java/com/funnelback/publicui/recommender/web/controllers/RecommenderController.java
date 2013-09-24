@@ -106,6 +106,10 @@ public class RecommenderController {
             maxRecommendations = MAX_RECOMMENDATIONS;
         }
 
+        if (scope == null) {
+            scope = "";
+        }
+
         String requestCollection = collection.getId();
         Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 

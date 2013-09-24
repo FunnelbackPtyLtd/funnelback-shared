@@ -101,6 +101,10 @@ public class RecommendationResponse {
             urls.add(url);
         }
 
+        if (scope == null) {
+            scope = "";
+        }
+
         recommendations = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig);
 
         if (recommendations != null && recommendations.size() > 0) {
