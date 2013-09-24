@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -38,10 +41,10 @@ public class DevRecommenderController {
     public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "recommender/";
     private static final String RECOMMENDATIONS_DOC_HEADER = "<html><head><title>Recommendations</title><head><body><h1>Recommendations</h1>";
     private static final String SESSIONS_DOC_HEADER = "<html><head><title>Sessions</title><head><body><h1>Sessions</h1>";
-    private static final String SEARCH_URL = "http://127.0.0.1:8080/s/search.json?collection=";
     private static final int DEFAULT_MAX_RECOMMENDATIONS = 10;
     private static final String CURTIN_SCOPE = "handbook.curtin.edu.au/units,courses.curtin.edu.au/course_overview";
     private static final String CURTIN_COLLECTION = "test-curtin-courses";
+    private static final String SEARCH_JSON = "search.json?collection=";
 
     @Autowired
     @Setter
@@ -62,17 +65,20 @@ public class DevRecommenderController {
      */
     @ResponseBody
     @RequestMapping(value = {"/" + RecommenderController.SEARCH_RECOMMENDATIONS_HTML}, method = RequestMethod.GET)
-    public String searchRecommendations(@RequestParam("query") String query,
+    public String searchRecommendations(HttpServletRequest request,
+                                        @RequestParam("query") String query,
                                         @RequestParam("collection") String collection,
                                         @RequestParam("scope") String scope,
                                         @RequestParam("maxRecommendations") int maxRecommendations,
                                         @RequestParam(value = "dsort", required = false) String dsort,
                                         @RequestParam(value = "asort", required = false) String asort,
                                         @RequestParam(value = "metadataClass", required = false) String metadataClass)
-            throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException, MalformedURLException {
         Comparator<Recommendation> comparator;
         List<Map<String, Object>> results = null;
-        String searchService = SEARCH_URL + collection;
+        URL requestURL = new URL(request.getRequestURL().toString());
+        String searchService = requestURL.getProtocol() + "://" + requestURL.getAuthority() + "/s/"
+                + SEARCH_JSON + collection;
 
         if (metadataClass != null || ("").equals(metadataClass)) {
             if (!DocInfoQuery.isValidMetadataClass(metadataClass)) {
@@ -185,7 +191,7 @@ public class DevRecommenderController {
                            @RequestParam("seedItem") String seedItem,
                            @RequestParam("collection") String collection) throws Exception {
         StringBuffer buf = new StringBuffer();
-        String searchService = SEARCH_URL + collection;
+        String searchService = SEARCH_JSON + collection;
         searchService = searchService.replaceAll("\\.json", "\\.html");
 
         Collection collectionRef
