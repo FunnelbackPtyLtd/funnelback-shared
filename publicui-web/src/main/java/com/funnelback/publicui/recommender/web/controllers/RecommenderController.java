@@ -88,6 +88,7 @@ public class RecommenderController {
                                      @Valid SearchQuestion question, @ModelAttribute SearchUser user,
                                      @RequestParam("seedItem") String seedItem,
                                      @RequestParam(value = "scope", required = false) String scope,
+                                     @RequestParam(value = "maxRecommendations", required = false) Integer maxRecommendations,
                                      @RequestParam(value = "dsort", required = false) String dsort,
                                      @RequestParam(value = "asort", required = false) String asort,
                                      @RequestParam(value = "metadataClass", required = false) String metadataClass) throws Exception {
@@ -113,12 +114,18 @@ public class RecommenderController {
             }
         }
 
+        if (maxRecommendations == null) {
+            maxRecommendations = MAX_RECOMMENDATIONS;
+        }
+
         comparator = SortType.getComparator(asort, dsort, metadataClass);
+        String requestCollection = collection.getId();
         Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 
         if (collectionConfig != null) {
             recommendations
-                    = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope, MAX_RECOMMENDATIONS);
+                    = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
+                          maxRecommendations);
 
             if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
                 question.setQuery("explore:" + seedItem);
@@ -131,6 +138,7 @@ public class RecommenderController {
 
             recommendationResponse =
                     new RecommendationResponse(RecommendationResponse.Status.OK, seedItem,
+                            requestCollection, scope, maxRecommendations, recommendations.size(),
                             collectionConfig.getCollectionName(), RecommendationResponse.Source.clicks, timeTaken,
                             RecommenderUtils.sortRecommendations(recommendations, comparator));
             model.put("RecommendationResponse", recommendationResponse);
@@ -176,7 +184,7 @@ public class RecommenderController {
         String query = question.getOriginalQuery();
         String seedItem = query.replaceFirst("^explore:", "");
         recommendationResponse =
-                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(), collectionConfig);
+                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(), collectionConfig, "", "", 5);
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);
 

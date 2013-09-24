@@ -77,7 +77,7 @@ public class DevRecommenderController {
         Comparator<Recommendation> comparator;
         List<Map<String, Object>> results = null;
         URL requestURL = new URL(request.getRequestURL().toString());
-        String searchService = requestURL.getProtocol() + "://" + requestURL.getAuthority() + "/s/"
+        String searchService = "http://" + requestURL.getAuthority() + "/s/"
                 + SEARCH_JSON + collection;
 
         if (metadataClass != null || ("").equals(metadataClass)) {
@@ -151,7 +151,8 @@ public class DevRecommenderController {
 
                     if (collectionConfig != null) {
                         List<Recommendation> recommendations =
-                                RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig, scope, maxRecommendations);
+                                RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig,
+                                        scope, maxRecommendations);
                         List<Recommendation> sortedRecommendations
                                 = RecommenderUtils.sortRecommendations(recommendations, comparator);
                         buf.append(HTMLUtils.getHTMLRecommendations(sortedRecommendations, resultURL, collection,

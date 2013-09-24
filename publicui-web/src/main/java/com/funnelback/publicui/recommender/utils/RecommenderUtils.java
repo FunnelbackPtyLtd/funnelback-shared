@@ -57,6 +57,9 @@ public final class RecommenderUtils {
     /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
      *
+     *
+     *
+     *
      * @param itemName           name of item
      * @param collectionConfig   collection config object
      * @param scope              comma separated list of items scopes
@@ -64,7 +67,7 @@ public final class RecommenderUtils {
      * @return List of recommendations (which may be empty).
      */
     public static List<Recommendation> getRecommendationsForItem(String itemName, Config collectionConfig,
-            String scope, int maxRecommendations) throws IllegalStateException {
+                                                                 String scope, int maxRecommendations) throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
         List<ItemTuple> fullList;
         List<String> scopes = new ArrayList<>();

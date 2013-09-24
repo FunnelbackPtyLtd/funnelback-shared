@@ -56,6 +56,18 @@ public class RecommendationResponse {
     private String seedItem;
 
     @Getter
+   	private String collection;
+
+    @Getter
+   	private String scope;
+
+    @Getter
+   	private int maxRecommendations;
+
+    @Getter
+   	private int numRecommendations;
+
+    @Getter
    	private String sourceCollection;
 
     @Getter
@@ -70,12 +82,17 @@ public class RecommendationResponse {
 
     /**
      * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query.
+     *
      * @param seedItem seed URL
      * @param results list of results from explore query
      * @param collectionConfig collection config object
-     * @return RecommendationResponse object (which may contain no recommendations).
-     */
-    public static RecommendationResponse fromResults(String seedItem, List<Result> results, Config collectionConfig){
+     * @param requestCollection
+     * @param scope
+     * @param maxRecommendations
+     * */
+    public static RecommendationResponse fromResults(String seedItem, List<Result> results,
+                                                     Config collectionConfig, String requestCollection,
+                                                     String scope, int maxRecommendations){
 		List<Recommendation> recommendations;
         List<String> urls = new ArrayList<>();
 
@@ -87,12 +104,12 @@ public class RecommendationResponse {
         recommendations = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig);
 
         if (recommendations != null && recommendations.size() > 0) {
-            return new RecommendationResponse(Status.OK, seedItem, collectionConfig.getCollectionName(),
-                    Source.explore, -1, recommendations);
+            return new RecommendationResponse(Status.OK, seedItem, requestCollection, scope, maxRecommendations,
+                    recommendations.size(), collectionConfig.getCollectionName(), Source.explore, -1, recommendations);
         }
         else {
-            return new RecommendationResponse(Status.NOT_FOUND, seedItem, collectionConfig.getCollectionName(),
-                    Source.none, -1, null);
+            return new RecommendationResponse(Status.NOT_FOUND, seedItem, requestCollection, scope,
+                    maxRecommendations, 0, collectionConfig.getCollectionName(), Source.none, -1, null);
         }
 	}
 }
