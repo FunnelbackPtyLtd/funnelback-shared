@@ -298,6 +298,7 @@ public class LocalDataRepository implements DataRepository {
         case database:
         case directory:
             return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
+        case custom:
         case trimpush:
             return URLDecoder.decode(url, "UTF-8");
         case meta:
