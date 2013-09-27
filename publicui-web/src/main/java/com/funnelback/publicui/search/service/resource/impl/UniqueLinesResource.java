@@ -11,7 +11,8 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 
-import com.funnelback.publicui.search.service.resource.impl.SimpleFileResource.RemoveCommentsPredicate;
+import com.funnelback.common.config.RemoveCommentsPredicate;
+
 
 /**
  * Reads a file and returns a Set of String containing
