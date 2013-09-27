@@ -48,6 +48,7 @@
 
 	<properties>
 		<liquibase.url>jdbc:h2:${env.SEARCH_HOME}/databases/search-session</liquibase.url>
+		<liquibase.driver>org.h2.Driver</liquibase.driver>
 	</properties>
 
 	<build>
@@ -95,7 +96,7 @@
 				<version>2.0.5</version>
 				<configuration>
 					<changeLogFile>src/main/resources/com/funnelback/publicui/search/model/transaction/session/session-db.changelog-master.xml</changeLogFile>
-					<driver>org.h2.Driver</driver>
+					<driver>${liquibase.driver}</driver>
 					<url>${liquibase.url}</url>
 				</configuration>
 				<dependencies>

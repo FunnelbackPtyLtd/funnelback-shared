@@ -7,60 +7,60 @@
 		 run liquibase (Maven, command line...) to avoid liquibase detecting a difference
 		 in the changesets that were run -->
 	<changeSet id="1" author="nguillaumin" logicalFilePath="session-db-changelog-1.0.xml">
-		<createTable tableName="SearchHistory">
-			<column name="userId" type="varchar(36)">
+		<createTable tableName="searchhistory">
+			<column name="userid" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="searchDate" type="timestamp">
+			<column name="searchdate" type="timestamp">
 				<constraints nullable="false" />
 			</column>
-			<column name="originalQuery" type="varchar(255)">
+			<column name="originalquery" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="queryAsProcessed" type="varchar(255)">
+			<column name="queryasprocessed" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="totalMatching" type="int">
+			<column name="totalmatching" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="currStart" type="int">
+			<column name="currstart" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="numRanks" type="int">
+			<column name="numranks" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="searchParams" type="varchar(1024)">
+			<column name="searchparams" type="varchar(1024)">
 				<constraints nullable="false" />
 			</column>
-			<column name="searchParamsSignature" type="int">
+			<column name="searchparamssignature" type="int">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-        <addPrimaryKey tableName="SearchHistory" columnNames="userId,collection,searchParamsSignature"/>
-		<createIndex tableName="SearchHistory" indexName="SearchHistory_UserId_Idx">
-			<column name="userId" />
+        <addPrimaryKey tableName="searchhistory" columnNames="userid,collection,searchparamssignature"/>
+		<createIndex tableName="searchhistory" indexName="searchhistory_userid_idx">
+			<column name="userid" />
 		</createIndex>
-		<createIndex tableName="SearchHistory" indexName="SearchHistory_Collection_Idx">
+		<createIndex tableName="searchhistory" indexName="searchhistory_collection_idx">
 			<column name="collection" />
 		</createIndex>
-        <createIndex tableName="SearchHistory" indexName="SearchHistory_SearchParamsSignature_Idx">
-            <column name="searchParamsSignature" />
+        <createIndex tableName="searchhistory" indexName="searchhistory_searchparamssignature_idx">
+            <column name="searchparamssignature" />
         </createIndex>
 
-		<createTable tableName="ClickHistory">
-			<column name="userId" type="varchar(36)">
+		<createTable tableName="clickhistory">
+			<column name="userid" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-            <column name="indexUrl" type="varchar(1024)">
+            <column name="indexurl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
-            <column name="clickDate" type="timestamp">
+            <column name="clickdate" type="timestamp">
                 <constraints nullable="false" />
             </column>
             <column name="query" type="varchar(255)">
@@ -71,47 +71,47 @@
             </column>
             <column name="summary" type="varchar(1024)" />
 		</createTable>
-        <addPrimaryKey tableName="ClickHistory" columnNames="userId,collection,indexUrl"/>
-		<createIndex tableName="ClickHistory" indexName="ClickHistory_UserId_Idx">
-			<column name="userId" />
+        <addPrimaryKey tableName="clickhistory" columnNames="userid,collection,indexurl"/>
+		<createIndex tableName="clickhistory" indexName="clickhistory_userid_idx">
+			<column name="userid" />
 		</createIndex>
-		<createIndex tableName="ClickHistory" indexName="ClickHistory_Collection_Idx">
+		<createIndex tableName="clickhistory" indexName="clickhistory_collection_idx">
 			<column name="collection" />
 		</createIndex>
-        <createIndex tableName="ClickHistory" indexName="ClickHistory_IndexUrl_Idx">
-            <column name="indexUrl" />
+        <createIndex tableName="clickhistory" indexName="clickhistory_indexurl_idx">
+            <column name="indexurl" />
         </createIndex>
 
-        <createTable tableName="ClickHistoryMetadata">
-            <column name="userId" type="varchar(36)">
+        <createTable tableName="clickhistorymetadata">
+            <column name="userid" type="varchar(36)">
                 <constraints nullable="false" />
             </column>
             <column name="collection" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="indexUrl" type="varchar(1024)">
+            <column name="indexurl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="char(1)">
                 <constraints nullable="false" />
             </column>
-            <column name="metaData" type="varchar(4096)">
+            <column name="metadata" type="varchar(4096)">
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName="ClickHistoryMetadata" columnNames="userId,collection,indexUrl,key"/>
+        <addPrimaryKey tableName="clickhistorymetadata" columnNames="userid,collection,indexurl,key"/>
 
-		<createTable tableName="CartResult">
-			<column name="userId" type="varchar(36)">
+		<createTable tableName="cartresult">
+			<column name="userid" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-            <column name="indexUrl" type="varchar(1024)">
+            <column name="indexurl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
-            <column name="addedDate" type="timestamp">
+            <column name="addeddate" type="timestamp">
                 <constraints nullable="false" />
             </column>
             <column name="title" type="varchar(255)">
@@ -119,35 +119,35 @@
             </column>
             <column name="summary" type="varchar(1024)" />
 		</createTable>
-        <addPrimaryKey tableName="CartResult" columnNames="userId,collection,indexUrl"/>
-		<createIndex tableName="CartResult" indexName="CartResult_UserId_Idx">
-			<column name="userId" />
+        <addPrimaryKey tableName="cartresult" columnNames="userid,collection,indexurl"/>
+		<createIndex tableName="cartresult" indexName="cartresult_userid_idx">
+			<column name="userid" />
 		</createIndex>
-		<createIndex tableName="CartResult" indexName="CartResult_Collection_Idx">
+		<createIndex tableName="cartresult" indexName="cartresult_collection_idx">
 			<column name="collection" />
 		</createIndex>
-        <createIndex tableName="CartResult" indexName="CartResult_IndexUrl_Idx">
-            <column name="indexUrl" />
+        <createIndex tableName="cartresult" indexName="cartresult_indexurl_idx">
+            <column name="indexurl" />
         </createIndex>
 
-        <createTable tableName="CartResultMetadata">
-			<column name="userId" type="varchar(36)">
+        <createTable tableName="cartresultmetadata">
+			<column name="userid" type="varchar(36)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-            <column name="indexUrl" type="varchar(1024)">
+            <column name="indexurl" type="varchar(1024)">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="char(1)">
                 <constraints nullable="false" />
             </column>
-            <column name="metaData" type="varchar(4096)">
+            <column name="metadata" type="varchar(4096)">
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName="CartResultMetadata" columnNames="userId,collection,indexUrl,key"/>
+        <addPrimaryKey tableName="cartresultmetadata" columnNames="userid,collection,indexurl,key"/>
 
 	</changeSet>
 
