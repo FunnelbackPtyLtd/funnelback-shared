@@ -113,6 +113,43 @@ public class LocalDataRepositoryDocTest {
                 new File("/etc/passwd"), 0, -1);
         }
     }
+    
+    @Test
+    public void testSecondaryData() throws IOException {
+        RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
+            collection, View.live, "http://invalid.url/file.html",
+            new File("cached-doc.secondary-data.txt"), 0, -1);
+        
+        Assert.assertNotNull(rmd);
+        Assert.assertNotNull(rmd.record);
+        Assert.assertTrue(rmd.record instanceof RawBytesRecord);
+        Assert.assertNotNull(rmd.metadata);
+        
+        Assert.assertArrayEquals(
+            FileUtils.readFileToByteArray(new File(SEARCH_HOME, "data/data-repository/live/secondary-data/cached-doc.secondary-data.txt")),
+            ((RawBytesRecord) rmd.record).getContent());
+        Assert.assertEquals(0, rmd.metadata.size());
+    }
+
+    /**
+     * The most recent version of the document is always in the secondary-data folder
+     */
+    @Test
+    public void testSecondaryAndMainData() throws IOException {
+        RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
+            collection, View.live, "http://invalid.url/file.html",
+            new File("cached-doc.in-both-data.txt"), 0, -1);
+        
+        Assert.assertNotNull(rmd);
+        Assert.assertNotNull(rmd.record);
+        Assert.assertTrue(rmd.record instanceof RawBytesRecord);
+        Assert.assertNotNull(rmd.metadata);
+        
+        Assert.assertArrayEquals(
+            FileUtils.readFileToByteArray(new File(SEARCH_HOME, "data/data-repository/live/secondary-data/cached-doc.in-both-data.txt")),
+            ((RawBytesRecord) rmd.record).getContent());
+        Assert.assertEquals(0, rmd.metadata.size());
+    }
 
 
 }

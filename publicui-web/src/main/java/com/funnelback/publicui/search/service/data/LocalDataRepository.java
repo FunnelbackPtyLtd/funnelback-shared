@@ -137,19 +137,18 @@ public class LocalDataRepository implements DataRepository {
             return null;
         }
         
-        File root =  new File(collection.getConfiguration().getCollectionRoot(),
-            view.toString() + File.separator + DefaultValues.FOLDER_DATA);
-        File path = new File(root, relativePath.getPath());
-
+        if (relativePath.isAbsolute()) {
+            throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
+        }
+        
         byte[] content = null;
         try {
-            if (relativePath.isAbsolute()
-                || ! com.funnelback.common.utils.FileUtils.isChildOf(root, path)) {
-                throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
-            } else if (! path.exists()) {
+            File path = getDocumentFile(collection.getConfiguration().getCollectionRoot(), relativePath, view);
+            if (path == null) {
+                // Not found
                 return null;
             }
-
+            
             if (length > 0) {
                 try (RandomAccessFile f = new RandomAccessFile(path, "r")) {
                     content = new byte[length];
@@ -161,7 +160,8 @@ public class LocalDataRepository implements DataRepository {
                 content = FileUtils.readFileToByteArray(path);
             }
         } catch (IOException ioe) {
-            log.error("Error while accessing cached document '"+path.getAbsolutePath()+"'", ioe);
+            log.error("Error while accessing cached document '"+relativePath
+                +"' on collection '"+collection.getId()+"'", ioe);
             content = null;
         }
         
@@ -173,6 +173,33 @@ public class LocalDataRepository implements DataRepository {
             } else {
                 return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(content, url),
                     new HashMap<String, String>());
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Attempt to get a document from the data folder of a collection for the given view,
+     * looking a the secondary data folder first (for instant updates) then the main one
+     * @param collectionRoot Path to the collection root folder
+     * @param relativePath Relative (to the <code>live/data/</code> folder) path of the file to get 
+     * @param view View to look at
+     * @return The path to the actual file, either from the main data folder or the secondary one, or
+     * null if the file is not found
+     * @throws IOException
+     */
+    private File getDocumentFile(File collectionRoot, File relativePath, View view) throws IOException {
+        for (String folder: new String[] {
+            DefaultValues.Secondary.FOLDER_DATA, DefaultValues.FOLDER_DATA}) {
+            File root =  new File(collectionRoot,
+                view.toString() + File.separator + folder);
+            File path = new File(root, relativePath.getPath());
+            
+            if(!com.funnelback.common.utils.FileUtils.isChildOf(root, path)) {
+                throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
+            } else if (path.exists()) {
+                return path;
             }
         }
         
@@ -226,8 +253,11 @@ public class LocalDataRepository implements DataRepository {
             + File.separator + DefaultValues.VIEW_LIVE,
             File.separator + DefaultValues.FOLDER_TMP);
         
-        List<String> cmdLine = new ArrayList<String>(Arrays.asList(new String[] { getDocumentBinary.getAbsolutePath(),
-                        "-i", Integer.toString(trimUri), "-f", tempFolder.getAbsolutePath(), collection.getId() }));
+        List<String> cmdLine = new ArrayList<String>(
+            Arrays.asList(new String[] {
+                getDocumentBinary.getAbsolutePath(),
+                "-i", Integer.toString(trimUri), "-f",
+                tempFolder.getAbsolutePath(), collection.getId() }));
 
         try {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
