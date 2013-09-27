@@ -3,12 +3,15 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<!-- logicalFilePath required so that path will be independend from where you
+    <!-- Make sure you use only lowercase names otherwise the tables names will be quoted by
+         liquibase and badness will ensue -->
+
+	<!-- logicalFilePath required so that path will be independent from where you
 		 run liquibase (Maven, command line...) to avoid liquibase detecting a difference
 		 in the changesets that were run -->
 	<changeSet id="1" author="nguillaumin" logicalFilePath="session-db-changelog-1.0.xml">
 		<createTable tableName="searchhistory">
-			<column name="userid" type="varchar(36)">
+			<column name="userid" type="varchar(64)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
@@ -51,7 +54,7 @@
         </createIndex>
 
 		<createTable tableName="clickhistory">
-			<column name="userid" type="varchar(36)">
+			<column name="userid" type="varchar(64)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
@@ -83,7 +86,7 @@
         </createIndex>
 
         <createTable tableName="clickhistorymetadata">
-            <column name="userid" type="varchar(36)">
+            <column name="userid" type="varchar(64)">
                 <constraints nullable="false" />
             </column>
             <column name="collection" type="varchar(255)">
@@ -102,7 +105,7 @@
         <addPrimaryKey tableName="clickhistorymetadata" columnNames="userid,collection,indexurl,key"/>
 
 		<createTable tableName="cartresult">
-			<column name="userid" type="varchar(36)">
+			<column name="userid" type="varchar(64)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
@@ -131,7 +134,7 @@
         </createIndex>
 
         <createTable tableName="cartresultmetadata">
-			<column name="userid" type="varchar(36)">
+			<column name="userid" type="varchar(64)">
 				<constraints nullable="false" />
 			</column>
 			<column name="collection" type="varchar(255)">
