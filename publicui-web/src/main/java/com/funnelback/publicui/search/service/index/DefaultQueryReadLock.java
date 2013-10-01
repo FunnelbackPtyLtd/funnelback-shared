@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.service.index;
 
-import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,8 +11,6 @@ import com.funnelback.common.Lock;
 import com.funnelback.common.ThreadSharedFileLock;
 import com.funnelback.common.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 @Component
@@ -59,7 +56,7 @@ public class DefaultQueryReadLock implements QueryReadLock{
 		}
 
 		private String getCollectionUpdateLockFile(Config config) {
-			return Lock.collectionInstantUpdateLockFile(config.getCollectionRoot(), config.getCollectionName());
+			return Lock.collectionInstantUpdateLockFile(config.getCollectionRoot());
 		}
 
 		public void lock(Collection collection) throws FileLockException {
