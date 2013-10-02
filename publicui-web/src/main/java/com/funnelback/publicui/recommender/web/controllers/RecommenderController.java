@@ -131,7 +131,7 @@ public class RecommenderController {
 
             recommendationResponse =
                     new RecommendationResponse(RecommendationResponse.Status.OK, seedItem,
-                            requestCollection, scope, maxRecommendations, recommendations.size(),
+                            requestCollection, scope, maxRecommendations,
                             collectionConfig.getCollectionName(), RecommendationResponse.Source.CLICKS, timeTaken,
                             recommendations);
             model.put("RecommendationResponse", recommendationResponse);

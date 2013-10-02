@@ -64,9 +64,6 @@ public class RecommendationResponse {
    	private int maxRecommendations;
 
     @Getter
-   	private int numRecommendations;
-
-    @Getter
    	private String sourceCollection;
 
     @Getter
@@ -108,11 +105,11 @@ public class RecommendationResponse {
 
         if (recommendations != null && recommendations.size() > 0) {
             return new RecommendationResponse(Status.OK, seedItem, requestCollection, scope, maxRecommendations,
-                    recommendations.size(), collectionConfig.getCollectionName(), Source.EXPLORE, -1, recommendations);
+                    collectionConfig.getCollectionName(), Source.EXPLORE, -1, recommendations);
         }
         else {
             return new RecommendationResponse(Status.NOT_FOUND, seedItem, requestCollection, scope,
-                    maxRecommendations, 0, collectionConfig.getCollectionName(), Source.NONE, -1, null);
+                    maxRecommendations, collectionConfig.getCollectionName(), Source.NONE, -1, null);
         }
 	}
 }
