@@ -16,10 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class RecommendationResponse {
     public static enum Source {
-        clicks("recency"),
-        explore("explore"),
-        purchases("purchases"),
-        none("none");
+        CLICKS("CLICKS"),
+        EXPLORE("EXPLORE"),
+        NONE("NONE");
 
         private final String source;
 
@@ -109,11 +108,11 @@ public class RecommendationResponse {
 
         if (recommendations != null && recommendations.size() > 0) {
             return new RecommendationResponse(Status.OK, seedItem, requestCollection, scope, maxRecommendations,
-                    recommendations.size(), collectionConfig.getCollectionName(), Source.explore, -1, recommendations);
+                    recommendations.size(), collectionConfig.getCollectionName(), Source.EXPLORE, -1, recommendations);
         }
         else {
             return new RecommendationResponse(Status.NOT_FOUND, seedItem, requestCollection, scope,
-                    maxRecommendations, 0, collectionConfig.getCollectionName(), Source.none, -1, null);
+                    maxRecommendations, 0, collectionConfig.getCollectionName(), Source.NONE, -1, null);
         }
 	}
 }
