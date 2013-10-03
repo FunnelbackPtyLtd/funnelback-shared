@@ -12,7 +12,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 public class PassThroughParametersTests {
-
     
     @Test
     public void testMissingData() throws InputProcessorException {
@@ -34,6 +33,7 @@ public class PassThroughParametersTests {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
         
         st.getQuestion().getRawInputParameters().put(RequestParameters.QUERY, new String[] {"query"});
+        st.getQuestion().getRawInputParameters().put(RequestParameters.S, new String[] {"system query"});
         st.getQuestion().getRawInputParameters().put(RequestParameters.COLLECTION, new String[] {"collection"});
         st.getQuestion().getRawInputParameters().put("param1", new String[] {"value1"});
         st.getQuestion().getRawInputParameters().put("param2", new String[] {"value2a,value2b"});

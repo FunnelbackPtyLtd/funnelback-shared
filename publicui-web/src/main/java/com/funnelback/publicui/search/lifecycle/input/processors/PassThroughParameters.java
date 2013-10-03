@@ -36,7 +36,8 @@ public class PassThroughParameters extends AbstractInputProcessor {
         RequestParameters.QUERY, RequestParameters.COLLECTION, RequestParameters.PROFILE,
         RequestParameters.CLIVE, RequestParameters.ContextualNavigation.CN_CLICKED,
         RequestParameters.ONESHOT, // FUN-4328: Ignore oneshot parameter
-        RequestParameters.ENC      // Input parameters are always UTF-8
+        RequestParameters.ENC,      // Input parameters are always UTF-8
+        RequestParameters.S
     };
     
     /**

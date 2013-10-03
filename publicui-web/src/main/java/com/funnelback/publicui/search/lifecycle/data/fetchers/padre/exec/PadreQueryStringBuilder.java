@@ -174,6 +174,13 @@ public class PadreQueryStringBuilder {
                 query.append(" ").append(value);
             }
         }
+        
+        if (question.getInputParameterMap().containsKey(Parameters.s.toString())
+            && question.getInputParameterMap().get(Parameters.s.toString()) != null) {
+            // Append user-entered system query, if any
+            query.append(" ").append(question.getInputParameterMap().get(Parameters.s.toString()).trim());
+        }
+        
         return query.toString().trim();
     }
     

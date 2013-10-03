@@ -282,6 +282,9 @@ public class SearchQuestion {
         /** Query terms */
         public static final String QUERY = "query";
         
+        /** System generated query */
+        public static final String S = "s";
+        
         /** Search profile */
         public static final String PROFILE = "profile";
         

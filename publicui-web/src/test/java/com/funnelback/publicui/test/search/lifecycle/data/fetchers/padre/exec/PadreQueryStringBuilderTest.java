@@ -62,6 +62,19 @@ public class PadreQueryStringBuilderTest {
     }
     
     @Test
+    public void testSystemQueryWithExistingSystemQuery() {
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("dummy", null));
+        qs.setQuery("user entered query");
+        qs.getSystemMetaParameters().add("additional");
+        qs.getInputParameterMap().put("s", "already present");
+        
+        Assert.assertEquals("collection=dummy&profile=_default&query=user+entered+query&s=additional+already+present",
+                new PadreQueryStringBuilder(qs, true).buildQueryString());
+        
+    }
+    
+    @Test
     public void test() {
         PadreQueryStringBuilder builder = new PadreQueryStringBuilder(q, false);
         Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", builder.buildQueryString());
