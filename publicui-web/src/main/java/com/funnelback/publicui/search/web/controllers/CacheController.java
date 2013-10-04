@@ -287,6 +287,7 @@ public class CacheController {
     public ModelAndView handleException(HttpServletResponse response, Exception e) {
         log.error("An error occured while processing a cache request", e);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.setContentType("text/html");
         return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, "exception", e);
     }
     
