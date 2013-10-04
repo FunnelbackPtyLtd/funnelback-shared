@@ -31,6 +31,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.Xml;
+import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.RawBytesRecord;
@@ -143,7 +145,7 @@ public class LocalDataRepository implements DataRepository {
         
         byte[] content = null;
         try {
-            File path = getDocumentFile(collection.getConfiguration().getCollectionRoot(), relativePath, view);
+            File path = getDocumentFile(collection, relativePath, view);
             if (path == null) {
                 // Not found
                 return null;
@@ -189,14 +191,21 @@ public class LocalDataRepository implements DataRepository {
      * null if the file is not found
      * @throws IOException
      */
-    private File getDocumentFile(File collectionRoot, File relativePath, View view) throws IOException {
-        for (String folder: new String[] {
-            DefaultValues.Secondary.FOLDER_DATA, DefaultValues.FOLDER_DATA}) {
-            File root =  new File(collectionRoot,
-                view.toString() + File.separator + folder);
-            File path = new File(root, relativePath.getPath());
+    private File getDocumentFile(Collection c, File relativePath, View view) throws IOException {
+        File[] candidatesFolders = new File[] {
+            new File(c.getConfiguration().getCollectionRoot(),
+                view.toString() + File.separator + DefaultValues.Secondary.FOLDER_DATA),
+            new File(c.getConfiguration().getCollectionRoot(),
+                view.toString() + File.separator + DefaultValues.FOLDER_DATA)};
+        
+        if (Type.local.equals(c.getType())) {
+            candidatesFolders = new File[] {c.getConfiguration().getDataRoot()};
+        }
+        
+        for (File folder: candidatesFolders) {
+            File path = new File(folder, relativePath.getPath());
             
-            if(!com.funnelback.common.utils.FileUtils.isChildOf(root, path)) {
+            if(!com.funnelback.common.utils.FileUtils.isChildOf(folder, path)) {
                 throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
             } else if (path.exists()) {
                 return path;
@@ -217,6 +226,9 @@ public class LocalDataRepository implements DataRepository {
             log.error("Error while getting store for collection '"+collection.getId()+"'", cnfe);
         } catch (IOException ioe) {
             log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
+        } catch (UnsupportedOperationException uoe) {
+            // Ignore, some collection types (local) are not supported
+            log.debug("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
         }
     
         return new RecordAndMetadata<Record<?>>(null, null);

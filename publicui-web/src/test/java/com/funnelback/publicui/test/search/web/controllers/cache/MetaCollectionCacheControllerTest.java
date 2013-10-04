@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class MetaCollectionCacheControllerTest {
         response = new MockHttpServletResponse();
     }
     
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void test() throws Exception {
         cacheController.cache(request,
                 response,
@@ -55,6 +56,7 @@ public class MetaCollectionCacheControllerTest {
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
                 "unknown-record", null, 0, -1);
-
+        
+        Assert.assertEquals(404, response.getStatus());
     }
 }
