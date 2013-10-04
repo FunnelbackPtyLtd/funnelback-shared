@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import lombok.Cleanup;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +27,14 @@ import com.funnelback.publicui.search.service.image.UrlRenderer;
 @Controller
 public class PreviewController {
 
+    private static final int DEFAULT_WIDTH = 1024;
+    private static final int DEFAULT_HEIGHT = 768;
+    
     @Autowired
-    UrlRenderer renderer;
+    private UrlRenderer renderer;
 
     @Autowired
-    ImageScaler scaler;
+    private ImageScaler scaler;
 
     @RequestMapping(value="/preview", method=RequestMethod.GET)
     public ModelAndView preview(
@@ -43,22 +47,29 @@ public class PreviewController {
         throws Exception {
         
         if (renderWidth == null) {
-            renderWidth = 1024;
+            renderWidth = DEFAULT_WIDTH;
         }
         if (renderHeight == null) {
-            renderHeight = 768;
+            renderHeight = DEFAULT_HEIGHT;
         }
 
         byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
-        byte[] scaledImage = scaler.scaleImage(
-                PreviewController.class.getCanonicalName() + "|" + url,
-                unscaledImage, ss);
-        
-        @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
-        
-        org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
-        
-        response.getOutputStream().close();
+        if (unscaledImage.length > 0) {
+            byte[] scaledImage = scaler.scaleImage(
+                    PreviewController.class.getCanonicalName() + "|" + url,
+                    unscaledImage, ss);
+            
+            @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
+            
+            IOUtils.copy(processedImageStream, response.getOutputStream());
+            
+            response.getOutputStream().close();
+        } else {
+            // Something went wrong
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/plain");
+            response.getWriter().write("Unable to obtain a preview. Please check the application logs");
+        }
         
         return null;
     }
