@@ -34,7 +34,8 @@ public class RecommendationResponse {
 
     public static enum Status {
         OK("OK"),
-        NOT_FOUND("NOT_FOUND");
+        NOT_FOUND("NOT_FOUND"),
+        ERROR("ERROR");
 
         private final String status;
 

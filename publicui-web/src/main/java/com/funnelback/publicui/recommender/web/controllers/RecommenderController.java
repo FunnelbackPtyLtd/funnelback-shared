@@ -202,10 +202,14 @@ public class RecommenderController {
      */
     @ExceptionHandler
     public ModelAndView exceptionHandler(HttpServletResponse response, Exception exception) throws IOException {
-        Map<String, Object> model = new HashMap<>();
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        model.put("class", ClassUtils.getShortName(exception.getClass()));
-        model.put("message", exception.getMessage());
-        return new ModelAndView(view, model);
+        Map<String, String> recommendationResponse = new HashMap<>();
+        recommendationResponse.put("status", RecommendationResponse.Status.ERROR.toString());
+        recommendationResponse.put("class", ClassUtils.getShortName(exception.getClass()));
+        recommendationResponse.put("message", exception.getMessage());
+
+        Map<String, Object> recommendationModel = new HashMap<>();
+        recommendationModel.put("RecommendationResponse", recommendationResponse);
+        return new ModelAndView(view, recommendationModel);
     }
 }
