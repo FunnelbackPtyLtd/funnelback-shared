@@ -99,7 +99,7 @@ public class RecommenderController {
         }
 
         if (collection == null) {
-            throw new IllegalArgumentException("collection parameter must be provided.");
+            throw new IllegalArgumentException("invalid collection identifier");
         }
 
         if (maxRecommendations == null) {
