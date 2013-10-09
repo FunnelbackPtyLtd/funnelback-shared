@@ -1,6 +1,7 @@
 package com.funnelback.publicui.recommender.utils;
 
-import com.funnelback.common.config.*;
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
 import com.funnelback.dataapi.connector.padre.PadreConnector;
@@ -207,6 +208,7 @@ public final class RecommenderUtils {
                 if (sessions != null && sessions.size() > 0) {
                     // This collection has session information on the seed item - use it.
                     foundComponent = true;
+                    logger.debug("Found session info for seed item: " + seedItem + " in component: " + component);
                     break;
                 }
                 else {
@@ -215,12 +217,15 @@ public final class RecommenderUtils {
                     if (docInfo != null) {
                         // No sessions found, but we do have information from the Data API
                         foundComponent = true;
+                        logger.debug("Found Data API match info for seed item: " + seedItem
+                                + " in component: " + component);
                         break;
                     }
                 }
             }
 
             if (!foundComponent) {
+                logger.debug("No matching component collection for seed item: " + seedItem);
                 componentConfig = null;
             }
         }
@@ -259,7 +264,7 @@ public final class RecommenderUtils {
                     items = mapper.readValue(value, new TypeReference<List<ItemTuple>>() {
                     });
                 } else {
-                    logger.warn("No value found in cache for key: " + key);
+                    logger.warn("No value found in recommendations cache for key: " + key);
                 }
             } catch (Exception exception) {
                 logger.warn("Exception getting value and converting from JSON: " + exception);
@@ -319,7 +324,7 @@ public final class RecommenderUtils {
                         logger.warn("No sessions found for item: " + itemName);
                     }
                 } else {
-                    logger.warn("No value found in cache for key: " + itemName);
+                    logger.warn("No value found in sessions cache for key: " + itemName);
                 }
             } catch (Exception exception) {
                 logger.warn("Exception getting value and converting from JSON: " + exception);

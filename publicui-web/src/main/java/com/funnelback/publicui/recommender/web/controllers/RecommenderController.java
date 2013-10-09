@@ -10,6 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -33,6 +34,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/recommender")
 public class RecommenderController {
+    private static final Logger logger = Logger.getLogger(RecommenderController.class);
+
     public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
     public static final String QUERY_ENTRY_HTML = "queryEntry.html";
     public static final String ITEM_ENTRY_HTML = "itemEntry.html";
@@ -121,6 +124,7 @@ public class RecommenderController {
             if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
                 question.setQuery("explore:" + seedItem);
                 question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
+                logger.debug("No recommendations found, trying explore query for seed item: " + seedItem);
 
                 // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
                 // suggestions should be automatically scoped.
