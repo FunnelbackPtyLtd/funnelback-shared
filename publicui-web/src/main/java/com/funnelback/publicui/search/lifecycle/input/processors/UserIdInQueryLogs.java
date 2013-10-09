@@ -24,7 +24,8 @@ public class UserIdInQueryLogs extends AbstractInputProcessor {
     public void processInput(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(st)
             && SearchTransactionUtils.hasSession(st)
-            && st.getSession().getSearchUser() != null) {
+            && st.getSession().getSearchUser() != null
+            && st.getSession().getSearchUser().getId() != null) {
 
             st.getQuestion().getDynamicQueryProcessorOptions()
                 .add(QP_OPT_USERNAME + "=" + st.getSession().getSearchUser().getId());

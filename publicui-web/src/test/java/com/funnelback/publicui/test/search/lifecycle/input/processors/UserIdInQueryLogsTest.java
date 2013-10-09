@@ -53,5 +53,15 @@ public class UserIdInQueryLogsTest {
         
         Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().contains("-username=user-id"));
     }
+    
+    @Test
+    public void testUserNoId() throws InputProcessorException {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        st.setSession(new SearchSession(new SearchUser(null)));
+        
+        processor.processInput(st);
+        
+        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
+    }
 
 }
