@@ -24,6 +24,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -37,16 +38,19 @@ public class LocalCollectionCacheControllerTest {
     
     @Resource(name="localDataRepository")
     protected DataRepository dataRepository;
-    
+
+    protected MetricRegistry metrics;
     protected MockHttpServletRequest request;
     protected MockHttpServletResponse response;
 
     @Before
     public void before() throws IOException {
+        metrics = new MetricRegistry();
+        
         cacheController = new CacheController();
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
-        cacheController.setMetricRegistry(new MetricRegistry());
+        cacheController.setMetrics(metrics);
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
@@ -68,6 +72,16 @@ public class LocalCollectionCacheControllerTest {
             Jsoup.parse(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/share/local-collection-cached-document.txt"))).html(),
             ((Document) mav.getModel().get(CacheController.MODEL_DOCUMENT)).html());
 
+        Assert.assertEquals(
+            1,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, "cache-local",
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
+        Assert.assertEquals(
+            1,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.ALL_NS, MetricsConfiguration.CACHE)).getCount());
+
     }
     
     @Test
@@ -80,5 +94,15 @@ public class LocalCollectionCacheControllerTest {
             "unknown-record", new File("src/test/resources/dummy-search_home/global.cfg.default"), 0, -1);
         
         Assert.assertEquals(404, response.getStatus());
+
+        Assert.assertEquals(
+            0,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, "cache-local",
+                    DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
+        Assert.assertEquals(
+            0,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.ALL_NS, MetricsConfiguration.CACHE)).getCount());
     }
 }

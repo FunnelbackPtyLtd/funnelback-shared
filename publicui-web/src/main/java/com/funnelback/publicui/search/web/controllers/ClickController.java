@@ -220,6 +220,9 @@ public class ClickController extends SessionController {
                     redirectUrl, type, LogUtils.getUserId(user)));
             
             metrics.counter(MetricRegistry.name(
+                MetricsConfiguration.ALL_NS, MetricsConfiguration.CLICK)).inc();
+
+            metrics.counter(MetricRegistry.name(
                 MetricsConfiguration.COLLECTION_NS, collection.getId(),
                 profile, MetricsConfiguration.CLICK)).inc();
             

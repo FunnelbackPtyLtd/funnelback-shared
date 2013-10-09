@@ -71,7 +71,7 @@ public abstract class AbstractRawBytesCacheControllerTest {
         cacheController = new CacheController();
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
-        cacheController.setMetricRegistry(metrics);
+        cacheController.setMetrics(metrics);
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
@@ -80,9 +80,6 @@ public abstract class AbstractRawBytesCacheControllerTest {
         collectionId = getCollectionId();
         rmd = buildRecordAndMetadata();
         cacheUrl = getCacheUrl(rmd.record.getPrimaryKey());
-
-        metrics.remove( MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
-            DefaultValues.DEFAULT_PROFILE, MetricsConfiguration.CACHE));
         
         liveRoot = new File("src/test/resources/dummy-search_home/data/"+getCollectionId()+"/live/data");
         cleanupStore();
@@ -111,6 +108,10 @@ public abstract class AbstractRawBytesCacheControllerTest {
             metrics.counter(
                 MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
                     DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
+        Assert.assertEquals(
+            0,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.ALL_NS, MetricsConfiguration.CACHE)).getCount());
     }
     
     @SuppressWarnings("unchecked")
@@ -143,6 +144,10 @@ public abstract class AbstractRawBytesCacheControllerTest {
             metrics.counter(
                 MetricRegistry.name(MetricsConfiguration.COLLECTION_NS, getCollectionId(),
                     DefaultValues.PREVIEW_SUFFIX, MetricsConfiguration.CACHE)).getCount());
+        Assert.assertEquals(
+            1,
+            metrics.counter(
+                MetricRegistry.name(MetricsConfiguration.ALL_NS, MetricsConfiguration.CACHE)).getCount());
 
     }
 

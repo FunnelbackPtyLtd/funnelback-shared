@@ -94,7 +94,7 @@ public class CacheController {
     @Setter private ConfigRepository configRepository;
 
     @Autowired
-    @Setter private MetricRegistry metricRegistry;
+    @Setter private MetricRegistry metrics;
 
     @InitBinder
     public void initBinder(DataBinder binder) {
@@ -166,10 +166,8 @@ public class CacheController {
                                 + "/" + profile
                                 + "/" + form + DefaultValues.CACHE_FORM_SUFFIX;
 
-                        metricRegistry.counter(MetricRegistry.name(
-                            MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                            profile, MetricsConfiguration.CACHE)).inc();
-
+                        incrementMetrics(collection, profile);
+                        
                         return new ModelAndView(view, model);
                         
                     } else if (rmd.record instanceof XmlRecord) {
@@ -191,10 +189,8 @@ public class CacheController {
                         } else {
                             response.getWriter().write(Xml.toString(xmlRecord.getContent()));
                         }
-                        
-                        metricRegistry.counter(MetricRegistry.name(
-                            MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                            profile, MetricsConfiguration.CACHE)).inc();
+
+                        incrementMetrics(collection, profile);
                         
                         return null;
                     } else {
@@ -268,6 +264,20 @@ public class CacheController {
         }
         
         return new HookScriptResult(true, null, null);
+    }
+    
+    /**
+     * Increment the cache controller hit metrics
+     * @param collection Collection
+     * @param profile Profile ID
+     */
+    private void incrementMetrics(Collection collection, String profile) {
+        metrics.counter(MetricRegistry.name(
+            MetricsConfiguration.ALL_NS, MetricsConfiguration.CACHE)).inc();
+
+        metrics.counter(MetricRegistry.name(
+            MetricsConfiguration.COLLECTION_NS, collection.getId(),
+            profile, MetricsConfiguration.CACHE)).inc();        
     }
     
     @RequiredArgsConstructor
