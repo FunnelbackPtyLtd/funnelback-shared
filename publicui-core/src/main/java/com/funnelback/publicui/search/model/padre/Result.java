@@ -1,8 +1,16 @@
 package com.funnelback.publicui.search.model.padre;
 
-import lombok.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A single search result.
@@ -72,7 +80,17 @@ public class Result implements ResultType {
      */
     @Getter @Setter private Collapsed collapsed;
     
-    /** URL to access the search result. */
+    /**
+     * <p>URL to access the search result.</p>
+     * 
+     * <p>It's identical to the {@link #indexUrl} initially, but might
+     * have been transformed by a hook script. The click tracking URL
+     * will be built based on this URL, so if you need to modify the URL
+     * that's recorded in the click log, this field should be changed.</p>
+     * 
+     * <p>In the default form, its only use it to display a proper URL
+     * when the user mouse-over the result title link.</p>
+     **/
     @Getter @Setter private String liveUrl;
     
     /** Query-biased summary */
@@ -142,11 +160,13 @@ public class Result implements ResultType {
     /**
      * <p>URL to display for the result.</p>
      * 
-     * <p>The {@link #liveUrl} will be replaced by a click tracking URL
-     * if click tracking is enabled. This field can be used to display
-     * the initial live URL of the document to the user.</p>
+     * <p>Initially identical to {@link #indexUrl} and {@link #liveUrl},
+     * but might have been transformed by a hook script. This URL
+     * can be used to display a different URL from the actual one, while
+     * preserving the {@link #liveUrl} for the user to access the result.</p>
      * 
-     * <p>The {@link #liveUrl} is copied on this field by default.</p>
+     * <p>In the default form, this URL is displayed in the <code>&ltcite&gt;</code>
+     * block for the the result</p>
      **/
     @Getter @Setter private String displayUrl;
         
@@ -172,6 +192,7 @@ public class Result implements ResultType {
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
         
+        // CHECKSTYLE:OFF
         public static final String RESULT = "result";
         
         public static final String RANK = "rank";
@@ -199,6 +220,7 @@ public class Result implements ResultType {
         public static final String COLLAPSED_SIG = "sig";
         public static final String COLLAPSED_COL = "col";
         public static final String COLLAPSED_COUNT = "count";
+        // CHECKSTYLE:ON
     }
 }
 
