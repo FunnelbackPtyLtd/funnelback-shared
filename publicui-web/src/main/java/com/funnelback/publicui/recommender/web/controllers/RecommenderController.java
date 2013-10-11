@@ -10,6 +10,8 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,12 +30,13 @@ import java.util.*;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
+ * It extends SessionController so that we can have a unique user/session ID generated for requests.
  *
  * @author fcrimmins@funnelback.com
  */
 @Controller
 @RequestMapping("/recommender")
-public class RecommenderController {
+public class RecommenderController extends SessionController {
     private static final Logger logger = Logger.getLogger(RecommenderController.class);
 
     public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
@@ -43,6 +46,7 @@ public class RecommenderController {
     public static final String SESSIONS_HTML = "sessions.html";
     public static final String EXPLORE_JSON = "explore.json";
     public static final int MAX_RECOMMENDATIONS = 5;
+    public static final String MAX_EXPLORE_RESULTS = "100";
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
@@ -122,9 +126,10 @@ public class RecommenderController {
                           maxRecommendations);
 
             if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
-                question.setQuery("explore:" + seedItem);
+                String exploreQuery = "explore:" + seedItem;
+                question.setQuery(exploreQuery);
                 question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
-                logger.debug("No recommendations found, trying explore query for seed item: " + seedItem);
+                logger.debug("No recommendations found, using explore with query: " + exploreQuery);
 
                 // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
                 // suggestions should be automatically scoped.
@@ -168,22 +173,26 @@ public class RecommenderController {
             throw new IllegalArgumentException("collection parameter must be provided.");
         }
 
+        String requestCollection = collection.getId();
+        String query = question.getQuery();
+        Integer maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
+        question.getInputParameterMap().put("num_ranks", MAX_EXPLORE_RESULTS);
+
         Map<String, Object> model;
         {
             ModelAndView modelandView = searchController.search(request, response, question, user);
             if (modelandView == null) {
+                logger.warn("Null model returned from search controller for query: " + query
+                        + " and collection: " + requestCollection);
                 return null;
             }
             model = modelandView.getModel();
         }
 
-        String requestCollection = collection.getId();
         SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
         Config collectionConfig = collection.getConfiguration();
-        String query = question.getOriginalQuery();
         String seedItem = query.replaceFirst("^explore:", "");
         String scope = question.getInputParameterMap().get("scope");
-        Integer maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
 
         recommendationResponse =
                 RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(),
@@ -211,6 +220,7 @@ public class RecommenderController {
         recommendationResponse.put("status", RecommendationResponse.Status.ERROR.toString());
         recommendationResponse.put("class", ClassUtils.getShortName(exception.getClass()));
         recommendationResponse.put("message", exception.getMessage());
+        recommendationResponse.put("stack-trace", ExceptionUtils.getStackTrace(exception));
 
         Map<String, Object> recommendationModel = new HashMap<>();
         recommendationModel.put("RecommendationResponse", recommendationResponse);

@@ -55,30 +55,24 @@ public final class RecommenderUtils {
         if (fullList != null && fullList.size() > 0) {
             List<ItemTuple> scopedList = new ArrayList<>();
 
-            int i = 0;
             for (ItemTuple item : fullList) {
-                if (maxRecommendations > 0 && i >= maxRecommendations) {
-                    break;
-                }
-
                 String itemValue = item.getItemID();
 
                 if (itemValue != null && inScope(itemValue, scopes)) {
                     scopedList.add(item);
-                    i++;
                 }
             }
 
-            List<String> urls = new ArrayList<>();
+            List<String> indexURLs = new ArrayList<>();
             Map<String, ItemTuple> confidenceMap = new HashMap<>();
 
             for (ItemTuple item : scopedList) {
-                String url = item.getItemID();
-                urls.add(url);
-                confidenceMap.put(url, item);
+                String indexURL = item.getItemID();
+                indexURLs.add(indexURL);
+                confidenceMap.put(indexURL, item);
             }
 
-            recommendations = decorateURLRecommendations(urls, confidenceMap, collectionConfig);
+            recommendations = decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig, maxRecommendations);
         }
 
         return recommendations;
@@ -86,29 +80,52 @@ public final class RecommenderUtils {
 
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
+     *
      * @param urls list of URL strings to decorate
      * @param confidenceMap Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig collection config object
+     * @param maxRecommendations maximum number of recommendations to return - list will never be larger than this.
      * @return list of decorated URL recommendations (which may be empty)
      */
     public static List<Recommendation> decorateURLRecommendations(List<String> urls,
-            Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
+            Map<String, ItemTuple> confidenceMap, Config collectionConfig, int maxRecommendations) {
         List<Recommendation> recommendations = new ArrayList<>();
-        List<DocInfo> dis = getDocInfoResult(urls, collectionConfig).asList();
         float confidence = -1;
+        List< DocInfo > dis = null;
+        DocInfoResult dir = getDocInfoResult(urls, collectionConfig);
 
-        if (dis != null) {
+        if (dir != null) {
+            dis = dir.asList();
+        }
+
+        if (dis != null && dis.size() > 0) {
+            float prevQieScore = -1;
+
             for (DocInfo docInfo : dis) {
                 URI uri = docInfo.getUri();
                 String itemID = uri.toString();
+                float qieScore = docInfo.getQieScore();
 
-                if (confidenceMap != null) {
-                    confidence = confidenceMap.get(itemID).getScore();
+                if (prevQieScore != qieScore) {
+                    if (confidenceMap != null) {
+                        confidence = confidenceMap.get(itemID).getScore();
+                    }
+
+                    Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
+                    recommendations.add(recommendation);
+                    prevQieScore = qieScore;
                 }
-
-                Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
-                recommendations.add(recommendation);
+                else {
+                    logger.debug("Item has same QIE score as previous item - skipping: " + itemID);
+                }
             }
+        }
+        else {
+            logger.warn("Null or empty DocInfo list returned from getDocInfoResult.");
+        }
+
+        if (recommendations != null && recommendations.size() > maxRecommendations) {
+            recommendations = recommendations.subList(0, maxRecommendations);
         }
 
         return recommendations;
@@ -125,19 +142,27 @@ public final class RecommenderUtils {
      * @return a DocInfoResult (which may be null).
      */
     public static DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
-        DocInfoResult dir;
+        DocInfoResult dir = null;
 
-        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
-                + File.separator + "idx" + File.separator + "index");
+        if (urls.size() > 0) {
+            File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+                    + File.separator + "idx" + File.separator + "index");
 
-        URI[] addresses = new URI[urls.size()];
-        int i = 0;
-        for (String item : urls) {
-            addresses[i] = URI.create(item);
-            i++;
+            URI[] addresses = new URI[urls.size()];
+            int i = 0;
+            for (String item : urls) {
+                addresses[i] = URI.create(item);
+                logger.debug("Added URL to list for libi4u call: " + addresses[i].toString());
+                i++;
+            }
+
+            boolean debug = false;
+            dir = new PadreConnector(indexStem).docInfo(addresses).withMetadata(DocInfoQuery.ALL_METADATA).withDebug(debug).fetch();
         }
-
-        dir = new PadreConnector(indexStem).docInfo(addresses).withMetadata(DocInfoQuery.ALL_METADATA).fetch();
+        else {
+            logger.warn("Empty list of URLs provided for query to collection: "
+                    + collectionConfig.getCollectionName());
+        }
 
         return dir;
     }

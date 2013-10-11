@@ -83,9 +83,9 @@ public class RecommendationResponse {
      * @param seedItem seed URL
      * @param results list of results from explore query
      * @param collectionConfig collection config object
-     * @param requestCollection
-     * @param scope
-     * @param maxRecommendations
+     * @param requestCollection name of the collection that the original recommendation request was made to
+     * @param scope scope parameter (may be empty)
+     * @param maxRecommendations maximum number of recommendations to return
      * */
     public static RecommendationResponse fromResults(String seedItem, List<Result> results,
                                                      Config collectionConfig, String requestCollection,
@@ -102,7 +102,8 @@ public class RecommendationResponse {
             scope = "";
         }
 
-        recommendations = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig);
+        recommendations
+                = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig, maxRecommendations);
 
         if (recommendations != null && recommendations.size() > 0) {
             return new RecommendationResponse(Status.OK, seedItem, requestCollection, scope, maxRecommendations,
