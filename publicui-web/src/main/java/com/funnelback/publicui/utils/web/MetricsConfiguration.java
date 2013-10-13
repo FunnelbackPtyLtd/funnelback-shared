@@ -3,9 +3,11 @@ package com.funnelback.publicui.utils.web;
 import static com.codahale.metrics.MetricRegistry.name;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
+import javax.net.SocketFactory;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +103,9 @@ public class MetricsConfiguration implements ServletContextAware {
                 hostName = hostName.replace(".", "_").toLowerCase();
             }
         
-            Graphite graphite = new Graphite(new InetSocketAddress(graphiteHost, graphitePort));
+            Graphite graphite = new Graphite(
+                new InetSocketAddress(graphiteHost, graphitePort),
+                SocketFactory.getDefault(), Charset.forName("US-ASCII"));
             graphiteReporter = GraphiteReporter.forRegistry(registry)
                 .prefixedWith(hostName+"."+MODERNUI_PREFIX)
                 .convertRatesTo(TimeUnit.SECONDS)
