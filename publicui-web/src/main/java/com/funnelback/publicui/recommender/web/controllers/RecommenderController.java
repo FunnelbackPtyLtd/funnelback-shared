@@ -103,6 +103,9 @@ public class RecommenderController extends SessionController {
         List<Recommendation> recommendations = null;
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
         RecommendationResponse.Source sourceType = RecommendationResponse.Source.DEFAULT;
+        RecommendationResponse.Status status = RecommendationResponse.Status.SEED_NOT_FOUND;
+        RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
+        long timeTaken = -1;
 
         if (seedItem == null || ("").equals(seedItem)) {
             throw new IllegalArgumentException("seedItem parameter must be provided.");
@@ -126,9 +129,12 @@ public class RecommenderController extends SessionController {
         }
 
         String requestCollection = collection.getId();
+        String sourceCollection = requestCollection;
         Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 
         if (collectionConfig != null) {
+            sourceCollection = collectionConfig.getCollectionName();
+
             switch(sourceType) {
                 case DEFAULT:
                     recommendations
@@ -147,21 +153,20 @@ public class RecommenderController extends SessionController {
                     break;
             }
 
-            long timeTaken = System.currentTimeMillis() - startTime.getTime();
+            timeTaken = System.currentTimeMillis() - startTime.getTime();
+            recommendationsSource = RecommendationResponse.Source.CLICKS;
 
-            recommendationResponse =
-                    new RecommendationResponse(RecommendationResponse.Status.OK, seedItem,
-                            requestCollection, scope, maxRecommendations,
-                            collectionConfig.getCollectionName(), RecommendationResponse.Source.CLICKS, timeTaken,
-                            recommendations);
-            model.put("RecommendationResponse", recommendationResponse);
+            if (recommendations != null && recommendations.size() > 0) {
+                status = RecommendationResponse.Status.OK;
+            }
+            else {
+                status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
+            }
         }
-        else {
-            recommendationResponse = new RecommendationResponse(RecommendationResponse.Status.SEED_NOT_FOUND,
-                    seedItem, requestCollection, scope, maxRecommendations, requestCollection,
-                    RecommendationResponse.Source.NONE, -1, null);
-            model.put("RecommendationResponse", recommendationResponse);
-        }
+
+        recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,
+                maxRecommendations, sourceCollection, recommendationsSource, timeTaken, recommendations);
+        model.put("RecommendationResponse", recommendationResponse);
 
         return new ModelAndView(view, model);
     }
