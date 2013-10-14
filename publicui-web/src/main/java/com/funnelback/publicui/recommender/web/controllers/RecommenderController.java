@@ -93,13 +93,16 @@ public class RecommenderController extends SessionController {
                                      @RequestParam("seedItem") String seedItem,
                                      @RequestParam(value = "scope", required = false) String scope,
                                      @RequestParam(value = "maxRecommendations", required = false)
-                                     Integer maxRecommendations) throws Exception {
+                                     Integer maxRecommendations,
+                                     @RequestParam(value = "source", required = false) String source)
+                                     throws Exception {
         Date startTime = new Date();
         response.setContentType("application/json");
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
-        List<Recommendation> recommendations;
+        List<Recommendation> recommendations = null;
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
+        RecommendationResponse.Source sourceType = RecommendationResponse.Source.DEFAULT;
 
         if (seedItem == null || ("").equals(seedItem)) {
             throw new IllegalArgumentException("seedItem parameter must be provided.");
@@ -117,23 +120,31 @@ public class RecommenderController extends SessionController {
             scope = "";
         }
 
+        if (source != null) {
+            source = source.toUpperCase();
+            sourceType = RecommendationResponse.Source.valueOf(source);
+        }
+
         String requestCollection = collection.getId();
         Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
 
         if (collectionConfig != null) {
-            recommendations
-                    = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
-                          maxRecommendations);
-
-            if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
-                String exploreQuery = "explore:" + seedItem;
-                question.setQuery(exploreQuery);
-                question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
-                logger.debug("No recommendations found, using explore with query: " + exploreQuery);
-
-                // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
-                // suggestions should be automatically scoped.
-                return exploreItems(request, response, question, user);
+            switch(sourceType) {
+                case DEFAULT:
+                    recommendations
+                            = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
+                                  maxRecommendations);
+                    if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
+                        return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
+                    }
+                    break;
+                case EXPLORE:
+                    return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
+                case CLICKS:
+                    recommendations
+                            = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
+                                  maxRecommendations);
+                    break;
             }
 
             long timeTaken = System.currentTimeMillis() - startTime.getTime();
@@ -153,6 +164,18 @@ public class RecommenderController extends SessionController {
         }
 
         return new ModelAndView(view, model);
+    }
+
+    private ModelAndView getExploreSuggestions(HttpServletRequest request, HttpServletResponse response,
+                                         @Valid SearchQuestion question, @ModelAttribute SearchUser user,
+                                         String seedItem, Integer maxRecommendations) throws Exception {
+        String exploreQuery = "explore:" + seedItem;
+        question.setQuery(exploreQuery);
+        question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
+
+        // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
+        // suggestions should be automatically scoped.
+        return exploreItems(request, response, question, user);
     }
 
     /**

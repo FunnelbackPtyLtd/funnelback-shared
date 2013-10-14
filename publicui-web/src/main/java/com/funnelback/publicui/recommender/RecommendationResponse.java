@@ -18,6 +18,7 @@ public class RecommendationResponse {
     public static enum Source {
         CLICKS("CLICKS"),
         EXPLORE("EXPLORE"),
+        DEFAULT("DEFAULT"),
         NONE("NONE");
 
         private final String source;
