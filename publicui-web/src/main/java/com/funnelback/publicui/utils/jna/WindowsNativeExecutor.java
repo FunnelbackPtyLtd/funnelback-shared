@@ -96,6 +96,8 @@ public class WindowsNativeExecutor {
                 
                 int errno = Kernel32.INSTANCE.GetLastError();
                 if (W32Errors.ERROR_NO_TOKEN == errno) {
+                    log.debug("Opening thread token failed. Try to ImpersonateSelf() now");
+                    
                     // Can happen in case of extra searches: The thread is coming from
                     // an executor pool and is not impersonated. Impersonate it now
                     if (! Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityDelegation)) {
@@ -312,6 +314,4 @@ public class WindowsNativeExecutor {
         }
     }
 
-    
-    
 }

@@ -75,16 +75,12 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                     + File.separator + GET_USER_KEYS_BINARY_PATH,
                     GET_USER_KEYS_BINARY);
                 
-                Map<String, String> env = new HashMap<String, String>();
+                // Copy ALL the environment here. The TRIM SDK requires some environment
+                // variables to be set, such as "SystemRoot" and "CommonProgramFiles"
+                Map<String, String> env = new HashMap<>(System.getenv());
+                // Force SEARCH_HOME, discarding any existing value in the environment
                 env.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
-                // SystemRoot environment variable is MANDATORY.
-                // The TRIM SDK uses WinSock to connect to the remote server, and 
-                // WinSock needs SystemRoot to initialise itself.
-                if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
-                    env.put(EnvironmentKeys.SystemRoot.toString(),
-                        System.getenv(EnvironmentKeys.SystemRoot.toString()));
-                }
-                
+
                 List<String> cmdLine = new ArrayList<String>(Arrays.asList(new String[] {
                                 getUserKeysBinary.getAbsolutePath(), "-f", getKeyStringFormat().name(),
                                 collection.getId() }));

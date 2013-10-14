@@ -119,15 +119,11 @@ public class LocalDataRepository implements DataRepository {
             + File.separator + GET_DOCUMENT_BINARY_PATH,
             GET_DOCUMENT_BINARY);
 
-        getDocumentEnvironment = new HashMap<String, String>();
+
+        // Copy ALL the environment here. The TRIM SDK requires some environment
+        // variables to be set, such as "SystemRoot" and "CommonProgramFiles"
+        getDocumentEnvironment = new HashMap<String, String>(System.getenv());
         getDocumentEnvironment.put(EnvironmentKeys.SEARCH_HOME.toString(), searchHome.getAbsolutePath());
-        // SystemRoot environment variable is MANDATORY.
-        // The TRIM SDK uses WinSock to connect to the remote server, and 
-        // WinSock needs SystemRoot to initialise itself.
-        if (System.getenv(EnvironmentKeys.SystemRoot.toString()) != null) {
-            getDocumentEnvironment.put(EnvironmentKeys.SystemRoot.toString(),
-                System.getenv(EnvironmentKeys.SystemRoot.toString()));
-        }
     }
     
     @Override
