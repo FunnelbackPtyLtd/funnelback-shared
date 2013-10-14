@@ -34,7 +34,8 @@ public class RecommendationResponse {
 
     public static enum Status {
         OK("OK"),
-        NOT_FOUND("NOT_FOUND"),
+        SEED_NOT_FOUND("SEED_NOT_FOUND"),
+        NO_SUGGESTIONS_FOUND("NO_SUGGESTIONS_FOUND"),
         ERROR("ERROR");
 
         private final String status;
@@ -110,7 +111,7 @@ public class RecommendationResponse {
                     collectionConfig.getCollectionName(), Source.EXPLORE, -1, recommendations);
         }
         else {
-            return new RecommendationResponse(Status.NOT_FOUND, seedItem, requestCollection, scope,
+            return new RecommendationResponse(Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
                     maxRecommendations, collectionConfig.getCollectionName(), Source.NONE, -1, null);
         }
 	}

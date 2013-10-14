@@ -34,6 +34,7 @@ public final class RecommenderUtils {
 
     /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
+     *
      * @param itemName           name of item
      * @param collectionConfig   collection config object
      * @param scope              comma separated list of items scopes
@@ -81,17 +82,17 @@ public final class RecommenderUtils {
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
      *
-     * @param urls list of URL strings to decorate
-     * @param confidenceMap Optional map of urls to confidence scores (can be null if not available).
-     * @param collectionConfig collection config object
+     * @param urls               list of URL strings to decorate
+     * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
+     * @param collectionConfig   collection config object
      * @param maxRecommendations maximum number of recommendations to return - list will never be larger than this.
      * @return list of decorated URL recommendations (which may be empty)
      */
     public static List<Recommendation> decorateURLRecommendations(List<String> urls,
-            Map<String, ItemTuple> confidenceMap, Config collectionConfig, int maxRecommendations) {
+                                                                  Map<String, ItemTuple> confidenceMap, Config collectionConfig, int maxRecommendations) {
         List<Recommendation> recommendations = new ArrayList<>();
         float confidence = -1;
-        List< DocInfo > dis = null;
+        List<DocInfo> dis = null;
         DocInfoResult dir = getDocInfoResult(urls, collectionConfig);
 
         if (dir != null) {
@@ -99,28 +100,18 @@ public final class RecommenderUtils {
         }
 
         if (dis != null && dis.size() > 0) {
-            float prevQieScore = -1;
-
             for (DocInfo docInfo : dis) {
                 URI uri = docInfo.getUri();
                 String itemID = uri.toString();
-                float qieScore = docInfo.getQieScore();
 
-                if (prevQieScore != qieScore) {
-                    if (confidenceMap != null) {
-                        confidence = confidenceMap.get(itemID).getScore();
-                    }
+                if (confidenceMap != null) {
+                    confidence = confidenceMap.get(itemID).getScore();
+                }
 
-                    Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
-                    recommendations.add(recommendation);
-                    prevQieScore = qieScore;
-                }
-                else {
-                    logger.debug("Item has same QIE score as previous item - skipping: " + itemID);
-                }
+                Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
+                recommendations.add(recommendation);
             }
-        }
-        else {
+        } else {
             logger.warn("Null or empty DocInfo list returned from getDocInfoResult.");
         }
 
@@ -158,8 +149,7 @@ public final class RecommenderUtils {
 
             boolean debug = false;
             dir = new PadreConnector(indexStem).docInfo(addresses).withMetadata(DocInfoQuery.ALL_METADATA).withDebug(debug).fetch();
-        }
-        else {
+        } else {
             logger.warn("Empty list of URLs provided for query to collection: "
                     + collectionConfig.getCollectionName());
         }
@@ -204,14 +194,15 @@ public final class RecommenderUtils {
      * then its own configuration may be returned or one of its components, depending on which component has
      * information on the given seed item. If this is not a meta collection then the configuration for the
      * specified collection will always be returned.
-     *
+     * <p/>
      * For a meta collection (and each of its components) we first check if any session information is available
      * and if there is none we check if the Data API knows about the seed item. If neither source has information
      * we will move on to the next component until we have exhausted the list of components or found a component
      * that has information.
-     * @param collection Collection to derive collection configuration for
+     *
+     * @param collection       Collection to derive collection configuration for
      * @param configRepository handle to configuration repository
-     * @param seedItem the seed item to use in detecting which component to return
+     * @param seedItem         the seed item to use in detecting which component to return
      * @return collection configuration (may be null).
      */
     public static Config getCollectionConfig(com.funnelback.publicui.search.model.collection.Collection collection,
@@ -235,8 +226,7 @@ public final class RecommenderUtils {
                     foundComponent = true;
                     logger.debug("Found session info for seed item: " + seedItem + " in component: " + component);
                     break;
-                }
-                else {
+                } else {
                     DocInfo docInfo = RecommenderUtils.getDocInfo(seedItem, componentConfig);
 
                     if (docInfo != null) {
@@ -248,14 +238,20 @@ public final class RecommenderUtils {
                     }
                 }
             }
+        } else {
+            componentConfig = collection.getConfiguration();
+            DocInfo docInfo = RecommenderUtils.getDocInfo(seedItem, componentConfig);
 
-            if (!foundComponent) {
-                logger.debug("No matching component collection for seed item: " + seedItem);
-                componentConfig = null;
+            if (docInfo != null) {
+                logger.debug("Found Data API match info for seed item: " + seedItem
+                        + " in requested collection: " + componentConfig.getCollectionName());
+                foundComponent = true;
             }
         }
-        else {
-            componentConfig = collection.getConfiguration();
+
+        if (!foundComponent) {
+            logger.debug("No matching component collection for seed item: " + seedItem);
+            componentConfig = null;
         }
 
         return componentConfig;
@@ -296,8 +292,7 @@ public final class RecommenderUtils {
             } finally {
                 database.close();
             }
-        }
-        else {
+        } else {
             String collectionName = config.getCollectionName();
             throw new IllegalStateException("Expected database file does not exist: " + collectionName + baseName
                     + " for collection " + collectionName);
@@ -330,7 +325,8 @@ public final class RecommenderUtils {
                 if (value != null) {
                     ObjectMapper mapper = new ObjectMapper();
                     // See http://wiki.fasterxml.com/JacksonInFiveMinutes#Data_Binding_with_Generics
-                    Set<String> sessionIDs = mapper.readValue(value, new TypeReference<Set<String>>() {});
+                    Set<String> sessionIDs = mapper.readValue(value, new TypeReference<Set<String>>() {
+                    });
 
                     if (sessionIDs != null && !sessionIDs.isEmpty()) {
                         for (String sessionID : sessionIDs) {
@@ -338,7 +334,8 @@ public final class RecommenderUtils {
 
                             if (value != null) {
                                 List<PreferenceTuple> session
-                                        = mapper.readValue(value, new TypeReference<List<PreferenceTuple>>() {});
+                                        = mapper.readValue(value, new TypeReference<List<PreferenceTuple>>() {
+                                });
 
                                 if (session != null) {
                                     sessions.add(session);
@@ -363,7 +360,8 @@ public final class RecommenderUtils {
 
     /**
      * Return a DocInfo object for a single URL.
-     * @param url URL string to get DocInfo for
+     *
+     * @param url              URL string to get DocInfo for
      * @param collectionConfig collection config object
      * @return DocInfo object (may be null if unable to get information)
      */
@@ -384,7 +382,8 @@ public final class RecommenderUtils {
 
     /**
      * Return the title of the given URL from the given collection.
-     * @param url URL to get title for
+     *
+     * @param url              URL to get title for
      * @param collectionConfig collection Config object
      * @return title or empty string if title is not available
      */
@@ -392,7 +391,7 @@ public final class RecommenderUtils {
         String title = "";
         DocInfo docInfo = getDocInfo(url, collectionConfig);
 
-        if (docInfo != null ) {
+        if (docInfo != null) {
             title = docInfo.getTitle();
         }
 

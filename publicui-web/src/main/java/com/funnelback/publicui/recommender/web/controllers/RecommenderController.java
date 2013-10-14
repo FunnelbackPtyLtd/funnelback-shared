@@ -46,7 +46,7 @@ public class RecommenderController extends SessionController {
     public static final String SESSIONS_HTML = "sessions.html";
     public static final String EXPLORE_JSON = "explore.json";
     public static final int MAX_RECOMMENDATIONS = 5;
-    public static final String MAX_EXPLORE_RESULTS = "100";
+    public static final String MAX_EXPLORE_RESULTS = "50";
 
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
@@ -143,6 +143,12 @@ public class RecommenderController extends SessionController {
                             requestCollection, scope, maxRecommendations,
                             collectionConfig.getCollectionName(), RecommendationResponse.Source.CLICKS, timeTaken,
                             recommendations);
+            model.put("RecommendationResponse", recommendationResponse);
+        }
+        else {
+            recommendationResponse = new RecommendationResponse(RecommendationResponse.Status.SEED_NOT_FOUND,
+                    seedItem, requestCollection, scope, maxRecommendations, requestCollection,
+                    RecommendationResponse.Source.NONE, -1, null);
             model.put("RecommendationResponse", recommendationResponse);
         }
 
