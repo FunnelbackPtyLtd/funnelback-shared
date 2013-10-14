@@ -96,8 +96,8 @@ public class RecommendationResponse {
         List<String> urls = new ArrayList<>();
 
         for (Result result : results) {
-            String url = result.getDisplayUrl();
-            urls.add(url);
+            String indexUrl = result.getIndexUrl();
+            urls.add(indexUrl);
         }
 
         if (scope == null) {
