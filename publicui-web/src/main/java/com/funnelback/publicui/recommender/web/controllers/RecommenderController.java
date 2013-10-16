@@ -140,7 +140,7 @@ public class RecommenderController extends SessionController {
                     recommendations
                             = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
                                   maxRecommendations);
-                    if (recommendations == null || recommendations.size() == 0 && seedItem.startsWith("http")) {
+                    if (recommendations == null || recommendations.size() == 0 && seedItem.contains("://")) {
                         return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
                     }
                     break;
