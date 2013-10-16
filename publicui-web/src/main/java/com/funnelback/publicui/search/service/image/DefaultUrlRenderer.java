@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.image;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -164,6 +165,11 @@ public class DefaultUrlRenderer implements UrlRenderer {
                     cmdLine.addArgument(tempFile.getCanonicalPath());
                     DefaultExecutor executor = new DefaultExecutor();
                     
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+                    PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream, errorStream);
+                    executor.setStreamHandler(streamHandler);
+                    
                     // We need to force the phantomBinary to check the right lib path on linux
                     Map<String, String> environment = new HashMap<String, String>(System.getenv());
                     File libraryDirectory = new File(phantomBinary.getParentFile().getParentFile(), "lib");
@@ -175,6 +181,13 @@ public class DefaultUrlRenderer implements UrlRenderer {
                     }
             
                     byte[] imageBytes = FileUtils.readFileToByteArray(tempFile);
+                    
+                    if (imageBytes.length < 1) {
+                        // Something went wrong
+                        log.error("Preview for '"+url+"' returned an empty content. "
+                            + "Process stdout was: '"+outputStream.toString()+"' "
+                            + "Process stderr was: '"+errorStream.toString()+"' ");
+                    }
     
                     cache.put(new Element(key, imageBytes));
                 } finally {

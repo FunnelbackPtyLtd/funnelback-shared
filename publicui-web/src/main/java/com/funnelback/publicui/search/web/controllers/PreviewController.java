@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import lombok.Cleanup;
 
 import org.apache.commons.io.IOUtils;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import com.funnelback.publicui.search.service.image.UrlRenderer;
 @Controller
 public class PreviewController {
 
+    private static final String DEFAULT_PNG = "/1x1.png";
     private static final int DEFAULT_WIDTH = 1024;
     private static final int DEFAULT_HEIGHT = 768;
     
@@ -66,9 +68,10 @@ public class PreviewController {
             response.getOutputStream().close();
         } else {
             // Something went wrong
+            Log.error("Unable to obtain a preview for '"+url+"'. Please check the application logs");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.setContentType("text/plain");
-            response.getWriter().write("Unable to obtain a preview. Please check the application logs");
+            response.setContentType("image/png");
+            IOUtils.copy(getClass().getResourceAsStream(DEFAULT_PNG), response.getOutputStream());
         }
         
         return null;
