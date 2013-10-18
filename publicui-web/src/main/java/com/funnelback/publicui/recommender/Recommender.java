@@ -203,7 +203,7 @@ public class Recommender {
                 }	
             }
             else {
-            	// No given seed item - just return the config object for the given collection
+            	// No given seed item - just return the configuration object for the given collection
             	foundComponent = true;
             }
         }
