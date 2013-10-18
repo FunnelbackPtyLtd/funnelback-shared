@@ -5,12 +5,16 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.Recommender;
+import com.funnelback.publicui.recommender.dataapi.DataAPI;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
+
+import lombok.Getter;
 import lombok.Setter;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -49,6 +54,10 @@ public class DevRecommenderController {
     @Setter
     private ConfigRepository configRepository;
 
+    @Autowired
+    @Setter
+    private DataAPI dataAPI;
+    
     /**
      * Return a HTML page displaying the recommendations for each result for the given query, collection & scope.
      *
@@ -121,15 +130,19 @@ public class DevRecommenderController {
                             + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
                             + "\">Sessions</a>]</li>\n");
 
-                    Config collectionConfig = RecommenderUtils.getCollectionConfig(collectionRef, configRepository, resultURL);
+                    try {
+                        Recommender recommender = new Recommender(collectionRef, dataAPI, resultURL);
 
-                    if (collectionConfig != null) {
                         List<Recommendation> recommendations =
-                                RecommenderUtils.getRecommendationsForItem(resultURL, collectionConfig,
-                                        scope, maxRecommendations);
+                                recommender.getRecommendationsForItem(resultURL, scope,
+                                        maxRecommendations);
                         buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
-                                scope, maxRecommendations));
+                                scope, maxRecommendations));	
                     }
+                    catch (IllegalStateException exception) {
+                    	logger.warn(exception);
+                    }
+ 
                     buf.append("</ul>\n");
                     originalResults.add(resultURL);
                 }
@@ -170,14 +183,14 @@ public class DevRecommenderController {
         Collection collectionRef
                 = configRepository.getCollection(collection);
 
-        if (collectionRef != null) {
-            Config collectionConfig = RecommenderUtils.getCollectionConfig(collectionRef, configRepository, itemName);
-
-            if (collectionConfig != null) {
+        if (collectionRef != null) {      	
+            try {
+                Recommender recommender = new Recommender(collectionRef, dataAPI, itemName);
+                Config collectionConfig = recommender.getCollectionConfig();
+                
                 buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
-                Set<List<PreferenceTuple>> sessions
-                        = RecommenderUtils.getSessions(itemName, collectionConfig);
-
+                Set<List<PreferenceTuple>> sessions = recommender.getSessions(itemName);
+                
                 if (sessions != null && !sessions.isEmpty()) {
                     for (List<PreferenceTuple> session : sessions) {
                         String sessionID = session.get(0).getUserID();
@@ -190,7 +203,7 @@ public class DevRecommenderController {
                             urls.add(preference.getItemID());
                         }
 
-                        Map<URI, DocInfo> docInfoMap = RecommenderUtils.getDocInfoResult(urls, collectionConfig).asMap();
+                        Map<URI, DocInfo> docInfoMap = dataAPI.getDocInfoResult(urls, collectionConfig).asMap();
 
                         if (docInfoMap != null && !docInfoMap.isEmpty()) {
                             for (PreferenceTuple preference : session) {
@@ -224,14 +237,14 @@ public class DevRecommenderController {
 
                         buf.append("</ul>");
                     }
-
                 } else {
                     buf.append("<p>No sessions found.</p>");
-                }
+                }              
             }
-            else {
+            catch (IllegalStateException exception) {
+            	logger.warn(exception);
                 buf.append("<p>Unable to get a valid collection.</p>");
-            }
+            }           
         }
 
         buf.append("</ul></body></html>");
@@ -251,7 +264,7 @@ public class DevRecommenderController {
         StringBuffer buf = new StringBuffer();
         buf.append(SESSIONS_DOC_HEADER);
 
-        String keyTitle = RecommenderUtils.getTitle(itemName, collectionConfig);
+        String keyTitle = dataAPI.getTitle(itemName, collectionConfig);
 
         if ("".equals(keyTitle)) {
             keyTitle = itemName;

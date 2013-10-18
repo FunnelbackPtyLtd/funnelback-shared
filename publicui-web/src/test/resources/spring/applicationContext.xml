@@ -80,7 +80,13 @@
 
 	<bean id="searchController"
 		class="com.funnelback.publicui.search.web.controllers.SearchController" />
-		
+
+    <bean id="recommenderController"
+   		class="com.funnelback.publicui.recommender.web.controllers.RecommenderController" />
+
+    <bean id="dataAPI"
+   		class="com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE" />
+   		
 	<bean id="serveFilecopyDocumentController"
 		class="com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController"/>
 
@@ -166,6 +172,10 @@
     <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartProcessController" />
     
     <bean class="com.funnelback.publicui.search.service.index.DefaultQueryReadLock" />
-    
+
+    <bean name="recommenderJsonView"
+   		class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
+           <property name="renderedAttributes" value="RecommendationResponse" />
+   	</bean>
 	
 </beans>

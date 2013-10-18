@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>publicui-web</artifactId>
     <packaging>war</packaging>
@@ -11,17 +11,37 @@
     </parent>
 
     <build>
-        <!-- No version in WAR filename as it's dropped in web/webapps/ and 
-            auto-deployed -->
+        <!-- No version in WAR filename as it's dropped in web/webapps/ and auto-deployed -->
         <finalName>funnelback-publicui</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <!-- Path to shared libraries -->
+                        <jna.library.path>target/natives</jna.library.path>
+                    </systemProperties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <!-- Extract PADRE native libs prior to testing -->
+            <plugin>
+                <groupId>com.googlecode.mavennatives</groupId>
+                <artifactId>maven-nativedependencies-plugin</artifactId>
+                <version>0.0.7</version>
+                <executions>
+                    <execution>
+                        <id>unpacknatives</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -277,6 +297,13 @@
             <artifactId>liquibase-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.funnelback.padre</groupId>
+            <artifactId>padre</artifactId>
+            <version>${project.version}</version>
+            <!-- ${platform} here is coming from the top-level parent POM -->
+            <classifier>natives-${platform}</classifier>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
 </project>

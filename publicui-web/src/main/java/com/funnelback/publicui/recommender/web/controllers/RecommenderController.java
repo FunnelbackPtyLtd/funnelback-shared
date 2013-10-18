@@ -3,7 +3,9 @@ package com.funnelback.publicui.recommender.web.controllers;
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
+import com.funnelback.publicui.recommender.Recommender;
+import com.funnelback.publicui.recommender.dataapi.DataAPI;
+import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -11,6 +13,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +28,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.util.*;
+
+import lombok.Setter;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
@@ -61,6 +67,10 @@ public class RecommenderController extends SessionController {
         }
     }
 
+    @Autowired
+    @Setter
+    private DataAPI dataAPI;
+    
     @Autowired
     private SearchController searchController;
 
@@ -130,38 +140,50 @@ public class RecommenderController extends SessionController {
 
         String requestCollection = collection.getId();
         String sourceCollection = requestCollection;
-        Config collectionConfig = RecommenderUtils.getCollectionConfig(collection, configRepository, seedItem);
+        
+        try {
+            Recommender recommender = new Recommender(collection, dataAPI, seedItem);
+            Config collectionConfig = recommender.getCollectionConfig();
+            
+            if (collectionConfig != null) {
+                sourceCollection = collectionConfig.getCollectionName();
 
-        if (collectionConfig != null) {
-            sourceCollection = collectionConfig.getCollectionName();
-
-            switch(sourceType) {
-                case DEFAULT:
-                    recommendations
-                            = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
-                                  maxRecommendations);
-                    if (recommendations == null || recommendations.size() == 0 && seedItem.contains("://")) {
+                switch(sourceType) {
+                    case DEFAULT:
+                        recommendations
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
+                        if (recommendations == null || recommendations.size() == 0 && seedItem.contains("://")) {
+                            return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
+                        }
+                        break;
+                    case EXPLORE:
                         return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
-                    }
-                    break;
-                case EXPLORE:
-                    return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
-                case CLICKS:
-                    recommendations
-                            = RecommenderUtils.getRecommendationsForItem(seedItem, collectionConfig, scope,
-                                  maxRecommendations);
-                    break;
-            }
+                    case CLICKS:
+                        recommendations
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
+                        break;
+				    case NONE:
+				    	recommendations = null;
+					    break;
+				    default:
+			    	    recommendations = null;
+				        break;
+                }
 
-            timeTaken = System.currentTimeMillis() - startTime.getTime();
-            recommendationsSource = RecommendationResponse.Source.CLICKS;
+                timeTaken = System.currentTimeMillis() - startTime.getTime();
+                recommendationsSource = RecommendationResponse.Source.CLICKS;
 
-            if (recommendations != null && recommendations.size() > 0) {
-                status = RecommendationResponse.Status.OK;
+                if (recommendations != null && recommendations.size() > 0) {
+                    status = RecommendationResponse.Status.OK;
+                }
+                else {
+                    status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
+                }
             }
-            else {
-                status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
-            }
+            
+        }
+        catch (IllegalStateException exception) {
+        	logger.warn(exception);
         }
 
         recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,
@@ -229,7 +251,7 @@ public class RecommenderController extends SessionController {
         String scope = question.getInputParameterMap().get("scope");
 
         recommendationResponse =
-                RecommendationResponse.fromResults(seedItem, searchResponse.getResultPacket().getResults(),
+                dataAPI.getResponseFromResults(seedItem, searchResponse.getResultPacket().getResults(),
                         collectionConfig, requestCollection, scope, maxRecommendations);
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
         recommendationResponse.setTimeTaken(timeTaken);

@@ -1,17 +1,13 @@
 package com.funnelback.publicui.recommender;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.publicui.recommender.utils.RecommenderUtils;
-import com.funnelback.publicui.search.model.padre.Result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Response from the recommendations system.
+ * A response from the Recommender System.
  */
 @AllArgsConstructor
 public class RecommendationResponse {
@@ -78,42 +74,4 @@ public class RecommendationResponse {
 
     @Getter
    	private List<Recommendation> recommendations;
-
-    /**
-     * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query.
-     *
-     * @param seedItem seed URL
-     * @param results list of results from explore query
-     * @param collectionConfig collection config object
-     * @param requestCollection name of the collection that the original recommendation request was made to
-     * @param scope scope parameter (may be empty)
-     * @param maxRecommendations maximum number of recommendations to return
-     * */
-    public static RecommendationResponse fromResults(String seedItem, List<Result> results,
-                                                     Config collectionConfig, String requestCollection,
-                                                     String scope, int maxRecommendations){
-		List<Recommendation> recommendations;
-        List<String> urls = new ArrayList<>();
-
-        for (Result result : results) {
-            String indexUrl = result.getIndexUrl();
-            urls.add(indexUrl);
-        }
-
-        if (scope == null) {
-            scope = "";
-        }
-
-        recommendations
-                = RecommenderUtils.decorateURLRecommendations(urls, null, collectionConfig, maxRecommendations);
-
-        if (recommendations != null && recommendations.size() > 0) {
-            return new RecommendationResponse(Status.OK, seedItem, requestCollection, scope, maxRecommendations,
-                    collectionConfig.getCollectionName(), Source.EXPLORE, -1, recommendations);
-        }
-        else {
-            return new RecommendationResponse(Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
-                    maxRecommendations, collectionConfig.getCollectionName(), Source.NONE, -1, null);
-        }
-	}
 }
