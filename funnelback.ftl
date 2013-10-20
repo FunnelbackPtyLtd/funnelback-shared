@@ -658,7 +658,7 @@
 <#-- @begin Session features (Deprecated in v13) -->
 
 <#---
-    DEPRECATED in v13: Display a link to add a result to the cart
+    DEPRECATED in v13: Display the result cart
 -->
 <#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear"></#macro>
 
@@ -673,7 +673,7 @@
 <#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5></#macro>
 
 <#---
-    DEPRECATED in v13: Display the result cart
+    DEPRECATED in v13: Display a link to add a result to the cart
 -->
 <#macro ResultCart></#macro> 
 
