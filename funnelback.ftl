@@ -654,3 +654,27 @@
 <#macro HasSearchHistory><#if session?? && session.searchHistory?size &gt; 0>true<#else>false</#if></#macro>
 
 <#-- @end -->
+
+<#-- @begin Session features (Deprecated in v13) -->
+
+<#---
+    DEPRECATED in v13: Display a link to add a result to the cart
+-->
+<#macro ResultsCart savedResultsLabel="Saved results" clearLabel="clear"></#macro>
+
+<#---
+    DEPRECATED in v13: Display the click history
+-->
+<#macro ClickHistory lastClicksLabel="Last results clicked" clearLabel="clear" max=5></#macro>
+
+<#---
+    DEPRECATED in v13: Display the search history
+-->
+<#macro SearchHistory lastQueriesLabel="Last queries" clearLabel="clear" resultsLabel="results" max=5></#macro>
+
+<#---
+    DEPRECATED in v13: Display the result cart
+-->
+<#macro ResultCart></#macro> 
+
+<#-- @end -->
