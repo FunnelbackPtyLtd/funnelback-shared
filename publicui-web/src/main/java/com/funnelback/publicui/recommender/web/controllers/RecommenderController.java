@@ -10,7 +10,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
-import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import lombok.Setter;
@@ -42,11 +41,7 @@ import java.util.*;
 public class RecommenderController extends SessionController {
     private static final Logger logger = Logger.getLogger(RecommenderController.class);
 
-    public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
-    public static final String QUERY_ENTRY_HTML = "queryEntry.html";
-    public static final String ITEM_ENTRY_HTML = "itemEntry.html";
     public static final String SIMILAR_ITEMS_JSON = "similarItems.json";
-    public static final String SESSIONS_HTML = "sessions.html";
     public static final String EXPLORE_JSON = "explore.json";
     public static final int MAX_RECOMMENDATIONS = 5;
     public static final String MAX_EXPLORE_RESULTS = "50";
@@ -75,9 +70,6 @@ public class RecommenderController extends SessionController {
     @Autowired
     private SearchController searchController;
 
-    @Autowired
-    private ConfigRepository configRepository;
-
     @InitBinder
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
@@ -88,8 +80,8 @@ public class RecommenderController extends SessionController {
 
     /**
      * Return JSON output showing similar (recommended) items for the given item name.
-     * @param request request from the client
-     * @param response response to be sent back to the client
+     * @param request HTTP request from the client
+     * @param response HTTP response to be sent back to the client
      * @param question a search question containing a reference to the collection etc.
      * @param user a search user
      * @param seedItem name of seed item to get recommended items for

@@ -41,6 +41,10 @@ import java.util.*;
 public class DevRecommenderController {
     private static final Logger logger = Logger.getLogger(DevRecommenderController.class);
 
+    public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
+    public static final String QUERY_ENTRY_HTML = "queryEntry.html";
+    public static final String ITEM_ENTRY_HTML = "itemEntry.html";
+    public static final String SESSIONS_HTML = "sessions.html";
     public static final String RECOMMENDER_PREFIX = DefaultValues.ModernUI.CONTEXT_PATH + "recommender/";
     private static final String RECOMMENDATIONS_DOC_HEADER = "<html><head><title>Recommendations</title><head><body><h1>Recommendations</h1>";
     private static final String SESSIONS_DOC_HEADER = "<html><head><title>Sessions</title><head><body><h1>Sessions</h1>";
@@ -72,7 +76,7 @@ public class DevRecommenderController {
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping(value = {"/" + RecommenderController.SEARCH_RECOMMENDATIONS_HTML}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/" + SEARCH_RECOMMENDATIONS_HTML}, method = RequestMethod.GET)
     public String searchRecommendations(HttpServletRequest request,
                                         @RequestParam("query") String query,
                                         @RequestParam("collection") String collection,
@@ -129,7 +133,7 @@ public class DevRecommenderController {
                     buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.SIMILAR_ITEMS_JSON + "?seedItem="
                             + encodedResultURL + encodedCollection + encodedScope
                             + "&maxRecommendations=" + maxRecommendations + "\">JSON</a>] \n");
-                    buf.append("[<a href=\"" + RECOMMENDER_PREFIX + RecommenderController.SESSIONS_HTML + "?itemName="
+                    buf.append("[<a href=\"" + RECOMMENDER_PREFIX + SESSIONS_HTML + "?itemName="
                             + encodedResultURL + "&seedItem=" + encodedResultURL + encodedCollection
                             + "\">Sessions</a>]</li>\n");
 
@@ -175,7 +179,7 @@ public class DevRecommenderController {
      * @throws Exception
      */
     @ResponseBody
-    @RequestMapping(value = {"/" + RecommenderController.SESSIONS_HTML}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/" + SESSIONS_HTML}, method = RequestMethod.GET)
     public String sessions(@RequestParam("itemName") String itemName,
                            @RequestParam("seedItem") String seedItem,
                            @RequestParam("collection") String collection) throws Exception {
@@ -292,7 +296,7 @@ public class DevRecommenderController {
      * @return HTML page with entry form.
      */
     @ResponseBody
-    @RequestMapping(value = {"/" + RecommenderController.ITEM_ENTRY_HTML}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/" + ITEM_ENTRY_HTML}, method = RequestMethod.GET)
     public String itemEntry(@RequestParam("collection") String collection) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
         String scope = "";
@@ -319,7 +323,7 @@ public class DevRecommenderController {
      * @return HTML page with entry form.
      */
     @ResponseBody
-    @RequestMapping(value = {"/" + RecommenderController.QUERY_ENTRY_HTML}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/" + QUERY_ENTRY_HTML}, method = RequestMethod.GET)
     public String queryEntry(@RequestParam("collection") String collection) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
         String scope = "";
@@ -329,7 +333,7 @@ public class DevRecommenderController {
         }
 
         buf.append(RECOMMENDATIONS_DOC_HEADER);
-        buf.append("<form action=\"" + RECOMMENDER_PREFIX + RecommenderController.SEARCH_RECOMMENDATIONS_HTML
+        buf.append("<form action=\"" + RECOMMENDER_PREFIX + SEARCH_RECOMMENDATIONS_HTML
                 + "\" method=\"GET\">");
         buf.append("<label for=\"query\">Query: </label>" +
                 "<input id=\"query\" class=\"text\" type=\"text\" title=\"Query\" name=\"query\" size=\"70\"/>" +

@@ -95,7 +95,28 @@ public class RecommenderControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, null);
     }
-    
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testMissingCollectionParameter() throws Exception {
+        SearchQuestion sq = new SearchQuestion();
+        sq.setCollection(null);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidSeedItem() throws Exception {
+        configRepository.removeAllCollections();
+        configRepository.addCollection(new Collection(DEFAULT_COLLECTION_NAME, null));
+        Collection collection = new Collection(DEFAULT_COLLECTION_NAME, new NoOptionsConfig(DEFAULT_COLLECTION_NAME));
+        SearchQuestion sq = new SearchQuestion();
+        sq.setCollection(collection);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        recommenderController.similarItems(request, response, sq, null, "", "", MAX_RECOMMENDATIONS, null);
+    }
+
     @Test
     public void testSeedNotFound() throws Exception {
         configRepository.removeAllCollections();

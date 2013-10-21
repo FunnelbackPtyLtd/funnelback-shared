@@ -13,6 +13,12 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.List;
 
+/**
+ * This class implements the Recommender system DAO (Data Access Object) interface. It uses the SQLite
+ * database to access cached recommendation information.
+ * @author fcrimmins@funnelback.com
+ */
+
 @Component
 public class SQLiteRecommenderDAO implements RecommenderDAO {
     private static final Logger logger = Logger.getLogger(SQLiteRecommenderDAO.class);

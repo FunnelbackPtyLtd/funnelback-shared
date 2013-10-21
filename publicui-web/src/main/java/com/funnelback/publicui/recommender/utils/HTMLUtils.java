@@ -2,6 +2,7 @@ package com.funnelback.publicui.recommender.utils;
 
 import com.funnelback.common.utils.ObjectMapperSingleton;
 import com.funnelback.publicui.recommender.Recommendation;
+import com.funnelback.publicui.recommender.web.controllers.DevRecommenderController;
 import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -131,7 +132,6 @@ public final class HTMLUtils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm");
         String timeStamp = "N/A";
         int numRecommendations = 0;
-        String encodedMetadataClass;
 
         if (maxRecommendations < 1) {
             maxRecommendations = 10;
@@ -162,7 +162,7 @@ public final class HTMLUtils {
                             + encodedItem + collection + scope + "&maxRecommendations="
                             + maxRecommendations;
 
-                    String sessionsLink = RecommenderController.SESSIONS_HTML + "?itemName=" + encodedItem
+                    String sessionsLink = DevRecommenderController.SESSIONS_HTML + "?itemName=" + encodedItem
                             + seedItem + collection + "&minClicks=" + MIN_CLICKS_PER_SESSION;
 
                     buf.append("<li><a href=\"" + item + "\">" + title + "</a> <small>"
