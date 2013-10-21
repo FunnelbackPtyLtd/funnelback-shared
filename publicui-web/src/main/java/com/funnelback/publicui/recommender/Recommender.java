@@ -5,12 +5,12 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
-import com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
-
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
-
-import lombok.Getter;
 
 /**
  * This class provides recommendations from the Recommender System for a given collection.
@@ -35,29 +33,24 @@ public class Recommender {
     private ConfigRepository configRepository;
     
     private DataAPI dataAPI;
-    
-    /**
-     * Create a Recommender for the given collection.
-     * @param collection collection object
-     * @param dataAPI a handle to the Data API system
-     */
-    public Recommender(com.funnelback.publicui.search.model.collection.Collection collection, DataAPI dataAPI) {
-        this(collection, dataAPI, "");	
-    }
-    
+
+    private RecommenderDAO recommenderDAO;
+
     /**
      * Create a Recommender for the given collection and seed item. The Recommender will try to determine if
      * the given seed item is present in the given collection or one of its components if it is a meta collection.
-     * If it cannot find a collection with information on the given item then it will throw an 
+     * If it cannot find a collection with information on the given item then it will throw an
      * @param collection collection object
      * @param dataAPI a handle to the Data API system
+     * @param recommenderDAO
      * @param seedItem seed item (e.g. URL)
      */
-    public Recommender(com.funnelback.publicui.search.model.collection.Collection collection, 
-    		DataAPI dataAPI, String seedItem) throws IllegalStateException	{
+    public Recommender(com.funnelback.publicui.search.model.collection.Collection collection,
+            DataAPI dataAPI, RecommenderDAO recommenderDAO, String seedItem) throws IllegalStateException {
         this.dataAPI = dataAPI;
     	this.collectionConfig = getCollectionConfig(collection, seedItem);
-        
+        this.recommenderDAO = recommenderDAO;
+
         if (collectionConfig == null) {
         	throw new IllegalStateException("Unable to create a valid collection config object for collection: "
         			+ collection.getId() + " and seed item: " + seedItem);
@@ -82,7 +75,7 @@ public class Recommender {
             scopes = Arrays.asList(scope.split(","));
         }
 
-        fullList = getRecommendationsFromCache(itemName);
+        fullList = recommenderDAO.getRecommendations(itemName, collectionConfig);
 
         if (fullList != null && fullList.size() > 0) {
             List<ItemTuple> scopedList = new ArrayList<>();
@@ -214,50 +207,6 @@ public class Recommender {
         }
 
         return componentConfig;
-    }
-
-    /**
-     * Get a list of recommendations from a backing cache based on the given Config and hashName.
-     *
-     * @param key    key to lookup in cache
-     * @return value as a list, which may be null
-     */
-    public List<ItemTuple> getRecommendationsFromCache(String key) throws IllegalStateException {
-        List<ItemTuple> items = null;
-        String baseName = com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH
-                + DefaultValues.SQLITEDB;
-        String databaseFilename
-                = SQLiteCache.getDatabaseFilename(collectionConfig, DefaultValues.VIEW_LIVE, baseName);
-        File db = new File(databaseFilename);
-        String value;
-
-        if (db.exists()) {
-            ObjectCache database = new SQLiteCache(databaseFilename, collectionConfig, true);
-
-            try {
-                value = (String) database.get(key);
-
-                if (value != null) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    // See http://wiki.fasterxml.com/JacksonInFiveMinutes#Data_Binding_with_Generics
-                    items = mapper.readValue(value, new TypeReference<List<ItemTuple>>() {});
-                } else {
-                    logger.warn("No value found in recommendations cache for key: " + key);
-                }
-            } catch (Exception exception) {
-                logger.warn("Exception getting value and converting from JSON: " + exception);
-            } finally {
-            	if (database != null) {
-                    database.close();            		
-            	}
-            }
-        } else {
-            String collectionName = collectionConfig.getCollectionName();
-            throw new IllegalStateException("Expected database file does not exist: " + collectionName + baseName
-                    + " for collection " + collectionName);
-        }
-
-        return items;
     }
 
     /**

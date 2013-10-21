@@ -3,16 +3,15 @@ package com.funnelback.publicui.recommender.web.controllers;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.Recommender;
+import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 
-import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
@@ -57,6 +56,10 @@ public class DevRecommenderController {
     @Autowired
     @Setter
     private DataAPI dataAPI;
+
+    @Autowired
+    @Setter
+    private RecommenderDAO recommenderDAO;
     
     /**
      * Return a HTML page displaying the recommendations for each result for the given query, collection & scope.
@@ -131,7 +134,7 @@ public class DevRecommenderController {
                             + "\">Sessions</a>]</li>\n");
 
                     try {
-                        Recommender recommender = new Recommender(collectionRef, dataAPI, resultURL);
+                        Recommender recommender = new Recommender(collectionRef, dataAPI, recommenderDAO, resultURL);
 
                         List<Recommendation> recommendations =
                                 recommender.getRecommendationsForItem(resultURL, scope,
@@ -185,7 +188,7 @@ public class DevRecommenderController {
 
         if (collectionRef != null) {      	
             try {
-                Recommender recommender = new Recommender(collectionRef, dataAPI, itemName);
+                Recommender recommender = new Recommender(collectionRef, dataAPI, recommenderDAO, itemName);
                 Config collectionConfig = recommender.getCollectionConfig();
                 
                 buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));

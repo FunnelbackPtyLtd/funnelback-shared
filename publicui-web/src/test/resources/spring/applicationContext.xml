@@ -86,7 +86,10 @@
 
     <bean id="dataAPI"
    		class="com.funnelback.publicui.recommender.dataapi.DataAPIConnectorPADRE" />
-   		
+
+    <bean id="recommenderDAO"
+   		class="com.funnelback.publicui.recommender.dao.SQLiteRecommenderDAO" />
+
 	<bean id="serveFilecopyDocumentController"
 		class="com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController"/>
 

@@ -4,8 +4,8 @@ import com.funnelback.common.config.Config;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
 import com.funnelback.publicui.recommender.Recommender;
+import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
-import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
-
+import lombok.Setter;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import java.io.IOException;
 import java.util.*;
-
-import lombok.Setter;
 
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
@@ -70,7 +67,11 @@ public class RecommenderController extends SessionController {
     @Autowired
     @Setter
     private DataAPI dataAPI;
-    
+
+    @Autowired
+    @Setter
+    private RecommenderDAO recommenderDAO;
+
     @Autowired
     private SearchController searchController;
 
@@ -142,7 +143,7 @@ public class RecommenderController extends SessionController {
         String sourceCollection = requestCollection;
         
         try {
-            Recommender recommender = new Recommender(collection, dataAPI, seedItem);
+            Recommender recommender = new Recommender(collection, dataAPI, recommenderDAO, seedItem);
             Config collectionConfig = recommender.getCollectionConfig();
             
             if (collectionConfig != null) {
