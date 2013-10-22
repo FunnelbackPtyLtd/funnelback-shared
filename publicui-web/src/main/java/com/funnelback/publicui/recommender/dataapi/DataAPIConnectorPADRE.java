@@ -8,11 +8,8 @@ import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.recommender.RecommendationResponse.Source;
-import com.funnelback.publicui.recommender.RecommendationResponse.Status;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -160,7 +157,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
 
          DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
          recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig, maxRecommendations);
-
 
          if (recommendations != null && recommendations.size() > 0) {
              return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,

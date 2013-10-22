@@ -68,6 +68,7 @@ public class RecommenderController extends SessionController {
     private RecommenderDAO recommenderDAO;
 
     @Autowired
+    @Setter
     private SearchController searchController;
 
     @InitBinder
@@ -214,7 +215,10 @@ public class RecommenderController extends SessionController {
     public ModelAndView exploreItems(HttpServletRequest request, HttpServletResponse response,
                                      @Valid SearchQuestion question, @ModelAttribute SearchUser user) throws Exception {
         Date startTime = new Date();
-        RecommendationResponse recommendationResponse;
+        RecommendationResponse recommendationResponse = null;
+        List<Recommendation> recommendations = null;
+        RecommendationResponse.Status status = RecommendationResponse.Status.SEED_NOT_FOUND;
+        RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
         response.setContentType("application/json");
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
 
@@ -224,30 +228,44 @@ public class RecommenderController extends SessionController {
 
         String requestCollection = collection.getId();
         String query = question.getQuery();
+        String seedItem = query.replaceFirst("^explore:", "");
         Integer maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
         question.getInputParameterMap().put("num_ranks", MAX_EXPLORE_RESULTS);
+        String scope = question.getInputParameterMap().get("scope");
 
-        Map<String, Object> model;
+        Map<String, Object> model = null;
         {
             ModelAndView modelandView = searchController.search(request, response, question, user);
             if (modelandView == null) {
                 logger.warn("Null model returned from search controller for query: " + query
                         + " and collection: " + requestCollection);
-                return null;
             }
-            model = modelandView.getModel();
+            else {
+                model = modelandView.getModel();
+            }
         }
 
-        SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
-        Config collectionConfig = collection.getConfiguration();
-        String seedItem = query.replaceFirst("^explore:", "");
-        String scope = question.getInputParameterMap().get("scope");
+        if (model != null) {
+            SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
+            Config collectionConfig = collection.getConfiguration();
 
-        recommendationResponse =
-                dataAPI.getResponseFromResults(seedItem, searchResponse.getResultPacket().getResults(),
-                        collectionConfig, requestCollection, scope, maxRecommendations);
+            recommendationResponse =
+                    dataAPI.getResponseFromResults(seedItem, searchResponse.getResultPacket().getResults(),
+                            collectionConfig, requestCollection, scope, maxRecommendations);
+        }
+
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
-        recommendationResponse.setTimeTaken(timeTaken);
+
+        if (recommendationResponse != null) {
+            recommendationResponse.setTimeTaken(timeTaken);
+        }
+        else {
+            logger.warn("Null recommendationResponse returned from data API for seed: " + seedItem
+                    + " and collection: " + requestCollection);
+            status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
+            recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,
+                    maxRecommendations, requestCollection, recommendationsSource, timeTaken, recommendations);
+        }
 
         Map<String, Object> recommendationModel = new HashMap<>();
         recommendationModel.put("RecommendationResponse", recommendationResponse);

@@ -1,21 +1,19 @@
 package com.funnelback.publicui.search.model.transaction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>This class contains all the output data related to a search.</p>
@@ -47,13 +45,13 @@ public class SearchResponse {
      * Computed facets based on the PADRE
      * result packet and collection configuration.
      **/
-    @Getter private final List<Facet> facets = new ArrayList<Facet>();
+    @Getter private final List<Facet> facets = new ArrayList<>();
     
     /**
      * Custom data placeholder allowing any arbitrary data to be
      * stored by hook scripts.
      */
-    @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
+    @Getter private final Map<String, Object> customData = new HashMap<>();
     
     /**
      * Content Optimiser: URL comparison data.
@@ -82,7 +80,7 @@ public class SearchResponse {
      */
     @XStreamOmitField
     @Getter
-    private final Map<String, String> translations = new HashMap<String, String>();
+    private final Map<String, String> translations = new HashMap<>();
         
     /**
      * Performance metrics of each phase of the transaction lifecycle
