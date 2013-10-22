@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class provides recommendations from the Recommender System for a given collection.
@@ -112,21 +114,53 @@ public class Recommender {
      * @return true if item should be displayed
      */
     public boolean inScope(String item, List<String> scopes) {
+        Pattern positiveRegex = null;
+        Pattern negativeRegex = null;
         boolean inScope = false;
 
         if (scopes != null && scopes.size() > 0) {
+            StringBuffer buf1 = new StringBuffer();
+            StringBuffer buf2 = new StringBuffer();
+
+            // First build up regular expressions
             for (String scopePattern : scopes) {
                 if (scopePattern.startsWith(("-"))) {
                     // Negative scope pattern i.e. -handbook.curtin.edu.au
                     scopePattern = scopePattern.substring(1, scopePattern.length());
-
-                    if (item.contains(scopePattern)) {
-                        inScope = false;
-                        break;
-                    }
-                } else if (item.contains(scopePattern)) {
-                    inScope = true;
+                    buf2.append(scopePattern + "|");
                 }
+                else {
+                    buf1.append(scopePattern + "|");
+                }
+            }
+
+            if (buf1.length() > 0) {
+                // Remove trailing | before converting to String
+                positiveRegex = Pattern.compile(buf1.deleteCharAt(buf1.length() - 1).toString());
+            }
+
+            if (buf2.length() > 0) {
+                negativeRegex = Pattern.compile(buf2.deleteCharAt(buf2.length() - 1).toString());
+            }
+
+            if (negativeRegex != null) {
+                Matcher negativeMatcher = negativeRegex.matcher(item);
+                if (negativeMatcher.find()) {
+                    // Negative match - return straight away
+                    return false;
+                }
+            }
+
+            // Didn't pass negative pattern - now check positive pattern (if it exists).
+            if (positiveRegex != null) {
+                Matcher positiveMatcher = positiveRegex.matcher(item);
+                if (positiveMatcher.find()) {
+                    return true;
+                }
+            }
+            else {
+                // Didn't match negative pattern and positive pattern was empty -> item is in scope
+                inScope = true;
             }
         } else {
             inScope = true;

@@ -47,6 +47,8 @@ public class RecommenderControllerTest {
     private final String EXPLORE_SEED = "http://www.immi.gov.au/";
     private final String EXPLORE_RECOMMENDATION = "http://www.immi.gov.au/e_visa/";
     private final String EXPLORE_RECOMMENDATION_TITLE = "Department of Immigation e-Visa";
+    private final String OUTSIDE_SCOPE = "http://example.com/hr/";
+    private final String OUTSIDE_SCOPE_TITLE = "HR @ Example.com - Internal Only";
     private final String DEFAULT_COLLECTION_NAME = "recommender";
     private final String INVALID_COLLECTION_NAME = "invalid_collection";
     private final int MAX_RECOMMENDATIONS = 10;
@@ -59,12 +61,13 @@ public class RecommenderControllerTest {
 
     private MockHttpServletRequest request;
     private ModelAndView modelAndView;
-    private SearchUser user;
+    private String scope;
 
     /**
      * Generate and return a mock DocInfo object based on the given URL address and title.
+     *
      * @param address address of URL
-     * @param title title of URL content
+     * @param title   title of URL content
      * @return DocInfo object
      */
     private DocInfo getMockDocInfo(String address, String title) {
@@ -87,6 +90,7 @@ public class RecommenderControllerTest {
 
     /**
      * Return a mock SearchQuestion for the given collection name.
+     *
      * @param collectionName name of collection
      * @return a mock SearchQuestion
      */
@@ -101,8 +105,8 @@ public class RecommenderControllerTest {
     }
 
     private void checkResponse(RecommendationResponse recommendationResponse, String seedItem,
-            String collectionName, RecommendationResponse.Source source, int maxRecommendations,
-            String recommendedItem, String recommendedItemTitle) {
+                               String collectionName, RecommendationResponse.Source source, int maxRecommendations,
+                               String recommendedItem, String recommendedItemTitle) {
         Assert.assertEquals(RecommendationResponse.Status.OK, recommendationResponse.getStatus());
         Assert.assertEquals(seedItem, recommendationResponse.getSeedItem());
         Assert.assertEquals(collectionName, recommendationResponse.getCollection());
@@ -124,35 +128,35 @@ public class RecommenderControllerTest {
         Map<String, Object> model = new HashMap<>();
         SearchResponse searchResponse = new SearchResponse();
         searchResponse.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml")), false));
+                FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml")), false));
 
         model.put(SearchController.ModelAttributes.response.toString(), searchResponse);
         modelAndView = new ModelAndView("json", model);
-        user = new SearchUser();
+        scope = "";
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidCollection() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(INVALID_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
         recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
-                "", MAX_RECOMMENDATIONS, null);
+                scope, MAX_RECOMMENDATIONS, null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testMissingCollectionParameter() throws Exception {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(null);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM, "",
+        recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM, scope,
                 MAX_RECOMMENDATIONS, null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidSeedItem() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null, "", "", MAX_RECOMMENDATIONS, null);
+        recommenderController.similarItems(request, response, sq, null, "", scope, MAX_RECOMMENDATIONS, null);
     }
 
     @Test
@@ -165,15 +169,15 @@ public class RecommenderControllerTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
-                "", MAX_RECOMMENDATIONS, null);
+                scope, MAX_RECOMMENDATIONS, null);
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
         RecommendationResponse.Status status = recommendationResponse.getStatus();
         Assert.assertEquals(RecommendationResponse.Status.SEED_NOT_FOUND, status);
     }
-    
-	@Test
-    public void testSeedFound() throws Exception  {
+
+    @Test
+    public void testSeedFound() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         Collection collection = sq.getCollection();
         Config collectionConfig = collection.getConfiguration();
@@ -181,9 +185,10 @@ public class RecommenderControllerTest {
         List<String> indexURLs = new ArrayList<>();
         indexURLs.add(DEFAULT_RECOMMENDATION);
 
+        List<ItemTuple> cachedItems;
+        cachedItems = new ArrayList<>();
         ItemTuple itemTuple = new ItemTuple(DEFAULT_RECOMMENDATION, 5);
-        List<ItemTuple> items; items = new ArrayList<>();
-        items.add(itemTuple);
+        cachedItems.add(itemTuple);
 
         DocInfo docInfo = getMockDocInfo(DEFAULT_RECOMMENDATION, DEFAULT_RECOMMENDATION_TITLE);
         List<Recommendation> recommendations = new ArrayList<>();
@@ -194,18 +199,19 @@ public class RecommenderControllerTest {
         confidenceMap.put(DEFAULT_RECOMMENDATION, itemTuple);
 
         DataAPI dataAPI = mock(DataAPI.class);
-        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(docInfo);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, "Default Seed Item");
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
                 MAX_RECOMMENDATIONS)).thenReturn(recommendations);
         recommenderController.setDataAPI(dataAPI);
 
         RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
-        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(items);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
-                "", MAX_RECOMMENDATIONS, null);
+                scope, MAX_RECOMMENDATIONS, null);
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
@@ -224,9 +230,10 @@ public class RecommenderControllerTest {
         List<String> indexURLs = new ArrayList<>();
         indexURLs.add(EXPLORE_SEED);
 
+        List<ItemTuple> cachedItems;
+        cachedItems = new ArrayList<>();
         ItemTuple itemTuple = new ItemTuple(EXPLORE_SEED, 5);
-        List<ItemTuple> items; items = new ArrayList<>();
-        items.add(itemTuple);
+        cachedItems.add(itemTuple);
 
         List<Recommendation> recommendations = new ArrayList<>();
         DocInfo recommendationDocInfo = getMockDocInfo(EXPLORE_RECOMMENDATION, EXPLORE_RECOMMENDATION_TITLE);
@@ -236,7 +243,7 @@ public class RecommenderControllerTest {
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
         confidenceMap.put(EXPLORE_SEED, itemTuple);
         RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
-                EXPLORE_SEED, DEFAULT_COLLECTION_NAME, "", maxRecommendations, collectionConfig.getCollectionName(),
+                EXPLORE_SEED, DEFAULT_COLLECTION_NAME, scope, maxRecommendations, collectionConfig.getCollectionName(),
                 RecommendationResponse.Source.EXPLORE, -1, recommendations);
 
         DataAPI dataAPI = mock(DataAPI.class);
@@ -261,7 +268,7 @@ public class RecommenderControllerTest {
         recommenderController.setSearchController(searchController);
 
         ModelAndView mav = recommenderController.similarItems(request, response, sq, null, EXPLORE_SEED,
-                "", maxRecommendations, null);
+                scope, maxRecommendations, null);
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
         RecommendationResponse.Status status = recommendationResponse.getStatus();
@@ -270,5 +277,103 @@ public class RecommenderControllerTest {
         checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
                 EXPLORE_RECOMMENDATION_TITLE);
+    }
+
+    @Test
+    public void testPositiveScope() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        Collection collection = sq.getCollection();
+        Config collectionConfig = collection.getConfiguration();
+        scope = "careers";
+
+        // Set up list of index URLs - we deliberately don't add the OUTSIDE_SCOPE URL as it should
+        // be knocked out by an inScope() check
+        List<String> indexURLs = new ArrayList<>();
+        indexURLs.add(DEFAULT_RECOMMENDATION);
+
+        List<ItemTuple> cachedItems;
+        cachedItems = new ArrayList<>();
+        ItemTuple firstTuple = new ItemTuple(OUTSIDE_SCOPE, 7);
+        cachedItems.add(firstTuple);
+        ItemTuple secondTuple = new ItemTuple(DEFAULT_RECOMMENDATION, 5);
+        cachedItems.add(secondTuple);
+
+        List<Recommendation> recommendations = new ArrayList<>();
+        DocInfo docInfo = getMockDocInfo(DEFAULT_RECOMMENDATION, DEFAULT_RECOMMENDATION_TITLE);
+        Recommendation recommendation = new Recommendation(DEFAULT_RECOMMENDATION, -1, docInfo);
+        recommendations.add(recommendation);
+
+        Map<String, ItemTuple> confidenceMap = new HashMap<>();
+        confidenceMap.put(DEFAULT_RECOMMENDATION, secondTuple);
+
+        DataAPI dataAPI = mock(DataAPI.class);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, "Default Seed Item");
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
+                MAX_RECOMMENDATIONS)).thenReturn(recommendations);
+        recommenderController.setDataAPI(dataAPI);
+
+        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
+        recommenderController.setRecommenderDAO(recommenderDAO);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+                scope, MAX_RECOMMENDATIONS, null);
+        RecommendationResponse recommendationResponse =
+                (RecommendationResponse) mav.getModel().get("RecommendationResponse");
+
+        checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
+                RecommendationResponse.Source.CLICKS, MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
+                DEFAULT_RECOMMENDATION_TITLE);
+    }
+
+    @Test
+    public void testNegativeScope() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        Collection collection = sq.getCollection();
+        Config collectionConfig = collection.getConfiguration();
+        scope = "-hr";
+
+        // Set up list of index URLs - we deliberately don't add the OUTSIDE_SCOPE URL as it should
+        // be knocked out by an inScope() check
+        List<String> indexURLs = new ArrayList<>();
+        indexURLs.add(DEFAULT_RECOMMENDATION);
+
+        List<ItemTuple> cachedItems;
+        cachedItems = new ArrayList<>();
+        ItemTuple firstTuple = new ItemTuple(OUTSIDE_SCOPE, 7);
+        cachedItems.add(firstTuple);
+        ItemTuple secondTuple = new ItemTuple(DEFAULT_RECOMMENDATION, 5);
+        cachedItems.add(secondTuple);
+
+        List<Recommendation> recommendations = new ArrayList<>();
+        DocInfo docInfo = getMockDocInfo(DEFAULT_RECOMMENDATION, DEFAULT_RECOMMENDATION_TITLE);
+        Recommendation recommendation = new Recommendation(DEFAULT_RECOMMENDATION, -1, docInfo);
+        recommendations.add(recommendation);
+
+        Map<String, ItemTuple> confidenceMap = new HashMap<>();
+        confidenceMap.put(DEFAULT_RECOMMENDATION, secondTuple);
+
+        DataAPI dataAPI = mock(DataAPI.class);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, "Default Seed Item");
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
+                MAX_RECOMMENDATIONS)).thenReturn(recommendations);
+        recommenderController.setDataAPI(dataAPI);
+
+        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
+        recommenderController.setRecommenderDAO(recommenderDAO);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+                scope, MAX_RECOMMENDATIONS, null);
+        RecommendationResponse recommendationResponse =
+                (RecommendationResponse) mav.getModel().get("RecommendationResponse");
+
+        checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
+                RecommendationResponse.Source.CLICKS, MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
+                DEFAULT_RECOMMENDATION_TITLE);
     }
 }
