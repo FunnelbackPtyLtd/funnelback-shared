@@ -30,6 +30,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
+     * The list returned should never be larger than the value of the "maxRecommendations" parameter.
      *
      * @param urls               list of URL strings to decorate
      * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
