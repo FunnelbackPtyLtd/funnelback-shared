@@ -32,14 +32,14 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
      * The list returned should never be larger than the value of the "maxRecommendations" parameter.
      *
+     *
      * @param urls               list of URL strings to decorate
      * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig   collection configuration object
-     * @param maxRecommendations maximum number of recommendations to return - list will never be larger than this.
      * @return list of decorated URL recommendations (which may be empty)
      */
     public List<Recommendation> decorateURLRecommendations(List<String> urls,
-            Map<String, ItemTuple> confidenceMap, Config collectionConfig, int maxRecommendations) {
+            Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
         List<Recommendation> recommendations = new ArrayList<>();
         float confidence = -1;
         List<DocInfo> dis = null;
@@ -63,10 +63,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
             }
         } else {
             logger.warn("Null or empty DocInfo list returned from getDocInfoResult.");
-        }
-
-        if (recommendations != null && recommendations.size() > maxRecommendations) {
-            recommendations = recommendations.subList(0, maxRecommendations);
         }
 
         return recommendations;
@@ -131,7 +127,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     }
 
      /**
-      * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query.
+      * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query).
       *
       * @param seedItem seed URL
       * @param results list of results from explore query
@@ -157,9 +153,15 @@ public class DataAPIConnectorPADRE implements DataAPI {
          }
 
          DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
-         recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig, maxRecommendations);
+         recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig);
 
          if (recommendations != null && recommendations.size() > 0) {
+
+             // Make sure number of recommendations is <= maxRecommendations
+             if (recommendations != null && recommendations.size() > maxRecommendations) {
+                 recommendations = recommendations.subList(0, maxRecommendations);
+             }
+
              return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,
                      collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
          }

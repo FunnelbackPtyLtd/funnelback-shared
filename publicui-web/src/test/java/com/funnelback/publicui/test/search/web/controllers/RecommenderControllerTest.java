@@ -226,8 +226,8 @@ public class RecommenderControllerTest {
         DataAPI dataAPI = mock(DataAPI.class);
         DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
-        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
-                MAX_RECOMMENDATIONS)).thenReturn(recommendations);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
+        )).thenReturn(recommendations);
         recommenderController.setDataAPI(dataAPI);
 
         RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
@@ -268,7 +268,7 @@ public class RecommenderControllerTest {
         DocInfo seedDocInfo = getMockDocInfo(EXPLORE_SEED, "Immigration");
         when(dataAPI.getDocInfo(EXPLORE_SEED, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(any(List.class), any(Map.class),
-                any(Config.class), anyInt())).thenReturn(recommendations);
+                any(Config.class))).thenReturn(recommendations);
         when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
                 any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
         recommenderController.setDataAPI(dataAPI);
@@ -322,8 +322,8 @@ public class RecommenderControllerTest {
         DataAPI dataAPI = mock(DataAPI.class);
         DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
-        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
-                MAX_RECOMMENDATIONS)).thenReturn(recommendations);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
+        )).thenReturn(recommendations);
         recommenderController.setDataAPI(dataAPI);
 
         RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
@@ -366,8 +366,8 @@ public class RecommenderControllerTest {
         DataAPI dataAPI = mock(DataAPI.class);
         DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
-        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
-                MAX_RECOMMENDATIONS)).thenReturn(recommendations);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
+        )).thenReturn(recommendations);
         recommenderController.setDataAPI(dataAPI);
 
         RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
@@ -395,13 +395,9 @@ public class RecommenderControllerTest {
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
-        // Generate a scoped list that is no larger than the test maxRecommendations setting,
-        // so that we can return an appropriately sized list of recommendations.
         List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
-        List<ItemTuple> scopedItems = new ArrayList(cachedItems);
-        scopedItems.remove(1);
 
-        List<Recommendation> recommendations = getRecommendations(scopedItems);
+        List<Recommendation> recommendations = getRecommendations(cachedItems);
 
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
         confidenceMap.put(DEFAULT_RECOMMENDATION, cachedItems.get(0));        
@@ -410,8 +406,8 @@ public class RecommenderControllerTest {
         DataAPI dataAPI = mock(DataAPI.class);
         DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
-        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig,
-                maxRecommendations)).thenReturn(recommendations);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
+        )).thenReturn(recommendations);
         recommenderController.setDataAPI(dataAPI);
 
         RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);

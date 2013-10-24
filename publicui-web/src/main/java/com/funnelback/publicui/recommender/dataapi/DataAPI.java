@@ -19,14 +19,14 @@ public interface DataAPI {
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
      *
+     *
      * @param urls               list of URL strings to decorate
      * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig   collection config object
-     * @param maxRecommendations maximum number of recommendations to return - list will never be larger than this.
      * @return list of decorated URL recommendations (which may be empty)
      */
     List<Recommendation> decorateURLRecommendations(List<String> urls,
-                Map<String, ItemTuple> confidenceMap, Config collectionConfig, int maxRecommendations);
+                                                    Map<String, ItemTuple> confidenceMap, Config collectionConfig);
 
     /**
      * Return a DocInfoResult for the given URL items in the given collection. Callers can call asList()
