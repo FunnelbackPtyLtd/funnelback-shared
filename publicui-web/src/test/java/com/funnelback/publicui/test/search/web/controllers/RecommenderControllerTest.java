@@ -109,6 +109,9 @@ public class RecommenderControllerTest {
         return sq;
     }
 
+    /**
+     * Check the given response against the other specified values.
+     */
     private void checkResponse(RecommendationResponse recommendationResponse, String seedItem,
                                String collectionName, RecommendationResponse.Source source, int maxRecommendations,
                                String recommendedItem, String recommendedItemTitle, int expectedSize,
@@ -131,17 +134,23 @@ public class RecommenderControllerTest {
         }
     }
 
-    private List<ItemTuple> getItemTuples(List<String> items, List<String> titles) {
+    /**
+     * Build and return a list of ItemTuples based on the given list of item IDs and associated titles.
+     */
+    private List<ItemTuple> getItemTuples(List<String> itemIDs, List<String> titles) {
         List<ItemTuple> itemTuples = new ArrayList<>();
 
-        for (int i=0; i < items.size(); i++) {
-            ItemTuple itemTuple = new ItemTuple(items.get(i), DEFAULT_SCORE, titles.get(i));
+        for (int i=0; i < itemIDs.size(); i++) {
+            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, titles.get(i));
             itemTuples.add(itemTuple);
         }
 
         return itemTuples;
     }
 
+    /**
+     * Get a list of recommendations from the given list of ItemTuples.
+     */
     private List<Recommendation> getRecommendations(List<ItemTuple> itemTuples) {
         List<Recommendation> recommendations = new ArrayList<>();
 
@@ -154,6 +163,9 @@ public class RecommenderControllerTest {
         return recommendations;
     }
 
+    /**
+     * Run a recommender "similarItems" request based on the given sourceType (e.g. "default", "clicks" etc.)
+     */
     private void runSourceRequest(SearchQuestion sq, String sourceType, int numExpected,
                                   RecommendationResponse.Status status) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -328,7 +340,7 @@ public class RecommenderControllerTest {
         Config collectionConfig = collection.getConfiguration();
         scope = "careers";
 
-        // Include an item that is out of scope in the list of cached items, and generate a "scoped items"
+        // Include an item that is out of scope in the list of cached itemIDs, and generate a "scoped itemIDs"
         // list that does not include this so a synthetic list of scoped recommendations can be generated.
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
@@ -372,7 +384,7 @@ public class RecommenderControllerTest {
         Config collectionConfig = collection.getConfiguration();
         scope = "-hr";
 
-        // Include an item that is out of scope in the list of cached items, and generate a "scoped items"
+        // Include an item that is out of scope in the list of cached itemIDs, and generate a "scoped itemIDs"
         // list that does not include this so a synthetic list of scoped recommendations can be generated.
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
