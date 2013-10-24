@@ -46,19 +46,6 @@ public class RecommenderController extends SessionController {
     public static final int MAX_RECOMMENDATIONS = 5;
     public static final String MAX_EXPLORE_RESULTS = "50";
 
-    public enum ModelAttributes {
-        SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-        extraSearches, question, response, session, error, httpRequest;
-
-        public static Set<String> getNames() {
-            HashSet<String> out = new HashSet<>();
-            for (ModelAttributes name : values()) {
-                out.add(name.toString());
-            }
-            return out;
-        }
-    }
-
     @Autowired
     @Setter
     private DataAPI dataAPI;
@@ -218,7 +205,6 @@ public class RecommenderController extends SessionController {
         Date startTime = new Date();
         RecommendationResponse recommendationResponse = null;
         List<Recommendation> recommendations = null;
-        RecommendationResponse.Status status = RecommendationResponse.Status.SEED_NOT_FOUND;
         RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
         response.setContentType("application/json");
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
@@ -265,7 +251,7 @@ public class RecommenderController extends SessionController {
         else {
             logger.warn("Null recommendationResponse returned from data API for seed: " + seedItem
                     + " and collection: " + requestCollection);
-            status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
+            RecommendationResponse.Status status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
             recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,
                     maxRecommendations, requestCollection, recommendationsSource, timeTaken, recommendations);
         }
