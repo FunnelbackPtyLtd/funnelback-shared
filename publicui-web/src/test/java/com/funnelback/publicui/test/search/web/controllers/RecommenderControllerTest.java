@@ -111,18 +111,24 @@ public class RecommenderControllerTest {
 
     private void checkResponse(RecommendationResponse recommendationResponse, String seedItem,
                                String collectionName, RecommendationResponse.Source source, int maxRecommendations,
-                               String recommendedItem, String recommendedItemTitle, int expectedSize) {
-        Assert.assertEquals(RecommendationResponse.Status.OK, recommendationResponse.getStatus());
+                               String recommendedItem, String recommendedItemTitle, int expectedSize,
+                               RecommendationResponse.Status status) {
+        Assert.assertEquals(status, recommendationResponse.getStatus());
         Assert.assertEquals(seedItem, recommendationResponse.getSeedItem());
         Assert.assertEquals(collectionName, recommendationResponse.getCollection());
         Assert.assertEquals(source, recommendationResponse.getSource());
         Assert.assertEquals(maxRecommendations, recommendationResponse.getMaxRecommendations());
 
         List<Recommendation> returnedRecommendations = recommendationResponse.getRecommendations();
-        Assert.assertEquals(expectedSize, returnedRecommendations.size());
-        Recommendation returnedRecommendation = returnedRecommendations.get(0);
-        Assert.assertEquals(recommendedItem, returnedRecommendation.getItemID());
-        Assert.assertEquals(recommendedItemTitle, returnedRecommendation.getTitle());
+
+        int actualSize = returnedRecommendations.size();
+        Assert.assertEquals(expectedSize, actualSize);
+
+        if (expectedSize > 0) {
+            Recommendation returnedRecommendation = returnedRecommendations.get(0);
+            Assert.assertEquals(recommendedItem, returnedRecommendation.getItemID());
+            Assert.assertEquals(recommendedItemTitle, returnedRecommendation.getTitle());
+        }
     }
 
     private List<ItemTuple> getItemTuples(List<String> items, List<String> titles) {
@@ -148,6 +154,24 @@ public class RecommenderControllerTest {
         return recommendations;
     }
 
+    private void runSourceRequest(SearchQuestion sq, String sourceType, int numExpected,
+                                  RecommendationResponse.Status status) throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+                scope, MAX_RECOMMENDATIONS, sourceType);
+        RecommendationResponse recommendationResponse =
+                (RecommendationResponse) mav.getModel().get("RecommendationResponse");
+
+        if (RecommendationResponse.Source.valueOf(sourceType).equals(RecommendationResponse.Source.DEFAULT)) {
+            // Assume we will get clicks back
+            sourceType = RecommendationResponse.Source.CLICKS.toString();
+        }
+
+        checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
+                RecommendationResponse.Source.valueOf(sourceType), MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
+                DEFAULT_RECOMMENDATION_TITLE, numExpected, status);
+    }
+
     @Before
     public void before() throws Exception {
         request = new MockHttpServletRequest();
@@ -167,6 +191,11 @@ public class RecommenderControllerTest {
 
         indexURLTitles = new ArrayList<>();
         indexURLTitles.add(DEFAULT_RECOMMENDATION_TITLE);
+
+        SearchController searchController = mock(SearchController.class);
+        when(searchController.search(any(HttpServletRequest.class), any(HttpServletResponse.class),
+                any(SearchQuestion.class), any(SearchUser.class))).thenReturn(modelAndView);
+        recommenderController.setSearchController(searchController);
     }
 
     /****************************************** Start Tests *******************************************/
@@ -242,7 +271,7 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.CLICKS, MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, 1);
+                DEFAULT_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
     }
 
     @Test
@@ -280,11 +309,6 @@ public class RecommenderControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setContentType("application/json");
 
-        SearchController searchController = mock(SearchController.class);
-        when(searchController.search(any(HttpServletRequest.class), any(HttpServletResponse.class),
-                any(SearchQuestion.class), any(SearchUser.class))).thenReturn(modelAndView);
-        recommenderController.setSearchController(searchController);
-
         ModelAndView mav = recommenderController.similarItems(request, response, sq, null, EXPLORE_SEED,
                 scope, maxRecommendations, null);
         RecommendationResponse recommendationResponse =
@@ -294,7 +318,7 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
-                EXPLORE_RECOMMENDATION_TITLE, 1);
+                EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
     }
 
     @Test
@@ -338,7 +362,7 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.CLICKS, MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, 1);
+                DEFAULT_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
     }
 
     @Test
@@ -382,7 +406,7 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.CLICKS, MAX_RECOMMENDATIONS, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, 1);
+                DEFAULT_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
     }
 
     @Test
@@ -396,7 +420,6 @@ public class RecommenderControllerTest {
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
-
         List<Recommendation> recommendations = getRecommendations(cachedItems);
 
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
@@ -422,6 +445,60 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.CLICKS, maxRecommendations, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, 1);
+                DEFAULT_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
+    }
+
+    /**
+     * Test sourceType (Default, Clicks, Explore, None).
+     * @throws Exception
+     */
+    @Test
+    public void testSource() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        Collection collection = sq.getCollection();
+        Config collectionConfig = collection.getConfiguration();
+
+        indexURLs.add(OUTSIDE_SCOPE);
+        indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
+
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+
+        List<Recommendation> recommendations = getRecommendations(cachedItems);
+
+        Map<String, ItemTuple> confidenceMap = new HashMap<>();
+        confidenceMap.put(DEFAULT_RECOMMENDATION, cachedItems.get(0));
+        confidenceMap.put(OUTSIDE_SCOPE, cachedItems.get(1));
+
+        DataAPI dataAPI = mock(DataAPI.class);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
+        when(dataAPI.decorateURLRecommendations(any(List.class), any(Map.class),
+                any(Config.class))).thenReturn(recommendations);
+        recommenderController.setDataAPI(dataAPI);
+
+        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
+        recommenderController.setRecommenderDAO(recommenderDAO);
+
+        runSourceRequest(sq, RecommendationResponse.Source.DEFAULT.toString(), 2, RecommendationResponse.Status.OK);
+        runSourceRequest(sq, RecommendationResponse.Source.CLICKS.toString(), 2, RecommendationResponse.Status.OK);
+        runSourceRequest(sq, RecommendationResponse.Source.NONE.toString(), 0, RecommendationResponse.Status.NO_SUGGESTIONS_FOUND);
+
+        // Set things up for an Explore source by now returning a smaller list in response to an
+        // explicit Explore request
+        recommendations.remove(1);
+        RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
+                DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME, scope, MAX_RECOMMENDATIONS, collectionConfig.getCollectionName(),
+                RecommendationResponse.Source.EXPLORE, -1, recommendations);
+        when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
+                any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
+
+        runSourceRequest(sq, RecommendationResponse.Source.EXPLORE.toString(), 1, RecommendationResponse.Status.OK);
+
+        // Now configure DAO to return nothing for the given seed item i.e. no clicked recommendations available
+        // This is so we can confirm that it does not fall through to returning Explore results (default behaviour).
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
+        runSourceRequest(sq, RecommendationResponse.Source.CLICKS.toString(), 0,
+                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND);
     }
 }

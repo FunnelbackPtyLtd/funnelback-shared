@@ -104,7 +104,7 @@ public class RecommenderController extends SessionController {
         response.setContentType("application/json");
         RecommendationResponse recommendationResponse;
         Map<String, Object> model = new HashMap<>();
-        List<Recommendation> recommendations = null;
+        List<Recommendation> recommendations = new ArrayList<>();
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
         RecommendationResponse.Source sourceType = RecommendationResponse.Source.DEFAULT;
         RecommendationResponse.Status status = RecommendationResponse.Status.SEED_NOT_FOUND;
@@ -157,15 +157,16 @@ public class RecommenderController extends SessionController {
                                 = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
                         break;
 				    case NONE:
-				    	recommendations = null;
 					    break;
 				    default:
-			    	    recommendations = null;
 				        break;
                 }
 
                 timeTaken = System.currentTimeMillis() - startTime.getTime();
-                recommendationsSource = RecommendationResponse.Source.CLICKS;
+
+                if (!sourceType.equals((RecommendationResponse.Source.NONE))) {
+                    recommendationsSource = RecommendationResponse.Source.CLICKS;
+                }
 
                 if (recommendations != null && recommendations.size() > 0) {
                     status = RecommendationResponse.Status.OK;
@@ -249,9 +250,11 @@ public class RecommenderController extends SessionController {
             SearchResponse searchResponse = (SearchResponse) model.get((SearchController.ModelAttributes.response.toString()));
             Config collectionConfig = collection.getConfiguration();
 
-            recommendationResponse =
-                    dataAPI.getResponseFromResults(seedItem, searchResponse.getResultPacket().getResults(),
-                            collectionConfig, requestCollection, scope, maxRecommendations);
+            if (searchResponse.hasResultPacket()) {
+                recommendationResponse =
+                        dataAPI.getResponseFromResults(seedItem, searchResponse.getResultPacket().getResults(),
+                                collectionConfig, requestCollection, scope, maxRecommendations);
+            }
         }
 
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
