@@ -22,6 +22,8 @@ import java.util.Map;
 
 /**
  * Utilities for generating HTML output.
+ * NB: Since this is for developers only it currently has no unit tests exercising it.
+ * TODO FUN-5961: Move this into another "developer tools" WAR file.
  * @author fcrimmins@funnelback.com
  */
 public final class HTMLUtils {

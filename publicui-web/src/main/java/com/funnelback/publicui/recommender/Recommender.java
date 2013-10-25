@@ -14,7 +14,6 @@ import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
@@ -30,8 +29,7 @@ public class Recommender {
 
     @Getter
     private Config collectionConfig;
-    
-    @Autowired
+
     private ConfigRepository configRepository;
     
     private DataAPI dataAPI;
@@ -44,14 +42,17 @@ public class Recommender {
      * If it cannot find a collection with information on the given item then it will throw an
      * @param collection collection object
      * @param dataAPI a handle to the Data API system
-     * @param recommenderDAO
+     * @param recommenderDAO recommender data access object
      * @param seedItem seed item (e.g. URL)
+     * @param configRepository handle to configuration repository
      */
     public Recommender(com.funnelback.publicui.search.model.collection.Collection collection,
-            DataAPI dataAPI, RecommenderDAO recommenderDAO, String seedItem) throws IllegalStateException {
+                       DataAPI dataAPI, RecommenderDAO recommenderDAO, String seedItem,
+                       ConfigRepository configRepository) throws IllegalStateException {
         this.dataAPI = dataAPI;
-    	this.collectionConfig = getCollectionConfig(collection, seedItem);
         this.recommenderDAO = recommenderDAO;
+        this.configRepository = configRepository;
+        this.collectionConfig = getCollectionConfig(collection, seedItem);
 
         if (collectionConfig == null) {
         	throw new IllegalStateException("Unable to create a valid collection config object for collection: "
@@ -204,7 +205,7 @@ public class Recommender {
             // Loop over all components (with parent first), until we find a component that knows about the item
             for (String component : components) {
                 componentConfig = configRepository.getCollection(component).getConfiguration();
-                Set<List<PreferenceTuple>> sessions = getSessions(seedItem);
+                Set<List<PreferenceTuple>> sessions = getSessions(seedItem, componentConfig);
 
                 if (sessions != null && sessions.size() > 0) {
                     // This collection has session information on the seed item - use it.
@@ -249,13 +250,17 @@ public class Recommender {
         return componentConfig;
     }
 
+    public synchronized Set<List<PreferenceTuple>> getSessions(String itemName) {
+        return getSessions(itemName, collectionConfig);
+    }
+
     /**
      * Return a set of sessions that the given item appears in.
      *
      * @param itemName Name of item
      * @return set of sessions (which may be empty)
      */
-    public synchronized Set<List<PreferenceTuple>> getSessions(String itemName) {
+    public synchronized Set<List<PreferenceTuple>> getSessions(String itemName, Config collectionConfig) {
         Set<List<PreferenceTuple>> sessions = new HashSet<>();
         String databaseFilename
                 = SQLiteCache.getDatabaseFilename(collectionConfig, DefaultValues.VIEW_LIVE,

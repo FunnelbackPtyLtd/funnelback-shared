@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.recommender.Recommendation;
@@ -52,6 +53,7 @@ public class RecommenderControllerTest {
     private final String OUTSIDE_SCOPE_TITLE = "HR @ Example.com - Internal Only";
     private final String DEFAULT_COLLECTION_NAME = "recommender";
     private final String INVALID_COLLECTION_NAME = "invalid_collection";
+    private final String META_COLLECTION_NAME = "recommender-meta";
     private final int MAX_RECOMMENDATIONS = 5;
     private final int DEFAULT_SCORE = 5;
     private final int DEFAULT_CONFIDENCE = -1;
@@ -70,9 +72,9 @@ public class RecommenderControllerTest {
     /**
      * Check a "similarItems" request based on the given parameters.
      */
-    private void checkSimilarItems(SearchQuestion sq, String sourceType, int numExpected,
-                                   RecommendationResponse.Status status, int maxRecommendations,
-                                   String scope) throws Exception {
+    private void checkSimilarItems(SearchQuestion sq, String expectedSourceType, int numExpected,
+                                   RecommendationResponse.Status expectedStatus, int maxRecommendations,
+                                   String expectedScope, String collectionName) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
         ModelAndView mav;
 
@@ -80,25 +82,28 @@ public class RecommenderControllerTest {
         // converts null to the expected default
         if (maxRecommendations == MAX_RECOMMENDATIONS) {
             mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
-                    scope, null, sourceType);
+                    expectedScope, null, expectedSourceType);
         }
         else {
             mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
-                    scope, maxRecommendations, sourceType);
+                    expectedScope, maxRecommendations, expectedSourceType);
         }
 
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
-        if (sourceType == null ||
-                RecommendationResponse.Source.valueOf(sourceType).equals(RecommendationResponse.Source.DEFAULT)) {
+        if (expectedStatus.equals(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND)) {
+            expectedSourceType = RecommendationResponse.Source.NONE.toString();
+        }
+        else if (expectedSourceType == null ||
+                RecommendationResponse.Source.valueOf(expectedSourceType).equals(RecommendationResponse.Source.DEFAULT)) {
             // Assume we will get clicks back
-            sourceType = RecommendationResponse.Source.CLICKS.toString();
+            expectedSourceType = RecommendationResponse.Source.CLICKS.toString();
         }
 
-        checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME,
-                RecommendationResponse.Source.valueOf(sourceType), maxRecommendations, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, numExpected, status);
+        checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, collectionName,
+                RecommendationResponse.Source.valueOf(expectedSourceType), maxRecommendations, DEFAULT_RECOMMENDATION,
+                DEFAULT_RECOMMENDATION_TITLE, numExpected, expectedStatus);
     }
 
     /**
@@ -108,6 +113,8 @@ public class RecommenderControllerTest {
                                String collectionName, RecommendationResponse.Source source, int maxRecommendations,
                                String recommendedItem, String recommendedItemTitle, int expectedSize,
                                RecommendationResponse.Status status) {
+        int actualSize = 0;
+
         Assert.assertEquals(status, recommendationResponse.getStatus());
         Assert.assertEquals(seedItem, recommendationResponse.getSeedItem());
         Assert.assertEquals(collectionName, recommendationResponse.getCollection());
@@ -116,7 +123,10 @@ public class RecommenderControllerTest {
 
         List<Recommendation> returnedRecommendations = recommendationResponse.getRecommendations();
 
-        int actualSize = returnedRecommendations.size();
+        if (returnedRecommendations != null) {
+            actualSize = returnedRecommendations.size();
+        }
+
         Assert.assertEquals(expectedSize, actualSize);
 
         if (expectedSize > 0) {
@@ -151,16 +161,25 @@ public class RecommenderControllerTest {
         return docInfo;
     }
 
+    private SearchQuestion getMockSearchQuestion(String collectionName) {
+        return getMockSearchQuestion(collectionName, com.funnelback.common.config.Collection.Type.web);
+    }
+
     /**
      * Return a mock SearchQuestion for the given collection name.
      *
      * @param collectionName name of collection
+     * @param collectionType type of collection (e.g. 'web', 'meta' etc.)
      * @return a mock SearchQuestion
      */
-    private SearchQuestion getMockSearchQuestion(String collectionName) {
+    private SearchQuestion getMockSearchQuestion(String collectionName,
+                                                 com.funnelback.common.config.Collection.Type collectionType) {
         configRepository.removeAllCollections();
-        configRepository.addCollection(new Collection(collectionName, null));
-        Collection collection = new Collection(collectionName, new NoOptionsConfig(collectionName));
+        Config collectionConfig = new NoOptionsConfig(collectionName);
+        collectionConfig.setValue(Keys.COLLECTION_TYPE, collectionType.toString());
+        collectionConfig.setValue(Keys.COLLECTION, collectionName);
+        Collection collection = new Collection(collectionName, collectionConfig);
+        configRepository.addCollection(collection);
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(collection);
 
@@ -232,6 +251,24 @@ public class RecommenderControllerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testMissingExploreCollection() throws Exception {
+        SearchQuestion sq = new SearchQuestion();
+        sq.setCollection(null);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        recommenderController.exploreItems(request, response, sq, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingExploreQuery() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        Collection collection = sq.getCollection();
+        sq.setCollection(collection);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        recommenderController.exploreItems(request, response, sq, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testMissingCollectionParameter() throws Exception {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(null);
@@ -241,10 +278,29 @@ public class RecommenderControllerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testInvalidSourceParameter() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        recommenderController.similarItems(request, response, sq, null,
+                DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, RecommendationResponse.Source.NONE.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidSeedItem() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
         recommenderController.similarItems(request, response, sq, null, "", "", MAX_RECOMMENDATIONS, null);
+    }
+
+    @Test
+    public void testSpringExceptionHandler() throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        Exception exception = new IllegalArgumentException("Test exception");
+
+        ModelAndView mav = recommenderController.exceptionHandler(response, exception);
+        Map<String, String> errorResponse = (Map<String, String>) mav.getModel().get("RecommendationResponse");
+
+        Assert.assertEquals(RecommendationResponse.Status.ERROR.toString(), errorResponse.get("status"));
     }
 
     @Test
@@ -286,7 +342,35 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, null, 1, RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, "");
+        checkSimilarItems(sq, null, 1, RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, "", DEFAULT_COLLECTION_NAME);
+    }
+
+    @Test
+    public void testMetaCollection() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(META_COLLECTION_NAME,
+                com.funnelback.common.config.Collection.Type.meta);
+        Collection collection = sq.getCollection();
+        Config collectionConfig = collection.getConfiguration();
+
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<Recommendation> recommendations = getRecommendations(cachedItems);
+        Map<String, ItemTuple> confidenceMap = new HashMap<>();
+        confidenceMap.put(DEFAULT_RECOMMENDATION, cachedItems.get(0));
+
+        DataAPI dataAPI = mock(DataAPI.class);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
+        when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
+        )).thenReturn(recommendations);
+        recommenderController.setDataAPI(dataAPI);
+
+        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
+        recommenderController.setRecommenderDAO(recommenderDAO);
+        recommenderController.setConfigRepository(configRepository);
+
+        checkSimilarItems(sq, null, 1, RecommendationResponse.Status.OK,
+                MAX_RECOMMENDATIONS, "", META_COLLECTION_NAME);
     }
 
     @Test
@@ -329,12 +413,50 @@ public class RecommenderControllerTest {
                 scope, maxRecommendations, null);
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
-        RecommendationResponse.Status status = recommendationResponse.getStatus();
-        Assert.assertEquals(RecommendationResponse.Status.OK, status);
 
         checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
                 RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
                 EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
+
+        // Text maxRecommendations not being set in direct explore query (should fall back to internal default)
+        String exploreQuery = RecommenderController.EXPLORE_QUERY_PREFIX + EXPLORE_SEED;
+        sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        sq.setQuery(exploreQuery);
+        mav = recommenderController.exploreItems(request, response, sq, null);
+        recommendationResponse =
+                        (RecommendationResponse) mav.getModel().get("RecommendationResponse");
+
+        checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
+                RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
+                EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
+    }
+
+    @Test
+    public void testExploreNoSuggestions() throws Exception {
+        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
+        Collection collection = sq.getCollection();
+        Config collectionConfig = collection.getConfiguration();
+
+        SearchController searchController = mock(SearchController.class);
+        when(searchController.search(any(HttpServletRequest.class), any(HttpServletResponse.class),
+                any(SearchQuestion.class), any(SearchUser.class))).thenReturn(null);
+        recommenderController.setSearchController(searchController);
+
+        String exploreQuery = "explore:" + DEFAULT_SEED_ITEM;
+        sq.setQuery(exploreQuery);
+
+        DataAPI dataAPI = mock(DataAPI.class);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
+        recommenderController.setDataAPI(dataAPI);
+
+        // Return no cached recommendations to force an explore request to be run.
+        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
+        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
+        recommenderController.setRecommenderDAO(recommenderDAO);
+
+        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 0,
+                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, "", DEFAULT_COLLECTION_NAME);
     }
 
     @Test
@@ -371,7 +493,7 @@ public class RecommenderControllerTest {
         recommenderController.setRecommenderDAO(recommenderDAO);
 
         checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 1,
-                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope);
+                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 
     @Test
@@ -408,7 +530,7 @@ public class RecommenderControllerTest {
         recommenderController.setRecommenderDAO(recommenderDAO);
 
         checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 1,
-                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope);
+                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 
     @Test
@@ -441,7 +563,7 @@ public class RecommenderControllerTest {
 
         // Also test null scope parameter
         checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 1,
-                RecommendationResponse.Status.OK, maxRecommendations, null);
+                RecommendationResponse.Status.OK, maxRecommendations, null, DEFAULT_COLLECTION_NAME);
     }
 
     /**
@@ -476,25 +598,27 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 2, RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope);
-        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 2, RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope);
-        checkSimilarItems(sq, RecommendationResponse.Source.NONE.toString(), 0, RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, scope);
+        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 2,
+                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
+        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 2,
+                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
 
         // Set things up for an Explore source by now returning a smaller list in response to an
         // explicit Explore request
         recommendations.remove(1);
         RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
-                DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME, scope, MAX_RECOMMENDATIONS, collectionConfig.getCollectionName(),
-                RecommendationResponse.Source.EXPLORE, -1, recommendations);
+                DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME, scope, MAX_RECOMMENDATIONS,
+                collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
         when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
                 any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.EXPLORE.toString(), 1, RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope);
+        checkSimilarItems(sq, RecommendationResponse.Source.EXPLORE.toString(), 1,
+                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
 
         // Now configure DAO to return nothing for the given seed item i.e. no clicked recommendations available
         // This is so we can confirm that it does not fall through to returning Explore results (default behaviour).
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
         checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 0,
-                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, scope);
+                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 }

@@ -34,6 +34,9 @@ import java.util.*;
 
 /**
  * Controller for developer access to Recommender system.
+ * NB: Since this is for developers only it currently has no unit tests exercising it.
+ * TODO FUN-5961: Move this into another "developer tools" WAR file.
+ * @author fcrimmins@funnelback.com
  */
 
 @Controller
@@ -138,7 +141,8 @@ public class DevRecommenderController {
                             + "\">Sessions</a>]</li>\n");
 
                     try {
-                        Recommender recommender = new Recommender(collectionRef, dataAPI, recommenderDAO, resultURL);
+                        Recommender recommender =
+                                new Recommender(collectionRef, dataAPI, recommenderDAO, resultURL, configRepository);
 
                         List<Recommendation> recommendations =
                                 recommender.getRecommendationsForItem(resultURL, scope,
@@ -192,7 +196,8 @@ public class DevRecommenderController {
 
         if (collectionRef != null) {      	
             try {
-                Recommender recommender = new Recommender(collectionRef, dataAPI, recommenderDAO, itemName);
+                Recommender recommender =
+                        new Recommender(collectionRef, dataAPI, recommenderDAO, itemName, configRepository);
                 Config collectionConfig = recommender.getCollectionConfig();
                 
                 buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));

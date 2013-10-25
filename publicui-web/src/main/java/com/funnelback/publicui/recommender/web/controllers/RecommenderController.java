@@ -10,6 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import lombok.Setter;
@@ -45,6 +46,15 @@ public class RecommenderController extends SessionController {
     public static final String EXPLORE_JSON = "explore.json";
     public static final int MAX_RECOMMENDATIONS = 5;
     public static final String MAX_EXPLORE_RESULTS = "50";
+    public static final String EXPLORE_QUERY_PREFIX = "explore:";
+
+    @Autowired
+    @Setter
+    private ConfigRepository configRepository;
+
+    @Autowired
+    @Setter
+    private SearchController searchController;
 
     @Autowired
     @Setter
@@ -54,12 +64,9 @@ public class RecommenderController extends SessionController {
     @Setter
     private RecommenderDAO recommenderDAO;
 
-    @Autowired
-    @Setter
-    private SearchController searchController;
-
     @InitBinder
     public void initBinder(DataBinder binder) {
+        // Call searchController binder method to bind request parameters to Java objects.
         searchController.initBinder(binder);
     }
 
@@ -119,11 +126,15 @@ public class RecommenderController extends SessionController {
             sourceType = RecommendationResponse.Source.valueOf(source);
         }
 
+        if (sourceType.equals(RecommendationResponse.Source.NONE)) {
+            throw new IllegalArgumentException("Invalid source identifier in request");
+        }
+
         String requestCollection = collection.getId();
         String sourceCollection = requestCollection;
         
         try {
-            Recommender recommender = new Recommender(collection, dataAPI, recommenderDAO, seedItem);
+            Recommender recommender = new Recommender(collection, dataAPI, recommenderDAO, seedItem, configRepository);
             Config collectionConfig = recommender.getCollectionConfig();
             
             if (collectionConfig != null) {
@@ -143,23 +154,19 @@ public class RecommenderController extends SessionController {
                         recommendations
                                 = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
                         break;
-				    case NONE:
-					    break;
 				    default:
 				        break;
                 }
 
                 timeTaken = System.currentTimeMillis() - startTime.getTime();
 
-                if (!sourceType.equals((RecommendationResponse.Source.NONE))) {
-                    recommendationsSource = RecommendationResponse.Source.CLICKS;
-                }
-
                 if (recommendations != null && recommendations.size() > 0) {
                     status = RecommendationResponse.Status.OK;
+                    recommendationsSource = RecommendationResponse.Source.CLICKS;
                 }
                 else {
                     status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
+                    recommendationsSource = RecommendationResponse.Source.NONE;
                 }
             }
             
@@ -178,7 +185,7 @@ public class RecommenderController extends SessionController {
     private ModelAndView getExploreSuggestions(HttpServletRequest request, HttpServletResponse response,
                                          @Valid SearchQuestion question, @ModelAttribute SearchUser user,
                                          String seedItem, Integer maxRecommendations) throws Exception {
-        String exploreQuery = "explore:" + seedItem;
+        String exploreQuery = EXPLORE_QUERY_PREFIX + seedItem;
         question.setQuery(exploreQuery);
         question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
 
@@ -208,6 +215,7 @@ public class RecommenderController extends SessionController {
         RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
         response.setContentType("application/json");
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
+        Integer maxRecommendations;
 
         if (collection == null) {
             throw new IllegalArgumentException("collection parameter must be provided.");
@@ -215,8 +223,21 @@ public class RecommenderController extends SessionController {
 
         String requestCollection = collection.getId();
         String query = question.getQuery();
-        String seedItem = query.replaceFirst("^explore:", "");
-        Integer maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
+
+        if (query == null || !query.startsWith(EXPLORE_QUERY_PREFIX)) {
+            throw new IllegalArgumentException("Valid 'explore:url' query parameter must be provided.");
+        }
+
+        String seedItem = query.replaceFirst("^" + EXPLORE_QUERY_PREFIX, "");
+
+        try {
+            maxRecommendations = Integer.parseInt(question.getInputParameterMap().get("num_ranks"));
+        }
+        catch (NumberFormatException exception) {
+            // Ignore - use default
+            maxRecommendations = MAX_RECOMMENDATIONS;
+        }
+
         question.getInputParameterMap().put("num_ranks", MAX_EXPLORE_RESULTS);
         String scope = question.getInputParameterMap().get("scope");
 
@@ -272,14 +293,14 @@ public class RecommenderController extends SessionController {
     @ExceptionHandler
     public ModelAndView exceptionHandler(HttpServletResponse response, Exception exception) throws IOException {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        Map<String, String> recommendationResponse = new HashMap<>();
-        recommendationResponse.put("status", RecommendationResponse.Status.ERROR.toString());
-        recommendationResponse.put("class", ClassUtils.getShortName(exception.getClass()));
-        recommendationResponse.put("message", exception.getMessage());
-        recommendationResponse.put("stack-trace", ExceptionUtils.getStackTrace(exception));
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("status", RecommendationResponse.Status.ERROR.toString());
+        errorResponse.put("class", ClassUtils.getShortName(exception.getClass()));
+        errorResponse.put("message", exception.getMessage());
+        errorResponse.put("stack-trace", ExceptionUtils.getStackTrace(exception));
 
         Map<String, Object> recommendationModel = new HashMap<>();
-        recommendationModel.put("RecommendationResponse", recommendationResponse);
+        recommendationModel.put("RecommendationResponse", errorResponse);
         return new ModelAndView(view, recommendationModel);
     }
 }
