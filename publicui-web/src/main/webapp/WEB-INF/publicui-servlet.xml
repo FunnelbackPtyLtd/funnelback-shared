@@ -39,6 +39,7 @@
 			<mvc:mapping path="/search.*" />
             <mvc:mapping path="/anchors.*" />
             <mvc:mapping path="/content-optimiser/*" />
+            <mvc:mapping path="/recommender/*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
@@ -51,6 +52,10 @@
 			<mvc:mapping path="/content-optimiser/*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
 		</mvc:interceptor>
+        <mvc:interceptor>
+      			<mvc:mapping path="/recommender/*.html" />
+      			<bean class="com.funnelback.publicui.recommender.interceptors.DevRecommenderInterceptor" />
+      	</mvc:interceptor>
 	</mvc:interceptors>
 
 	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
