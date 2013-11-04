@@ -2,9 +2,8 @@ package com.funnelback.publicui.recommender.dataapi;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.dataapi.connector.padre.PadreConnector;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.RecommendationResponse;
@@ -27,19 +26,18 @@ import java.util.Map;
 @Component
 public class DataAPIConnectorPADRE implements DataAPI {
     private static final Logger logger = Logger.getLogger(DataAPIConnectorPADRE.class);
-    
+
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
      * The list returned should never be larger than the value of the "maxRecommendations" parameter.
      *
-     *
-     * @param urls               list of URL strings to decorate
-     * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
-     * @param collectionConfig   collection configuration object
+     * @param urls             list of URL strings to decorate
+     * @param confidenceMap    Optional map of urls to confidence scores (can be null if not available).
+     * @param collectionConfig collection configuration object
      * @return list of decorated URL recommendations (which may be empty)
      */
     public List<Recommendation> decorateURLRecommendations(List<String> urls,
-            Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
+                                                           Map<String, ItemTuple> confidenceMap, Config collectionConfig) {
         List<Recommendation> recommendations = new ArrayList<>();
         float confidence = -1;
         List<DocInfo> dis = null;
@@ -79,28 +77,9 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * @return a DocInfoResult (which may be null).
      */
     public DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
-        DocInfoResult dir = null;
-
-        if (urls.size() > 0) {
-            File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
-                    + File.separator + "idx" + File.separator + "index");
-
-            URI[] addresses = new URI[urls.size()];
-            int i = 0;
-            for (String item : urls) {
-                addresses[i] = URI.create(item);
-                logger.debug("Added URL to list for libi4u call: " + addresses[i].toString());
-                i++;
-            }
-
-            boolean debug = false;
-            dir = new PadreConnector(indexStem).docInfo(addresses).withMetadata(DocInfoQuery.ALL_METADATA).withDebug(debug).fetch();
-        } else {
-            logger.warn("Empty list of URLs provided for query to collection: "
-                    + collectionConfig.getCollectionName());
-        }
-
-        return dir;
+        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + "idx" + File.separator + "index");
+        return new DocInfoAccess().getDocInfoResult(urls, indexStem);
     }
 
     /**
@@ -111,65 +90,53 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * @return DocInfo object (may be null if unable to get information)
      */
     public DocInfo getDocInfo(String url, Config collectionConfig) {
-        DocInfo docInfo = null;
-
-        List<String> urls = new ArrayList<>();
-        urls.add(url);
-
-        DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
-        List<DocInfo> dis = dataAPI.getDocInfoResult(urls, collectionConfig).asList();
-
-        if (dis != null && dis.size() == 1) {
-            docInfo = dis.get(0);
-        }
-
-        return docInfo;
+        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + "idx" + File.separator + "index");
+        return new DocInfoAccess().getDocInfo(url, indexStem);
     }
 
-     /**
-      * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query).
-      *
-      * @param seedItem seed URL
-      * @param results list of results from explore query
-      * @param collectionConfig collection config object
-      * @param requestCollection name of the collection that the original recommendation request was made to
-      * @param scope scope parameter (may be empty)
-      * @param maxRecommendations maximum number of recommendations to return
-      * 
-      */
-     public RecommendationResponse getResponseFromResults(String seedItem, List<Result> results,
-                                                          Config collectionConfig, String requestCollection,
-                                                          String scope, int maxRecommendations) {
- 		List<Recommendation> recommendations;
-         List<String> urls = new ArrayList<>();
+    /**
+     * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query).
+     *
+     * @param seedItem           seed URL
+     * @param results            list of results from explore query
+     * @param collectionConfig   collection config object
+     * @param requestCollection  name of the collection that the original recommendation request was made to
+     * @param scope              scope parameter (may be empty)
+     * @param maxRecommendations maximum number of recommendations to return
+     */
+    public RecommendationResponse getResponseFromResults(String seedItem, List<Result> results,
+                                                         Config collectionConfig, String requestCollection,
+                                                         String scope, int maxRecommendations) {
+        List<Recommendation> recommendations;
+        List<String> urls = new ArrayList<>();
 
-         for (Result result : results) {
-             String indexUrl = result.getIndexUrl();
-             urls.add(indexUrl);
-         }
+        for (Result result : results) {
+            String indexUrl = result.getIndexUrl();
+            urls.add(indexUrl);
+        }
 
-         if (scope == null) {
-             scope = "";
-         }
+        if (scope == null) {
+            scope = "";
+        }
 
-         DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
-         recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig);
+        DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
+        recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig);
 
-         if (recommendations != null && recommendations.size() > 0) {
+        if (recommendations != null && recommendations.size() > 0) {
 
-             // Make sure number of recommendations is <= maxRecommendations
-             if (recommendations != null && recommendations.size() > maxRecommendations) {
-                 recommendations = recommendations.subList(0, maxRecommendations);
-             }
+            // Make sure number of recommendations is <= maxRecommendations
+            if (recommendations != null && recommendations.size() > maxRecommendations) {
+                recommendations = recommendations.subList(0, maxRecommendations);
+            }
 
-             return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,
-                     collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
-         }
-         else {
-             return new RecommendationResponse(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
-                     maxRecommendations, collectionConfig.getCollectionName(), RecommendationResponse.Source.NONE, -1, null);
-         }
- 	}
+            return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,
+                    collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
+        } else {
+            return new RecommendationResponse(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
+                    maxRecommendations, collectionConfig.getCollectionName(), RecommendationResponse.Source.NONE, -1, null);
+        }
+    }
 
     /**
      * Return the title of the given URL from the given collection.
