@@ -102,7 +102,6 @@
 <xsl:template match="response/resultPacket/resultsSummary">
 	<results_summary>
 		<fully_matching><xsl:value-of select="fullyMatching" /></fully_matching>
-		<estimated_hits><xsl:value-of select="estimatedHits" /></estimated_hits>
 		<partially_matching><xsl:value-of select="partiallyMatching" /></partially_matching>
 		<total_matching><xsl:value-of select="totalMatching" /></total_matching>
 		<xsl:if test="carriedOverFtd">

@@ -32,9 +32,9 @@
 <results_summary>
   <fully_matching>200</fully_matching>
   <collapsed>42</collapsed>
-  <estimated_hits>200</estimated_hits>
   <partially_matching>0</partially_matching>
   <total_matching>200</total_matching>
+  <estimated_counts>true</estimated_counts>
   <carried_over_ftd>4</carried_over_ftd>
   <total_distinct_matching_urls>57</total_distinct_matching_urls>
   <num_ranks>10</num_ranks>

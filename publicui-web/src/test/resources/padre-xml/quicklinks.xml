@@ -12,9 +12,9 @@
 
 <results_summary>
   <fully_matching>1</fully_matching>
-  <estimated_hits>1</estimated_hits>
   <partially_matching>0</partially_matching>
   <total_matching>1</total_matching>
+  <estimated_counts>false</estimated_counts>
   <num_ranks>1</num_ranks>
   <currstart>1</currstart>
   <currend>1</currend>

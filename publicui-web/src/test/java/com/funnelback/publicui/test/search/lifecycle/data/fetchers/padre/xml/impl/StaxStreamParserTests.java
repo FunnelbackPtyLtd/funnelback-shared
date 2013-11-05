@@ -173,9 +173,9 @@ public class StaxStreamParserTests {
     public void testResultsSummary() {
         assertEquals(200, rp.getResultsSummary().getFullyMatching().intValue());
         assertEquals(42, rp.getResultsSummary().getCollapsed().intValue());
-        assertEquals(200, rp.getResultsSummary().getEstimatedHits().intValue());
         assertEquals(0, rp.getResultsSummary().getPartiallyMatching().intValue());
         assertEquals(200, rp.getResultsSummary().getTotalMatching().intValue());
+        assertTrue(rp.getResultsSummary().getEstimatedCounts());
         assertEquals(4, rp.getResultsSummary().getCarriedOverFtd().intValue());
         assertEquals(57, rp.getResultsSummary().getTotalDistinctMatchingUrls().intValue());
         assertEquals(10, rp.getResultsSummary().getNumRanks().intValue());

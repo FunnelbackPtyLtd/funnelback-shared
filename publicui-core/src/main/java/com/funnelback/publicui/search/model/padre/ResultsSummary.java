@@ -20,14 +20,7 @@ public class ResultsSummary {
     
     /** Number of collapsed results */
     @Getter @Setter private Integer collapsed;
-    
-    /**
-     * <p>Estimated number of hits in <code>daat</code> mode.</p>
-     * 
-     * <p>See: the <code>-daat</code> query processor option.</p>
-     */
-    @Getter @Setter private Integer estimatedHits;
-    
+        
     /** Number of documents that partially matched the query terms. */
     @Getter @Setter private Integer partiallyMatching;
     
@@ -38,6 +31,14 @@ public class ResultsSummary {
      * <p>Should be {@link #fullyMatching} + {@link #partiallyMatching}.
      */
     @Getter @Setter private Integer totalMatching;
+
+    /**
+     * <p>Whether or not the counts within this summary have been estimated.</p>
+     *  
+     * <p>Estimation occurs when the result set is only partially scanned (e.g.
+     *  more results are found than the daat value).</p>
+     */
+    @Getter @Setter private Boolean estimatedCounts;
 
     /**
      * <p>Number of events continued from the day when using event search.</p>
@@ -105,9 +106,9 @@ public class ResultsSummary {
         
         public static final String FULLY_MATCHING = "fully_matching";
         public static final String COLLAPSED = "collapsed";
-        public static final String ESTIMATED_HITS = "estimated_hits";
         public static final String PARTIALLY_MATCHING = "partially_matching";
         public static final String TOTAL_MATCHING = "total_matching";
+        public static final String ESTIMATED_COUNTS = "estimated_counts";
         public static final String CARRIED_OVER_FTD = "carried_over_ftd";
         public static final String TOTAL_DISTINCT_MATCHING_URLS = "total_distinct_matching_urls";
         public static final String NUM_RANKS = "num_ranks";
