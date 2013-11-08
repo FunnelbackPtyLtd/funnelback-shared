@@ -215,6 +215,11 @@ public class ClickController extends SessionController {
                 }
             }
             
+            //Rank is not necessary if type has been specified
+            if(rank == null && type != null) {
+                rank = new Integer(0);
+            }
+            
             logService.logClick(new ClickLog(new Date(), collection, collection
                     .getProfiles().get(profile), requestId, referer, rank,
                     redirectUrl, type, LogUtils.getUserId(user)));
