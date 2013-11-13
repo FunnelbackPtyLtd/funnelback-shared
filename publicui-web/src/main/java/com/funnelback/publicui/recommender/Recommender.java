@@ -4,10 +4,13 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
+import com.funnelback.common.utils.StringCount;
+import com.funnelback.dataapi.connector.analytics.AnalyticsConnector;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.reporting.DatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 import lombok.Getter;
@@ -78,6 +81,22 @@ public class Recommender {
 
         if (scope != null && !("").equals(scope)) {
             scopes = Arrays.asList(scope.split(","));
+        }
+
+        String installDir = collectionConfig.getSearchHomeDir().getAbsolutePath();
+        AnalyticsConnector analyticsConnector =
+                new AnalyticsConnector(installDir, collectionConfig.getCollectionName());
+        List<StringCount> relatedQueries
+                = analyticsConnector.getAnnotations(DatabaseAccess.Table.RELATED_QUERIES, itemName);
+
+        if (relatedQueries != null) {
+            System.out.println(itemName + " -> " + relatedQueries);
+
+            for (StringCount item : relatedQueries) {
+                String query = item.getString();
+                List<StringCount> topClickedURLs = analyticsConnector.urlsForQuery(query);
+                System.out.println(query + " -> " + topClickedURLs);
+            }
         }
 
         fullList = recommenderDAO.getRecommendations(itemName, collectionConfig);
