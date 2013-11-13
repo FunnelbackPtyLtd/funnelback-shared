@@ -51,12 +51,14 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
                         r.setClickTrackingUrl(r.getLiveUrl());
                     }
                 }
-                
-                if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
-                    // Apply click tracking to best bets links
-                    for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
-                        bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
-                    }
+            }
+        }
+
+        // Apply click tracking to best bets links, even if there are no results
+        if (SearchTransactionUtils.hasCollection(searchTransaction)) {
+            if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
+                    bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
                 }
             }
         }

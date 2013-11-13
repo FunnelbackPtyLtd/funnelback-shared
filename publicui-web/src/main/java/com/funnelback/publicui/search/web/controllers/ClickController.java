@@ -157,7 +157,7 @@ public class ClickController extends SessionController {
             HttpServletResponse response,
             @RequestParam(RequestParameters.COLLECTION) String collectionId,
             @RequestParam(required = false, defaultValue = "CLICK") ClickLog.Type type,
-            Integer rank,
+            @RequestParam(required = false, defaultValue = "0") Integer rank,
             @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
@@ -213,11 +213,6 @@ public class ClickController extends SessionController {
                 } catch (DataAccessException | TransactionException e) {
                     log.error("Error while saving click history", e);
                 }
-            }
-            
-            //Rank is not necessary if type has been specified
-            if(rank == null && type != null) {
-                rank = new Integer(0);
             }
             
             logService.logClick(new ClickLog(new Date(), collection, collection
