@@ -55,7 +55,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         }
 
         // Apply click tracking to best bets links, even if there are no results
-        if (SearchTransactionUtils.hasCollection(searchTransaction)) {
+        if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
             if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
                 for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
                     bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
