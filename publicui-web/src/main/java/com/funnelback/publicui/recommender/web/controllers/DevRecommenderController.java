@@ -146,7 +146,7 @@ public class DevRecommenderController {
 
                         List<Recommendation> recommendations =
                                 recommender.getRecommendationsForItem(resultURL, scope,
-                                        maxRecommendations);
+                                        maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.CLICKS);
                         buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
                                 scope, maxRecommendations));	
                     }

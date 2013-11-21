@@ -1,6 +1,7 @@
 package com.funnelback.publicui.recommender;
 
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import lombok.Getter;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -60,13 +61,20 @@ public class Recommendation {
     @Getter
     private String format = "";
 
-    public Recommendation(String item, float confidence, DocInfo docInfo) {
+    /**
+     * Source of this recommendation.
+     */
+    @Getter
+    private ItemTuple.Source source;
+
+    public Recommendation(String item, float confidence, DocInfo docInfo, ItemTuple.Source source) {
         this.itemID = item;
         this.confidence = confidence;
         this.title = docInfo.getTitle();
         this.date = docInfo.getDate();
         this.qieScore = docInfo.getQieScore();
         this.metaData = docInfo.getMetaData();
+        this.source = source;
 
         String value = metaData.get("c");
 

@@ -13,6 +13,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
+import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import lombok.Setter;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -100,9 +101,9 @@ public class RecommenderController extends SessionController {
         Map<String, Object> model = new HashMap<>();
         List<Recommendation> recommendations = new ArrayList<>();
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
-        RecommendationResponse.Source sourceType = RecommendationResponse.Source.DEFAULT;
+        ItemTuple.Source sourceType = ItemTuple.Source.DEFAULT;
         RecommendationResponse.Status status = RecommendationResponse.Status.SEED_NOT_FOUND;
-        RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
+        ItemTuple.Source recommendationsSource;
         long timeTaken = -1;
 
         if (seedItem == null || ("").equals(seedItem)) {
@@ -123,11 +124,14 @@ public class RecommenderController extends SessionController {
 
         if (source != null) {
             source = source.toUpperCase();
-            sourceType = RecommendationResponse.Source.valueOf(source);
+            sourceType = ItemTuple.Source.valueOf(source);
         }
 
-        if (sourceType.equals(RecommendationResponse.Source.NONE)) {
+        if (sourceType.equals(ItemTuple.Source.NONE)) {
             throw new IllegalArgumentException("Invalid source identifier in request");
+        }
+        else {
+            recommendationsSource = sourceType;
         }
 
         String requestCollection = collection.getId();
@@ -143,18 +147,16 @@ public class RecommenderController extends SessionController {
                 switch(sourceType) {
                     case DEFAULT:
                         recommendations
-                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType);
                         if (recommendations == null || recommendations.size() == 0 && seedItem.contains("://")) {
-                            return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
+                            return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations, scope);
                         }
                         break;
                     case EXPLORE:
-                        return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations);
-                    case CLICKS:
-                        recommendations
-                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations);
-                        break;
+                        return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations, scope);
 				    default:
+                        recommendations
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType);
 				        break;
                 }
 
@@ -162,11 +164,10 @@ public class RecommenderController extends SessionController {
 
                 if (recommendations != null && recommendations.size() > 0) {
                     status = RecommendationResponse.Status.OK;
-                    recommendationsSource = RecommendationResponse.Source.CLICKS;
+                    recommendationsSource = sourceType;
                 }
                 else {
                     status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
-                    recommendationsSource = RecommendationResponse.Source.NONE;
                 }
             }
             
@@ -183,11 +184,15 @@ public class RecommenderController extends SessionController {
     }
 
     private ModelAndView getExploreSuggestions(HttpServletRequest request, HttpServletResponse response,
-                                         @Valid SearchQuestion question, @ModelAttribute SearchUser user,
-                                         String seedItem, Integer maxRecommendations) throws Exception {
+                                               @Valid SearchQuestion question, @ModelAttribute SearchUser user,
+                                               String seedItem, Integer maxRecommendations, String scope) throws Exception {
         String exploreQuery = EXPLORE_QUERY_PREFIX + seedItem;
         question.setQuery(exploreQuery);
         question.getInputParameterMap().put("num_ranks", maxRecommendations.toString());
+
+        if (!("").equals(scope)) {
+            question.getInputParameterMap().put("scope", scope);
+        }
 
         // Any 'scope' parameter in the SearchQuestion will be passed through to PADRE and so Explore
         // suggestions should be automatically scoped.
@@ -212,7 +217,6 @@ public class RecommenderController extends SessionController {
         Date startTime = new Date();
         RecommendationResponse recommendationResponse = null;
         List<Recommendation> recommendations = null;
-        RecommendationResponse.Source recommendationsSource = RecommendationResponse.Source.NONE;
         response.setContentType("application/json");
         com.funnelback.publicui.search.model.collection.Collection collection = question.getCollection();
         Integer maxRecommendations;
@@ -240,6 +244,10 @@ public class RecommenderController extends SessionController {
 
         question.getInputParameterMap().put("num_ranks", MAX_EXPLORE_RESULTS);
         String scope = question.getInputParameterMap().get("scope");
+
+        if (scope == null) {
+            scope = "";
+        }
 
         Map<String, Object> model = null;
         {
@@ -274,7 +282,7 @@ public class RecommenderController extends SessionController {
                     + " and collection: " + requestCollection);
             RecommendationResponse.Status status = RecommendationResponse.Status.NO_SUGGESTIONS_FOUND;
             recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,
-                    maxRecommendations, requestCollection, recommendationsSource, timeTaken, recommendations);
+                    maxRecommendations, requestCollection, ItemTuple.Source.EXPLORE, timeTaken, recommendations);
         }
 
         Map<String, Object> recommendationModel = new HashMap<>();

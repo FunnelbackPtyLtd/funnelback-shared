@@ -1,5 +1,6 @@
 package com.funnelback.publicui.recommender;
 
+import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,24 +12,6 @@ import java.util.List;
  */
 @AllArgsConstructor
 public class RecommendationResponse {
-    public static enum Source {
-        CLICKS("CLICKS"),
-        EXPLORE("EXPLORE"),
-        DEFAULT("DEFAULT"),
-        NONE("NONE");
-
-        private final String source;
-
-        private Source(final String value) {
-        	this.source = value;
-		}
-
-        @Override
-        public String toString() {
-            return source;
-        }
-    }
-
     public static enum Status {
         OK("OK"),
         SEED_NOT_FOUND("SEED_NOT_FOUND"),
@@ -66,7 +49,7 @@ public class RecommendationResponse {
    	private String sourceCollection;
 
     @Getter
-   	private Source source;
+   	private ItemTuple.Source source;
 
     @Setter
     @Getter

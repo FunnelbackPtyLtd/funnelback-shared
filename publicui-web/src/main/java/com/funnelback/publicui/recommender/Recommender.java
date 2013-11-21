@@ -4,15 +4,14 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
-import com.funnelback.common.utils.StringCount;
-import com.funnelback.dataapi.connector.analytics.AnalyticsConnector;
+import com.funnelback.common.utils.StringCountComparator;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.reporting.DatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
+import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,6 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * This class provides recommendations from the Recommender System for a given collection.
+ *
  * @author fcrimmins@funnelback.com
  */
 public class Recommender {
@@ -34,19 +34,23 @@ public class Recommender {
     private Config collectionConfig;
 
     private ConfigRepository configRepository;
-    
+
     private DataAPI dataAPI;
 
     private RecommenderDAO recommenderDAO;
+
+    // Comparator for StringCount objects (based on their internal count value)
+    public static final StringCountComparator FREQUENCY_ORDER = new StringCountComparator();
 
     /**
      * Create a Recommender for the given collection and seed item. The Recommender will try to determine if
      * the given seed item is present in the given collection or one of its components if it is a meta collection.
      * If it cannot find a collection with information on the given item then it will throw an
-     * @param collection collection object
-     * @param dataAPI a handle to the Data API system
-     * @param recommenderDAO recommender data access object
-     * @param seedItem seed item (e.g. URL)
+     *
+     * @param collection       collection object
+     * @param dataAPI          a handle to the Data API system
+     * @param recommenderDAO   recommender data access object
+     * @param seedItem         seed item (e.g. URL)
      * @param configRepository handle to configuration repository
      */
     public Recommender(com.funnelback.publicui.search.model.collection.Collection collection,
@@ -58,11 +62,11 @@ public class Recommender {
         this.collectionConfig = getCollectionConfig(collection, seedItem);
 
         if (collectionConfig == null) {
-        	throw new IllegalStateException("Unable to create a valid collection config object for collection: "
-        			+ collection.getId() + " and seed item: " + seedItem);
-        }       
+            throw new IllegalStateException("Unable to create a valid collection config object for collection: "
+                    + collection.getId() + " and seed item: " + seedItem);
+        }
     }
-    
+
     /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
      * Guarantees that the number of recommendations returned will never be greater than maxRecommendations
@@ -71,10 +75,12 @@ public class Recommender {
      * @param itemName           name of item
      * @param scope              comma separated list of items scopes
      * @param maxRecommendations maximum number of recommendations to display (less than 1 means unlimited)
+     * @param source             expected source of recommendations (default is CLICKS)
      * @return List of recommendations (which may be empty).
      */
-    public List<Recommendation> getRecommendationsForItem(String itemName, String scope, int maxRecommendations) 
-    		throws IllegalStateException {
+    public List<Recommendation> getRecommendationsForItem(String itemName, String scope,
+                                                          int maxRecommendations, ItemTuple.Source source)
+            throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
         List<ItemTuple> fullList;
         List<String> scopes = new ArrayList<>();
@@ -83,25 +89,14 @@ public class Recommender {
             scopes = Arrays.asList(scope.split(","));
         }
 
-        String installDir = collectionConfig.getSearchHomeDir().getAbsolutePath();
-        AnalyticsConnector analyticsConnector =
-                new AnalyticsConnector(installDir, collectionConfig.getCollectionName());
-        List<StringCount> relatedQueries
-                = analyticsConnector.getAnnotations(DatabaseAccess.Table.RELATED_QUERIES, itemName);
-
-        if (relatedQueries != null) {
-            System.out.println(itemName + " -> " + relatedQueries);
-
-            for (StringCount item : relatedQueries) {
-                String query = item.getString();
-                List<StringCount> topClickedURLs = analyticsConnector.urlsForQuery(query);
-                System.out.println(query + " -> " + topClickedURLs);
-            }
-        }
-
         fullList = recommenderDAO.getRecommendations(itemName, collectionConfig);
 
         if (fullList != null && fullList.size() > 0) {
+            if (source.equals(ItemTuple.Source.RELATED_CLICKS) && fullList.size() < maxRecommendations) {
+                List<ItemTuple> relatedClicks = RecommenderUtils.getRelatedClicks(itemName, fullList, collectionConfig);
+                fullList.addAll(relatedClicks);
+            }
+
             List<ItemTuple> scopedList = new ArrayList<>();
 
             for (ItemTuple item : fullList) {
@@ -112,19 +107,23 @@ public class Recommender {
                 }
             }
 
-            List<String> indexURLs = new ArrayList<>();
-            Map<String, ItemTuple> confidenceMap = new HashMap<>();
+            if (scopedList.size() > 0) {
+                List<String> indexURLs = new ArrayList<>();
+                Map<String, ItemTuple> confidenceMap = new HashMap<>();
 
-            for (ItemTuple item : scopedList) {
-                String indexURL = item.getItemID();
-                indexURLs.add(indexURL);
-                confidenceMap.put(indexURL, item);
-            }
+                for (ItemTuple item : scopedList) {
+                    String indexURL = item.getItemID();
+                    indexURLs.add(indexURL);
+                    confidenceMap.put(indexURL, item);
+                }
 
-            recommendations = dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig);
+                recommendations = dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig);
 
-            if (recommendations != null && recommendations.size() > maxRecommendations) {
-                recommendations = recommendations.subList(0, maxRecommendations);
+                if (recommendations != null && recommendations.size() > maxRecommendations) {
+                    recommendations = recommendations.subList(0, maxRecommendations);
+                }
+            } else {
+                logger.info("No items in scope from original list of size: " + fullList.size());
             }
         }
 
@@ -154,8 +153,7 @@ public class Recommender {
                     // Negative scope pattern i.e. -handbook.curtin.edu.au
                     scopePattern = scopePattern.substring(1, scopePattern.length());
                     buf2.append(scopePattern + "|");
-                }
-                else {
+                } else {
                     buf1.append(scopePattern + "|");
                 }
             }
@@ -183,8 +181,7 @@ public class Recommender {
                 if (positiveMatcher.find()) {
                     return true;
                 }
-            }
-            else {
+            } else {
                 // Didn't match negative pattern and positive pattern was empty -> item is in scope
                 inScope = true;
             }
@@ -206,12 +203,12 @@ public class Recommender {
      * we will move on to the next component until we have exhausted the list of components or found a component
      * that has information.
      *
-     * @param collection       Collection to derive collection configuration for
-     * @param seedItem         the seed item to use in detecting which component to return
+     * @param collection Collection to derive collection configuration for
+     * @param seedItem   the seed item to use in detecting which component to return
      * @return collection configuration (may be null).
      */
     private Config getCollectionConfig(com.funnelback.publicui.search.model.collection.Collection collection,
-                                             String seedItem) {
+                                       String seedItem) {
         Config componentConfig = null;
         boolean foundComponent = false;
 
@@ -245,7 +242,7 @@ public class Recommender {
             }
         } else {
             componentConfig = collection.getConfiguration();
-            
+
             if (seedItem != null && !("").equals(seedItem) && dataAPI != null) {
                 DocInfo docInfo = dataAPI.getDocInfo(seedItem, componentConfig);
 
@@ -253,11 +250,10 @@ public class Recommender {
                     logger.debug("Found Data API match info for seed item: " + seedItem
                             + " in requested collection: " + componentConfig.getCollectionName());
                     foundComponent = true;
-                }	
-            }
-            else {
-            	// No given seed item - just return the configuration object for the given collection
-            	foundComponent = true;
+                }
+            } else {
+                // No given seed item - just return the configuration object for the given collection
+                foundComponent = true;
             }
         }
 

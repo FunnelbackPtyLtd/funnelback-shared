@@ -92,17 +92,14 @@ public class RecommenderControllerTest {
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
-        if (expectedStatus.equals(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND)) {
-            expectedSourceType = RecommendationResponse.Source.NONE.toString();
-        }
-        else if (expectedSourceType == null ||
-                RecommendationResponse.Source.valueOf(expectedSourceType).equals(RecommendationResponse.Source.DEFAULT)) {
+        if (expectedSourceType == null ||
+                ItemTuple.Source.valueOf(expectedSourceType).equals(ItemTuple.Source.DEFAULT)) {
             // Assume we will get clicks back
-            expectedSourceType = RecommendationResponse.Source.CLICKS.toString();
+            expectedSourceType = ItemTuple.Source.CLICKS.toString();
         }
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, collectionName,
-                RecommendationResponse.Source.valueOf(expectedSourceType), maxRecommendations, DEFAULT_RECOMMENDATION,
+                ItemTuple.Source.valueOf(expectedSourceType), maxRecommendations, DEFAULT_RECOMMENDATION,
                 DEFAULT_RECOMMENDATION_TITLE, numExpected, expectedStatus);
     }
 
@@ -110,7 +107,7 @@ public class RecommenderControllerTest {
      * Check the given response against the other specified values.
      */
     private void checkResponse(RecommendationResponse recommendationResponse, String seedItem,
-                               String collectionName, RecommendationResponse.Source source, int maxRecommendations,
+                               String collectionName, ItemTuple.Source source, int maxRecommendations,
                                String recommendedItem, String recommendedItemTitle, int expectedSize,
                                RecommendationResponse.Status status) {
         int actualSize = 0;
@@ -193,7 +190,7 @@ public class RecommenderControllerTest {
         List<ItemTuple> itemTuples = new ArrayList<>();
 
         for (int i=0; i < itemIDs.size(); i++) {
-            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, titles.get(i));
+            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, titles.get(i), null);
             itemTuples.add(itemTuple);
         }
 
@@ -208,7 +205,7 @@ public class RecommenderControllerTest {
 
         for (ItemTuple itemTuple : itemTuples) {
             DocInfo docInfo = getMockDocInfo(itemTuple.getItemID(), itemTuple.getTitle());
-            Recommendation recommendation = new Recommendation(itemTuple.getItemID(), DEFAULT_CONFIDENCE, docInfo);
+            Recommendation recommendation = new Recommendation(itemTuple.getItemID(), DEFAULT_CONFIDENCE, docInfo, null);
             recommendations.add(recommendation);
         }
 
@@ -282,7 +279,7 @@ public class RecommenderControllerTest {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
         recommenderController.similarItems(request, response, sq, null,
-                DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, RecommendationResponse.Source.NONE.toString());
+                DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, ItemTuple.Source.NONE.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -391,7 +388,7 @@ public class RecommenderControllerTest {
 
         RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
                 EXPLORE_SEED, DEFAULT_COLLECTION_NAME, scope, maxRecommendations, collectionConfig.getCollectionName(),
-                RecommendationResponse.Source.EXPLORE, -1, recommendations);
+                ItemTuple.Source.EXPLORE, -1, recommendations);
 
         DataAPI dataAPI = mock(DataAPI.class);
         DocInfo seedDocInfo = getMockDocInfo(EXPLORE_SEED, "Immigration");
@@ -415,7 +412,7 @@ public class RecommenderControllerTest {
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
         checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
-                RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
+                ItemTuple.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
                 EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
 
         // Text maxRecommendations not being set in direct explore query (should fall back to internal default)
@@ -427,7 +424,7 @@ public class RecommenderControllerTest {
                         (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
         checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
-                RecommendationResponse.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
+                ItemTuple.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
                 EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
     }
 
@@ -455,7 +452,7 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 0,
+        checkSimilarItems(sq, ItemTuple.Source.DEFAULT.toString(), 0,
                 RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, "", DEFAULT_COLLECTION_NAME);
     }
 
@@ -492,7 +489,7 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.DEFAULT.toString(), 1,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 
@@ -529,7 +526,7 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 1,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 
@@ -562,7 +559,7 @@ public class RecommenderControllerTest {
         recommenderController.setRecommenderDAO(recommenderDAO);
 
         // Also test null scope parameter
-        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 1,
                 RecommendationResponse.Status.OK, maxRecommendations, null, DEFAULT_COLLECTION_NAME);
     }
 
@@ -598,9 +595,9 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.DEFAULT.toString(), 2,
+        checkSimilarItems(sq, ItemTuple.Source.DEFAULT.toString(), 2,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
-        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 2,
+        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 2,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
 
         // Set things up for an Explore source by now returning a smaller list in response to an
@@ -608,17 +605,17 @@ public class RecommenderControllerTest {
         recommendations.remove(1);
         RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
                 DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME, scope, MAX_RECOMMENDATIONS,
-                collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
+                collectionConfig.getCollectionName(), ItemTuple.Source.EXPLORE, -1, recommendations);
         when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
                 any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
 
-        checkSimilarItems(sq, RecommendationResponse.Source.EXPLORE.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.EXPLORE.toString(), 1,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
 
         // Now configure DAO to return nothing for the given seed item i.e. no clicked recommendations available
         // This is so we can confirm that it does not fall through to returning Explore results (default behaviour).
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
-        checkSimilarItems(sq, RecommendationResponse.Source.CLICKS.toString(), 0,
+        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 0,
                 RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 }

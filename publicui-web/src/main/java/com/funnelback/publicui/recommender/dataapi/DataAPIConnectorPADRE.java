@@ -51,12 +51,15 @@ public class DataAPIConnectorPADRE implements DataAPI {
             for (DocInfo docInfo : dis) {
                 URI uri = docInfo.getUri();
                 String itemID = uri.toString();
+                ItemTuple.Source source = ItemTuple.Source.EXPLORE;
 
                 if (confidenceMap != null) {
-                    confidence = confidenceMap.get(itemID).getScore();
+                    ItemTuple itemTuple = confidenceMap.get(itemID);
+                    confidence = itemTuple.getScore();
+                    source = itemTuple.getSource();
                 }
 
-                Recommendation recommendation = new Recommendation(itemID, confidence, docInfo);
+                Recommendation recommendation = new Recommendation(itemID, confidence, docInfo, source);
                 recommendations.add(recommendation);
             }
         } else {
@@ -111,31 +114,36 @@ public class DataAPIConnectorPADRE implements DataAPI {
         List<Recommendation> recommendations;
         List<String> urls = new ArrayList<>();
 
-        for (Result result : results) {
-            String indexUrl = result.getIndexUrl();
-            urls.add(indexUrl);
-        }
-
-        if (scope == null) {
-            scope = "";
-        }
-
-        DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
-        recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig);
-
-        if (recommendations != null && recommendations.size() > 0) {
-
-            // Make sure number of recommendations is <= maxRecommendations
-            if (recommendations != null && recommendations.size() > maxRecommendations) {
-                recommendations = recommendations.subList(0, maxRecommendations);
+        if (results.size() > 0) {
+            for (Result result : results) {
+                String indexUrl = result.getIndexUrl();
+                urls.add(indexUrl);
             }
 
-            return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,
-                    collectionConfig.getCollectionName(), RecommendationResponse.Source.EXPLORE, -1, recommendations);
-        } else {
-            return new RecommendationResponse(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
-                    maxRecommendations, collectionConfig.getCollectionName(), RecommendationResponse.Source.NONE, -1, null);
+            if (scope == null) {
+                scope = "";
+            }
+
+            DataAPIConnectorPADRE dataAPI = new DataAPIConnectorPADRE();
+            recommendations = dataAPI.decorateURLRecommendations(urls, null, collectionConfig);
+
+            if (recommendations != null && recommendations.size() > 0) {
+
+                // Make sure number of recommendations is <= maxRecommendations
+                if (recommendations != null && recommendations.size() > maxRecommendations) {
+                    recommendations = recommendations.subList(0, maxRecommendations);
+                }
+
+                return new RecommendationResponse(RecommendationResponse.Status.OK, seedItem, requestCollection, scope, maxRecommendations,
+                        collectionConfig.getCollectionName(), ItemTuple.Source.EXPLORE, -1, recommendations);
+            }
         }
+        else {
+            logger.warn("Empty result set for explore query for seed item: " + seedItem);
+        }
+
+        return new RecommendationResponse(RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, seedItem, requestCollection, scope,
+            maxRecommendations, collectionConfig.getCollectionName(), ItemTuple.Source.EXPLORE, -1, null);
     }
 
     /**
