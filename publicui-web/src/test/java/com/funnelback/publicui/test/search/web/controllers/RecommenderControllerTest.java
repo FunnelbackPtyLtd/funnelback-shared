@@ -92,10 +92,8 @@ public class RecommenderControllerTest {
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");
 
-        if (expectedSourceType == null ||
-                ItemTuple.Source.valueOf(expectedSourceType).equals(ItemTuple.Source.DEFAULT)) {
-            // Assume we will get clicks back
-            expectedSourceType = ItemTuple.Source.CLICKS.toString();
+        if (expectedSourceType == null) {
+            expectedSourceType = ItemTuple.Source.DEFAULT.toString();
         }
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, collectionName,
@@ -452,7 +450,7 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, ItemTuple.Source.DEFAULT.toString(), 0,
+        checkSimilarItems(sq, ItemTuple.Source.EXPLORE.toString(), 0,
                 RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, "", DEFAULT_COLLECTION_NAME);
     }
 
