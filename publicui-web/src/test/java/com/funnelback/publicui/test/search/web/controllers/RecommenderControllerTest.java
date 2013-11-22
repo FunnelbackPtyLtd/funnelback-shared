@@ -213,7 +213,7 @@ public class RecommenderControllerTest {
     @Before
     public void before() throws Exception {
         request = new MockHttpServletRequest();
-        request.setRequestURI("similarItems.json");
+        request.setRequestURI("/similarItems.json");
 
         Map<String, Object> model = new HashMap<>();
         SearchResponse searchResponse = new SearchResponse();

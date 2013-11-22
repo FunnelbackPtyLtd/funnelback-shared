@@ -33,14 +33,12 @@ public class Recommender {
     @Getter
     private Config collectionConfig;
 
-    private ConfigRepository configRepository;
-
-    private DataAPI dataAPI;
-
-    private RecommenderDAO recommenderDAO;
-
     // Comparator for StringCount objects (based on their internal count value)
     public static final StringCountComparator FREQUENCY_ORDER = new StringCountComparator();
+
+    private ConfigRepository configRepository;
+    private DataAPI dataAPI;
+    private RecommenderDAO recommenderDAO;
 
     /**
      * Create a Recommender for the given collection and seed item. The Recommender will try to determine if
@@ -76,10 +74,12 @@ public class Recommender {
      * @param scope              comma separated list of items scopes
      * @param maxRecommendations maximum number of recommendations to display (less than 1 means unlimited)
      * @param source             expected source of recommendations (default is CLICKS)
+     * @param searchService
      * @return List of recommendations (which may be empty).
      */
     public List<Recommendation> getRecommendationsForItem(String itemName, String scope,
-                                                          int maxRecommendations, ItemTuple.Source source)
+                                                          int maxRecommendations, ItemTuple.Source source,
+                                                          String searchService)
             throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
         List<ItemTuple> fullList;
@@ -95,6 +95,12 @@ public class Recommender {
             if (source.equals(ItemTuple.Source.RELATED_CLICKS) && fullList.size() < maxRecommendations) {
                 List<ItemTuple> relatedClicks = RecommenderUtils.getRelatedClicks(itemName, fullList, collectionConfig);
                 fullList.addAll(relatedClicks);
+            }
+
+            if (!("").equals(searchService)) {
+                List<ItemTuple> relatedResults
+                        = RecommenderUtils.getBlendedResults(itemName, fullList, collectionConfig, scope, searchService);
+                fullList.addAll(relatedResults);
             }
 
             List<ItemTuple> scopedList = new ArrayList<>();

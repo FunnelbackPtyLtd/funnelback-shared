@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -45,6 +46,7 @@ public class RecommenderController extends SessionController {
 
     public static final String SIMILAR_ITEMS_JSON = "similarItems.json";
     public static final String EXPLORE_JSON = "explore.json";
+    private static final String SEARCH_JSON = "search.json";
     public static final int MAX_RECOMMENDATIONS = 5;
     public static final String MAX_EXPLORE_RESULTS = "50";
     public static final String EXPLORE_QUERY_PREFIX = "explore:";
@@ -136,7 +138,12 @@ public class RecommenderController extends SessionController {
 
         String requestCollection = collection.getId();
         String sourceCollection = requestCollection;
-        
+        String address = request.getRequestURL().toString();
+
+        URL requestURL = new URL(address);
+        String searchService = "http://" + requestURL.getAuthority() + "/s/"
+                + SEARCH_JSON + "?collection=" + requestCollection;
+
         try {
             Recommender recommender = new Recommender(collection, dataAPI, recommenderDAO, seedItem, configRepository);
             Config collectionConfig = recommender.getCollectionConfig();
@@ -147,7 +154,7 @@ public class RecommenderController extends SessionController {
                 switch(sourceType) {
                     case DEFAULT:
                         recommendations
-                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType);
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType, searchService);
                         if (recommendations == null || recommendations.size() == 0 && seedItem.contains("://")) {
                             return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations, scope);
                         }
@@ -156,7 +163,7 @@ public class RecommenderController extends SessionController {
                         return getExploreSuggestions(request, response, question, user, seedItem, maxRecommendations, scope);
 				    default:
                         recommendations
-                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType);
+                                = recommender.getRecommendationsForItem(seedItem, scope, maxRecommendations, sourceType, searchService);
 				        break;
                 }
 

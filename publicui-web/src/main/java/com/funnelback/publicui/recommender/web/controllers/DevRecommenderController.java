@@ -11,9 +11,8 @@ import com.funnelback.publicui.recommender.utils.HTMLUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
-
+import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 import lombok.Setter;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -106,7 +104,7 @@ public class DevRecommenderController {
             long startTime = System.currentTimeMillis();
 
             try {
-                results = HTMLUtils.getResults(query, searchService);
+                results = RecommenderUtils.getResults(query, searchService);
             } catch (IOException exception) {
                 logger.error(exception);
             }
@@ -146,7 +144,7 @@ public class DevRecommenderController {
 
                         List<Recommendation> recommendations =
                                 recommender.getRecommendationsForItem(resultURL, scope,
-                                        maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.CLICKS);
+                                        maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.CLICKS, "");
                         buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
                                 scope, maxRecommendations));	
                     }
