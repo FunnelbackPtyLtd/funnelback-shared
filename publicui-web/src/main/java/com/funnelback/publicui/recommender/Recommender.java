@@ -99,7 +99,7 @@ public class Recommender {
 
             if (!("").equals(searchService)) {
                 List<ItemTuple> relatedResults
-                        = RecommenderUtils.getBlendedResults(itemName, fullList, collectionConfig, scope, searchService);
+                        = RecommenderUtils.getRelatedResults(itemName, fullList, collectionConfig, scope, searchService);
                 fullList.addAll(relatedResults);
             }
 
