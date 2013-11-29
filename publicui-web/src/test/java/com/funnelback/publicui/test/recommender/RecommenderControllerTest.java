@@ -186,7 +186,7 @@ public class RecommenderControllerTest {
         List<ItemTuple> itemTuples = new ArrayList<>();
 
         for (int i=0; i < itemIDs.size(); i++) {
-            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, ItemTuple.Source.CO_CLICKS);
+            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), ItemTuple.Source.CO_CLICKS);
             itemTuples.add(itemTuple);
         }
 

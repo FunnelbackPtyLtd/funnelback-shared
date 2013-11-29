@@ -26,12 +26,6 @@ public class Recommendation {
     private ItemTuple.Source source;
 
     /**
-   	 * The confidence value assigned to this recommendation.
-   	 */
-    @Getter
-    private float confidence = 0;
-
-    /**
    	 * The title of the item e.g. title of web page etc.
    	 */
     @Getter
@@ -77,7 +71,6 @@ public class Recommendation {
     public Recommendation(ItemTuple itemTuple, DocInfo docInfo) {
         this.itemID = itemTuple.getItemID();
         this.source = itemTuple.getSource();
-        this.confidence = itemTuple.getScore();
         this.title = docInfo.getTitle();
         this.date = docInfo.getDate();
         this.qieScore = docInfo.getQieScore();

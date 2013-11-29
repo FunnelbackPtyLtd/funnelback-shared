@@ -107,7 +107,6 @@ public final class HTMLUtils {
                     String item = recommendation.getItemID();
                     String title = recommendation.getTitle();
                     Date date = recommendation.getDate();
-                    float confidence = recommendation.getConfidence();
                     float qieScore = recommendation.getQieScore();
 
                     if (date != null) {
@@ -126,8 +125,7 @@ public final class HTMLUtils {
                     buf.append("<li><a href=\"" + item + "\">" + title + "</a> <small>"
                             + item + "</small> [<a href=\"" + similarLink + "\">JSON</a>] "
                             + "[<a href=\"" + sessionsLink + "\">Sessions</a>] ");
-                    buf.append("<ul><li><small> <b>Confidence</b>: "
-                            + confidence + " <b>Date</b>: " + timeStamp
+                    buf.append("<ul><li><small><b>Date</b>: " + timeStamp
                             + " <b>QIE Score</b>: " + qieScore + "</small></li></ul></li>\n");
                     numRecommendations++;
                 }

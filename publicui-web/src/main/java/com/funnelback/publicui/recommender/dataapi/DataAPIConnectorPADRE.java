@@ -56,7 +56,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
                     itemTuple = confidenceMap.get(itemID);
                 }
                 else {
-                    itemTuple = new ItemTuple(itemID, 0, source);
+                    itemTuple = new ItemTuple(itemID, source);
                 }
 
                 Recommendation recommendation = new Recommendation(itemTuple, docInfo);

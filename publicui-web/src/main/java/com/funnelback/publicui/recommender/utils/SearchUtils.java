@@ -163,8 +163,7 @@ public final class SearchUtils {
                             resultURL = resultURL.trim();
 
                             if (!itemName.equals(resultURL)) {
-                                ItemTuple itemTuple = new ItemTuple(resultURL, 0,
-                                        ItemTuple.Source.RELATED_RESULTS);
+                                ItemTuple itemTuple = new ItemTuple(resultURL, ItemTuple.Source.RELATED_RESULTS);
                                 itemTuple.setRank(i);
                                 relatedResults.add(itemTuple);
                                 i++;
@@ -218,8 +217,7 @@ public final class SearchUtils {
                 resultURL = resultURL.trim();
 
                 if (!itemName.equals(resultURL)) {
-                    ItemTuple itemTuple = new ItemTuple(resultURL, 0,
-                            ItemTuple.Source.EXPLORE_RESULTS);
+                    ItemTuple itemTuple = new ItemTuple(resultURL, ItemTuple.Source.EXPLORE_RESULTS);
                     itemTuple.setRank(i);
                     exploreResults.add(itemTuple);
                     i++;

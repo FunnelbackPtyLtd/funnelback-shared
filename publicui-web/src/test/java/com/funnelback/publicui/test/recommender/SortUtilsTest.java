@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SortUtilsTest {
-    private static final int DEFAULT_SCORE = 0;
 
     private ItemTuple addRecommendation(String itemID, ItemTuple.Source source, int rank, List<ItemTuple> recommendations) {
-        ItemTuple itemTuple = new ItemTuple(itemID, DEFAULT_SCORE, source);
+        ItemTuple itemTuple = new ItemTuple(itemID, source);
         itemTuple.setRank(rank);
         recommendations.add(itemTuple);
 
