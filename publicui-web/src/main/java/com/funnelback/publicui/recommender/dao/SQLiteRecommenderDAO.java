@@ -11,11 +11,13 @@ import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class implements the Recommender system DAO (Data Access Object) interface. It uses the SQLite
  * database to access cached recommendation information.
+ *
  * @author fcrimmins@funnelback.com
  */
 
@@ -24,10 +26,10 @@ public class SQLiteRecommenderDAO implements RecommenderDAO {
     private static final Logger logger = Logger.getLogger(SQLiteRecommenderDAO.class);
 
     /**
-     * Get a list of recommendations from for the given key (item ID) and collection.
+     * Get a list of recommendations for the given key (item ID) and collection.
      * @param key    key to lookup
      * @param collectionConfig collection configuration object
-     * @return value as a list, which may be null
+     * @return value as a list, which may be empty (but not null)
      */
     public List<ItemTuple> getRecommendations(String key, Config collectionConfig) throws IllegalStateException {
         List<ItemTuple> items = null;
@@ -62,6 +64,10 @@ public class SQLiteRecommenderDAO implements RecommenderDAO {
             String collectionName = collectionConfig.getCollectionName();
             throw new IllegalStateException("Expected database file does not exist: " + collectionName + baseName
                     + " for collection " + collectionName);
+        }
+
+        if (items == null) {
+            items = new ArrayList<>();
         }
 
         return items;

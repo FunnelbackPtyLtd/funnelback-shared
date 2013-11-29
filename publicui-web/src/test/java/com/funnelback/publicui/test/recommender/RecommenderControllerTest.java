@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.search.web.controllers;
+package com.funnelback.publicui.test.recommender;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
@@ -54,9 +54,10 @@ public class RecommenderControllerTest {
     private final String DEFAULT_COLLECTION_NAME = "recommender";
     private final String INVALID_COLLECTION_NAME = "invalid_collection";
     private final String META_COLLECTION_NAME = "recommender-meta";
-    private final int MAX_RECOMMENDATIONS = 5;
     private final int DEFAULT_SCORE = 5;
-    private final int DEFAULT_CONFIDENCE = -1;
+
+    // Set to -1 to indicate no limit
+    private final int MAX_RECOMMENDATIONS = -1;
 
     @Autowired
     private MockConfigRepository configRepository;
@@ -98,7 +99,7 @@ public class RecommenderControllerTest {
 
         checkResponse(recommendationResponse, DEFAULT_SEED_ITEM, collectionName,
                 ItemTuple.Source.valueOf(expectedSourceType), maxRecommendations, DEFAULT_RECOMMENDATION,
-                DEFAULT_RECOMMENDATION_TITLE, numExpected, expectedStatus);
+                numExpected, expectedStatus);
     }
 
     /**
@@ -106,7 +107,7 @@ public class RecommenderControllerTest {
      */
     private void checkResponse(RecommendationResponse recommendationResponse, String seedItem,
                                String collectionName, ItemTuple.Source source, int maxRecommendations,
-                               String recommendedItem, String recommendedItemTitle, int expectedSize,
+                               String recommendedItem, int expectedSize,
                                RecommendationResponse.Status status) {
         int actualSize = 0;
 
@@ -127,7 +128,6 @@ public class RecommenderControllerTest {
         if (expectedSize > 0) {
             Recommendation returnedRecommendation = returnedRecommendations.get(0);
             Assert.assertEquals(recommendedItem, returnedRecommendation.getItemID());
-            Assert.assertEquals(recommendedItemTitle, returnedRecommendation.getTitle());
         }
     }
 
@@ -135,15 +135,13 @@ public class RecommenderControllerTest {
      * Generate and return a mock DocInfo object based on the given URL address and title.
      *
      * @param address address of URL
-     * @param title   title of URL content
      * @return DocInfo object
      */
-    private DocInfo getMockDocInfo(String address, String title) {
+    private DocInfo getMockDocInfo(String address) {
         DocInfo docInfo;
 
         Map<String, String> i4uData = new HashMap<>();
         i4uData.put("url", address);
-        i4uData.put("title", title);
         i4uData.put("filetype", "html");
         i4uData.put("sumrytext", "Document summary text for: " + address);
         i4uData.put("date", "");
@@ -184,11 +182,11 @@ public class RecommenderControllerTest {
     /**
      * Build and return a list of ItemTuples based on the given list of item IDs and associated titles.
      */
-    private List<ItemTuple> getItemTuples(List<String> itemIDs, List<String> titles) {
+    private List<ItemTuple> getItemTuples(List<String> itemIDs) {
         List<ItemTuple> itemTuples = new ArrayList<>();
 
         for (int i=0; i < itemIDs.size(); i++) {
-            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, titles.get(i), null);
+            ItemTuple itemTuple = new ItemTuple(itemIDs.get(i), DEFAULT_SCORE, ItemTuple.Source.CO_CLICKS);
             itemTuples.add(itemTuple);
         }
 
@@ -202,8 +200,8 @@ public class RecommenderControllerTest {
         List<Recommendation> recommendations = new ArrayList<>();
 
         for (ItemTuple itemTuple : itemTuples) {
-            DocInfo docInfo = getMockDocInfo(itemTuple.getItemID(), itemTuple.getTitle());
-            Recommendation recommendation = new Recommendation(itemTuple.getItemID(), DEFAULT_CONFIDENCE, docInfo, null);
+            DocInfo docInfo = getMockDocInfo(itemTuple.getItemID());
+            Recommendation recommendation = new Recommendation(itemTuple, docInfo);
             recommendations.add(recommendation);
         }
 
@@ -243,24 +241,6 @@ public class RecommenderControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
                 "", MAX_RECOMMENDATIONS, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMissingExploreCollection() throws Exception {
-        SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(null);
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.exploreItems(request, response, sq, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMissingExploreQuery() throws Exception {
-        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
-        Collection collection = sq.getCollection();
-        sq.setCollection(collection);
-
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.exploreItems(request, response, sq, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -321,13 +301,13 @@ public class RecommenderControllerTest {
         Collection collection = sq.getCollection();
         Config collectionConfig = collection.getConfiguration();
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
         List<Recommendation> recommendations = getRecommendations(cachedItems);
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
         confidenceMap.put(DEFAULT_RECOMMENDATION, cachedItems.get(0));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
         )).thenReturn(recommendations);
@@ -347,13 +327,13 @@ public class RecommenderControllerTest {
         Collection collection = sq.getCollection();
         Config collectionConfig = collection.getConfiguration();
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
         List<Recommendation> recommendations = getRecommendations(cachedItems);
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
         confidenceMap.put(DEFAULT_RECOMMENDATION, cachedItems.get(0));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
         )).thenReturn(recommendations);
@@ -369,92 +349,6 @@ public class RecommenderControllerTest {
     }
 
     @Test
-    public void testExploreRecommendations() throws Exception {
-        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
-        Collection collection = sq.getCollection();
-        Config collectionConfig = collection.getConfiguration();
-        int maxRecommendations = 3;
-        String scope = "";
-
-        List<String> indexURLs = new ArrayList<>();
-        indexURLs.add(EXPLORE_RECOMMENDATION);
-        List<String> indexURLTitles = new ArrayList<>();
-        indexURLTitles.add(EXPLORE_RECOMMENDATION_TITLE);
-
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
-        List<Recommendation> recommendations = getRecommendations(cachedItems);
-
-        RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
-                EXPLORE_SEED, DEFAULT_COLLECTION_NAME, scope, maxRecommendations, collectionConfig.getCollectionName(),
-                ItemTuple.Source.EXPLORE, -1, recommendations);
-
-        DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(EXPLORE_SEED, "Immigration");
-        when(dataAPI.getDocInfo(EXPLORE_SEED, collectionConfig)).thenReturn(seedDocInfo);
-        when(dataAPI.decorateURLRecommendations(any(List.class), any(Map.class),
-                any(Config.class))).thenReturn(recommendations);
-        when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
-                any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
-        recommenderController.setDataAPI(dataAPI);
-
-        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
-        when(recommenderDAO.getRecommendations(EXPLORE_SEED, collectionConfig)).thenReturn(null);
-        recommenderController.setRecommenderDAO(recommenderDAO);
-
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setContentType("application/json");
-
-        ModelAndView mav = recommenderController.similarItems(request, response, sq, null, EXPLORE_SEED,
-                scope, maxRecommendations, null);
-        RecommendationResponse recommendationResponse =
-                (RecommendationResponse) mav.getModel().get("RecommendationResponse");
-
-        checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
-                ItemTuple.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
-                EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
-
-        // Text maxRecommendations not being set in direct explore query (should fall back to internal default)
-        String exploreQuery = RecommenderController.EXPLORE_QUERY_PREFIX + EXPLORE_SEED;
-        sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
-        sq.setQuery(exploreQuery);
-        mav = recommenderController.exploreItems(request, response, sq, null);
-        recommendationResponse =
-                        (RecommendationResponse) mav.getModel().get("RecommendationResponse");
-
-        checkResponse(recommendationResponse, EXPLORE_SEED, DEFAULT_COLLECTION_NAME,
-                ItemTuple.Source.EXPLORE, maxRecommendations, EXPLORE_RECOMMENDATION,
-                EXPLORE_RECOMMENDATION_TITLE, 1, RecommendationResponse.Status.OK);
-    }
-
-    @Test
-    public void testExploreNoSuggestions() throws Exception {
-        SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
-        Collection collection = sq.getCollection();
-        Config collectionConfig = collection.getConfiguration();
-
-        SearchController searchController = mock(SearchController.class);
-        when(searchController.search(any(HttpServletRequest.class), any(HttpServletResponse.class),
-                any(SearchQuestion.class), any(SearchUser.class))).thenReturn(null);
-        recommenderController.setSearchController(searchController);
-
-        String exploreQuery = "explore:" + DEFAULT_SEED_ITEM;
-        sq.setQuery(exploreQuery);
-
-        DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
-        when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
-        recommenderController.setDataAPI(dataAPI);
-
-        // Return no cached recommendations to force an explore request to be run.
-        RecommenderDAO recommenderDAO = mock(RecommenderDAO.class);
-        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
-        recommenderController.setRecommenderDAO(recommenderDAO);
-
-        checkSimilarItems(sq, ItemTuple.Source.EXPLORE.toString(), 0,
-                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, "", DEFAULT_COLLECTION_NAME);
-    }
-
-    @Test
     public void testPositiveScope() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         Collection collection = sq.getCollection();
@@ -466,7 +360,7 @@ public class RecommenderControllerTest {
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
         List<ItemTuple> scopedItems = cachedItems;
         scopedItems.remove(1);
         indexURLs.remove(1);
@@ -477,7 +371,7 @@ public class RecommenderControllerTest {
         confidenceMap.put(DEFAULT_RECOMMENDATION, scopedItems.get(0));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
         )).thenReturn(recommendations);
@@ -503,7 +397,7 @@ public class RecommenderControllerTest {
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
         List<ItemTuple> scopedItems = new ArrayList(cachedItems);
         scopedItems.remove(1);
         indexURLs.remove(1);
@@ -514,7 +408,7 @@ public class RecommenderControllerTest {
         confidenceMap.put(DEFAULT_RECOMMENDATION, scopedItems.get(0));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
         )).thenReturn(recommendations);
@@ -524,7 +418,7 @@ public class RecommenderControllerTest {
         when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(cachedItems);
         recommenderController.setRecommenderDAO(recommenderDAO);
 
-        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.CO_CLICKS.toString(), 1,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 
@@ -538,7 +432,7 @@ public class RecommenderControllerTest {
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
         List<Recommendation> recommendations = getRecommendations(cachedItems);
 
         Map<String, ItemTuple> confidenceMap = new HashMap<>();
@@ -546,7 +440,7 @@ public class RecommenderControllerTest {
         confidenceMap.put(OUTSIDE_SCOPE, cachedItems.get(1));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig
         )).thenReturn(recommendations);
@@ -557,7 +451,7 @@ public class RecommenderControllerTest {
         recommenderController.setRecommenderDAO(recommenderDAO);
 
         // Also test null scope parameter
-        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 1,
+        checkSimilarItems(sq, ItemTuple.Source.CO_CLICKS.toString(), 1,
                 RecommendationResponse.Status.OK, maxRecommendations, null, DEFAULT_COLLECTION_NAME);
     }
 
@@ -574,7 +468,7 @@ public class RecommenderControllerTest {
         indexURLs.add(OUTSIDE_SCOPE);
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
-        List<ItemTuple> cachedItems = getItemTuples(indexURLs, indexURLTitles);
+        List<ItemTuple> cachedItems = getItemTuples(indexURLs);
 
         List<Recommendation> recommendations = getRecommendations(cachedItems);
 
@@ -583,7 +477,7 @@ public class RecommenderControllerTest {
         confidenceMap.put(OUTSIDE_SCOPE, cachedItems.get(1));
 
         DataAPI dataAPI = mock(DataAPI.class);
-        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM, DEFAULT_SEED_ITEM_TITLE);
+        DocInfo seedDocInfo = getMockDocInfo(DEFAULT_SEED_ITEM);
         when(dataAPI.getDocInfo(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(seedDocInfo);
         when(dataAPI.decorateURLRecommendations(any(List.class), any(Map.class),
                 any(Config.class))).thenReturn(recommendations);
@@ -595,25 +489,7 @@ public class RecommenderControllerTest {
 
         checkSimilarItems(sq, ItemTuple.Source.DEFAULT.toString(), 2,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
-        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 2,
+        checkSimilarItems(sq, ItemTuple.Source.CO_CLICKS.toString(), 2,
                 RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
-
-        // Set things up for an Explore source by now returning a smaller list in response to an
-        // explicit Explore request
-        recommendations.remove(1);
-        RecommendationResponse simulatedResponse = new RecommendationResponse(RecommendationResponse.Status.OK,
-                DEFAULT_SEED_ITEM, DEFAULT_COLLECTION_NAME, scope, MAX_RECOMMENDATIONS,
-                collectionConfig.getCollectionName(), ItemTuple.Source.EXPLORE, -1, recommendations);
-        when(dataAPI.getResponseFromResults(any(String.class), any(List.class), any(Config.class),
-                any(String.class), any(String.class), anyInt())).thenReturn(simulatedResponse);
-
-        checkSimilarItems(sq, ItemTuple.Source.EXPLORE.toString(), 1,
-                RecommendationResponse.Status.OK, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
-
-        // Now configure DAO to return nothing for the given seed item i.e. no clicked recommendations available
-        // This is so we can confirm that it does not fall through to returning Explore results (default behaviour).
-        when(recommenderDAO.getRecommendations(DEFAULT_SEED_ITEM, collectionConfig)).thenReturn(null);
-        checkSimilarItems(sq, ItemTuple.Source.CLICKS.toString(), 0,
-                RecommendationResponse.Status.NO_SUGGESTIONS_FOUND, MAX_RECOMMENDATIONS, scope, DEFAULT_COLLECTION_NAME);
     }
 }

@@ -8,7 +8,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import java.util.Date;
 import java.util.Map;
 /**
- * A recommendation in the recommender system.
+ * A recommendation in the Recommender System.
+ *
  * @author fcrimmins@funnelback.com
  */
 public class Recommendation {
@@ -17,6 +18,12 @@ public class Recommendation {
 	 */
     @Getter
     private String itemID = "";
+
+    /**
+     * Source of this recommendation.
+     */
+    @Getter
+    private ItemTuple.Source source;
 
     /**
    	 * The confidence value assigned to this recommendation.
@@ -62,19 +69,20 @@ public class Recommendation {
     private String format = "";
 
     /**
-     * Source of this recommendation.
+     * The frequency of occurrence of this item (e.g. number of times it appeared in different data sources).
      */
     @Getter
-    private ItemTuple.Source source;
+    private int frequency = 0;
 
-    public Recommendation(String item, float confidence, DocInfo docInfo, ItemTuple.Source source) {
-        this.itemID = item;
-        this.confidence = confidence;
+    public Recommendation(ItemTuple itemTuple, DocInfo docInfo) {
+        this.itemID = itemTuple.getItemID();
+        this.source = itemTuple.getSource();
+        this.confidence = itemTuple.getScore();
         this.title = docInfo.getTitle();
         this.date = docInfo.getDate();
         this.qieScore = docInfo.getQieScore();
         this.metaData = docInfo.getMetaData();
-        this.source = source;
+        this.frequency = itemTuple.getFrequency();
 
         String value = metaData.get("c");
 

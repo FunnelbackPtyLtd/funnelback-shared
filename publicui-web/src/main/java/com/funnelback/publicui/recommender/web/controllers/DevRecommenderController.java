@@ -8,10 +8,10 @@ import com.funnelback.publicui.recommender.Recommender;
 import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
 import com.funnelback.publicui.recommender.utils.HTMLUtils;
+import com.funnelback.publicui.recommender.utils.SearchUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
-import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,7 @@ import java.util.*;
  * Controller for developer access to Recommender system.
  * NB: Since this is for developers only it currently has no unit tests exercising it.
  * TODO FUN-5961: Move this into another "developer tools" WAR file.
+ *
  * @author fcrimmins@funnelback.com
  */
 
@@ -89,11 +90,6 @@ public class DevRecommenderController {
         String searchService = "http://" + requestURL.getAuthority() + "/s/"
                 + SEARCH_JSON + collection;
 
-        if (scope != null && !("").equals(scope)) {
-            String utf8Scope = URLEncoder.encode(scope, "utf-8");
-            searchService = searchService + "&scope=" + utf8Scope;
-        }
-
         StringBuffer buf = new StringBuffer();
         buf.append(RECOMMENDATIONS_DOC_HEADER);
 
@@ -102,9 +98,10 @@ public class DevRecommenderController {
 
         if (collectionRef != null) {
             long startTime = System.currentTimeMillis();
+            SearchUtils searchUtils = new SearchUtils(collectionRef.getConfiguration());
 
             try {
-                results = RecommenderUtils.getResults(query, searchService);
+                results = searchUtils.getResults(query, searchService, scope, DEFAULT_MAX_RECOMMENDATIONS);
             } catch (IOException exception) {
                 logger.error(exception);
             }
@@ -140,11 +137,11 @@ public class DevRecommenderController {
 
                     try {
                         Recommender recommender =
-                                new Recommender(collectionRef, dataAPI, recommenderDAO, resultURL, configRepository);
+                                new Recommender(collectionRef, dataAPI, recommenderDAO, resultURL, "", configRepository);
 
                         List<Recommendation> recommendations =
                                 recommender.getRecommendationsForItem(resultURL, scope,
-                                        maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.CLICKS, "");
+                                        maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.DEFAULT);
                         buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
                                 scope, maxRecommendations));	
                     }
@@ -195,7 +192,7 @@ public class DevRecommenderController {
         if (collectionRef != null) {      	
             try {
                 Recommender recommender =
-                        new Recommender(collectionRef, dataAPI, recommenderDAO, itemName, configRepository);
+                        new Recommender(collectionRef, dataAPI, recommenderDAO, itemName, "", configRepository);
                 Config collectionConfig = recommender.getCollectionConfig();
                 
                 buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));

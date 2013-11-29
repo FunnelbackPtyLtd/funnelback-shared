@@ -4,21 +4,20 @@ import com.funnelback.common.config.Config;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
-import com.funnelback.publicui.recommender.RecommendationResponse;
-import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- *  The DataAPI interface provides access to the Funnelback Data API. This is mainly used to "decorate"
- *  suggestions returned by the Recommender with information from the Data API (e.g. title, metadata etc.)
+ * The DataAPI interface provides access to the Funnelback Data API. This is mainly used to "decorate"
+ * suggestions returned by the Recommender with information from the Data API (e.g. title, metadata etc.).
+ *
+ * @author fcrimmins@funnelback.com
  */
 public interface DataAPI {
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
-     *
      *
      * @param urls               list of URL strings to decorate
      * @param confidenceMap      Optional map of urls to confidence scores (can be null if not available).
@@ -48,21 +47,6 @@ public interface DataAPI {
      * @return DocInfo object (may be null if unable to get information)
      */
     DocInfo getDocInfo(String url, Config collectionConfig);
-
-    /**
-     * Return a RecommendationResponse built from the given list of results (which came from an 'explore:url' query.
-     *
-     * @param seedItem seed URL
-     * @param results list of results from explore query
-     * @param collectionConfig collection config object
-     * @param requestCollection name of the collection that the original recommendation request was made to
-     * @param scope scope parameter (may be empty)
-     * @param maxRecommendations maximum number of recommendations to return
-     * 
-     */
-    RecommendationResponse getResponseFromResults(String seedItem, List<Result> results,
-                                                              Config collectionConfig, String requestCollection,
-                                                              String scope, int maxRecommendations);
 
     /**
      * Return the title of the given URL from the given collection.

@@ -4,14 +4,14 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
 import com.funnelback.common.utils.SQLiteCache;
-import com.funnelback.common.utils.StringCountComparator;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
+import com.funnelback.publicui.recommender.utils.SearchUtils;
+import com.funnelback.publicui.recommender.utils.SortUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
-import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,31 +33,31 @@ public class Recommender {
     @Getter
     private Config collectionConfig;
 
-    // Comparator for StringCount objects (based on their internal count value)
-    public static final StringCountComparator FREQUENCY_ORDER = new StringCountComparator();
-
     private ConfigRepository configRepository;
     private DataAPI dataAPI;
     private RecommenderDAO recommenderDAO;
+    private String searchService = "";
 
     /**
      * Create a Recommender for the given collection and seed item. The Recommender will try to determine if
      * the given seed item is present in the given collection or one of its components if it is a meta collection.
-     * If it cannot find a collection with information on the given item then it will throw an
+     * If it cannot find a collection with information on the given item then it will throw an IllegalStateException.
      *
      * @param collection       collection object
      * @param dataAPI          a handle to the Data API system
      * @param recommenderDAO   recommender data access object
      * @param seedItem         seed item (e.g. URL)
+     * @param searchService
      * @param configRepository handle to configuration repository
      */
     public Recommender(com.funnelback.publicui.search.model.collection.Collection collection,
                        DataAPI dataAPI, RecommenderDAO recommenderDAO, String seedItem,
-                       ConfigRepository configRepository) throws IllegalStateException {
+                       String searchService, ConfigRepository configRepository) throws IllegalStateException {
         this.dataAPI = dataAPI;
         this.recommenderDAO = recommenderDAO;
         this.configRepository = configRepository;
         this.collectionConfig = getCollectionConfig(collection, seedItem);
+        this.searchService = searchService;
 
         if (collectionConfig == null) {
             throw new IllegalStateException("Unable to create a valid collection config object for collection: "
@@ -66,49 +66,79 @@ public class Recommender {
     }
 
     /**
+     * Build up a list of recommendations for the given item, scope and source type.
+     * @param itemName name (ID) of item
+     * @param scope scope parameter that may be used in searches for generating recommendations
+     * @param source   Enum specifying source of recommendations: DEFAULT (multiple sources), CO_CLICKS,
+     *                 RELATED_CLICKS, RELATED_RESULTS, EXPLORE_RESULTS.
+     * @return list of recommendations (which may be empty but not null)
+     */
+    private List<ItemTuple> buildRecommendations(String itemName, String scope,
+            ItemTuple.Source source) {
+        List<ItemTuple> itemTuples = new ArrayList<>();
+        SearchUtils searchUtils = new SearchUtils(collectionConfig);
+
+        switch(source) {
+            case DEFAULT:
+                // Query all sources and then blend them
+                itemTuples = recommenderDAO.getRecommendations(itemName, collectionConfig);
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                        scope, ItemTuple.Source.RELATED_RESULTS));
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                        scope, ItemTuple.Source.EXPLORE_RESULTS));
+                break;
+            case CO_CLICKS:
+            case RELATED_CLICKS:
+                // Both of these sources are available from the DAO - we will rely on a later
+                // validSource() call to remove any items that we don't want
+                itemTuples = recommenderDAO.getRecommendations(itemName, collectionConfig);
+                break;
+            case RELATED_RESULTS:
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                        scope, ItemTuple.Source.RELATED_RESULTS));
+                break;
+            case EXPLORE_RESULTS:
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                        scope, ItemTuple.Source.EXPLORE_RESULTS));
+                break;
+            default:
+                throw new IllegalStateException("Unknown source type: " + source);
+        }
+
+        return itemTuples;
+    }
+
+    /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
      * Guarantees that the number of recommendations returned will never be greater than maxRecommendations
      * (unless maxRecommendations is < 1, which means 'unlimited').
      *
-     * @param itemName           name of item
-     * @param scope              comma separated list of items scopes
+     * @param itemName           name (ID) of item
+     * @param scope              comma separated list of item scopes
      * @param maxRecommendations maximum number of recommendations to display (less than 1 means unlimited)
-     * @param source             expected source of recommendations (default is CLICKS)
-     * @param searchService
-     * @return List of recommendations (which may be empty).
+     * @param source   Enum specifying source of recommendations: DEFAULT (blended mixture), CO_CLICKS,
+     *                 RELATED_CLICKS, RELATED_RESULTS, EXPLORE_RESULTS.
+     * @return List of recommendations (which may be empty but not null).
      */
     public List<Recommendation> getRecommendationsForItem(String itemName, String scope,
-                                                          int maxRecommendations, ItemTuple.Source source,
-                                                          String searchService)
-            throws IllegalStateException {
+            int maxRecommendations, ItemTuple.Source source) throws IllegalStateException {
         List<Recommendation> recommendations = new ArrayList<>();
-        List<ItemTuple> fullList;
         List<String> scopes = new ArrayList<>();
 
         if (scope != null && !("").equals(scope)) {
             scopes = Arrays.asList(scope.split(","));
         }
 
-        fullList = recommenderDAO.getRecommendations(itemName, collectionConfig);
+        List<ItemTuple> itemTuples = buildRecommendations(itemName, scope, source);
 
-        if (fullList != null && fullList.size() > 0) {
-            if (source.equals(ItemTuple.Source.RELATED_CLICKS) && fullList.size() < maxRecommendations) {
-                List<ItemTuple> relatedClicks = RecommenderUtils.getRelatedClicks(itemName, fullList, collectionConfig);
-                fullList.addAll(relatedClicks);
-            }
-
-            if (!("").equals(searchService)) {
-                List<ItemTuple> relatedResults
-                        = RecommenderUtils.getRelatedResults(itemName, fullList, collectionConfig, scope, searchService);
-                fullList.addAll(relatedResults);
-            }
-
+        if (itemTuples != null && itemTuples.size() > 0) {
+            List<ItemTuple> sortedList = SortUtils.sortList(itemTuples);
             List<ItemTuple> scopedList = new ArrayList<>();
 
-            for (ItemTuple item : fullList) {
+            for (ItemTuple item : sortedList) {
                 String itemValue = item.getItemID();
 
-                if (itemValue != null && inScope(itemValue, scopes)) {
+                if (itemValue != null && inScope(itemValue, scopes) && validSource(item.getSource(), source)) {
                     scopedList.add(item);
                 }
             }
@@ -125,15 +155,33 @@ public class Recommender {
 
                 recommendations = dataAPI.decorateURLRecommendations(indexURLs, confidenceMap, collectionConfig);
 
-                if (recommendations != null && recommendations.size() > maxRecommendations) {
+                if (recommendations != null && recommendations.size() > maxRecommendations
+                        && maxRecommendations > 0) {
                     recommendations = recommendations.subList(0, maxRecommendations);
                 }
             } else {
-                logger.info("No items in scope from original list of size: " + fullList.size());
+                logger.info("No items in scope from original list of size: " + itemTuples.size());
             }
         }
 
         return recommendations;
+    }
+
+    /**
+     * Return true if the given item source is considered a valid source given an expected value.
+     * @param itemSource source of a given item
+     * @param expectedSource expected source (DEFAULT means all sources are considered valid)
+     * @return true if source is valid, otherwise false
+     */
+    private boolean validSource(ItemTuple.Source itemSource, ItemTuple.Source expectedSource) {
+        boolean validSource = false;
+
+        if (itemSource != null && (expectedSource.equals(ItemTuple.Source.DEFAULT)
+                || itemSource.equals(expectedSource))) {
+            validSource = true;
+        }
+
+        return validSource;
     }
 
     /**
@@ -142,7 +190,7 @@ public class Recommender {
      *
      * @param item   String to test for display
      * @param scopes list of scope patterns e.g. cmis.csiro.au,-vic.cmis.csiro.au
-     * @return true if item should be displayed
+     * @return true if item should be displayed, otherwise false
      */
     public boolean inScope(String item, List<String> scopes) {
         Pattern positiveRegex = null;
