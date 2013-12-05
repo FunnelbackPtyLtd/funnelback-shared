@@ -367,7 +367,7 @@
 <#macro QueryClean><#compress>
     <#if response?exists
         && response.resultPacket?exists>
-        ${response.resultPacket.queryCleaned?html}
+        ${response.resultPacket.queryCleaned!?html}
     </#if>
 </#compress></#macro>
 
