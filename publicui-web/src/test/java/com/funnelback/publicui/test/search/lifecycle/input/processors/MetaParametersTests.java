@@ -465,5 +465,27 @@ public class MetaParametersTests {
         Assert.assertEquals(0, st.getQuestion().getSystemMetaParameters().size());
     }
     
+    /**
+     * FUN-6235
+     */
+    @Test
+    public void testEventSearchParamsDontConflict() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        
+        st.getQuestion().getRawInputParameters().put("meta_w", new String[] {"value w"});
+        st.getQuestion().getRawInputParameters().put("meta_x", new String[] {"value x"});
+        st.getQuestion().getRawInputParameters().put("meta_y", new String[] {"value y"});
+        st.getQuestion().getRawInputParameters().put("meta_z", new String[] {"value z"});
+        
+        new MetaParameters().processInput(st);
+        
+        Assert.assertEquals(4, st.getQuestion().getMetaParameters().size());
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("w:value w"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("x:value x"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("y:value y"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("z:value z"));
+
+    }
+    
 }
 
