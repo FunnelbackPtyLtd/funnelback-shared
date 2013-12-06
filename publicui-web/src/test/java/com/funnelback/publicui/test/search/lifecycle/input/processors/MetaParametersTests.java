@@ -472,18 +472,20 @@ public class MetaParametersTests {
     public void testEventSearchParamsDontConflict() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
         
-        st.getQuestion().getRawInputParameters().put("meta_w", new String[] {"value w"});
-        st.getQuestion().getRawInputParameters().put("meta_x", new String[] {"value x"});
-        st.getQuestion().getRawInputParameters().put("meta_y", new String[] {"value y"});
-        st.getQuestion().getRawInputParameters().put("meta_z", new String[] {"value z"});
+        st.getQuestion().getRawInputParameters().put("meta_a", new String[] {"value_a"});
+        st.getQuestion().getRawInputParameters().put("meta_w", new String[] {"value_w"});
+        st.getQuestion().getRawInputParameters().put("meta_x", new String[] {"value_x"});
+        st.getQuestion().getRawInputParameters().put("meta_y", new String[] {"value_y"});
+        st.getQuestion().getRawInputParameters().put("meta_z", new String[] {"value_z"});
         
         new MetaParameters().processInput(st);
         
-        Assert.assertEquals(4, st.getQuestion().getMetaParameters().size());
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("w:value w"));
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("x:value x"));
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("y:value y"));
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("z:value z"));
+        Assert.assertEquals(5, st.getQuestion().getMetaParameters().size());
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:value_a"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("w:value_w"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("x:value_x"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("y:value_y"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("z:value_z"));
 
     }
     
