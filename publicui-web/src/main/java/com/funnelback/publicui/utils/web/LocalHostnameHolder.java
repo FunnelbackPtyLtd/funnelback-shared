@@ -45,7 +45,11 @@ public class LocalHostnameHolder {
     }
     
     public String getShortHostname() {
-        return hostname.replaceAll("\\..*$", "");
+        if (hostname != null) {
+            return hostname.replaceAll("\\..*$", "");
+        } else {
+            return null;
+        }
     }
 
     

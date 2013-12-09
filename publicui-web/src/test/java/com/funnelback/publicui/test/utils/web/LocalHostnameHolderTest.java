@@ -36,4 +36,11 @@ public class LocalHostnameHolderTest {
         Assert.assertTrue(holder.isLocalhost());
     }
     
+    @Test
+    public void testNullHostname() {
+        LocalHostnameHolder holder = new LocalHostnameHolder(null);
+        Assert.assertNull(holder.getHostname());
+        Assert.assertNull(holder.getShortHostname());
+
+    }
 }
