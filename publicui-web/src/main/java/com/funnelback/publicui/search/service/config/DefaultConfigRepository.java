@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import lombok.Setter;
@@ -139,7 +141,16 @@ public class DefaultConfigRepository implements ConfigRepository {
      */
     private Collection loadCollection(String collectionId) throws IOException {
         log.debug("Loading collection configuration for '"+collectionId+"'");
-        File configFolder = new File(searchHome+File.separator+DefaultValues.FOLDER_CONF, collectionId);
+        
+        // Sanity check the layout - The parent of the collection's directory should be $SEARCH_HOME/conf
+        File configFolder = new File(searchHome+File.separator+DefaultValues.FOLDER_CONF).getCanonicalFile();
+        File collectionConfigFolder = new File(configFolder, collectionId).getCanonicalFile();
+        if (!(collectionConfigFolder.getParentFile().equals(configFolder))) {
+            log.debug("Collection directory parent '"+collectionConfigFolder.getParentFile()+
+                "' is not Funnelback config directory '"+configFolder+
+                "' for collectionId '"+collectionId+"'");
+            return null;
+        }
         
         Config config = resourceManager.load(new ConfigResource(searchHome, collectionId));
         if (config == null) {
@@ -153,7 +164,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         if (Type.meta.equals(c.getType())) {
             c.setMetaComponents(
                     resourceManager.load(
-                            new SimpleFileResource(new File(configFolder, Files.META_CONFIG_FILENAME)),
+                            new SimpleFileResource(new File(collectionConfigFolder, Files.META_CONFIG_FILENAME)),
                             new String[0]));
         } else {
             c.setMetaComponents(new String[0]);
@@ -161,22 +172,22 @@ public class DefaultConfigRepository implements ConfigRepository {
 
         c.getTextMinerBlacklist().addAll(
                 resourceManager.load(
-                        new UniqueLinesResource(new File(configFolder, Files.TEXT_MINER_BLACKLIST)),
+                        new UniqueLinesResource(new File(collectionConfigFolder, Files.TEXT_MINER_BLACKLIST)),
                         new HashSet<String>(0)));
 
         c.getParametersTransforms().addAll(
                 resourceManager.load(
-                        new ParameterTransformResource(new File(configFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
+                        new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
                         new ArrayList<TransformRule>(0)));
         c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
                 collectionId,
                 searchHome,
-                new File(configFolder, Files.QUICKLINKS_CONFIG_FILENAME)), new HashMap<String, String>(0)));
+                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), new HashMap<String, String>(0)));
         
         c.getProfiles().putAll(loadProfiles(c));
         
         for (Hook hook: Hook.values()) {
-            File hookScriptFile = new File(configFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
+            File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
             if (hookScriptFile.exists()) {
                 try {
                     Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile));
@@ -187,7 +198,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             }
         }
         
-        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(configFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))));
+        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))));
         
         return c;
     }

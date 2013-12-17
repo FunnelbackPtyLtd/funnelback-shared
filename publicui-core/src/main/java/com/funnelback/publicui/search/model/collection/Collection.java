@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.ValidationException;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -164,6 +166,9 @@ public class Collection {
     }
     
     public Collection(String id, Config config) {
+        if (!id.matches(COLLECTION_ID_PATTERN)) {
+            throw new IllegalArgumentException("Invalid collection identifier requested");
+        }
         this.id = id;
         this.configuration = config;
     }
