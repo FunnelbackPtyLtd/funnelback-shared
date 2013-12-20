@@ -1,10 +1,16 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.extrasearches;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.utils.CommandLineUtils;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -40,7 +46,9 @@ public class ChangeCollectionQuestionFactory implements ExtraSearchQuestionFacto
         }
         
         if (extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS) != null) {
-            out.getDynamicQueryProcessorOptions().add(extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS));
+            List<String> extraSearchOptions = 
+                CommandLineUtils.splitCommandLineOptions(extraSearchConfiguration.get(Keys.QUERY_PROCESSOR_OPTIONS));
+            out.getDynamicQueryProcessorOptions().addAll(extraSearchOptions);
         }
         
         return out;
