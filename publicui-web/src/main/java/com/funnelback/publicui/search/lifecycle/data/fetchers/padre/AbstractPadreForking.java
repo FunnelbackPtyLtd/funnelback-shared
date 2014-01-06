@@ -95,7 +95,7 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
             if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
                 commandLine.add(OPT_USER_KEYS + "=\""
-                    + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), ",")
+                    + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), "\",\"")
                     + "\"");
             }
     
