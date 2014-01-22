@@ -11,6 +11,8 @@ import lombok.Setter;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.math.DoubleRange;
+import org.apache.commons.lang.math.Range;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -144,6 +146,21 @@ public class ResultPacket {
      * @since 11.2
      */
     @Getter private final Map<String, List<RMCItemResult>> rmcItemResults = new HashMap<String, List<RMCItemResult>>();
+    
+    /**
+     * <p>Metadata ranges.</p>
+     * 
+     * <p>The key is the <code>metadata_class</code> and the
+     * value is a DoubleRange object with maximum and minimum values.</p>
+     * 
+     * <p>
+     *     Example:
+     *  <ul>
+     *      <li>P => Range(100.0, 400.0)</li>
+     *  </ul>
+     * </p>
+     */
+    @Getter private final Map<String, DoubleRange> metadataRanges = new HashMap<String, DoubleRange>();
     
     /**
      * <p>URL counts (Used in faceted navigation).</p>
@@ -323,7 +340,12 @@ public class ResultPacket {
         
         public static final String RMC_ITEM_RESULTS = "rmc_item_results";
         public static final String RMC_ITEM_RESULT = "rmc_item_result";
-        
+
+        public static final String METADATA_RANGE = "md_range";
+        public static final String METADATA_RANGE_CLASS = "class";
+        public static final String METADATA_RANGE_MIN = "min";
+        public static final String METADATA_RANGE_MAX = "max";
+
         public static final String URLCOUNT = "urlcount";
         public static final String URLCOUNT_ITEM = "item";
         

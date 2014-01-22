@@ -12,6 +12,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.math.DoubleRange;
+import org.apache.commons.lang.math.Range;
+
 import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
@@ -103,6 +106,9 @@ public class StaxStreamParser implements PadreXmlParser {
                         RMC rmc = parseRmcFromRmcItemResults(xmlStreamReader);
                         packet.getRmcs().put(rmc.item, rmc.count);
                         packet.getRmcItemResults().put(rmc.item, parseRmcItemResults(xmlStreamReader));
+                    } else if (ResultPacket.Schema.METADATA_RANGE.equals(xmlStreamReader.getLocalName())){
+                        MetadataRange metadataRange = parseMetadataRange(xmlStreamReader);
+                        packet.getMetadataRanges().put(metadataRange.field, new DoubleRange(metadataRange.min, metadataRange.max));
                     } else if (ResultPacket.Schema.URLCOUNT.equals(xmlStreamReader.getLocalName())) {
                         URLCount urlCount = parseURLCount(xmlStreamReader);
                         packet.getUrlCounts().put(urlCount.url, urlCount.count);
@@ -239,7 +245,33 @@ public class StaxStreamParser implements PadreXmlParser {
         
         return null;
     }
-    
+
+    /**
+     * Parses a single <md_range> tag
+     * @param xmlStreamReader
+     * @return
+     * @throws NumberFormatException
+     * @throws XMLStreamException
+     */
+    private MetadataRange parseMetadataRange(XMLStreamReader xmlStreamReader) throws NumberFormatException, XMLStreamException {
+        if(!ResultPacket.Schema.METADATA_RANGE.equals(xmlStreamReader.getLocalName())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if ( xmlStreamReader.getAttributeCount() == 3
+            && ResultPacket.Schema.METADATA_RANGE_CLASS.equals(xmlStreamReader.getAttributeLocalName(0))
+            && ResultPacket.Schema.METADATA_RANGE_MIN.equals(xmlStreamReader.getAttributeLocalName(1))
+            && ResultPacket.Schema.METADATA_RANGE_MAX.equals(xmlStreamReader.getAttributeLocalName(2))) {
+            MetadataRange metadataRange = new MetadataRange();
+            metadataRange.field = xmlStreamReader.getAttributeValue(0);
+            metadataRange.min = Double.parseDouble(xmlStreamReader.getAttributeValue(1));
+            metadataRange.max = Double.parseDouble(xmlStreamReader.getAttributeValue(2));
+            return metadataRange; 
+        }
+        
+        return null;
+    }
+
     public static CoolValue parseCoolValue(XMLStreamReader xmlStreamReader) throws XMLStreamException {
         if (xmlStreamReader.getAttributeCount() == 1
                 && ResultPacket.Schema.COOL.equals(xmlStreamReader.getAttributeLocalName(0))) {
@@ -456,7 +488,13 @@ public class StaxStreamParser implements PadreXmlParser {
         public String item;
         public int count;
     }
-    
+
+    private class MetadataRange {
+        public String field;
+        public double min;
+        public double max;
+    }
+
     public static class CoolValue {
         public String name;
         public int id;
