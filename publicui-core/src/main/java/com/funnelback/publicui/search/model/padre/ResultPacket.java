@@ -11,8 +11,6 @@ import lombok.Setter;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.math.DoubleRange;
-import org.apache.commons.lang.math.Range;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -160,7 +158,7 @@ public class ResultPacket {
      *  </ul>
      * </p>
      */
-    @Getter private final Map<String, DoubleRange> metadataRanges = new HashMap<String, DoubleRange>();
+    @Getter private final Map<String, Range> metadataRanges = new HashMap<String, Range>();
     
     /**
      * <p>URL counts (Used in faceted navigation).</p>

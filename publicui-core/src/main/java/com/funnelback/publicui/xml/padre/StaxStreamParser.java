@@ -12,9 +12,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.commons.lang.math.DoubleRange;
-import org.apache.commons.lang.math.Range;
-
 import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
@@ -24,6 +21,7 @@ import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.RMCItemResult;
+import com.funnelback.publicui.search.model.padre.Range;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
@@ -108,7 +106,7 @@ public class StaxStreamParser implements PadreXmlParser {
                         packet.getRmcItemResults().put(rmc.item, parseRmcItemResults(xmlStreamReader));
                     } else if (ResultPacket.Schema.METADATA_RANGE.equals(xmlStreamReader.getLocalName())){
                         MetadataRange metadataRange = parseMetadataRange(xmlStreamReader);
-                        packet.getMetadataRanges().put(metadataRange.field, new DoubleRange(metadataRange.min, metadataRange.max));
+                        packet.getMetadataRanges().put(metadataRange.field, new Range(metadataRange.min, metadataRange.max));
                     } else if (ResultPacket.Schema.URLCOUNT.equals(xmlStreamReader.getLocalName())) {
                         URLCount urlCount = parseURLCount(xmlStreamReader);
                         packet.getUrlCounts().put(urlCount.url, urlCount.count);
