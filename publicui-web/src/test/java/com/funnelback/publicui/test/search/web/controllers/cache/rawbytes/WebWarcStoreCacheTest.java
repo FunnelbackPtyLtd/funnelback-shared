@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.URLStore.View;
 import com.funnelback.common.io.WARCStore;
 import com.funnelback.common.io.store.RawBytesRecord;
@@ -46,7 +45,7 @@ public class WebWarcStoreCacheTest extends
                 new DummyObjectCache(),
                 new DummyObjectCache(),
                 new DummyObjectCache(),
-                new SimpleRevisitPolicy(),
+                new DummyObjectCache(), new SimpleRevisitPolicy(),
                 configRepository.getCollection(collectionId).getConfiguration(),
                 pw,
                 pw,
@@ -55,8 +54,8 @@ public class WebWarcStoreCacheTest extends
                 pw,
                 pw,
                 0,
-                0,
-                new DummyObjectCache());
+                0
+        );
         
         ms.storeContent(
                 new URL(getPrimaryKey()),

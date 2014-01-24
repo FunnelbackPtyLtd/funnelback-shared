@@ -38,7 +38,7 @@ public class WebMirrorStoreCacheTest extends
                 new DummyObjectCache(),
                 new DummyObjectCache(),
                 new DummyObjectCache(),
-                new SimpleRevisitPolicy(),
+                new DummyObjectCache(), new SimpleRevisitPolicy(),
                 configRepository.getCollection(collectionId).getConfiguration(),
                 pw,
                 pw,
@@ -47,8 +47,8 @@ public class WebMirrorStoreCacheTest extends
                 pw,
                 pw,
                 0,
-                0,
-                new DummyObjectCache());
+                0
+        );
         
         ms.storeContent(
                 new URL(getPrimaryKey()),
