@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.funnelback.publicui.doc</groupId>
 		<artifactId>publicui-doc-parent</artifactId>
-		<version>13.1.12-SNAPSHOT</version>
+		<version>13.1.13-SNAPSHOT</version>
 	</parent>
 
     <build>
