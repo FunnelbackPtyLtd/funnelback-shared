@@ -1,6 +1,11 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd"
 	updateCheck="false">
-	<diskStore path="java.io.tmpdir" />
+
+	<!-- 
+	The diskStore is configured within com.funnelback.publicui.search.service.AppCacheManager base on the
+	current execution context (to avoid conflicts).
+	 -->
+	 
 	<defaultCache maxElementsInMemory="5000" eternal="true" overflowToDisk="false" statistics="true" />
 
 	<!-- Cache for collection configs -->

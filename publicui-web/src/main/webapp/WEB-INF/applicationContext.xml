@@ -29,12 +29,6 @@
 		<constructor-arg ref="searchHome"></constructor-arg>
 	</bean>
 
-	<bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
-		<constructor-arg index="0" type="java.net.URL"
-			value="classpath:ehcache.xml" />
-	</bean>
-	<bean class="com.funnelback.publicui.search.service.AppCacheManager" />
-	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<list>

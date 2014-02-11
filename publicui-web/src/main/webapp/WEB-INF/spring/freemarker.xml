@@ -75,7 +75,7 @@
 				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective">
-						<constructor-arg ref="appCacheManager" />
+						<constructor-arg ref="cacheManager" />
 						<constructor-arg ref="i18n"></constructor-arg>
 					</bean>
 				</entry>
