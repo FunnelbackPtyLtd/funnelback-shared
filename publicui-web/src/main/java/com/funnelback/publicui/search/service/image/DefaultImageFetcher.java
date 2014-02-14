@@ -52,6 +52,15 @@ public class DefaultImageFetcher implements ImageFetcher {
         return (byte[])cache.get(url).getValue();
     }
 
+    @Override
+    public void clearCache(String url) {
+        Cache cache = appCacheManager.getCache(CACHE);
+        cache.remove(url);
+    }
 
-
+    @Override
+    public void clearAllCache() {
+        Cache cache = appCacheManager.getCache(CACHE);
+        cache.removeAll();
+    }
 }

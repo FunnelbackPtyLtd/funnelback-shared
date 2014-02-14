@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import lombok.Cleanup;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,9 +33,15 @@ public class ImageScaleController {
     @Autowired
     ImageScaler scaler;
 
+    /**
+     * Scale (and possibly crop and convert) the specified image according to
+     * the scaler settings, and return the scaled image.
+     * 
+     * Caching is used to avoid re-scaling or re-fetching the image. The cache
+     * must be manually cleared if the source image is changed.
+     */
     @RequestMapping(value="/scale", method=RequestMethod.GET)
-    public ModelAndView scale(HttpServletRequest request,
-            HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
+    public ModelAndView scale(HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
         throws Exception {
         
         byte[] unscaledImage = fetcher.fetch(url);
@@ -48,5 +55,26 @@ public class ImageScaleController {
         
         return null;
     }
-        
+
+    /**
+     * Clear the cache for the specified image and scaling settings.
+     */
+    @RequestMapping(value="/scale/clear-cache", method=RequestMethod.GET)
+    public ModelAndView clearCache(String url, @Valid ImageScalerSettings ss)
+        throws Exception {
+        fetcher.clearCache(url);
+        scaler.clearCache(url, ss);
+        return null;
+    }
+
+    /**
+     * Clear all cache entries.
+     */
+    @RequestMapping(value="/scale/clear-all-cache", method=RequestMethod.GET)
+    public ModelAndView clearAllCache()
+        throws Exception {
+        fetcher.clearAllCache();
+        scaler.clearAllCache();
+        return null;
+    }
 }

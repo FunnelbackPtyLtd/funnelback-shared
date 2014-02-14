@@ -33,12 +33,10 @@ public class DefaultImageScaler implements ImageScaler {
 
         Cache cache = appCacheManager.getCache(CACHE);
 
-        String processedKey = scaledCacheIdentifier + "|" + settings.getWidth()
-                + "|" + settings.getHeight() + "|"
-                + settings.getType() + "|" + settings.getFormat();
+        String key = getCacheKey(scaledCacheIdentifier, settings);
 
-        if (! cache.isKeyInCache(processedKey)) {
-            log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + processedKey);
+        if (! cache.isKeyInCache(key)) {
+            log.trace("Scaling " + scaledCacheIdentifier + " to cache with key " + key);
             
             @Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
             Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
@@ -69,9 +67,46 @@ public class DefaultImageScaler implements ImageScaler {
                 throw new RuntimeException(e);
             }
             
-            cache.put(new Element(processedKey, scaledImageBytes.toByteArray()));
+            cache.put(new Element(key, scaledImageBytes.toByteArray()));
         }
 
-        return (byte[])cache.get(processedKey).getValue();
+        return (byte[])cache.get(key).getValue();
+    }
+
+    /**
+     * Returns the cache key, which should be distinct for distinct input values.
+     */
+    private String getCacheKey(String scaledCacheIdentifier, ImageScalerSettings settings) {
+        String processedKey = scaledCacheIdentifier + " " + settings.getWidth()
+                + "|" + settings.getHeight() + "|"
+                + settings.getType() + "|" + settings.getFormat();
+        return processedKey;
+    }
+
+    @Override
+    public void clearCache(String scaledCacheIdentifier, ImageScalerSettings ss) {
+        // Possibly we should clear all entries starting with this URL, but that may
+        // be expensive to do if the cache is large.
+        /*        
+        List<?> keys = cache.getKeysNoDuplicateCheck();
+        for (Object key : keys) {
+            if (key.toString().startsWith(scaledCacheIdentifier + "|")) {
+                cache.remove(key);
+            }
+        }
+        */
+        
+        // For now we just clear everything from this cache
+        
+        // In the ImageScaleController use case the ImageFetcher will still
+        // have cached (full size) copies of all the other images, so scaling
+        // will have to re-occur, but at least there's not another network request.
+        this.clearAllCache();
+    }
+
+    @Override
+    public void clearAllCache() {
+        Cache cache = appCacheManager.getCache(CACHE);
+        cache.removeAll();
     }
 }
