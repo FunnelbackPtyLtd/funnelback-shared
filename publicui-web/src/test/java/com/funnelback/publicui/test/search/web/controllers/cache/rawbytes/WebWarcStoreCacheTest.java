@@ -1,12 +1,5 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
-import java.io.IOException;
-import java.net.URL;
-
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.io.FileUtils;
-
 import com.funnelback.common.config.Config;
 import com.funnelback.common.io.URLStore.View;
 import com.funnelback.common.io.WARCStore;
@@ -16,6 +9,12 @@ import com.funnelback.common.revisit.SimpleRevisitPolicy;
 import com.funnelback.common.utils.DocHdrUtils;
 import com.funnelback.common.utils.DummyObjectCache;
 import com.funnelback.common.utils.Log4JPrintWriter;
+import com.funnelback.common.utils.WriterFile;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.io.FileUtils;
+
+import java.io.IOException;
+import java.net.URL;
 
 @Log4j
 public class WebWarcStoreCacheTest extends
@@ -31,7 +30,8 @@ public class WebWarcStoreCacheTest extends
     @Override
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
         Log4JPrintWriter pw = new Log4JPrintWriter(log);
-        
+        WriterFile wf = new WriterFile(pw, null);
+
         // Because the WARCStore deals with views itself, we need to fake
         // using the live view to store our test data
         Config c = configRepository.getCollection(collectionId).getConfiguration();
@@ -47,12 +47,12 @@ public class WebWarcStoreCacheTest extends
                 new DummyObjectCache(),
                 new DummyObjectCache(), new SimpleRevisitPolicy(),
                 configRepository.getCollection(collectionId).getConfiguration(),
-                pw,
-                pw,
-                pw,
-                pw,
-                pw,
-                pw,
+                wf,
+                wf,
+                wf,
+                wf,
+                wf,
+                wf,
                 0,
                 0
         );
