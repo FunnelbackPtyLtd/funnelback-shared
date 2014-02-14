@@ -42,11 +42,12 @@ public class AppCacheManager {
             diskStoreConfiguration.setPath("java.io.tmpdir/EhCache-" + executionContextHolder.getExecutionContext().name());
             configuration.addDiskStore(diskStoreConfiguration);
     
-            return new CacheManager(configuration);
+            cacheManager = new CacheManager(configuration);
+            
+            return cacheManager;
         }
     }
 
-    @Autowired
     private CacheManager cacheManager;
 
     /**
@@ -58,5 +59,4 @@ public class AppCacheManager {
         log.debug("Shutting down application cache");
         cacheManager.shutdown();
     }
-
 }
