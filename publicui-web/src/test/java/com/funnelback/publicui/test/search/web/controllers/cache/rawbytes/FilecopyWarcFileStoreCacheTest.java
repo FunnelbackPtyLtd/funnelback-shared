@@ -1,12 +1,12 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
-import java.io.IOException;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.Store.View;
 import com.funnelback.common.io.store.bytes.WarcFileStore;
+
+import java.io.IOException;
 
 public class FilecopyWarcFileStoreCacheTest extends
         AbstractRawBytesCacheControllerTest {

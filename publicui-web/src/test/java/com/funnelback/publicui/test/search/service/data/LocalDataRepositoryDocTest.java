@@ -1,24 +1,23 @@
 package com.funnelback.publicui.test.search.service.data;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import com.funnelback.common.View;
+import com.funnelback.common.Xml;
+import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.data.LocalDataRepository;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.Xml;
-import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.Store.View;
-import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.service.data.LocalDataRepository;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class LocalDataRepositoryDocTest {
 

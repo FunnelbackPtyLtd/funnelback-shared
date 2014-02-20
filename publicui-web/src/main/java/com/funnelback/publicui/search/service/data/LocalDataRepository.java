@@ -1,47 +1,12 @@
 package com.funnelback.publicui.search.service.data;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileSystemOptions;
-import org.apache.commons.vfs.UserAuthenticator;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.auth.StaticUserAuthenticator;
-import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Repository;
-
+import com.funnelback.common.View;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.Collection.Type;
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store;
+import com.funnelback.common.io.store.*;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.Store.View;
-import com.funnelback.common.io.store.StoreType;
-import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.warc.WarcConstants;
 import com.funnelback.common.utils.VFSURLUtils;
 import com.funnelback.publicui.i18n.I18n;
@@ -53,6 +18,22 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.vfs.*;
+import org.apache.commons.vfs.auth.StaticUserAuthenticator;
+import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * {@link DataRepository} implementation against the 

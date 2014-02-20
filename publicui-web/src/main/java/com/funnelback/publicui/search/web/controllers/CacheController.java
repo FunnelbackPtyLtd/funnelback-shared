@@ -1,49 +1,12 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import groovy.lang.Script;
-
-import java.beans.PropertyEditorSupport;
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Pattern;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-
-import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.FileEditor;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.codahale.metrics.MetricRegistry;
+import com.funnelback.common.View;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store;
+import com.funnelback.common.io.store.*;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.io.store.Store.View;
-import com.funnelback.common.io.store.StringRecord;
-import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
@@ -53,6 +16,28 @@ import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.RelativeFileOnlyEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import groovy.lang.Script;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Deal with cached copies

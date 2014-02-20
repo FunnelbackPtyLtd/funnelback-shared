@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.io.URLStore.View;
 import com.funnelback.common.io.WARCStore;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
