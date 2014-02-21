@@ -1,12 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.io.File;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -16,6 +10,11 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
 
 public class HostnameInLogFilenameTest {
 
@@ -54,7 +53,7 @@ public class HostnameInLogFilenameTest {
         
         String expectedFilename = new File(
                 st.getQuestion().getCollection().getConfiguration().getCollectionRoot()
-                + File.separator + "live" + File.separator + "log",
+                + File.separator + View.live + File.separator + "log",
                 "queries-" + localHostnameHolder.getShortHostname() + ".log").getAbsolutePath();
         
         Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());

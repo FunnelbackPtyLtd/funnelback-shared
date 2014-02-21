@@ -1,5 +1,6 @@
 package com.funnelback.publicui.recommender.dao;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
@@ -36,7 +37,7 @@ public class SQLiteRecommenderDAO implements RecommenderDAO {
         String baseName = com.funnelback.reporting.recommender.utils.RecommenderUtils.DATA_MODEL_HASH
                 + DefaultValues.SQLITEDB;
         String databaseFilename
-                = SQLiteCache.getDatabaseFilename(collectionConfig, DefaultValues.VIEW_LIVE, baseName);
+                = SQLiteCache.getDatabaseFilename(collectionConfig, View.live, baseName);
         File db = new File(databaseFilename);
         String value;
 

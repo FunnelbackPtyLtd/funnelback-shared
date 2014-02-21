@@ -1,27 +1,6 @@
 package com.funnelback.publicui.search.service.anchors;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.contentoptimiser.utils.PanLook;
 import com.funnelback.contentoptimiser.utils.PanLookFactory;
@@ -29,6 +8,18 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorDetail;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.exec.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j
 @Component
@@ -68,7 +59,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
             AnchorDescription description = anchors.get(lookupAnchortext);
             
             File indexStem = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionName
-                            + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX
+                            + File.separator + View.live + File.separator + DefaultValues.FOLDER_IDX
                             + File.separator + DefaultValues.INDEXFILES_PREFIX);
             
             List<String> sortedList = new ArrayList<String>(description.getLinksTo());
@@ -100,7 +91,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
         model.setDocNum(formattedDocnum);
     
         File indexStem = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionName
-                        + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX
+                        + File.separator + View.live + File.separator + DefaultValues.FOLDER_IDX
                         + File.separator + DefaultValues.INDEXFILES_PREFIX);
         
         File distilledFile = new File(indexStem.getAbsolutePath() + ".distilled");
@@ -117,13 +108,13 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
             }
             return ret;
         } else {
-            return new HashMap<String,AnchorDescription>();
+            return new HashMap<>();
         }
     }
 
     private PanLook callPanLook(AnchorModel model, String formattedDocnum,
             File distilledFile) {
-        PanLook panLook = null;
+        PanLook panLook;
         try {
             panLook = panLookFactory.getPanLook(distilledFile, formattedDocnum);
         } catch (IOException e1) {

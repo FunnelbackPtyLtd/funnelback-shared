@@ -1,5 +1,6 @@
 package com.funnelback.publicui.recommender;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.utils.ObjectCache;
@@ -332,7 +333,7 @@ public class Recommender {
     public synchronized Set<List<PreferenceTuple>> getSessions(String itemName, Config collectionConfig) {
         Set<List<PreferenceTuple>> sessions = new HashSet<>();
         String databaseFilename
-                = SQLiteCache.getDatabaseFilename(collectionConfig, DefaultValues.VIEW_LIVE,
+                = SQLiteCache.getDatabaseFilename(collectionConfig, View.live,
                 com.funnelback.reporting.recommender.utils.RecommenderUtils.SESSIONS_HASH + DefaultValues.SQLITEDB);
         File db = new File(databaseFilename);
         String value;

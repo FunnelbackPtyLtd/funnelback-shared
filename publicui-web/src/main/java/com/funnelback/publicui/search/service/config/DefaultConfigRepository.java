@@ -1,35 +1,6 @@
 package com.funnelback.publicui.search.service.config;
 
-import groovy.lang.Script;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
-import org.apache.commons.io.FileUtils;
-import org.codehaus.groovy.control.CompilationFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
@@ -42,19 +13,27 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.ResourceManager;
-import com.funnelback.publicui.search.service.resource.impl.AbstractSingleFileResource;
-import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
-import com.funnelback.publicui.search.service.resource.impl.ConfigResource;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
-import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
-import com.funnelback.publicui.search.service.resource.impl.GlobalConfigResource;
-import com.funnelback.publicui.search.service.resource.impl.GroovyScriptResource;
-import com.funnelback.publicui.search.service.resource.impl.ParameterTransformResource;
-import com.funnelback.publicui.search.service.resource.impl.PropertiesResource;
-import com.funnelback.publicui.search.service.resource.impl.SimpleFileResource;
-import com.funnelback.publicui.search.service.resource.impl.UniqueLinesResource;
+import com.funnelback.publicui.search.service.resource.impl.*;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+import groovy.lang.Script;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import org.apache.commons.io.FileUtils;
+import org.codehaus.groovy.control.CompilationFailedException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
@@ -272,7 +251,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             
             // Read config in live/idx/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
-                    + File.separator + DefaultValues.VIEW_LIVE
+                    + File.separator + View.live
                     + File.separator + DefaultValues.FOLDER_IDX,
                     Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
             c.setFacetedNavigationLiveConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
@@ -296,7 +275,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             
             // Read config in live/idx/<profile>/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
-                    + File.separator + DefaultValues.VIEW_LIVE
+                    + File.separator + View.live
                     + File.separator + DefaultValues.FOLDER_IDX
                     + File.separator + p.getId(),
                     Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);

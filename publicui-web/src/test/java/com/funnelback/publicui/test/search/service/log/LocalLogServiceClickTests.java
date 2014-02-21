@@ -1,37 +1,22 @@
 package com.funnelback.publicui.test.search.service.log;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Files;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.View;
+import com.funnelback.common.config.*;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.ClickLog;
-import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
-import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
-import com.funnelback.publicui.search.service.log.LocalLogService;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.Date;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
@@ -39,7 +24,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
     
     private File clickLogFileWithHostname = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
             + File.separator + COLLECTION_NAME
-            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + View.live
             + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.CLICKS_LOG_PREFIX 
             + Files.Log.CLICKS_LOG_SEPARATOR + TEST_HOSTNAME 
@@ -47,14 +32,14 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
     
     private File clickLogFileNoHostname = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
             + File.separator + COLLECTION_NAME
-            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + View.live
             + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.CLICKS_LOG_PREFIX 
             + Files.Log.CLICKS_LOG_EXT);
     
     private File clickLogFileDoesntExist = new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
             + File.separator + UNKNOWN_COLLECTION
-            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + View.live
             + File.separator + DefaultValues.FOLDER_LOG,
             Files.Log.CLICKS_LOG_PREFIX 
             + Files.Log.CLICKS_LOG_EXT);
@@ -128,7 +113,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
 		logService.setLocalHostnameHolder(lhh);
 
 		Config config = mock(Config.class);
-		when(config.getLogDir(DefaultValues.VIEW_LIVE)).thenReturn(clickLogFileDoesntExist);
+		when(config.getLogDir(View.live)).thenReturn(clickLogFileDoesntExist);
 		Collection c = new Collection(UNKNOWN_COLLECTION, config);
 		Profile p = new Profile("profile");
 		Date date = new Date(1361331439286L);

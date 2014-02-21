@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.service.data;
 
-import com.funnelback.common.View;
+import com.funnelback.common.StoreView;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.io.store.RawBytesRecord;
@@ -35,7 +35,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testTxt() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("sub-folder/cached-doc.txt"), 0, -1);
         
         Assert.assertNotNull(rmd);
@@ -52,7 +52,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testXml() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("sub-folder/cached-doc.xml"), 0, -1);
         
         Assert.assertNotNull(rmd);
@@ -75,7 +75,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testWarc() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("sub-folder/cached-doc.warc"), 0, -1);
         
         Assert.assertNull(rmd);
@@ -84,7 +84,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testInvalidFile() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("invalid-file.txt"), 0, -1);
         
         Assert.assertNull(rmd);
@@ -92,23 +92,23 @@ public class LocalDataRepositoryDocTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void testParentPath() throws IOException {
-        repository.getDocument(collection, View.live, "http://ignored.url/",
+        repository.getDocument(collection, StoreView.live, "http://ignored.url/",
             new File("../file-outside-data.txt"), 0, -1);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testSneakyParentPath() throws IOException {
-        repository.getDocument(collection, View.live, "http://ignored.url/",
+        repository.getDocument(collection, StoreView.live, "http://ignored.url/",
             new File("folder/file/../../../file-outside-data.txt"), 0, -1);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testAbsolutePath() throws IOException {
         if (OS.isFamilyWindows()) {
-            repository.getDocument(collection, View.live, "http://ignored.url/",
+            repository.getDocument(collection, StoreView.live, "http://ignored.url/",
                 new File("C:\\Windows\\System32\\cmd.exe"), 0, -1);
         } else {
-            repository.getDocument(collection, View.live, "http://ignored.url/",
+            repository.getDocument(collection, StoreView.live, "http://ignored.url/",
                 new File("/etc/passwd"), 0, -1);
         }
     }
@@ -116,7 +116,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testSecondaryData() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("cached-doc.secondary-data.txt"), 0, -1);
         
         Assert.assertNotNull(rmd);
@@ -136,7 +136,7 @@ public class LocalDataRepositoryDocTest {
     @Test
     public void testSecondaryAndMainData() throws IOException {
         RecordAndMetadata<? extends Record<?>> rmd = repository.getDocument(
-            collection, View.live, "http://invalid.url/file.html",
+            collection, StoreView.live, "http://invalid.url/file.html",
             new File("cached-doc.in-both-data.txt"), 0, -1);
         
         Assert.assertNotNull(rmd);

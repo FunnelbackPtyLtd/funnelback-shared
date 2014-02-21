@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.data;
 
+import com.funnelback.common.StoreView;
 import com.funnelback.common.View;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.Collection.Type;
@@ -108,7 +109,7 @@ public class LocalDataRepository implements DataRepository {
     }
     
     @Override
-    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, View view,
+    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, StoreView view,
         String url, File relativePath, int offset, int length) {
         
         if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath.getName()))) {
@@ -161,22 +162,22 @@ public class LocalDataRepository implements DataRepository {
     /**
      * Attempt to get a document from the data folder of a collection for the given view,
      * looking a the secondary data folder first (for instant updates) then the main one
-     * @param collectionRoot Path to the collection root folder
+     * @param collection Collection object
      * @param relativePath Relative (to the <code>live/data/</code> folder) path of the file to get 
      * @param view View to look at
      * @return The path to the actual file, either from the main data folder or the secondary one, or
      * null if the file is not found
      * @throws IOException
      */
-    private File getDocumentFile(Collection c, File relativePath, View view) throws IOException {
+    private File getDocumentFile(Collection collection, File relativePath, StoreView view) throws IOException {
         File[] candidatesFolders = new File[] {
-            new File(c.getConfiguration().getCollectionRoot(),
+            new File(collection.getConfiguration().getCollectionRoot(),
                 view.toString() + File.separator + DefaultValues.Secondary.FOLDER_DATA),
-            new File(c.getConfiguration().getCollectionRoot(),
+            new File(collection.getConfiguration().getCollectionRoot(),
                 view.toString() + File.separator + DefaultValues.FOLDER_DATA)};
         
-        if (Type.local.equals(c.getType())) {
-            candidatesFolders = new File[] {c.getConfiguration().getDataRoot()};
+        if (Type.local.equals(collection.getType())) {
+            candidatesFolders = new File[] {collection.getConfiguration().getDataRoot()};
         }
         
         for (File folder: candidatesFolders) {
@@ -194,7 +195,7 @@ public class LocalDataRepository implements DataRepository {
     
     @Override
     public RecordAndMetadata<? extends Record<?>> getCachedDocument(
-            Collection collection, View view, String url) {
+            Collection collection, StoreView view, String url) {
         
         try (Store<? extends Record<?>> store = StoreType.getStore(collection.getConfiguration(), view)) {
             store.open();
@@ -208,7 +209,7 @@ public class LocalDataRepository implements DataRepository {
             log.debug("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
         }
     
-        return new RecordAndMetadata<Record<?>>(null, null);
+        return new RecordAndMetadata<>(null, null);
 
     }
     
@@ -216,8 +217,7 @@ public class LocalDataRepository implements DataRepository {
     public InputStream getFilecopyDocument(Collection collection, URI uri,
             boolean withDls) throws IOException {
         if (withDls) {
-            // Convert the URI to a Windows path, taking care
-            // of preserving plus signs
+            // Convert the URI to a Windows path, taking care to preserve plus signs
             String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
                             URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
             return new WindowsFileInputStream(windowsPath);
@@ -239,7 +239,7 @@ public class LocalDataRepository implements DataRepository {
     @Override
     public File getTemporaryTrimDocument(Collection collection, int trimUri) throws TRIMException, IOException {
         File tempFolder = new File(collection.getConfiguration().getCollectionRoot()
-            + File.separator + DefaultValues.VIEW_LIVE,
+            + File.separator + View.live,
             File.separator + DefaultValues.FOLDER_TMP);
         
         List<String> cmdLine = new ArrayList<String>(
@@ -311,20 +311,24 @@ public class LocalDataRepository implements DataRepository {
      * @param url URL of the document
      * @return Corresponding primary key
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     private String extractPrimaryKey(Collection collection, String url) {
-        switch (collection.getType()) {
-        case database:
-        case directory:
-            return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
-        case custom:
-        case trimpush:
-            return URLDecoder.decode(url, "UTF-8");
-        case meta:
-        case unknown:
-            throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");
-        default:
-            return url;
+        try {
+            switch (collection.getType()) {
+            case database:
+            case directory:
+                return URLDecoder.decode(url.replaceFirst(".*[&?;]"+RECORD_ID+"=([^&]+).*", "$1"), "UTF-8");
+            case custom:
+            case trimpush:
+                return URLDecoder.decode(url, "UTF-8");
+            case meta:
+            case unknown:
+                throw new IllegalArgumentException("'"+collection.getType()+"' collections don't support cached copies.");
+            default:
+                return url;
+            }
+        }
+        catch (UnsupportedEncodingException exception) {
+            throw new RuntimeException(exception);
         }
     }
 

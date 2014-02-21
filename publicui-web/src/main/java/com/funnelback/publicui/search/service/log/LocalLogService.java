@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.funnelback.common.View;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -78,7 +79,7 @@ public class LocalLogService implements LogService {
             
             CSVWriter csvWriter= new CSVWriter(
             				new FileWriter(
-	            				new File(cl.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE),
+	            				new File(cl.getCollection().getConfiguration().getLogDir(View.live),
 	            					getLogName(cl.getCollection(), 
 	            						Files.Log.CLICKS_LOG_PREFIX, 
 	            						Files.Log.CLICKS_LOG_SEPARATOR, 
@@ -166,7 +167,7 @@ public class LocalLogService implements LogService {
     private void logLiveXmlData(Collection c, String fileName, String extension, String xmlData) {
 
         File targetFolder = new File(c.getConfiguration().getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + View.live
                 + File.separator + DefaultValues.FOLDER_LOG);
         
         File targetFile = new File(targetFolder, getLogName(c, fileName, "-", extension));
@@ -256,7 +257,7 @@ public class LocalLogService implements LogService {
         try {
             CSVWriter csvWriter = new CSVWriter(
             		new FileWriter(
-            			new File(il.getCollection().getConfiguration().getLogDir(DefaultValues.VIEW_LIVE), 
+            			new File(il.getCollection().getConfiguration().getLogDir(null),
             					getLogName(il.getCollection(), 
             						Files.Log.INTERACTION_LOG_PREFIX, 
             						Files.Log.INTERACTION_LOG_SEPARATOR, 

@@ -1,16 +1,7 @@
 package com.funnelback.publicui.test.search.service.index;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.funnelback.common.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
@@ -18,6 +9,15 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.index.DefaultQueryReadLock;
 import com.funnelback.publicui.search.service.index.QueryReadLock;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 public class QueryReadLockTest {
 	
@@ -29,7 +29,7 @@ public class QueryReadLockTest {
 	
 	private File getLockFile(Collection collection) {
 		return new File(collection.getConfiguration().getCollectionRoot()
-			 	+ File.separator + DefaultValues.VIEW_LIVE 
+			 	+ File.separator + View.live
             	+ File.separator + DefaultValues.FOLDER_IDX
             	,  Files.Index.UPDATE_LOCK);
 	}

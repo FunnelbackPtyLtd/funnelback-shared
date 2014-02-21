@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
-import com.funnelback.common.View;
+import com.funnelback.common.StoreView;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
@@ -22,7 +22,7 @@ public class FilecopyWarcFileStoreCacheTest extends
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
         WarcFileStore store = new WarcFileStore(
                 DefaultValues.Warc.WARC_COMPRESSION.toString(),
-                liveRoot, View.live.toString());
+                liveRoot, StoreView.live);
         store.open();
         store.add(rmd.record, rmd.metadata);
         store.close();

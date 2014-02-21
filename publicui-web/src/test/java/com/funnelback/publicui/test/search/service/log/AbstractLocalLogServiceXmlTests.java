@@ -1,20 +1,6 @@
 package com.funnelback.publicui.test.search.service.log;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -23,6 +9,19 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractLocalLogServiceXmlTests extends AbstractLocalLogServiceTests {
 
@@ -169,7 +168,7 @@ public abstract class AbstractLocalLogServiceXmlTests extends AbstractLocalLogSe
         
         return new File(TEST_OUT_ROOT + File.separator + DefaultValues.FOLDER_DATA
             + File.separator + COLLECTION_NAME
-            + File.separator + DefaultValues.VIEW_LIVE
+            + File.separator + View.live
             + File.separator + DefaultValues.FOLDER_LOG,
             fileName);
     }

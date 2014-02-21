@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
+import com.funnelback.common.StoreView;
 import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.io.WARCStore;
@@ -35,11 +36,12 @@ public class WebWarcStoreCacheTest extends
         // Because the WARCStore deals with views itself, we need to fake
         // using the live view to store our test data
         Config c = configRepository.getCollection(collectionId).getConfiguration();
-        c.setValue("crawler.checkpoint_to", c.value("crawler.checkpoint_to").replace("offline", "live"));
-        c.setValue("data_root", c.value("data_root").replace("offline", "live"));
+        c.setValue("crawler.checkpoint_to",
+                c.value("crawler.checkpoint_to").replace(View.offline.name(), View.live.name()));
+        c.setValue("data_root", c.value("data_root").replace(View.offline.name(), View.live.name()));
         
         WARCStore ms = new WARCStore();
-        ms.setUp(View.live,
+        ms.setUp(StoreView.live,
                 liveRoot.getAbsolutePath(),
                 "",
                 new DummyObjectCache(),
@@ -69,8 +71,9 @@ public class WebWarcStoreCacheTest extends
         ms.close();
 
         // Restore correct paths
-        c.setValue("crawler.checkpoint_to", c.value("crawler.checkpoint_to").replace("live", "offline"));
-        c.setValue("data_root", c.value("data_root").replace("live", "offline"));
+        c.setValue("crawler.checkpoint_to",
+                c.value("crawler.checkpoint_to").replace(View.live.name(), View.offline.name()));
+        c.setValue("data_root", c.value("data_root").replace(View.live.name(), View.offline.name()));
 
     }
     

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.utils;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -24,7 +25,8 @@ public class FacetedNavigationUtils {
         
         if (c.getConfiguration() != null) {
             // ...possibly overriden in collection config
-            configLocationOverride = c.getConfiguration().value(Keys.FacetedNavigation.CONFIG_LOCATION, DefaultValues.VIEW_LIVE);
+            configLocationOverride = c.getConfiguration().value(Keys.FacetedNavigation.CONFIG_LOCATION,
+                    View.live.name());
             if (DefaultValues.FOLDER_CONF.equals(configLocationOverride)) {
                 config = c.getFacetedNavigationConfConfig();
             }

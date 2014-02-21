@@ -1,15 +1,15 @@
 package com.funnelback.publicui.search.service;
 
+import com.funnelback.common.StoreView;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.data.exception.TRIMException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
-import com.funnelback.common.io.store.Record;
-import com.funnelback.common.io.store.Store;
-import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.service.data.exception.TRIMException;
 
 /**
  * Interface to access collection data (stores)
@@ -28,7 +28,7 @@ public interface DataRepository {
      * @param length Length of the data to read
      * @return Document The document
      */
-    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, Store.View view, String url,
+    public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, StoreView view, String url,
         File relativePath, int offset, int length);
     
     /**
@@ -38,7 +38,7 @@ public interface DataRepository {
      * @param url URL of the document
      * @return Cached document + metadata, or null on both fields if not found
      */
-    public RecordAndMetadata<? extends Record<?>> getCachedDocument(Collection collection, Store.View view, String url);
+    public RecordAndMetadata<? extends Record<?>> getCachedDocument(Collection collection, StoreView view, String url);
     
     /**
      * Get a document from a file share, for filecopy collections.

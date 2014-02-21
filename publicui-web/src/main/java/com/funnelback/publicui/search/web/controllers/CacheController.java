@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import com.codahale.metrics.MetricRegistry;
+import com.funnelback.common.StoreView;
 import com.funnelback.common.View;
 import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
@@ -118,10 +119,11 @@ public class CacheController {
         } else if (collection.getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
-            RecordAndMetadata<? extends Record<?>> rmd = dataRepository.getCachedDocument(collection, View.live, url);
+            RecordAndMetadata<? extends Record<?>> rmd
+                    = dataRepository.getCachedDocument(collection, StoreView.live, url);
             if ((rmd == null || rmd.record == null) && doc != null) {
                 // Attempt with DOC parameter
-                rmd = dataRepository.getDocument(collection, View.live, url, doc, offset, length);
+                rmd = dataRepository.getDocument(collection, StoreView.live, url, doc, offset, length);
             }
                 
             if (rmd != null && rmd.record != null) {

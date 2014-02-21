@@ -1,18 +1,18 @@
 package com.funnelback.publicui.test.utils;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FacetedNavigationUtilsTests {
     
@@ -30,7 +30,7 @@ public class FacetedNavigationUtilsTests {
         p2.setFacetedNavLiveConfig(new FacetedNavigationConfig("p2-live", null));
         
         c = new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy"));
-        c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig("live", null));
+        c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(View.live.name(), null));
         c.setFacetedNavigationConfConfig(new FacetedNavigationConfig("conf", null));
         c.getProfiles().put("p1", p1);
         c.getProfiles().put("p2", p2);
@@ -50,7 +50,7 @@ public class FacetedNavigationUtilsTests {
     
     @Test
     public void testNoOverride() throws Exception {
-        Assert.assertEquals("live",
+        Assert.assertEquals(View.live.name(),
             FacetedNavigationUtils.selectConfiguration(c, null).getQpOptions());
     }
 

@@ -1,23 +1,22 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.pool;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import lombok.extern.log4j.Log4j;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteResultHandler;
-import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreExecutor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.ExecuteResultHandler;
+import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Builds {@link PadreConnection} by forking new padre-sw processes.
@@ -41,7 +40,7 @@ public class PadreConnectionFactory extends BaseKeyedPoolableObjectFactory {
         }
         
         File indexStem = new File(c.getConfiguration().getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE + File.separator + DefaultValues.FOLDER_IDX,
+                + File.separator + View.live + File.separator + DefaultValues.FOLDER_IDX,
                 DefaultValues.INDEXFILES_PREFIX);
         
         String commandLine = new File(searchHome

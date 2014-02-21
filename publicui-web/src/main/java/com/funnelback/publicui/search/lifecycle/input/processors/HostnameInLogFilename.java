@@ -1,13 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.io.File;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import com.funnelback.common.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
@@ -15,6 +8,12 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 /**
  * Sets the relevant query processor option if the server
@@ -45,7 +44,7 @@ public class HostnameInLogFilename extends AbstractInputProcessor {
             
             File logFile = new File(
                     searchTransaction.getQuestion().getCollection().getConfiguration().getCollectionRoot()
-                    + File.separator + DefaultValues.VIEW_LIVE
+                    + File.separator + View.live
                     + File.separator + DefaultValues.FOLDER_LOG,
                     "queries-"+localHostnameHolder.getShortHostname()+".log");
             String opt = QP_OPT_LOGFILE + "=" + logFile.getAbsolutePath();

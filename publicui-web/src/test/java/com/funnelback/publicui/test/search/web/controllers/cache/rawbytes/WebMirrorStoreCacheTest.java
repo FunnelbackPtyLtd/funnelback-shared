@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
-import com.funnelback.common.View;
+import com.funnelback.common.StoreView;
 import com.funnelback.common.io.MirrorStore;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
@@ -32,7 +32,7 @@ public class WebMirrorStoreCacheTest extends
         WriterFile wf = new WriterFile(pw, null);
 
         MirrorStore ms = new MirrorStore();
-        ms.setUp(View.live,
+        ms.setUp(StoreView.live,
                 liveRoot.getAbsolutePath(),
                 "",
                 new DummyObjectCache(),

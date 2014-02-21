@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.textminer;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -41,7 +42,7 @@ public class SQLiteTextMiner implements TextMiner {
     private String getEntityOrVariant(String entity, Config config, String hashKey) {
         String jsonString = null;
         String databaseFilename
-                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
+                = SQLiteCache.getDatabaseFilename(config, View.live, hashKey + DefaultValues.SQLITEDB);
         File db = new File(databaseFilename);
 
         if (db.exists()) {
@@ -53,8 +54,8 @@ public class SQLiteTextMiner implements TextMiner {
                 if (jsonString == null) {
                     // Try the variant cache
                     hashKey = hashKey + "_variants";
-                    databaseFilename
-                                    = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
+                    databaseFilename = SQLiteCache.getDatabaseFilename(config, View.live,
+                            hashKey + DefaultValues.SQLITEDB);
                     db = new File(databaseFilename);
 
                     if (db.exists()) {
@@ -78,7 +79,7 @@ public class SQLiteTextMiner implements TextMiner {
     
     private String getNounEntity(String url, Config config, String hashKey) {
         String databaseFilename
-                = SQLiteCache.getDatabaseFilename(config, DefaultValues.VIEW_LIVE, hashKey + DefaultValues.SQLITEDB);
+                = SQLiteCache.getDatabaseFilename(config, View.live, hashKey + DefaultValues.SQLITEDB);
 
         File db = new File(databaseFilename);
         if (db.exists()) {

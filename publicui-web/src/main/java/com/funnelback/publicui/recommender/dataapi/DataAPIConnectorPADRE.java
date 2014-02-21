@@ -1,7 +1,7 @@
 package com.funnelback.publicui.recommender.dataapi;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
@@ -80,7 +80,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * @return a DocInfoResult (which may be null).
      */
     public DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
-        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
         return new DocInfoAccess().getDocInfoResult(urls, indexStem);
     }
@@ -93,7 +93,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * @return DocInfo object (may be null if unable to get information)
      */
     public DocInfo getDocInfo(String url, Config collectionConfig) {
-        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + DefaultValues.VIEW_LIVE
+        File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
         return new DocInfoAccess().getDocInfo(url, indexStem);
     }

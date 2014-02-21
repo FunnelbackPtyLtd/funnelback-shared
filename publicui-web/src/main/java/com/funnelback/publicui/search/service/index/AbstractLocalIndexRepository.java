@@ -1,10 +1,9 @@
 package com.funnelback.publicui.search.service.index;
 
+import com.funnelback.common.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
-import com.funnelback.dataapi.connector.padre.PadreConnector;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -121,7 +120,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
     
     protected File getIndexFile(String collectionId, String fileName) {
         return new File(configRepository.getCollection(collectionId).getConfiguration().getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + View.live
                 + File.separator + DefaultValues.FOLDER_IDX,
                 fileName);
     }
@@ -129,7 +128,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
     @Override
     public Result getResult(Collection collection, URI indexUri) {
         File indexStem = new File(collection.getConfiguration().getCollectionRoot()
-                + File.separator + DefaultValues.VIEW_LIVE
+                + File.separator + View.live
                 + File.separator + DefaultValues.FOLDER_IDX,
                 DefaultValues.INDEXFILES_PREFIX);
 
