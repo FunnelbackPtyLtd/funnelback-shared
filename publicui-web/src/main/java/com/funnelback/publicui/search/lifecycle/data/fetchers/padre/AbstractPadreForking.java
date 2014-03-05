@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.exec.OS;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,9 +95,16 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             commandLine.addAll(searchTransaction.getQuestion().getDynamicQueryProcessorOptions());
 
             if (searchTransaction.getQuestion().getUserKeys().size() > 0) {
-                commandLine.add(OPT_USER_KEYS + "=\""
-                    + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), "\",\"")
-                    + "\"");
+                if (OS.isFamilyWindows()) {
+                    // On Windows the complete command-line option is quoted (including the dash + option name)
+                    // so re-quoting it here is causing problems (FUN-6399)
+                    commandLine.add(OPT_USER_KEYS + "="
+                        + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), ","));
+                } else {
+                    commandLine.add(OPT_USER_KEYS + "=\""
+                        + StringUtils.join(searchTransaction.getQuestion().getUserKeys().toArray(new String[0]), "\",\"")
+                        + "\"");
+                }                
             }
     
             Map<String, String> env = new HashMap<String, String>(
