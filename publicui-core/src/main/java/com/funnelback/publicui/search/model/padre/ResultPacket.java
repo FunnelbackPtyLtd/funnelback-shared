@@ -39,6 +39,15 @@ public class ResultPacket {
     @Getter @Setter private String queryAsProcessed;
     
     /**
+     * <p>Query terms as provided to PADRE.</p>
+     * 
+     * <p>The query at this point has been encoded to UTF8, possibly
+     * there may have been percent decoding if query processor 
+     * option <code>-udcq</code> is used.</p>
+     */
+    @Getter @Setter private String queryRaw;
+    
+    /**
      * The query, cleaned from any operator or constraint that was
      * automatically added by the faceted navigation system.
      */
@@ -327,6 +336,7 @@ public class ResultPacket {
         
         public static final String QUERY = "query";
         public static final String QUERY_AS_PROCESSED = "query_as_processed";
+        public static final String QUERY_RAW = "query_raw";
         public static final String COLLECTION = "collection";
         
         public static final String QSUP = "qsup";

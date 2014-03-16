@@ -147,6 +147,7 @@ public class StaxStreamParserTests {
     public void testQueryAndCollection() {
         assertEquals("visa^0.345", rp.getQuery());
         assertEquals("visa", rp.getQueryAsProcessed());
+        assertEquals("visa raw", rp.getQueryRaw());
         assertEquals("visa^0.345", rp.getQueryCleaned());
         
         assertEquals("gov_combined", rp.getCollection());
