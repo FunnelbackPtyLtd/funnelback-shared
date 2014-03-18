@@ -25,6 +25,7 @@
   <query>visa^0.345</query>
   <query_as_processed>visa</query_as_processed>
   <query_raw>visa raw</query_raw>
+  <query_system_raw>visa system raw</query_system_raw>
   <collection>gov_combined</collection>
   
   <qsup src="SPEL">taxation</qsup>

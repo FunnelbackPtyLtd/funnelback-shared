@@ -156,6 +156,8 @@ public class XSLTXStreamViewTests {
         oldXml = oldXml.replaceAll("(?s)<estimated_counts>.*?</estimated_counts>\n", "");
         // As well as <query_raw>
         oldXml = oldXml.replaceAll("(?s)<query_raw>.*?</query_raw>\n", "");
+        // As well as <query_system_raw>
+        oldXml = oldXml.replaceAll("(?s)<query_system_raw>.*?</query_system_raw>\n", "");
         
         // Remove <unexpected_tag> used for other tests
         oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\n", "");

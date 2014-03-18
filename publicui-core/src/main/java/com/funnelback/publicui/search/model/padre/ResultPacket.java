@@ -48,6 +48,15 @@ public class ResultPacket {
     @Getter @Setter private String queryRaw;
     
     /**
+     * <p>Query terms as provided to PADRE.</p>
+     * 
+     * <p>The query separately provided by the system
+     * (Padre QPO -s) rather than the user which is ultimately
+     * concatenated to the preprocessed user query and parsed.</p>
+     */
+    @Getter @Setter private String querySystemRaw;
+    
+    /**
      * The query, cleaned from any operator or constraint that was
      * automatically added by the faceted navigation system.
      */
@@ -337,6 +346,7 @@ public class ResultPacket {
         public static final String QUERY = "query";
         public static final String QUERY_AS_PROCESSED = "query_as_processed";
         public static final String QUERY_RAW = "query_raw";
+        public static final String QUERY_SYSTEM_RAW = "query_system_raw";
         public static final String COLLECTION = "collection";
         
         public static final String QSUP = "qsup";
