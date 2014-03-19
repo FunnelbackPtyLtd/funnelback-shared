@@ -37,25 +37,28 @@ public class ResultPacket {
      * of if a query transformation was applied by PADRE.</p>
      */
     @Getter @Setter private String queryAsProcessed;
-    
+
     /**
-     * <p>Query terms as provided to PADRE.</p>
+     * <p>Query terms as provided to PADRE by the user.</p>
      * 
      * <p>The query at this point has been encoded to UTF8, possibly
      * there may have been percent decoding if query processor 
-     * option <code>-udcq</code> is used.</p>
+     * option <code>udcq</code> is used. The value is otherwise 
+     * unmodified.</p>
      */
     @Getter @Setter private String queryRaw;
-    
+ 
     /**
-     * <p>Query terms as provided to PADRE.</p>
+     * <p>System-generated query terms as provided to PADRE.</p>
      * 
      * <p>The query separately provided by the system
-     * (Padre QPO -s) rather than the user which is ultimately
-     * concatenated to the preprocessed user query and parsed.</p>
+     * using the processor option or CGI parameter <code>s</code>.
+     * This value has been UTF8 encoded, otherwise it is unchanged.
+     * It is ultimately preprocessed and concatenated to the 
+     * preprocessed user query and parsed.</p>
      */
     @Getter @Setter private String querySystemRaw;
-    
+
     /**
      * The query, cleaned from any operator or constraint that was
      * automatically added by the faceted navigation system.
