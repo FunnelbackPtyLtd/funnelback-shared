@@ -236,7 +236,7 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         }
         
         // Convert relative URLs
-        param = params.get(Parameters.convertrelative.toString());
+        param = params.get(Parameters.convertRelative.toString());
         if (param == null) {
             // Try with alternative syntax
             param = params.get(Parameters.convertrelative.toString());

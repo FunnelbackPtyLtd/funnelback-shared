@@ -1,14 +1,14 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.ehcache.CacheManager;
-
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.web.views.freemarker.IncludeUrlDirective;
 
 import freemarker.template.TemplateBooleanModel;
@@ -22,9 +22,9 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
     }
 
     @Test
-    public void testConvertRelative() throws TemplateModelException {
+    public void testConvertRelative() throws TemplateModelException, IOException {
         Map<String, TemplateModel> params = new HashMap<>();
-        params.put(Parameters.convertrelative.toString(), TemplateBooleanModel.TRUE);
+        params.put(Parameters.convertRelative.toString(), TemplateBooleanModel.TRUE);
         
         String actual = this.transformContent("http://server.com/folder/file.html", "<a href='test.html'>Link</a>", params);
         Assert.assertEquals(
@@ -61,6 +61,22 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
         Assert.assertEquals(
             "var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;",
             actual);
-
+        
+        // FUN-5164 again
+        actual = this.transformContent("http://server.com/folder/file.html", "<div class=\"hgroup\"> <a href=\"index.html\"><img class=\"bga\" src=\"images/logo.png\" alt=\"Business.gov.au\" /></a><p><a href=\"index.html\">Home</a> <span>»</span> <a href=\"advisor-finder-index.html\">Advisor finder</a></p></div><!-- hgroup -->", params);
+        Assert.assertEquals(
+            "<div class=\"hgroup\"> <a href=\"http://server.com/folder/index.html\"><img class=\"bga\" src=\"http://server.com/folder/images/logo.png\" alt=\"Business.gov.au\" /></a><p><a href=\"http://server.com/folder/index.html\">Home</a> <span>»</span> <a href=\"http://server.com/folder/advisor-finder-index.html\">Advisor finder</a></p></div><!-- hgroup -->",
+            actual);
     }
+
+    public void testConvertRelativeAlternate() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.convertrelative.toString(), TemplateBooleanModel.TRUE);
+        
+        String actual = this.transformContent("http://server.com/folder/file.html", "<a href='test.html'>Link</a>", params);
+        Assert.assertEquals(
+            "<a href=\"http://server.com/folder/test.html\">Link</a>",
+            actual);        
+    }
+    
 }
