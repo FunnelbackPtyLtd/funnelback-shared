@@ -49,7 +49,7 @@
     <properties>
         <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
         <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-        <version.codahale-metrics>3.0.1</version.codahale-metrics>
+        <version.codahale-metrics>3.0.2</version.codahale-metrics>
     </properties>
 
     <dependencies>
