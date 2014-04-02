@@ -18,13 +18,17 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * NOTE: To avoid displaying the full package name for the implementing class in
  * the curator config file add the implementing class to the aliasedTriggers
  * array in publicui-web's
- * com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource
+ * com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource
  * </p>
+ * 
+ * @since 13.0
  */
 public interface Trigger {
 
     /**
-     * Return true if this trigger should activate on the given
+     * @param searchTransaction Current search transaction
+     * @param context Modern UI global application context
+     * @return true if this trigger should activate on the given
      * searchTransaction, and false otherwise.
      */
     public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context);

@@ -12,6 +12,8 @@ import com.funnelback.publicui.search.model.curator.Exhibit;
 /**
  * Message represents a 'message' added by curator to be displayed within the
  * search results.
+ * 
+ * @since 13.0
  */
 @AllArgsConstructor @NoArgsConstructor
 public class Message implements Exhibit {
@@ -30,7 +32,7 @@ public class Message implements Exhibit {
     private Map<String, Object> additionalProperties;
 
     /**
-     * A category for the message which may be used by an ftl file to display
+     * A category for the message which may be used by an FreeMarker template to display
      * different types of messages in different ways.
      */
     @Getter

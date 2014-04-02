@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.Map.Entry;
-
 import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,8 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
-import com.funnelback.publicui.search.model.curator.config.ActionSet;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
-import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.publicui.search.model.curator.config.TriggerActions;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
@@ -63,9 +60,9 @@ public class Curator extends AbstractInputProcessor {
                     CuratorConfig config = searchTransaction.getQuestion().getCollection().getProfiles()
                         .get(profileName).getCuratorConfig();
 
-                    for (Entry<Trigger, ActionSet> e : config.getTriggerActions().entrySet()) {
-                        if (e.getValue().hasActionForPhase(Phase.INPUT, context) && e.getKey().activatesOn(searchTransaction, context)) {
-                            e.getValue().performActions(searchTransaction, Phase.INPUT, context);
+                    for (TriggerActions ta : config.getTriggerActions()) {
+                        if (ta.getActions().hasActionForPhase(Phase.INPUT, context) && ta.getTrigger().activatesOn(searchTransaction, context)) {
+                            ta.getActions().performActions(searchTransaction, Phase.INPUT, context);
                         }
                     }
                 }

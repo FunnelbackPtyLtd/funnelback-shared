@@ -207,7 +207,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             
             File curatorConfigFile = new File(profileDir, Files.CURATOR_CONFIG_FILENAME);
             try {
-                p.setCuratorConfig(resourceManager.load(new CuratorConifgResource(curatorConfigFile),
+                p.setCuratorConfig(resourceManager.load(new CuratorConfigResource(curatorConfigFile),
                     new CuratorConfig()));
             } catch (IOException e) {
                 log.error("Could not read curator file from '"+curatorConfigFile+"'",e);

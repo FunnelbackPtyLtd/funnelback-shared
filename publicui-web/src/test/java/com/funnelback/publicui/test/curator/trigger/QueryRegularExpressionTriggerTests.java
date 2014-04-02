@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.trigger.QueryRegularExpressionTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
 
 public class QueryRegularExpressionTriggerTests {
 
@@ -31,7 +31,7 @@ public class QueryRegularExpressionTriggerTests {
         QueryRegularExpressionTrigger qret = new QueryRegularExpressionTrigger();
         qret.setTriggerPattern("(?i)\\buniqueword\\b");
         
-        String yaml = CuratorConifgResource.getYamlObject().dumpAsMap(qret);
+        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(qret);
         Assert.assertTrue("", yaml.contains("uniqueword"));
     }
 }

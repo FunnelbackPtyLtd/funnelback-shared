@@ -10,6 +10,8 @@ package com.funnelback.publicui.search.model.curator;
  * JavaBean style getters created within any implementing class will be
  * available within the data model.
  * </p>
+ * 
+ * @since 13.0
  */
 public interface Exhibit {
 

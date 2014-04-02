@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.action.PromoteUrls;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
 
 public class PromoteUrlsTests {
 
@@ -36,7 +36,7 @@ public class PromoteUrlsTests {
     public void testSerializePromoteUrls() {
         PromoteUrls pu = new PromoteUrls(Arrays.asList(new String[]{"uniqueurl"}));
 
-        String yaml = CuratorConifgResource.getYamlObject().dumpAsMap(pu);
+        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(pu);
         Assert.assertTrue("", yaml.contains("uniqueurl"));
     }
 }

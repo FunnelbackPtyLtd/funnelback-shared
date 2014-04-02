@@ -15,9 +15,11 @@ import lombok.Setter;
  * </p>
  * 
  * <p>
- * May be most useful where structured data is needed, but neither Message nor
- * UrlAdvert are appropriate.
+ * May be most useful where structured data is needed, but neither {@link Message} nor
+ * {@link UrlAdvert} are appropriate.
  * </p>
+ * 
+ * @since 13.0
  */
 public class Properties implements Exhibit {
 
@@ -29,7 +31,7 @@ public class Properties implements Exhibit {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
-     * A category for the properties which may be used by an ftl file to display
+     * A category for the properties which may be used by a FreeMarker template to display
      * different types of properties in different ways.
      */
     @Getter

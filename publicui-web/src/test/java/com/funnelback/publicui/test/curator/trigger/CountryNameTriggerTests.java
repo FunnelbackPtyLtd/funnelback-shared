@@ -7,7 +7,7 @@ import com.funnelback.publicui.curator.trigger.CountryNameTrigger;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
 
 public class CountryNameTriggerTests {
 
@@ -45,7 +45,7 @@ public class CountryNameTriggerTests {
         CountryNameTrigger cnt = new CountryNameTrigger();
         cnt.getTargetCounties().add("uniquecountry");
 
-        String yaml = CuratorConifgResource.getYamlObject().dumpAsMap(cnt);
+        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(cnt);
         Assert.assertTrue("", yaml.contains("uniquecountry"));
     }
 }

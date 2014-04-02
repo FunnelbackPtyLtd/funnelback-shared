@@ -21,13 +21,13 @@ import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
  * Parses a curator config file and returns a CuratorConfig object.
  */
 @Log4j
-public class CuratorConifgResource extends AbstractSingleFileResource<CuratorConfig> {
+public class CuratorConfigResource extends AbstractSingleFileResource<CuratorConfig> {
 
     /**
      * Create the CuratorConifgResource with a file object representing the
      * config file to be parsed.
      */
-    public CuratorConifgResource(File configFile) {
+    public CuratorConfigResource(File configFile) {
         super(configFile);
     }
 

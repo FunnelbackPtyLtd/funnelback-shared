@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.trigger.AllQueryWordsTrigger;
 import com.funnelback.publicui.curator.trigger.OrTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
 
 public class OrTriggerTests {
 
@@ -47,7 +47,7 @@ public class OrTriggerTests {
         ot.getTriggers().add(new AllQueryWordsTrigger(Arrays.asList(new String[]{"uniqueword2"})));
         ot.getTriggers().add(new AlwaysTrigger());
 
-        String yaml = CuratorConifgResource.getYamlObject().dumpAsMap(ot);
+        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(ot);
         Assert.assertTrue("", yaml.contains("uniqueword1"));
         Assert.assertTrue("", yaml.contains("uniqueword2"));
     }

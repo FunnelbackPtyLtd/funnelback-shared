@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * NOTE: To avoid displaying the full package name for the implementing class in
  * the curator config file add the implementing class to the aliasedActions
  * array in publicui-web's
- * com.funnelback.publicui.search.service.resource.impl.CuratorConifgResource
+ * com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource
  * </p>
  */
 public interface Action {
@@ -34,7 +34,10 @@ public interface Action {
      * Phases in which an action may be executed
      */
     public enum Phase {
-        INPUT, OUTPUT
+        /** Input phase, i.e. before the query is run */
+        INPUT,
+        /** Output phase, i.e. after the query is run */
+        OUTPUT
     }
 
     /**
@@ -42,13 +45,19 @@ public interface Action {
      * Perform the defined action by modifying the searchTransaction object.
      * <p>
      * 
+     * @param searchTransaction Current search transaction
      * @param phase
      *            The phase being processed (Some actions may wish to behave
      *            differently depending on the current phase of processing).
+     * @param context Modern UI global application context
      */
     public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context);
 
     /**
+     * @param phase
+     *            The phase being processed (Some actions may wish to behave
+     *            differently depending on the current phase of processing).
+     * @param context Modern UI global application context
      * @return true if this action should be run in the given phase, otherwise
      *         return false.
      */

@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A CuratorModel will contain and additional information (exhibits) which has
+ * A Curator will contain and additional information (exhibits) which has
  * been added to the result packet by curator actions.
+ * 
+ * @since 13.0
  */
 public class Curator {
 

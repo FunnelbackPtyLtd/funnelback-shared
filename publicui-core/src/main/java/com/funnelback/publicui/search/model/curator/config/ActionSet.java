@@ -17,12 +17,15 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class ActionSet {
     
-    /** The actual actions contianed within the set */
+    /** The actual actions contained within the set */
     @Getter @Setter
     private List<Action> actions = new ArrayList<Action>();
     
     /**
      * Perform any actions within the set should be run in the given phase.
+     * @param searchTransaction Current search transaction
+     * @param phase current query lifecycle phase where the action is run
+     * @param context Modern UI global application context
      */
     public void performActions(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
         for (Action action : actions) {
@@ -33,7 +36,9 @@ public class ActionSet {
     }
 
     /**
-     * Return true if any of the actions in this set should be run within the specified phase.
+     * @param phase current query lifecycle phase where the action is run
+     * @param context Modern UI global application context
+     * @return true if any of the actions in this set should be run within the specified phase.
      */
     public boolean hasActionForPhase(Phase phase, ApplicationContext context) {
         // Perhaps should keep track of this when things are added to save time

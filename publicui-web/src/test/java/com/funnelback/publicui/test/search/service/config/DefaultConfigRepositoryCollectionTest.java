@@ -179,10 +179,20 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         coll = configRepository.getCollection("config-repository");
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
 
-        String curatorConfig1 = 
-            "triggerActions:\n  ? !AllQueryWords\n    triggerWords:\n    - best\n    - king\n" + 
-            "  : actions:\n    - !DisplayMessage\n      message:\n        additionalProperties: null\n" + "" +
-            "        category: no-category\n        messageHtml: message1html\n";
+        String curatorConfig1 = "triggerActions:\n"
+            + "  -\n"
+            + "    trigger: !AllQueryWords\n"
+            + "      triggerWords:\n"
+            + "        - best\n"
+            + "        - king\n"
+            + "    actions:\n"
+            + "      actions:\n"
+            + "        - !DisplayMessage\n"
+            + "          message:\n"
+            + "            additionalProperties: null\n"
+            + "            category: no-category\n"
+            + "            messageHtml: message1html";
+        
         String curatorConfig2 = curatorConfig1.replace("message1html", "message2html");
         
         File curatorConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME);
@@ -191,16 +201,14 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
         FileUtils.writeStringToFile(curatorConfigFile, curatorConfig1);
         coll = configRepository.getCollection("config-repository");
-        ActionSet as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
-            .values().toArray()[0];
+        ActionSet as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
         DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
         Assert.assertEquals("message1html", dm.getMessage().getMessageHtml());
 
         // Update curator.yaml
         writeAndTouchFuture(curatorConfigFile, curatorConfig2);
         coll = configRepository.getCollection("config-repository");
-        ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions()
-            .values().toArray()[0];
+        ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
         DisplayMessage dm2 = (DisplayMessage) as2.getActions().get(0);
         Assert.assertEquals("message2html", dm2.getMessage().getMessageHtml());
 
