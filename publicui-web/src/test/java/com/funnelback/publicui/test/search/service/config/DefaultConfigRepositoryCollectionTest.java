@@ -19,6 +19,7 @@ import com.funnelback.publicui.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.curator.config.ActionSet;
+import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -178,8 +179,15 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         new File(TEST_DIR, "profile2/"+Files.PADRE_OPTS).delete();
         coll = configRepository.getCollection("config-repository");
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+    }
+    
+    @Test
+    public void testProfilesCurator() throws IOException {
+        new File(TEST_DIR, "profile2").mkdirs();
+        
+        Collection coll = configRepository.getCollection("config-repository");
 
-        String curatorConfig1 = "triggerActions:\n"
+        String curatorYamlConfig1 = "triggerActions:\n"
             + "  -\n"
             + "    trigger: !AllQueryWords\n"
             + "      triggerWords:\n"
@@ -191,29 +199,61 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
             + "          message:\n"
             + "            additionalProperties: null\n"
             + "            category: no-category\n"
-            + "            messageHtml: message1html";
+            + "            messageHtml: yaml-message1html";
+        String curatorYamlConfig2 = curatorYamlConfig1.replace("yaml-message1html", "yaml-message2html");
+        File curatorYamlConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_YAML_CONFIG_FILENAME);
+
+        String curatorJsonConfig1 = FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/config-repository/curator-config-test.json"));
+        String curatorJsonConfig2 = curatorJsonConfig1.replace("json-message1html", "json-message2html");
+        File curatorJsonConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_JSON_CONFIG_FILENAME);
+
+        // Create curator.json file
+        Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
+        FileUtils.writeStringToFile(curatorJsonConfigFile, curatorJsonConfig1);;
+        coll = configRepository.getCollection("config-repository");
+        ActionSet as = coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
+        Assert.assertEquals("json-message1html", dm.getMessage().getMessageHtml());
+
+        // Update curator.json
+        writeAndTouchFuture(curatorJsonConfigFile, curatorJsonConfig2);
+        coll = configRepository.getCollection("config-repository");
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        dm = (DisplayMessage) as.getActions().get(0);
+        Assert.assertEquals("json-message2html", dm.getMessage().getMessageHtml());
         
-        String curatorConfig2 = curatorConfig1.replace("message1html", "message2html");
-        
-        File curatorConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_CONFIG_FILENAME);
+        // Don't delete the JSON file yet. We want to test it's taking precedence
+        // over JSON
         
         // Create curator.yaml file
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
-        FileUtils.writeStringToFile(curatorConfigFile, curatorConfig1);
+        FileUtils.writeStringToFile(curatorYamlConfigFile, curatorYamlConfig1);
+        
+        // JSON still active
         coll = configRepository.getCollection("config-repository");
-        ActionSet as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
-        DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
-        Assert.assertEquals("message1html", dm.getMessage().getMessageHtml());
+        
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        dm = (DisplayMessage) as.getActions().get(0);
+        Assert.assertEquals("json-message2html", dm.getMessage().getMessageHtml());
+
+        // Delete JSON
+        Assert.assertTrue("Expected successful deletion of " + curatorYamlConfigFile.getAbsolutePath(), curatorJsonConfigFile.delete());
+        
+        // YAML now applies
+        coll = configRepository.getCollection("config-repository");
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        dm = (DisplayMessage) as.getActions().get(0);
+        Assert.assertEquals("yaml-message1html", dm.getMessage().getMessageHtml());
 
         // Update curator.yaml
-        writeAndTouchFuture(curatorConfigFile, curatorConfig2);
+        writeAndTouchFuture(curatorYamlConfigFile, curatorYamlConfig2);
         coll = configRepository.getCollection("config-repository");
         ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
         DisplayMessage dm2 = (DisplayMessage) as2.getActions().get(0);
-        Assert.assertEquals("message2html", dm2.getMessage().getMessageHtml());
+        Assert.assertEquals("yaml-message2html", dm2.getMessage().getMessageHtml());
 
         // Delete curator.yaml
-        Assert.assertTrue("Expected successful deletion of " + curatorConfigFile.getAbsolutePath(), curatorConfigFile.delete());
+        Assert.assertTrue("Expected successful deletion of " + curatorYamlConfigFile.getAbsolutePath(), curatorYamlConfigFile.delete());
         coll = configRepository.getCollection("config-repository");
         Assert.assertTrue("Expected curatorConfig to be empty", coll.getProfiles().get("profile2").getCuratorConfig()
             .getTriggerActions().isEmpty());

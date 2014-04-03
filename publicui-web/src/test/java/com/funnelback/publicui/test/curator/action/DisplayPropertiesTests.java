@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.action.DisplayProperties;
 import com.funnelback.publicui.search.model.curator.data.Properties;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class DisplayPropertiesTests {
 
@@ -27,7 +27,7 @@ public class DisplayPropertiesTests {
         properties.getProperties().put("uniquekey", "uniquevalue");
         DisplayProperties dp = new DisplayProperties(properties);
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(dp);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(dp);
         Assert.assertTrue("", yaml.contains("uniquekey"));
         Assert.assertTrue("", yaml.contains("uniquevalue"));
     }

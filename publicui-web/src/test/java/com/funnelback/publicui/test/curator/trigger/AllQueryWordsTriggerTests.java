@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.trigger.AllQueryWordsTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class AllQueryWordsTriggerTests {
 
@@ -48,7 +48,7 @@ public class AllQueryWordsTriggerTests {
     public void testSerializeAllQueryWordsTrigger() {
         AllQueryWordsTrigger aqwt = new AllQueryWordsTrigger(Arrays.asList(new String[]{"uniqueword"}));
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(aqwt);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(aqwt);
         Assert.assertTrue("", yaml.contains("uniqueword"));
     }
 }

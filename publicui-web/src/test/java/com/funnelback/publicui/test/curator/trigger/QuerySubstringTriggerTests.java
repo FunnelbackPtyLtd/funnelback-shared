@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.trigger.QuerySubstringTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class QuerySubstringTriggerTests {
 
@@ -34,7 +34,7 @@ public class QuerySubstringTriggerTests {
         QuerySubstringTrigger qst = new QuerySubstringTrigger();
         qst.setTriggerSubstring("uniqueword");
         
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(qst);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(qst);
         Assert.assertTrue("", yaml.contains("uniqueword"));
     }
 }

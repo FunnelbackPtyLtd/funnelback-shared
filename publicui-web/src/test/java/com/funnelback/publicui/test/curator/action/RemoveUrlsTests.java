@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.action.RemoveUrls;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class RemoveUrlsTests {
 
@@ -36,7 +36,7 @@ public class RemoveUrlsTests {
     public void testSerializeRemoveUrls() {
         RemoveUrls ru = new RemoveUrls(Arrays.asList(new String[]{"uniqueurl"}));
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(ru);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(ru);
         Assert.assertTrue("", yaml.contains("uniqueurl"));
     }
 }

@@ -16,12 +16,14 @@ import com.funnelback.publicui.search.service.resource.ResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.*;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+
 import groovy.lang.Script;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,13 +206,18 @@ public class DefaultConfigRepository implements ConfigRepository {
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
+
+            // Load curator config from either JSON or YAML (JSON takes precedence)
+            File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
+            File curatorYamlConfigFile = new File(profileDir, Files.CURATOR_YAML_CONFIG_FILENAME);
             
-            File curatorConfigFile = new File(profileDir, Files.CURATOR_CONFIG_FILENAME);
             try {
-                p.setCuratorConfig(resourceManager.load(new CuratorConfigResource(curatorConfigFile),
-                    new CuratorConfig()));
+                // Attempt JSON first, fall back to YAML, and then fall back to empty config
+                p.setCuratorConfig(resourceManager.load(
+                    new CuratorJsonConfigResource(curatorJsonConfigFile),
+                    resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), new CuratorConfig())));
             } catch (IOException e) {
-                log.error("Could not read curator file from '"+curatorConfigFile+"'",e);
+                log.error("Could not read curator file from '"+curatorJsonConfigFile+"' nor '" + curatorYamlConfigFile + "'", e);
             }
 
             out.put(p.getId(), p);

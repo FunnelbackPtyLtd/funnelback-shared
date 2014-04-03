@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.trigger.ExactQueryTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class ExactQueryTriggerTests {
 
@@ -47,7 +47,7 @@ public class ExactQueryTriggerTests {
         ExactQueryTrigger eqt = new ExactQueryTrigger();
         eqt.setTriggerQuery("uniquequery");
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(eqt);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(eqt);
         Assert.assertTrue("", yaml.contains("uniquequery"));
     }
 }

@@ -45,7 +45,8 @@ public class Profile {
      */
     @Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
 
-    /** Curator configuration in <code>conf/[collection]/[profile]/curator.yaml</code> */
+    /** Curator configuration in <code>conf/[collection]/[profile]/curator.json</code>
+     * or <code>conf/[collection]/[profile]/curator.yaml</code>. JSON takes precedence. */
     @XStreamOmitField
     @Getter @Setter private CuratorConfig curatorConfig = new CuratorConfig();
 

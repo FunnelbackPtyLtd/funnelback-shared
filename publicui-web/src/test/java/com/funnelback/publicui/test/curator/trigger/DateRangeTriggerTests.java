@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.funnelback.publicui.curator.trigger.DateRangeTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class DateRangeTriggerTests {
 
@@ -65,7 +65,7 @@ public class DateRangeTriggerTests {
         c.set(2298, 11, 31, 23, 59, 59);
         drt.setEndDate(c.getTime());
         
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(drt);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(drt);
         Assert.assertTrue("", yaml.contains("1899"));
         Assert.assertTrue("", yaml.contains("2298"));
     }

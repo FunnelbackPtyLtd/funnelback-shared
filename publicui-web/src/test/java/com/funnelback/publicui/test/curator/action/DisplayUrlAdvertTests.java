@@ -7,7 +7,7 @@ import com.funnelback.publicui.curator.action.DisplayUrlAdvert;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class DisplayUrlAdvertTests {
 
@@ -59,7 +59,7 @@ public class DisplayUrlAdvertTests {
         advert.setTitleHtml("uniquehtml");
         DisplayUrlAdvert dua = new DisplayUrlAdvert(advert, true);
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(dua);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(dua);
         Assert.assertTrue("", yaml.contains("uniquehtml"));
     }
 }

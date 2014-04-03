@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.funnelback.publicui.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.curator.data.Message;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 
 public class DisplayMessageTests {
 
@@ -26,7 +26,7 @@ public class DisplayMessageTests {
         Message message = new Message("uniquehtml", null, "category");
         DisplayMessage dm = new DisplayMessage(message);
 
-        String yaml = CuratorConfigResource.getYamlObject().dumpAsMap(dm);
+        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(dm);
         Assert.assertTrue("", yaml.contains("uniquehtml"));
     }
 }

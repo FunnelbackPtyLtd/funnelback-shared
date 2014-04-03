@@ -18,16 +18,18 @@ import org.yaml.snakeyaml.representer.Representer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 
 /**
- * Parses a curator config file and returns a CuratorConfig object.
+ * Parses a curator YAML config file and returns a {@link CuratorConfig} object.
+ * 
+ * @see CuratorJsonConfigResource
  */
 @Log4j
-public class CuratorConfigResource extends AbstractSingleFileResource<CuratorConfig> {
+public class CuratorYamlConfigResource extends AbstractSingleFileResource<CuratorConfig> {
 
     /**
      * Create the CuratorConifgResource with a file object representing the
      * config file to be parsed.
      */
-    public CuratorConfigResource(File configFile) {
+    public CuratorYamlConfigResource(File configFile) {
         super(configFile);
     }
 
