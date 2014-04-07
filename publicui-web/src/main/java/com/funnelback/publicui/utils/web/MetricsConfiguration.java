@@ -68,6 +68,9 @@ public class MetricsConfiguration implements ServletContextAware {
     private LocalHostnameHolder hostnameHolder;
     
     @Autowired
+    private ExecutionContextHolder executionContextHolder;
+    
+    @Autowired
     private ConfigRepository configRepository;
  
     private MetricRegistry registry = new MetricRegistry();
@@ -107,7 +110,7 @@ public class MetricsConfiguration implements ServletContextAware {
                 new InetSocketAddress(graphiteHost, graphitePort),
                 SocketFactory.getDefault(), Charset.forName("US-ASCII"));
             graphiteReporter = GraphiteReporter.forRegistry(registry)
-                .prefixedWith(hostName+"."+MODERNUI_PREFIX)
+                .prefixedWith(hostName+"."+MODERNUI_PREFIX+"."+executionContextHolder.getExecutionContext())
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build(graphite);
