@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
 
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-
+import lombok.extern.log4j.Log4j;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * Authenticates search users via SiteCore-provided XML.
  */
+@Log4j
 public class SitecoreMapper implements UserKeysMapper {
+
+    private static final String xmlTagOfInterest = "roles";
 
     @Override
     public List<String> getUserKeys(Collection currentCollection, SearchTransaction transaction) {
@@ -27,35 +27,38 @@ public class SitecoreMapper implements UserKeysMapper {
 
             //Pull the start of the URL from collection.cfg
             //e.g. http://asc/sitecore/shell/userservice/userservice.asmx/UserGroups?username=
-            currentCollection.getConfiguration().value("sitecore_service_url")
+            currentCollection.getConfiguration().value(Keys.SecurityEarlyBinding.SITECORE_SERVICE_URL)
 
             //Attach the current search user to the end
-            + transaction.getQuestion().getInputParameterMap().get("REMOTE_USER");
+            + transaction.getQuestion().getPrincipal().getName();
+
+        System.out.println(currentCollection.getConfiguration().value(Keys.SecurityEarlyBinding.SITECORE_SERVICE_URL));
+        System.out.println(transaction.getQuestion().getPrincipal().getName());
 
         //Storage for keys to return
         List<String> userKeys = new ArrayList<String>();
 
         try {
             //Parse the xml
-            Element el =
+            Document doc =
                 DocumentBuilderFactory
                     .newInstance()
                     .newDocumentBuilder()
-                    .parse(serviceUrl)
-                    .getDocumentElement();
-            el.normalize();
-            String payload = el.getFirstChild().getTextContent();
+                    .parse(serviceUrl);
+
+            doc.normalize();
+
+            String payload = doc
+                .getElementsByTagName(xmlTagOfInterest)
+                .item(0)
+                .getTextContent();
 
             //Split the comma-separated values and add then to the return list
-            for (String userKey : payload.split(",")) {
-                userKeys.add(userKey.trim());
+            for (String s : payload.split(",")) {
+                userKeys.add(s.trim());
             }
-        } catch (IOException ioe) {
-
-        } catch (ParserConfigurationException pce) {
-
-        } catch (SAXException se) {
-
+        } catch (Exception e) {
+            log.error("Hit " + e.toString() + " trying to parse xml from " + serviceUrl, e);
         }
         return userKeys;
     }
