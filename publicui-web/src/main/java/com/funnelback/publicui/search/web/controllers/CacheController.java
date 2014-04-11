@@ -1,9 +1,8 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import com.codahale.metrics.MetricRegistry;
-import com.funnelback.common.StoreView;
-import com.funnelback.common.View;
-import com.funnelback.common.Xml;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.*;
@@ -174,7 +173,7 @@ public class CacheController {
                             DOMSource xmlSource = new DOMSource(xmlRecord.getContent());
                             transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
                         } else {
-                            response.getWriter().write(Xml.toString(xmlRecord.getContent()));
+                            response.getWriter().write(XMLUtils.toString(xmlRecord.getContent()));
                         }
 
                         incrementMetrics(collection, profile);

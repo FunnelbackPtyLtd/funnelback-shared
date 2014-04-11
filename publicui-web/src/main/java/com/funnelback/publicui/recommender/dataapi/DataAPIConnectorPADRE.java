@@ -1,6 +1,6 @@
 package com.funnelback.publicui.recommender.dataapi;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
@@ -18,9 +18,8 @@ import java.util.Map;
 
 /**
  * DataAPIConnectorPADRE implements the DataAPI interface, which provides access to the Funnelback Data API.
- * This is mainly used to "decorate" suggestions returned by the Recommender with information from the Data API
+ * This is mainly used to "decorate" suggestions returned by the Recommender with information from PADRE
  * (e.g. title, metadata etc.)
- *
  * @author fcrimmins@funnelback.com
  */
 @Component
@@ -29,7 +28,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
 
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
-     *
      * @param urls             list of URL strings to decorate
      * @param confidenceMap    Optional map of urls to confidence scores (can be null if not available).
      * @param collectionConfig collection configuration object
@@ -74,7 +72,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
      * or asMap() on the result to get the data in the format they need.
      * Document information for any URLs which are not in the index will not be
      * present in the returned object.
-     *
      * @param urls             list of URLs
      * @param collectionConfig collection config object
      * @return a DocInfoResult (which may be null).
@@ -87,7 +84,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
 
     /**
      * Return a DocInfo object for a single URL.
-     *
      * @param url              URL string to get DocInfo for
      * @param collectionConfig collection config object
      * @return DocInfo object (may be null if unable to get information)
@@ -100,7 +96,6 @@ public class DataAPIConnectorPADRE implements DataAPI {
 
     /**
      * Return the title of the given URL from the given collection.
-     *
      * @param url              URL to get title for
      * @param collectionConfig collection Config object
      * @return title or empty string if title is not available

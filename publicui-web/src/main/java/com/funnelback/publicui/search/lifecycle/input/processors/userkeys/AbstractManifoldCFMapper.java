@@ -19,8 +19,8 @@ import javax.net.ssl.TrustManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
-import com.funnelback.common.Security;
-import com.funnelback.common.Security.System;
+import com.funnelback.common.system.Security;
+import com.funnelback.common.system.Security.System;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.TrustAllCertsX509TrustManager;

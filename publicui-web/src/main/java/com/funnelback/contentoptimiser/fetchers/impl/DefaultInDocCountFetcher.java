@@ -1,6 +1,6 @@
 package com.funnelback.contentoptimiser.fetchers.impl;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.contentoptimiser.fetchers.InDocCountFetcher;
 import com.funnelback.contentoptimiser.utils.PanLook;

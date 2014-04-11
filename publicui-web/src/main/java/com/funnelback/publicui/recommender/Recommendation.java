@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.Map;
 /**
  * A recommendation in the Recommender System.
- *
  * @author fcrimmins@funnelback.com
  */
 public class Recommendation {

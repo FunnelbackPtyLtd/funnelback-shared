@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.service.log;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;

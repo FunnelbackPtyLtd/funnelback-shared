@@ -1,10 +1,10 @@
 package com.funnelback.publicui.recommender;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.utils.ObjectCache;
-import com.funnelback.common.utils.SQLiteCache;
+import com.funnelback.common.cache.ObjectCache;
+import com.funnelback.common.cache.SQLiteCache;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.publicui.recommender.dao.RecommenderDAO;
 import com.funnelback.publicui.recommender.dataapi.DataAPI;
@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 /**
  * This class provides recommendations from the Recommender System for a given collection.
- *
  * @author fcrimmins@funnelback.com
  */
 public class Recommender {
@@ -37,28 +36,27 @@ public class Recommender {
     private ConfigRepository configRepository;
     private DataAPI dataAPI;
     private RecommenderDAO recommenderDAO;
-    private String searchService = "";
+    private String searchServiceAddress = "";
 
     /**
      * Create a Recommender for the given collection and seed item. The Recommender will try to determine if
      * the given seed item is present in the given collection or one of its components if it is a meta collection.
      * If it cannot find a collection with information on the given item then it will throw an IllegalStateException.
-     *
      * @param collection       collection object
      * @param dataAPI          a handle to the Data API system
      * @param recommenderDAO   recommender data access object
      * @param seedItem         seed item (e.g. URL)
-     * @param searchService
+     * @param searchServiceAddress    address of search service to send queries to
      * @param configRepository handle to configuration repository
      */
     public Recommender(com.funnelback.publicui.search.model.collection.Collection collection,
                        DataAPI dataAPI, RecommenderDAO recommenderDAO, String seedItem,
-                       String searchService, ConfigRepository configRepository) throws IllegalStateException {
+                       String searchServiceAddress, ConfigRepository configRepository) throws IllegalStateException {
         this.dataAPI = dataAPI;
         this.recommenderDAO = recommenderDAO;
         this.configRepository = configRepository;
         this.collectionConfig = getCollectionConfig(collection, seedItem);
-        this.searchService = searchService;
+        this.searchServiceAddress = searchServiceAddress;
 
         if (collectionConfig == null) {
             throw new IllegalStateException("Unable to create a valid collection config object for collection: "
@@ -83,9 +81,9 @@ public class Recommender {
             case DEFAULT:
                 // Query all sources and then blend them
                 itemTuples = recommenderDAO.getRecommendations(itemName, collectionConfig);
-                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchServiceAddress,
                         scope, ItemTuple.Source.RELATED_RESULTS));
-                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchServiceAddress,
                         scope, ItemTuple.Source.EXPLORE_RESULTS));
                 break;
             case CO_CLICKS:
@@ -95,11 +93,11 @@ public class Recommender {
                 itemTuples = recommenderDAO.getRecommendations(itemName, collectionConfig);
                 break;
             case RELATED_RESULTS:
-                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchServiceAddress,
                         scope, ItemTuple.Source.RELATED_RESULTS));
                 break;
             case EXPLORE_RESULTS:
-                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchService,
+                itemTuples.addAll(searchUtils.getRecommendationsFromSource(itemName, searchServiceAddress,
                         scope, ItemTuple.Source.EXPLORE_RESULTS));
                 break;
             default:
@@ -188,7 +186,6 @@ public class Recommender {
     /**
      * Return true if the given item is considered "in scope" based on the given list
      * of scope patterns (which may be empty).
-     *
      * @param item   String to test for display
      * @param scopes list of scope patterns e.g. cmis.csiro.au,-vic.cmis.csiro.au
      * @return true if item should be displayed, otherwise false
@@ -257,7 +254,6 @@ public class Recommender {
      * and if there is none we check if the Data API knows about the seed item. If neither source has information
      * we will move on to the next component until we have exhausted the list of components or found a component
      * that has information.
-     *
      * @param collection Collection to derive collection configuration for
      * @param seedItem   the seed item to use in detecting which component to return
      * @return collection configuration (may be null).
@@ -326,7 +322,6 @@ public class Recommender {
 
     /**
      * Return a set of sessions that the given item appears in.
-     *
      * @param itemName Name of item
      * @return set of sessions (which may be empty)
      */

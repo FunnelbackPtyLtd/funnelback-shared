@@ -1,15 +1,14 @@
 package com.funnelback.contentoptimiser.test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
+import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.contentoptimiser.fetchers.impl.DefaultInDocCountFetcher;
+import com.funnelback.contentoptimiser.utils.PanLook;
+import com.funnelback.contentoptimiser.utils.PanLookFactory;
+import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import junit.framework.Assert;
-
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,14 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.EnvironmentVariableException;
-import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.contentoptimiser.fetchers.impl.DefaultInDocCountFetcher;
-import com.funnelback.contentoptimiser.utils.PanLook;
-import com.funnelback.contentoptimiser.utils.PanLookFactory;
-import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -91,7 +89,6 @@ public class DefaultInDocCountFetcherTest {
             @Override
             public PanLook getPanLookForLex(File sortedFile, String word)
                     throws IOException {
-        //        System.out.println(sortedFile.toString());
                 Assert.assertEquals("Requested word should be correct","testterm", word);
                 return new PanLook() {
                     

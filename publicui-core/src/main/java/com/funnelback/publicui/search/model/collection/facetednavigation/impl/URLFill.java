@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.funnelback.common.utils.VFSURLUtils;
+import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;

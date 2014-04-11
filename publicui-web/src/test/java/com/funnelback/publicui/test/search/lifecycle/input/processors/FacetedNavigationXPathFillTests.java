@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.collection.Collection;

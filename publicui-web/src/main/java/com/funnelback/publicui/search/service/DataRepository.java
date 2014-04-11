@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service;
 
-import com.funnelback.common.StoreView;
+import com.funnelback.common.views.StoreView;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.publicui.search.model.collection.Collection;

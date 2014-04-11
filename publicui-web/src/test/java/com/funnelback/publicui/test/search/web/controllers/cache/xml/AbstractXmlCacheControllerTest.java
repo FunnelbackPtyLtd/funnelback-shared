@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.utils.XMLUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
-import com.funnelback.common.Xml;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -116,7 +116,7 @@ public abstract class AbstractXmlCacheControllerTest {
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertEquals("text/xml", response.getContentType());
-        Assert.assertEquals(Xml.toString(rmd.record.getContent()), response.getContentAsString());
+        Assert.assertEquals(XMLUtils.toString(rmd.record.getContent()), response.getContentAsString());
         Assert.assertEquals(
             1,
             metrics.counter(
@@ -135,7 +135,7 @@ public abstract class AbstractXmlCacheControllerTest {
      */
     protected RecordAndMetadata<XmlRecord> buildRecordAndMetadata() throws IOException {
         return new RecordAndMetadata<XmlRecord>(new XmlRecord(
-                Xml.fromFile(TEST_DOCUMENT),
+                XMLUtils.fromFile(TEST_DOCUMENT),
                 getPrimaryKey()),
             null);
     }

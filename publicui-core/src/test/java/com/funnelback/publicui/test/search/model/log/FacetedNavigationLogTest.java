@@ -2,10 +2,10 @@ package com.funnelback.publicui.test.search.model.log;
 
 import java.util.Calendar;
 
+import com.funnelback.common.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.common.Xml;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
@@ -43,7 +43,7 @@ public class FacetedNavigationLogTest {
             l.toXml());
 
         // Valid XML, shouldn't throw Exceptions
-        Xml.fromString(l.toXml());
+        XMLUtils.fromString(l.toXml());
     }
     
 }

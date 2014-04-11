@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.funnelback.common.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;

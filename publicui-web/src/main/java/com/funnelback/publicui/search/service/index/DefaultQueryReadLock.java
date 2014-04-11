@@ -7,9 +7,9 @@ import lombok.Getter;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.Lock;
-import com.funnelback.common.ThreadSharedFileLock;
-import com.funnelback.common.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.lock.Lock;
+import com.funnelback.common.lock.ThreadSharedFileLock;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.Config;
 import com.funnelback.publicui.search.model.collection.Collection;
 

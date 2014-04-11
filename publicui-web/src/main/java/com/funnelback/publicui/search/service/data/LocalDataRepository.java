@@ -1,15 +1,15 @@
 package com.funnelback.publicui.search.service.data;
 
-import com.funnelback.common.StoreView;
-import com.funnelback.common.View;
-import com.funnelback.common.Xml;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.*;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.warc.WarcConstants;
-import com.funnelback.common.utils.VFSURLUtils;
+import com.funnelback.common.url.VFSURLUtils;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.common.views.View;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadreForking.EnvironmentKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -19,7 +19,6 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -146,9 +145,9 @@ public class LocalDataRepository implements DataRepository {
         }
         
         if (content != null) {
-            if (Xml.XML.equals(FilenameUtils.getExtension(relativePath.getName()))) {
+            if (XMLUtils.XML.equals(FilenameUtils.getExtension(relativePath.getName()))) {
                 return new RecordAndMetadata<XmlRecord>(new XmlRecord(
-                    Xml.fromString(new String(content)), url),
+                    XMLUtils.fromString(new String(content)), url),
                     new HashMap<String, String>());
             } else {
                 return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(content, url),
@@ -183,7 +182,7 @@ public class LocalDataRepository implements DataRepository {
         for (File folder: candidatesFolders) {
             File path = new File(folder, relativePath.getPath());
             
-            if(!com.funnelback.common.utils.FileUtils.isChildOf(folder, path)) {
+            if(!com.funnelback.common.io.file.FileUtils.isChildOf(folder, path)) {
                 throw new IllegalArgumentException("Invalid path '" + relativePath + "'");
             } else if (path.exists()) {
                 return path;

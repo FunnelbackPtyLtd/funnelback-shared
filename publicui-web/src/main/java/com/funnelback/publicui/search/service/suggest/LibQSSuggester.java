@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.suggest;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.dataapi.connector.padre.PadreConnector;
 import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;

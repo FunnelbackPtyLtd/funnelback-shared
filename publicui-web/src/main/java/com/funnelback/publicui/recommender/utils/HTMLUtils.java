@@ -3,7 +3,6 @@ package com.funnelback.publicui.recommender.utils;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.publicui.recommender.web.controllers.DevRecommenderController;
 import com.funnelback.publicui.recommender.web.controllers.RecommenderController;
-import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -16,11 +15,9 @@ import java.util.List;
  * Utilities for generating HTML output.
  * NB: Since this is for developers only it currently has no unit tests exercising it.
  * TODO FUN-5961: Move this into another "developer tools" WAR file.
- *
  * @author fcrimmins@funnelback.com
  */
 public final class HTMLUtils {
-    private static final Logger logger = Logger.getLogger(HTMLUtils.class);
     public static final int MIN_CLICKS_PER_SESSION = 2;
 
     public static enum ResultFormat {
@@ -77,7 +74,6 @@ public final class HTMLUtils {
 
     /**
      * Return a HTML version of the given list of recommendations, suitable for inclusion in a web page.
-     *
      * @param recommendations List of {@link com.funnelback.publicui.recommender.Recommendation}s
      * @param seedItem seed item that recommendations are for
      * @param collection collection ID (required)
@@ -145,20 +141,20 @@ public final class HTMLUtils {
 
     /**
      * Return a HTML hyperlink based on the given service URL, query and format.
-     * @param searchService URL for search service
+     * @param searchServiceAddress URL for search service
      * @param query query term(s)
      * @param format format e.g. {@link ResultFormat}
      * @return HTML hyperlink
      * @throws UnsupportedEncodingException
      */
-    public static String getSearchLink(String searchService, String query, ResultFormat format)
+    public static String getSearchLink(String searchServiceAddress, String query, ResultFormat format)
             throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
-        String searchURL = searchService;
+        String searchURL = searchServiceAddress;
         String anchorText = "JSON";
 
         if (format.equals(ResultFormat.html)) {
-            searchURL = searchService.replaceAll("\\.json", "\\.html");
+            searchURL = searchServiceAddress.replaceAll("\\.json", "\\.html");
             anchorText = query;
         }
 

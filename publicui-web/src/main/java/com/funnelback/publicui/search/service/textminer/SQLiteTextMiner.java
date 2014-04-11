@@ -1,11 +1,11 @@
 package com.funnelback.publicui.search.service.textminer;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.utils.ObjectCache;
-import com.funnelback.common.utils.SQLiteCache;
+import com.funnelback.common.cache.ObjectCache;
+import com.funnelback.common.cache.SQLiteCache;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.ConfigRepository;

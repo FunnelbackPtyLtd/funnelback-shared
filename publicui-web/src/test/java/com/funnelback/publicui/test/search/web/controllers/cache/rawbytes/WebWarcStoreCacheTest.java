@@ -1,16 +1,16 @@
 package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
-import com.funnelback.common.StoreView;
-import com.funnelback.common.View;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.io.WARCStore;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.revisit.SimpleRevisitPolicy;
 import com.funnelback.common.utils.DocHdrUtils;
-import com.funnelback.common.utils.DummyObjectCache;
-import com.funnelback.common.utils.Log4JPrintWriter;
-import com.funnelback.common.utils.WriterFile;
+import com.funnelback.common.cache.DummyObjectCache;
+import com.funnelback.common.log.Log4JPrintWriter;
+import com.funnelback.common.io.WriterFile;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 

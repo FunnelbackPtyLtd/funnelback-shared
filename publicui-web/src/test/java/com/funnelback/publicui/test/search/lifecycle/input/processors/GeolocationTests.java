@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;

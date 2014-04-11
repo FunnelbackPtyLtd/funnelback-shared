@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.config;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;

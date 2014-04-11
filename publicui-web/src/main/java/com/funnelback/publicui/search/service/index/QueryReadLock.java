@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.index;
 
-import com.funnelback.common.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 /**

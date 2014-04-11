@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 

@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * Sorting utilities.
- *
  * @author fcrimmins@funnelback.com
  */
 public final class SortUtils {
@@ -26,7 +25,6 @@ public final class SortUtils {
     /**
      * Return a sorted version of the given list, by sorting on multiple fields in
      * the order: frequency, source, rank.
-     *
      * @param input list of ItemTuples (recommendations)
      * @return sorted version of the input list, with no duplicate items.
      */

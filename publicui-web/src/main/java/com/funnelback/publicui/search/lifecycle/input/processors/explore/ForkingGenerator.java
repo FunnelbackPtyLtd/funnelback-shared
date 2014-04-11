@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.explore;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import lombok.Setter;

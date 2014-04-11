@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 
+import com.funnelback.common.utils.XMLUtils;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
@@ -21,7 +22,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
-import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
@@ -98,8 +98,8 @@ public class DocCacheControllerTest {
         Assert.assertEquals(200, response.getStatus());
         
         Assert.assertEquals(
-            Xml.fromFile(new File("src/test/resources/dummy-search_home/data/cache-doc/live/data/folder/document.xml")).toString(),
-            Xml.fromString(response.getContentAsString()).toString());
+            XMLUtils.fromFile(new File("src/test/resources/dummy-search_home/data/cache-doc/live/data/folder/document.xml")).toString(),
+            XMLUtils.fromString(response.getContentAsString()).toString());
 
         Assert.assertEquals(
             1,

@@ -1,6 +1,6 @@
 package com.funnelback.publicui.utils;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;

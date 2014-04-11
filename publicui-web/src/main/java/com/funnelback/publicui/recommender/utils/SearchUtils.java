@@ -1,8 +1,8 @@
 package com.funnelback.publicui.recommender.utils;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.common.utils.ObjectMapperSingleton;
-import com.funnelback.common.utils.StringCount;
+import com.funnelback.common.json.ObjectMapperSingleton;
+import com.funnelback.common.counters.StringCount;
 import com.funnelback.reporting.DatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.utils.RecommenderUtils;
@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * This class provides utilities for interacting with the Funnelback Search Service as
  * part of the Recommender lifecycle.
- *
  * @author fcrimmins@funnelback.com
  */
 public final class SearchUtils {
@@ -38,14 +37,13 @@ public final class SearchUtils {
     /**
      * Get search results for the given query and search URL. Each result is a Map which can be queried
      * like: result.get("liveUrl") or result.get("title");
-     *
      * @param query         search terms.
-     * @param searchService search service URL
+     * @param searchServiceAddress search service URL
      * @param scope list of scopes to apply to queries
      * @param numRanks maximum number of results to return (less than this may be available).
      * @return List of results from the search engine result packet.
      */
-    public List<Map<String, Object>> getResults(String query, String searchService,
+    public List<Map<String, Object>> getResults(String query, String searchServiceAddress,
             String scope, int numRanks) throws IOException {
         List<Map<String, Object>> results = null;
         HttpURLConnection urlConnection = null;
@@ -61,7 +59,7 @@ public final class SearchUtils {
             }
 
             if (!("").equals(utf8Scope)) {
-                searchService = searchService + "&scope=" + utf8Scope;
+                searchServiceAddress = searchServiceAddress + "&scope=" + utf8Scope;
             }
         }
 
@@ -69,11 +67,11 @@ public final class SearchUtils {
             numRanks = DEFAULT_NUM_RANKS;
         }
 
-        searchService = searchService + "&numRanks=" + numRanks;
+        searchServiceAddress = searchServiceAddress + "&numRanks=" + numRanks;
 
         if (query != null && !query.trim().equals("")) {
             try {
-                URL url = new URL(searchService + "&query=" + URLEncoder.encode(query, "utf-8"));
+                URL url = new URL(searchServiceAddress + "&query=" + URLEncoder.encode(query, "utf-8"));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 
@@ -98,19 +96,19 @@ public final class SearchUtils {
      * Get recommendations from the specified source (currently supported sources are RELATED_RESULTS
      * and EXPLORE_RESULTS).
      * @param itemName name (ID) of item.
-     * @param searchService address of search service to send queries to
+     * @param searchServiceAddress address of search service to send queries to
      * @param scope list of scopes to apply to queries
      * @param source   Enum specifying source of recommendations: DEFAULT (blended mixture), CO_CLICKS,
      *                 RELATED_CLICKS, RELATED_RESULTS, EXPLORE_RESULTS.
      * @return list of recommendations (which may be empty but not null).
      */
     public List<ItemTuple> getRecommendationsFromSource(String itemName,
-                String searchService, String scope, ItemTuple.Source source) {
+                String searchServiceAddress, String scope, ItemTuple.Source source) {
         if (source.equals(ItemTuple.Source.RELATED_RESULTS)) {
-            return getRelatedResults(itemName, searchService, scope);
+            return getRelatedResults(itemName, searchServiceAddress, scope);
         }
         else if (source.equals(ItemTuple.Source.EXPLORE_RESULTS)) {
-            return getExploreResults(itemName, searchService, scope);
+            return getExploreResults(itemName, searchServiceAddress, scope);
         }
 
         return new ArrayList<>();
@@ -121,14 +119,13 @@ public final class SearchUtils {
      * that result in clicks on that URL, and appending each result list to the overall list.
      * A later sortList() call should be used to sort the list and boost those items which
      * appear in more than one result list.
-     *
      * @param itemName item to get related results for
-     * @param searchService address of search service to send queries to
+     * @param searchServiceAddress address of search service to send queries to
      * @param scope list of scopes to apply to queries
      * @return list of ItemTuples (which may be empty but not null).
      */
     private List<ItemTuple> getRelatedResults(String itemName,
-            String searchService, String scope) {
+            String searchServiceAddress, String scope) {
         List<ItemTuple> relatedResults = new ArrayList<>();
         DatabaseAccess dba = null;
         String installDir = collectionConfig.getSearchHomeDir().getAbsolutePath();
@@ -150,7 +147,7 @@ public final class SearchUtils {
                     List<Map<String, Object>> results = null;
 
                     try {
-                        results = getResults(query, searchService, scope, DEFAULT_NUM_RANKS);
+                        results = getResults(query, searchServiceAddress, scope, DEFAULT_NUM_RANKS);
                     } catch (IOException ioe) {
                         logger.warn(ioe);
                     }
@@ -191,20 +188,19 @@ public final class SearchUtils {
 
     /**
      * Return a list of "explore:" results for the given item (URL).
-     *
      * @param itemName item to get related results for
-     * @param searchService address of search service to send queries to
+     * @param searchServiceAddress address of search service to send queries to
      * @param scope list of scopes to apply to explore query
      * @return list of ItemTuples (which may be empty but not null).
      */
     private List<ItemTuple> getExploreResults(String itemName,
-            String searchService, String scope) {
+            String searchServiceAddress, String scope) {
         List<ItemTuple> exploreResults = new ArrayList<>();
         String exploreQuery = EXPLORE_QUERY_PREFIX + itemName;
         List<Map<String, Object>> results = null;
 
         try {
-            results = getResults(exploreQuery, searchService, scope, DEFAULT_NUM_RANKS);
+            results = getResults(exploreQuery, searchServiceAddress, scope, DEFAULT_NUM_RANKS);
         } catch (IOException ioe) {
             logger.warn(ioe);
         }

@@ -1,10 +1,6 @@
 package com.funnelback.publicui.search.service.image;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.funnelback.publicui.search.service.image.ImageScalerSettings.ScaleType;
 import lombok.Cleanup;
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -13,11 +9,13 @@ import net.coobird.thumbnailator.geometry.Positions;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.publicui.search.service.image.ImageScalerSettings.ScaleType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Log4j
 @Component
@@ -83,24 +81,17 @@ public class DefaultImageScaler implements ImageScaler {
         return processedKey;
     }
 
+    /**
+     * Clear the cache for the given ID and settings.
+     * Possibly we should clear all entries starting with this URL, but that may
+     * be expensive to do if the cache is large.
+     * For now we just clear everything from this cache
+     * In the ImageScaleController use case the ImageFetcher will still
+     * have cached (full size) copies of all the other images, so scaling
+     * will have to re-occur, but at least there's not another network request.
+     */
     @Override
-    public void clearCache(String scaledCacheIdentifier, ImageScalerSettings ss) {
-        // Possibly we should clear all entries starting with this URL, but that may
-        // be expensive to do if the cache is large.
-        /*        
-        List<?> keys = cache.getKeysNoDuplicateCheck();
-        for (Object key : keys) {
-            if (key.toString().startsWith(scaledCacheIdentifier + "|")) {
-                cache.remove(key);
-            }
-        }
-        */
-        
-        // For now we just clear everything from this cache
-        
-        // In the ImageScaleController use case the ImageFetcher will still
-        // have cached (full size) copies of all the other images, so scaling
-        // will have to re-occur, but at least there's not another network request.
+    public void clearCache(String scaledCacheIdentifier, ImageScalerSettings imageScalerSettings) {
         this.clearAllCache();
     }
 

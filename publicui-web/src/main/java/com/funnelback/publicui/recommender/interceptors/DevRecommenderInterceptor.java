@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
  *     recommender.dev_access_allowed=true
  *
  * in the relevant collection.cfg file.
- *
  * @author fcrimmins@funnelback.com
  */
 public class DevRecommenderInterceptor implements HandlerInterceptor {

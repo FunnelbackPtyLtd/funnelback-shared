@@ -105,24 +105,6 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     private View richView;
 
     /**
-     * Simple Wrapper around <code>padre-qs.cgi</code>
-     * @param request HTTP request
-     * @param response HTTP response
-     * @throws Exception  
-     * @deprecated Use {@link #suggestJava(String, String, String, int, int, String, String)} instead
-     */
-    @Deprecated
-    @RequestMapping(value="/padre-qs.cgi", params=RequestParameters.COLLECTION)
-    public void suggest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        try {
-            runPadreBinary(PADRE_QS, null, request, response, true);
-        } catch (PadreForkingException e) {
-            SuggestController.log.error("Unable to run " + PADRE_QS, e);
-            throw new ServletException(e);
-        }
-    }
-
-    /**
      * Get suggestions using LibQS
      * @param response HTTP response
      */

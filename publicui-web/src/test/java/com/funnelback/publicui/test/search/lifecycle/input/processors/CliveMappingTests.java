@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.CliveMapping;

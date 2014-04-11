@@ -10,7 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;

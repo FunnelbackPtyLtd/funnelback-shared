@@ -35,7 +35,6 @@ import java.util.*;
 /**
  * This class represents the RESTful API to the Funnelback Recommendation System.
  * It extends SessionController so that we can have a unique user/session ID generated for requests.
- *
  * @author fcrimmins@funnelback.com
  */
 @Controller
@@ -138,12 +137,12 @@ public class RecommenderController extends SessionController {
         String address = request.getRequestURL().toString();
 
         URL requestURL = new URL(address);
-        String searchService = "http://" + requestURL.getAuthority() + "/s/"
+        String searchServiceAddress = "http://" + requestURL.getAuthority() + "/s/"
                 + SEARCH_JSON + "?collection=" + requestCollection;
 
         try {
             Recommender recommender = new Recommender(collection, dataAPI, recommenderDAO,
-                    seedItem, searchService, configRepository);
+                    seedItem, searchServiceAddress, configRepository);
             Config collectionConfig = recommender.getCollectionConfig();
             
             if (collectionConfig != null) {

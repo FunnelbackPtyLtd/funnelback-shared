@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * This class defines an interface for a Recommender system DAO (Data Access Object).
- *
  * @author fcrimmins@funnelback.com
  */
 public interface RecommenderDAO {

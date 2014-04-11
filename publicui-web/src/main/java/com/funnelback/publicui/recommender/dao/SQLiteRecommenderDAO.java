@@ -1,10 +1,10 @@
 package com.funnelback.publicui.recommender.dao;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.utils.ObjectCache;
-import com.funnelback.common.utils.SQLiteCache;
+import com.funnelback.common.cache.ObjectCache;
+import com.funnelback.common.cache.SQLiteCache;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * This class implements the Recommender system DAO (Data Access Object) interface. It uses the SQLite
  * database to access cached recommendation information.
- *
  * @author fcrimmins@funnelback.com
  */
 

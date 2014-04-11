@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.search.service.data;
 
-import com.funnelback.common.StoreView;
-import com.funnelback.common.Xml;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
@@ -63,7 +63,7 @@ public class LocalDataRepositoryDocTest {
         Assert.assertEquals(
             FileUtils.readFileToString(new File(SEARCH_HOME, "data/data-repository/live/data/sub-folder/cached-doc.xml"))
                 .replace("\r", ""),
-            Xml.toString(((XmlRecord) rmd.record).getContent())
+            XMLUtils.toString(((XmlRecord) rmd.record).getContent())
                 .replace("\r", ""));
         Assert.assertEquals(0, rmd.metadata.size());
     }

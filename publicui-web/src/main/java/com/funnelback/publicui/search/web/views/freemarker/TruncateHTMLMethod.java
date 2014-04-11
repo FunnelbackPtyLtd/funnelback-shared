@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.web.views.freemarker;
 
 import java.util.List;
 
-import com.funnelback.common.utils.TextUtils;
+import com.funnelback.common.text.TextUtils;
 
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;

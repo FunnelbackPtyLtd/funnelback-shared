@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import com.funnelback.common.EnvironmentVariableException;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;

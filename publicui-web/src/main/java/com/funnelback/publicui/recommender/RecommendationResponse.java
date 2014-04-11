@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * A response from the Recommender System.
- *
  * @author fcrimmins@funnelback.com
  */
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.search.service.index;
 
-import com.funnelback.common.ThreadSharedFileLock.FileLockException;
-import com.funnelback.common.View;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;

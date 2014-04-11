@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;

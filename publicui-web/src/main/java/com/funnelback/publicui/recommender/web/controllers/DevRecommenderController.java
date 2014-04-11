@@ -34,7 +34,6 @@ import java.util.*;
  * Controller for developer access to Recommender system.
  * NB: Since this is for developers only it currently has no unit tests exercising it.
  * TODO FUN-5961: Move this into another "developer tools" WAR file.
- *
  * @author fcrimmins@funnelback.com
  */
 
@@ -69,7 +68,6 @@ public class DevRecommenderController {
     
     /**
      * Return a HTML page displaying the recommendations for each result for the given query, collection & scope.
-     *
      * @param query              search term(s) (required)
      * @param collection         collection ID (required)
      * @param scope              comma separated list of scope(s) to apply to suggestions (may be null or empty)
@@ -87,7 +85,7 @@ public class DevRecommenderController {
             throws UnsupportedEncodingException, MalformedURLException {
         List<Map<String, Object>> results = null;
         URL requestURL = new URL(request.getRequestURL().toString());
-        String searchService = "http://" + requestURL.getAuthority() + "/s/"
+        String searchServiceAddress = "http://" + requestURL.getAuthority() + "/s/"
                 + SEARCH_JSON + collection;
 
         StringBuffer buf = new StringBuffer();
@@ -101,7 +99,7 @@ public class DevRecommenderController {
             SearchUtils searchUtils = new SearchUtils(collectionRef.getConfiguration());
 
             try {
-                results = searchUtils.getResults(query, searchService, scope, DEFAULT_MAX_RECOMMENDATIONS);
+                results = searchUtils.getResults(query, searchServiceAddress, scope, DEFAULT_MAX_RECOMMENDATIONS);
             } catch (IOException exception) {
                 logger.error(exception);
             }
@@ -111,8 +109,8 @@ public class DevRecommenderController {
                 Set<String> originalResults = new HashSet<>();
 
                 buf.append("<p>Original results for query: ");
-                buf.append(HTMLUtils.getSearchLink(searchService, query, HTMLUtils.ResultFormat.html));
-                buf.append(" (" + HTMLUtils.getSearchLink(searchService, query, HTMLUtils.ResultFormat.json) + ") ");
+                buf.append(HTMLUtils.getSearchLink(searchServiceAddress, query, HTMLUtils.ResultFormat.html));
+                buf.append(" (" + HTMLUtils.getSearchLink(searchServiceAddress, query, HTMLUtils.ResultFormat.json) + ") ");
                 buf.append("<small>(query time: " + timeTaken + "ms)</small></p>\n");
 
                 for (Map<String, Object> result : results) {
@@ -170,7 +168,6 @@ public class DevRecommenderController {
 
     /**
      * Return a HTML page displaying sessions which included the given item (clicked URL).
-     *
      * @param itemName   Name of item e.g. URL address
      * @param seedItem   The seed which led to this item being recommended. Could be a query or a URL.
      * @param collection name of collection
@@ -182,9 +179,9 @@ public class DevRecommenderController {
     public String sessions(@RequestParam("itemName") String itemName,
                            @RequestParam("seedItem") String seedItem,
                            @RequestParam("collection") String collection) throws Exception {
-        StringBuffer buf = new StringBuffer();
-        String searchService = SEARCH_JSON + collection;
-        searchService = searchService.replaceAll("\\.json", "\\.html");
+        StringBuffer stringBuffer = new StringBuffer();
+        String searchServiceAddress = SEARCH_JSON + collection;
+        searchServiceAddress = searchServiceAddress.replaceAll("\\.json", "\\.html");
 
         Collection collectionRef
                 = configRepository.getCollection(collection);
@@ -195,7 +192,7 @@ public class DevRecommenderController {
                         new Recommender(collectionRef, dataAPI, recommenderDAO, itemName, "", configRepository);
                 Config collectionConfig = recommender.getCollectionConfig();
                 
-                buf.append(getSessionsHeader(itemName, seedItem, collectionConfig));
+                stringBuffer.append(getSessionsHeader(itemName, seedItem, collectionConfig));
                 Set<List<PreferenceTuple>> sessions = recommender.getSessions(itemName);
                 
                 if (sessions != null && !sessions.isEmpty()) {
@@ -203,7 +200,7 @@ public class DevRecommenderController {
                         String sessionID = session.get(0).getUserID();
                         String host = session.get(0).getHost();
 
-                        buf.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
+                        stringBuffer.append("<h2>Session: " + sessionID + " Host: " + host + "</h2><ul>\n");
 
                         List<String> urls = new ArrayList<>();
                         for (PreferenceTuple preference : session) {
@@ -233,34 +230,33 @@ public class DevRecommenderController {
                                     url = "<font color=\"red\">" + url + "</font>";
                                 }
 
-                                buf.append("<li><a href=\"" + address + "\">" + title + "</a> <small>"
-                                        + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchService
+                                stringBuffer.append("<li><a href=\"" + address + "\">" + title + "</a> <small>"
+                                        + url + " Date: " + preference.getDate() + " Query: <a href=\"" + searchServiceAddress
                                         + URLEncoder.encode(query, "utf-8") + "\">" + query + "</a> QIE Score: "
                                         + qieScore + "</small></li>\n");
                             }
                         } else {
-                            buf.append("<li>No document information available from index for URLs in this session</li>");
+                            stringBuffer.append("<li>No document information available from index for URLs in this session</li>");
                         }
 
-                        buf.append("</ul>");
+                        stringBuffer.append("</ul>");
                     }
                 } else {
-                    buf.append("<p>No sessions found.</p>");
+                    stringBuffer.append("<p>No sessions found.</p>");
                 }              
             }
             catch (IllegalStateException exception) {
             	logger.warn(exception);
-                buf.append("<p>Unable to get a valid collection.</p>");
+                stringBuffer.append("<p>Unable to get a valid collection.</p>");
             }           
         }
 
-        buf.append("</ul></body></html>");
-        return buf.toString();
+        stringBuffer.append("</ul></body></html>");
+        return stringBuffer.toString();
     }
 
     /**
      * Return a header for the sessions page for the given input parameters.
-     *
      * @param itemName         Name of item e.g. URL address
      * @param seedItem         The seed which led to this item being recommended. Could be a query or a URL.
      * @param collectionConfig Collection Config object
@@ -291,7 +287,6 @@ public class DevRecommenderController {
 
     /**
      * Display a HTML form for entering an item to get recommendations for.
-     *
      * @param collection collection ID
      * @return HTML page with entry form.
      */
@@ -318,7 +313,6 @@ public class DevRecommenderController {
 
     /**
      * Display a HTML form for entering a query to get recommendations for.
-     *
      * @param collection collection ID
      * @return HTML page with entry form.
      */

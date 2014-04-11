@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.service.anchors;
 
-import com.funnelback.common.View;
+import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.contentoptimiser.utils.PanLook;
 import com.funnelback.contentoptimiser.utils.PanLookFactory;

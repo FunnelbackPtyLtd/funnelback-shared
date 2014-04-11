@@ -7,13 +7,13 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.funnelback.common.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.SneakyThrows;
 
-import com.funnelback.common.Xml;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
@@ -39,7 +39,7 @@ public class TRIMPushFolderXmlStoreCacheTest extends
     protected RecordAndMetadata<XmlRecord> buildRecordAndMetadata()
             throws IOException {
         return new RecordAndMetadata<XmlRecord>(
-                new XmlRecord(Xml.fromFile(
+                new XmlRecord(XMLUtils.fromFile(
                         new File("src/test/resources/dummy-search_home/data/cache-trimpush-xmlstore/live/data/45/1/1357-Embedded mail level 1 (root).html")),
                         getPrimaryKey()),
                 null);
