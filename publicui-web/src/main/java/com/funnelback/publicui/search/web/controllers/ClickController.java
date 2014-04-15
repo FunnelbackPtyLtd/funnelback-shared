@@ -196,22 +196,26 @@ public class ClickController extends SessionController {
                 && user != null) {
                 // Save the click in the user history
                 Result r = indexRepository.getResult(collection, redirectUrl);
+                if (r != null) {
                 
-                ClickHistory h = ClickHistory.fromResult(r);
-                h.setCollection(collection.getId());
-                h.setClickDate(new Date());
-                h.setUserId(user.getId());
-                if (referer != null) {
-                    Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
-                    if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
-                        h.setQuery(qs.get(RequestParameters.QUERY));
+                    ClickHistory h = ClickHistory.fromResult(r);
+                    h.setCollection(collection.getId());
+                    h.setClickDate(new Date());
+                    h.setUserId(user.getId());
+                    if (referer != null) {
+                        Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
+                        if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
+                            h.setQuery(qs.get(RequestParameters.QUERY));
+                        }
                     }
-                }
-                
-                try {
-                    searchHistoryRepository.saveClick(h);
-                } catch (DataAccessException | TransactionException e) {
-                    log.error("Error while saving click history", e);
+                    
+                    try {
+                        searchHistoryRepository.saveClick(h);
+                    } catch (DataAccessException | TransactionException e) {
+                        log.error("Error while saving click history", e);
+                    }
+                } else {
+                    log.warn("Result with URL '"+redirectUrl+"' not found in collection '"+collection.getId()+"'");
                 }
             }
             
