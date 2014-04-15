@@ -35,7 +35,7 @@ public class CountryNameTrigger implements Trigger {
      */
     @Getter
     @Setter
-    private Set<String> targetCounties = new HashSet<String>();
+    private Set<String> targetCountries = new HashSet<String>();
 
     /**
      * Check whether the given searchTransaction originates from a country
@@ -44,7 +44,7 @@ public class CountryNameTrigger implements Trigger {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
         Location location = searchTransaction.getQuestion().getLocation();
-        return targetCounties.contains(location.getCountryName());
+        return targetCountries.contains(location.getCountryName());
     }
 
 }

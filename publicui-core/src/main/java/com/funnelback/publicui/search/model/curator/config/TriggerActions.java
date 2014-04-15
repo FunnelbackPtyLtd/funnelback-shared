@@ -23,8 +23,20 @@ public class TriggerActions {
     /**
      * Set of actions for the {@link Trigger}
      */
-    @Getter
     @Setter
     private ActionSet actions;
+    
+    /**
+     * Get the set of actions for this trigger. If null, an empty
+     * {@link ActionSet} is returned instead.
+     * @return The actions for this trigger (never null)
+     */
+    public ActionSet getActions() {
+        if (actions == null) {
+            return new ActionSet();
+        } else {
+            return actions;
+        }
+    }
 
 }
