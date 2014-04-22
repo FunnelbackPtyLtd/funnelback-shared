@@ -23,19 +23,19 @@ public class CountryNameTriggerTests {
         
         Assert.assertFalse("Expected not to activate with an empty country set", cnt.activatesOn(st, null)); 
 
-        cnt.getTargetCounties().add("China");
+        cnt.getTargetCountries().add("China");
         
         Assert.assertFalse("Expected not to activate when countries don't match", cnt.activatesOn(st, null)); 
 
-        cnt.getTargetCounties().add("australia");
+        cnt.getTargetCountries().add("australia");
         
         Assert.assertFalse("Expected not to activate when countries don't match in case", cnt.activatesOn(st, null)); 
 
-        cnt.getTargetCounties().add("Aust");
+        cnt.getTargetCountries().add("Aust");
         
         Assert.assertFalse("Expected not to activate when countries don't match (even prefixes)", cnt.activatesOn(st, null)); 
 
-        cnt.getTargetCounties().add("Australia");
+        cnt.getTargetCountries().add("Australia");
         
         Assert.assertTrue("Expected to activate when countries do match", cnt.activatesOn(st, null)); 
     }
@@ -43,7 +43,7 @@ public class CountryNameTriggerTests {
     @Test
     public void testSerializeAndTrigger() {
         CountryNameTrigger cnt = new CountryNameTrigger();
-        cnt.getTargetCounties().add("uniquecountry");
+        cnt.getTargetCountries().add("uniquecountry");
 
         String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(cnt);
         Assert.assertTrue("", yaml.contains("uniquecountry"));
