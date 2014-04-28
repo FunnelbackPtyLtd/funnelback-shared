@@ -160,10 +160,13 @@ public class WindowsNativeExecutor {
 
             List<String> quotedCommandLine = new ArrayList<String>();
             for (String element : commandLineList) {
-                // Quote literal quotes and backslashes with backslashes as suggested at
-                // http://msdn.microsoft.com/en-us/library/a1y7w461.aspx
-                element = element.replace("\\", "\\\\");
-                element = element.replace("\"", "\\\"");
+
+                if (!element.startsWith("-userkeys")) {
+                    // Quote literal quotes and backslashes with backslashes as suggested at
+                    // http://msdn.microsoft.com/en-us/library/a1y7w461.aspx
+                    element = element.replace("\\", "\\\\");
+                    element = element.replace("\"", "\\\"");
+                }
 
                 // Quote whole string with double quotes as suggested at
                 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms682429%28v=vs.85%29.aspx
