@@ -547,9 +547,9 @@
                      of the root URL -->
                 <#if ! def.data?lower_case?matches(".*[/\\\\]"+part?lower_case+"[/\\\\].*")>
                     <#if part_has_next>
-                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${pathBuilding?url}">${part}</a>
+                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${pathBuilding?url}">${part?html}</a>
                     <#else>
-                        ${separator} ${part}
+                        ${separator} ${part?html}
                     </#if>
                 </#if>
             </#list>
@@ -590,10 +590,10 @@
                 </#list>
 
                 <#if last == true>
-                    ${separator} ${valueLabel}
+                    ${separator} ${valueLabel?html}
                 <#else>
                     ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
-                        ${valueLabel}
+                        ${valueLabel?html}
                     </a>
                     <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
                 </#if>
