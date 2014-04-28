@@ -1,10 +1,15 @@
 package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 
 import lombok.extern.log4j.Log4j;
@@ -58,14 +63,30 @@ public class SitecoreMapper implements UserKeysMapper {
                 return userKeys;
             }
 
+            URL url = new URL(urlStem + searchName);
+            InputStream is = url.openStream();
+
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(is, writer, "UTF-8");
+            String xmlContents = writer.toString();
+
+            is.close();
+
+            log.debug("XML Contents to follow: ");
+            log.debug(xmlContents);
+
+            InputStream xmlIs = new ByteArrayInputStream(xmlContents.getBytes());
+
             //Parse the xml
             Document doc =
                 DocumentBuilderFactory
                     .newInstance()
                     .newDocumentBuilder()
-                    .parse(urlStem + searchName);
+                    .parse(xmlIs);
 
-            doc.normalize();
+            //create a debug log string
+            log.debug("LOOKED IN: " + urlStem + searchName);
+
 
             String payload = doc
                 .getElementsByTagName(xmlTagOfInterest)
@@ -74,8 +95,17 @@ public class SitecoreMapper implements UserKeysMapper {
 
             //Split the comma-separated values and add then to the return list
             for (String s : payload.split(",")) {
-                userKeys.add(s.trim());
+                
+                //Remove internal spaces - experimental to try to get it working
+                userKeys.add(s.replace(" ", "").trim());
             }
+
+            String dbgUserKeys = "FOR USER " + searchName + ", RETURNED USERKEYS:\r\n";
+            for(String s : userKeys) {
+                dbgUserKeys += s + "\r\n";
+            }
+            log.debug(dbgUserKeys);
+
         } catch (Exception e) {
             log.error("Hit " + e.toString() + " trying to parse xml from " + urlStem + " with searchName " + searchName, e);
         }
