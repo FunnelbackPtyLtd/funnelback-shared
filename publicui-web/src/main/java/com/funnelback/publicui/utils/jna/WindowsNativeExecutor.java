@@ -158,30 +158,16 @@ public class WindowsNativeExecutor {
             si.hStdOutput = hChildOutWrite.getValue();
             si.dwFlags = WinBase.STARTF_USESTDHANDLES;
 
-            List<String> quotedCommandLine = new ArrayList<String>();
-            for (String element : commandLineList) {
-
-                if (!element.startsWith("-userkeys")) {
-                    // Quote literal quotes and backslashes with backslashes as suggested at
-                    // http://msdn.microsoft.com/en-us/library/a1y7w461.aspx
-                    element = element.replace("\\", "\\\\");
-                    element = element.replace("\"", "\\\"");
-                }
-
-                // Quote whole string with double quotes as suggested at
-                // http://msdn.microsoft.com/en-us/library/windows/desktop/ms682429%28v=vs.85%29.aspx
-                quotedCommandLine.add("\"" + element + "\"");
-            }
-            String commandLine = StringUtils.join(quotedCommandLine, " ");
+            String commandLine = WindowsCommandEscaping.escapeArgumentsToString(commandLineList);
             
             // Actually fork
-            log.debug("Calling CreateProcessAsUser() for command line '" + commandLine.trim()
+            log.debug("Calling CreateProcessAsUser() for command line '" + commandLine
                 + "' with environment '" + environment + "'");
             
             if ( ! Advapi32.INSTANCE.CreateProcessAsUser(
                     hPrimaryToken.getValue(),
                     null,
-                    commandLine.trim(),
+                    commandLine,
                     sa,
                     sa,
                     true,
