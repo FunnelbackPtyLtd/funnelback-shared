@@ -72,9 +72,9 @@ public class PortalMapperTests {
         processor.processInput(st);
 
         Assert.assertEquals(3, st.getQuestion().getUserKeys().size());
-        Assert.assertEquals("ab", st.getQuestion().getUserKeys().get(0));
-        Assert.assertEquals("cd", st.getQuestion().getUserKeys().get(1));
-        Assert.assertEquals("ef", st.getQuestion().getUserKeys().get(2));
+        Assert.assertEquals("dummy;ab", st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("dummy;cd", st.getQuestion().getUserKeys().get(1));
+        Assert.assertEquals("dummy;ef", st.getQuestion().getUserKeys().get(2));
     }
 
 

@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Setter;
@@ -17,6 +18,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MetaMapper;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.UserKeysMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -145,7 +147,21 @@ public class UserKeys extends AbstractInputProcessor {
         try {
             Class<?> clazz = Class.forName(className);
             UserKeysMapper mapper = (UserKeysMapper) beanFactory.createBean(clazz);
-            return mapper.getUserKeys(collection, st);
+            
+            List<String> rawKeys = mapper.getUserKeys(collection, st);
+            
+            // Prefix every userKey with "collection_name;" (so padre can direct them appropriately for meta collections)
+            // But not for MetaMapper (for which they will already have been added for the sub-component
+            List<String> result = new ArrayList<String>();
+            if (!clazz.equals(MetaMapper.class)) {
+                for (String rawKey : rawKeys) {
+                    result.add(collection.getId() + ";" + rawKey);
+                }
+            } else {
+                result.addAll(rawKeys);
+            }
+            
+            return result;
         } catch (ClassNotFoundException cnfe) {
             throw new InputProcessorException(i18n.tr("inputprocessor.userkeys.plugin.invalid", securityPlugin), cnfe);
         }

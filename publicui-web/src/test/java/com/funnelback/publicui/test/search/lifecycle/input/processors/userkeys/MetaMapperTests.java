@@ -73,7 +73,7 @@ public class MetaMapperTests {
         processor.processInput(st);
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
-        Assert.assertEquals(MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("meta;" + MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
     }
     
     @Test
@@ -91,8 +91,8 @@ public class MetaMapperTests {
         processor.processInput(st);
 
         Assert.assertEquals(2, st.getQuestion().getUserKeys().size());
-        Assert.assertEquals(MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
-        Assert.assertEquals(MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(1));
+        Assert.assertEquals("sub1;" + MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("sub2;" + MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(1));
     }
 
 

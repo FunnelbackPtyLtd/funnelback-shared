@@ -79,7 +79,7 @@ public class UserKeysTests {
         processor.processInput(st);
         
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
-        Assert.assertEquals(MockUserKeysMapper.class.getSimpleName(), st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("dummy;" + MockUserKeysMapper.class.getSimpleName(), st.getQuestion().getUserKeys().get(0));
     }
     
     @Test
@@ -94,7 +94,7 @@ public class UserKeysTests {
         processor.processInput(st);
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
-        Assert.assertEquals(MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
+        Assert.assertEquals("dummy;" + MasterKeyMapper.MASTER_KEY, st.getQuestion().getUserKeys().get(0));
     }
     
     @Test
@@ -151,7 +151,7 @@ public class UserKeysTests {
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
         String key1 = st.getQuestion().getUserKeys().get(0);
-        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertTrue(key1.matches("dummy;[0-9]+"));
         
         // Second run
         question = new SearchQuestion();
@@ -161,7 +161,7 @@ public class UserKeysTests {
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
         String key2 = st.getQuestion().getUserKeys().get(0);
-        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertTrue(key1.matches("dummy;[0-9]+"));
         Assert.assertNotSame(key1,  key2);
     }
     
@@ -182,7 +182,7 @@ public class UserKeysTests {
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
         String key1 = st.getQuestion().getUserKeys().get(0);
-        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertTrue(key1.matches("dummy;[0-9]+"));
         
         // Second run
         question = new SearchQuestion();
@@ -193,7 +193,7 @@ public class UserKeysTests {
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
         String key2 = st.getQuestion().getUserKeys().get(0);
-        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertTrue(key1.matches("dummy;[0-9]+"));
         Assert.assertEquals(key1,  key2);
         
         // Different user should get different value
@@ -205,7 +205,7 @@ public class UserKeysTests {
 
         Assert.assertEquals(1, st.getQuestion().getUserKeys().size());
         String key3 = st.getQuestion().getUserKeys().get(0);
-        Assert.assertTrue(key1.matches("[0-9]+"));
+        Assert.assertTrue(key1.matches("dummy;[0-9]+"));
         Assert.assertNotSame(key1,  key3);
         Assert.assertNotSame(key2,  key3);
     }
