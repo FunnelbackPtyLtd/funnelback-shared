@@ -63,7 +63,7 @@ public class DefaultPadreForkingLockTests {
      */
     @Test
     public void testLockTwoSearches() throws Exception {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
         lockFile.delete();
         Assert.assertFalse(lockFile.exists());
         
@@ -137,7 +137,7 @@ public class DefaultPadreForkingLockTests {
 
     @Test
     public void testLockCreated() throws DataFetchException, EnvironmentVariableException, IOException {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
         
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{
@@ -158,7 +158,7 @@ public class DefaultPadreForkingLockTests {
 
     @Test
     public void testLockWaits() throws Exception {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx/index_update.lock");
+        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
         
         String qp = "mock-padre-wait.sh";
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
