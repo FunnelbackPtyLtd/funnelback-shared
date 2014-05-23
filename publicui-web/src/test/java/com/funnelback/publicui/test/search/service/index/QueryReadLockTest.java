@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.service.index;
 
+import com.funnelback.common.lock.Lock;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
@@ -9,12 +10,15 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.index.DefaultQueryReadLock;
 import com.funnelback.publicui.search.service.index.QueryReadLock;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
@@ -28,10 +32,7 @@ public class QueryReadLockTest {
 	private QueryReadLock queryReadLock;
 	
 	private File getLockFile(Collection collection) {
-		return new File(collection.getConfiguration().getCollectionRoot()
-			 	+ File.separator + View.live
-            	+ File.separator + DefaultValues.FOLDER_IDX
-            	,  Files.Index.UPDATE_LOCK);
+	    return new File(Lock.collectionInstantUpdateLockFile(collection.getConfiguration().getCollectionRoot()));
 	}
 	
 	private Collection getCollection(int i) throws FileNotFoundException{
@@ -45,13 +46,21 @@ public class QueryReadLockTest {
 	}
 	
 	@Before
-	public void before() throws FileNotFoundException {
+	public void before() throws IOException {
 		collection = new Collection[COLLECTION_COUNT];
 		for (int i = 0; i < COLLECTION_COUNT; i++){
 			collection[i] = getCollection(i);
+			getLockFile(collection[i]).createNewFile();
 			Assert.assertTrue(getLockFile(collection[i]).exists());
 		}
 		queryReadLock = new DefaultQueryReadLock();
+	}
+	
+	@After
+	public void after() throws IOException {
+	    for (int i = 0; i < COLLECTION_COUNT; i++){
+	        getLockFile(collection[i]).delete();
+	    }
 	}
 	
 	@Test
