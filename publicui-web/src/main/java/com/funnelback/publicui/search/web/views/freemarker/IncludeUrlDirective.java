@@ -39,6 +39,7 @@ import freemarker.template.TemplateScalarModel;
 /**
  * Includes an external URL.
  * Replacement for NickScript's IncludeUrl plugin
+ * Supports HTTP redirects, however 'meta-refresh' tags/redirects within the included url are not supported.
  * Parameters:
  * - url: Absolute URL to include
  * - expiry: Cache TTL, in seconds
