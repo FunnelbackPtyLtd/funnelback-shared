@@ -3,7 +3,7 @@ package com.funnelback.publicui.recommender.utils;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.json.ObjectMapperSingleton;
 import com.funnelback.common.counters.StringCount;
-import com.funnelback.reporting.DatabaseAccess;
+import com.funnelback.reporting.database.AnalyticsDatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 import org.apache.log4j.Logger;
@@ -127,12 +127,12 @@ public final class SearchUtils {
     private List<ItemTuple> getRelatedResults(String itemName,
             String searchServiceAddress, String scope) {
         List<ItemTuple> relatedResults = new ArrayList<>();
-        DatabaseAccess dba = null;
+        AnalyticsDatabaseAccess dba = null;
         String installDir = collectionConfig.getSearchHomeDir().getAbsolutePath();
         String collectionName = collectionConfig.getCollectionName();
 
         try {
-            dba = new DatabaseAccess(new File(installDir), collectionName, false);
+            dba = new AnalyticsDatabaseAccess(new File(installDir), collectionName, false);
             List<StringCount> relatedQueries = dba.selectQueriesForURLWithCounts(itemName);
 
             if (relatedQueries != null && relatedQueries.size() > 0) {
