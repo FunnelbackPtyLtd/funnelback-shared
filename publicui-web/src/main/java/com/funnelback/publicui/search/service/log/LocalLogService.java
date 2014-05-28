@@ -9,6 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.funnelback.common.views.View;
+
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -30,7 +31,7 @@ import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.log.Log;
 import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
-import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
 
 /**
  * Writes log files locally in the LIVE folder of each collection

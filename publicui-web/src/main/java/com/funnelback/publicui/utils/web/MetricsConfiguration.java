@@ -26,6 +26,7 @@ import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
 
 /**
  * Configure the Yammer Metrics registry and corresponding

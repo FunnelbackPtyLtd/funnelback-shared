@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.funnelback.publicui.search.service.log.LocalLogService;
-import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
 
 public abstract class AbstractLocalLogServiceTests {
 

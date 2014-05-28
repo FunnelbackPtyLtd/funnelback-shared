@@ -7,9 +7,11 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
-import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
+
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

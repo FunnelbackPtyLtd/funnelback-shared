@@ -8,7 +8,8 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.log.Log;
-import com.funnelback.publicui.utils.web.LocalHostnameHolder;
+import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
