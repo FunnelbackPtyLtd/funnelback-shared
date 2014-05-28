@@ -54,6 +54,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-springmvc-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.funnelback.publicui</groupId>
             <artifactId>publicui-core</artifactId>
             <version>${project.version}</version>

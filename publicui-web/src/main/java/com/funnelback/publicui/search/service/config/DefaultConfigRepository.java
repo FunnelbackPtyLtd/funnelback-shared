@@ -12,10 +12,12 @@ import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.resource.ResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.*;
 import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+import com.funnelback.springmvc.service.resource.ResourceManager;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 
 import groovy.lang.Script;
 import lombok.Setter;

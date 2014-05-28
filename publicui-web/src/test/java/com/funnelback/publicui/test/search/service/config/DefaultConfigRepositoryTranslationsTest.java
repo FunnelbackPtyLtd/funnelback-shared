@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.io.FileUtils;
@@ -18,8 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
 import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
+import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

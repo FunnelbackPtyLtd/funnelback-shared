@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.ResourceManager;
 import com.funnelback.publicui.search.service.resource.impl.GroovyObjectResource;
+import com.funnelback.springmvc.service.resource.ResourceManager;
 
 /**
  * Perform an action which is specified by an external Groovy class.

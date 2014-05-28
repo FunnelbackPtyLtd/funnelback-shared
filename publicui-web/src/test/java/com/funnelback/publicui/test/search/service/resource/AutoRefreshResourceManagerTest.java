@@ -19,9 +19,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.DefaultValues;
-import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
-import com.funnelback.publicui.search.service.resource.impl.PropertiesResource;
 import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
+import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
+import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

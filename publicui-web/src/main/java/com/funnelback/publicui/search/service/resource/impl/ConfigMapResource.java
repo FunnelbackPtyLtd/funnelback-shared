@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 
 import com.funnelback.common.config.ConfigReader;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Parses a Funnelback configuration file and returns the

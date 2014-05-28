@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 
 import com.funnelback.common.config.RemoveCommentsPredicate;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Parses a key=value config files and returns an array of

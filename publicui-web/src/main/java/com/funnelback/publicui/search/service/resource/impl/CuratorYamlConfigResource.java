@@ -16,6 +16,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Parses a curator YAML config file and returns a {@link CuratorConfig} object.

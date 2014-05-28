@@ -10,7 +10,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Files.Types;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.service.resource.ParseableResource;
+import com.funnelback.springmvc.service.resource.ParseableResource;
 
 /**
  * Parses a collection configuration files into a {@link Config}

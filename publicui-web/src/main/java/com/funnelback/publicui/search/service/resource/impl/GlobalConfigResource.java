@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
-import com.funnelback.publicui.search.service.resource.ParseableResource;
+import com.funnelback.springmvc.service.resource.ParseableResource;
 
 /**
  * Loads the <code>global.cfg(.default)</code>

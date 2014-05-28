@@ -13,7 +13,7 @@ import com.funnelback.publicui.curator.action.GroovyAction;
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.ResourceManager;
+import com.funnelback.springmvc.service.resource.ResourceManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

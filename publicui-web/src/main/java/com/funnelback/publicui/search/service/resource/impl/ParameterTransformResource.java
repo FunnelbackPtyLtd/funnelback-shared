@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.collection.paramtransform.ParamTransformRuleFactory;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Parses a file containing parameter (CGI) transforms

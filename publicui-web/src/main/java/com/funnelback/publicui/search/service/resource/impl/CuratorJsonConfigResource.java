@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Parses a curator JSON config file and returns a {@link CuratorConfig} object.

@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.search.service.resource.AutoRefreshResourceManager;
 import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
+import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 
 public abstract class DefaultConfigRepositoryTestBase {
 

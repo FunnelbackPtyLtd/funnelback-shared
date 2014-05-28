@@ -11,6 +11,7 @@ import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
 import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Loads and parse a faceted navigation configuration file.
