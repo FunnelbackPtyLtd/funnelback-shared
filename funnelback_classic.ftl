@@ -347,9 +347,9 @@
 
     @param italics The words to italicize, space separated. If not set it will automatically italicize the query terms.
 -->
-<#macro italicize italics><#compress>
+<#macro italicize italics=""><#compress>
     <#local content><#nested></#local>
-    <#if italics?exists>
+    <#if italics != "">
         ${tagify("em", italics, content)}
     <#else>
         <#-- Pass the regular expression returned by PADRE -->
