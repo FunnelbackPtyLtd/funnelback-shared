@@ -11,6 +11,7 @@ import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
+import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.*;
 import com.funnelback.publicui.utils.MapUtils;
@@ -209,18 +210,32 @@ public class DefaultConfigRepository implements ConfigRepository {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
 
-            // Load curator config from either JSON or YAML (JSON takes precedence)
-            File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
-            File curatorYamlConfigFile = new File(profileDir, Files.CURATOR_YAML_CONFIG_FILENAME);
+            
+            CuratorConfig config = new CuratorConfig();  // Empty default curator config
+            
+            // Load curator config from each of the supported config files (combining them)
+            try {
+                File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), new CuratorConfig()).getTriggerActions());
+            } catch (IOException e) {
+                log.error("Error loading curator json configuration.", e);
+            }
             
             try {
-                // Attempt JSON first, fall back to YAML, and then fall back to empty config
-                p.setCuratorConfig(resourceManager.load(
-                    new CuratorJsonConfigResource(curatorJsonConfigFile),
-                    resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), new CuratorConfig())));
+                File curatorAdvancedJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_ADVANCED_CONFIG_FILENAME);
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), new CuratorConfig()).getTriggerActions());
             } catch (IOException e) {
-                log.error("Could not read curator file from '"+curatorJsonConfigFile+"' nor '" + curatorYamlConfigFile + "'", e);
+                log.error("Error loading curator advanced json configuration.", e);
             }
+
+            try {
+                File curatorYamlConfigFile = new File(profileDir, Files.CURATOR_YAML_CONFIG_FILENAME);
+                config.addAll(resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), new CuratorYamlConfig()).toTriggerActions());
+            } catch (IOException e) {
+                log.error("Error loading curator yaml configuration.", e);
+            }
+            
+            p.setCuratorConfig(config);
 
             out.put(p.getId(), p);
             log.debug("Loaded profile from '" + profileDir.getAbsolutePath() + "' for collection '" + c.getId() + "'");

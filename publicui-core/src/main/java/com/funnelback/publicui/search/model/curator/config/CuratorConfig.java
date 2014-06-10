@@ -33,6 +33,15 @@ public class CuratorConfig {
     private List<TriggerActions> triggerActions = new ArrayList<TriggerActions>();
     
     /**
+     * <p>Add a list of TriggerActions (perhaps from another Curator[Yaml]Config object) to this CuratorConfig.</p>
+     *
+     * @since 14.0
+     */
+    public void addAll(List<TriggerActions> triggerActions) {
+        this.triggerActions.addAll(triggerActions);
+    }
+    
+    /**
      * <p>
      * Determines, based on the given searchTransaction, whether the curator
      * system should be activated. If it is not activated the curator system

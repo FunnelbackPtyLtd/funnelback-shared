@@ -8,10 +8,19 @@ import lombok.Setter;
  * An association between a curator {@link Trigger} and the {@link ActionSet}
  * to perform for this trigger.
  * 
+ * This is known as a RuleSet in the Admin UI interface.
+ * 
  * @since 13.4
  */
 @NoArgsConstructor
 public class TriggerActions {
+    
+    /**
+     * Name for the TriggerAction (called a RuleSet in the user interface)
+     */
+    @Getter
+    @Setter
+    private String name;    
     
     /**
      * {@link Trigger} associated to the {@link ActionSet}

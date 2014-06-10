@@ -16,6 +16,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
+import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
@@ -24,7 +25,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  * @see CuratorJsonConfigResource
  */
 @Log4j
-public class CuratorYamlConfigResource extends AbstractSingleFileResource<CuratorConfig> {
+public class CuratorYamlConfigResource extends AbstractSingleFileResource<CuratorYamlConfig> {
 
     /**
      * Create the CuratorConifgResource with a file object representing the
@@ -39,7 +40,7 @@ public class CuratorYamlConfigResource extends AbstractSingleFileResource<Curato
      * it.
      */
     @Override
-    public CuratorConfig parse() throws IOException {
+    public CuratorYamlConfig parse() throws IOException {
         log.debug("Reading curator configuration data from '" + file.getAbsolutePath() + "'");
 
         return loadYamlConfig(file.getAbsolutePath());
@@ -99,11 +100,11 @@ public class CuratorYamlConfigResource extends AbstractSingleFileResource<Curato
      * into a CuratorConfig.
      * @throws IOException 
      */
-    public static CuratorConfig loadYamlConfig(String filename) throws IOException {
+    public static CuratorYamlConfig loadYamlConfig(String filename) throws IOException {
         FileReader reader = null;
         try {
             reader = new FileReader(filename);
-            return getYamlObject().loadAs(reader, CuratorConfig.class);
+            return getYamlObject().loadAs(reader, CuratorYamlConfig.class);
         } catch (YAMLException e) {
             throw new IOException("Invalid YAML Curator config file", e);
         } finally {

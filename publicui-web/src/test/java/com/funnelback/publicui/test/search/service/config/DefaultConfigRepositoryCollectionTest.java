@@ -187,19 +187,18 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         
         Collection coll = configRepository.getCollection("config-repository");
 
-        String curatorYamlConfig1 = "triggerActions:\n"
-            + "  -\n"
-            + "    trigger: !AllQueryWords\n"
-            + "      triggerWords:\n"
-            + "        - best\n"
-            + "        - king\n"
-            + "    actions:\n"
-            + "      actions:\n"
-            + "        - !DisplayMessage\n"
-            + "          message:\n"
-            + "            additionalProperties: null\n"
-            + "            category: no-category\n"
-            + "            messageHtml: yaml-message1html";
+        String curatorYamlConfig1 = 
+            "triggerActions:\n"
+            + "  ? !AllQueryWords\n"
+            + "    triggerWords:\n"
+            + "    - best\n"
+            + "    - king\n"
+            + "  : actions:\n"
+            + "    - !DisplayMessage\n"
+            + "      message:\n"
+            + "        additionalProperties: null\n"
+            + "        category: no-category\n"
+            + "        messageHtml: yaml-message1html";
         String curatorYamlConfig2 = curatorYamlConfig1.replace("yaml-message1html", "yaml-message2html");
         File curatorYamlConfigFile = new File(TEST_DIR, "profile2/" + Files.CURATOR_YAML_CONFIG_FILENAME);
 
@@ -209,7 +208,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
 
         // Create curator.json file
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
-        FileUtils.writeStringToFile(curatorJsonConfigFile, curatorJsonConfig1);;
+        FileUtils.writeStringToFile(curatorJsonConfigFile, curatorJsonConfig1);
         coll = configRepository.getCollection("config-repository");
         ActionSet as = coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
         DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
