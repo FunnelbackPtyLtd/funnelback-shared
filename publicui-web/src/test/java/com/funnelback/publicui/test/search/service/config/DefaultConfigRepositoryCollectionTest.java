@@ -210,6 +210,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertNull(coll.getProfiles().get("profile2").getPadreOpts());
         FileUtils.writeStringToFile(curatorJsonConfigFile, curatorJsonConfig1);
         coll = configRepository.getCollection("config-repository");
+        System.out.println(coll.getProfiles().get("profile2").getCuratorConfig());
         ActionSet as = coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
         DisplayMessage dm = (DisplayMessage) as.getActions().get(0);
         Assert.assertEquals("json-message1html", dm.getMessage().getMessageHtml());

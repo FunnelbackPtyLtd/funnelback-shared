@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ import com.funnelback.springmvc.service.resource.ResourceManager;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Component
 public class GroovyTrigger implements Trigger {
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.Exhibit;
 
@@ -25,6 +26,7 @@ import com.funnelback.publicui.search.model.curator.Exhibit;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UrlAdvert implements Exhibit {
     /** The title (in HTML) of the advert. */
     @Getter

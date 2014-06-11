@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.map.annotate.JsonTypeIdResolver;
 import org.springframework.context.ApplicationContext;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -28,6 +30,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * com.funnelback.publicui.search.service.resource.impl.CuratorConfigResource
  * </p>
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeIdResolver(ActionTypeIdResolver.class)
 public interface Action {
 
     /**

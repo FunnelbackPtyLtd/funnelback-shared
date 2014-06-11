@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
@@ -16,6 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class DisplayUrlAdvert implements Action {
 
     /** The URL advert object to be displayed. */

@@ -7,6 +7,7 @@ import com.funnelback.publicui.search.model.curator.Exhibit;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -21,6 +22,7 @@ import lombok.Setter;
  * 
  * @since 13.0
  */
+@ToString
 public class Properties implements Exhibit {
 
     /**

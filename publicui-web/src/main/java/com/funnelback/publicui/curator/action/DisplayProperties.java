@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.data.Properties;
@@ -16,6 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class DisplayProperties implements Action {
 
     /** The properties object to be displayed. */

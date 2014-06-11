@@ -3,10 +3,11 @@ package com.funnelback.publicui.search.model.curator.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import org.springframework.context.ApplicationContext;
 
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -15,6 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * ActionSet defines a group of actions (which may share a single trigger) and
  * provides convenience methods across the group.
  */
+@ToString
 public class ActionSet {
     
     /** The actual actions contained within the set */

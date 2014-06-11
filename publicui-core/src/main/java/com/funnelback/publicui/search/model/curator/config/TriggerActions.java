@@ -1,8 +1,12 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * An association between a curator {@link Trigger} and the {@link ActionSet}
@@ -13,6 +17,7 @@ import lombok.Setter;
  * @since 13.4
  */
 @NoArgsConstructor
+@ToString
 public class TriggerActions {
     
     /**
@@ -33,8 +38,8 @@ public class TriggerActions {
      * Set of actions for the {@link Trigger}
      */
     @Setter
-    private ActionSet actions;
-    
+    private List<Action> actions = new ArrayList<Action>();
+
     /**
      * Get the set of actions for this trigger. If null, an empty
      * {@link ActionSet} is returned instead.
@@ -44,7 +49,9 @@ public class TriggerActions {
         if (actions == null) {
             return new ActionSet();
         } else {
-            return actions;
+            ActionSet result = new ActionSet();
+            result.setActions(actions);
+            return result;
         }
     }
 

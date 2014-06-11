@@ -46,7 +46,7 @@ public class CuratorYamlConfig {
         for (Trigger t : triggerActions.keySet()) {
             TriggerActions item = new TriggerActions();
             item.setTrigger(t);
-            item.setActions(triggerActions.get(t));
+            item.setActions(triggerActions.get(t).getActions());
             result.add(item);
         }
         

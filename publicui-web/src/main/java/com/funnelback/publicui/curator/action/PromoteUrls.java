@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -27,6 +28,7 @@ import com.google.common.base.Joiner;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PromoteUrls implements Action {
 
     /**

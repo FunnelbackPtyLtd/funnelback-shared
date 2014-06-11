@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -18,6 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class QueryRegularExpressionTrigger implements Trigger {
 
     /** The regular expression to run against the current query */

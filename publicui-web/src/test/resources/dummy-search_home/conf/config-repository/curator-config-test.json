@@ -1,38 +1,73 @@
-{
-   "triggerActions":[
-      "java.util.ArrayList",
-      [
-         {
-            "trigger":[
-               "com.funnelback.publicui.curator.trigger.AllQueryWordsTrigger",
-               {
-                  "triggerWords":[
-                     "java.util.ArrayList",
-                     [
-                        "best",
-                        "king"
-                     ]
-                  ]
-               }
-            ],
-            "actions":{
-               "actions":[
-                  "java.util.ArrayList",
-                  [
-                     [
-                        "com.funnelback.publicui.curator.action.DisplayMessage",
-                        {
-                           "message":{
-                              "messageHtml":"json-message1html",
-                              "additionalProperties":null,
-                              "category":"no-category"
-                           }
-                        }
-                     ]
-                  ]
-               ]
+[
+    {
+        "name": "Some name",
+        "trigger": {
+            "type": "And",
+            "triggers": [
+		        {
+		            "type": "AllQueryWords",
+		            "triggerWords": [
+		                "best",
+		                "king"
+		            ]
+		        },
+		        {
+		            "type": "CountryName",
+		            "targetCountries": [
+		                "Australia",
+		                "China"
+		            ]
+		        }
+            ]
+        },
+        "actions": [
+            {
+                "type": "DisplayMessage",
+                "message": {
+                    "messageHtml": "json-message1html",
+                    "additionalProperties": null,
+                    "category": "no-category"
+                }
             }
-         }
-      ]
-   ]
-}
+        ]
+    },
+    {
+        "name": "Some other name",
+        "trigger": {
+            "type": "And",
+            "triggers": [
+		        {
+		            "type": "AllQueryWords",
+		            "triggerWords": [
+		                "worst",
+		                "king"
+		            ]
+		        },
+		        {
+		            "type": "CountryName",
+		            "targetCountries": [
+		                "America"
+		            ]
+		        }
+            ]
+        },
+        "actions": [
+            {
+                "type": "DisplayMessage",
+                "message": {
+                    "messageHtml": "json-messageAhtml",
+                    "additionalProperties": null,
+                    "category": "no-category"
+                }
+            },
+            {
+                "type": "DisplayMessage",
+                "message": {
+                    "messageHtml": "json-messageBhtml",
+                    "additionalProperties": null,
+                    "category": "no-category"
+                }
+            }
+        ]
+    }
+]
