@@ -67,7 +67,7 @@ public class DocCacheControllerTest {
             configRepository.getCollection("cache-doc"),
             DefaultValues.PREVIEW_SUFFIX,
             DefaultValues.DEFAULT_FORM,
-            "unknown-record", new File("folder/document.html"), 0, -1);
+            "unknown-record", "folder/document.html", 0, -1);
         
         Assert.assertEquals(200, response.getStatus());
         
@@ -93,7 +93,7 @@ public class DocCacheControllerTest {
             configRepository.getCollection("cache-doc"),
             DefaultValues.PREVIEW_SUFFIX,
             DefaultValues.DEFAULT_FORM,
-            "unknown-record", new File("folder/document.xml"), 0, -1);
+            "unknown-record", "folder/document.xml", 0, -1);
         
         Assert.assertEquals(200, response.getStatus());
         
@@ -119,7 +119,7 @@ public class DocCacheControllerTest {
             configRepository.getCollection("cache-doc"),
             DefaultValues.PREVIEW_SUFFIX,
             DefaultValues.DEFAULT_FORM,
-            "unknown-record", new File("non-existent/document.html"), 0, -1);
+            "unknown-record", "non-existent/document.html", 0, -1);
 
         Assert.assertEquals(404, response.getStatus());
 
@@ -141,15 +141,15 @@ public class DocCacheControllerTest {
             configRepository.getCollection("cache-doc"),
             DefaultValues.PREVIEW_SUFFIX,
             DefaultValues.DEFAULT_FORM,
-            "unknown-record", new File("../../etc/passwd"), 0, -1);
+            "unknown-record", "../../etc/passwd", 0, -1);
     }
 
 
     @Test(expected=IllegalArgumentException.class)
     public void testAbsoluteFile() throws Exception {
-        File f = new File("/etc/passwd");
+        String f = "/etc/passwd";
         if (OS.isFamilyWindows()) {
-            f = new File("C:\\Windows\\System32\\cmd.exe");
+            f = "C:\\Windows\\System32\\cmd.exe";
         }
         
         cacheController.cache(request,

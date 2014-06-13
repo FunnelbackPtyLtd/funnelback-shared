@@ -18,11 +18,22 @@ public class RelativeFileOnlyEditor extends PropertyEditorSupport {
     
     @Override
     public void setAsText(String text) {
-        if (NO_PARENT_PATTERN.matcher(text).find()
-            || new File(text).isAbsolute()) {
-            throw new IllegalArgumentException("Invalid path '"+text+"'");
+            setValue(transformToFile(text));
+    }
+    
+    /**
+     * Returns a File, checking the path is relative
+     * 
+     * @param relativePath
+     * @return
+     * @throws IllegalArgumentException when the path is not relative
+     */
+    public static File transformToFile(String relativePath) throws IllegalArgumentException {
+        if (NO_PARENT_PATTERN.matcher(relativePath).find()
+            || new File(relativePath).isAbsolute()) {
+            throw new IllegalArgumentException("Invalid path '"+relativePath+"'");
         } else {
-            setValue(new File(text));
+            return new File(relativePath);
         }
     }
     

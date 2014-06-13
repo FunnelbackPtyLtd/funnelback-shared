@@ -109,7 +109,7 @@ public class CacheController {
             @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
             @RequestParam(required=true) String url,
-            @RequestParam File doc,
+            @RequestParam String doc,
             @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") int offset,
             @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
         
@@ -122,7 +122,9 @@ public class CacheController {
                     = dataRepository.getCachedDocument(collection, StoreView.live, url);
             if ((rmd == null || rmd.record == null) && doc != null) {
                 // Attempt with DOC parameter
-                rmd = dataRepository.getDocument(collection, StoreView.live, url, doc, offset, length);
+                File docFile = RelativeFileOnlyEditor.transformToFile(doc);
+                // Attempt with DOC parameter
+                rmd = dataRepository.getDocument(collection, StoreView.live, url, docFile, offset, length);
             }
                 
             if (rmd != null && rmd.record != null) {

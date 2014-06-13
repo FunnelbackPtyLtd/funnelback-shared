@@ -64,7 +64,7 @@ public class LocalCollectionCacheControllerTest {
                 configRepository.getCollection("cache-local"),
                 DefaultValues.PREVIEW_SUFFIX,
                 DefaultValues.DEFAULT_FORM,
-                "unknown-record", new File("local-collection-cached-document.txt"), 0, -1);
+                "unknown-record", "local-collection-cached-document.txt", 0, -1);
 
         Assert.assertEquals(200, response.getStatus());
         
@@ -91,7 +91,7 @@ public class LocalCollectionCacheControllerTest {
             configRepository.getCollection("cache-local"),
             DefaultValues.PREVIEW_SUFFIX,
             DefaultValues.DEFAULT_FORM,
-            "unknown-record", new File("src/test/resources/dummy-search_home/global.cfg.default"), 0, -1);
+            "unknown-record", "src/test/resources/dummy-search_home/global.cfg.default", 0, -1);
         
         Assert.assertEquals(404, response.getStatus());
 
