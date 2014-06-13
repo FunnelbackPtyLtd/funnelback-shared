@@ -34,7 +34,7 @@ public class PadreQueryStringBuilder {
     private final boolean withFacetConstraints;
     
     public String buildQueryString() {
-        Map<String, String[]> qs = new TreeMap<String, String[]>();
+        Map<String, String[]> qs = new TreeMap<>();
         
         // Add any additional parameter
         qs.putAll(question.getAdditionalParameters());
@@ -187,8 +187,6 @@ public class PadreQueryStringBuilder {
     /**
      * Builds <code>gscope1</code> parameter using any existing input parameter combined
      * with faceted navigation gscope constraints.
-     * @param transaction
-     * @return
      */
     private String buildGScope1() {
         String facetGscopeConstraints = question.getFacetsGScopeConstraints();
