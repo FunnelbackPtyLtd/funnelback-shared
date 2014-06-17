@@ -6,8 +6,6 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
-import com.funnelback.publicui.curator.GroovyActionResourceManager;
-import com.funnelback.publicui.curator.GroovyTriggerResourceManager;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -76,14 +74,6 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Autowired
     @Setter
     protected ResourceManager resourceManager;
-
-    @Autowired
-    @Setter
-    protected GroovyTriggerResourceManager groovyTriggerResourceManager;
-
-    @Autowired
-    @Setter
-    protected GroovyActionResourceManager groovyActionResourceManager;
 
     @Autowired
     @Setter
@@ -226,14 +216,14 @@ public class DefaultConfigRepository implements ConfigRepository {
             // Load curator config from each of the supported config files (combining them)
             try {
                 File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile, groovyTriggerResourceManager, groovyActionResourceManager), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), new CuratorConfig()).getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator json configuration.", e);
             }
             
             try {
                 File curatorAdvancedJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_ADVANCED_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile, groovyTriggerResourceManager, groovyActionResourceManager), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), new CuratorConfig()).getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator advanced json configuration.", e);
             }

@@ -48,20 +48,20 @@ public class CuratorYamlConfigResource extends AbstractSingleFileResource<Curato
 
     /** Trigger classes to add shortName aliases for (to keep the config simple) */
     public static final Class<?>[] aliasedTriggers = new Class<?>[] {
-                    com.funnelback.publicui.curator.trigger.AllQueryWordsTrigger.class,
-                    com.funnelback.publicui.curator.trigger.AndTrigger.class,
-                    com.funnelback.publicui.curator.trigger.CountryNameTrigger.class,
-                    com.funnelback.publicui.curator.trigger.DateRangeTrigger.class,
-                    com.funnelback.publicui.curator.trigger.ExactQueryTrigger.class,
-                    com.funnelback.publicui.curator.trigger.OrTrigger.class,
-                    com.funnelback.publicui.curator.trigger.QueryRegularExpressionTrigger.class,
-                    com.funnelback.publicui.curator.trigger.QuerySubstringTrigger.class };
+                    com.funnelback.publicui.search.model.curator.trigger.AllQueryWordsTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.AndTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.CountryNameTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.DateRangeTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.ExactQueryTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.OrTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.QueryRegularExpressionTrigger.class,
+                    com.funnelback.publicui.search.model.curator.trigger.QuerySubstringTrigger.class };
     /** Action classes to add shortName aliases for (to keep the config simple) */
     public static final Class<?>[] aliasedActions = new Class<?>[] {
-                    com.funnelback.publicui.curator.action.DisplayMessage.class,
-                    com.funnelback.publicui.curator.action.DisplayUrlAdvert.class,
-                    com.funnelback.publicui.curator.action.PromoteUrls.class,
-                    com.funnelback.publicui.curator.action.RemoveUrls.class };
+                    com.funnelback.publicui.search.model.curator.action.DisplayMessage.class,
+                    com.funnelback.publicui.search.model.curator.action.DisplayUrlAdvert.class,
+                    com.funnelback.publicui.search.model.curator.action.PromoteUrls.class,
+                    com.funnelback.publicui.search.model.curator.action.RemoveUrls.class };
 
     /**
      * Get a snakeyaml parsing/serializing object which is already configured

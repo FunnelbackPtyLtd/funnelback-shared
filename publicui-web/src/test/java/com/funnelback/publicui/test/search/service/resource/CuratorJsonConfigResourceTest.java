@@ -6,8 +6,6 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import com.funnelback.publicui.curator.SimpleGroovyActionResourceManager;
-import com.funnelback.publicui.curator.SimpleGroovyTriggerResourceManager;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
 
@@ -44,7 +42,7 @@ public class CuratorJsonConfigResourceTest {
             ""
         );
         
-        CuratorJsonConfigResource c = new CuratorJsonConfigResource(f, new SimpleGroovyTriggerResourceManager(), new SimpleGroovyActionResourceManager());
+        CuratorJsonConfigResource c = new CuratorJsonConfigResource(f);
         
         CuratorConfig conf = c.parse();
         

@@ -6,11 +6,9 @@ import java.io.IOException;
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;

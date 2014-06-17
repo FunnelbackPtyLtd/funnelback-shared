@@ -8,7 +8,7 @@ import org.codehaus.jackson.type.JavaType;
 
 public class TriggerTypeIdResolver implements TypeIdResolver {
 
-    private static final String TRIGGER_PACKAGE = "com.funnelback.publicui.curator.trigger";
+    private static final String TRIGGER_PACKAGE = "com.funnelback.publicui.search.model.curator.trigger";
     private static final String CLASS_SUFFIX = "Trigger";
     
     private JavaType baseType;

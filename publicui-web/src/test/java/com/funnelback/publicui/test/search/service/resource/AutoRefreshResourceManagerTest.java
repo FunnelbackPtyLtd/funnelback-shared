@@ -9,7 +9,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;

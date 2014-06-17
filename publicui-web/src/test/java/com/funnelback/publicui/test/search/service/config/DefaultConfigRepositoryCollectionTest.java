@@ -15,11 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Files;
-import com.funnelback.publicui.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
+import com.funnelback.publicui.search.model.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.curator.config.ActionSet;
-import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

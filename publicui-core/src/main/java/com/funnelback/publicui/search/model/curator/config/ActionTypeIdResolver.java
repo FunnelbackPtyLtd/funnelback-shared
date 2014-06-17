@@ -8,7 +8,7 @@ import org.codehaus.jackson.type.JavaType;
 
 public class ActionTypeIdResolver implements TypeIdResolver {
 
-    private static final String ACTION_PACKAGE = "com.funnelback.publicui.curator.action";
+    private static final String ACTION_PACKAGE = "com.funnelback.publicui.search.model.curator.action";
     
     private JavaType baseType;
     
