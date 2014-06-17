@@ -19,8 +19,8 @@ public class ActionTestUtils {
     
     public static SearchTransaction runAllPhases(Action action, SearchTransaction searchTransaction, ApplicationContext context) {
         for (Action.Phase phase : Action.Phase.values()) {
-            if (action.runsInPhase(phase, context)) {
-                action.performAction(searchTransaction, phase, context);
+            if (action.runsInPhase(phase)) {
+                action.performAction(searchTransaction, phase);
             }
         }
         

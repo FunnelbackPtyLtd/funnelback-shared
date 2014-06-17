@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.model.curator.config;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.annotate.JsonTypeIdResolver;
-import org.springframework.context.ApplicationContext;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -55,7 +54,7 @@ public interface Action {
      *            differently depending on the current phase of processing).
      * @param context Modern UI global application context
      */
-    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context);
+    public void performAction(SearchTransaction searchTransaction, Phase phase);
 
     /**
      * @param phase
@@ -65,5 +64,5 @@ public interface Action {
      * @return true if this action should be run in the given phase, otherwise
      *         return false.
      */
-    public boolean runsInPhase(Phase phase, ApplicationContext context);
+    public boolean runsInPhase(Phase phase);
 }

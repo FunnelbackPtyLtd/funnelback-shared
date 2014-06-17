@@ -1,7 +1,6 @@
 package com.funnelback.publicui.curator.trigger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.curator.GroovyTriggerResourceManager;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.service.resource.impl.GroovyObjectResource;
-import com.funnelback.springmvc.service.resource.ResourceManager;
 
 
 /**
@@ -57,39 +54,17 @@ public class GroovyTrigger implements Trigger {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
-     * Resource manager used to reload the Groovy class when it changes
+     * A resource manager object which handles loading of groovy objects
      */
     @Setter
-    private ResourceManager resourceManager;
-    
-    /**
-     * Loads the GroovyActionInterface implementation from the resourceManager (which will cache it between
-     * requests until the file changes) and returns it for use.
-     */
-    private GroovyTriggerInterface getTriggerImplementation(ApplicationContext context) {
-        if (resourceManager == null) {
-            resourceManager = context.getBean(ResourceManager.class);
-        }
-        
-        GroovyTriggerInterface result;
-        try {
-            result = resourceManager.load(new GroovyObjectResource<GroovyTriggerInterface>(new File(classFile)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        if (result == null) {
-            throw new RuntimeException(new ClassNotFoundException("No class was loaded from " + classFile));
-        }
-
-        return result;
-    }
+    private GroovyTriggerResourceManager groovyTriggerResourceManager;
 
     /**
      * Check the given searchTransaction to see if the trigger activates on this request.
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
-        return getTriggerImplementation(context).activatesOn(searchTransaction, properties);
+    public boolean activatesOn(SearchTransaction searchTransaction) {
+        return groovyTriggerResourceManager.getGroovyObject(new File(classFile)).activatesOn(searchTransaction, properties);
     }
 
 }

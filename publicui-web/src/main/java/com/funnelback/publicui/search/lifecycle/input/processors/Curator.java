@@ -61,8 +61,8 @@ public class Curator extends AbstractInputProcessor {
                         .get(profileName).getCuratorConfig();
 
                     for (TriggerActions ta : config.getTriggerActions()) {
-                        if (ta.getActions().hasActionForPhase(Phase.INPUT, context) && ta.getTrigger().activatesOn(searchTransaction, context)) {
-                            ta.getActions().performActions(searchTransaction, Phase.INPUT, context);
+                        if (ta.getActions().hasActionForPhase(Phase.INPUT) && ta.getTrigger().activatesOn(searchTransaction)) {
+                            ta.getActions().performActions(searchTransaction, Phase.INPUT);
                         }
                     }
                 }

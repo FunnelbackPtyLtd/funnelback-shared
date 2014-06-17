@@ -1,7 +1,5 @@
 package com.funnelback.publicui.curator.action;
 
-import org.springframework.context.ApplicationContext;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +25,7 @@ public class DisplayProperties implements Action {
 
     /** Adds the action's properties object to the curator model's exhibits. */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+    public void performAction(SearchTransaction searchTransaction, Phase phase) {
         searchTransaction.getResponse().getCurator().getExhibits().add(properties);
     }
 
@@ -36,7 +34,7 @@ public class DisplayProperties implements Action {
      * has been created from Padre's output).
      */
     @Override
-    public boolean runsInPhase(Phase phase, ApplicationContext context) {
+    public boolean runsInPhase(Phase phase) {
         return phase.equals(Phase.OUTPUT);
     }
 }

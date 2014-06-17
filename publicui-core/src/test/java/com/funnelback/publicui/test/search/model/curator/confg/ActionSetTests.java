@@ -15,13 +15,13 @@ public class ActionSetTests {
         ActionSet set = new ActionSet();
         set.getActions().add(new InputAction());
         
-        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT, null));
-        Assert.assertFalse("Expected not to find output action", set.hasActionForPhase(Phase.OUTPUT, null));
+        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT));
+        Assert.assertFalse("Expected not to find output action", set.hasActionForPhase(Phase.OUTPUT));
         
         set.getActions().add(new OutputAction());
 
-        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT, null));
-        Assert.assertTrue("Expected to find output action", set.hasActionForPhase(Phase.OUTPUT, null));
+        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT));
+        Assert.assertTrue("Expected to find output action", set.hasActionForPhase(Phase.OUTPUT));
     }
 
     @Test
@@ -29,8 +29,8 @@ public class ActionSetTests {
         ActionSet set = new ActionSet();
         set.getActions().add(new DualAction());
         
-        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT, null));
-        Assert.assertTrue("Expected to find output action", set.hasActionForPhase(Phase.OUTPUT, null));
+        Assert.assertTrue("Expected to find input action", set.hasActionForPhase(Phase.INPUT));
+        Assert.assertTrue("Expected to find output action", set.hasActionForPhase(Phase.OUTPUT));
     }
     
     @Test
@@ -41,7 +41,7 @@ public class ActionSetTests {
         set.getActions().add(ia);
         set.getActions().add(oa);
 
-        set.performActions(null, Phase.INPUT, null);
+        set.performActions(null, Phase.INPUT);
 
         Assert.assertTrue("Expected input action to be run", ia.hasBeenRun);
         Assert.assertFalse("Expected output action not to be run", oa.hasBeenRun);
@@ -53,13 +53,13 @@ public class ActionSetTests {
         DualAction da = new DualAction();
         set.getActions().add(da);
 
-        set.performActions(null, Phase.INPUT, null);
+        set.performActions(null, Phase.INPUT);
 
         Assert.assertTrue("Expected input action to be run", da.hasBeenRun);
         
         da.hasBeenRun = false;
         
-        set.performActions(null, Phase.OUTPUT, null);
+        set.performActions(null, Phase.OUTPUT);
         
         Assert.assertTrue("Expected input action to be run", da.hasBeenRun);
     }
@@ -69,12 +69,12 @@ public class ActionSetTests {
         public boolean hasBeenRun = false;
         
         @Override
-        public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+        public void performAction(SearchTransaction searchTransaction, Phase phase) {
             hasBeenRun = true;
         }
 
         @Override
-        public boolean runsInPhase(Phase phase, ApplicationContext context) {
+        public boolean runsInPhase(Phase phase) {
             return Phase.INPUT.equals(phase);
         }
         
@@ -85,12 +85,12 @@ public class ActionSetTests {
         public boolean hasBeenRun = false;
         
         @Override
-        public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+        public void performAction(SearchTransaction searchTransaction, Phase phase) {
             hasBeenRun = true;
         }
 
         @Override
-        public boolean runsInPhase(Phase phase, ApplicationContext context) {
+        public boolean runsInPhase(Phase phase) {
             return Phase.OUTPUT.equals(phase);
         }
         
@@ -101,12 +101,12 @@ public class ActionSetTests {
         public boolean hasBeenRun = false;
         
         @Override
-        public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+        public void performAction(SearchTransaction searchTransaction, Phase phase) {
             hasBeenRun = true;
         }
 
         @Override
-        public boolean runsInPhase(Phase phase, ApplicationContext context) {
+        public boolean runsInPhase(Phase phase) {
             return Phase.INPUT.equals(phase) || Phase.OUTPUT.equals(phase);
         }
         

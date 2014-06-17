@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.model.curator.config;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.annotate.JsonTypeIdResolver;
-import org.springframework.context.ApplicationContext;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -35,6 +34,6 @@ public interface Trigger {
      * @return true if this trigger should activate on the given
      * searchTransaction, and false otherwise.
      */
-    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context);
+    public boolean activatesOn(SearchTransaction searchTransaction);
 
 }

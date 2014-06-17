@@ -73,7 +73,7 @@ public class ExploreQuery extends AbstractInputProcessor {
             }
             
             if (queryChanged) {
-                new RemoveUrls(urlsToRemove).performAction(searchTransaction, Action.Phase.INPUT, null);
+                new RemoveUrls(urlsToRemove).performAction(searchTransaction, Action.Phase.INPUT);
                 searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(OPT_VSIMPLE);
                 log.debug("Query updated from '" + searchTransaction.getQuestion().getQuery()
                     + "' to '" + StringUtils.join(queries, " ") + "'");

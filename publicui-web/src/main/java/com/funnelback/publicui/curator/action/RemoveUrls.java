@@ -2,8 +2,6 @@ package com.funnelback.publicui.curator.action;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +43,7 @@ public class RemoveUrls implements Action {
      * which will be given to padre.
      */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+    public void performAction(SearchTransaction searchTransaction, Phase phase) {
         String newRemovedUrls = Joiner.on(" ").join(urlsToRemove);
         addUrlsStringToRemoveList(searchTransaction, newRemovedUrls);
     }
@@ -76,7 +74,7 @@ public class RemoveUrls implements Action {
      * performed by augmenting the request to padre.
      */
     @Override
-    public boolean runsInPhase(Phase phase, ApplicationContext context) {
+    public boolean runsInPhase(Phase phase) {
         return phase.equals(Phase.INPUT);
     }
 }

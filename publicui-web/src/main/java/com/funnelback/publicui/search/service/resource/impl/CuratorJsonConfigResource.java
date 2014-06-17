@@ -10,8 +10,11 @@ import lombok.extern.log4j.Log4j;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.map.InjectableValues;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.funnelback.publicui.curator.GroovyActionResourceManager;
+import com.funnelback.publicui.curator.GroovyTriggerResourceManager;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.TriggerActions;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
@@ -24,13 +27,21 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
 @Log4j
 public class CuratorJsonConfigResource extends AbstractSingleFileResource<CuratorConfig> {
 
+    private GroovyTriggerResourceManager triggerResourceManager;
+    private GroovyActionResourceManager actionResourceManager;
+
     /**
      * @param file JSON file to parse
+     * @param triggerResourceManager A resource manager for getting groovy trigger implementations 
+     * @param actionResourceManager A resource manager for getting groovy action implementations 
      */
-    public CuratorJsonConfigResource(File file) {
+    public CuratorJsonConfigResource(File file, GroovyTriggerResourceManager triggerResourceManager,
+        GroovyActionResourceManager actionResourceManager) {
         super(file);
+        this.triggerResourceManager = triggerResourceManager;
+        this.actionResourceManager = actionResourceManager;
     }
-
+    
     /**
      * Perform the parsing of a JSON curator config file into a CuratorConfig object.
      *
@@ -41,9 +52,16 @@ public class CuratorJsonConfigResource extends AbstractSingleFileResource<Curato
     public CuratorConfig parse() throws IOException {
         log.debug("Reading curator configuration data from '" + file.getAbsolutePath() + "'");
         
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setInjectableValues(
+            new InjectableValues.Std()
+            .addValue(GroovyTriggerResourceManager.class, triggerResourceManager)
+            .addValue(GroovyActionResourceManager.class, actionResourceManager)
+            );
+        
         JsonFactory f = new JsonFactory();
         JsonParser jp = f.createJsonParser(this.file);
-        jp.setCodec(new ObjectMapper());
+        jp.setCodec(objectMapper);
         
         List<TriggerActions> triggerActions = new ArrayList<TriggerActions>();
         

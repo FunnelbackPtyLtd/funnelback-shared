@@ -18,25 +18,25 @@ public class AndTriggerTests {
         
         SearchTransaction st = new SearchTransaction(null, null);
         
-        Assert.assertTrue("Expected to activate with an empty trigger set", at.activatesOn(st, null)); 
+        Assert.assertTrue("Expected to activate with an empty trigger set", at.activatesOn(st)); 
         
         at.getTriggers().add(new NeverTrigger());
         
-        Assert.assertFalse("Expected not to activate with one false sub-trigger", at.activatesOn(st, null)); 
+        Assert.assertFalse("Expected not to activate with one false sub-trigger", at.activatesOn(st)); 
 
         at.getTriggers().add(new AlwaysTrigger());
         
-        Assert.assertFalse("Expected not to activate with one false sub-trigger (even if there's also a true one)", at.activatesOn(st, null));
+        Assert.assertFalse("Expected not to activate with one false sub-trigger (even if there's also a true one)", at.activatesOn(st));
         
         at.getTriggers().clear();
         
         at.getTriggers().add(new AlwaysTrigger());
 
-        Assert.assertTrue("Expected to activate with one true trigger set", at.activatesOn(st, null)); 
+        Assert.assertTrue("Expected to activate with one true trigger set", at.activatesOn(st)); 
 
         at.getTriggers().add(new NeverTrigger());
 
-        Assert.assertFalse("Expected not to activate with one false sub-trigger (even if a true one is first)", at.activatesOn(st, null)); 
+        Assert.assertFalse("Expected not to activate with one false sub-trigger (even if a true one is first)", at.activatesOn(st)); 
     }
     
     @Test

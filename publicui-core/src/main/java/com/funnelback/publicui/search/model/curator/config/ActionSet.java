@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.springframework.context.ApplicationContext;
-
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -29,10 +27,10 @@ public class ActionSet {
      * @param phase current query lifecycle phase where the action is run
      * @param context Modern UI global application context
      */
-    public void performActions(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+    public void performActions(SearchTransaction searchTransaction, Phase phase) {
         for (Action action : actions) {
-            if (action.runsInPhase(phase, context)) {
-                action.performAction(searchTransaction, phase, context);
+            if (action.runsInPhase(phase)) {
+                action.performAction(searchTransaction, phase);
             }
         }
     }
@@ -42,10 +40,10 @@ public class ActionSet {
      * @param context Modern UI global application context
      * @return true if any of the actions in this set should be run within the specified phase.
      */
-    public boolean hasActionForPhase(Phase phase, ApplicationContext context) {
+    public boolean hasActionForPhase(Phase phase) {
         // Perhaps should keep track of this when things are added to save time
         for (Action action : actions) {
-            if (action.runsInPhase(phase, context)) {
+            if (action.runsInPhase(phase)) {
                 return true;
             }
         }

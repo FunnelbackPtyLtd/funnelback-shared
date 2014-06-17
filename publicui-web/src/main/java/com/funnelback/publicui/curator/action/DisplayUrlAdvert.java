@@ -1,7 +1,5 @@
 package com.funnelback.publicui.curator.action;
 
-import org.springframework.context.ApplicationContext;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +43,7 @@ public class DisplayUrlAdvert implements Action {
      * results.
      */
     @Override
-    public void performAction(SearchTransaction searchTransaction, Phase phase, ApplicationContext context) {
+    public void performAction(SearchTransaction searchTransaction, Phase phase) {
         if (removeCollectionUrl && phase.equals(Phase.INPUT)) {
             // Remove the URL if it exists in the results
             RemoveUrls.addUrlsStringToRemoveList(searchTransaction, advert.getDisplayUrl());
@@ -60,7 +58,7 @@ public class DisplayUrlAdvert implements Action {
      * results) and the output phase (to add the advert data).
      */
     @Override
-    public boolean runsInPhase(Phase phase, ApplicationContext context) {
+    public boolean runsInPhase(Phase phase) {
         return (removeCollectionUrl && phase.equals(Phase.INPUT)) || phase.equals(Phase.OUTPUT);
     }
 }

@@ -20,26 +20,26 @@ public class ExactQueryTriggerTests {
         eqt.setTriggerQuery("a B c");
         eqt.setIgnoreCase(false);
         question.setQuery("a c");
-        Assert.assertFalse("Expected to fail because query doesn't match", eqt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because query doesn't match", eqt.activatesOn(st));
 
         question.setQuery("d a B c");
-        Assert.assertFalse("Expected to fail because query doesn't match (even if there's a substring)", eqt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because query doesn't match (even if there's a substring)", eqt.activatesOn(st));
 
         question.setQuery("a b c");
-        Assert.assertFalse("Expected to fail because query doesn't match (different in case)", eqt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because query doesn't match (different in case)", eqt.activatesOn(st));
 
         question.setQuery("a B c");
-        Assert.assertTrue("Expected to pass because query matches exactly", eqt.activatesOn(st, null));
+        Assert.assertTrue("Expected to pass because query matches exactly", eqt.activatesOn(st));
 
         question.setQuery(" a B c");
-        Assert.assertFalse("Expected to fail because query doesn't match (whitespace at start)", eqt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because query doesn't match (whitespace at start)", eqt.activatesOn(st));
 
         question.setQuery("a B c ");
-        Assert.assertFalse("Expected to fail because query doesn't match (whitespace at end)", eqt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because query doesn't match (whitespace at end)", eqt.activatesOn(st));
 
         eqt.setIgnoreCase(true);
         question.setQuery("a b c");
-        Assert.assertTrue("Expected to pass because query matches (case is now ignored)", eqt.activatesOn(st, null));
+        Assert.assertTrue("Expected to pass because query matches (case is now ignored)", eqt.activatesOn(st));
     }
 
     @Test

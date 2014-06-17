@@ -3,8 +3,6 @@ package com.funnelback.publicui.curator.trigger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,9 +41,9 @@ public class NotAnyTrigger implements Trigger {
      * return false).
      */
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
+    public boolean activatesOn(SearchTransaction searchTransaction) {
         for (Trigger trigger : triggers) {
-            if (trigger.activatesOn(searchTransaction, context)) {
+            if (trigger.activatesOn(searchTransaction)) {
                 return false;
             }
         }

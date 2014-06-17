@@ -18,25 +18,25 @@ public class NotAnyTriggerTests {
         
         SearchTransaction st = new SearchTransaction(null, null);
         
-        Assert.assertTrue("Expected to activate with an empty trigger set", nat.activatesOn(st, null)); 
+        Assert.assertTrue("Expected to activate with an empty trigger set", nat.activatesOn(st)); 
         
         nat.getTriggers().add(new NeverTrigger());
         
-        Assert.assertTrue("Expected to activate with one false sub-trigger", nat.activatesOn(st, null)); 
+        Assert.assertTrue("Expected to activate with one false sub-trigger", nat.activatesOn(st)); 
 
         nat.getTriggers().add(new AlwaysTrigger());
         
-        Assert.assertFalse("Expected not to activate with one true sub-trigger (even if there's also a false one)", nat.activatesOn(st, null));
+        Assert.assertFalse("Expected not to activate with one true sub-trigger (even if there's also a false one)", nat.activatesOn(st));
         
         nat.getTriggers().clear();
         
         nat.getTriggers().add(new AlwaysTrigger());
 
-        Assert.assertFalse("Expected not to activate with one true trigger set", nat.activatesOn(st, null)); 
+        Assert.assertFalse("Expected not to activate with one true trigger set", nat.activatesOn(st)); 
 
         nat.getTriggers().add(new NeverTrigger());
 
-        Assert.assertFalse("Expected not to activate with one true sub-trigger (even if there's also a false one)", nat.activatesOn(st, null)); 
+        Assert.assertFalse("Expected not to activate with one true sub-trigger (even if there's also a false one)", nat.activatesOn(st)); 
     }
     
     @Test

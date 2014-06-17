@@ -20,28 +20,28 @@ public class AllQueryWordsTriggerTests {
         SearchTransaction st = new SearchTransaction(question, null);
         
         question.setQuery("a c");
-        Assert.assertFalse("Expected to fail because b is missing", aqwt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because b is missing", aqwt.activatesOn(st));
 
         question.setQuery("b c");
-        Assert.assertFalse("Expected to fail because a is missing", aqwt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because a is missing", aqwt.activatesOn(st));
 
         question.setQuery("ab");
-        Assert.assertFalse("Expected to fail because a and b are missing (as unique words)", aqwt.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because a and b are missing (as unique words)", aqwt.activatesOn(st));
 
         question.setQuery("a b");
-        Assert.assertTrue("Expected to succeed because a and b are present", aqwt.activatesOn(st, null));
+        Assert.assertTrue("Expected to succeed because a and b are present", aqwt.activatesOn(st));
 
         question.setQuery("a b c");
-        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st, null));
+        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
         
         question.setQuery("c a b");
-        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st, null));
+        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
 
         question.setQuery("c a b d");
-        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st, null));
+        Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
 
         question.setQuery("b a");
-        Assert.assertTrue("Expected to succeed because a and b are present (order doesn't matter)", aqwt.activatesOn(st, null));
+        Assert.assertTrue("Expected to succeed because a and b are present (order doesn't matter)", aqwt.activatesOn(st));
     }
     
     @Test

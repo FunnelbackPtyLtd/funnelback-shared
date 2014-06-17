@@ -20,13 +20,13 @@ public class QuerySubstringTriggerTests {
         qst.setTriggerSubstring("bar");
 
         question.setQuery("foo");
-        Assert.assertFalse("Expected to fail because substring doesn't match", qst.activatesOn(st, null));
+        Assert.assertFalse("Expected to fail because substring doesn't match", qst.activatesOn(st));
 
         question.setQuery("bar");
-        Assert.assertTrue("Expected to pass because substring matches whole query", qst.activatesOn(st, null));
+        Assert.assertTrue("Expected to pass because substring matches whole query", qst.activatesOn(st));
 
         question.setQuery("foo bar foo");
-        Assert.assertTrue("Expected to pass because substring matches as a substring", qst.activatesOn(st, null));
+        Assert.assertTrue("Expected to pass because substring matches as a substring", qst.activatesOn(st));
     }
 
     @Test

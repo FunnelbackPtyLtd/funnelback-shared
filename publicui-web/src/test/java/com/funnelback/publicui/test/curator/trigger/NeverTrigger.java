@@ -8,7 +8,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class NeverTrigger implements Trigger {
 
     @Override
-    public boolean activatesOn(SearchTransaction searchTransaction, ApplicationContext context) {
+    public boolean activatesOn(SearchTransaction searchTransaction) {
         return false;
     }
 

@@ -76,6 +76,10 @@
 
 	<bean id="resourceManager" class="com.funnelback.springmvc.service.resource.AutoRefreshResourceManager" />
 
+	<bean id="groovyTriggerResourceManager" class="com.funnelback.publicui.curator.SimpleGroovyTriggerResourceManager" />
+
+	<bean id="groovyActionResourceManager" class="com.funnelback.publicui.curator.SimpleGroovyActionResourceManager" />
+
 	<bean id="localDataRepository" class="com.funnelback.publicui.search.service.data.LocalDataRepository" />
 
 	<bean id="searchController"
