@@ -1,20 +1,14 @@
 package com.funnelback.publicui.search.service.resource.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
 import lombok.extern.log4j.Log4j;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.map.InjectableValues;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.funnelback.publicui.json.CuratorConfigParser;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
-import com.funnelback.publicui.search.model.curator.config.TriggerActions;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
@@ -43,26 +37,12 @@ public class CuratorJsonConfigResource extends AbstractSingleFileResource<Curato
     @Override
     public CuratorConfig parse() throws IOException {
         log.debug("Reading curator configuration data from '" + file.getAbsolutePath() + "'");
+        CuratorConfig result;
         
-        ObjectMapper objectMapper = new ObjectMapper();
-        
-        JsonFactory f = new JsonFactory();
-        JsonParser jp = f.createJsonParser(this.file);
-        jp.setCodec(objectMapper);
-        
-        List<TriggerActions> triggerActions = new ArrayList<TriggerActions>();
-        
-        if (jp.nextToken() != JsonToken.START_ARRAY) {
-            throw new RuntimeException("Error - Curator Json config file expected to have a top-level array");
+        try (InputStream is = new FileInputStream(file)) {
+            result = new CuratorConfigParser().parseJsonCuratorConfiguration(is);
         }
         
-        while (jp.nextToken() == JsonToken.START_OBJECT) {
-            TriggerActions ta = jp.readValueAs(TriggerActions.class);
-            triggerActions.add(ta);
-        }
-        
-        CuratorConfig result =  new CuratorConfig();
-        result.addAll(triggerActions);
         return result;
     }
 }

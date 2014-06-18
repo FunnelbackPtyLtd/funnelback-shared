@@ -3,7 +3,8 @@ package com.funnelback.publicui.test.search.service.resource;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
@@ -13,39 +14,11 @@ public class CuratorJsonConfigResourceTest {
     
     @Test
     public void test() throws IOException {
-        File f = File.createTempFile(this.getClass().getName(), ".tmp");
-        f.deleteOnExit();
-        
-        FileUtils.writeStringToFile(f, 
-            "[\n"+
-            "   {\n"+
-            "      \"name\":\"Some name\",\n"+
-            "      \"trigger\":{\n"+
-            "         \"type\":\"AllQueryWords\",\n"+
-            "         \"triggerWords\":[\n"+
-            "            \"best\",\n"+
-            "            \"king\"\n"+
-            "         ]\n"+
-            "      },\n"+
-            "      \"actions\":[\n"+
-            "         {\n"+
-            "            \"type\":\"DisplayMessage\",\n"+
-            "            \"message\":{\n"+
-            "               \"messageHtml\":\"json-message1html\",\n"+
-            "               \"additionalProperties\":null,\n"+
-            "               \"category\":\"no-category\"\n"+
-            "            }\n"+
-            "         }\n"+
-            "      ]\n"+
-            "   }\n"+
-            "]\n"+
-            ""
-        );
-        
+        File f = new File("src/test/resources/dummy-search_home/conf/config-repository/curator-config-test.json");
         CuratorJsonConfigResource c = new CuratorJsonConfigResource(f);
         
         CuratorConfig conf = c.parse();
         
-        System.out.println(conf.toString());
+        Assert.assertEquals("Expected curator-config-test.json to contain two trigger actions.", 2, conf.getTriggerActions().size());
     }
 }
