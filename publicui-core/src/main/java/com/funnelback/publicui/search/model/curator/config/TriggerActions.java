@@ -3,6 +3,8 @@ package com.funnelback.publicui.search.model.curator.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,12 +23,26 @@ import lombok.ToString;
 public class TriggerActions {
     
     /**
-     * Name for the TriggerAction (called a RuleSet in the user interface)
+     * Name for the TriggerAction (a nice name to present to the user)
      */
     @Getter
     @Setter
     private String name;    
-    
+
+    /**
+     * Id for the TriggerAction (a unique ID to refer to the specific item by)
+     */
+    @Getter
+    @Setter
+    private String Id = null;    
+
+    /**
+     * Indicates whether this TriggerActions is enabled (i.e. should be considered for new requests).
+     */
+    @Getter
+    @Setter
+    private Boolean enabled = true;    
+
     /**
      * {@link Trigger} associated to the {@link ActionSet}
      */
@@ -37,6 +53,7 @@ public class TriggerActions {
     /**
      * Set of actions for the {@link Trigger}
      */
+    @Getter
     @Setter
     private List<Action> actions = new ArrayList<Action>();
 
@@ -45,7 +62,8 @@ public class TriggerActions {
      * {@link ActionSet} is returned instead.
      * @return The actions for this trigger (never null)
      */
-    public ActionSet getActions() {
+    @JsonIgnore
+    public ActionSet getActionSet() {
         if (actions == null) {
             return new ActionSet();
         } else {
