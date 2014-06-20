@@ -65,8 +65,8 @@ public class Curator extends AbstractOutputProcessor {
                         .get(profileName).getCuratorConfig();
 
                     for (TriggerActions ta : config.getTriggerActions()) {
-                        if (ta.getActions().hasActionForPhase(Phase.OUTPUT) && ta.getTrigger().activatesOn(searchTransaction)) {
-                            ta.getActions().performActions(searchTransaction, Phase.OUTPUT);
+                        if (ta.getActionSet().hasActionForPhase(Phase.OUTPUT) && ta.getTrigger().activatesOn(searchTransaction)) {
+                            ta.getActionSet().performActions(searchTransaction, Phase.OUTPUT);
                         }
                     }
                 }
