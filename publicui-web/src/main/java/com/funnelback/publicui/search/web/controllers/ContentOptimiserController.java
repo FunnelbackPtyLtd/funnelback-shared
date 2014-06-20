@@ -1,18 +1,11 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.SneakyThrows;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,170 +16,151 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
-import com.funnelback.contentoptimiser.ContentOptimiserUserRestrictions;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
-import com.funnelback.publicui.xml.XmlParsingException;
 
 @Controller
-@RequestMapping("/content-optimiser")
 public class ContentOptimiserController {
 
     @Autowired
     private ConfigRepository configRepository;
-    
-    @Resource(name="contentOptimiserKickoffView")
-    private FreeMarkerView contentOptimiserKickoffView; 
 
-    @Resource(name="contentOptimiserView")
-    private FreeMarkerView contentOptimiserView;
-    
-    @Resource(name="contentOptimiserTextView")
-    private FreeMarkerView contentOptimiserTextView;
-
-    @Resource(name="contentOptimiserLoadingView")
-    private FreeMarkerView contentOptimiserLoadingView;
-    
     @Autowired
     private SearchController searchController;
-    
+
     @InitBinder
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
     }
-    
-    /**
-     * Called when no collection has been specified.
-     * @return a list of all available collections.
-     */
-    @RequestMapping(value={"/"},params="!"+RequestParameters.COLLECTION)
-    public ModelAndView noCollectionKickoff() {
+
+    @RequestMapping (value={
+        "/content-optimiser/",
+        "/content-optimiser.html/",
+        "content-optimiser"})
+    public String redirects() {
+        return "redirect:/content-optimiser.html";
+    }
+
+    @RequestMapping("/content-optimiser.html")
+    public ModelAndView mainEntry(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question,
+            @ModelAttribute SearchUser user) {
+
+        String collection = request.getParameter(RequestParameters.COLLECTION);
+        String query = request.getParameter(RequestParameters.QUERY);
+        String optimiserUrl = request.getParameter(RequestParameters.CONTENT_OPTIMISER_URL);
+        String loaded = request.getParameter(RequestParameters.LOADED);
+
+        //Check for each parameter, so we can route the user to the right page
+        if(nullOrEmpty(collection)) {
+
+            //Go back and choose the collection
+            return visitContentOptimiserChooseCollectionPage();
+
+        } else if (nullOrEmpty(query, optimiserUrl)) {
+
+            //Go back and choose the query and optimiserUrl
+            return visitContentOptimiserCollectionQueryPage(request);
+
+        } else if (nullOrEmpty(loaded)) {
+
+            //Plumb the parameters through the loading page so we can get them back later
+            Map<String, String> loadingPageModel = new TreeMap<String, String>();
+            loadingPageModel.put(RequestParameters.COLLECTION, collection);
+            loadingPageModel.put(RequestParameters.QUERY, query);
+            loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, optimiserUrl);
+
+            //Head to loading page
+            return visitContentOptimiserLoadingPage(loadingPageModel);
+
+        } else {
+
+            //Head to results page
+            return visitContentOptimiserResultsPage(request, response, question, user);
+        }
+    }
+
+    @Autowired
+    private FreeMarkerView contentOptimiserChooseCollectionPage;
+    public ModelAndView visitContentOptimiserChooseCollectionPage() {
+
+        //Pass the collection names through for FreeMarker to render
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put(ModelAttributes.AllCollections.toString(), configRepository.getAllCollections());
+        model.put(
+            ModelAttributes.AllCollections.toString(),
+            configRepository.getAllCollections());
 
-        return new ModelAndView(DefaultValues.FOLDER_WEB+"/"
-                +DefaultValues.FOLDER_TEMPLATES+"/"
-                +DefaultValues.FOLDER_MODERNUI+"/no-collection", model);
+        return new ModelAndView(contentOptimiserChooseCollectionPage, model);
     }
-    
-    @RequestMapping(value="")
-    public String noSlash() {
-        return "redirect:content-optimiser/";
+
+    @Autowired
+    private FreeMarkerView contentOptimiserCollectionQueryPage;
+    public ModelAndView visitContentOptimiserCollectionQueryPage(HttpServletRequest request) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(RequestParameters.COLLECTION, request.getParameter(RequestParameters.COLLECTION));            
+        return new ModelAndView(contentOptimiserCollectionQueryPage, model);
     }
-    
-    
-    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,RequestParameters.CONTENT_OPTIMISER_ADVANCED})
-    public ModelAndView contentOptimiserAdvanced(
+
+    @Autowired
+    private FreeMarkerView contentOptimiserLoadingPage;
+    public ModelAndView visitContentOptimiserLoadingPage(Map<String, String> loadingPageModel) {
+        return new ModelAndView(contentOptimiserLoadingPage, loadingPageModel);
+    }
+
+    @Autowired
+    private FreeMarkerView contentOptimiserResultsPage;
+    public ModelAndView visitContentOptimiserResultsPage(HttpServletRequest request, HttpServletResponse response, SearchQuestion question, SearchUser user) {
+
+        question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+
+        ModelAndView mav =
+            searchController.search(request, response, question, user);
+
+        Map<String, Object> model = mav.getModel();
+
+        return new ModelAndView(contentOptimiserResultsPage, model);
+    }
+
+    @RequestMapping("content-optimiser.html/modeldump.html/")
+    public String redirectDump() {
+        return "redirect:/content-optimiser.html";
+    }
+
+    @Autowired
+    private FreeMarkerView contentOptimiserModelDump;
+    @RequestMapping("content-optimiser.html/modeldump.html")
+    public ModelAndView visitContentOptimiserModelDump(
             HttpServletRequest request,
             HttpServletResponse response,
             SearchQuestion question,
-            @ModelAttribute SearchUser user) throws IOException, XmlParsingException {
-        question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
-        if("".equals(question.getQuery())) {
-            return kickoff(request);
-        }
-        long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
-        if(timeDiff < 0 ) {
-            return buildLoadingScreen(request);
-        }
+            SearchUser user) {
 
-        ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-        Map<String, Object> model = searchController.search(request, response, question, user).getModel();
-        
-        if(contentOptimiserUserRestrictions.isAllowNonAdminFullAccess()) {
-             String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
-            model.put("nonAdminLink", nonAdminLink);
-        }
-        if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
-        
-        return new ModelAndView(contentOptimiserView, model);
-    }
-    
-    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY,"!advanced"})
-    public ModelAndView contentOptimiserTextOnly(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            SearchQuestion question,
-            @ModelAttribute SearchUser user) throws IOException, XmlParsingException {
-        question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
-        if("".equals(question.getQuery())) {
-            return kickoff(request);
-        }
-        long timeDiff = Long.parseLong( request.getParameter("optimiser_ts")) + 10000 - (Calendar.getInstance().getTimeInMillis());
-        if(timeDiff < 0 ) {
-            return buildLoadingScreen(request);
-        }
-        
-        Map<String, Object> model = searchController.search(request, response, question, user).getModel();
-        
-        ContentOptimiserUserRestrictions contentOptimiserUserRestrictions = (ContentOptimiserUserRestrictions)request.getAttribute(ContentOptimiserUserRestrictions.class.getName());
-    
-        if(contentOptimiserUserRestrictions.isAllowNonAdminTextAccess()) {
-             String nonAdminLink = question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PROTOCOL) + "://" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_HOST) + ":" + question.getCollection().getConfiguration().value(Keys.Urls.SEARCH_PORT) + request.getRequestURI().replace("optimise.html", "runOptimiser.html") + "?" + request.getQueryString();
-            model.put("nonAdminLink", nonAdminLink);
-        }
-        if(contentOptimiserUserRestrictions.isOnAdminPort()) model.put("onAdminPort", "true");
-        
-        return new ModelAndView(contentOptimiserTextView, model);
-    }
-    
+        question
+            .getRawInputParameters()
+            .put(RequestParameters.EXPLAIN, new String[] {"on"});
 
-    @RequestMapping(value="/optimise.html",params={RequestParameters.COLLECTION,"!"+RequestParameters.QUERY})
-    public ModelAndView collectionNoQuery(HttpServletRequest request) {
-        return kickoff(request);
-    }
-    
-    @RequestMapping(value="/optimise.html") 
-    public ModelAndView noCollectionContentOptimiser(){
-        return noCollectionKickoff();
-    }
-    
-    //@RequestMapping(value="/content-optimiser.html",params={RequestParameters.COLLECTION,RequestParameters.QUERY})
-    @RequestMapping(value={"/"})
-    public ModelAndView kickoff(HttpServletRequest request) {
-        Map<String,Object> m = new HashMap<String,Object>();
-        m.put("collection", request.getParameter(RequestParameters.COLLECTION));
-        if(request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED) != null) m.put("advanced", request.getParameter(RequestParameters.CONTENT_OPTIMISER_ADVANCED));
-        return new ModelAndView(contentOptimiserKickoffView,m);
-    }
-    
-    @RequestMapping(value="/runOptimiser.html")
+        question
+            .getRawInputParameters()
+            .put(RequestParameters.NUM_RANKS, new String[] {"999"});
 
-    public ModelAndView loadingScreen(HttpServletRequest request) {
-        return buildLoadingScreen(request);
+        Map<String, Object> m = searchController.search(request, response, question, user).getModel();
+
+        return new ModelAndView(contentOptimiserModelDump, m);
     }
 
-    @SneakyThrows(UnsupportedEncodingException.class)
-    @SuppressWarnings("unchecked") // because request.getParameterNames() returns Enumeration not Enumeration<String>
-    public ModelAndView buildLoadingScreen(HttpServletRequest request) {
-        Map<String, Object> model = new HashMap<String,Object>();
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("optimise.html?");
-
-        for (Enumeration<String> e = request.getParameterNames() ; e.hasMoreElements() ;) {
-            String key = e.nextElement();
-            if(key.equals("optimiser_ts")) continue;
-            
-            sb.append(key);
-            sb.append("=");
-            sb.append(URLEncoder.encode(request.getParameter(key),"UTF-8"));
-            sb.append("&");
+    private static boolean nullOrEmpty(String...params) {
+        for(String s : params) {
+            if(s == null || s.equals("")) {
+                return true;
+            }
         }
-        
-        sb.append("optimiser_ts=");
-        sb.append(Calendar.getInstance().getTimeInMillis());
-         
-            
-        model.put("urlToLoad", sb.toString());
-        return new ModelAndView(contentOptimiserLoadingView,model);
+        return false;
     }
 
 }

@@ -281,7 +281,9 @@ public class SearchQuestion {
         
         /** Query terms */
         public static final String QUERY = "query";
-        
+
+	public static final String LOADED = "loaded";
+
         /** System generated query */
         public static final String S = "s";
         

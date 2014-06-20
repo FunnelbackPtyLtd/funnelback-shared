@@ -172,23 +172,29 @@
 	</bean>
 
 	<!-- Content optimiser views -->
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserView">
-		<property name="url" value="contentoptimiser/content-optimiser.ftl" />
+
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserChooseCollectionPage">
+		<property name="url" value="contentoptimiser/contentOptimiserChooseCollectionPage.html" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserTextView">
-		<property name="url" value="contentoptimiser/content-optimiser-text-only.ftl" />
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserCollectionQueryPage">
+		<property name="url" value="contentoptimiser/contentOptimiserCollectionQueryPage.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserKickoffView">
-		<property name="url" value="contentoptimiser/content-optimiser-kickoff.ftl" />
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserLoadingPage">
+		<property name="url" value="contentoptimiser/contentOptimiserLoadingPage.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserLoadingView">
-		<property name="url" value="contentoptimiser/content-optimiser-loading.ftl" />
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserResultsPage">
+		<property name="url" value="contentoptimiser/contentOptimiserResultsPage.ftl" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserModelDump">
+		<property name="url" value="contentoptimiser/contentOptimiserModelDump.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 	
