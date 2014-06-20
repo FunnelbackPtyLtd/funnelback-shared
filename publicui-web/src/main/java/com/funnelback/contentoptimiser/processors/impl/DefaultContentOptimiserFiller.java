@@ -188,7 +188,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         m.put("host_domain_shallowness_score",host_domain_shallowness_score);            
 
         List<String> imp_phrase = new ArrayList<String>();
-        imp_phrase.add("Your page receieved a low phrase matching score. For multiple word queries, you can improve your implicit phrase matching score by making sure that the query terms appear close together early in the document, or in the title. <b>Note: One word queries will never receive phrase matching scores.</b>");
+        imp_phrase.add("Your page received a low phrase matching score. For multiple word queries, you can improve your implicit phrase matching score by making sure that the query terms appear close together early in the document, or in the title. <b>Note: One word queries will never receive phrase matching scores.</b>");
         m.put("imp_phrase",imp_phrase);
 
         List<String> content = new ArrayList<String>();
