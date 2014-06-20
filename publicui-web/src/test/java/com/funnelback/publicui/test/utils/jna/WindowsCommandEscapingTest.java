@@ -24,7 +24,12 @@ public class WindowsCommandEscapingTest {
         "\"\\some\\path with\\spaces\""},
 
         {"I want to use \"|,>,<,\\\", as well as \"&,?,% and ^\"",
-        "\"I want to use \\\"|,>,<,\\\\\", as well as \\\"&,?,% and ^\\\"\""}
+        "\"I want to use \\\"|,>,<,\\\\\", as well as \\\"&,?,% and ^\\\"\""},
+
+        {"-userkeys=sport\\DomainUsers,sitecore\\ExternalUser",
+        "\"-userkeys=sport\\DomainUsers,sitecore\\ExternalUser\""
+        }
+
     };
 
     @Test
