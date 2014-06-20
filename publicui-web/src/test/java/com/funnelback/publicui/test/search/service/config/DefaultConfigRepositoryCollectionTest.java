@@ -217,7 +217,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         // Update curator.json
         writeAndTouchFuture(curatorJsonConfigFile, curatorJsonConfig2);
         coll = configRepository.getCollection("config-repository");
-        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActionSet();
         dm = (DisplayMessage) as.getActions().get(0);
         Assert.assertEquals("json-message2html", dm.getMessage().getMessageHtml());
         
@@ -231,7 +231,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         // JSON still active
         coll = configRepository.getCollection("config-repository");
         
-        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActionSet();
         dm = (DisplayMessage) as.getActions().get(0);
         Assert.assertEquals("json-message2html", dm.getMessage().getMessageHtml());
 
@@ -240,14 +240,14 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         
         // YAML now applies
         coll = configRepository.getCollection("config-repository");
-        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        as = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActionSet();
         dm = (DisplayMessage) as.getActions().get(0);
         Assert.assertEquals("yaml-message1html", dm.getMessage().getMessageHtml());
 
         // Update curator.yaml
         writeAndTouchFuture(curatorYamlConfigFile, curatorYamlConfig2);
         coll = configRepository.getCollection("config-repository");
-        ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActions();
+        ActionSet as2 = (ActionSet) coll.getProfiles().get("profile2").getCuratorConfig().getTriggerActions().get(0).getActionSet();
         DisplayMessage dm2 = (DisplayMessage) as2.getActions().get(0);
         Assert.assertEquals("yaml-message2html", dm2.getMessage().getMessageHtml());
 
