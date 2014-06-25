@@ -14,6 +14,7 @@ import org.apache.commons.lang.time.DateUtils;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.*;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Builds {@link Result}s from various input sources.
@@ -70,6 +71,8 @@ public class ResultFactory {
             }
         }
 
+        Set<Integer> gscopesSet = parseGScopeSet(data.get(Result.Schema.GSCOPES_SET));
+
         Result r = new Result(
                 rank,
                 score,
@@ -91,14 +94,44 @@ public class ResultFactory {
                 liveUrl,
                 liveUrl,
                 explain,
-                liveUrl);
-        
+                liveUrl,
+                gscopesSet);
+
         r.getMetaData().putAll(metadataMap);
         if (data.get(Result.Schema.TAGS) != null) {
             r.getTags().addAll(Arrays.asList(data.get(Result.Schema.TAGS).split(",")));
         }
-        
+
         return r;
+    }
+
+    /** Parses the <gscopes_set> field into a Set of Integers
+     *  If it hits any failure it will return the set of as
+     *  many as it parsed, or the empty set.
+     * */
+    private static Set<Integer> parseGScopeSet(String strGScopesSet) {
+        Set<Integer> gscopeSet = new HashSet<Integer>();
+
+        if(strGScopesSet == null || strGScopesSet.trim().length() == 0) {
+            return gscopeSet;
+        }
+
+        try {
+            //Split on commas
+            String[] parseElements = strGScopesSet.split(",");
+
+            try {
+                //Parse to Integer and insert into set
+                for(String s : parseElements) {
+                    gscopeSet.add(Integer.parseInt(s));
+                }
+                return gscopeSet;
+            } catch (NumberFormatException nfe) {
+                return gscopeSet;
+            }
+        } catch (PatternSyntaxException pse) {
+            return gscopeSet;
+        }
     }
 
     /**

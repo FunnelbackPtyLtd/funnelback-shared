@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -184,6 +185,11 @@ public class Result implements ResultType {
     @Getter @Setter private String indexUrl;
 
     /**
+     * Set of GScope Numbers that this result has.
+     */
+    @Getter @Setter private Set<Integer> gscopesSet;
+
+    /**
      * Custom data placeholder allowing any arbitrary data to be
      * stored by hook scripts.
      */
@@ -216,6 +222,7 @@ public class Result implements ResultType {
         public static final String TAGS = "tags";
         public static final String RQ = "rq";
         public static final String ATTR_METADATA_F = "f";
+        public static final String GSCOPES_SET = "gscopes_set";
         
         public static final String COLLAPSED_SIG = "sig";
         public static final String COLLAPSED_COL = "col";
