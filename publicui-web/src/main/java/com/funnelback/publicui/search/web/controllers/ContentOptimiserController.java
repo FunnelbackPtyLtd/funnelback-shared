@@ -40,8 +40,16 @@ public class ContentOptimiserController {
         "/content-optimiser/",
         "/content-optimiser.html/",
         "content-optimiser"})
-    public String redirects() {
-        return "redirect:/content-optimiser.html";
+    public String redirects(HttpServletRequest request) {
+
+        String paramString = continueParametersFrom (
+            request,
+            RequestParameters.COLLECTION,
+            RequestParameters.QUERY,
+            RequestParameters.CONTENT_OPTIMISER_URL,
+            RequestParameters.LOADED);
+        
+        return "redirect:/content-optimiser.html" + paramString;
     }
 
     @RequestMapping("/content-optimiser.html")
@@ -154,6 +162,32 @@ public class ContentOptimiserController {
         return new ModelAndView(contentOptimiserModelDump, m);
     }
 
+    /** Pulls out the selected parameters by name, 
+     * and re-assembles them */
+    private static String continueParametersFrom(HttpServletRequest request, String...paramNames) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("?");
+        for(String paramName : paramNames) {
+            String next = continueParameterFrom(request, paramName);
+            if (next.length() > 0) {
+                sb.append(next);
+                sb.append("&");
+            }
+        }
+        return sb.substring(0, sb.length()-1);
+    }
+    
+    /** Return the given parameter=value pair as a string, or "" */
+    private static String continueParameterFrom(HttpServletRequest request, String paramName) {
+        String paramValue = request.getParameter(paramName);
+        if(nullOrEmpty(paramValue)) {
+            return "";
+        } else {
+            return paramName + "=" + paramValue;
+        }
+    }
+    
+    /** Checks if any of the given strings are empty or null */
     private static boolean nullOrEmpty(String...params) {
         for(String s : params) {
             if(s == null || s.equals("")) {
