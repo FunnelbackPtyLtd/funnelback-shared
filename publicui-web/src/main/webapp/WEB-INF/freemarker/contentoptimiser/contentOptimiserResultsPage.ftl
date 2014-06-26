@@ -34,6 +34,9 @@
 
 <#assign queryUrl = question.inputParameterMap["optimiser_url"] />
 
+<!-- Work out whether it's advanced mode -->
+<#assign advanced = ( question.inputParameterMap["advanced"]?? ) && (question.inputParameterMap["advanced"] == "1")>
+
 <!-- assign matchingPages = response.resultPacket.resultsSummary.fullyMatching?string.number-->
 <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
 
@@ -68,10 +71,11 @@
 
         <!--Do we need to switch the following to normal and advanced view?-->
         <div class="navbar-header">
-            <i class="navbar-brand advanced-view">
-                <i class="visible-md visible-lg">- &nbsp; Content Optimiser <span>Advanced View</span>
-                </i>
-            </i> 
+            <#if advanced>
+                <i class="navbar-brand advanced-view"><i class="visible-md visible-lg">- &nbsp; Content Optimiser <span>Advanced View</span></i></i> 
+            <#else>
+                <i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i> 
+            </#if>
         </div>
 
         <div class="navbar-right pull-right">
@@ -206,6 +210,7 @@
         </#if>
         <!-- / #co-stats -->
 
+        <#if advanced>
         <!--Start #co-comparison-->
         <div id="co-comparison" class="box">
           
@@ -253,6 +258,7 @@
             </div>             
         </div>
         <!--End #co-comparison-->  
+        </#if>
 
     <!--------------------------------------Start #co-advice--------------------------------->
     <#if documentWasFound>
