@@ -359,7 +359,9 @@
 
                                             <div class="chart-wrapper row-fluid">
 
+                                            <#if advanced>
                                                 <div class="col-md-5  mt30">
+                                            </#if>
                                                     <#if hint.name == "content">
                                                         <li>
                                                             The most common words in the page are <strong>${response.optimiserModel.content.commonWords}</strong>.
@@ -369,13 +371,17 @@
                                                     <#list hint.hintTexts as text>
                                                         <li>${text}</li>                                  
                                                     </#list>
+                                            <#if advanced>
                                                 </div>
+                                            </#if>
 
-                                                <div class="col-md-7">
-                                                    <div class="tips-chart" id="${divId}" >
-                                                        <p><i>Please put "${hint.name}" graph in this div "${divId}"</i></p>
+                                                <#if advanced>
+                                                    <div class="col-md-7">
+                                                        <div class="tips-chart" id="${divId}" >
+                                                            <p><i>Please put "${hint.name}" graph in this div "${divId}"</i></p>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </#if>
                                             </div>
                                         </#if>
                                     </#list>
@@ -761,99 +767,101 @@ $( function () {
                     </#if>
                 ];
                 
-                AmCharts.makeChart("${divId}",
-                {
-                    "type": "serial",
-                    "pathToImages": "http://cdn.amcharts.com/lib/3/images/",
-                    "categoryField": "rank",
-                    "autoMarginOffset": 0,
-                    "marginRight": 10,
-                    "marginLeft": 0,
-                    "marginTop": 5,
-                    "fontSize": 12,
-                    "color": '#505050',
-                    //"fillColors":"#FF0099",
-                    "theme": "none",
-                    "chartCursor": {},
-                    //"chartScrollbar": {},
-                    //"trendLines": [],
-                    //"legend": [],
-                    "graphs": [
-                        {
-                            "columnWidth": 0.5,
-                            "cornerRadiusTop": 2,
-                            "lineColor": "#FF7F00",
-                            "id": "chart-1",
-                            //"title": "Top URLs",
-                            "type": "column",
-                            "dashLengthField": "dashLengthLine",
-                            //"lineThicknessField": "lineThick",
-                            "colorField": "color",
-                            "lineAlpha": 1,
-                            "fillAlphas": 0.75,
-                            "valueField": "score",
-                            "alphaField": "alpha",
-                            "title": "Page Score",
-                        },
-                        {
-                            "bullet": "round",
-                            "bulletBorderAlpha": 1,
-                            "bulletBorderThickness": 1,
-                            "bulletSize": 1,
-                            "lineColor": "#FF0000",
-                            //"id": "AmGraph-2",
-                            "lineThickness": 1.5,
-                            "title": "Current URL",
-                            "valueField": "currentPageScore",
-                        }
-                    ],
-                    
-                    //add in the category of the current page if it sits in the top 10
-                    "guides": [{
+                <#if advanced>
+                    AmCharts.makeChart("${divId}",
+                    {
+                        "type": "serial",
+                        "pathToImages": "http://cdn.amcharts.com/lib/3/images/",
+                        "categoryField": "rank",
+                        "autoMarginOffset": 0,
+                        "marginRight": 10,
+                        "marginLeft": 0,
+                        "marginTop": 5,
+                        "fontSize": 12,
+                        "color": '#505050',
+                        //"fillColors":"#FF0099",
+                        "theme": "none",
+                        "chartCursor": {},
+                        //"chartScrollbar": {},
+                        //"trendLines": [],
+                        //"legend": [],
+                        "graphs": [
+                            {
+                                "columnWidth": 0.5,
+                                "cornerRadiusTop": 2,
+                                "lineColor": "#FF7F00",
+                                "id": "chart-1",
+                                //"title": "Top URLs",
+                                "type": "column",
+                                "dashLengthField": "dashLengthLine",
+                                //"lineThicknessField": "lineThick",
+                                "colorField": "color",
+                                "lineAlpha": 1,
+                                "fillAlphas": 0.75,
+                                "valueField": "score",
+                                "alphaField": "alpha",
+                                "title": "Page Score",
+                            },
+                            {
+                                "bullet": "round",
+                                "bulletBorderAlpha": 1,
+                                "bulletBorderThickness": 1,
+                                "bulletSize": 1,
+                                "lineColor": "#FF0000",
+                                //"id": "AmGraph-2",
+                                "lineThickness": 1.5,
+                                "title": "Current URL",
+                                "valueField": "currentPageScore",
+                            }
+                        ],
                         
-                        category: ( "${selectedRank}" + suffix(${selectedRank})  ),
-                        //toCategory: "http://www.demourl.com",
-                        behindColumns:false,
-                        lineColor: "#ff0088",
-                        lineAlpha: 1,
-                        fillAlpha: 1,
-                        fillColor: "#ff0088",
-                        gridAlpha:1,
-                        dashLength: 3,
-                        inside: true,
-                        //label: "Current Page",
-                        color:"#000",
-                        "rotate":false,
-    
-                    }],
-                    "valueAxes": [
-                        {
-                            "id": "ValueAxis-1",
-                            "title": "Score"
-                        }
-                    ],
-                    
-                    "categoryAxis":
-                        {
-                            "id": "ValueAxis-1",
-                            "title": "Rank",
-                            "gridPosition": "start",
-                            "labelRotation": 25
-                        }
-                    ,
-                    //"allLabels": [],
-                    //"balloon": {},
-                    "titles": [{
-                        "class": "title-1",
-                        "size": 12,
-                        "text": "${hint.name} scores",
-                        "color":"#303030",
-                        "marginBottom":0
+                        //add in the category of the current page if it sits in the top 10
+                        "guides": [{
+                            
+                            category: ( "${selectedRank}" + suffix(${selectedRank})  ),
+                            //toCategory: "http://www.demourl.com",
+                            behindColumns:false,
+                            lineColor: "#ff0088",
+                            lineAlpha: 1,
+                            fillAlpha: 1,
+                            fillColor: "#ff0088",
+                            gridAlpha:1,
+                            dashLength: 3,
+                            inside: true,
+                            //label: "Current Page",
+                            color:"#000",
+                            "rotate":false,
+        
+                        }],
+                        "valueAxes": [
+                            {
+                                "id": "ValueAxis-1",
+                                "title": "Score"
+                            }
+                        ],
                         
-                    }],
-                    "dataProvider": chartWrapper.chartData1
-                }
-            );
+                        "categoryAxis":
+                            {
+                                "id": "ValueAxis-1",
+                                "title": "Rank",
+                                "gridPosition": "start",
+                                "labelRotation": 25
+                            }
+                        ,
+                        //"allLabels": [],
+                        //"balloon": {},
+                        "titles": [{
+                            "class": "title-1",
+                            "size": 12,
+                            "text": "${hint.name} scores",
+                            "color":"#303030",
+                            "marginBottom":0
+                            
+                        }],
+                        "dataProvider": chartWrapper.chartData1
+                    }
+                );
+                </#if>
             </#if>
         </#list>
     </#list>
