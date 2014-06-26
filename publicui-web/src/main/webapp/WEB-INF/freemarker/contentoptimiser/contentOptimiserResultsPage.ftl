@@ -254,7 +254,7 @@
         </div>
         <!--End #co-comparison-->  
 
-    <!--------------------------------------Start NEW #co-advice--------------------------------->
+    <!--------------------------------------Start #co-advice--------------------------------->
     <#if documentWasFound>
     <div class="box" id="co-advice">
         <div class="header">
@@ -383,7 +383,7 @@
         </div>
     </div>
     </#if>
-    <!--------------------------------------END OF NEW #co-advice--------------------------------->
+    <!--------------------------------------END #co-advice--------------------------------->
 
     
        
@@ -840,7 +840,7 @@ $( function () {
                     "titles": [{
                         "class": "title-1",
                         "size": 12,
-                        "text": "${hc.name} scores",
+                        "text": "${hint.name} scores",
                         "color":"#303030",
                         "marginBottom":0
                         
