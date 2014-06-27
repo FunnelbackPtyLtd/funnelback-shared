@@ -120,7 +120,7 @@
 
               <#if documentWasFound>
               <div class="col-sm-2 text-center p0 m0">
-              
+
                 <#if selectedRank == 1>
                     <#assign ribbonColour = "green">
                 <#elseif (selectedRank <= 10)>
@@ -151,7 +151,7 @@
                         <label for="form_query">Query</label>
                       </div>
                       <div class="col-sm-11">
-                        <input class="form-control text-disguise" type="text" placeholder="${query}" id="form_query" name="query">
+                        <input class="form-control text-disguise" type="text" value="${query}" id="form_query" name="query">
                         <div class="co-form-edit-btn"><i class="fa fa-edit"></i><span class="hidden-xs"> Edit</span></div>
                       </div>
                     </div>
@@ -160,7 +160,7 @@
                         <label for="form_url">URL</label>
                       </div>
                       <div class="col-sm-11 mb15">
-                        <input class="form-control text-disguise" type="text" placeholder="${queryUrl}" name="optimiser_url" id="form_url">
+                        <input class="form-control text-disguise" type="text" value="${queryUrl}" name="optimiser_url" id="form_url">
                       </div>
                     </div>
                     <div class="form-group m0 disguise-hide">
