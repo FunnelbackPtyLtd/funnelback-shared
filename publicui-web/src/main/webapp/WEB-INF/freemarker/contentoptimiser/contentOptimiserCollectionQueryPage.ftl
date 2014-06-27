@@ -59,7 +59,6 @@
 					</div>
                     <input type="hidden" name="collection" value="${collection}" />
 					<input type="hidden" name="profile" value="_default" />
-					<input type="hidden" name="advanced" value="1" /> 
 
                 </form>
 			</div>
