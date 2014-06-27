@@ -31,13 +31,13 @@
 
 <#assign documentWasFound = response.optimiserModel.selectedDocument?? />
 <#assign query = response.resultPacket.query />
+<#assign collection = response.resultPacket.collection />
 
 <#assign queryUrl = question.inputParameterMap["optimiser_url"] />
 
 <!-- Work out whether it's advanced mode -->
 <#assign advanced = ( question.inputParameterMap["advanced"]?? ) && (question.inputParameterMap["advanced"] == "1")>
 
-<!-- assign matchingPages = response.resultPacket.resultsSummary.fullyMatching?string.number-->
 <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
 
 <#if documentWasFound >
@@ -79,8 +79,8 @@
         </div>
 
         <div class="navbar-right pull-right">
-            <a href="." class="btn pull-left link-home" title="Content Optimiser Home"><i class="fa fa-flask"></i> <span class="hidden-xs sr-xs">Optimiser Home</span></a>
-            <a href="advanced_search.html?advanced=1" class="btn pull-left link-home" title="Content Optimiser Home"><i class="fa fa-eye "></i> <span class="hidden-xs sr-xs">Advanced View</span></a> 
+            <a href="content-optimiser.html" class="btn pull-left link-home" title="Content Optimiser Home"><span class="hidden-xs sr-xs">Optimiser Home</span></a>
+            <a href="content-optimiser.html?advanced=1" class="btn pull-left link-home" title="Content Optimiser Home"><i class="fa fa-eye "></i> <span class="hidden-xs sr-xs">Advanced View</span></a> 
         </div>
     </div>
     </nav>
@@ -129,7 +129,17 @@
 
               <#if documentWasFound>
               <div class="col-sm-2 text-center p0 m0">
-                <div class="ribbon green"><i>Rank</i><b>${selectedRank}</b></div>
+              
+                <#if selectedRank == 1>
+                    <#assign ribbonColour = "green">
+                <#elseif (selectedRank <= 10)>
+                    <#assign ribbonColour = "orange">
+                <#else>
+                    <#assign ribbonColour = "red">
+                </#if>
+
+                <div class="ribbon ${ribbonColour}"><i>Rank</i><b>${selectedRank}</b></div>
+
                 <div class="of rel text-grey-md z1"><i>of</i></div>
                 <div class="pages text-grey-md">${matchingPages} Pages</div>
               </div>
@@ -140,12 +150,12 @@
                 <div class="stack-btns pull-right">
 
                 </div>
-                <input id="form_collection" type="hidden" name="collection" value="collection">
+                <!-- <input id="form_collection" type="hidden" name="collection" value="collection">
                 <input id="form_profile" type="hidden" name="profile" value="profile">
                 <input id="form_optimiser_ts" type="hidden" name="optimiser_ts" value="optimiser_ts">
-                <input id="form_advanced" type="hidden" name="advanced" value="">
+                <input id="form_advanced" type="hidden" name="advanced" value=""> -->
 
-                  <form id="co-cs-form" method="get" action="advanced_search.html" class="form-horizontal disguise" role="form">
+                  <form id="co-cs-form" method="get" action="content-optimiser.html" class="form-horizontal disguise" role="form">
                     <div class="form-group m0 pt15">
                       <div class="col-sm-1 m0">
                         <label for="form_query">Query</label>
@@ -160,7 +170,7 @@
                         <label for="form_url">URL</label>
                       </div>
                       <div class="col-sm-11 mb15">
-                        <input class="form-control text-disguise" type="text" placeholder="${queryUrl}" name="url" id="form_url">
+                        <input class="form-control text-disguise" type="text" placeholder="${queryUrl}" name="optimiser_url" id="form_url">
                       </div>
                     </div>
                     <div class="form-group m0 disguise-hide">
@@ -169,6 +179,17 @@
                         <button class="btn btn-default btn-orange btn-sm pull-left mb15" type="submit">Optimise <i class="fa fa-arrow-circle-right"></i></button>
                       </div>
                     </div>
+
+                    <input type="hidden" name="collection" value="${collection}" />
+                    <input type="hidden" name="loaded" value="1" />
+
+                    <#if advanced>
+                        <input type="hidden" name="advanced" value="1" />
+                    </#if>
+
+                    <!-- <input type="hidden" name="profile" value="_default" /> 
+                    <input type="hidden" name="advanced" value="1" /> -->
+
                   </form>
 
                   <#if documentWasFound>
@@ -199,12 +220,9 @@
         <#if documentWasFound>
         <div id="co-stats" class="bump">
           <div class="row">
-            <div class="col-sm-2 col-xs-4"><b class="text-green">*?*</b><span>Overall Grade</span></div>
             <div class="col-sm-2 col-xs-4"><b class="">${totalWords}</b><span>Total Words</span></div>
             <div class="col-sm-2 col-xs-4"><b class="">${uniqueWords}</b><span class="spacing-fix">Unique Words</span></div>
             <div class="col-sm-2 col-xs-4"><b class="">${matchingPages}</b><span>Pages Found</span></div>
-            <div class="col-sm-2 col-xs-4"><b class="">*?*</b><span>Tips</span></div>
-            <div class="col-sm-2 col-xs-4"><b class="">*?*</b><span>Example</span></div>
           </div>
         </div>
         </#if>
@@ -539,19 +557,19 @@ $(function () {
             /* For each Cooler Weight */
             <#list response.optimiserModel.hintsByName?keys as hintkey>
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
-                "${hintkey}": ${ hint.scores[topResult.rank?string]?string("0.00") },
+                "${hintkey}": ${hint.scores[topResult.rank?string]?string("0.00")},
             </#list>                    
         },
         </#list>
 
         /* If your result is present (but after rank 10), put in a separator and your result */
         <#if (documentWasFound && selectedRank > 10) >
-            
+
             /* This is the '...' separator */
             {"page_name": '...',
                 "url": '...',
                 "index": -1},
-                
+
             /* This is your >10th result */
             {"page_name": '${selectedTitle}',
                 "url": '${selectedUrl}',
@@ -740,15 +758,15 @@ $( function () {
                     <#list 1..pagesToList as i>
                         {
                             "rank": "${i}" + suffix(${i}),
-                            "score": ${hint.scores[i?string]},
-                            "currentPageScore": ${rf},
+                            "score": ${hint.scores[i?string]?string("0.00")},
+                            "currentPageScore": ${rf?string("0.00")},
                             
                             <#if i == selectedRank>
-                            "color":"#FFDD22",
-                            "lineColor": "#FF0",
-                            "alpha" : 0.6,
-                            "dashLengthLine":3,
-                            "lineThick": 9
+                                "color":"#FFDD22",
+                                "lineColor": "#FF0",
+                                "alpha" : 0.6,
+                                "dashLengthLine":3,
+                                "lineThick": 9
                             </#if>
                             
                         },
@@ -757,7 +775,7 @@ $( function () {
                     <#if (selectedRank > 10) >
                             {"rank": "${selectedRank}" + suffix(${selectedRank}),
                             "score": ${rf},
-                            "currentPageScore": ${rf},
+                            "currentPageScore": ${rf?string("0.00")},
                             // if the current page fits into the ranks 
                             "color":"#FFDD22",
                             "lineColor": "#FF0",
