@@ -275,8 +275,8 @@
             </div>
 
             <#assign hintCounter = 0>            
+            <#assign visibleHintCounter = 0>
             <#list response.optimiserModel.hintCollections as hc> <!-- [content, URL, link based, etc.] -->
-                <#assign hintCounter = hintCounter + 1>
 
                 <#if (matchingPages < 10)>
                     <#assign pagesToList = matchingPages>
@@ -301,7 +301,11 @@
                     </#list>
                 </#list>
 
+                <#assign hintCounter = hintCounter + 1>
+
                 <#if (displayableSections > 0) >
+                    <#assign visibleHintCounter = visibleHintCounter + 1>
+
                 <div class="panel-group" id="accordion">
                     <div class="panel inactive band-${hintCounter}">
                         <div class="panel-heading">
@@ -312,7 +316,7 @@
                                             <div class="col-xs-2 col-sm-1">
                                                 <span class="order fa-stack fa-lg ">
                                                     <i class="fa fa-circle fa-stack-2x"></i>
-                                                    <i class="order-value">${hintCounter}</i>
+                                                    <i class="order-value">${visibleHintCounter}</i>
                                                 </span>
                                             </div>
                                             <div class="col-xs-10 col-sm-11">
@@ -334,7 +338,7 @@
                         <div class="panel-collapse" id="collapse_${hintCounter}">
 
                             <div class="panel-body col-sm-offset-1">
-                                <ol>
+                                <ol>                                
                                     <#list hc.hints as hint>
 
                                         <!--Only show this if this factor for our page is not the best.
@@ -353,12 +357,12 @@
                                         </#list>
 
                                         <#if foundBetter>
-
+                                        
                                             <#assign divId = "graph_hc" + hintCounter + "_hn" + hint.name >
 
                                             <div class="chart-wrapper row-fluid">
 
-                                                <div class="col-md-5  mt30">
+                                                <div class="col-md-5 mt30">
                                                     <#if hint.name == "content">
                                                         <li>
                                                             The most common words in the page are <strong>${response.optimiserModel.content.commonWords}</strong>.
@@ -749,7 +753,7 @@ $( function () {
 
                     <#if (selectedRank > 10) >
                             {"rank": "${selectedRank}" + suffix(${selectedRank}),
-                            "score": ${rf},
+                            "score": ${rf?string("0.00")},
                             "currentPageScore": ${rf?string("0.00")},
                             // if the current page fits into the ranks 
                             "color":"#FFDD22",
