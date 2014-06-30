@@ -23,11 +23,9 @@
         "actions": [
             {
                 "type": "DisplayMessage",
-                "message": {
-                    "messageHtml": "json-message1html",
-                    "additionalProperties": null,
-                    "category": "no-category"
-                }
+                "messageHtml": "json-message1html",
+                "additionalProperties": null,
+                "category": "no-category"
             }
         ]
     },
@@ -54,19 +52,15 @@
         "actions": [
             {
                 "type": "DisplayMessage",
-                "message": {
-                    "messageHtml": "json-messageAhtml",
-                    "additionalProperties": null,
-                    "category": "no-category"
-                }
+                "messageHtml": "json-messageAhtml",
+                "additionalProperties": null,
+                "category": "no-category"
             },
             {
                 "type": "DisplayMessage",
-                "message": {
-                    "messageHtml": "json-messageBhtml",
-                    "additionalProperties": null,
-                    "category": "no-category"
-                }
+                "messageHtml": "json-messageBhtml",
+                "additionalProperties": null,
+                "category": "no-category"
             }
         ]
     }
