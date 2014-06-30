@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import org.codehaus.jackson.annotate.JsonUnwrapped;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ public class DisplayMessage implements Action {
     /** The message to display when this action is performed. */
     @Getter
     @Setter
+    @JsonUnwrapped
     private Message message;
 
     /**

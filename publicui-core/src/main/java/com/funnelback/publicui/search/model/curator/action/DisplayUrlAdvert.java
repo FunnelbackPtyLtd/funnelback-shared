@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import org.codehaus.jackson.annotate.JsonUnwrapped;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ public class DisplayUrlAdvert implements Action {
     /** The URL advert object to be displayed. */
     @Getter
     @Setter
+    @JsonUnwrapped
     private UrlAdvert advert;
 
     /**

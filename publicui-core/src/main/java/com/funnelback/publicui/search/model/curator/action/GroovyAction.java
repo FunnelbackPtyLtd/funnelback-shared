@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
@@ -22,7 +22,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 /**
  * Perform an action which is specified by an external Groovy class.
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Component
@@ -48,12 +47,22 @@ public class GroovyAction implements Action {
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     /**
+     * Convenience constructor to create a new GroovyAction with a script and properties.
+     */
+    public GroovyAction(String classFile, Map<String, Object> properties) {
+        this.classFile = classFile;
+        this.properties = properties;
+    }
+
+    
+    /**
      * Returns the GroovyTriggerInterface implementation for this trigger.
      * 
      * The returned implementation is cached, however the original file has a modification
      * timestamp check performed on every request (and the implementation refreshed if the
      * file is changed).
      */
+    @JsonIgnore
     private GroovyActionInterface getActionImplementation() {
         File classFileObject = new File(classFile);
         if (cachedActionImplementation == null ||
@@ -78,7 +87,10 @@ public class GroovyAction implements Action {
         
         return cachedActionImplementation;
     }
+    
+    @JsonIgnore
     private GroovyActionInterface cachedActionImplementation;
+    @JsonIgnore
     private long cachedActionImplementationLastModified;
     
     /**

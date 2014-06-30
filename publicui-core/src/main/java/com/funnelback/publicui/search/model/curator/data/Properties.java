@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.funnelback.publicui.search.model.curator.Exhibit;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -23,6 +25,8 @@ import lombok.ToString;
  * @since 13.0
  */
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Properties implements Exhibit {
 
     /**
