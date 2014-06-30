@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import org.codehaus.jackson.annotate.JsonUnwrapped;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +23,13 @@ public class DisplayProperties implements Action {
     /** The properties object to be displayed. */
     @Getter
     @Setter
-    private Properties properties;
+    @JsonUnwrapped
+    private Properties additionalProperties;
 
     /** Adds the action's properties object to the curator model's exhibits. */
     @Override
     public void performAction(SearchTransaction searchTransaction, Phase phase) {
-        searchTransaction.getResponse().getCurator().getExhibits().add(properties);
+        searchTransaction.getResponse().getCurator().getExhibits().add(additionalProperties);
     }
 
     /**
