@@ -135,6 +135,7 @@ public class ContentOptimiserController {
         return new ModelAndView(contentOptimiserResultsPage, model);
     }
 
+    /* Turning off modeldump functionality - only turn it on for debugging
     @RequestMapping("content-optimiser.html/modeldump.html/")
     public String redirectDump() {
         return "redirect:/content-optimiser.html";
@@ -160,7 +161,7 @@ public class ContentOptimiserController {
         Map<String, Object> m = searchController.search(request, response, question, user).getModel();
 
         return new ModelAndView(contentOptimiserModelDump, m);
-    }
+    } */
 
     /** Pulls out the selected parameters by name, 
      * and re-assembles them */
