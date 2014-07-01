@@ -84,21 +84,6 @@
 
     <div class="row">
       <div id="main" class="col-md-10 col-md-offset-1">
-
-     <!-- Below are some errors and warnings if the CO needs to throw an error
-
-     <div class="fb-callout fb-callout-danger">    or <div class="fb-callout fb-callout-warning">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <h4><i class="fa fa-times-circle"></i> I'm a Bad Error!</h4>
-    <ul class="errors-list">
-
-      <li id="error-1"><strong>Warning!</strong> The selected document did not appear high enough in the results to examine the ranking. It may not have matched the query. This is a big whoops and should be fixed.</li>
-
-      <li id="error-2"><strong>Some Error has occured!</strong> Information about the selected URL was unavailable due to the following message from the crawler: "Never seen". Ask your administrator for more information.</li>
-
-      </ul>
-  </div> -->
-
         <div id="co-cs" class="box">
           <div class="header">
             <h3>Ranking Summary</h3>
@@ -259,7 +244,7 @@
         </div>
         <!--End #co-comparison-->  
 
-    <!--------------------------------------Start #co-advice--------------------------------->
+    <!-- Start #co-advice -->
     <#if documentWasFound>
     <div class="box" id="co-advice">
         <div class="header">
@@ -284,11 +269,11 @@
                     <#assign pagesToList = 10>
                 </#if>
 
-                <!-- This section deals with determining which sections to show -->
+                <#-- This section deals with determining which sections to show -->
                 <#assign displayableSections = 0>
                 <#list hc.hints as hint>
                     <#list 1..pagesToList as i>
-                        <!-- If there is another page that does better for this factor: -->
+                        <#-- If there is another page that does better for this factor: -->
                         <#if (hint.scores[i?string] > hint.scores[selectedRank?string]) >
                             <#if hint.name == "content">
                                 <#assign displayableSections = displayableSections + 1>
@@ -341,10 +326,10 @@
                                 <ol>                                
                                     <#list hc.hints as hint>
 
-                                        <!--Only show this if this factor for our page is not the best.
+                                        <#-- Only show this if this factor for our page is not the best.
                                             so, try to find something better -->
 
-                                        <!-- Our page's ranking factor -->
+                                        <#-- Our page's ranking factor -->
                                         <#assign rf = hint.scores[selectedRank?string]>
                                         <#assign foundBetter = false>
 
@@ -392,22 +377,16 @@
         </div>
     </div>
     </#if>
-    <!--------------------------------------END #co-advice--------------------------------->
+    <!-- END #co-advice -->
 
-    
-       
-        
-        
-      </div>
-      <!--end main-->
-      
-      
-      
     </div>
-  
+    <!--end main-->
+
+    </div>
+
   </div>
   <!-- /container --> 
-  
+
 </div>
 <!-- end content -->
 
@@ -707,9 +686,9 @@ $( function () {
 
         <#list hc.hints as hint>
 
-            //Only show this if this factor for our page is not the best. so, try to find something better
+            <#-- Only show this if this factor for our page is not the best. so, try to find something better -->
 
-            //Our page's ranking factor
+            <#-- Our page's ranking factor -->
             <#assign rf = hint.scores[selectedRank?string]>
             <#assign foundBetter = false>
 
