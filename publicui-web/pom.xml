@@ -250,7 +250,7 @@
         </dependency>
         <dependency>
             <groupId>com.funnelback</groupId>
-            <artifactId>jetty-funnelback-extras</artifactId>
+            <artifactId>funnelback-jetty-extras</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
