@@ -67,11 +67,41 @@
     <div class="container">
 
         <div class="navbar-header">
-            <i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i> 
+           <a href="?" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
         </div>
 
         <div class="navbar-right pull-right">
-            <a href="content-optimiser.html" class="btn pull-left link-home" title="Content Optimiser Home"><span class="hidden-xs sr-xs">Optimiser Home</span></a>
+		
+           <a href="content-optimiser.html?collection=${collection}&optimiser_url=${queryUrl}" class="btn pull-left link-query" title="Change Query"><span class="hidden-xs sr-xs"><i class="fa fa-filter fa-lg"></i></span></a> 
+		   <div class="btn-group dropdown-menu-right pull-right collections-top-menu">
+			
+			<a href="content-optimiser.html" class="btn btn-default dropdown-toggle link-collections" data-toggle="dropdown" title="Content Optimiser Collections List"><span class="hidden-xs sr-xs"><i class="fa  fb-icn-collections"></i></span></a>
+			
+			
+		<div aria-labelledby="collection-menu" role="menu" class="dropdown-menu box">
+        <div class="header">
+
+        <h4><i class="fa fb-icn-collections"></i> Collections</h4> 
+            
+        </div>
+        
+        
+        <div class="body">
+       
+        	<div><small>Current: <strong>${collection}</strong></small></div>
+           <div><small>Query: <strong>${query}</strong></small></div>
+        </div>
+        
+        <ul id="catch-collection-list">
+           
+        </ul>
+        </div>
+		</div>
+		
+		
+		
+		
+		
         </div>
     </div>
     </nav>
@@ -83,7 +113,7 @@
   <div class="container">
 
     <div class="row">
-      <div id="main" class="col-md-10 col-md-offset-1">
+      <div id="main" class="col-md-12">
         <div id="co-cs" class="box">
           <div class="header">
             <h3>Ranking Summary</h3>
@@ -94,7 +124,7 @@
           <div id="co-cs-title" class="pane pt20 pb10">
             <div class="row">
               <div class="col-xs-2 text-center"><b class="text-grey-lt">Page:</b></div>
-              <div class="col-xs-10 pl15"> <a class="text-grey-dk" target="new" href=${selectedUrl}>This is a link to the page in question <i class="fa fa-external-link fs11 pl5 pr5"></i></a> </div>
+              <div class="col-xs-10 pl15"> <a class="text-grey-dk" target="new" title="Open the page: ${selectedUrl}" href=${selectedUrl}>${selectedTitle} <i class="fa fa-external-link fs11 pl5 pr5"></i></a> </div>
             </div>
           </div>
           <!-- / .pane -->
@@ -208,28 +238,31 @@
                     <div class="m20">
                     
                     <#if ( (!documentWasFound) || (selectedRank > 10) ) > <!-- Some kind of error/warning -->
-                        <div class="alert fb-callout-warning">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                        <div class="alert alert-info">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
                             <#if (documentWasFound) > <!-- Bad rank -->
                                 <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
-                                <div>The selected document was not in the top 10 results for the query <em>${query}</em>.</div>
-                                <div>Your document (ranked ${selectedRank}) is shown below the top 10 results for comparison.</div>
+                                <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
+                                <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
                             <#else> <!-- Completely missing -->
-                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Not returned!</h4>
-                                <div>The selected document was not returned for the query <em>${query}</em>.</div>
-                                
+                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
+                                <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
                                 <#if (matchingPages < 1) >
-                                    <div>There were no results returned for this query.</div>
+                                    <p>There were no results returned for this query.</p>
                                 <#elseif (matchingPages <= 10) >
-                                    <div>All ${matchingPages} matching results for this query are shown below.</div>
+                                    <p>All ${matchingPages} matching results for this query are shown below.</p>
                                 <#else >
-                                    <div>The top 10 results for this query are shown below.</div>
+                                    <p>Anyhow, here are the top 10 results for this collection that match the query: <strong>${query}</strong>.</p>
                                 </#if>
                                 
                             </#if>
                         </div>
                     </#if>
-
+					  
+					  <#if (!documentWasFound) >
+							<a href="?query=${query}&collection=${collection}" class="btn btn-sm btn-primary"><i class="fa fa-angle-double-left"></i> Back</a>
+							<hr class="mt0 mb10">
+					  </#if>
                     <#if (matchingPages > 0) >
                         <!-- Top Ranking Chart and Table -->
                         <div id="chart-top-ten"></div>
@@ -253,11 +286,13 @@
 
         <div class="body p0">
             <div class="m20">
+			
                 <p>
                     <div>Follow the step-by-step tips below to better optimise the current page and boost its page rank upwards</div>
-                    <div><small id="chart-top-ten-desc">Tip: Click on a section to view detailed instructions</small></div>
+                    <div><small id="chart-top-ten-desc"><i class="fa fa-info-circle"></i> Click on a section to view detailed instructions</small></div>
                 </p>
             </div>
+<div class="panel-group" id="accordion"> 
 
             <#assign hintCounter = 0>            
             <#assign visibleHintCounter = 0>
@@ -289,9 +324,9 @@
                 <#assign hintCounter = hintCounter + 1>
 
                 <#if (displayableSections > 0) >
-                    <#assign visibleHintCounter = visibleHintCounter + 1>
+               
+			        <#assign visibleHintCounter = visibleHintCounter + 1>
 
-                <div class="panel-group" id="accordion">
                     <div class="panel inactive band-${hintCounter}">
                         <div class="panel-heading">
                             <div class="panel-title">
@@ -323,7 +358,7 @@
                         <div class="panel-collapse" id="collapse_${hintCounter}">
 
                             <div class="panel-body col-sm-offset-1">
-                                <ol>                                
+                                                              
                                     <#list hc.hints as hint>
 
                                         <#-- Only show this if this factor for our page is not the best.
@@ -348,15 +383,17 @@
                                             <div class="chart-wrapper row-fluid">
 
                                                 <div class="col-md-5 mt30">
-                                                    <#if hint.name == "content">
+                                    <ol class="tip-list">      
+										            <#if hint.name == "content">
                                                         <li>
                                                             The most common words in the page are <strong>${response.optimiserModel.content.commonWords}</strong>.
-                                                            These words should be an indicator of the subject of the page. If the words don't accurately reflect the subject of the page, consider re-wording the page, or preventing sections of the page from being indexed by wrapping the section with <span style="display: inline-block">&lt;!--noindex--&gt;</span> and <span style="display: inline-block">&lt;!--endnoindex--&gt;</span> tags.
+                                                            These words should be an indicator of the subject of the page. If the words don't accurately reflect the subject of the page, consider re-wording the page, or preventing sections of the page from being indexed by wrapping the section with <strong>&lt;!--noindex--&gt;</strong> and <span><strong>&lt;!--endnoindex--&gt;</strong></span> tags.
                                                         </li>
                                                     </#if>
                                                     <#list hint.hintTexts as text>
                                                         <li>${text}</li>                                  
                                                     </#list>
+													</ol>
                                                 </div>
 
                                                 <div class="col-md-7">
@@ -367,18 +404,18 @@
                                             </div>
                                         </#if>
                                     </#list>
-                                </ol>
+                                
                             </div>
                         </div>
                     </div>
-                </div>
+                
                 </#if>
             </#list>
         </div>
     </div>
     </#if>
     <!-- END #co-advice -->
-
+</div>
     </div>
     <!--end main-->
 
@@ -415,16 +452,24 @@
 
 <script>
 
+
+	//parameters into JS object (for use with content-optimiser.js)
+
+	contentOptimiser = [];
+	contentOptimiser.query = '${query}';
+	contentOptimiser.target_url = '${queryUrl}';
+
+
+
 // AM Charts + related here forward... 
 $(function () {
 
     // work aroun for getting the charts in the accordion to work
     // issue help: http://stackoverflow.com/questions/10013408/amcharts-doesnt-display-chart-for-initially-hidden-divs
-
     //have now made them open on page load then close on document ready
-
     //Not sure about this fix - sometimes things work without this, sometimes they don't
-    $('#accordion').on('shown.bs.collapse', function(e){
+    
+	$('#accordion').on('shown.bs.collapse', function(e){
         id = $(e.target).attr('href');        
         chartdiv_id = $(id).find('.chartdiv').attr('id');                        
         doChart(chartdiv_id, true);
@@ -436,11 +481,12 @@ $(function () {
     };
 
     /* Start top ranking breakdown - AMCcharts JS*/
+	
     var topRankingBreakdown = [];
 
     topRankingBreakdown.labelFunction = function(valueText, serialDataItem, categoryAxis) {
 
-        //Misuse this function to turn '-1' into '...' for the graph y axisAlpha
+    //Misuse this function to turn '-1' into '...' for the graph y axisAlpha
         if (serialDataItem.dataContext.index == -1) {
             return '...';
         } else {
@@ -620,7 +666,7 @@ $(function () {
     chart.addLegend(legend, "chart-top-ten-legend");
 
     $('#chart-top-ten-legend')
-        .after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>-->Tip: click keys to compare and analyse</small>');
+    .after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>--><i class="fa fa-info-circle"></i> click keys to compare and analyse</small>');
     
     $.each($(topRankingBreakdown.data),function(i,v) {
 
@@ -720,7 +766,7 @@ $( function () {
                             "currentPageScore": ${rf?string("0.00")},
                             
                             <#if i == selectedRank>
-                                "color":"#FFDD22",
+                                "color":"#FFEB70",
                                 "lineColor": "#FF0",
                                 "alpha" : 0.6,
                                 "dashLengthLine":3,
@@ -842,11 +888,7 @@ $( function () {
 });
 </#if>
 
-$( function () {
-	setTimeout(function(){
-	$('.panel-collapse').addClass('collapse');
-	},333);
-});
+
 </script> 
 </body>
 </html>

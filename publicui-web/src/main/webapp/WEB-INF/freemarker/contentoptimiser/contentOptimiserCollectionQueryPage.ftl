@@ -19,7 +19,7 @@
 
 <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
 <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
-<link rel="stylesheet" href="${ContextPath}/content-optimiser/css/theme.css">
+<link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
 </head>
 
@@ -28,7 +28,7 @@
 	<div id="app">
 		<div class="container">
 
-			<a target="_blank" href="http://funnelback.com"><img
+			<a target="_blank" href="?"><img
 				class="fb-logo" src="${ContextPath}/content-optimiser/img/fb-logo-lg.png"
 				alt="Funnelback - Content Optimiser" /></a>
 
@@ -37,15 +37,15 @@
 				<form id="co-form-main" method="GET" action="" enctype="application/x-www-form-urlencoded">
 					<div class="col-md-5">
 						<div class="form-group">
-							<label for="query">Query</label>
+							<label for="query" class="sr-only">Query</label>
 							<input type="text" placeholder="Query" id="query"
-								class="form-control query" name="query" tabindex="1" required>
+								class="form-control query" name="query" tabindex="1" value="" required>
 						</div>
 					</div>
 
 					<div class="col-md-5">
 						<div class="form-group">
-							<label for="optimiser_url">Target URL</label>
+							<label for="optimiser_url" class="sr-only">Target URL</label>
 							<input type="text" placeholder="Target URL" id="optimiser_url"
 								value="" name="optimiser_url" class="optimiser_url form-control"
 								tabindex="2" required>
@@ -53,7 +53,8 @@
 					</div>
 
 					<div class="col-sm-2">
-						<button type="submit" class="btn btn-orange btn-lg" tabindex="3">
+					<label for="optimiser_url" class="sr-only">&nbsp;</label>
+						<button id="co-opt-btn" type="submit" class="btn btn-orange btn-lg" tabindex="3">
 							<i class="fa fa-arrow-circle-right"></i>&nbsp; Optimise
 						</button>
 					</div>

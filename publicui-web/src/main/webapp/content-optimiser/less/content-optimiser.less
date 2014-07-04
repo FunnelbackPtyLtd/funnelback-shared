@@ -1,8 +1,8 @@
 /****************************************************************************
    Funnelback Bootstrap Styles for the Content Optimiser
-   ---------------------------
+   ----------------------------------
    Last Authored by: Steven Chan 2014
-   -------------------  
+   ----------------------------------  
  *****************************************************************************/
 
 /*/
@@ -22,45 +22,13 @@ text-shadow: 0 0.5px 0 #FFFFFF;
 /* ==========================================================================
    FB Fonts
    ========================================================================== */
-@font-path:						"assets/fonts/";
-@css-path:							"assets/css/"; 
-@OpenSans-Regular-webfont:		"OpenSans-Regular-webfont"; 
-@OpenSans-Light-webfont:			"OpenSans-Light-webfont"; 
-@OpenSans-Bold-webfont:	     	"OpenSans-Bold-webfont";   
-@font-face {
-  font-family:'Open Sans';
-  font-style:normal;
-  font-weight:400;
-  src:~"url('@{font-path}@{OpenSans-Regular-webfont}.eot')";
-  src:~"url('@{font-path}@{OpenSans-Regular-webfont}.eot?#iefix') format('embedded-opentype')",
-       ~"url('@{font-path}@{OpenSans-Regular-webfont}.woff') format('woff')",
-       ~"url('@{font-path}@{OpenSans-Regular-webfont}.ttf') format('truetype')",
-       ~"url('@{font-path}@{OpenSans-Regular-webfont}.svg#@{icon-font-svg-id}') format('svg')";
-}
 
-@font-face {
-  font-family:'Open Sans';
-  font-style:normal;
-  font-weight:200;
-  src:~"url('@{font-path}@{OpenSans-Light-webfont}.eot')";
-  src:~"url('@{font-path}@{OpenSans-Light-webfont}.eot?#iefix') format('embedded-opentype')",
-       ~"url('@{font-path}@{OpenSans-Light-webfont}.woff') format('woff')",
-       ~"url('@{font-path}@{OpenSans-Light-webfont}.ttf') format('truetype')",
-       ~"url('@{font-path}@{OpenSans-Light-webfont}.svg#@{icon-font-svg-id}') format('svg')";
-}
+@css-path:							"../css/"; 
+@font-path:						"../fonts/";
+@OpenSans-Regular-webfont:		"OpenSans-Regular"; 
+@OpenSans-Light-webfont:			"OpenSans-Light"; 
+@OpenSans-Bold-webfont:	     	"OpenSans-Bold";   
 
-
-
-@font-face {
-  font-family:'Open Sans';
-  font-style:normal;
-  font-weight:900;
-  src:~"url('@{font-path}@{OpenSans-Bold-webfont}.eot')";
-  src:~"url('@{font-path}@{OpenSans-Bold-webfont}.eot?#iefix') format('embedded-opentype')",
-       ~"url('@{font-path}@{OpenSans-Bold-webfont}.woff') format('woff')",
-       ~"url('@{font-path}@{OpenSans-Bold-webfont}.ttf') format('truetype')",
-       ~"url('@{font-path}@{OpenSans-Bold-webfont}.svg#@{icon-font-svg-id}') format('svg')";
-}
 
 /* ==========================================================================
    FB Loop De loop
@@ -299,6 +267,7 @@ user-select:none;
 
 
 
+
 /* ==========================================================================
    FB Generic Box Shadow
    ========================================================================== */
@@ -307,6 +276,9 @@ user-select:none;
 }
 .box .header, .modal-header {
     .box-shadow(~"0 1px 1px -1px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.6) inset,0 -31px 22px -8px rgba(0,0,0,0.05) inset");
+	& h3{
+		font-weight:600;
+		}
 }
 .box-shadow-input {
     .box-shadow(~"INSET 0 0 0 1PX #FFF,0 1px 0 rgba(255,255,255,0.8),0 1px 3px rgba(0,0,0,0.25) inset");
@@ -366,6 +338,9 @@ a {
     }
     &.btn:hover {
     }
+	&:focus,:active,:hover{
+	 	outline:none;	
+	}
 	
 }
 a, .text-link {
@@ -421,24 +396,45 @@ h4, .h4 {
 .label-info, .badge-info {
     background-color:#68A3D5;
 }
-.alert [class^="icon-"], .alert [class*=" icon-"] {
-    color:#F1C359;
-    display:inline-block;
-    font-size:27px;
-    margin-bottom:8px;
-    margin-right:17px;
-    position:relative;
-    top:4px;
-}
-.alert-success [class^="icon-"], .alert-success [class*=" icon-"] {
+
+.alert{
+		
+		& h4{
+			font-weight: 600;
+			letter-spacing: 0.2px;
+		}
+		
+	&-warning{ 
+	
+		color:#A45D00; background:#fceda4; border-color:#FEC100; 
+		
+		
+		& h4{
+			color: #E07E00 !important;
+		}
+	}
+	
+	[class^="fa-"], [class*=" fa-"] {
+		font-size: 18px;
+		margin-bottom: 8px;
+	}
+	
+	
+	
+
+	&-success [class^="icon-"], &-success [class*=" icon-"] {
     color:#81AD53;
-}
-.alert-info [class^="icon-"], .alert-info [class*=" icon-"] {
-    color:#4993C6;
-}
-.alert-danger [class^="icon-"], .alert-danger [class*=" icon-"] {
-    color:#D5393E;
-}
+	}
+	&-info [class^="icon-"], &-info [class*=" icon-"] {
+		color:#4993C6;
+	}
+	&-danger [class^="icon-"], &-danger [class*=" icon-"] {
+		color:#D5393E;
+	}
+
+ }
+ 
+ 
 code {
     color:#4E99DF;
 }
@@ -1175,12 +1171,13 @@ footer hr {
 	
 #co-cs {
     &-title {
-        font-weight:900;
+        font-weight:600;
     }
     &-summary {
         background-color:#FFF1D0;
         border-bottom:none;
         position:relative;
+		 min-height:70px;
         & strong {
             color:#444 !important;
         }
@@ -1332,7 +1329,7 @@ footer hr {
         & a {
             color:#4a4a4a;
             font-size:13px;
-            font-weight:bold;
+            font-weight:600;
             display:block;
             padding:10px 0!important;
             &:focus {
@@ -1415,7 +1412,7 @@ footer hr {
 
 
  /* ==========================================================================
-   FB CO Front List  
+   FB CO Front List   
    ========================================================================== */
 
 .fb-list, .fb-list li {
@@ -1479,12 +1476,14 @@ html.js .disguise .btn, html.js .disguise .disguise-hide {
     border-left:1px solid #ddd !important;
 }
 
+
 /* ==========================================================================
 FB AM Charts
 ========================================================================== */
 
 /*Start Tip Chart*/
-
+.tip-list{ padding-left:10px}
+.tip-list li{ margin-bottom:20px}
 .tips-chart{
 	width		: 100%;
 	height		: 300px;
@@ -1500,7 +1499,9 @@ FB AM Charts
 #chart-top-ten-legend{ position:relative}
 .tips-chart a,#chart-top-ten a{ display:none !important}
 #chart-top-ten-desc {
- COLOR:#888;
+  color: #888;
+  display: block;
+  margin-top: 10px;
 }
 
 table a { color:#333}
@@ -1512,7 +1513,7 @@ table a { color:#333}
 		&:last-child{border-right:1px solid #eee;}
 	}
 	
-	& .highlight{ background-color:#FCDA01;}
+	& .highlight{ background-color:#fff5b5; font-weight:600}
 }
 .transparent{ visibility:hidden}
 #ls-top-rank-url tr:hover .fa.transparent{ visibility:visible !important}
@@ -1528,6 +1529,38 @@ table a { color:#333}
 
 .table-fbco tr th{ background-color:#eee}
 
+#co-advice	.panel {padding: 10px 0 20px;}
+#co-advice	.panel-group{
+margin:0;	
+}
+.fa-info-circle{ color:#0076FF}
+
+/* ==========================================================================
+FB Icons
+========================================================================== */
+.link-collections{ padding:3px 8px !important }
+.fb-icn-collections {
+  background: url("../img/icn-collections.png") repeat scroll center center transparent;
+  height: 16px;
+  width: 17px;
+  margin-top: 3px;
+  
+}
+
+.collections-top-menu h4{padding: 8px 10px 10px !important;}
+
+
+
+#catch-collection-list li a{
+	i { 
+		color:#aaa;
+	}
+	&:hover{
+		& i{
+			color:#ff7f00;	
+		}	
+	}
+}
 /* ==========================================================================
 FB Media Queries
 ========================================================================== */
@@ -1545,8 +1578,8 @@ FB Media Queries
 #chart-top-ten-legend{ width:100%; padding-left:59px;
 
 }
-#chart-top-ten-desc{ padding-left: 80px;
-  text-align: center;}
+#chart-top-ten-desc{ 
+  }
   
 /*
 //causing a position bug
@@ -1596,7 +1629,7 @@ FB Media Queries
             }
         }
     }
-	
+
 #co-advice .panel 
 {
 	.col-xs-10 {
@@ -1605,6 +1638,7 @@ FB Media Queries
 	  margin-left: 0;
 	  padding-left: 0;
 	  padding-right: 0;
+	   padding: 10px 0 20px;
 	}
 	.col-xs-2.col-sm-1 {
 	  margin: 0;
