@@ -21,7 +21,7 @@
 	</bean>
 
 	<mvc:interceptors>
-            <mvc:interceptor>
+        <mvc:interceptor>
             <mvc:mapping path="/*" />
             <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
                 <property name="persistenceUnitName" value="search-session" />
@@ -30,6 +30,10 @@
         <mvc:interceptor>
             <mvc:mapping path="/*" />
             <bean class="com.funnelback.publicui.search.web.interceptors.SessionInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/*" />
+            <bean class="com.funnelback.springmvc.web.interceptor.Log4jMdcInterceptor" />
         </mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
