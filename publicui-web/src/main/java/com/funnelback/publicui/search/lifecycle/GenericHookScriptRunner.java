@@ -90,7 +90,8 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getCollection().getHookScriptsClasses().size() > 0) {
             
-            Class<Script> hookScriptClass = searchTransaction.getQuestion().getCollection().getHookScriptsClasses().get(hookScriptToRun);
+            Collection collection = searchTransaction.getQuestion().getCollection();
+            Class<Script> hookScriptClass = collection.getHookScriptsClasses().get(hookScriptToRun);
             if (hookScriptClass != null) {
                 try {
                     Map<String, Object> data = new HashMap<>();
@@ -99,7 +100,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
                     
                     fixMapsWithArrayLists(searchTransaction);
                 } catch (Throwable t) {
-                    log.error("Error while running " + hookScriptToRun.toString() + " hook for collection '" + searchTransaction.getQuestion().getCollection().getId() + "'", t);
+                    log.error("Error while running " + hookScriptToRun.toString() + " hook for collection '" + collection.getId() + "'", t);
                 }
             }
         }

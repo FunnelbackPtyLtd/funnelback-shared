@@ -124,5 +124,21 @@ public class GenericHookScriptRunnerTests {
         Assert.assertEquals("Test query", st.getQuestion().getQuery());
         Assert.assertEquals("Clicked Cluster", st.getQuestion().getCnClickedCluster());        
     }
+    
+    @Test
+    public void testQuestionCanBeNulled() throws Exception {
+        st.getQuestion().getCollection()
+        .getHookScriptsClasses().put(Hook.post_process, new GroovyClassLoader().parseClass("transaction.question = null"));
+        
+        GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.post_process, Phase.Output);
+        
+        processor.processInput(st);
+        processor.fetchData(st);
+        Assert.assertEquals("Test query", st.getQuestion().getQuery());
+        Assert.assertNotNull(st.getQuestion());
+
+        processor.processOutput(st);        
+        Assert.assertNull(st.getQuestion());
+    }
 
 }
