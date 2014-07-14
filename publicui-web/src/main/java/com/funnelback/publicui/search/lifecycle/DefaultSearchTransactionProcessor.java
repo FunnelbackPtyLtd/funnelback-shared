@@ -70,18 +70,22 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
                 fetcher.fetchData(transaction);
                 sw.stop();
             }
+            
+            transaction.getResponse().setPerformanceMetrics(sw);
 
             for (OutputProcessor processor : outputFlow) {
                 sw.start(OUTPUT+":"+processor.getId());
                 processor.processOutput(transaction);
                 sw.stop();
             }
+            //We should not make changes to the transaction as the will be changes that can not be seen within the
+            //post process hook script.
             
             // Start a counter that will be stopped in
             // the FreeMarker side
             sw.start(OUTPUT+":"+RENDER);
             
-            transaction.getResponse().setPerformanceMetrics(sw);
+            
             
         } catch (InputProcessorException ipe) {
             log.error(ipe);
