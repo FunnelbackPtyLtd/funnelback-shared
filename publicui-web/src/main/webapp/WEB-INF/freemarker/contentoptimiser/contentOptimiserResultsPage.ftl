@@ -232,11 +232,11 @@
               <div class="header">
                 <h3>Top Ranking Breakdown</h3>
               </div>
-              
+
               <div class="body p0">
 
                     <div class="m20">
-                    
+
                     <#if ( (!documentWasFound) || (selectedRank > 10) ) > <!-- Some kind of error/warning -->
                         <div class="alert alert-info">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
@@ -245,16 +245,28 @@
                                 <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
                                 <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
                             <#else> <!-- Completely missing -->
-                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
-                                <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
-                                <#if (matchingPages < 1) >
-                                    <p>There were no results returned for this query.</p>
-                                <#elseif (matchingPages <= 10) >
-                                    <p>All ${matchingPages} matching results for this query are shown below.</p>
-                                <#else >
-                                    <p>Anyhow, here are the top 10 results for this collection that match the query: <strong>${query}</strong>.</p>
+
+                                <#-- Was there even a url entered? -->
+                                <#if (queryUrl?string?length > 0) >
+
+                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
+                                    <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
+
+				    <#if (matchingPages < 1) >
+					<p>There were no results returned for this query.</p>
+				    <#elseif (matchingPages <= 10) >
+                                        <p>All ${matchingPages} matching results for this query are shown below.</p>
+                                    <#else >
+                                        <p>Anyhow, here are the top 10 results for this collection that match the query: <strong>${query}</strong>.</p>
+                                    </#if>
+
+                                <#else>
+
+                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
+                                    <div>No url was entered.</div>
+
                                 </#if>
-                                
+
                             </#if>
                         </div>
                     </#if>

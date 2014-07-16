@@ -48,7 +48,7 @@
 							<label for="optimiser_url" class="sr-only">Target URL</label>
 							<input type="text" placeholder="Target URL" id="optimiser_url"
 								value="" name="optimiser_url" class="optimiser_url form-control"
-								tabindex="2" required>
+								tabindex="2">
 						</div>
 					</div>
 

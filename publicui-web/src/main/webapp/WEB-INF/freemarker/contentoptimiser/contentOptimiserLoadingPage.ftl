@@ -32,7 +32,14 @@
     </div>
     <script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
     <script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script>
-    <meta http-equiv="refresh" content="0; url='?query=${query}&optimiser_url=${optimiser_url}&collection=${collection}&loaded=1">
+    
+    <#if optimiser_url?? >
+        <#assign maybeUrl = "&optimiser_url=" + optimiser_url>
+    <#else>
+        <#assign maybeUrl = "">
+    </#if>
+
+    <meta http-equiv="refresh" content="0; url='?query=${query}${maybeUrl}&collection=${collection}&loaded=1">
 </body>
 </html>
 
