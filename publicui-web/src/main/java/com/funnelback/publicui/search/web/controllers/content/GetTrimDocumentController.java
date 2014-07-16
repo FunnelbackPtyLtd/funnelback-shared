@@ -191,14 +191,15 @@ public class GetTrimDocumentController {
     
     /**
      * Check if the collection may contain TRIM document, i.e. if it's a
-     * {@link Type#trim}, {@link Type#trimpush} or {@link Type#push} one.
+     * {@link Type#trim}, {@link Type#trimpush}, {@link Type#push} or {@link Type#trimpush2} one.
      * @param c Collection to check
      * @return true if this collection might contain TRIM documents, false otherwise.
      */
     private boolean isTrimCollection(Collection c) {
         return Type.trim.equals(c.getType())
             || Type.trimpush.equals(c.getType())
-            || Type.push.equals(c.getType());
+            || Type.push.equals(c.getType())
+            || Type.push2.equals(c.getType());
     }
     
     @ExceptionHandler(TRIMException.class)

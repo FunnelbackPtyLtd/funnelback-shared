@@ -44,7 +44,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     
     /** Collection type supported by this input processor */
     public static final Type[] SUPPORTED_TYPES = {
-        Type.trim, Type.connector, Type.filecopy, Type.database, Type.directory, Type.push
+        Type.trim, Type.connector, Type.filecopy, Type.database, Type.directory, Type.push, Type.push2
     };
     
     /** Local scheme as used in DB or Connector collection */
@@ -103,15 +103,16 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
      * <p>Get the type of a result, depending on its collection</p>
      * 
      * <p>For all collections the type is the collection type, except for
-     * {@link Type#push} collection that can contains various result types. In
-     * that case the type is deduced from the URL</p>
+     * {@link Type#push} and {@link Type#push2} collection that can contains
+     * various result types. In that case the type is deduced from the URL</p>
      * 
      * @param resultCollection
      * @param r
      * @return
      */
     private Type getResultCollectionType(Collection resultCollection, Result r) {
-        if (Type.push.equals(resultCollection.getType())) {
+        if (Type.push.equals(resultCollection.getType())
+            || Type.push2.equals(resultCollection.getType())) {
             return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
         } else {
             return resultCollection.getType();
