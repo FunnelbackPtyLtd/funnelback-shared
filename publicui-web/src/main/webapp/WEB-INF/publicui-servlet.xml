@@ -42,6 +42,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
             <mvc:mapping path="/anchors.*" />
+            <mvc:mapping path="/suggest.*" />
             <mvc:mapping path="/content-optimiser/*" />
             <mvc:mapping path="/recommender/*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
