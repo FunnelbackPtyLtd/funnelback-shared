@@ -90,7 +90,7 @@
 <#macro Page numPages=10>
     <#local rs = response.resultPacket.resultsSummary />
     <#local pages = 0 />
-    <#if rs.fullyMatching &gt; 0>
+    <#if rs.fullyMatching!0 &gt; 0>
         <#local pages = (rs.fullyMatching + rs.partiallyMatching + rs.numRanks - 1) / rs.numRanks />
     <#else>
         <#local pages = (rs.totalMatching + rs.numRanks - 1) / rs.numRanks />

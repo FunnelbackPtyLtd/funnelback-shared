@@ -39,9 +39,14 @@
         </#if>
 
         <#local pages = 0 />
-        <#if rs.fullyMatching &gt; 0>
-            <#local pages = (rs.fullyMatching + rs.partiallyMatching + rs.numRanks - 1) / rs.numRanks />
+        <#if rs.fullyMatching??>
+            <#if rs.fullyMatching &gt; 0>
+                <#local pages = (rs.fullyMatching + rs.partiallyMatching + rs.numRanks - 1) / rs.numRanks />
+            <#else>
+                <#local pages = (rs.totalMatching + rs.numRanks - 1) / rs.numRanks />
+            </#if>
         <#else>
+            <#-- Event search -->
             <#local pages = (rs.totalMatching + rs.numRanks - 1) / rs.numRanks />
         </#if>
 
