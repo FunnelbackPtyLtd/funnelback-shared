@@ -139,6 +139,22 @@
   <docnum>1</docnum>
   </result>
 
+  <result>
+  <rank>8</rank>
+  <score>100</score>
+  <title><![CDATA[WEB result]]></title>
+  <collection>collection-push</collection>
+  <component>0</component>
+  <live_url>luke://www.site.com/folder/result.html</live_url>
+  <summary><![CDATA[Summary]]></summary>
+  <cache_url></cache_url>
+  <date>No Date</date>
+  <filesize>1</filesize>
+  <filetype>xml</filetype>
+  <tier>1</tier>
+  <docnum>1</docnum>
+  </result>
+
 </results>
 
 </PADRE_result_packet>

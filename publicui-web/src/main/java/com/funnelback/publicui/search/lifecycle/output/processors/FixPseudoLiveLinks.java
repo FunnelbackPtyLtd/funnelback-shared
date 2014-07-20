@@ -4,6 +4,7 @@ import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.utils.ResultUtils;
+import com.funnelback.common.padre.utils.ResultUtils.UndeterminedCollectionTypeException;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -12,8 +13,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
+
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,7 +116,11 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
     private Type getResultCollectionType(Collection resultCollection, Result r) {
         if (Type.push.equals(resultCollection.getType())
             || Type.push2.equals(resultCollection.getType())) {
-            return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
+            try {
+                return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
+            } catch (UndeterminedCollectionTypeException e){
+                return Type.unknown;
+            }
         } else {
             return resultCollection.getType();
         }
