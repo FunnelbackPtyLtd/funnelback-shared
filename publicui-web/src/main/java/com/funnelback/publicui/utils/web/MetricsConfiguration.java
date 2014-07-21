@@ -2,6 +2,7 @@ package com.funnelback.publicui.utils.web;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
@@ -25,6 +27,7 @@ import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.metric.MetricRegistryReporter;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
 
@@ -76,7 +79,7 @@ public class MetricsConfiguration implements ServletContextAware {
  
     private MetricRegistry registry = new MetricRegistry();
     
-    private GraphiteReporter graphiteReporter;
+    private MetricRegistryReporter registryReporter;
     
     /**
      * Builds a new configuration and register JVM metrics on it
@@ -95,29 +98,21 @@ public class MetricsConfiguration implements ServletContextAware {
      */
     @Bean
     public MetricRegistry metricRegistry() {
-        String graphiteHost = configRepository.getGlobalConfiguration().value(Keys.Metrics.GRAPHITE_HOST);
-        int graphitePort = configRepository.getGlobalConfiguration().valueAsInt(
-            Keys.Metrics.GRAPHITE_PORT, DefaultValues.Metrics.GRAHITE_PORT);
         
-        if (graphiteHost != null) {
-            String hostName = hostnameHolder.getHostname();
-            if (hostName == null) {
-                hostName = "unknown";
-            } else {
-                hostName = hostName.replace(".", "_").toLowerCase();
-            }
-        
-            Graphite graphite = new Graphite(
-                new InetSocketAddress(graphiteHost, graphitePort),
-                SocketFactory.getDefault(), Charset.forName("US-ASCII"));
-            graphiteReporter = GraphiteReporter.forRegistry(registry)
-                .prefixedWith(hostName+"."+MODERNUI_PREFIX+"."+executionContextHolder.getExecutionContext())
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build(graphite);
-
-            graphiteReporter.start(1, TimeUnit.MINUTES);
+        String hostName = hostnameHolder.getHostname();
+        if (hostName == null) {
+            hostName = "unknown";
+        } else {
+            hostName = hostName.replace(".", "_").toLowerCase();
         }
+        String[] otherPrefixes = new String[2];
+        otherPrefixes[0] = MODERNUI_PREFIX;
+        otherPrefixes[1] = executionContextHolder.getExecutionContext().toString();
+        registryReporter = com.funnelback.common.metric.MetricConfiguration.getConfiguredRegistryReporter(registry, 
+            configRepository.getGlobalConfiguration(), 
+            hostName, 
+            otherPrefixes
+        );
 
         return registry;
     }
@@ -127,8 +122,12 @@ public class MetricsConfiguration implements ServletContextAware {
      */
     @PreDestroy
     public void preDestroy() {
-        if (graphiteReporter != null) {
-            graphiteReporter.stop();
+        if (registryReporter != null) {
+            try {
+                registryReporter.close();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
         }
     }
 
