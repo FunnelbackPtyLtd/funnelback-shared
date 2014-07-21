@@ -26,8 +26,13 @@
         <div class="container text-center">
             <a target="_fbcom" href="http://funnelback.com"><img class="fb-logo center" src="${ContextPath}/content-optimiser/img/fb-logo-lg.png" alt="Funnelback - Content Optimiser"/></a>
             <div class="loading"></div>
-            <h1>The Content Optimiser is currently examining the rank of the URL and Query</h1>
-            <p>This will only take a moment...</p>
+            <h1>Generating Content Optimisation Report for:</h1>
+            <ul>
+                <li>Query: ${query}</li>
+                <#if optimiser_url?? >
+                    <li>URL: ${optimiser_url}</li>
+                </#if>
+            </ul>
         </div>
     </div>
     <script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
