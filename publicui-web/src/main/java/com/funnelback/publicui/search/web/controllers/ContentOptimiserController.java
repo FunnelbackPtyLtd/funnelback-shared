@@ -41,7 +41,7 @@ public class ContentOptimiserController {
 
     @Autowired
     private FreeMarkerView contentOptimiserAnchorsPage;
-    @RequestMapping("content-optimiser.html/anchors.html")
+    @RequestMapping("/content-optimiser.html/anchors.html")
     public ModelAndView visitContentOptimiserAnchorsPage(HttpServletRequest request) {
 
         Map<String, Object> model = new HashMap<String, Object>();
@@ -56,7 +56,7 @@ public class ContentOptimiserController {
             model.put(paramName, request.getParameter(paramName));
         }
 
-        return new ModelAndView(contentOptimiserCollectionQueryPage, model);
+        return new ModelAndView(contentOptimiserAnchorsPage, model);
     }
     
     @RequestMapping (value={

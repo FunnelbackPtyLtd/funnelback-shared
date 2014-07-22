@@ -31,18 +31,15 @@
 			<div class="row col-sm-8 col-md-6 col-md-offset-3 col-sm-offset-2">
 				<div class="box well p0">
 					<div class="header">
-						<h2>${AllCollections?size} Collections</h2>
+						<h2>Something</h2>
 					</div>
 					<div class="pane">
 						<h4>Select a collection to optimise</h4>
 					</div>
 					<div class="body p0">
 						<ul class="fb-list">
-							<#list AllCollections as oneCollection>
-								<li><a href="?collection=${oneCollection.id}">
-									<i class="fa fa-arrow-circle-right pull-right"></i>${oneCollection.configuration.value("service_name")}
-								</a></li>
-							</#list>
+							<li>Something</li>
+							<li>Something Else</li>
 						</ul>
 					</div>
 				</div>
