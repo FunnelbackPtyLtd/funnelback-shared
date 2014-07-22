@@ -353,7 +353,7 @@
                                             </div>
                                             <div class="col-xs-10 col-sm-11">
                                                 <a data-parent="#accordion" data-toggle="collapse" href="#collapse_${hintCounter}">
-                                                    <span class="title">Improve ${hc.name} features</span>
+                                                    <span class="title">${hc.name}</span>
                                                 </a>
                                             </div>
                                         </div>

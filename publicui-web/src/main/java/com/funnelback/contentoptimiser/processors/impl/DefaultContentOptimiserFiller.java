@@ -84,11 +84,11 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         String[] annie = {"annie_rank","log_annie","anlog_annie","annie_rank","consistency","annie","raw_annie"};
         Set<String> annieSet = new HashSet<String>(Arrays.asList(annie));
         
-        if(contentSet.contains(key)) return "content";
-        if(urlSet.contains(key)) return "URL";
-        if(beyondSet.contains(key)) return "administrator controlled";
-        if(linkSet.contains(key)) return "link based";
-        if(annieSet.contains(key)) return "annotation";
+        if(contentSet.contains(key)) return "On-Page: Content";
+        if(urlSet.contains(key)) return "On-Page: URL";
+        if(beyondSet.contains(key)) return "Administrator-Controlled";
+        if(linkSet.contains(key)) return "Off-Page: Links";
+        if(annieSet.contains(key)) return "Annotation";
         
         throw new RuntimeException("Category for ranking feature '" + key + "' is missing");
     }
@@ -98,8 +98,8 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         Map<String,List<String>> m = new HashMap<String,List<String>>();
         
         List<String> urllen = new ArrayList<String>();
-        urllen.add("Try shortening the URL. Make sure that there aren't any unnecessary characters in your URL (e.g. long numbers or extra words).");
-        urllen.add("URLs should be succinct - a person should be able to read the URL and work out what content is stored there.");
+        urllen.add("Try shortening the URL by removing any unnecessary characters (e.g. long numbers or extra words).");
+        urllen.add("URLs should be succinct - a human should be able to read the URL and guess what content is stored there.");
         m.put("urllen",urllen);
         List<String> offlink = new ArrayList<String>();
         offlink.add("Try obtaining more links from other sites. Your site name is everything between the second and third slashes in the URL, so if your URL is http://<b>www.example.com</b>/somewhere/, then your site name is <b>www.example.com</b>. Add links to your content anywhere where the page URL has a different site name.");
@@ -112,12 +112,12 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         qie.add("The Query Independent Evidence (QIE) score for your page is low. This score is configured by the administrator of your funnelback installation. Ask your administrator how the score is currently calculated and how you can improve it.");
         m.put("qie", qie);
         List<String> recency = new ArrayList<String>();
-        recency.add("Ensure that any dates in the page are accurate and that the content is up to date. The recency score for your page is low - this score is determined by date(s) available in your page content.");
+        recency.add("The recency score for your page is <strong>low</strong> - this score is determined by date(s) available in your page content. Ensure that any dates in the page are accurate and that the content is up-to-date.");
         m.put("recency", recency);
         List<String> urltype = new ArrayList<String>();
         urltype.add("Ensure that your page URL does not contain excessive punctuation.");
-        urltype.add("Try moving your page to the sites home page (if it is not already).");
-        urltype.add("Ensure that your page does not contain copyright content.");
+        urltype.add("Try moving your page to the site's home page (if it is not already).");
+        urltype.add("Ensure that your page does not contain copyrighted content.");
         m.put("urltype", urltype);
         List<String> annie = new ArrayList<String>();
         annie.add("The annotation score for your page is low. This is calculated from features like the link text of links pointing to your page, and search queries where users clicked your page.");
