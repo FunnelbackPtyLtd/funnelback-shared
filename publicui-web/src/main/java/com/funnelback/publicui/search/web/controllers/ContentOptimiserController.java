@@ -1,6 +1,9 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +39,26 @@ public class ContentOptimiserController {
         searchController.initBinder(binder);
     }
 
+    @Autowired
+    private FreeMarkerView contentOptimiserAnchorsPage;
+    @RequestMapping("content-optimiser.html/anchors.html")
+    public ModelAndView visitContentOptimiserAnchorsPage(HttpServletRequest request) {
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        List<String> paramNames = new ArrayList<String>();
+        Enumeration<String> es = request.getParameterNames();
+        while (es.hasMoreElements()) {
+            paramNames.add(es.nextElement());
+        }
+
+        for(String paramName : paramNames ) {
+            model.put(paramName, request.getParameter(paramName));
+        }
+
+        return new ModelAndView(contentOptimiserCollectionQueryPage, model);
+    }
+    
     @RequestMapping (value={
         "/content-optimiser/",
         "/content-optimiser.html/",
@@ -70,8 +93,8 @@ public class ContentOptimiserController {
             //Go back and choose the collection
             return visitContentOptimiserChooseCollectionPage();
 
-        } else if (nullOrEmpty(query, optimiserUrl)) {
-
+        //} else if (nullOrEmpty(query, optimiserUrl)) {
+        } else if (nullOrEmpty(query)) {
             //Go back and choose the query and optimiserUrl
             return visitContentOptimiserCollectionQueryPage(request);
 
@@ -81,7 +104,10 @@ public class ContentOptimiserController {
             Map<String, String> loadingPageModel = new TreeMap<String, String>();
             loadingPageModel.put(RequestParameters.COLLECTION, collection);
             loadingPageModel.put(RequestParameters.QUERY, query);
-            loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, optimiserUrl);
+
+            if( ! nullOrEmpty(optimiserUrl) ) {
+                loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, optimiserUrl);
+            }
 
             //Head to loading page
             return visitContentOptimiserLoadingPage(loadingPageModel);
@@ -135,7 +161,7 @@ public class ContentOptimiserController {
         return new ModelAndView(contentOptimiserResultsPage, model);
     }
 
-    /* Turning off modeldump functionality - only turn it on for debugging
+    // Turning off modeldump functionality - only turn it on for debugging
     @RequestMapping("content-optimiser.html/modeldump.html/")
     public String redirectDump() {
         return "redirect:/content-optimiser.html";
@@ -161,7 +187,7 @@ public class ContentOptimiserController {
         Map<String, Object> m = searchController.search(request, response, question, user).getModel();
 
         return new ModelAndView(contentOptimiserModelDump, m);
-    } */
+    }
 
     /** Pulls out the selected parameters by name, 
      * and re-assembles them */
@@ -181,13 +207,14 @@ public class ContentOptimiserController {
     /** Return the given parameter=value pair as a string, or "" */
     private static String continueParameterFrom(HttpServletRequest request, String paramName) {
         String paramValue = request.getParameter(paramName);
-        if(nullOrEmpty(paramValue)) {
-            return "";
-        } else {
-            return paramName + "=" + paramValue;
-        }
+
+        paramValue = paramValue == null ? null : paramValue.trim();
+
+        return nullOrEmpty(paramValue)
+            ? ""
+            : paramName + "=" + paramValue;
     }
-    
+
     /** Checks if any of the given strings are empty or null */
     private static boolean nullOrEmpty(String...params) {
         for(String s : params) {
