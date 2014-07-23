@@ -559,7 +559,7 @@
 -->
 <#macro Optimise label="Optimise">
     <@AdminUIOnly>
-        <a class="search-optimise" href="content-optimiser/runOptimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;=${question.profile}">${label}</a>
+        <a class="search-optimise" href="content-optimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;profile=${question.profile}">${label}</a>
     </@AdminUIOnly>
 </#macro>
 
