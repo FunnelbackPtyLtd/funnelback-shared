@@ -249,7 +249,7 @@
                                 <#-- Was there even a url entered? -->
                                 <#if (queryUrl?string?length > 0) >
 
-                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
+                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp; Document Not Found</h4>
                                     <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
 
 				    <#if (matchingPages < 1) >
@@ -710,12 +710,19 @@ $(function () {
                 break;
             </#if>
         }
-        
+
+        var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
+        var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
+
         $("#ls-top-rank-url")
-            .append("<tr data-url=\""+v.url+"\" class=\"rank-"+rank+" "+hl+" \"><td>"+rank+"</td><td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.page_name+"\">"+v.page_name+"</a></td><td class=\"hidden-xs\"><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\">"+v.url+"</a></td><!--<td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\" class=\"\">View Page</a> | <a href=\"gotosearchresultspage\" target=\"_fbOut\" title=\"gotosearchresultspage\" class=\"\">Show in results</a></td>--></tr>");
+            .append("<tr data-url=\""+v.url+"\" class=\"rank-"+rank+" "+hl+" \">"
+                    + "<td>"+rank+"</td>"
+                    + "<td><a href=\""+urlToVisit+"\" title=\"" + toolTip +"\"\>" + v.page_name + "</a></td>"
+                    + "<td class=\"hidden-xs\"><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\">"+v.url+"</a></td>"
+                  + "</tr>");
     });
     
-    $(document).on('click','#ls-top-rank-url tr',function(){
+    /* $(document).on('click','#ls-top-rank-url tr',function(){
         var target = $(this).attr('data-url');			
         //Allow clicking of results except for '...'
         if (target && target != '...') {
@@ -725,7 +732,7 @@ $(function () {
             );
         }
         return false;
-    });
+    }); */
 });
 
 <#if documentWasFound>
