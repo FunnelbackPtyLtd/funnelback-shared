@@ -64,9 +64,9 @@ public class DefaultContentOptimiserFillerTest {
         assertNotNull(comparison.getWeights().get("offlink"));
         
         assertEquals(3,comparison.getHintCollections().size());
-        assertEquals("content",comparison.getHintCollections().get(0).getName());
-        assertEquals("URL",comparison.getHintCollections().get(1).getName());
-        assertEquals("link based",comparison.getHintCollections().get(2).getName());
+        assertEquals("On-Page: Content",comparison.getHintCollections().get(0).getName());
+        assertEquals("On-Page: URL",comparison.getHintCollections().get(1).getName());
+        assertEquals("Off-Page: Links",comparison.getHintCollections().get(2).getName());
         
         assertEquals(10.004,comparison.getHintCollections().get(0).getWin(),0.0001);
         assertEquals(1.755,comparison.getHintCollections().get(1).getWin(),0.0001);
