@@ -571,11 +571,11 @@
     @param labels Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String.
 
 -->
-<#macro Collapsed defaultLabel="{0} very similar results" labels={}>
+<#macro Collapsed defaultLabel="{0} very similar results" defaultApproximateLabel="About {0} very similar results" labels={}>
     <#if s.result.collapsed??>
         <#assign text = defaultLabel />
         <#if response.resultPacket.resultsSummary.estimatedCounts>
-                <#assign text = "About " + text>
+                <#assign text = defaultApproximateLabel>
         </#if>
         <#if labels[s.result.collapsed.column]??>
             <#assign text = labels[s.result.collapsed.column] />
