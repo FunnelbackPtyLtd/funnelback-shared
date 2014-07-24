@@ -1,4 +1,25 @@
-<#ftl encoding="utf-8" />
+
+<#-- Funtion for sub-ordinal No.s. Credit to : http://christiancox.com/2012/08/freemarker-ordinal-number-suffix/ -->
+<#function getOrdinalSuffix cardinal="notSet">
+  <#assign ext='' />
+  <#assign testCardinal=cardinal%10 />
+  <#if (cardinal%100 < 21 && cardinal%100 > 4)>
+    <#assign ext='th' />
+  <#else>
+    <#if (testCardinal<1)>
+      <#assign ext='th' />
+    <#elseif (testCardinal<2)>
+      <#assign ext='st' />
+    <#elseif (testCardinal<3)>
+      <#assign ext='nd' />
+    <#elseif (testCardinal<4)>
+      <#assign ext='rd' />
+    <#else>
+      <#assign ext='th' />
+    </#if>
+  </#if>
+  <#return ext>
+</#function>
 <#setting number_format="computer">
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#compress>
@@ -139,7 +160,7 @@
                     <#assign ribbonColour = "red">
                 </#if>
 
-                <div class="ribbon ${ribbonColour}"><i>Rank</i><b>${selectedRank}</b></div>
+                <div class="ribbon ${ribbonColour}"><i>Rank</i><b>${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></b></div>
 
                 <div class="of rel text-grey-md z1"><i>of</i></div>
                 <div class="pages text-grey-md">${matchingPages} Pages</div>
@@ -187,13 +208,13 @@
 
                   <#if documentWasFound>
                   <div id="co-cs-summary" class="pane pt15 pb15 text-grey">
-                      This document places <strong class="text-green">${selectedRank}</strong>
+                      This document places <strong class="text-green">${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></strong>
                       amongst a total of <strong>${matchingPages}</strong> fully-matching documents
                       when a query for <strong>${query}</strong> is run,
                       <#if (nPagesFromStart >= 1)>
-                        and is placed approximately ${pagesFromStart} away from the first results page.
+                        and is placed approximately ${pagesFromStart} away from the first page of the search results.
                       <#else>
-                        and is shown on the first results page.
+                        and is shown on the first page of the search results.
                       </#if>
                   </div>
                   </#if>
