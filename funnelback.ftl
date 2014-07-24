@@ -574,6 +574,9 @@
 <#macro Collapsed defaultLabel="{0} very similar results" labels={}>
     <#if s.result.collapsed??>
         <#assign text = defaultLabel />
+        <#if response.resultPacket.resultsSummary.estimatedCounts>
+                <#assign text = "About " + text>
+        </#if>
         <#if labels[s.result.collapsed.column]??>
             <#assign text = labels[s.result.collapsed.column] />
         </#if>
