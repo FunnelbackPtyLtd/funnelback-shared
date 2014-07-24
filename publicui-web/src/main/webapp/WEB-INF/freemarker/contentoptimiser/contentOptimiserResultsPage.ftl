@@ -22,9 +22,6 @@
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
 
-    <!--Less for development mode... -->
-    <!--<link rel="stylesheet/less" href="less/content-optimiser.less" type="text/css">-->
-    <!--CSS for production mode... -->
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
 </head>
@@ -32,16 +29,13 @@
 <#assign documentWasFound = response.optimiserModel.selectedDocument?? />
 <#assign query = response.resultPacket.query />
 <#assign collection = response.resultPacket.collection />
-
 <#assign queryUrl = question.inputParameterMap["optimiser_url"] />
-
 <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
 
 <#if documentWasFound >
     <#assign selectedRank = response.optimiserModel.selectedDocument.rank />
     <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl />
     <#assign selectedTitle = response.optimiserModel.selectedDocument.title />
-
     <#assign totalWords = response.optimiserModel.content.totalWords?string.number />
     <#assign uniqueWords = response.optimiserModel.content.uniqueWords?string.number />
 
@@ -56,11 +50,11 @@
     </#if>
 </#if>
 
-<body id="fb-co-as">
+<body id="fb-co">
 
 <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]--> 
+ <![endif]--> 
 
 <header>
     <nav role="navigation" class="navbar navbar-inverse navbar-static-top">
@@ -72,14 +66,16 @@
 
         <div class="navbar-right pull-right">
 		
-           <a href="content-optimiser.html?collection=${collection}&optimiser_url=${queryUrl}" class="btn pull-left link-query" title="Change Query"><span class="hidden-xs sr-xs"><i class="fa fa-filter fa-lg"></i></span></a> 
+
+    <#--
+      <a href="content-optimiser.html?collection=${collection}&optimiser_url=${queryUrl}" class="btn pull-left link-query" title="Change Query"><span class="hidden-xs sr-xs"><i class="fa fa-filter fa-lg"></i></span></a> 
 		   <div class="btn-group dropdown-menu-right pull-right collections-top-menu">
 			
 			<a href="content-optimiser.html" class="btn btn-default dropdown-toggle link-collections" data-toggle="dropdown" title="Content Optimiser Collections List"><span class="hidden-xs sr-xs"><i class="fa  fb-icn-collections"></i></span></a>
 			
 			
 		<div aria-labelledby="collection-menu" role="menu" class="dropdown-menu box">
-        <div class="header">
+        <div class="header fa fb-icn-collections
 
         <h4><i class="fa fb-icn-collections"></i> Collections</h4> 
             
@@ -98,7 +94,7 @@
         </div>
 		</div>
 		
-		
+		-->
 		
 		
 		
@@ -109,7 +105,6 @@
 
 <div id="app"> 
 
-  <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="container">
 
     <div class="row">
@@ -209,7 +204,7 @@
           </div>
           <!-- / .body -->
 
-          <!--<div class="footer">.box .footer</div>-->
+        
           <!-- / .footer --> 
 
         </div>
@@ -237,19 +232,19 @@
 
                     <div class="m20">
 
-                    <#if ( (!documentWasFound) || (selectedRank > 10) ) > <!-- Some kind of error/warning -->
-                        <div class="alert alert-info">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-                            <#if (documentWasFound) > <!-- Bad rank -->
+                   <#if ( (!documentWasFound) || (selectedRank > 10) ) > 
+                                            <div class="alert alert-info">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
+                            <#if (documentWasFound) > 
                                 <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
                                 <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
                                 <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
-                            <#else> <!-- Completely missing -->
+                            <#else> 
 
-                                <#-- Was there even a url entered? -->
+                                
                                 <#if (queryUrl?string?length > 0) >
 
-                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp; Document Not Found</h4>
+                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
                                     <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
 
 				    <#if (matchingPages < 1) >
@@ -268,12 +263,15 @@
                                 </#if>
 
                             </#if>
+                            <p><a href="?query=${query}&collection=${collection}" class="btn btn-sm btn-primary mt10">
+                               &laquo; Back</a>
+                            </p>
                         </div>
-                    </#if>
+                    </#if> 
 					  
 					  <#if (!documentWasFound) >
-							<a href="?query=${query}&collection=${collection}" class="btn btn-sm btn-primary"><i class="fa fa-angle-double-left"></i> Back</a>
-							<hr class="mt0 mb10">
+							
+							
 					  </#if>
                     <#if (matchingPages > 0) >
                         <!-- Top Ranking Chart and Table -->
@@ -300,8 +298,9 @@
             <div class="m20">
 			
                 <p>
-                    <div>Follow the step-by-step tips below to better optimise the current page and boost its page rank upwards</div>
-                    <div><small id="chart-top-ten-desc"><i class="fa fa-info-circle"></i> Click on a section to view detailed instructions</small></div>
+                    <div>Follow the tips below to better optimise the current page and boost its page rank upwards</div>
+                    <!--<div><small id="chart-top-ten-desc"><i class="fa fa-info-circle"></i> Click on a section to view detailed instructions</small>-->
+                    </div>
                 </p>
             </div>
 <div class="panel-group" id="accordion"> 
@@ -339,7 +338,7 @@
                
 			        <#assign visibleHintCounter = visibleHintCounter + 1>
 
-                    <div class="panel inactive band-${hintCounter}">
+                    <div class="panel mt30 band-${hintCounter}">
                         <div class="panel-heading">
                             <div class="panel-title">
                                 <div class="row">
@@ -352,24 +351,24 @@
                                                 </span>
                                             </div>
                                             <div class="col-xs-10 col-sm-11">
-                                                <a data-parent="#accordion" data-toggle="collapse" href="#collapse_${hintCounter}">
-                                                    <span class="title">${hc.name}</span>
-                                                </a>
+                                                <#--<a data-parent="#accordion" href="#collapse_${hintCounter}">-->
+                                                    <h2 class="title">${hc.name}</h2>
+                                                <#--</a>-->
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-2 mb0 text-right">
                                         <span class="pr15 pt5 block">
-                                            <i class="fa fa-caret-down"></i>
+                                            <#--<i class="fa fa-caret-down"></i>-->
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="panel-collapse" id="collapse_${hintCounter}">
+                        <div id="collapse_${hintCounter}">
 
-                            <div class="panel-body col-sm-offset-1">
+                            <div class="col-sm-offset-1">
                                                               
                                     <#list hc.hints as hint>
 
@@ -464,6 +463,28 @@
 
 <script>
 
+//Middle trancation
+
+function truncate(text, startChars, endChars, maxLength) {
+    if (text.length > maxLength) {
+        var start = text.substring(0, startChars);
+        var end = text.substring(text.length - endChars, text.length);
+        while ((start.length + end.length) < maxLength)
+        {
+            start = start + '.';
+        }
+        return start + end;
+    }
+    return text;
+}
+  
+  $(document).ready(function(){
+
+    setTimeout(function(){
+        $('.url-link').tooltip();
+    },1000);
+
+  });
 
 	//parameters into JS object (for use with content-optimiser.js)
 
@@ -472,15 +493,10 @@
 	contentOptimiser.target_url = '${queryUrl}';
 
 
-
-// AM Charts + related here forward... 
+  // AM Charts + related here forward... 
 $(function () {
 
-    // work aroun for getting the charts in the accordion to work
-    // issue help: http://stackoverflow.com/questions/10013408/amcharts-doesnt-display-chart-for-initially-hidden-divs
-    //have now made them open on page load then close on document ready
-    //Not sure about this fix - sometimes things work without this, sometimes they don't
-    
+
 	$('#accordion').on('shown.bs.collapse', function(e){
         id = $(e.target).attr('href');        
         chartdiv_id = $(id).find('.chartdiv').attr('id');                        
@@ -547,14 +563,12 @@ $(function () {
         <#list response.optimiserModel.hintsByName?keys as hintkey>
             <#assign hint = response.optimiserModel.hintsByName[hintkey] />
             {
-                "balloonText": "<div style=\"text-align:left;padding:10px\"><b>[[title]]</b><br>Score: <b>[[value]]</b>/100 | Page Rank: <b>[[index]]</b><br><span style='font-size:11px'>[[category]]</span>",
+                "balloonText": "<div style=\"text-align:left;padding:10px\"><b>[[title]]</b><br>Contributing percentage: <b>[[value]]%</b></b>",
                 "fillAlphas": 0.75,
                 "lineThickness": 0.6,
                 "type": "column",
-
                 //"valueField": "content",
                 "valueField": "${hintkey}",
-
                 //"title": "Content",     //TODO: One of these should be a long name
                 "title": "${hintkey}"
             },
@@ -566,9 +580,10 @@ $(function () {
         /* For each result in the top 10 */
         <#list response.optimiserModel.topResults as topResult>
         {
-            "page_name": "${topResult.title}",
-            "url": '${topResult.displayUrl}',
-            "index":${topResult.rank}, 
+            "page_name":      "${topResult.title}",
+            "url":           '${topResult.displayUrl}',
+            "index":          ${topResult.rank},
+            "url_trancated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,35)}<#else>${topResult.displayUrl}</#if>', 
 
             /* For each Cooler Weight */
             <#list response.optimiserModel.hintsByName?keys as hintkey>
@@ -587,9 +602,10 @@ $(function () {
                 "index": -1},
 
             /* This is your >10th result */
-            {"page_name": '${selectedTitle}',
-                "url": '${selectedUrl}',
-                "index":${selectedRank}, 
+            {"page_name"        : '${selectedTitle}',
+                "url"           : '${selectedUrl}',
+                "index"         : ${selectedRank}, 
+                "url_trancated" : '${truncateURL(selectedUrl, 3)}',
 
             /* For each Cooler Weight */
             <#list response.optimiserModel.hintsByName?keys as hintkey>
@@ -607,22 +623,25 @@ $(function () {
         "theme": "none",
         "rotate":true,
         "colors": [
-            '#0D8ECF','#0D52D1','#2A0CD0','#8A0CCF','#CD0D74','#754DEB','#FF0F00',
-            '#FF6600','#FF9E01','#F5DA70','#FFD840','#ECFF66','#A8ED6A','#5EE165'
+            
+            '#FFD840','#ECFF66','#A8ED6A','#5EE165',
+            '#8EE7E0','#8EE5E7','#DCD2EB','#FF7EA9','#FF7EFA','#89D0D9','#FF9E01','#B1B0EB','#EBC0B0','#B0E0EB'
         ],
 
         "titles": [{
             "id": "top-ranking-breakdown",
             "size": 12,
-            "text": "Ranking Caused by",
+            "text": "Ranking Cause",
             "color":"#505050"}
         ],
 
         "graphs": topRankingBreakdown.graphs,
         "columnWidth": 0.85,
         "urlField":"url",
-        //textClickEnabled:true,
-        "urlTarget":"_blank",
+        //textClickEnabled:true,#B1B0EB
+        "rollOverGraphAlpha":0.5,
+         "urlTarget":"_blank",
+
         "clustered":false,
         "categoryField": "url",
         "categoryAxis": {
@@ -675,10 +694,14 @@ $(function () {
     legend.horizontalGap =0;
     legend.fontSize = 10;
     legend.marginRight = 0;
+    legend.rollOverGraphAlpha = 0.1;
+    legend.rollOverColor = '#ff6500';
+    legend.textClickEnabled = false;
     chart.addLegend(legend, "chart-top-ten-legend");
 
-    $('#chart-top-ten-legend')
-    .after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>--><i class="fa fa-info-circle"></i> click keys to compare and analyse</small>');
+
+//    $('#chart-top-ten-legend').after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>--><i class="fa fa-info-circle"></i> click keys to compare and analyse</small>');
+
     
     $.each($(topRankingBreakdown.data),function(i,v) {
 
@@ -710,19 +733,12 @@ $(function () {
                 break;
             </#if>
         }
-
-        var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
-        var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
-
+        
         $("#ls-top-rank-url")
-            .append("<tr data-url=\""+v.url+"\" class=\"rank-"+rank+" "+hl+" \">"
-                    + "<td>"+rank+"</td>"
-                    + "<td><a href=\""+urlToVisit+"\" title=\"" + toolTip +"\"\>" + v.page_name + "</a></td>"
-                    + "<td class=\"hidden-xs\"><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\">"+v.url+"</a></td>"
-                  + "</tr>");
+            .append("<tr data-url=\""+v.url+"\" class=\"rank-"+rank+" "+hl+" \"><td>"+rank+"</td><td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.page_name+"\">"+v.page_name+"</a></td><td class=\"hidden-xs\"><a class=\"trancate url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_trancated+"</a></td><!--<td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\" class=\"\">View Page</a> | <a href=\"gotosearchresultspage\" target=\"_fbOut\" title=\"gotosearchresultspage\" class=\"\">Show in results</a></td>--></tr>");
     });
     
-    /* $(document).on('click','#ls-top-rank-url tr',function(){
+    $(document).on('click','#ls-top-rank-url tr',function(){
         var target = $(this).attr('data-url');			
         //Allow clicking of results except for '...'
         if (target && target != '...') {
@@ -732,7 +748,7 @@ $(function () {
             );
         }
         return false;
-    }); */
+    });
 });
 
 <#if documentWasFound>
