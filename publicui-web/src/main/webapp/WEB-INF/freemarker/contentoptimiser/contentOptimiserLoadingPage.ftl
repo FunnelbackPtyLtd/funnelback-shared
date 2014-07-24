@@ -27,10 +27,10 @@
             <a target="_fbcom" href="http://funnelback.com"><img class="fb-logo center" src="${ContextPath}/content-optimiser/img/fb-logo-lg.png" alt="Funnelback - Content Optimiser"/></a>
             <div class="loading"></div>
             <h1>Generating Content Optimisation Report for:</h1>
-            <ul>
-                <li>Query: ${query}</li>
+            <ul class="no-bullets">
+                <li><strong>Query:</strong> ${query}</li>
                 <#if optimiser_url?? >
-                    <li>URL: ${optimiser_url}</li>
+                    <li><strong>URL:</strong> ${optimiser_url}</li>
                 </#if>
             </ul>
         </div>
