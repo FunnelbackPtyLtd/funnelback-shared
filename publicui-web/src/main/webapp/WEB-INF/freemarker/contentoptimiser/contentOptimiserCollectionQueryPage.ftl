@@ -23,12 +23,6 @@
 
 </head>
 
-<#if RequestParameters.profile??>
-    <#assign profile = RequestParameters.profile>
-<#else>
-    <#assign profile = "">
-</#if>
-
 <body id="fb-co-hm">
 	<!--[if lt IE 7]><p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
 	<div id="app">
@@ -65,8 +59,10 @@
 						</button>
 					</div>
                     <input type="hidden" name="collection" value="${collection}" />
-					<input type="hidden" name="profile" value="${profile}" />
-
+					<#if RequestParameters.profile??>
+                    <input type="hidden" name="profile" value="${RequestParameters.profile}" />    
+                    </#if>
+					
                 </form>
 			</div>
 		</div>
