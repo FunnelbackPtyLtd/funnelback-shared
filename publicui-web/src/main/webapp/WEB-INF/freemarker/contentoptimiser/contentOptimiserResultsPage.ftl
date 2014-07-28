@@ -643,11 +643,18 @@ $(function () {
         "type": "serial",
         "theme": "none",
         "rotate":true,
+        
         "colors": [
-            
-            '#FFD840','#ECFF66','#A8ED6A','#5EE165',
-            '#8EE7E0','#8EE5E7','#DCD2EB','#FF7EA9','#FF7EFA','#89D0D9','#FF9E01','#B1B0EB','#EBC0B0','#B0E0EB'
+          
+          '#0D8ECF','#0D52D1','#2A0CD0','#8A0CCF','#CD0D74','#754DEB','#FF0F00',
+          '#FF6600','#FF9E01','#F5DA70','#FFD840','#ECFF66','#A8ED6A','#5EE165'
+      
         ],
+        // Gives a Pastel Appearance
+        // "colors": [
+        //     '#FFD840','#ECFF66','#A8ED6A','#5EE165',
+        //     '#8EE7E0','#8EE5E7','#DCD2EB','#FF7EA9','#FF7EFA','#89D0D9','#FF9E01','#B1B0EB','#EBC0B0','#B0E0EB'
+        // ],
 
         "titles": [{
             "id": "top-ranking-breakdown",
