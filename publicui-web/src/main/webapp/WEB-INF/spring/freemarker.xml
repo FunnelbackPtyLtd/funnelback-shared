@@ -174,7 +174,7 @@
 	<!-- Content optimiser views -->
 
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserChooseCollectionPage">
-		<property name="url" value="contentoptimiser/contentOptimiserChooseCollectionPage.html" />
+		<property name="url" value="contentoptimiser/contentOptimiserChooseCollectionPage.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 
