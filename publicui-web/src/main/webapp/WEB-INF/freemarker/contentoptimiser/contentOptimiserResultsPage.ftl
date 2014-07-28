@@ -754,12 +754,19 @@ $(function () {
                 break;
             </#if>
         }
-        
-        $("#ls-top-rank-url")
-            .append("<tr data-url=\""+v.url+"\" class=\"rank-"+rank+" "+hl+" \"><td>"+rank+"</td><td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.page_name+"\">"+v.page_name+"</a></td><td class=\"hidden-xs\"><a class=\"trancate url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_trancated+"</a></td><!--<td><a href=\""+v.url+"\" target=\"_fbOut\" title=\""+v.url+"\" class=\"\">View Page</a> | <a href=\"gotosearchresultspage\" target=\"_fbOut\" title=\"gotosearchresultspage\" class=\"\">Show in results</a></td>--></tr>");
-    });
     
-    $(document).on('click','#ls-top-rank-url tr',function(){
+        var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
+        var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
+
+        $("#ls-top-rank-url")
+            .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
+                +  "<td>"+rank+"</td>"
+                +  "<td><a href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
+                +  "<td class=\"hidden-xs\"><a class=\"trancate url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_trancated+"</a></td>"
+            + "</tr>");
+    });
+ 
+    /* $(document).on('click','#ls-top-rank-url tr',function(){
         var target = $(this).attr('data-url');			
         //Allow clicking of results except for '...'
         if (target && target != '...') {
@@ -769,7 +776,7 @@ $(function () {
             );
         }
         return false;
-    });
+    }); */
 });
 
 <#if documentWasFound>
