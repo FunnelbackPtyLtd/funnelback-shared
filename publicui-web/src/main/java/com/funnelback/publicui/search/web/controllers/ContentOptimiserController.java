@@ -16,6 +16,7 @@ import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
@@ -70,7 +71,8 @@ public class ContentOptimiserController {
             RequestParameters.COLLECTION,
             RequestParameters.QUERY,
             RequestParameters.CONTENT_OPTIMISER_URL,
-            RequestParameters.LOADED);
+            RequestParameters.LOADED,
+            RequestParameters.PROFILE);
         
         return "redirect:/content-optimiser.html" + paramString;
     }
