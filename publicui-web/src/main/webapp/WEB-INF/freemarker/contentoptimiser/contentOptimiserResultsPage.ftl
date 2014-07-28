@@ -71,6 +71,12 @@
     </#if>
 </#if>
 
+<#if RequestParameters.profile??>
+    <#assign profile = "&profile=" + RequestParameters.profile>
+<#else>
+    <#assign profile = "">
+</#if>
+
 <body id="fb-co">
 
 <!--[if lt IE 7]>
@@ -284,7 +290,7 @@
                                 </#if>
 
                             </#if>
-                            <p><a href="?query=${query}&collection=${collection}" class="btn btn-sm btn-primary mt10">
+                            <p><a href="?collection=${collection}${profile}" class="btn btn-sm btn-primary mt10">
                                &laquo; Back</a>
                             </p>
                         </div>

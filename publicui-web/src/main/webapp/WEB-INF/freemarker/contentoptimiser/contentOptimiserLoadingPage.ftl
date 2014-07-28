@@ -21,6 +21,13 @@
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
     
 </head>
+
+<#if RequestParameters.profile??>
+    <#assign profile = "&profile=" + RequestParameters.profile>
+<#else>
+    <#assign profile = "">
+</#if>
+
 <body>
     <div id="app">
         <div class="container text-center">
@@ -44,7 +51,7 @@
         <#assign maybeUrl = "">
     </#if>
 
-    <meta http-equiv="refresh" content="0; url='?query=${query}${maybeUrl}&collection=${collection}&loaded=1">
+    <meta http-equiv="refresh" content="0; url='?query=${query}${maybeUrl}&collection=${collection}&loaded=1${profile}">
 </body>
 </html>
 

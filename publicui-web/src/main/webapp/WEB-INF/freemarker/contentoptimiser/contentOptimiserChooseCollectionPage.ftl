@@ -22,6 +22,12 @@
 
 </head>
 
+<#if RequestParameters.profile??>
+    <#assign profile = "&profile=" + RequestParameters.profile>
+<#else>
+    <#assign profile = "">
+</#if>
+
 <body>
 	<div id="app">
 		<div class="container">
@@ -39,7 +45,7 @@
 					<div class="body p0">
 						<ul class="fb-list">
 							<#list AllCollections as oneCollection>
-								<li><a href="?collection=${oneCollection.id}">
+								<li><a href="?collection=${oneCollection.id}${profile}">
 									<i class="fa fa-arrow-circle-right pull-right"></i>${oneCollection.configuration.value("service_name")}
 								</a></li>
 							</#list>
