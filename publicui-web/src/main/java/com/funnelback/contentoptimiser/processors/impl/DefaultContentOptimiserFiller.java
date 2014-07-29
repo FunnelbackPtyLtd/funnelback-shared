@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.views.StoreView;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
@@ -30,6 +32,7 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -39,6 +42,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
+import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.utils.MapUtils;
 import com.google.common.collect.SetMultimap;
 
@@ -346,6 +350,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         Collections.sort(comparison.getHintsByWin());
     }
 
+    @Autowired
+    @Setter private DataRepository dataRepository;
+
     @Override
     public void obtainContentBreakdown(ContentOptimiserModel comparison,
             SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors, SetMultimap<String,String> stemMatches) {
@@ -363,9 +370,26 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             }
         }
         
+        String url =
+            searchTransaction
+                .getQuestion()
+                .getAdditionalParameters()
+                .get("optimiser_url")
+                    [0];
         
+        byte[] contentBytes =
+            (byte[])
+                ((RawBytesRecord)
+                        dataRepository
+                            .getCachedDocument(
+                                    searchTransaction
+                                        .getQuestion()
+                                        .getCollection(),
+                                    StoreView.live,
+                                    url).record
+                ).getContent();
         
-        String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
+        String documentContent = new String(contentBytes);
         if(documentContent != null) {
             DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
             
