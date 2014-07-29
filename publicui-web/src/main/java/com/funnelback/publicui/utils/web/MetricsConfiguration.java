@@ -102,8 +102,6 @@ public class MetricsConfiguration implements ServletContextAware {
         String hostName = hostnameHolder.getHostname();
         if (hostName == null) {
             hostName = "unknown";
-        } else {
-            hostName = hostName.replace(".", "_").toLowerCase();
         }
         String[] otherPrefixes = new String[2];
         otherPrefixes[0] = MODERNUI_PREFIX;
