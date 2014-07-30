@@ -795,18 +795,6 @@ $(function () {
               e.preventDefault();
               
     });
-
-    /* $(document).on('click','#ls-top-rank-url tr',function(){
-        var target = $(this).attr('data-url');			
-        //Allow clicking of results except for '...'
-        if (target && target != '...') {
-            window.open(
-                target,
-                '_fbOut'
-            );
-        }
-        return false;
-    }); */
 });
 
 <#if documentWasFound>
