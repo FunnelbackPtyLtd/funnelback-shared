@@ -122,10 +122,7 @@
 		</div>
 		
 		-->
-		
-		
-		
-        </div>
+  </div>
     </div>
     </nav>
 </header>
@@ -252,7 +249,7 @@
         <div id="co-comparison" class="box">
           
               <div class="header">
-                <h3>Top Ranking Breakdown</h3>
+                <h3>Top-ranked results for '${query}'</h3>
               </div>
 
               <div class="body p0">
@@ -305,7 +302,7 @@
                         <div id="chart-top-ten"></div>
                         <div id="chart-top-ten-legend"></div>
                         <table id="ls-top-rank-url" class="table table-condensed table-hover table-fbco mt20 mb30">
-                            <tr class="head"><th>Rank</th><th>Title</th><th>URL</th></tr>
+                            <tr class="head"><th>Rank</th><th>Page</th><th>URL</th></tr>
                             <!-- The rest of the table data here is populated by JS -->
                         </table>
                     </#if>
@@ -490,7 +487,7 @@
 
 <script>
 
-//Middle trancation
+//Middle truncation
 
 function truncate(text, startChars, endChars, maxLength) {
     if (text.length > maxLength) {
@@ -610,7 +607,7 @@ $(function () {
             "page_name":      "${topResult.title}",
             "url":           '${topResult.displayUrl}',
             "index":          ${topResult.rank},
-            "url_trancated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,35)}<#else>${topResult.displayUrl}</#if>', 
+            "url_truncated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace("<br/>", "... ")}<#else>${topResult.displayUrl}</#if>', 
 
             /* For each Cooler Weight */
             <#list response.optimiserModel.hintsByName?keys as hintkey>
@@ -649,12 +646,9 @@ $(function () {
         "type": "serial",
         "theme": "none",
         "rotate":true,
-        
         "colors": [
-          
           '#0D8ECF','#0D52D1','#2A0CD0','#8A0CCF','#CD0D74','#754DEB','#FF0F00',
           '#FF6600','#FF9E01','#F5DA70','#FFD840','#ECFF66','#A8ED6A','#5EE165'
-      
         ],
         // Gives a Pastel Appearance
         // "colors": [
@@ -665,7 +659,7 @@ $(function () {
         "titles": [{
             "id": "top-ranking-breakdown",
             "size": 12,
-            "text": "Ranking Cause",
+            "text": "Score",
             "color":"#505050"}
         ],
 
@@ -684,7 +678,7 @@ $(function () {
             "position": "left",
             //"labelRotation":30,
             "offset": 0,
-            "title": "Top 10 Page Rankings",
+            "title": "Rank",
             "titleColor": "#555",
             "color":"#444",
             "axisColor": '#666',
@@ -694,26 +688,32 @@ $(function () {
             //centerLabelOnFullPeriod:false,
             gridThickness:0.5,
             "guides": [{
-                //add in the category that the current page if it sits in the top 10
-                category: "http://www.demourl.com 2",
+                //The category is equal to the url in question.
+
+                category: "${queryUrl}",
                 //toCategory: "http://www.demourl.com",
                 behindColumns:false,
-                lineColor: "#ff0000",
+                lineColor: "#ff0055",
                 lineAlpha: 1,
                 fillAlpha: 1,
-                fillColor: "#ff0000",
+                fillColor: "#ff0055",
                 gridAlpha:1,
                 dashLength: 3,
                 inside: true,
                 //Not too sure what this is yet --
-                <#if documentWasFound> label: "The current page places " + ${selectedRank} +"/10", </#if>
+                <#if documentWasFound> label: 
+                //"${queryUrl}", 
+                'Current Page ->',
+                </#if>
                 color:"#fff"
             }]
         },
         
         "dataProvider": topRankingBreakdown.data,
+        
         "valueAxes": [{
             "stackType": "regular",
+            //"stackType": "100%",
             "axisAlpha": 1,
             "axisColor": '#505050',
             "color": '#505050',
@@ -738,6 +738,7 @@ $(function () {
 
     
     $.each($(topRankingBreakdown.data),function(i,v) {
+
 
         var pos = i + 1;
         var hl;
@@ -774,11 +775,34 @@ $(function () {
         $("#ls-top-rank-url")
             .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
                 +  "<td>"+rank+"</td>"
-                +  "<td><a href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
-                +  "<td class=\"hidden-xs\"><a class=\"trancate url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_trancated+"</a></td>"
+                +  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
+                +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
             + "</tr>");
+
     });
- 
+    
+    var rankNo = '${selectedRank}';
+
+    if(rankNo <= 10){
+        window.setTimeout(function(){
+      //$('#chart-top-ten').css({'background':'#ff0088'});
+      },1000);
+    } 
+
+    $("#ls-top-rank-url").on('click', 'tbody > tr > td', function(e) {
+
+              var anchor  =     $(this).find('a');
+              var href    =     anchor.attr('href');
+              var target  =     anchor.attr('target');
+
+              if(target && href) {
+                window.open(href,target);
+              }
+
+              e.preventDefault();
+              
+    });
+
     /* $(document).on('click','#ls-top-rank-url tr',function(){
         var target = $(this).attr('data-url');			
         //Allow clicking of results except for '...'
