@@ -756,16 +756,30 @@ $(function () {
             </#if>
         }
     
-        var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
-        var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
+        //Make the separate unclickable...
+        if (pos == 11) {
 
-        $("#ls-top-rank-url")
-            .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
-                +  "<td>"+rank+"</td>"
-                +  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
-                +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
-            + "</tr>");
+            $("#ls-top-rank-url")
+                .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
+                    +  "<td>"+rank+"</td>"
+                    +  "<td><div class=\"title-link\">"+v.page_name+"</div></td>"
+                    +  "<td class=\"hidden-xs\"><div class=\"url-link\">"+v.url_truncated+"</div></td>"
+                + "</tr>");
 
+        //...But the actual results clickable
+        } else {
+
+            var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
+            var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
+
+            $("#ls-top-rank-url")
+                .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
+                    +  "<td>"+rank+"</td>"
+                    +  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
+                    +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
+                + "</tr>");
+
+        }
     });
 
     $("#ls-top-rank-url").on('click', 'tbody > tr > td', function(e) {
