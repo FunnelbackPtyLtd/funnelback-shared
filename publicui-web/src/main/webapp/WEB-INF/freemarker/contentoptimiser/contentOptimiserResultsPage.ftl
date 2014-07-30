@@ -780,14 +780,6 @@ $(function () {
             + "</tr>");
 
     });
-    
-    var rankNo = '${selectedRank}';
-
-    if(rankNo <= 10){
-        window.setTimeout(function(){
-      //$('#chart-top-ten').css({'background':'#ff0088'});
-      },1000);
-    } 
 
     $("#ls-top-rank-url").on('click', 'tbody > tr > td', function(e) {
 
