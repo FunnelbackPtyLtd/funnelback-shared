@@ -1574,6 +1574,49 @@ margin:0;
 .fa-info-circle{ color:#0076FF}
 
 /* ==========================================================================
+Sankey Diagram - d3.js
+========================================================================== */
+
+/* The Chart Styles */
+#chart-sankey {
+  height: 500px;
+  background:#fff
+}
+
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
+
+
+.cycleLink {
+  fill: none;
+  stroke: #300;
+  stroke-opacity: .2;
+}
+
+.cycleLink:hover {
+  stroke-opacity: .5;
+}
+
+.link:hover {
+  stroke-opacity: .5;
+}
+
+
+/* ==========================================================================
 FB Icons
 ========================================================================== */
 .link-collections{ padding:3px 8px !important }
