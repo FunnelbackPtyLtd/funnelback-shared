@@ -370,13 +370,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             }
         }
         
-        String url =
-            searchTransaction
-                .getQuestion()
-                .getAdditionalParameters()
-                .get("optimiser_url")
-                    [0];
-        
         byte[] contentBytes =
             (byte[])
                 ((RawBytesRecord)
@@ -386,7 +379,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
                                         .getQuestion()
                                         .getCollection(),
                                     StoreView.live,
-                                    url).record
+                                    importantResult.getIndexUrl()).record
                 ).getContent();
         
         String documentContent = new String(contentBytes);
