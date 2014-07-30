@@ -268,14 +268,14 @@
                                 <#if (queryUrl?string?length > 0) >
 
                                     <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
-                                    <div>The URL provided does not match any documents within the collection: <strong>${collection}</strong>.</div>
+                                    <div>The URL provided does not rank in the top 10 results within the collection: <strong>${collection}</strong>.</div>
 
 				    <#if (matchingPages < 1) >
 					<p>There were no results returned for this query.</p>
 				    <#elseif (matchingPages <= 10) >
-                                        <p>All ${matchingPages} matching results for this query are shown below.</p>
+                                        <p>All ${matchingPages} matching results for the query: <strong>${query}</strong> are shown below.</p>
                                     <#else >
-                                        <p>Anyhow, here are the top 10 results for this collection that match the query: <strong>${query}</strong>.</p>
+                                        <p>The top 10 results for this collection that match the query: <strong>${query}</strong> are shown below.</p>
                                     </#if>
 
                                 <#else>
