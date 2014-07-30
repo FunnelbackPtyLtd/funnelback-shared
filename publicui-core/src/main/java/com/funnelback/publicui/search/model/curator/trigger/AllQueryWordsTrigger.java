@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -46,8 +47,14 @@ public class AllQueryWordsTrigger implements Trigger {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
         Set<String> queryWords = new HashSet<String>();
-        queryWords.addAll(Arrays.asList(searchTransaction.getQuestion().getQuery().split("\\b")));
-        return queryWords.containsAll(triggerWords);
+        queryWords.addAll(Arrays.asList(searchTransaction.getQuestion().getQuery().toLowerCase().split("\\b")));
+        
+        List<String> lowercasedTriggerWords = new ArrayList<String>();
+        for (String triggerWord : triggerWords) {
+            lowercasedTriggerWords.add(triggerWord.toLowerCase());
+        }
+        
+        return queryWords.containsAll(lowercasedTriggerWords);
     }
 
 }
