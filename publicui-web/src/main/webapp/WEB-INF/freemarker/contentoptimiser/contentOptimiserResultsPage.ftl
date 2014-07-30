@@ -487,20 +487,6 @@
 
 <script>
 
-//Middle truncation
-
-function truncate(text, startChars, endChars, maxLength) {
-    if (text.length > maxLength) {
-        var start = text.substring(0, startChars);
-        var end = text.substring(text.length - endChars, text.length);
-        while ((start.length + end.length) < maxLength)
-        {
-            start = start + '.';
-        }
-        return start + end;
-    }
-    return text;
-}
   
   $(document).ready(function(){
 
@@ -623,13 +609,14 @@ $(function () {
             /* This is the '...' separator */
             {"page_name": '...',
                 "url": '...',
-                "index": -1},
+                "index": -1,
+                "url_truncated": '...'},
 
             /* This is your >10th result */
             {"page_name"        : '${selectedTitle}',
                 "url"           : '${selectedUrl}',
                 "index"         : ${selectedRank}, 
-                "url_trancated" : '${truncateURL(selectedUrl, 3)}',
+                "url_truncated" : '${truncateURL(selectedUrl, 30)}',
 
             /* For each Cooler Weight */
             <#list response.optimiserModel.hintsByName?keys as hintkey>
