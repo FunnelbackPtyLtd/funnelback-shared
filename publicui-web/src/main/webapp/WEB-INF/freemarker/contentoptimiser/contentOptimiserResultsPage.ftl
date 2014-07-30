@@ -755,7 +755,7 @@ $(function () {
             </#if>
         }
     
-        //Make the separate unclickable...
+        //Make the separator unclickable...
         if (pos == 11) {
 
             $("#ls-top-rank-url")
@@ -775,7 +775,7 @@ $(function () {
                 .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
                     +  "<td>"+rank+"</td>"
                     +  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
-                    +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+urlToVisit+"\" target=\"_fbOut\" title=\""+toolTip+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
+                    +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\"Visit page "+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
                 + "</tr>");
 
         }
