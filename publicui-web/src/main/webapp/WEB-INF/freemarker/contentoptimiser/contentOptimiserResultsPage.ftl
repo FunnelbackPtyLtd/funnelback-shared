@@ -88,7 +88,7 @@
     <div class="container">
 
         <div class="navbar-header">
-           <a href="?" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
+           <a href="?${profile}" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
         </div>
 
         <div class="navbar-right pull-right">
@@ -175,10 +175,6 @@
                 <div class="stack-btns pull-right">
 
                 </div>
-                <!-- <input id="form_collection" type="hidden" name="collection" value="collection">
-                <input id="form_profile" type="hidden" name="profile" value="profile">
-                <input id="form_optimiser_ts" type="hidden" name="optimiser_ts" value="optimiser_ts"> -->
-
                   <form id="co-cs-form" method="get" action="content-optimiser.html" class="form-horizontal disguise" role="form">
                     <div class="form-group m0 pt15">
                       <div class="col-sm-1 m0">
@@ -206,6 +202,9 @@
 
                     <input type="hidden" name="collection" value="${collection}" />
                     <input type="hidden" name="loaded" value="1" />
+                    <#if RequestParameters.profile??>
+                        <input type="hidden" name="profile" value="${RequestParameters.profile}" />
+                    </#if>
 
                   </form>
 
@@ -769,7 +768,7 @@ $(function () {
         //...But the actual results clickable
         } else {
 
-            var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}&loaded=1";
+            var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}${profile}&loaded=1";
             var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
 
             $("#ls-top-rank-url")
