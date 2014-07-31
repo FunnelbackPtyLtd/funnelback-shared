@@ -27,7 +27,7 @@
   <query_raw>visa raw</query_raw>
   <query_system_raw>visa system raw</query_system_raw>
   <collection>gov_combined</collection>
-  <hostname>gov_combined</hostname>
+  <hostname>hostnamevalue</hostname>
   
   <qsup src="SPEL">taxation</qsup>
   <qsup src="SYNS">u:australia.gov.au t:"tax"</qsup>
