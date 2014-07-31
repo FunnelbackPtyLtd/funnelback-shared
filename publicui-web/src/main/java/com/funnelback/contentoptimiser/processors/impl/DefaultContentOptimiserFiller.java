@@ -395,7 +395,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             }
                             
             content.setTotalWords(dwp.getTotalWords());
-            content.setUniqueWords(dwp.setUniqueWords());
+            content.setUniqueWords(dwp.getUniqueWords());
             content.setCommonWords(Arrays.toString(dwp.getCommonWords(searchTransaction.getResponse().getResultPacket().getStopWords(),"_")));
             
             List<ContentHint> contentHints = new ArrayList<ContentHint>();

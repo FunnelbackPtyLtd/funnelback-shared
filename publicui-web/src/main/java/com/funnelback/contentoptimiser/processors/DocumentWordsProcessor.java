@@ -12,6 +12,6 @@ public interface DocumentWordsProcessor {
     String[] getCommonWords(List<String> stopWords, String fieldType);
 
     int getTotalWords();
-    int setUniqueWords();
+    int getUniqueWords();
 
 }

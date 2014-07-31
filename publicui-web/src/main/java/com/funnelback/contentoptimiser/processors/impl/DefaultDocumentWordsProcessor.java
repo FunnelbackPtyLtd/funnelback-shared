@@ -154,7 +154,7 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
     }
 
     @Override
-    public int setUniqueWords() {
+    public int getUniqueWords() {
         return termsSortedByFrequency.size();
     }
 
