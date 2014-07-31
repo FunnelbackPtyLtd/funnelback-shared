@@ -101,15 +101,15 @@ public class DefaultDocumentWordsProcessor implements DocumentWordsProcessor {
         int i = 0;
         Set<String> stopSet = new HashSet<String>(stopWords);
         
-        List<String> topFive = new ArrayList<String>(5);
+        List<String> topTen = new ArrayList<String>(10);
         for(Entry<String,Integer> e : termsSortedByFrequency) {
-            if(i == 5) break;
-            if(! stopSet.contains(e.getKey())) {
-                topFive.add(e.getKey());
+            if(i == 10) break;
+            if(! stopSet.contains(e.getKey().toLowerCase())) {
+                topTen.add(e.getKey());
                 i++;
             }
         }
-        return topFive.toArray(new String[0]);
+        return topTen.toArray(new String[0]);
     }
 
     @Override
