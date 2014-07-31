@@ -28,7 +28,8 @@ public class ResultPacket {
     
     /** Original query terms */
     @Getter @Setter private String query;
-    
+
+
     /**
      * <p>Query terms as processed by PADRE.</p>
      * 
@@ -68,6 +69,11 @@ public class ResultPacket {
     /** ID of the collection being searched. */
     @Getter @Setter private String collection;
 
+    /**
+     * <p>Name of the host where PADRE executed the query.</p>
+     */
+    @Getter @Setter private String hostName;
+    
     /**
      * <p>List of additional queries for the Query Blending system.</p>
      * 
@@ -345,6 +351,7 @@ public class ResultPacket {
         
         public static final String BEST_BETS = "best_bets";
         public static final String RESULTS = "results";
+        public static final String HOSTNAME = "hostname";
         
         public static final String QUERY = "query";
         public static final String QUERY_AS_PROCESSED = "query_as_processed";
