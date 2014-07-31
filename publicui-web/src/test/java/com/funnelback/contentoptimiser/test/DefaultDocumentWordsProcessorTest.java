@@ -111,12 +111,23 @@ public class DefaultDocumentWordsProcessorTest {
     
     @Test
     public void testDocumentOverview() {
+
+        String miniDocument = "the inverse translation from classic arrows to the arrow"
+                + " calculus is given in figure 5 again the translation of the constructs"
+                + " of the core lambda calculus are straightforward homomorphisms"
+                + " each of the three constants translates to an appropriate term"
+                + " in the arrow calculus promotion accepts a function and returns"
+                + " the corresponding arrow which applies the function";
+
         SetMultimap<String, String> emptyStemMatches = HashMultimap.create();
-        DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor("one two two two three four five five six",anchors,emptyStemMatches);
-        String[] expectedFive =new String[] {"two","five","three","six","one"};
-        Assert.assertTrue("Top five words in document incorrect ", Arrays.equals(expectedFive, dwp.getCommonWords(new ArrayList<String>(),"_")));
-        Assert.assertEquals(9,dwp.getTotalWords());
-        Assert.assertEquals(6, dwp.setUniqueWords());
+        DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(miniDocument,anchors,emptyStemMatches);
+
+        String[] expectedTen = new String[] {"the", "of", "calculus", "arrow",
+                "translation", "to", "in", "function", "which", "translates"};
+
+        Assert.assertTrue("Top ten words in document incorrect ", Arrays.equals(expectedTen, dwp.getCommonWords(new ArrayList<String>(),"_")));        
+        Assert.assertEquals(56,dwp.getTotalWords());
+        Assert.assertEquals(38, dwp.getUniqueWords());
     }
     
 }
