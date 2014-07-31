@@ -89,6 +89,11 @@ public class ContentOptimiserController {
         String optimiserUrl = request.getParameter(RequestParameters.CONTENT_OPTIMISER_URL);
         String loaded = request.getParameter(RequestParameters.LOADED);
 
+        String profile = request.getParameter(RequestParameters.PROFILE);
+        if(profile == null) {
+            throw new RuntimeException("Missing profile parameter in Content Optimiser");
+        }
+
         //Check for each parameter, so we can route the user to the right page
         if(nullOrEmpty(collection)) {
 
