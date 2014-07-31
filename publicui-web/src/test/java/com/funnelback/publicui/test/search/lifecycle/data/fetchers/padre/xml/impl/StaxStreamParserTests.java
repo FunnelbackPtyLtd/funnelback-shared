@@ -153,7 +153,6 @@ public class StaxStreamParserTests {
         
         assertEquals("gov_combined", rp.getCollection());
 
-        assertEquals("hostnamevalue", rp.getHostName());
         assertEquals(2, rp.getQSups().size());
         assertEquals(Source.SPEL, rp.getQSups().get(0).getSrc());
         assertEquals("taxation", rp.getQSups().get(0).getQuery());

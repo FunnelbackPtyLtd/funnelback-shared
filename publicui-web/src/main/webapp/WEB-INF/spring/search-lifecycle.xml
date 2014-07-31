@@ -25,7 +25,7 @@
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
-		<ref bean="hostnameInLogFilename" />
+		<ref bean="hostname" />
 		<ref bean="userIdInQueryLogs" />
 		<!-- <ref bean="contentOptimiserSelectDocumentInputProcessor"/> -->
 		<ref bean="extraSearchesInputProcessor" />

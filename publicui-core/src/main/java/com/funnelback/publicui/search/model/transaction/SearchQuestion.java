@@ -270,6 +270,12 @@ public class SearchQuestion {
     @Getter @Setter private Principal principal;
 
     /**
+     * <p>Name of the host where PADRE executed the query.</p>
+     * @since 14.0	
+     */
+    @Getter @Setter private String hostname;
+    
+    /**
      * Common query string parameters names.
      * 
      * @since 11.0

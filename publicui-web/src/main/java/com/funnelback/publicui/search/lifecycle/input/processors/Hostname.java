@@ -20,14 +20,17 @@ import java.io.File;
 /**
  * Sets the relevant query processor option if the server
  * host name must be used in the queries log filename.
+ * Sets the hostname in the question section if it 
+ * is configured for display.
  * 
  * @see FUN-3306
  * @see FUN-5071
+ * @see FUN-6100
  * @since v12.2
  */
 @Log4j
-@Component("hostnameInLogFilename")
-public class HostnameInLogFilename extends AbstractInputProcessor {
+@Component("hostname")
+public class Hostname extends AbstractInputProcessor {
 
     /** Name of the QP option to specify the log file */
     public static final String QP_OPT_LOGFILE = "-qlog_file";
@@ -52,9 +55,15 @@ public class HostnameInLogFilename extends AbstractInputProcessor {
             String opt = QP_OPT_LOGFILE + "=" + logFile.getAbsolutePath();
             
             searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(opt);
-            log.debug("Added QP option '"+opt+"'");            
+            log.debug("Added QP option '"+opt+"'");
+            
         }
-
+        
+        if (SearchTransactionUtils.hasCollection(searchTransaction)
+                && searchTransaction.getQuestion().getCollection().getConfiguration()
+                .valueAsBoolean(Keys.ModernUI.SHOW_HOSTNAME, DefaultValues.ModernUI.SHOW_HOSTNAME)) {
+        	searchTransaction.getQuestion().setHostname(localHostnameHolder.getHostname());
+        }
     }
 
 }

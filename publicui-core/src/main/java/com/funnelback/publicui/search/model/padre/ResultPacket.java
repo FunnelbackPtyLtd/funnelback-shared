@@ -68,11 +68,6 @@ public class ResultPacket {
     
     /** ID of the collection being searched. */
     @Getter @Setter private String collection;
-
-    /**
-     * <p>Name of the host where PADRE executed the query.</p>
-     */
-    @Getter @Setter private String hostName;
     
     /**
      * <p>List of additional queries for the Query Blending system.</p>
