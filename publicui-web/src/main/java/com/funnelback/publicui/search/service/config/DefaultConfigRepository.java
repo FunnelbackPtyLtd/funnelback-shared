@@ -10,6 +10,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -31,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -83,6 +85,9 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Setter
     private FacetedNavigationConfigParser fnConfigParser;
     
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
+
     /**
      * <p>This implementation will cache collection objects for a short period
      * so that multiple call to this function for a single request will
@@ -234,6 +239,14 @@ public class DefaultConfigRepository implements ConfigRepository {
             } catch (IOException e) {
                 log.error("Error loading curator yaml configuration.", e);
             }
+            
+            // Autowire in anything the Curator objects depend on
+            config.configure(new Configurer() {
+                @Override
+                public void configure(Object objectToConfigure) {
+                    beanFactory.autowireBean(objectToConfigure);
+                }
+            });
             
             p.setCuratorConfig(config);
 

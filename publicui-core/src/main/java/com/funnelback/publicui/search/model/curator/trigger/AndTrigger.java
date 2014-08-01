@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -50,4 +51,12 @@ public class AndTrigger implements Trigger {
         return true;
     }
 
+    /** Configure this trigger and its children (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
+        for (Trigger trigger : triggers) {
+            trigger.configure(configurer);
+        }
+    }
 }

@@ -65,4 +65,9 @@ public interface Action {
      *         return false.
      */
     public boolean runsInPhase(Phase phase);
+    
+    /**
+     * Perform any configuration required (e.g. autowiring beans needed by the Action).
+     */
+    public void configure(Configurer configurer);
 }

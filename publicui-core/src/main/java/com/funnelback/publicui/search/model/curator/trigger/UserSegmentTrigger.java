@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,32 +8,34 @@ import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
-import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>
- * A trigger which activates only when the current request originates from a
- * country whose name exists in the targetCountries list.
- * </p>
- * 
- * <p>
- * The detection of the originating country requires geolocation to be active
- * (otherwise this trigger will never activate).
+ * A trigger which activates only when the current request originates user matching
+ * some particular Predictive Segmenter constraint.
  * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CountryNameTrigger implements Trigger {
-
+public class UserSegmentTrigger implements Trigger {
+    
     /**
-     * The list of country names (case sensitive) for which this trigger should
-     * activate.
+     * The type of segment to check.
+     * 
+     * Available segments depend on the fields in the predictive segmenter database in use.
      */
     @Getter
     @Setter
-    private Set<String> targetCountries = new HashSet<String>();
+    private String segmentType;
+
+    /**
+     * The 'value' to check for in the segment data (currently a substring check)
+     */
+    @Getter
+    @Setter
+    private String segmentValue;
 
     /**
      * Check whether the given searchTransaction originates from a country
@@ -44,8 +43,10 @@ public class CountryNameTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
-        Location location = searchTransaction.getQuestion().getLocation();
-        return targetCountries.contains(location.getCountryName());
+        throw new UnsupportedOperationException(
+            "The publicui-core UserSegmentTrigger does not support activatesOn calls."
+                + " Please ensure the implementation in publicui-web's "
+                + " com.funnelback.publicui.curator.trigger package is available.");
     }
 
     /** Configure this trigger (expected to autowire in any dependencies) */

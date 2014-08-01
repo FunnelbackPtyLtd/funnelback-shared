@@ -17,6 +17,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -109,5 +110,11 @@ public class GroovyAction implements Action {
     @Override
     public boolean runsInPhase(Phase phase) {
         return getActionImplementation().runsInPhase(phase, properties);
+    }
+
+    /** Configure this action (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
     }
 }

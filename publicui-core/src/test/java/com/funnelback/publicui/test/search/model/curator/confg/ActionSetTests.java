@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Action.Phase;
 import com.funnelback.publicui.search.model.curator.config.ActionSet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -78,6 +79,10 @@ public class ActionSetTests {
             return Phase.INPUT.equals(phase);
         }
         
+        @Override
+        public void configure(Configurer configurer) {
+            configurer.configure(this);
+        }
     }
 
     private class OutputAction implements Action {
@@ -94,6 +99,10 @@ public class ActionSetTests {
             return Phase.OUTPUT.equals(phase);
         }
         
+        @Override
+        public void configure(Configurer configurer) {
+            configurer.configure(this);
+        }
     }
 
     private class DualAction implements Action {
@@ -110,5 +119,9 @@ public class ActionSetTests {
             return Phase.INPUT.equals(phase) || Phase.OUTPUT.equals(phase);
         }
         
+        @Override
+        public void configure(Configurer configurer) {
+            configurer.configure(this);
+        }
     }
 }

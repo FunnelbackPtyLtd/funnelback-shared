@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.base.Joiner;
@@ -76,5 +77,11 @@ public class RemoveUrls implements Action {
     @Override
     public boolean runsInPhase(Phase phase) {
         return phase.equals(Phase.INPUT);
+    }
+    
+    /** Configure this action (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
     }
 }

@@ -35,5 +35,10 @@ public interface Trigger {
      * searchTransaction, and false otherwise.
      */
     public boolean activatesOn(SearchTransaction searchTransaction);
+    
+    /**
+     * Perform any configuration required (e.g. autowiring beans needed by the Trigger).
+     */
+    public void configure(Configurer configurer);
 
 }

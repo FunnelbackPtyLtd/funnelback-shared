@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -73,4 +74,9 @@ public class DateRangeTrigger implements Trigger {
         return false;
     }
 
+    /** Configure this trigger (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
+    }
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.google.common.collect.ObjectArrays;
@@ -52,4 +53,9 @@ public class AddQueryTerm implements Action {
         return phase.equals(Phase.INPUT);
     }
 
+    /** Configure this action (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
+    }
 }

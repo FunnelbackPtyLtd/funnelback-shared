@@ -49,4 +49,14 @@ public class ActionSet {
         }
         return false;
     }
+    
+    /**
+     * Perform any configuration required (e.g. autowiring beans needed by each Action).
+     */
+    public void configure(Configurer configurer) {
+        for (Action action : actions) {
+            action.configure(configurer);
+        }
+    }
+
 }

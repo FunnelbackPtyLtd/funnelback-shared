@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.data.Message;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -42,5 +43,11 @@ public class DisplayMessage implements Action {
     @Override
     public boolean runsInPhase(Phase phase) {
         return phase.equals(Phase.OUTPUT);
+    }
+    
+    /** Configure this action (expected to autowire in any dependencies) */
+    @Override
+    public void configure(Configurer configurer) {
+        configurer.configure(this);
     }
 }
