@@ -21,8 +21,7 @@ public class FilecopyWarcFileStoreCacheTest extends
     @Override
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
         WarcFileStore store = new WarcFileStore(
-                DefaultValues.Warc.WARC_COMPRESSION.toString(),
-                liveRoot, StoreView.live);
+                liveRoot);
         store.open();
         store.add(rmd.record, rmd.metadata);
         store.close();

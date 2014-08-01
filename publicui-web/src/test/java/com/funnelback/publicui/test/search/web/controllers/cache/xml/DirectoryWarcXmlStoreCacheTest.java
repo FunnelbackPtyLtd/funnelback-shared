@@ -19,7 +19,7 @@ public class DirectoryWarcXmlStoreCacheTest extends
     @Override
     protected void storeContent(RecordAndMetadata<XmlRecord> rmd)
             throws IOException {
-        WarcXmlStore store = new WarcXmlStore(liveRoot, DefaultValues.Warc.WARC_COMPRESSION);
+        WarcXmlStore store = new WarcXmlStore(liveRoot);
         store.open();
         store.add(rmd.record);
         store.close();
