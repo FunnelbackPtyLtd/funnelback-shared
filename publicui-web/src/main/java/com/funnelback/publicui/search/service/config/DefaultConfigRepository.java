@@ -244,7 +244,11 @@ public class DefaultConfigRepository implements ConfigRepository {
             config.configure(new Configurer() {
                 @Override
                 public void configure(Object objectToConfigure) {
-                    beanFactory.autowireBean(objectToConfigure);
+                    if (beanFactory != null) {
+                        beanFactory.autowireBean(objectToConfigure);
+                    } else {
+                        log.error("Expected AutowireBeanFactory bean to be available - Some curator rules may not function.");
+                    }
                 }
             });
             
