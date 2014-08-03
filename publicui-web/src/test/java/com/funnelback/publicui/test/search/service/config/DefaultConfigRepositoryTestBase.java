@@ -8,6 +8,7 @@ import net.sf.ehcache.CacheManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
@@ -25,6 +26,9 @@ public abstract class DefaultConfigRepositoryTestBase {
     
     @Autowired
     private CacheManager appCacheManager;
+    
+    @Autowired
+    private AutowireCapableBeanFactory autowireCapableBeanFactory;
     
 
     /**
@@ -55,6 +59,7 @@ public abstract class DefaultConfigRepositoryTestBase {
         configRepository.setFnConfigParser(new StaxStreamFacetedNavigationConfigParser());
         configRepository.setSearchHome(SEARCH_HOME);
         configRepository.setCacheTtlSeconds(0);
+        configRepository.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
         
     }
     

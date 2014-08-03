@@ -33,6 +33,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -86,7 +87,8 @@ public class DefaultConfigRepository implements ConfigRepository {
     private FacetedNavigationConfigParser fnConfigParser;
     
     @Autowired
-    private AutowireCapableBeanFactory beanFactory;
+    @Setter
+    private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
     /**
      * <p>This implementation will cache collection objects for a short period
@@ -244,8 +246,8 @@ public class DefaultConfigRepository implements ConfigRepository {
             config.configure(new Configurer() {
                 @Override
                 public void configure(Object objectToConfigure) {
-                    if (beanFactory != null) {
-                        beanFactory.autowireBean(objectToConfigure);
+                    if (autowireCapableBeanFactory != null) {
+                        autowireCapableBeanFactory.autowireBean(objectToConfigure);
                     } else {
                         log.error("Expected AutowireBeanFactory bean to be available - Some curator rules may not function.");
                     }
