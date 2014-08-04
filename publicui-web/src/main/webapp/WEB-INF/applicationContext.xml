@@ -77,9 +77,9 @@
 	
 	<!-- End search session database setup -->
 	
-	<bean class="com.funnelback.dataapi.connector.visitorprofile.VisitorProfileConnector">
+	<bean class="com.funnelback.dataapi.connector.visitorprofile.PredictiveSegmentationConnector">
 		<constructor-arg value="file:#{searchHome.absolutePath}/databases/GeoIPOrg.dat" />
-		<constructor-arg value="file:#{searchHome.absolutePath}/databases/visitor-profile.mapdb" />
+		<constructor-arg value="file:#{searchHome.absolutePath}/databases/company-info.mapdb" />
 	</bean>
 	
 </beans>
