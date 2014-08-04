@@ -103,7 +103,7 @@
         </dependency>
         <dependency>
             <groupId>com.funnelback.dataapi</groupId>
-            <artifactId>funnelback-data-api-connector-visitor-profile</artifactId>
+            <artifactId>funnelback-data-api-connector-predictive-segmentation</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
