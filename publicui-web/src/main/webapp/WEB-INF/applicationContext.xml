@@ -77,7 +77,7 @@
 	
 	<!-- End search session database setup -->
 	
-	<bean class="com.funnelback.dataapi.connector.predictivesegmenter.PredictiveSegmentationConnector">
+	<bean class="com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationConnector">
 		<constructor-arg value="file:#{searchHome.absolutePath}/databases/GeoIPOrg.dat" />
 		<constructor-arg value="file:#{searchHome.absolutePath}/databases/company-info.mapdb" />
 	</bean>
