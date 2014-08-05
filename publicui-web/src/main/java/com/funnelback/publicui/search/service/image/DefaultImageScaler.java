@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.service.image;
 
 import com.funnelback.publicui.search.service.image.ImageScalerSettings.ScaleType;
+
 import lombok.Cleanup;
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -9,9 +10,11 @@ import net.coobird.thumbnailator.geometry.Positions;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,6 +41,9 @@ public class DefaultImageScaler implements ImageScaler {
             
             @Cleanup ByteArrayInputStream unscaledImageInputStream = new ByteArrayInputStream(imageData);
             Builder<? extends InputStream> thumbnailor = Thumbnails.of(unscaledImageInputStream);
+            
+            // Force a 24 bit image with an alpha channel - See SUPPORT-1508
+            thumbnailor = thumbnailor.imageType(BufferedImage.TYPE_INT_ARGB);
             
             thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
     
