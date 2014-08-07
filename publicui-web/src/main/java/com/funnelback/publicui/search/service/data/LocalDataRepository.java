@@ -197,15 +197,17 @@ public class LocalDataRepository implements DataRepository {
             Collection collection, StoreView view, String url) {
         
         try (Store<? extends Record<?>> store = StoreType.getStore(collection.getConfiguration(), view)) {
+            log.fatal("Got a store for collection '"+collection.getId()+"', it is a: " 
+                + store.getClass().getCanonicalName());
             store.open();
             return store.getRecordAndMetadata(extractPrimaryKey(collection, url));        
         } catch (ClassNotFoundException cnfe) {
-            log.error("Error while getting store for collection '"+collection.getId()+"'", cnfe);
+            log.fatal("Error while getting store for collection '"+collection.getId()+"'", cnfe);
         } catch (IOException ioe) {
-            log.error("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
+            log.fatal("Couldn't access stored content on collection '"+collection.getId()+"' for URL '"+url+"'", ioe);
         } catch (UnsupportedOperationException uoe) {
             // Ignore, some collection types (local) are not supported
-            log.debug("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
+            log.fatal("Unsupported operation on the store for collection '"+collection.getId()+"'", uoe);
         }
     
         return new RecordAndMetadata<>(null, null);

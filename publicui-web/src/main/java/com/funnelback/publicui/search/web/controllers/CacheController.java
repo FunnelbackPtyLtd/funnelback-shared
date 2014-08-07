@@ -112,7 +112,7 @@ public class CacheController {
             @RequestParam String doc,
             @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") int offset,
             @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
-        
+        try {
         if (url == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (collection.getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
@@ -190,12 +190,17 @@ public class CacheController {
                 }
             } else {
                 // Record not found
-                log.debug("Cached copy of '"+url+"' not found on collection '"+collection.getId()+"'");
+                log.fatal("Cached copy of '"+url+"' not found on collection '"+collection.getId()+"'");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         }
         
         return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, new HashMap<String, Object>());
+        } catch (Throwable t){
+            log.fatal("Cached copy of '"+url+"' for collection collection '"+collection.getId()+"' raised"
+                + " a Throwable", t);
+            throw t;
+        }
     }
     
     /**
