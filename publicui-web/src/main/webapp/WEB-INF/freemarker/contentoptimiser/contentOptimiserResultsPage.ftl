@@ -142,7 +142,7 @@
           <#if documentWasFound>
           <div id="co-cs-title" class="pane pt20 pb10">
             <div class="row">
-              <div class="col-xs-2 text-center"><b class="text-grey-lt">Page:</b></div>
+              <div class="col-xs-2 text-center"><b class="text-grey-lt">Title:</b></div>
               <div class="col-xs-10 pl15"> <a class="text-grey-dk" target="new" title="Open the page: ${selectedUrl}" href=${selectedUrl}>${selectedTitle} <i class="fa fa-external-link fs11 pl5 pr5"></i></a> </div>
             </div>
           </div>
@@ -165,8 +165,14 @@
 
                 <div class="ribbon ${ribbonColour}"><i>Rank</i><b>${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></b></div>
 
-                <div class="of rel text-grey-md z1"><i>of</i></div>
-                <div class="pages text-grey-md">${matchingPages} Pages</div>
+
+                <#-- TODO: add this as a thumbnail preview of the website, maybe use a ajax to load since it will take time to generate from the server -->
+
+                <#-- Deprecated: 
+
+                    <div class="of rel text-grey-md z1"><i>of</i></div>
+                    <div class="pages text-grey-md">${matchingPages} Pages</div>
+                -->
               </div>
               </#if>
 
