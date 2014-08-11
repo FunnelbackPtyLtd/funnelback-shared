@@ -50,7 +50,8 @@ public class MetaParameters extends AbstractInputProcessor {
     
     private static final Pattern META_QUERY_PATTERN = Pattern.compile("^(" + META_PREFIX + "|" + QUERY_PREFIX + ").*");
 
-    private static final Pattern META_DATE_PATTERN = Pattern.compile("^" + META_PREFIX + "d(1|2|3|4|)(day|month|year)$");
+    /** Note, the date pattern must support meta_d, meta_d1 and meta_d1_day (hence the last pipe in the groups is required) */
+    private static final Pattern META_DATE_PATTERN = Pattern.compile("^" + META_PREFIX + "d(1|2|3|4|)(day|month|year|)$");
     private static final Pattern META_EVENT_PATTERN = Pattern.compile("^" + META_PREFIX + "[wxyz](day|month|year)$");
     
     /**

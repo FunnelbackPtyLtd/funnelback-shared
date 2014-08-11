@@ -446,6 +446,8 @@ public class MetaParametersTests {
     public void testMetaDatesAreSkipped() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
         
+        st.getQuestion().getRawInputParameters().put("meta_d1", new String[] {"1Jan2014"});
+        st.getQuestion().getRawInputParameters().put("smeta_d1", new String[] {"31Dec2014"});
         st.getQuestion().getRawInputParameters().put("meta_d1day", new String[] {"1day"});
         st.getQuestion().getRawInputParameters().put("smeta_d1day", new String[] {"1day"});
         st.getQuestion().getRawInputParameters().put("meta_d2month", new String[] {"2month"});
