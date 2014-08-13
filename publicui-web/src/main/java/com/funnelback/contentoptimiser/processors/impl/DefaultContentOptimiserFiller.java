@@ -17,6 +17,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -384,7 +386,19 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         
         String documentContent = new String(contentBytes);
         if(documentContent != null) {
-            DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
+
+            //I feel like too much is being done here.  Assumes a JSoup-able document, assumes whatever locale for lower case.
+            //Also it *probably doesn't* obey noindex tags,  
+            String documentWords;
+            try {
+                //Can't really foresee what problems jsoup might run into
+                documentWords = Jsoup.clean(documentContent, Whitelist.simpleText()).toLowerCase();
+            } catch (Exception e) {
+                //Fall back to the non-cleaned version.
+                documentWords = documentContent;
+            }
+
+            DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentWords,anchors,stemMatches);
             
             BldInfoStats bldInfoStats = null;
             try {
