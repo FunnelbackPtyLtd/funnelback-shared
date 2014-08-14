@@ -395,6 +395,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
                 documentWords = Jsoup.clean(documentContent, Whitelist.simpleText()).toLowerCase();
             } catch (Exception e) {
                 //Fall back to the non-cleaned version.
+                log.error("Problem cleaning document with jsoup",e);
                 documentWords = documentContent;
             }
 
