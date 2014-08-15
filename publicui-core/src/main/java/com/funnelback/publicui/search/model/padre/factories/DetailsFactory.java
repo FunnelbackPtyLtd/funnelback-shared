@@ -21,7 +21,7 @@ public class DetailsFactory {
     private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
     
     public static Details fromMap(Map<String, String> data) {
-        Date updated = new Date();
+        Date updated = new Date(0);
         String str = data.get(Details.Schema.COLLECTION_UPDATED);
         if (str != null && ! "".equals(str.trim())) {
             try {
