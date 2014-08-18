@@ -88,7 +88,7 @@
     <div class="container">
 
         <div class="navbar-header">
-           <a href="?${profile}" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
+           <a href="?collection=${collection}${profile}" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
         </div>
 
         <div class="navbar-right pull-right">
