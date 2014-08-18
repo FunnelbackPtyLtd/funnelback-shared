@@ -17,13 +17,9 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.views.StoreView;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
@@ -34,7 +30,6 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.contentoptimiser.processors.DocumentWordsProcessor;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -44,7 +39,6 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Content
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
-import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.utils.MapUtils;
 import com.google.common.collect.SetMultimap;
 
@@ -352,9 +346,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         Collections.sort(comparison.getHintsByWin());
     }
 
-    @Autowired
-    @Setter private DataRepository dataRepository;
-
     @Override
     public void obtainContentBreakdown(ContentOptimiserModel comparison,
             SearchTransaction searchTransaction, Result importantResult,AnchorModel anchors, SetMultimap<String,String> stemMatches) {
@@ -372,34 +363,11 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             }
         }
         
-        byte[] contentBytes =
-            (byte[])
-                ((RawBytesRecord)
-                        dataRepository
-                            .getCachedDocument(
-                                    searchTransaction
-                                        .getQuestion()
-                                        .getCollection(),
-                                    StoreView.live,
-                                    importantResult.getIndexUrl()).record
-                ).getContent();
         
-        String documentContent = new String(contentBytes);
+        
+        String documentContent = docFromCache.getDocument(comparison, importantResult.getCacheUrl(),searchTransaction.getQuestion().getCollection().getConfiguration(),importantResult.getCollection());
         if(documentContent != null) {
-
-            //I feel like too much is being done here.  Assumes a JSoup-able document, assumes whatever locale for lower case.
-            //Also it *probably doesn't* obey noindex tags,  
-            String documentWords;
-            try {
-                //Can't really foresee what problems jsoup might run into
-                documentWords = Jsoup.clean(documentContent, Whitelist.simpleText()).toLowerCase();
-            } catch (Exception e) {
-                //Fall back to the non-cleaned version.
-                log.error("Problem cleaning document with jsoup",e);
-                documentWords = documentContent;
-            }
-
-            DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentWords,anchors,stemMatches);
+            DocumentWordsProcessor dwp = new DefaultDocumentWordsProcessor(documentContent,anchors,stemMatches);
             
             BldInfoStats bldInfoStats = null;
             try {
