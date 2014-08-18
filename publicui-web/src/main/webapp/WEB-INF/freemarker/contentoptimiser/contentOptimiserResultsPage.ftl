@@ -288,7 +288,7 @@
 
                                     <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
                                     <div>No url was entered.</div>
-
+                                    <div>The top results for the query <strong>${query}</strong> are shown below.</div>
                                 </#if>
 
                             </#if>
