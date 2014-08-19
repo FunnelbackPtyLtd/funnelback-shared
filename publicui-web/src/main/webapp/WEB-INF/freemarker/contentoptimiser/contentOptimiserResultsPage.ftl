@@ -85,45 +85,15 @@
 
 <header>
     <nav role="navigation" class="navbar navbar-inverse navbar-static-top">
-    <div class="container">
+        <div class="container">
 
-        <div class="navbar-header">
-           <a href="?collection=${collection}${profile}" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
-        </div>
+            <div class="navbar-header">
+                <a href="?collection=${collection}${profile}" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
+            </div>
 
-        <div class="navbar-right pull-right">
-		
-
-    <#--
-      <a href="content-optimiser.html?collection=${collection}&optimiser_url=${queryUrl}" class="btn pull-left link-query" title="Change Query"><span class="hidden-xs sr-xs"><i class="fa fa-filter fa-lg"></i></span></a> 
-		   <div class="btn-group dropdown-menu-right pull-right collections-top-menu">
-			
-			<a href="content-optimiser.html" class="btn btn-default dropdown-toggle link-collections" data-toggle="dropdown" title="Content Optimiser Collections List"><span class="hidden-xs sr-xs"><i class="fa  fb-icn-collections"></i></span></a>
-			
-			
-		<div aria-labelledby="collection-menu" role="menu" class="dropdown-menu box">
-        <div class="header fa fb-icn-collections
-
-        <h4><i class="fa fb-icn-collections"></i> Collections</h4> 
-            
+            <div class="navbar-right pull-right">
+            </div>
         </div>
-        
-        
-        <div class="body">
-       
-        	<div><small>Current: <strong>${collection}</strong></small></div>
-           <div><small>Query: <strong>${query}</strong></small></div>
-        </div>
-        
-        <ul id="catch-collection-list">
-           
-        </ul>
-        </div>
-		</div>
-		
-		-->
-  </div>
-    </div>
     </nav>
 </header>
 
