@@ -220,71 +220,59 @@
         </#if>
         <!-- / #co-stats -->
 
-        <!--Start #co-comparison-->
-        <div id="co-comparison" class="box">
-          
-              <div class="header">
-                <h3>Top-ranked results for '${query}'</h3>
-              </div>
-
-              <div class="body p0">
-
-                    <div class="m20">
-
-                   <#if ( (!documentWasFound) || (selectedRank > 10) ) > 
-                                            <div class="alert alert-info">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
-                            <#if (documentWasFound) > 
-                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
-                                <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
-                                <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
-                            <#else> 
-
-                                
-                                <#if (queryUrl?string?length > 0) >
-
-                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
-                                    <div>The URL provided does not rank in the top 10 results within the collection: <strong>${collection}</strong>.</div>
-
-				    <#if (matchingPages < 1) >
-					<p>There were no results returned for this query.</p>
-				    <#elseif (matchingPages <= 10) >
-                                        <p>All ${matchingPages} matching results for the query: <strong>${query}</strong> are shown below.</p>
-                                    <#else >
-                                        <p>The top 10 results for this collection that match the query: <strong>${query}</strong> are shown below.</p>
-                                    </#if>
-
-                                <#else>
-
-                                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
-                                    <div>No url was entered.</div>
-                                    <div>The top results for the query <strong>${query}</strong> are shown below.</div>
-                                </#if>
-
-                            </#if>
-                            <p><a href="?collection=${collection}${profile}" class="btn btn-sm btn-primary mt10">
-                               &laquo; Back</a>
-                            </p>
-                        </div>
-                    </#if> 
-					  
-					  <#if (!documentWasFound) >
-							
-							
-					  </#if>
-                    <#if (matchingPages > 0) >
-                        <!-- Top Ranking Chart and Table -->
-                        <div id="chart-top-ten"></div>
-                        <div id="chart-top-ten-legend"></div>
-                        <table id="ls-top-rank-url" class="table table-condensed table-hover table-fbco mt20 mb30">
-                            <tr class="head"><th>Rank</th><th>Page</th><th>URL</th></tr>
-                            <!-- The rest of the table data here is populated by JS -->
-                        </table>
-                    </#if>
-                </div>
-            </div>             
+<!--Start #co-comparison-->
+    <div id="co-comparison" class="box">
+        <div class="header">
+            <h3>Top-ranked results for '${query}'</h3>
         </div>
-        <!--End #co-comparison-->  
+
+        <div class="body p0">
+            <div class="m20">
+            
+                <#if ( (!documentWasFound) || (selectedRank > 10) ) >
+                    <div class="alert alert-info">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
+                        
+                        <#if (documentWasFound) >
+                            <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
+                            <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
+                            <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
+                        <#else>
+                            <#if (queryUrl?string?length > 0) >
+                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
+                                <div>The URL provided does not rank in the top 10 results within the collection: <strong>${collection}</strong>.</div>
+                                <#if (matchingPages < 1) >
+                                    <p>There were no results returned for this query.</p>
+                                <#elseif (matchingPages <= 10) >
+                                    <p>All ${matchingPages} matching results for the query: <strong>${query}</strong> are shown below.</p>
+                                <#else>
+                                    <p>The top 10 results for this collection that match the query: <strong>${query}</strong> are shown below.</p>
+                                </#if>
+                            <#else>
+                                <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
+                                <div>No url was entered.</div>
+                                <div>The top results for the query <strong>${query}</strong> are shown below.</div>
+                            </#if>
+                        </#if>
+                        
+                        <p><a href="?collection=${collection}${profile}" class="btn btn-sm btn-primary mt10">&laquo; Back</a></p>
+                    </div>
+                </#if>
+   
+                <#if (matchingPages > 0) >
+    
+                    <!-- Top Ranking Chart and Table -->
+                    <div id="chart-top-ten"></div>
+                    <div id="chart-top-ten-legend"></div>
+                        <table id="ls-top-rank-url" class="table table-condensed table-hover table-fbco mt20 mb30">
+                        <tr class="head"><th>Rank</th><th>Page</th><th>URL</th></tr>
+                        <!-- The rest of the table data here is populated by JS -->
+                    </table>
+                </#if>
+            </div>
+        </div>
+    </div>
+<!--End #co-comparison-->
 
     <!-- Start #co-advice -->
     <#if documentWasFound>
@@ -565,8 +553,8 @@ $(function () {
         /* For each result in the top 10 */
         <#list response.optimiserModel.topResults as topResult>
         {
-            "page_name":      "${topResult.title}",
-            "url":           '${topResult.displayUrl}',
+            "page_name":      "${topResult.title?html}",
+            "url":            "${topResult.displayUrl?html}",
             "index":          ${topResult.rank},
             "url_truncated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace("<br/>", "... ")}<#else>${topResult.displayUrl}</#if>', 
 
@@ -588,8 +576,8 @@ $(function () {
                 "url_truncated": '...'},
 
             /* This is your >10th result */
-            {"page_name"        : '${selectedTitle}',
-                "url"           : '${selectedUrl}',
+            {"page_name"        : "${selectedTitle?html}",
+                "url"           : "${selectedUrl?html}",
                 "index"         : ${selectedRank}, 
                 "url_truncated" : '${truncateURL(selectedUrl, 30)}',
 
@@ -779,8 +767,6 @@ $( function () {
         var d = (n|0)%100;
         return d > 3 && d < 21 ? 'th' : ['th', 'st', 'nd', 'rd'][d%10] || 'th';
     };
-
-    console.log ("Entering graph function");
 
     <#assign hintCounter = 0>            
     <#list response.optimiserModel.hintCollections as hc>
