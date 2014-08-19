@@ -51,7 +51,7 @@
         <#assign maybeUrl = "">
     </#if>
 
-    <meta http-equiv="refresh" content="0; url='?query=${query}${maybeUrl}&collection=${collection}&loaded=1${profile}">
+    <meta http-equiv="refresh" content="0; url=?query=${query}${maybeUrl}&collection=${collection}&loaded=1${profile}">
 </body>
 </html>
 
