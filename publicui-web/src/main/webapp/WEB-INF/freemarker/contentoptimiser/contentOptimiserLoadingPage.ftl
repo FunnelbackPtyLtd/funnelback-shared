@@ -46,7 +46,7 @@
     <script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script>
     
     <#if optimiser_url?? >
-        <#assign maybeUrl = "&optimiser_url=" + optimiser_url>
+        <#assign maybeUrl = "&optimiser_url=" + (optimiser_url?trim) >
     <#else>
         <#assign maybeUrl = "">
     </#if>
