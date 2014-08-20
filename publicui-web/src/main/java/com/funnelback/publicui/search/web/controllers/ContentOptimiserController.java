@@ -115,7 +115,7 @@ public class ContentOptimiserController {
             if(nullOrEmpty(optimiserUrl)) {
                 loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, "");
             } else {
-                loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, optimiserUrl);
+                loadingPageModel.put(RequestParameters.CONTENT_OPTIMISER_URL, optimiserUrl.trim());
             }
 
             //Head to loading page
