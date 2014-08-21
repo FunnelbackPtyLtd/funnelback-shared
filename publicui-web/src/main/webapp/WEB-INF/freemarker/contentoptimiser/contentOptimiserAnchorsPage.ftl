@@ -7,19 +7,17 @@
 <!--<![endif]-->
 <head>
 
-<meta charset="utf-8">
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <title>Content Optimiser | Funnelback</title>
+    <meta name="description" content="Funnelback Content Optimiser">
+    <meta name="viewport" content="width=device-width">
 
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-<title>Content Optimiser | Funnelback</title>
-<meta name="description" content="Funnelback Content Optimiser">
-<meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
 
-<link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
-
-<link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
-<link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
-<link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
-
+    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
+    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
 </head>
 
@@ -28,21 +26,15 @@
 <header>
     <nav role="navigation" class="navbar navbar-inverse navbar-static-top">
     <div class="container">
-
         <div class="navbar-header">
-           <a href="?" title="Funnelback Content Optimiser"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
+           <a href="?" title="Content Optimiser - Home"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a> 
         </div>
-
        </div>
     </nav>
 </header>
 
 <div id="app">
-
-
-
   <div class="container">
-  
     <div class="box mt10">
       <div class="header">
         <h3>Anchors Summary</h3>
@@ -101,7 +93,6 @@
         </table>
       </div>
       <!-- / .body -->
-      
       <div class="footer" id="footer"> <a class="btn btn-sm btn-default no-shadow" onclick="javascript:history.go(-1);" href="#" id="btn-prev-page"><i class="fa fa-arrow-circle-left"></i> Previous Page</a> </div>
       
       <!-- / .footer --> 
