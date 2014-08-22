@@ -74,7 +74,7 @@
       <nav role="navigation" class="navbar navbar-inverse navbar-static-top">
         <div class="container">
           <div class="navbar-header">
-            <a href="?collection=${collection}${profile}" title="Content Optimiser - Home"><i class="navbar-brand"><i class="visible-md visible-lg">- &nbsp; Content Optimiser</i></i></a>
+            <a href="?collection=${collection}${profile}" title="Content Optimiser - Home"><span class="navbar-brand"><i>- &nbsp; Content Optimiser</i></span></a>
           </div>
           <div class="navbar-right pull-right">
           </div>
