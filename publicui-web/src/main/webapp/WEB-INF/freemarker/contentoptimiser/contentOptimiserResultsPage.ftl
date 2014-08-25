@@ -195,28 +195,27 @@
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
                     
                     <#if (documentWasFound) >
-                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
-                    <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
-                    <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
+                        <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Low Ranking!</h4>
+                        <div>The selected document was not in the top 10 results for the query: <strong><em>${query}</em></strong>.</div>
+                        <div>Your document (<strong>ranked ${selectedRank}</strong>) is shown below the top 10 results for comparison.</div>
                     <#else>
-                    <#if (queryUrl?string?length > 0) >
-                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
-                    <div>The URL provided does not rank in the top 10 results within the collection: <strong>${collection}</strong>.</div>
-                    <#if (matchingPages < 1) >
-                    <p>There were no results returned for this query.</p>
-                    <#elseif (matchingPages <= 10) >
-                    <p>All ${matchingPages} matching results for the query: <strong>${query}</strong> are shown below.</p>
-                    <#else>
-                    <p>The top 10 results for this collection that match the query: <strong>${query}</strong> are shown below.</p>
+                        <#if (queryUrl?string?length > 0) >
+                        <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
+                        <div><p>The collection <strong>${collection}</strong> does not contain the URL:<br/>
+                            <em>${queryUrl?html}</em></p></div>
+                            <#if (matchingPages < 1) >
+                            <p>There were no results returned for this query.</p>
+                            <#elseif (matchingPages <= 10) >
+                            <p>All ${matchingPages} matching results for the query <strong>${query}</strong> are shown below:</p>
+                            <#else>
+                            <p>The top 10 results for this collection that match the query <strong>${query}</strong> are shown below:</p>
+                            </#if>
+                        <#else>
+                            <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
+                            <div>No url was entered.</div>
+                            <div>The top results for the query <strong>${query}</strong> are shown below.</div>
+                        </#if>
                     </#if>
-                    <#else>
-                    <h4><i class="fa fa-exclamation-triangle"></i>&nbsp No Url!</h4>
-                    <div>No url was entered.</div>
-                    <div>The top results for the query <strong>${query}</strong> are shown below.</div>
-                    </#if>
-                    </#if>
-                    
-                    <p><a href="?collection=${collection}${profile}" class="btn btn-sm btn-primary mt10">&laquo; Back</a></p>
                   </div>
                   </#if>
                   
