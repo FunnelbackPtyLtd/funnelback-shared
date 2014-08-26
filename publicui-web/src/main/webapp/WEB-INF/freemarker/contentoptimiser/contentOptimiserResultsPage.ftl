@@ -328,18 +328,18 @@
                           <ol class="tip-list">
                             <#if hint.name == "content">
                             <li>
-                              The most common words in the page are <strong>${response.optimiserModel.content.commonWords?html}</strong>.
+                              The most common words in the page are <strong name=hintCommonWords>${response.optimiserModel.content.commonWords?html}</strong>.
                               These words should be an indicator of the subject of the page. If the words don't accurately reflect the subject of the page, consider re-wording the page, or preventing sections of the page from being indexed by wrapping the section with <strong>&lt;!--noindex--&gt;</strong> and <span><strong>&lt;!--endnoindex--&gt;</strong></span> tags.
                             </li>
                             </#if>
                             <#list hint.hintTexts as text>
-                            <li>${text}</li>
+                            <li name=hintText>${text}</li>
                             </#list>
                           </ol>
                         </div>
                         <div class="col-md-7">
                           <div class="tips-chart" id="${divId}" >
-                            <p><i>Please put "${hint.name}" graph in this div "${divId}"</i></p>
+                            <p><i name="chartPlaceHolder">Please put "${hint.name}" graph in this div "${divId}"</i></p>
                           </div>
                         </div>
                       </div>
