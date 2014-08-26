@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,9 +36,6 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
-import com.funnelback.warc.CompressionMode;
-import com.funnelback.warc.io.indexed.Fix;
-import com.funnelback.warc.io.indexed.ReadOnlyMapDbWarcFile;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
@@ -47,8 +43,6 @@ import com.google.common.io.Files;
 @Component
 public class DefaultDocFromCache implements DocFromCache {
     private static final String CACHE_CGI = "cache.cgi";
-
-    private static final String SEP = System.getProperty("file.separator");
 
     @Autowired
     @Setter
@@ -113,30 +107,11 @@ public class DefaultDocFromCache implements DocFromCache {
      *  @return a string containing all the words in the document in the order that they appear.
      */
     @Override
-    public String getDocument(ContentOptimiserModel comparison, String cacheUrl, Config config, String collectionId) {
+    public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config,String collectionId) {
         // Create a temp directory to store the cache copy and the index
         File tempDir = Files.createTempDir();
         log.debug("Created tempdir");
         File cacheFile = new File(tempDir,"cachefile");
-
-        //Extract local copy into temp directory
-        createLocalTempCopy(
-            tempDir,
-            cacheFile,
-            cacheUrl,
-            comparison);
-
-        //Index locally and return document words
-        String docWords = indexLocalTempCopyGetWords(tempDir, collectionId, cacheFile, config, comparison); 
-
-        return docWords;
-    }
-
-    /** Gets a cached copy (identified by cacheUrl) out of the store,
-     * and writes it to cacheFile in tempDir.
-     */
-    private void createLocalTempCopy(File tempDir, File cacheFile, String cacheUrl, ContentOptimiserModel comparison) {
-
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(cacheFile);
@@ -158,83 +133,22 @@ public class DefaultDocFromCache implements DocFromCache {
         PrintWriter printWriter = new PrintWriter(fos);
         printWriter.write(sb.toString());
         printWriter.flush();
-
-        try {
-
-            //If we're using mocks :(
-            if(cacheUrl.equals("cache-url")) {
-                finishCacheOldWarcStore(cacheUrl, fos);
-            } else {
-
-                Map<String, String> urlMap = getUrlMap(cacheUrl);
-                String collectionId = urlMap.get("collection");
-    
-                Config conf = configRepository.getCollection(collectionId).getConfiguration();
-    
-                //If we're using the old warc store path
-                if(conf.getConfigData()
-                       .get("crawler.classes.URLStore")
-                       .equals("com.funnelback.common.io.WARCStore")) {
-                    finishCacheOldWarcStore(cacheUrl, fos);
-                } else {
-                    String targetUrl = URLDecoder.decode(urlMap.get("url"), "UTF-8"); 
-                    File warcFileStem = new File(conf.getCollectionRoot().toString() 
-                            + SEP + "live" + SEP + "data" + SEP + "funnelback-web-crawl");
-                    
-                    finishCacheNewWarcStore(collectionId, targetUrl, warcFileStem, fos);
-                }
-            }
-
-        } catch (Exception e1) {
-            log.error("Failed to get document from cache",e1);
-            comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
-        }
-
-        IOUtils.closeQuietly(printWriter);
-        IOUtils.closeQuietly(fos);
-    }
-
-    private void finishCacheNewWarcStore(String collectionId, String targetUrl, File warcFileStem, FileOutputStream fos) throws IOException {
-
-        try (ReadOnlyMapDbWarcFile warc = new ReadOnlyMapDbWarcFile(warcFileStem, CompressionMode.COMPRESSED)) {
-            warc.open(Fix.NO_AUTOFIX);
-
-            String strContents =
-                new String (warc
-                    .get(targetUrl)
-                    .decompressInPlace()
-                    .getContents());
-
-            fos.write(strContents.split("\r\n", 2)[1].getBytes());
-        }
-    }
-
-    private void finishCacheOldWarcStore(String cacheUrl, FileOutputStream fos) throws CgiRunnerException {
+        
         
         File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
         CgiRunner runner = cgiRunnerFactory.create(
                 new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
                         + DefaultValues.FOLDER_PUBLIC + File.separator + CACHE_CGI),
                 perlBin);
-        
-        runner.setRequestUrl(cacheUrl).setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath()).run(fos);
-    }
-
-    private static Map<String, String> getUrlMap(String url) {
-        String[] urlParts = url.split("[?&]");
-        HashMap<String,String> urlMap = new HashMap<String, String>();
-        for(String s : urlParts) {
-            String keyValues[] = s.split("=", 2);
-            if(keyValues.length == 2) {
-                urlMap.put(keyValues[0], keyValues[1]);
-            }
+        try {
+            runner.setRequestUrl(cacheUrl).setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath()).run(fos);
+        } catch (CgiRunnerException e1) {
+            log.error("Failed to get document from cache",e1);
+            comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
         }
-        return urlMap;
-    }
-
-    /** Indexes the entry in cacheFile, to pull out the words in the document.
-     * Returns those words in a string */
-    private String indexLocalTempCopyGetWords(File tempDir, String collectionId, File cacheFile, Config config, ContentOptimiserModel comparison) {
+        IOUtils.closeQuietly(printWriter);
+        IOUtils.closeQuietly(fos);
+        
         File wordsInDocFile = new File(tempDir, "index-single.words_in_docs");
         log.debug("....done");
         Executor indexDocument = new DefaultExecutor();
