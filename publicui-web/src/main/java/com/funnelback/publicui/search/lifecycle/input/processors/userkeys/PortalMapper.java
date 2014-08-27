@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
+
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -14,6 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * <p>Note that this approach is not secure unless Funnelback can be accessed only via
  * the portal.</p>
  */
+@Log4j
 public class PortalMapper implements UserKeysMapper {
 
     /** Name of the URL parameter to use to pass the keys */
@@ -27,6 +30,9 @@ public class PortalMapper implements UserKeysMapper {
             for (String key: userKeys) {
                 result.addAll(Arrays.asList(key.split(",")));
             }
+            log.debug("Set userkeys for request to " + result);
+        } else {
+            log.debug("No userkeys set for request");            
         }
         return result;
     }
