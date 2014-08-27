@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,13 +30,20 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.utils.cgirunner.CgiRunner;
 import com.funnelback.common.utils.cgirunner.CgiRunnerException;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.common.views.View;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -54,6 +63,9 @@ public class DefaultDocFromCache implements DocFromCache {
     @Autowired @Setter
     private ConfigRepository configRepository;
     
+    @Autowired
+    private DataRepository dataRepository;
+
     @Autowired
     @Setter private IndexRepository indexRepository;
     
@@ -134,17 +146,22 @@ public class DefaultDocFromCache implements DocFromCache {
         printWriter.write(sb.toString());
         printWriter.flush();
         
-        
-        File perlBin = new File(configRepository.getExecutablePath(Keys.Executables.PERL));
-        CgiRunner runner = cgiRunnerFactory.create(
-                new File(searchHome, DefaultValues.FOLDER_WEB + File.separator
-                        + DefaultValues.FOLDER_PUBLIC + File.separator + CACHE_CGI),
-                perlBin);
         try {
-            runner.setRequestUrl(cacheUrl).setEnvironmentVariable("SEARCH_HOME", searchHome.getAbsolutePath()).run(fos);
-        } catch (CgiRunnerException e1) {
+
+            String url = getUrlMap(cacheUrl).get("url");
+
+            RecordAndMetadata<RawBytesRecord> cached =
+                (RecordAndMetadata<RawBytesRecord>)
+                    dataRepository.getCachedDocument(
+                        new Collection(collectionId, config),
+                        StoreView.live,
+                        URLDecoder.decode(url, "UTF-8"));
+
+            fos.write(cached.record.getContent());
+        } catch (UnsupportedEncodingException e0) {
+            log.error("Failed to decode url ", e0);
+        } catch (IOException e1) {
             log.error("Failed to get document from cache",e1);
-            comparison.getMessages().add(i18n.tr("error.callingCacheCgi"));
         }
         IOUtils.closeQuietly(printWriter);
         IOUtils.closeQuietly(fos);
@@ -194,6 +211,18 @@ public class DefaultDocFromCache implements DocFromCache {
         return wordsInDoc;
     }
     
+    private static Map<String, String> getUrlMap(String url) {
+        String[] urlParts = url.split("[?&]");
+        HashMap<String,String> urlMap = new HashMap<String, String>();
+        for(String s : urlParts) {
+            String keyValues[] = s.split("=", 2);
+            if(keyValues.length == 2) {
+                urlMap.put(keyValues[0], keyValues[1]);
+            }
+        }
+        return urlMap;
+    }
+
     /**
      * This function obtains the previous indexer options from the given bldinfo file.
      * @param collectionId
