@@ -148,14 +148,12 @@ public class DefaultDocFromCache implements DocFromCache {
         
         try {
 
-            String url = getUrlMap(cacheUrl).get("url");
-
             RecordAndMetadata<RawBytesRecord> cached =
                 (RecordAndMetadata<RawBytesRecord>)
                     dataRepository.getCachedDocument(
                         new Collection(collectionId, config),
                         StoreView.live,
-                        URLDecoder.decode(url, "UTF-8"));
+                        comparison.getSelectedDocument().getIndexUrl());
 
             fos.write(cached.record.getContent());
         } catch (UnsupportedEncodingException e0) {
@@ -211,17 +209,6 @@ public class DefaultDocFromCache implements DocFromCache {
         return wordsInDoc;
     }
     
-    private static Map<String, String> getUrlMap(String url) {
-        String[] urlParts = url.split("[?&]");
-        HashMap<String,String> urlMap = new HashMap<String, String>();
-        for(String s : urlParts) {
-            String keyValues[] = s.split("=", 2);
-            if(keyValues.length == 2) {
-                urlMap.put(keyValues[0], keyValues[1]);
-            }
-        }
-        return urlMap;
-    }
 
     /**
      * This function obtains the previous indexer options from the given bldinfo file.
