@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +10,8 @@ import lombok.ToString;
 
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.google.common.collect.ObjectArrays;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>Action to add a specified term to the users query before running it.</p>
@@ -35,13 +36,13 @@ public class AddQueryTerm implements Action {
      */
     @Override
     public void performAction(SearchTransaction searchTransaction, Phase phase) {
-        String[] sValues = searchTransaction.getQuestion().getRawInputParameters().get(RequestParameters.S);
-        if (sValues == null) {
-            sValues = new String[] {};
-        }
-        sValues = ObjectArrays.concat(sValues, queryTerm);
+        Map<String, String> inputParameterMap = searchTransaction.getQuestion().getInputParameterMap();
         
-        searchTransaction.getQuestion().getRawInputParameters().put(RequestParameters.S, sValues);
+        if (inputParameterMap.get(RequestParameters.S) == null) {
+            inputParameterMap.put(RequestParameters.S, queryTerm);
+        } else {
+            inputParameterMap.put(RequestParameters.S, inputParameterMap.get(RequestParameters.S) + " " + queryTerm);
+        }
     }
 
     /**
