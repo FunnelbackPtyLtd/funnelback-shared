@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
+
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParseException;
@@ -22,6 +24,7 @@ import com.funnelback.publicui.search.model.curator.config.TriggerActions;
 /**
  * Parser for JSON curator config files.
  */
+@Log4j
 public class CuratorConfigParser {
 
     /**
@@ -83,7 +86,8 @@ public class CuratorConfigParser {
         try {
             CuratorConfig newConfig = this.parseJsonCuratorConfiguration(new ByteArrayInputStream(parseBytes));
             if (newConfig.getTriggerActions().size() != 1) {
-                throw new IllegalArgumentException("Expected argument to contain a single TriggerActions definition.");
+                log.error("Failed to parse curator json. Input was " + parseString);
+                throw new IllegalArgumentException("Expected argument to contain a single TriggerActions definition, but found " + newConfig.getTriggerActions().size());
             }
             
             newTriggerActions = newConfig.getTriggerActions().get(0);
