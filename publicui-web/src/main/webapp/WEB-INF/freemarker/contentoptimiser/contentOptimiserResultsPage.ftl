@@ -32,7 +32,7 @@
   <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
     <title>Content Optimiser | Funnelback</title>
     <meta name="description" content="Funnelback Content Optimiser">
     <meta name="viewport" content="width=device-width">
@@ -40,6 +40,29 @@
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
     <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
+
+	<script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
+	<#--Needs to be replaced if we're in production mode --> 
+	<#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
+	<script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
+	<script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
+	
+	<#--FB Content Optimiser-->
+	<script src="${ContextPath}/content-optimiser/js/content-optimiser.js"></script>
+
+	<#--AM Charts-->
+
+	<script src="${ContextPath}/content-optimiser/js/amcharts/amcharts.js"></script>
+	<script src="${ContextPath}/content-optimiser/js/amcharts/xy.js"></script>
+	<script src="${ContextPath}/content-optimiser/js/amcharts/serial.js"></script>
+
+	<!--[if lt IE 9]>
+     <script src="${ContextPath}/content-optimiser/js/html5shiv.min.js"></script>
+     <script src="${ContextPath}/content-optimiser/js/ie10-viewport-bug-workaround.js"></script>
+     <script src="${ContextPath}/content-optimiser/js/respond.min.js"></script>
+	   <script src="${ContextPath}/content-optimiser/js/PIE.js"></script>
+	<![endif]-->
+
   </head>
   <#assign documentWasFound = response.optimiserModel.selectedDocument?? />
   <#assign query = response.resultPacket.query />
@@ -372,25 +395,12 @@
     </div>
   </footer>
 
+<script type="text/javascript">
 
-<script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
-<#--Needs to be replaced if we're in production mode --> 
-<#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
-<script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
-<script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
 
-<#--FB Content Optimiser-->
-<script src="${ContextPath}/content-optimiser/js/content-optimiser.js"></script>
-    
-<#--AM Charts-->
-<script src="${ContextPath}/content-optimiser/js/amcharts/amcharts.js"></script>
-<script src="${ContextPath}/content-optimiser/js/amcharts/xy.js"></script>
-<script src="${ContextPath}/content-optimiser/js/amcharts/serial.js"></script>
-
-<script>
-
-  
   $(document).ready(function(){
+
+    window.onerror = function(){alert('error');}
 
     setTimeout(function(){
         $('.url-link').tooltip();
@@ -399,8 +409,7 @@
   });
 
 	//parameters into JS object (for use with content-optimiser.js)
-
-	contentOptimiser = [];
+	var contentOptimiser = [];
 	contentOptimiser.query = '${query}';
 	contentOptimiser.target_url = '${queryUrl}';
 
@@ -409,18 +418,12 @@
 $(function () {
 
 
-	$('#accordion').on('shown.bs.collapse', function(e){
-        id = $(e.target).attr('href');        
-        chartdiv_id = $(id).find('.chartdiv').attr('id');                        
-        doChart(chartdiv_id, true);
-    });
-
     function suffix(n) {
-        var d = (n|0)%100;
+        var d = (n | 0) % 100;
         return d > 3 && d < 21 ? 'th' : ['th', 'st', 'nd', 'rd'][d%10] || 'th';
-    };
+    }
 
-    /* Start top ranking breakdown - AMCcharts JS*/
+    <#-- Start top ranking breakdown - AMCcharts JS-->
 	
     var topRankingBreakdown = [];
 
@@ -432,7 +435,7 @@ $(function () {
         } else {
             return serialDataItem.dataContext.index + suffix(serialDataItem.dataContext.index);
         }
-    }
+    };
 
     topRankingBreakdown.exportConfig  = {
         menuTop: 'auto',
@@ -485,11 +488,14 @@ $(function () {
                 "title": "${hintkey}"
             },
         </#list>
-    ]
+    ];
+
+
+
 
     topRankingBreakdown.data = [
 
-        /* For each result in the top 10 */
+        <#-- For each result in the top 10 -->
         <#list response.optimiserModel.topResults as topResult>
         {
             "page_name":      "${topResult.title?html}",
@@ -497,37 +503,43 @@ $(function () {
             "index":          ${topResult.rank},
             "url_truncated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace("<br/>", "... ")}<#else>${topResult.displayUrl}</#if>', 
 
-            /* For each Cooler Weight */
+            <#-- For each Cooler Weight -->
             <#list response.optimiserModel.hintsByName?keys as hintkey>
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
                 "${hintkey}": ${hint.scores[topResult.rank?string]?string("0.00")},
             </#list>                    
         },
         </#list>
-
-        /* If your result is present (but after rank 10), put in a separator and your result */
+        <#-- If your result is present (but after rank 10), put in a separator and your result -->
         <#if (documentWasFound && selectedRank > 10) >
 
-            /* This is the '...' separator */
+         <#-- This is the '...' separator -->
             {"page_name": '...',
                 "url": '...',
                 "index": -1,
                 "url_truncated": '...'},
 
-            /* This is your >10th result */
+            <#-- This is your >10th result -->
             {"page_name"        : "${selectedTitle?html}",
                 "url"           : "${selectedUrl?html}",
                 "index"         : ${selectedRank}, 
                 "url_truncated" : '${truncateURL(selectedUrl, 30)}',
 
-            /* For each Cooler Weight */
+            <#-- For each Cooler Weight -->
             <#list response.optimiserModel.hintsByName?keys as hintkey>
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
                 "${hintkey}": ${hint.scores[selectedRank?string]?string("0.00")},
             </#list>
             }
-        </#if>
-    ];
+        </#if>];
+
+          $.each(topRankingBreakdown.data, function(i,value){
+
+          if (typeof value === 'undefined') {
+              delete topRankingBreakdown.data[i];
+              //alert(JSON.stringify(value,null,4));
+          }
+          });
 
     // make the top ranking breakdown chart
     var chart = AmCharts.makeChart("chart-top-ten", {
@@ -535,32 +547,15 @@ $(function () {
         "type": "serial",
         "theme": "none",
         "rotate":true,
-        "colors": [
-          '#0D8ECF','#0D52D1','#2A0CD0','#8A0CCF','#CD0D74','#754DEB','#FF0F00',
-          '#FF6600','#FF9E01','#F5DA70','#FFD840','#ECFF66','#A8ED6A','#5EE165'
-        ],
-        // Gives a Pastel Appearance
-        // "colors": [
-        //     '#FFD840','#ECFF66','#A8ED6A','#5EE165',
-        //     '#8EE7E0','#8EE5E7','#DCD2EB','#FF7EA9','#FF7EFA','#89D0D9','#FF9E01','#B1B0EB','#EBC0B0','#B0E0EB'
-        // ],
-
-        "titles": [{
-            "id": "top-ranking-breakdown",
-            "size": 12,
-            "text": "Score",
-            "color":"#505050"}
-        ],
-
         "graphs": topRankingBreakdown.graphs,
+        "dataProvider": topRankingBreakdown.data,
         "columnWidth": 0.85,
-        "urlField":"url",
-        //textClickEnabled:true,#B1B0EB
-        "rollOverGraphAlpha":0.5,
-         "urlTarget":"_blank",
-
-        "clustered":false,
         "categoryField": "url",
+        "urlField":"url",
+        //textClickEnabled:true,
+        "rollOverGraphAlpha":0.5,
+        "urlTarget":"_blank",
+        "clustered":false,
         "categoryAxis": {
             labelFunction:topRankingBreakdown.labelFunction ,
             //"gridPosition": "bottom",
@@ -571,14 +566,12 @@ $(function () {
             "titleColor": "#555",
             "color":"#444",
             "axisColor": '#666',
-            
             //inside:true,
             //labelsEnabled:false,
             //centerLabelOnFullPeriod:false,
             gridThickness:0.5,
             "guides": [{
                 //The category is equal to the url in question.
-
                 category: "${queryUrl}",
                 //toCategory: "http://www.demourl.com",
                 behindColumns:false,
@@ -589,17 +582,14 @@ $(function () {
                 gridAlpha:1,
                 dashLength: 3,
                 inside: true,
-                //Not too sure what this is yet --
+                // Adds a line to display the current rank
                 <#if documentWasFound> label: 
-                //"${queryUrl}", 
-                'Current Page ->',
+                <#--//"${queryUrl}",--> 
+                "Current Page ->",
                 </#if>
                 color:"#fff"
             }]
         },
-        
-        "dataProvider": topRankingBreakdown.data,
-        
         "valueAxes": [{
             "stackType": "regular",
             //"stackType": "100%",
@@ -610,17 +600,27 @@ $(function () {
             "gridColor": '#ffffff',
             "behindColumns":false
         }],
-        "exportConfig": topRankingBreakdown.exportConfig 
+        "colors": [
+          '#0D8ECF','#0D52D1','#2A0CD0','#8A0CCF','#CD0D74','#754DEB','#FF0F00',
+          '#FF6600','#FF9E01','#F5DA70','#FFD840','#ECFF66','#A8ED6A','#5EE165'
+        ],
+       "titles": [{
+            "id": "top-ranking-breakdown",
+            "size": 12,
+            "text": "Score",
+            "color":"#505050"
+          }],
+	"exportConfig": topRankingBreakdown.exportConfig 
     });
 
     var legend = new AmCharts.AmLegend();
-    legend.horizontalGap =0;
-    legend.fontSize = 10;
-    legend.marginRight = 0;
-    legend.rollOverGraphAlpha = 0.1;
-    legend.rollOverColor = '#ff6500';
-    legend.textClickEnabled = false;
-    chart.addLegend(legend, "chart-top-ten-legend");
+        legend.horizontalGap =0;
+        legend.fontSize = 10;
+        legend.marginRight = 0;
+        legend.rollOverGraphAlpha = 0.1;
+        legend.rollOverColor = '#ff6500';
+        legend.textClickEnabled = false;
+        chart.addLegend(legend, "chart-top-ten-legend");
 
 
 //    $('#chart-top-ten-legend').after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>--><i class="fa fa-info-circle"></i> click keys to compare and analyse</small>');
@@ -628,10 +628,13 @@ $(function () {
     
     $.each($(topRankingBreakdown.data),function(i,v) {
 
-
         var pos = i + 1;
         var hl;
         var rank;
+
+	   	// for IE8 bug - last result turning up was undefined	
+        if(v === null || (typeof v === "undefined")){ delete topRankingBreakdown.data[i]; return; }
+			//alert(JSON.stringify(v,null,3));
 
         switch (true) {
 
@@ -662,11 +665,12 @@ $(function () {
         if (pos == 11) {
 
             $("#ls-top-rank-url")
-                .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
-                    +  "<td>"+rank+"</td>"
-                    +  "<td><div class=\"title-link\">"+v.page_name+"</div></td>"
-                    +  "<td class=\"hidden-xs\"><div class=\"url-link\">"+v.url_truncated+"</div></td>"
-                + "</tr>");
+                .append(
+                  "<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">" +
+                  "<td>"+rank+"</td>" +
+                  "<td><div class=\"title-link\">"+v.page_name+"</div></td>" +
+                  "<td class=\"hidden-xs\"><div class=\"url-link\">"+v.url_truncated+"</div></td>" +
+                  "</tr>");
 
         //...But the actual results clickable
         } else {
@@ -675,11 +679,13 @@ $(function () {
             var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
 
             $("#ls-top-rank-url")
-                .append("<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">"
-                    +  "<td>"+rank+"</td>"
-                    +  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>"
-                    +  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\"Visit page "+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>"
-                + "</tr>");
+                .append(
+                  "<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">" +
+                  "<td>"+rank+"</td>" +
+                  "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>" +
+                  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\"Visit page "+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>" +
+                  "</tr>"
+                  );
 
         }
     });
@@ -703,9 +709,9 @@ $(function () {
 $( function () {
 
     function suffix(n) {
-        var d = (n|0)%100;
+        var d = (n | 0) % 100;
         return d > 3 && d < 21 ? 'th' : ['th', 'st', 'nd', 'rd'][d%10] || 'th';
-    };
+    }
 
     <#assign hintCounter = 0>            
     <#list response.optimiserModel.hintCollections as hc>
@@ -737,7 +743,7 @@ $( function () {
                 <#assign divId = "graph_hc" + hintCounter + "_hn" + hint.name >
 
                 //Start preparing the chart             
-                chartWrapper = [];
+                var chartWrapper = [];
 
                 chartWrapper.chartData1 = [
                     <#list 1..pagesToList as i>
@@ -848,8 +854,7 @@ $( function () {
                             "title": "Rank",
                             "gridPosition": "start",
                             "labelRotation": 25
-                        }
-                    ,
+                        },
                     //"allLabels": [],
                     //"balloon": {},
                     "titles": [{
@@ -866,6 +871,15 @@ $( function () {
             </#if>
         </#list>
     </#list>
+
+    //remove undefined in ie8 - caused by trailing comma (should always try and never leave trailing commas)
+    $.each(chartWrapper.chartData1, function(i, v) {
+        if (typeof v === 'undefined') {
+          delete chartWrapper.chartData1[i];
+        }
+
+    });
+
 });
 </#if>
 

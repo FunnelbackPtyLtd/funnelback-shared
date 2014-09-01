@@ -21,6 +21,13 @@
 <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
 <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
+<script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script>
+<!--[if lt IE 9]>
+	<script src="${ContextPath}/content-optimiser/js/html5shiv.min.js"></script>
+	<script src="${ContextPath}/content-optimiser/js/ie10-viewport-bug-workaround.js"></script>
+	<script src="${ContextPath}/content-optimiser/js/respond.min.js"></script>
+<![endif]-->
+
 </head>
 
 <body id="fb-co-hm">
