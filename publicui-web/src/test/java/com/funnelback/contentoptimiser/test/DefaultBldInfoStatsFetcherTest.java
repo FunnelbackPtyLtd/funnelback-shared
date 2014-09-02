@@ -9,6 +9,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.contentoptimiser.fetchers.impl.DefaultBldInfoStatsFetcher;
 import com.funnelback.contentoptimiser.processors.impl.BldInfoStats;
 import com.funnelback.publicui.i18n.I18n;
@@ -23,8 +24,8 @@ public class DefaultBldInfoStatsFetcherTest {
         DefaultBldInfoStatsFetcher fetcher = new DefaultBldInfoStatsFetcher();
         
         IndexRepository indexRepo = mock(IndexRepository.class);
-        when(indexRepo.getBuildInfoValue("collection_id", IndexRepository.BuildInfoKeys.Num_docs.toString())).thenReturn("100");
-        when(indexRepo.getBuildInfoValue("collection_id", IndexRepository.BuildInfoKeys.Average_document_length.toString())).thenReturn("10 content words");        
+        when(indexRepo.getBuildInfoValue("collection_id", BuildInfoUtils.BuildInfoKeys.Num_docs.toString())).thenReturn("100");
+        when(indexRepo.getBuildInfoValue("collection_id", BuildInfoUtils.BuildInfoKeys.Average_document_length.toString())).thenReturn("10 content words");        
         
         fetcher.setIndexRepository(indexRepo);
         Collection c = mock(Collection.class);
@@ -44,8 +45,8 @@ public class DefaultBldInfoStatsFetcherTest {
         DefaultBldInfoStatsFetcher fetcher = new DefaultBldInfoStatsFetcher();
         
         IndexRepository indexRepo = mock(IndexRepository.class);
-        when(indexRepo.getBuildInfoValue("collection_id", IndexRepository.BuildInfoKeys.Num_docs.toString())).thenReturn("0");
-        when(indexRepo.getBuildInfoValue("collection_id", IndexRepository.BuildInfoKeys.Average_document_length.toString())).thenReturn("0 content words");        
+        when(indexRepo.getBuildInfoValue("collection_id", BuildInfoUtils.BuildInfoKeys.Num_docs.toString())).thenReturn("0");
+        when(indexRepo.getBuildInfoValue("collection_id", BuildInfoUtils.BuildInfoKeys.Average_document_length.toString())).thenReturn("0 content words");        
         
         I18n i18n = mock(I18n.class);
         when(i18n.tr("error.readingBldinfo")).thenReturn("error.readingBldinfo");
@@ -70,11 +71,11 @@ public class DefaultBldInfoStatsFetcherTest {
         DefaultBldInfoStatsFetcher fetcher = new DefaultBldInfoStatsFetcher();
         
         IndexRepository indexRepo = mock(IndexRepository.class);
-        when(indexRepo.getBuildInfoValue("collection_1", IndexRepository.BuildInfoKeys.Num_docs.toString())).thenReturn("100");
-        when(indexRepo.getBuildInfoValue("collection_1", IndexRepository.BuildInfoKeys.Average_document_length.toString())).thenReturn("20 content words");        
+        when(indexRepo.getBuildInfoValue("collection_1", BuildInfoUtils.BuildInfoKeys.Num_docs.toString())).thenReturn("100");
+        when(indexRepo.getBuildInfoValue("collection_1", BuildInfoUtils.BuildInfoKeys.Average_document_length.toString())).thenReturn("20 content words");        
 
-        when(indexRepo.getBuildInfoValue("collection_2", IndexRepository.BuildInfoKeys.Num_docs.toString())).thenReturn("300");
-        when(indexRepo.getBuildInfoValue("collection_2", IndexRepository.BuildInfoKeys.Average_document_length.toString())).thenReturn("10.0 content words");        
+        when(indexRepo.getBuildInfoValue("collection_2", BuildInfoUtils.BuildInfoKeys.Num_docs.toString())).thenReturn("300");
+        when(indexRepo.getBuildInfoValue("collection_2", BuildInfoUtils.BuildInfoKeys.Average_document_length.toString())).thenReturn("10.0 content words");        
             
         fetcher.setIndexRepository(indexRepo);
     

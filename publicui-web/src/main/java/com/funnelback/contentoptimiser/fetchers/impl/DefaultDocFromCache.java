@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
@@ -217,11 +218,11 @@ public class DefaultDocFromCache implements DocFromCache {
      * @throws IOException
      */
     private String[] getArgsFromBldinfo(String collectionId) {
-        String indexerOptions = indexRepository.getBuildInfoValue(collectionId, IndexRepository.BuildInfoKeys.indexer_arguments.toString());
+        String indexerOptions = indexRepository.getBuildInfoValue(collectionId, BuildInfoUtils.BuildInfoKeys.indexer_arguments.toString());
 
         // We're only interested in options starting with a dash
         List<String> args = new ArrayList<String>();
-        for (String line: indexerOptions.split(IndexRepository.INDEXER_OPTIONS_SEPARATOR)) {
+        for (String line: indexerOptions.split(BuildInfoUtils.INDEXER_OPTIONS_SEPARATOR)) {
             if (line.length() > 0 && line.charAt(0) == '-') {
                args.add(line);     
             }

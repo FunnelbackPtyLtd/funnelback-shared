@@ -12,36 +12,6 @@ import java.util.Date;
 public interface IndexRepository {
     
     /**
-     * Keys used to retrieve some special values
-     * from the <code>.bldinfo</code> map.
-     */
-    public enum BuildInfoKeys {
-        /** PADRE version string (Starting with 'version') */
-        version("version"),
-        /** List of indexer arguments, separated by {@link #INDEXER_OPTIONS_SEPARATOR} */
-        indexer_arguments("indexer_arguments"),
-        /** Numbers of documents in the collection */
-        Num_docs("Num_docs"),
-        /** Average length of documents in the collection */
-        Average_document_length("Average_document_length");
-        
-        BuildInfoKeys(String displayName) {
-            this.displayName = displayName;
-        }
-        
-        private String displayName = null;
-        
-        @Override
-        public String toString() {
-            if(displayName != null) return displayName;
-            return name();
-        }
-    }
-    
-    /** Separator for the indexer options of the <code>.bldinfo</code> file */
-    public static final String INDEXER_OPTIONS_SEPARATOR = "\n";
-    
-    /**
      * @param c
      * @return The last update date for the collection
      * @throws UnsupportedOperationException if the collection is a meta collection,

@@ -4,14 +4,17 @@ import com.funnelback.common.views.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.funnelback.publicui.search.service.index.result.ResultFetcher;
+
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,27 +92,7 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
         try {
             File indexBldInfoFile = getIndexFile(collectionId, Files.Index.BLDINFO);
             if (indexBldInfoFile.canRead()) {
-                Map<String, String> out = new HashMap<String, String>();
-                List<String> indexerOptions = new ArrayList<String>();
-                for (String line: (List<String>) FileUtils.readLines(indexBldInfoFile)) {
-                    if (line.startsWith(BuildInfoKeys.version.toString())) {
-                        out.put(BuildInfoKeys.version.toString(), line);
-                    } else if (line.matches("^.+?:\\s.+$")) {
-                        // Key: value type
-                        out.put(
-                            line.substring(0, line.indexOf(":")),
-                            line.substring(line.indexOf(": ")+2));                        
-                    } else if (line.matches("^[A-Z_-]+$")) {
-                        // Single uppercase word, it's a flag
-                        out.put(line, null);
-                    } else {
-                        // None of the above matched, it's probably
-                        // an indexer option from the top of the file
-                        indexerOptions.add(line);
-                    }
-                }
-                out.put(BuildInfoKeys.indexer_arguments.toString(), StringUtils.join(indexerOptions, "\n"));
-                return out;
+                return BuildInfoUtils.loadBuildInfo(indexBldInfoFile);
             }
         } catch (IOException ioe) {
             log.error("Could not load bldinfo file for collection '" + collectionId + "'", ioe);

@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
 import com.funnelback.contentoptimiser.processors.impl.BldInfoStats;
 import com.funnelback.publicui.i18n.I18n;
@@ -40,19 +41,19 @@ public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
         BigDecimal totalWordsInDocs = new BigDecimal(0);
 
         if(bldInfos.length == 0) {
-            totalDocs = Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString()));
-            String avgDocs = indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Average_document_length.toString());
+            totalDocs = Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), BuildInfoUtils.BuildInfoKeys.Num_docs.toString()));
+            String avgDocs = indexRepository.getBuildInfoValue(collection.getId(), BuildInfoUtils.BuildInfoKeys.Average_document_length.toString());
             if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
             totalWordsInDocs = totalWordsInDocs.add(
-                    new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), IndexRepository.BuildInfoKeys.Num_docs.toString())))
+                    new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(collection.getId(), BuildInfoUtils.BuildInfoKeys.Num_docs.toString())))
                     .multiply(new BigDecimal(avgDocs)));
         } else {
             for(String coll : bldInfos) {
-                totalDocs += Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString()));
-                String avgDocs = indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Average_document_length.toString());
+                totalDocs += Long.parseLong(indexRepository.getBuildInfoValue(coll, BuildInfoUtils.BuildInfoKeys.Num_docs.toString()));
+                String avgDocs = indexRepository.getBuildInfoValue(coll, BuildInfoUtils.BuildInfoKeys.Average_document_length.toString());
                 if(avgDocs.contains(" ")) avgDocs = avgDocs.substring(0, avgDocs.indexOf(' '));
                 totalWordsInDocs = totalWordsInDocs.add(
-                        new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(coll, IndexRepository.BuildInfoKeys.Num_docs.toString())))
+                        new BigDecimal(Long.parseLong(indexRepository.getBuildInfoValue(coll, BuildInfoUtils.BuildInfoKeys.Num_docs.toString())))
                         .multiply(new BigDecimal(avgDocs)));
             }            
         }
