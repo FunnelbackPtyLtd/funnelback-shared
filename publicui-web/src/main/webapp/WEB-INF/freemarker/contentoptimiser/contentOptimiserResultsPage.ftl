@@ -31,37 +31,36 @@
 <html class="no-js sticky">
   <!--<![endif]-->
   <head>
-    <meta charset="utf-8">
-	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-    <title>Content Optimiser | Funnelback</title>
-    <meta name="description" content="Funnelback Content Optimiser">
-    <meta name="viewport" content="width=device-width">
-    <link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
-    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
-    <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
+      <meta charset="utf-8">
+      <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+      <title>Content Optimiser | Funnelback</title>
+      <meta name="description" content="Funnelback Content Optimiser">
+      <meta name="viewport" content="width=device-width">
+      <link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
+      <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
+      <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/font-awesome.min.css">
+      <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
-	<script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
-	<#--Needs to be replaced if we're in production mode --> 
-	<#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
-	<script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
-	<script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
-	
-	<#--FB Content Optimiser-->
-	<script src="${ContextPath}/content-optimiser/js/content-optimiser.js"></script>
+      <script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
+      <#--Needs to be replaced if we're in production mode and want to instanatly see less css changes --> 
+      <#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
+      <script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
+      <script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
+      
+      <#--FB Content Optimiser-->
+      <script src="${ContextPath}/content-optimiser/js/content-optimiser.js"></script>
 
-	<#--AM Charts-->
+      <#--AM Charts-->
+      <script src="${ContextPath}/content-optimiser/js/amcharts/amcharts.js"></script>
+      <script src="${ContextPath}/content-optimiser/js/amcharts/xy.js"></script>
+      <script src="${ContextPath}/content-optimiser/js/amcharts/serial.js"></script>
 
-	<script src="${ContextPath}/content-optimiser/js/amcharts/amcharts.js"></script>
-	<script src="${ContextPath}/content-optimiser/js/amcharts/xy.js"></script>
-	<script src="${ContextPath}/content-optimiser/js/amcharts/serial.js"></script>
-
-	<!--[if lt IE 9]>
-     <script src="${ContextPath}/content-optimiser/js/html5shiv.min.js"></script>
-     <script src="${ContextPath}/content-optimiser/js/ie10-viewport-bug-workaround.js"></script>
-     <script src="${ContextPath}/content-optimiser/js/respond.min.js"></script>
-	   <script src="${ContextPath}/content-optimiser/js/PIE.js"></script>
-	<![endif]-->
+      <!--[if lt IE 9]>
+         <script src="${ContextPath}/content-optimiser/js/html5shiv.min.js"></script>
+         <script src="${ContextPath}/content-optimiser/js/ie10-viewport-bug-workaround.js"></script>
+         <script src="${ContextPath}/content-optimiser/js/respond.min.js"></script>
+         <script src="${ContextPath}/content-optimiser/js/PIE.js"></script>
+      <![endif]-->
 
   </head>
   <#assign documentWasFound = response.optimiserModel.selectedDocument?? />
@@ -400,7 +399,11 @@
 
   $(document).ready(function(){
 
-    window.onerror = function(){alert('error');}
+    <#--
+    window.onerror = function(){
+      alert('There is a JS error');
+    }
+    -->
 
     setTimeout(function(){
         $('.url-link').tooltip();
@@ -408,10 +411,10 @@
 
   });
 
-	//parameters into JS object (for use with content-optimiser.js)
-	var contentOptimiser = [];
-	contentOptimiser.query = '${query}';
-	contentOptimiser.target_url = '${queryUrl}';
+  //parameters into JS object (for use with content-optimiser.js)
+  var contentOptimiser = [];
+  contentOptimiser.query = '${query}';
+  contentOptimiser.target_url = '${queryUrl}';
 
 
   // AM Charts + related here forward... 
@@ -424,7 +427,7 @@ $(function () {
     }
 
     <#-- Start top ranking breakdown - AMCcharts JS-->
-	
+  
     var topRankingBreakdown = [];
 
     topRankingBreakdown.labelFunction = function(valueText, serialDataItem, categoryAxis) {
@@ -486,7 +489,7 @@ $(function () {
                 "valueField": "${hintkey}",
                 //"title": "Content",     //TODO: One of these should be a long name
                 "title": "${hintkey}"
-            },
+            }<#if hintkey_has_next>,</#if>
         </#list>
     ];
 
@@ -508,8 +511,9 @@ $(function () {
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
                 "${hintkey}": ${hint.scores[topResult.rank?string]?string("0.00")},
             </#list>                    
-        },
+        }<#if topResult_has_next>,</#if>
         </#list>
+
         <#-- If your result is present (but after rank 10), put in a separator and your result -->
         <#if (documentWasFound && selectedRank > 10) >
 
@@ -610,7 +614,7 @@ $(function () {
             "text": "Score",
             "color":"#505050"
           }],
-	"exportConfig": topRankingBreakdown.exportConfig 
+  "exportConfig": topRankingBreakdown.exportConfig 
     });
 
     var legend = new AmCharts.AmLegend();
@@ -632,9 +636,9 @@ $(function () {
         var hl;
         var rank;
 
-	   	// for IE8 bug - last result turning up was undefined	
+      // for IE8 bug - last result turning up was undefined 
         if(v === null || (typeof v === "undefined")){ delete topRankingBreakdown.data[i]; return; }
-			//alert(JSON.stringify(v,null,3));
+      //alert(JSON.stringify(v,null,3));
 
         switch (true) {
 
@@ -721,7 +725,7 @@ $( function () {
 
             <#-- Only show this if this factor for our page is not the best. so, try to find something better -->
 
-            <#-- Our page's ranking factor -->
+            <#-- Our pages ranking factor -->
             <#assign rf = hint.scores[selectedRank?string]>
             <#assign foundBetter = false>
 
@@ -760,11 +764,11 @@ $( function () {
                                 "lineThick": 9
                             </#if>
                             
-                        },
+                        }<#if i_has_next>,</#if>
                     </#list>
 
                     <#if (selectedRank > 10) >
-                            {"rank": "${selectedRank}" + suffix(${selectedRank}),
+                            ,{"rank": "${selectedRank}" + suffix(${selectedRank}),
                             "score": ${rf?string("0.00")},
                             "currentPageScore": ${rf?string("0.00")},
                             // if the current page fits into the ranks 
