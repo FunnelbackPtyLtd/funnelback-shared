@@ -478,18 +478,20 @@ $(function () {
     };
 
     topRankingBreakdown.graphs = [
+        <#assign hintKeyNo = 0>
         <#list response.optimiserModel.hintsByName?keys as hintkey>
+            <#assign hintKeyNo = hintKeyNo + 1>
+            <#assign hasNextHintKey = hintKeyNo < response.optimiserModel.hintsByName?keys?size>
             <#assign hint = response.optimiserModel.hintsByName[hintkey] />
             {
                 "balloonText": "<div style=\"text-align:left;padding:10px\"><b>[[title]]</b><br>Contributing percentage: <b>[[value]]%</b></b>",
                 "fillAlphas": 0.75,
                 "lineThickness": 0.6,
                 "type": "column",
-                //"valueField": "content",
                 "valueField": "${hintkey}",
-                //"title": "Content",     //TODO: One of these should be a long name
+                <#--  //"title": "Content",  TODO: long name should go somewhere here -->
                 "title": "${hintkey}"
-            }<#if hintkey_has_next>,</#if>
+            }<#if hasNextHintKey>,</#if>
         </#list>
     ];
 
@@ -498,41 +500,51 @@ $(function () {
 
     topRankingBreakdown.data = [
 
-        <#-- For each result in the top 10 -->
+    <#-- For each result in the top 10 -->
+        <#assign topResultNo = 0>
         <#list response.optimiserModel.topResults as topResult>
-        {
+            <#assign topResultNo = topResultNo + 1>
+            <#assign hasNextTopResult = topResultNo < response.optimiserModel.topResults?size>
+            {
             "page_name":      "${topResult.title?html}",
             "url":            "${topResult.displayUrl?html}",
             "index":          ${topResult.rank},
             "url_truncated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace("<br/>", "... ")}<#else>${topResult.displayUrl}</#if>', 
 
             <#-- For each Cooler Weight -->
+            <#assign coolerWeightNo = 0>
             <#list response.optimiserModel.hintsByName?keys as hintkey>
+                <#assign coolerWeightNo = coolerWeightNo + 1>
+                <#assign hasNextCoolerWeight = coolerWeightNo < response.optimiserModel.hintsByName?keys?size>
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
-                "${hintkey}": ${hint.scores[topResult.rank?string]?string("0.00")},
+                "${hintkey}": ${hint.scores[topResult.rank?string]?string("0.00")}<#if hasNextCoolerWeight>,</#if>
             </#list>                    
-        }<#if topResult_has_next>,</#if>
+        }<#if hasNextTopResult>,</#if>
         </#list>
 
         <#-- If your result is present (but after rank 10), put in a separator and your result -->
         <#if (documentWasFound && selectedRank > 10) >
 
-         <#-- This is the '...' separator -->
-            {"page_name": '...',
-                "url": '...',
-                "index": -1,
-                "url_truncated": '...'},
+        <#-- This is the '...' separator -->
+            ,{"page_name": '...',
+              "url": '...',
+              "index": -1,
+              "url_truncated": '...'},
 
-            <#-- This is your >10th result -->
-            {"page_name"        : "${selectedTitle?html}",
-                "url"           : "${selectedUrl?html}",
-                "index"         : ${selectedRank}, 
-                "url_truncated" : '${truncateURL(selectedUrl, 30)}',
+        <#-- This is your >10th result -->
+            {
+            "page_name"     : "${selectedTitle?html}",
+            "url"           : "${selectedUrl?html}",
+            "index"         : ${selectedRank}, 
+            "url_truncated" : '${truncateURL(selectedUrl, 30)}',
 
             <#-- For each Cooler Weight -->
+            <#assign coolerWeightNo = 0>
             <#list response.optimiserModel.hintsByName?keys as hintkey>
+                <#assign coolerWeightNo = coolerWeightNo + 1>
+                <#assign hasNextCoolerWeight = coolerWeightNo < response.optimiserModel.hintsByName?keys?size>
                 <#assign hint = response.optimiserModel.hintsByName[hintkey] />
-                "${hintkey}": ${hint.scores[selectedRank?string]?string("0.00")},
+                "${hintkey}": ${hint.scores[selectedRank?string]?string("0.00")}<#if hasNextCoolerWeight>,</#if>
             </#list>
             }
         </#if>];
@@ -754,9 +766,10 @@ $( function () {
                         {
                             "rank": "${i}" + suffix(${i}),
                             "score": ${hint.scores[i?string]?string("0.00")},
-                            "currentPageScore": ${rf?string("0.00")},
+                            "currentPageScore": ${rf?string("0.00")}
                             
                             <#if i == selectedRank>
+                            ,
                                 "color":"#FFEB70",
                                 "lineColor": "#FF0",
                                 "alpha" : 0.6,
@@ -764,7 +777,7 @@ $( function () {
                                 "lineThick": 9
                             </#if>
                             
-                        }<#if i_has_next>,</#if>
+                        }<#if i < pagesToList>,</#if>
                     </#list>
 
                     <#if (selectedRank > 10) >
