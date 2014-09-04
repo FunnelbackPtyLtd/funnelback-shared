@@ -70,7 +70,7 @@
   <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
   <#if documentWasFound >
   <#assign selectedRank = response.optimiserModel.selectedDocument.rank />
-  <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl />
+  <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl?html />
   <#assign selectedTitle = response.optimiserModel.selectedDocument.title />
   <#assign totalWords = response.optimiserModel.content.totalWords?string.number />
   <#assign uniqueWords = response.optimiserModel.content.uniqueWords?string.number />
@@ -504,12 +504,13 @@ $(function () {
         <#assign topResultNo = 0>
         <#list response.optimiserModel.topResults as topResult>
             <#assign topResultNo = topResultNo + 1>
+            <#assign displayUrl = topResult.displayUrl?html>
             <#assign hasNextTopResult = topResultNo < response.optimiserModel.topResults?size>
             {
             "page_name":      "${topResult.title?html}",
-            "url":            "${topResult.displayUrl?html}",
+            "url":            "${displayUrl}",
             "index":          ${topResult.rank},
-            "url_truncated":  '<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace("<br/>", "... ")}<#else>${topResult.displayUrl}</#if>', 
+            "url_truncated":  "<#if (displayUrl?length > 30)>${truncateURL(displayUrl,30)?replace('<br/>', '... ')}<#else>${displayUrl}</#if>",
 
             <#-- For each Cooler Weight -->
             <#assign coolerWeightNo = 0>
@@ -534,7 +535,7 @@ $(function () {
         <#-- This is your >10th result -->
             {
             "page_name"     : "${selectedTitle?html}",
-            "url"           : "${selectedUrl?html}",
+            "url"           : "${selectedUrl}",
             "index"         : ${selectedRank}, 
             "url_truncated" : '${truncateURL(selectedUrl, 30)}',
 
