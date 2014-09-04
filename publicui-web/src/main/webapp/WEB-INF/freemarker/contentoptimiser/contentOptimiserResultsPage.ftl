@@ -223,7 +223,7 @@
                     <#else>
                         <#if (queryUrl?string?length > 0) >
                         <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
-                        <div><p>The collection <strong>${collection}</strong> does not contain the URL:<br/>
+                        <div><p>The query results did not contain the URL:<br/>
                             <em>${queryUrl?html}</em></p></div>
                             <#if (matchingPages < 1) >
                             <p>There were no results returned for this query.</p>
