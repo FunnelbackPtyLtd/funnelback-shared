@@ -22,6 +22,8 @@
 </#function>
 <#setting number_format="computer">
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
+
+<#escape x as x?html>
 <#compress>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7 sticky"> <![endif]-->
@@ -70,21 +72,13 @@
   <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
   <#if documentWasFound >
   <#assign selectedRank = response.optimiserModel.selectedDocument.rank />
-  <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl?html />
+  <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl />
   <#assign selectedTitle = response.optimiserModel.selectedDocument.title />
   <#assign totalWords = response.optimiserModel.content.totalWords?string.number />
   <#assign uniqueWords = response.optimiserModel.content.uniqueWords?string.number />
-  <!-- Assume 10 results per page -->
-  <#assign resultsPerPage = 10>
-  <#assign nPagesFromStart = (selectedRank / resultsPerPage)?int>
-  <#if nPagesFromStart == 1>
-  <#assign pagesFromStart = "<strong>" + nPagesFromStart + "</strong> page">
-  <#else>
-  <#assign pagesFromStart = "<strong>" + nPagesFromStart + "</strong> pages">
-  </#if>
   </#if>
   <#if RequestParameters.profile??>
-  <#assign profile = "&profile=" + RequestParameters.profile>
+  <#assign profile = "&profile=" + RequestParameters.profile?url>
   <#else>
   <#assign profile = "">
   </#if>
@@ -168,19 +162,25 @@
                             <button class="btn btn-default btn-orange btn-sm pull-left mb15" type="submit">Optimise <i class="fa fa-arrow-circle-right"></i></button>
                           </div>
                         </div>
-                        <input type="hidden" name="collection" value="${collection}" />
+                        <input type="hidden" name="collection" value="${collection?url}" />
                         <input type="hidden" name="loaded" value="1" />
                         <#if RequestParameters.profile??>
-                        <input type="hidden" name="profile" value="${RequestParameters.profile}" />
+                        <input type="hidden" name="profile" value="${RequestParameters.profile?url}" />
                         </#if>
                       </form>
+
                       <#if documentWasFound>
+
+                      <!-- Assume 10 results per page -->
+                      <#assign resultsPerPage = 10>
+                      <#assign nPagesFromStart = ((selectedRank - 1) / resultsPerPage)?int>
+
                       <div id="co-cs-summary" class="pane pt15 pb15 text-grey">
                         This document places <strong class="text-green">${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></strong>
                         amongst a total of <strong>${matchingPages}</strong> fully-matching documents
                         when a query for <strong>${query}</strong> is run,
                         <#if (nPagesFromStart >= 1)>
-                        and is placed approximately ${pagesFromStart} away from the first page of the search results.
+                        and is placed approximately <strong>${nPagesFromStart}</strong> <#if nPagesFromStart == 1>page<#else>pages</#if> away from the first page of the search results.
                         <#else>
                         and is shown on the first page of the search results.
                         </#if>
@@ -224,7 +224,7 @@
                         <#if (queryUrl?string?length > 0) >
                         <h4><i class="fa fa-exclamation-triangle"></i>&nbsp Document Not Found</h4>
                         <div><p>The query results did not contain the URL:<br/>
-                            <em>${queryUrl?html}</em></p></div>
+                            <em>${queryUrl}</em></p></div>
                             <#if (matchingPages < 1) >
                             <p>There were no results returned for this query.</p>
                             <#elseif (matchingPages <= 10) >
@@ -266,8 +266,6 @@
                   
                   <p>
                   <div>Follow the tips below to better optimise the current page and boost its page rank upwards</div>
-                  <#--<div><small id="chart-top-ten-desc"><i class="fa fa-info-circle"></i> Click on a section to view detailed instructions</small>-->
-                </div>
                 </p>
               </div>
               <div class="panel-group" id="accordion">
@@ -349,13 +347,13 @@
                         <div class="col-md-5 mt30">
                           <ol class="tip-list">
                             <#if hint.name == "content">
-                            <li>
-                              The most common words in the page are <strong name=hintCommonWords>${response.optimiserModel.content.commonWords?html}</strong>.
+                            <li><#noescape>
+                              The most common words in the page are <strong name=hintCommonWords>${response.optimiserModel.content.commonWords}</strong>.
                               These words should be an indicator of the subject of the page. If the words don't accurately reflect the subject of the page, consider re-wording the page, or preventing sections of the page from being indexed by wrapping the section with <strong>&lt;!--noindex--&gt;</strong> and <span><strong>&lt;!--endnoindex--&gt;</strong></span> tags.
-                            </li>
+                            </#noescape></li>
                             </#if>
                             <#list hint.hintTexts as text>
-                            <li name=hintText>${text}</li>
+                            <li name=hintText><#noescape>${text}</#noescape></li>
                             </#list>
                           </ol>
                         </div>
@@ -413,8 +411,8 @@
 
   //parameters into JS object (for use with content-optimiser.js)
   var contentOptimiser = [];
-  contentOptimiser.query = '${query}';
-  contentOptimiser.target_url = '${queryUrl}';
+  contentOptimiser.query = "${query}";
+  contentOptimiser.target_url = "${queryUrl?url}";
 
 
   // AM Charts + related here forward... 
@@ -504,13 +502,12 @@ $(function () {
         <#assign topResultNo = 0>
         <#list response.optimiserModel.topResults as topResult>
             <#assign topResultNo = topResultNo + 1>
-            <#assign displayUrl = topResult.displayUrl?html>
             <#assign hasNextTopResult = topResultNo < response.optimiserModel.topResults?size>
             {
-            "page_name":      "${topResult.title?html}",
-            "url":            "${displayUrl}",
+            "page_name":      "${topResult.title}",
+            "url":            "${topResult.displayUrl?url}",
             "index":          ${topResult.rank},
-            "url_truncated":  "<#if (displayUrl?length > 30)>${truncateURL(displayUrl,30)?replace('<br/>', '... ')}<#else>${displayUrl}</#if>",
+            "url_truncated":  "<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace('<br/>', '... ')}<#else>${topResult.displayUrl}</#if>",
 
             <#-- For each Cooler Weight -->
             <#assign coolerWeightNo = 0>
@@ -534,10 +531,10 @@ $(function () {
 
         <#-- This is your >10th result -->
             {
-            "page_name"     : "${selectedTitle?html}",
+            "page_name"     : "${selectedTitle}",
             "url"           : "${selectedUrl}",
             "index"         : ${selectedRank}, 
-            "url_truncated" : '${truncateURL(selectedUrl, 30)}',
+            "url_truncated" : '${truncateURL(selectedUrl?url, 30)}',
 
             <#-- For each Cooler Weight -->
             <#assign coolerWeightNo = 0>
@@ -640,7 +637,6 @@ $(function () {
         chart.addLegend(legend, "chart-top-ten-legend");
 
 
-//    $('#chart-top-ten-legend').after('<small id="chart-top-ten-desc"><!--<i class="fa fa-exclamation-circle"></i>--><i class="fa fa-info-circle"></i> click keys to compare and analyse</small>');
 
     
     $.each($(topRankingBreakdown.data),function(i,v) {
@@ -651,7 +647,6 @@ $(function () {
 
       // for IE8 bug - last result turning up was undefined 
         if(v === null || (typeof v === "undefined")){ delete topRankingBreakdown.data[i]; return; }
-      //alert(JSON.stringify(v,null,3));
 
         switch (true) {
 
@@ -906,3 +901,5 @@ $( function () {
 </body>
 </html>
 </#compress>
+
+</#escape>
