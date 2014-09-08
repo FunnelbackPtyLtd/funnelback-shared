@@ -18,7 +18,7 @@ public class WindowsCommandEscaping {
     public static String escapeArgumentsToString(List<String> args) {
         StringBuffer buf = new StringBuffer();
         for(String arg : args) {
-            buf.append(arg);
+            buf.append(argvQuote(arg));
             buf.append(" ");
         }
         return buf.toString().trim();
