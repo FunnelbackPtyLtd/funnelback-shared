@@ -279,6 +279,7 @@
                 </#if>
                 <#-- This section deals with determining which sections to show -->
                 <#assign displayableSections = 0>
+                <#if (pagesToList >= 1) >
                 <#list hc.hints as hint>
                 <#list 1..pagesToList as i>
                 <#-- If there is another page that does better for this factor: -->
@@ -293,6 +294,7 @@
                 </#if>
                 </#list>
                 </#list>
+		</#if>
                 <#assign hintCounter = hintCounter + 1>
                 <#if (displayableSections > 0) >
                 
@@ -746,6 +748,7 @@ $( function () {
                 <#assign pagesToList = 10>
             </#if>
             
+            <#if (pagesToList >= 1)>
             <#list 1..pagesToList as i>
                 <#if (hint.scores[i?string] > rf) >
                     // Found better! 
@@ -753,6 +756,7 @@ $( function () {
                     <#break> 
                 </#if>
             </#list>
+            </#if>
 
             <#if foundBetter >
                 <#assign divId = "graph_hc" + hintCounter + "_hn" + hint.name >
