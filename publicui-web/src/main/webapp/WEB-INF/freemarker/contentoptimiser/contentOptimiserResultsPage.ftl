@@ -506,6 +506,7 @@ $(function () {
             {
             "page_name":      "${topResult.title}",
             "url":            "${topResult.displayUrl?url}",
+            "unescaped_url":  "${topResult.displayUrl}",
             "index":          ${topResult.rank},
             "url_truncated":  "<#if (topResult.displayUrl?length > 30)>${truncateURL(topResult.displayUrl,30)?replace('<br/>', '... ')}<#else>${topResult.displayUrl}</#if>",
 
@@ -526,16 +527,18 @@ $(function () {
         <#-- This is the '...' separator -->
             ,{"page_name": '...',
               "url": '...',
+              "unescaped_url":  "...",
               "index": -1,
               "url_truncated": '...'},
 
         <#-- This is your >10th result -->
             {
             "page_name"     : "${selectedTitle}",
-            "url"           : "${selectedUrl}",
+            "url"           : "${selectedUrl?url}",
+            "unescaped_url" : "${selectedUrl}",
             "index"         : ${selectedRank}, 
-            "url_truncated" : '${truncateURL(selectedUrl?url, 30)}',
-
+            "url_truncated":  "<#if (selectedUrl?length > 30)>${truncateURL(selectedUrl,30)?replace('<br/>', '... ')}<#else>${selectedUrl}</#if>",
+            
             <#-- For each Cooler Weight -->
             <#assign coolerWeightNo = 0>
             <#list response.optimiserModel.hintsByName?keys as hintkey>
@@ -688,14 +691,14 @@ $(function () {
         } else {
 
             var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}${profile}&loaded=1";
-            var toolTip = "Run Content Optimiser for '${query}' on '" + v.url + "'";
+            var toolTip = "Run Content Optimiser for '${query}' on '" + v.unescaped_url + "'";
 
             $("#ls-top-rank-url")
                 .append(
                   "<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">" +
                   "<td>"+rank+"</td>" +
                   "<td><a class=\"title-link\" href=\""+urlToVisit+"\" target=\"_self\" title=\""+toolTip+"\">"+v.page_name+"</a></td>" +
-                  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+v.url+"\" target=\"_fbOut\" title=\"Visit page "+v.url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>" +
+                  "<td class=\"hidden-xs\"><a class=\"url-link\" href=\""+v.unescaped_url+"\" target=\"_fbOut\" title=\"Visit page "+v.unescaped_url+"\" data-toggle=\"tooltip\" data-placement=\"top\">"+v.url_truncated+"</a></td>" +
                   "</tr>"
                   );
 
