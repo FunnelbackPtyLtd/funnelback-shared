@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,12 +32,11 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.StringRecord;
+import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.common.utils.cgirunner.CgiRunner;
-import com.funnelback.common.utils.cgirunner.CgiRunnerException;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
-import com.funnelback.common.views.View;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.i18n.I18n;
@@ -52,7 +51,6 @@ import com.google.common.io.Files;
 @Log4j
 @Component
 public class DefaultDocFromCache implements DocFromCache {
-    private static final String CACHE_CGI = "cache.cgi";
 
     @Autowired
     @Setter
@@ -149,14 +147,30 @@ public class DefaultDocFromCache implements DocFromCache {
         
         try {
 
-            RecordAndMetadata<RawBytesRecord> cached =
-                (RecordAndMetadata<RawBytesRecord>)
-                    dataRepository.getCachedDocument(
-                        new Collection(collectionId, config),
-                        StoreView.live,
-                        comparison.getSelectedDocument().getIndexUrl());
+            RecordAndMetadata cached =
+                dataRepository.getCachedDocument(
+                    new Collection(collectionId, config),
+                    StoreView.live,
+                    comparison.getSelectedDocument().getIndexUrl());
 
-            fos.write(cached.record.getContent());
+            if(cached.record instanceof RawBytesRecord) {
+                fos.write(
+                    ((RecordAndMetadata<RawBytesRecord>) cached)
+                        .record.getContent());
+            } else if (cached.record instanceof XmlRecord) {
+                fos.write(
+                    XMLUtils.toBytes(
+                        ((RecordAndMetadata<XmlRecord>) cached).record.getContent(),
+                        "UTF-8"));
+            } else if (cached.record instanceof StringRecord) {
+                fos.write(
+                    ((RecordAndMetadata<StringRecord>) cached)
+                        .record.getContent()
+                            .getBytes(Charset.forName("UTF-8")));
+            } else {
+                throw new IOException("Could not match cached.record to a known instance");
+            }
+
         } catch (UnsupportedEncodingException e0) {
             log.error("Failed to decode url ", e0);
         } catch (IOException e1) {
