@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
 
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+import com.google.common.collect.Lists;
 
 /**
  * Fetch the user keys from TRIM by running an external tool
@@ -101,8 +103,12 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                             + er.getReturnCode()+") with command line '"
                             + cmdLine + "'. Output was '"+er.getOutput() + "'");
                     } else {
-                        out.add(outStr);
-                        log.debug("Collected keys '"+outStr+"' for user '"
+                        // This splits the strings on commas, but only those followed by
+                        // the collection's id (to reduce the risk of commas in the trim group names
+                        // being caught - I'm not sure if they'd be permitted by Trim)
+                        String[] keys = outStr.split(",(?=" + Pattern.quote(collection.getId() + ":") + ")");
+                        out.addAll(Arrays.asList(keys));
+                        log.debug("Collected keys '"+out+"' for user '"
                             +st.getQuestion().getPrincipal().getName()+"'");
                     }
                     
