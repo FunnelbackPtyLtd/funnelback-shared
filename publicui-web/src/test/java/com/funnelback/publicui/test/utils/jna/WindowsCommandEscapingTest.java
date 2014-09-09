@@ -24,20 +24,25 @@ public class WindowsCommandEscapingTest {
         "\"\\some\\path with\\spaces\""},
 
         {"I want to use \"|,>,<,\\\", as well as \"&,?,% and ^\"",
-        "\"I want to use \\\"|,>,<,\\\\\", as well as \\\"&,?,% and ^\\\"\""},
+        "\"I want to use \\\"|,>,<,\\\\\\\", as well as \\\"&,?,% and ^\\\"\""},
 
         {"-userkeys=sport\\DomainUsers,sitecore\\ExternalUser",
-        "\"-userkeys=sport\\DomainUsers,sitecore\\ExternalUser\""
+        "\"-userkeys=sport\\DomainUsers,sitecore\\ExternalUser\""},
+        
+        {
+            "-userkeys=Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Unclassified:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Top Secret:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Secret:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Confidential:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Staff in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Medical in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Cabinet in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Trusted Commercial:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Research Projects:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Everyone:acl,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Administrator:acl",
+            "\"-userkeys=Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Unclassified:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Top Secret:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Secret:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Confidential:level,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Staff in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Medical in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Cabinet in Confidence:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Trusted Commercial:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Research Projects:caveat,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Everyone:acl,Se2-PublicUI-Meta-Trim-Component;Se2-PublicUI-Meta-Trim-Component:Administrator:acl\""
         }
+        
 
     };
 
     @Test
     public void testEscapingSingleArgument() {
         for(String[] testPair : testStringPairs) {
-            Assert.assertTrue(
-                testPair[1].equals(
-                    WindowsCommandEscaping.argvQuote(testPair[0])));
+            Assert.assertEquals(
+                testPair[1],
+                WindowsCommandEscaping.argvQuote(testPair[0]));
         }
     }
 }

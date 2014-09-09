@@ -44,7 +44,7 @@ public class WindowsCommandEscaping {
 
             int nBackSlashes = 0;
 
-            while ( c < arg.length() && c == '\\' ) {
+            while ( c < arg.length() && arg.charAt(c) == '\\' ) {
                 ++c;
                 ++nBackSlashes;
             }
