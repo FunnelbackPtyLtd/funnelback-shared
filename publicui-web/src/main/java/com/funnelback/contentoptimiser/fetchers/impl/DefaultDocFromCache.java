@@ -145,6 +145,9 @@ public class DefaultDocFromCache implements DocFromCache {
         printWriter.write(sb.toString());
         printWriter.flush();
         
+        boolean forceXml = false;
+        boolean assumeUtf8 = false;
+
         try {
 
             RecordAndMetadata cached =
@@ -158,11 +161,14 @@ public class DefaultDocFromCache implements DocFromCache {
                     ((RecordAndMetadata<RawBytesRecord>) cached)
                         .record.getContent());
             } else if (cached.record instanceof XmlRecord) {
+                forceXml = true;
+                assumeUtf8 = true;
                 fos.write(
                     XMLUtils.toBytes(
                         ((RecordAndMetadata<XmlRecord>) cached).record.getContent(),
                         "UTF-8"));
             } else if (cached.record instanceof StringRecord) {
+                assumeUtf8 = true;
                 fos.write(
                     ((RecordAndMetadata<StringRecord>) cached)
                         .record.getContent()
@@ -183,7 +189,11 @@ public class DefaultDocFromCache implements DocFromCache {
         log.debug("....done");
         Executor indexDocument = new DefaultExecutor();
         indexDocument.setWorkingDirectory(tempDir);
-        CommandLine clIndexDocument = new CommandLine(new File(searchHome,  DefaultValues.FOLDER_BIN+ File.separator +  config.value(Keys.INDEXER)));
+        
+        CommandLine clIndexDocument =
+            new CommandLine(
+                new File(searchHome, DefaultValues.FOLDER_BIN + File.separator + config.value(Keys.INDEXER)));
+
         String[] args = getArgsFromBldinfo(collectionId);
         ByteArrayOutputStream outstream = new ByteArrayOutputStream();
         ByteArrayOutputStream errstream = new ByteArrayOutputStream();
@@ -194,6 +204,15 @@ public class DefaultDocFromCache implements DocFromCache {
             clIndexDocument.addArgument(cacheFile.getPath());
             clIndexDocument.addArgument(tempDir + File.separator + "index-single");
             clIndexDocument.addArguments(getArgsForSingleDocument(args));
+
+            if(forceXml) {
+                clIndexDocument.addArgument("-forcexml");
+            }
+
+            if(assumeUtf8) {
+                clIndexDocument.addArgument("-utf8input");
+            }
+
             indexDocument.setStreamHandler(new PumpStreamHandler(outstream, errstream)); // record indexer output for debugging
             Map<String,String> env = new HashMap<String,String>();
             env.put("SEARCH_HOME",searchHome.getAbsolutePath());
