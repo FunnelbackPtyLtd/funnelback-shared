@@ -35,6 +35,7 @@ import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.StringRecord;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.common.utils.DocHdrUtils;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
@@ -132,18 +133,7 @@ public class DefaultDocFromCache implements DocFromCache {
         }        
         log.debug("Obtaining doc from cache");
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("<DOCHDR>");
-        sb.append(System.getProperty("line.separator"));
-        sb.append("  <BASE HREF=\"");
-        sb.append(comparison.getSelectedDocument().getLiveUrl());
-        sb.append("\">");
-        sb.append(System.getProperty("line.separator"));
-        sb.append("</DOCHDR>");
-        
         PrintWriter printWriter = new PrintWriter(fos);
-        printWriter.write(sb.toString());
-        printWriter.flush();
         
         boolean forceXml = false;
         boolean assumeUtf8 = false;
@@ -155,6 +145,8 @@ public class DefaultDocFromCache implements DocFromCache {
                     new Collection(collectionId, config),
                     StoreView.live,
                     comparison.getSelectedDocument().getIndexUrl());
+
+            fos.write(DocHdrUtils.mapToDocHdr(cached.metadata).getBytes("UTF-8"));
 
             if(cached.record instanceof RawBytesRecord) {
                 fos.write(
