@@ -30,7 +30,7 @@
 </head>
 
 <#if RequestParameters.profile??>
-    <#assign profile = "&profile=" + RequestParameters.profile>
+    <#assign profile = "&profile=" + RequestParameters.profile?url>
 <#else>
     <#assign profile = "">
 </#if>

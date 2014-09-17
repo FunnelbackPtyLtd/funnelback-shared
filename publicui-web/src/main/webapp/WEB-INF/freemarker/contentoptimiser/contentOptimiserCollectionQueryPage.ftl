@@ -65,9 +65,9 @@
 							<i class="fa fa-arrow-circle-right"></i>&nbsp; Optimise
 						</button>
 					</div>
-                    <input type="hidden" name="collection" value="${collection}" />
+                    <input type="hidden" name="collection" value="${collection?url}" />
 					<#if RequestParameters.profile??>
-                    <input type="hidden" name="profile" value="${RequestParameters.profile}" />    
+                    <input type="hidden" name="profile" value="${RequestParameters.profile?url}" />    
                     </#if>
 					
                 </form>

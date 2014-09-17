@@ -683,10 +683,10 @@ $(function () {
 
             $("#ls-top-rank-url")
                 .append(
-                  "<tr data-url=\""+urlToVisit+"\" class=\"rank-"+rank+" "+hl+" \">" +
+                  "<tr class=\"rank-"+rank+" "+hl+" \">" +
                   "<td>"+rank+"</td>" +
-                  "<td><div class=\"title-link\">"+v.page_name+"</div></td>" +
-                  "<td class=\"hidden-xs\"><div class=\"url-link\">"+v.url_truncated+"</div></td>" +
+                  "<td><div class=\"title-link\">...</div></td>" +
+                  "<td class=\"hidden-xs\"><div class=\"url-link\">...</div></td>" +
                   "</tr>");
 
         //...But the actual results clickable
