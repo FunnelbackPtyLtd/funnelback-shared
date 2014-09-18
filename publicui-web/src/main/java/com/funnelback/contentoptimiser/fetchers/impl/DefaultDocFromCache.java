@@ -146,6 +146,10 @@ public class DefaultDocFromCache implements DocFromCache {
                     StoreView.live,
                     comparison.getSelectedDocument().getIndexUrl());
 
+            cached.metadata.put(
+        		DocHdrUtils.BASE_KEY, 
+        		"<BASE HREF=\"" + comparison.getSelectedDocument().getLiveUrl() + "\"/>");
+
             fos.write(DocHdrUtils.mapToDocHdr(cached.metadata).getBytes("UTF-8"));
 
             if(cached.record instanceof RawBytesRecord) {
