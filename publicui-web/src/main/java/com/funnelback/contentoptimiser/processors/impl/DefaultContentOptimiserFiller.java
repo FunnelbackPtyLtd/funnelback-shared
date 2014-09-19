@@ -406,9 +406,12 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             }
             String[] queryWords = queryFromRp.split("\\s+");
 
-            for(String queryWord : queryWords){
-                SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWord,searchTransaction.getQuestion().getCollection());
-                Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWord,anchors.getCollection());
+            for(String queryWordRaw : queryWords) {
+
+            	String queryWordLower = queryWordRaw.toLowerCase();
+
+                SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWordLower,searchTransaction.getQuestion().getCollection());
+                Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWordLower,anchors.getCollection());
                 
                 long totalDocuments = 0;
                 if(bldInfoStats != null) totalDocuments = bldInfoStats.getTotalDocuments();
@@ -417,7 +420,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
                     Integer inDocFreq = inDocFreqs.get(metaFreqs.getKey());
                     Integer termFreq = frequencies.getCount(metaFreqs.getKey());
                     
-                    ContentHint contentHint = obtainContentHint(queryWord, totalDocuments,
+                    ContentHint contentHint = obtainContentHint(queryWordRaw, totalDocuments,
                             inDocFreq, termFreq, mf,
                             metaFreqs.getKey());
                     if(contentHint != null) {
@@ -433,7 +436,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
                     }
                 }
                 if(inDocFreqs.get("_") == null ) {
-                    contentHints.add(new ContentHint("Query term '<strong>"+queryWord+"</strong>' does not appear in the document body for any documents in this collection.",10000));
+                    contentHints.add(new ContentHint("Query term '<strong>"+queryWordRaw+"</strong>' does not appear in the document body for any documents in this collection.",10000));
                 }
             }
             boolean cleared = false;
