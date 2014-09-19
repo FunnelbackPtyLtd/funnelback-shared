@@ -44,7 +44,7 @@
       <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
       <script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
-      <#--Needs to be replaced if we're in production mode and want to instanatly see less css changes --> 
+      <#--Needs to be replaced if we're in production mode and want to instantly see less css changes --> 
       <#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
       <script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
       <script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
@@ -69,7 +69,9 @@
   <#assign query = response.resultPacket.query />
   <#assign collection = response.resultPacket.collection />
   <#assign queryUrl = question.inputParameterMap["optimiser_url"] />
-  <#assign matchingPages = response.resultPacket.resultsSummary.fullyMatching />
+  <#assign partiallyMatchingPages = response.resultPacket.resultsSummary.partiallyMatching />
+  <#assign fullyMatchingPages = response.resultPacket.resultsSummary.fullyMatching />
+  <#assign matchingPages = fullyMatchingPages + partiallyMatchingPages />
   <#if documentWasFound >
   <#assign selectedRank = response.optimiserModel.selectedDocument.rank />
   <#assign selectedUrl = response.optimiserModel.selectedDocument.displayUrl />
@@ -128,10 +130,6 @@
                     </#if>
                     <div class="ribbon ${ribbonColour}"><i>Rank</i><b>${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></b></div>
                     <#-- TODO: add this as a thumbnail preview of the website, maybe use a ajax to load since it will take time to generate from the server -->
-                    <#-- Deprecated:
-                    <div class="of rel text-grey-md z1"><i>of</i></div>
-                    <div class="pages text-grey-md">${matchingPages} Pages</div>
-                    -->
                   </div>
                   </#if>
                   <div class="col-sm-10 p0 m0 bl1">
@@ -177,8 +175,8 @@
 
                       <div id="co-cs-summary" class="pane pt15 pb15 text-grey">
                         This document places <strong class="text-green">${selectedRank}<sup>${getOrdinalSuffix(selectedRank)}</sup></strong>
-                        amongst a total of <strong>${matchingPages}</strong> fully-matching documents
-                        when a query for <strong>${query}</strong> is run,
+                        amongst a total of <strong>${fullyMatchingPages}</strong> fully-matching documents, and <strong>${partiallyMatchingPages}</strong>
+                        partially-matching documents when a query for <strong>${query}</strong> is run,
                         <#if (nPagesFromStart >= 1)>
                         and is placed approximately <strong>${nPagesFromStart}</strong> <#if nPagesFromStart == 1>page<#else>pages</#if> away from the first page of the search results.
                         <#else>
@@ -199,7 +197,8 @@
               <div class="row">
                 <div class="col-sm-2 col-xs-4"><b class="">${totalWords}</b><span>Total Words</span></div>
                 <div class="col-sm-2 col-xs-4"><b class="">${uniqueWords}</b><span class="spacing-fix">Unique Words</span></div>
-                <div class="col-sm-2 col-xs-4"><b class="">${matchingPages}</b><span>Pages Found</span></div>
+                <div class="col-sm-2 col-xs-4"><b class="">${fullyMatchingPages}</b><span>Fully-Matching Pages Found</span></div>
+                <div class="col-sm-2 col-xs-4"><b class="">${partiallyMatchingPages}</b><span>Partially-Matching Pages Found</span></div>
               </div>
             </div>
             </#if>
