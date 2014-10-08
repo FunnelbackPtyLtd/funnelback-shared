@@ -35,7 +35,7 @@
 	<div id="app">
 		<div class="container">
 
-			<a target="_blank" href="?"><img
+			<a target="_blank" href="http://funnelback.com"><img
 				class="fb-logo" src="${ContextPath}/content-optimiser/img/fb-logo-lg.png"
 				alt="Funnelback - Content Optimiser" /></a>
 
