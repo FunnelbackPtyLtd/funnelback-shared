@@ -160,6 +160,7 @@ public class ClickController extends SessionController {
             @RequestParam(required = false, defaultValue = "0") Integer rank,
             @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) String profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
+            @RequestParam(value = RequestParameters.Click.INDEX_URL, required = true) URI indexUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
             @RequestParam(value = RequestParameters.Click.NOATTACHMENT,
                            required = false, defaultValue = "false") boolean noAttachment,
@@ -195,7 +196,7 @@ public class ClickController extends SessionController {
             if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
                 && user != null) {
                 // Save the click in the user history
-                Result r = indexRepository.getResult(collection, redirectUrl);
+                Result r = indexRepository.getResult(collection, indexUrl);
                 if (r != null) {
                 
                     ClickHistory h = ClickHistory.fromResult(r);
@@ -215,13 +216,13 @@ public class ClickController extends SessionController {
                         log.error("Error while saving click history", e);
                     }
                 } else {
-                    log.warn("Result with URL '"+redirectUrl+"' not found in collection '"+collection.getId()+"'");
+                    log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
                 }
             }
             
             logService.logClick(new ClickLog(new Date(), collection, collection
                     .getProfiles().get(profile), requestId, referer, rank,
-                    redirectUrl, type, LogUtils.getUserId(user)));
+                    indexUrl, type, LogUtils.getUserId(user)));
             
             metrics.counter(MetricRegistry.name(
                 MetricsConfiguration.ALL_NS, MetricsConfiguration.CLICK)).inc();

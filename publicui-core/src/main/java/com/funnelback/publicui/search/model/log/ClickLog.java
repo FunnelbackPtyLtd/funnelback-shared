@@ -42,7 +42,7 @@ public class ClickLog extends Log {
      * @param requestId Request identifier (IP, hash, '-')
      * @param referer URL of the search page where the click is coming from
      * @param rank Rank of the clicked result
-     * @param target URL of the result
+     * @param target URL of the result (should be the one stored in the index)
      * @param type Type of click
      * @param userId User identifier, may be null
      */
