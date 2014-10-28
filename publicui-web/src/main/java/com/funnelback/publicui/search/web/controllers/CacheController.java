@@ -14,12 +14,14 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.search.web.binding.RelativeFileOnlyEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
+
 import groovy.lang.Script;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -116,7 +119,7 @@ public class CacheController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (collection.getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
+        } else { 
             RecordAndMetadata<? extends Record<?>> rmd
                     = dataRepository.getCachedDocument(collection, StoreView.live, url);
             if ((rmd == null || rmd.record == null) && doc != null) {
