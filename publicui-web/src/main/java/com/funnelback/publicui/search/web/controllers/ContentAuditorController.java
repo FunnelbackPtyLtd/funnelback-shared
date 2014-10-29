@@ -68,8 +68,6 @@ public class ContentAuditorController {
             SearchQuestion question,
             @ModelAttribute SearchUser user,
             String type) {
-
-        System.out.println(request.getRequestURL() + "?" + request.getQueryString());
         
         // We want search result links to come back to us
         // But still allow config to make it absolute
