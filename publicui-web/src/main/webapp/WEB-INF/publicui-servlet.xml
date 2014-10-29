@@ -145,5 +145,6 @@
 	<bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />	
 			
 	<mvc:resources mapping="/content-optimiser/**" location="/content-optimiser/" />
+	<mvc:resources mapping="/content-auditor/**" location="/content-auditor/" />
 		
 </beans>
