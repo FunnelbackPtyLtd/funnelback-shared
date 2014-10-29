@@ -27,13 +27,13 @@
           <h4><@s.FacetLabel summary=false /></h4>
           <#assign assignFacetSummary><@s.FacetSummary /></#assign>
           <#if (assignFacetSummary?length > 11)>
-            <p class="chosen-facets">chosen attributes <span>${assignFacetSummary?replace("&amp;form=facets","")}</span>&nbsp;</p>
+            <p class="chosen-facets">chosen attributes <span>${assignFacetSummary?replace("&amp;type=facets","")}</span>&nbsp;</p>
           </#if>
           <span class="facet-graph"><a href="#fb-facet-graph" class="facet-graph-button">(View Graph)</a></span>
         </div>
         <@s.Category max=1000>    
           <#assign assignCategoryName><@s.CategoryName /></#assign>
-          <span class="fb-facet-count"><span><@s.CategoryCount /></span></span>&nbsp;${assignCategoryName?replace("&amp;form=facets","")}
+          <span class="fb-facet-count"><span><@s.CategoryCount /></span></span>&nbsp;${assignCategoryName?replace("&amp;type=facets","")}
         </@s.Category>
         </div>
     </@s.Facet>

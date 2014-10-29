@@ -45,8 +45,6 @@ POTENTIAL IMPROVEMENTS:
 <#assign collectionId2>TODO</#assign>
 <#assign collectionId3>TODO</#assign>
 
-<#assign absoluteHtmlUrl>${httpRequest.requestURL}</#assign>
-
 <!DOCTYPE html>
 <html lang="en-us">
 

@@ -14,7 +14,7 @@
 <#assign collectionId2>TODO</#assign>
 <#assign collectionId3>TODO</#assign>
 
-<#assign absoluteHtmlUrl>http://localhost:8084/s/search.html</#assign>
+<#assign absoluteHtmlUrl>${httpRequest.requestURL}</#assign>
 
 <#-- InitialTabs -->
 <#macro InitialTabs>
@@ -29,7 +29,7 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="collection-1">
-          <#assign reportDetailsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&profile=contentauditor&query=-padrenull&form=reportdetails</#assign>
+          <#assign reportDetailsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=reportdetails</#assign>
           <!-- Retrieve report details from ${reportDetailsCollection0} -->
           <div class="fb-ajax-get fb-report-details" data-fb-get-url="${reportDetailsCollection0}"></div>
           <@fb.IncludeUrl url="${reportDetailsCollection0}" start="<!--BEGINREPORTDETAILS-->" end="<!--ENDREPORTDETAILS-->" expiry=0 />
@@ -41,13 +41,13 @@
               </ul>
               <div class="tab-content lvl-2">
                   <div class="tab-pane active" id="collection-1-tab-1">
-                    <#assign initialSearchFacetsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&profile=contentauditor&query=-padrenull&form=facetsinitial</#assign>
+                    <#assign initialSearchFacetsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=facetsinitial</#assign>
                     <!-- Retrieve facets from ${initialSearchFacetsCollection0} -->
                     <div class="fb-ajax-get fb-initial-facets" data-fb-get-url="${initialSearchFacetsCollection0}"></div>
                     <@fb.IncludeUrl url="${initialSearchFacetsCollection0}" start="<!--BEGINFACETS-->" end="<!--ENDFACETS-->" expiry=0 />
                   </div>
                   <div class="tab-pane" id="collection-1-tab-2">
-                    <#assign initialSearchDocumentsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&profile=contentauditor&query=-padrenull&form=documentsinitial&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
+                    <#assign initialSearchDocumentsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=documentsinitial&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
                     <!-- Retrieve documents from ${initialSearchDocumentsCollection0} -->
                     <div class="fb-ajax-get fb-initial-documents" data-fb-get-url="${initialSearchDocumentsCollection0}"></div>
                     <@fb.IncludeUrl url="${initialSearchDocumentsCollection0}" start="<!--BEGINDOCUMENTS-->" end="<!--ENDDOCUMENTS-->" expiry=0 />
@@ -122,7 +122,7 @@
       <div class="tab-content lvl-1">
         <div class="tab-pane active" id="collection-1">
 
-        <#assign reportDetailsCollectionOne>${absoluteHtmlUrl}?collection=${collectionId0}&profile=contentauditor&query=-padrenull&form=reportdetails</#assign>
+        <#assign reportDetailsCollectionOne>${absoluteHtmlUrl}?collection=${collectionId0}&type=reportdetails</#assign>
         <!-- Retrieve report details from ${reportDetailsCollectionOne} -->
         <div class="fb-ajax-get fb-report-details" data-fb-get-url="${reportDetailsCollectionOne}"></div>
         <@fb.IncludeUrl url="${reportDetailsCollectionOne}" start="<!--BEGINREPORTDETAILS-->" end="<!--ENDREPORTDETAILS-->" expiry=0 />  
@@ -134,10 +134,10 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="collection-1-tab-1">
-                    <#if QueryString?contains("form=")>
-                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("form=simple","form=facets")}</#assign>
+                    <#if QueryString?contains("type=")>
+                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=facets")}</#assign>
                     <#else>
-                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString}&form=facets</#assign>
+                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=facets</#assign>
                     </#if>
                     
                     <!-- Include from ${afterSearchFacetsCollectionOne} -->
@@ -145,10 +145,10 @@
                     <@fb.IncludeUrl url="${afterSearchFacetsCollectionOne}" start="<!--BEGINFACETS-->" end="<!--ENDFACETS-->" expiry=1 />
                 </div>
                 <div class="tab-pane" id="collection-1-tab-2">
-                    <#if QueryString?contains("form=")>
-                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("form=simple","form=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
+                    <#if QueryString?contains("type=")>
+                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
                     <#else>
-                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString}&form=documents&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
+                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=documents&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
                     </#if>                        
                     
                     <!-- Include from ${afterSearchDocumentsCollectionOne} -->

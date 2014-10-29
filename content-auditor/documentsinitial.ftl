@@ -64,7 +64,7 @@
                   <p>
                     <a href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}">View Anchors</a></li>
                   </p>
-                  <form action="https://squiz-funnelback03.squiz.net:8443/s/content-optimiser/optimise.html">
+                  <form action="${httpRequest.requestURL}/../../content-optimiser/optimise.html">
                     <p><strong>Content optimiser</strong></p>
                     <input type="text" name="query" value="" placeholder="Query to match against result" />
                     <input type="hidden" name="optimiser_url" value="${s.result.liveUrl?html?replace("http://","")}" />

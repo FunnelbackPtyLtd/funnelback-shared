@@ -14,8 +14,6 @@
 <#assign collectionId2>TODO</#assign>
 <#assign collectionId3>TODO</#assign>
 
-<#assign absoluteHtmlUrl>https://squiz-funnelback03.squiz.net:8443/s/search.html</#assign>
-
 <#-- Contents of the HTML <head> tag -->
 <#macro Head>
 <head>
@@ -52,7 +50,7 @@
 <div id="top-content">
   <@s.InitialFormOnly>
   <div class="top-logo">
-    <a href="/s/search.html?collection=${question.inputParameterMap["collection"]!?html}">
+    <a href="/s/content-auditor.html?collection=${question.inputParameterMap["collection"]!?html}">
       <img src="/s/content-auditor/sm-logo.png" alt="Content Auditor"/>
     </a>
   </div><!-- .top-logo -->
@@ -60,7 +58,7 @@
 
   <@s.AfterSearchOnly>
   <div class="top-logo">
-    <a href="/s/search.html?collection=${question.inputParameterMap["collection"]!?html}">
+    <a href="/s/content-auditor.html?collection=${question.inputParameterMap["collection"]!?html}">
       <img src="/s/content-auditor/sm-logo-no-text.png" alt="Content Auditor"/>
     </a>
   </div><!-- .top-logo -->
@@ -69,7 +67,7 @@
   <div class="search-form">
       <h2 class="visuallyhidden">Search</h2>
       <!-- QUERY FORM -->
-      <form action="${question.collection.configuration.value("ui.modern.search_link")}" method="GET" class="form-block">    
+      <form action="/s/content-auditor.html" method="GET" class="form-block">    
           <div class="form-field input-text field-query">
               <label for="query">Keywords</label>        
               <input name="query" id="query" type="search" placeholder="Search terms&hellip;" value="${question.inputParameterMap["query"]!?html}" class="input-xlarge">

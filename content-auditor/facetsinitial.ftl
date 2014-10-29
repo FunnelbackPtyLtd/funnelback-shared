@@ -18,7 +18,7 @@
             </div>
             <@s.Category max=1000>    
                 <#assign assignCategoryName><@s.CategoryName /></#assign>
-                <span class="fb-facet-count"><span><@s.CategoryCount /></span></span>&nbsp;${assignCategoryName?replace("&amp;form=facets","")}
+                <span class="fb-facet-count"><span><@s.CategoryCount /></span></span>&nbsp;${assignCategoryName?replace("&amp;type=facets","")}
             </@s.Category>
             <@s.MoreOrLessCategories />
             </div>
