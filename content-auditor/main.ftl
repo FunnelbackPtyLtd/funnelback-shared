@@ -29,11 +29,8 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="collection-1">
-          <#assign reportDetailsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=reportdetails</#assign>
-          <!-- Retrieve report details from ${reportDetailsCollection0} -->
-          <div class="fb-ajax-get fb-report-details" data-fb-get-url="${reportDetailsCollection0}"></div>
-          <@fb.IncludeUrl url="${reportDetailsCollection0}" start="<!--BEGINREPORTDETAILS-->" end="<!--ENDREPORTDETAILS-->" expiry=0 />
-          
+          <#include "/web/templates/modernui/content-auditor/reportdetails.ftl" />
+
           <div class="tabbable lvl-2">
               <ul class="nav nav-tabs lvl-2">
                   <li class="active"><a href="#collection-1-tab-1" data-toggle="tab">Content Attributes</a></li>
@@ -41,16 +38,14 @@
               </ul>
               <div class="tab-content lvl-2">
                   <div class="tab-pane active" id="collection-1-tab-1">
-                    <#assign initialSearchFacetsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=facetsinitial</#assign>
-                    <!-- Retrieve facets from ${initialSearchFacetsCollection0} -->
-                    <div class="fb-ajax-get fb-initial-facets" data-fb-get-url="${initialSearchFacetsCollection0}"></div>
-                    <@fb.IncludeUrl url="${initialSearchFacetsCollection0}" start="<!--BEGINFACETS-->" end="<!--ENDFACETS-->" expiry=0 />
+                    <#include "/web/templates/modernui/content-auditor/facetsinitial.ftl" />
                   </div>
                   <div class="tab-pane" id="collection-1-tab-2">
                     <#assign initialSearchDocumentsCollection0>${absoluteHtmlUrl}?collection=${collectionId0}&type=documentsinitial&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
                     <!-- Retrieve documents from ${initialSearchDocumentsCollection0} -->
-                    <div class="fb-ajax-get fb-initial-documents" data-fb-get-url="${initialSearchDocumentsCollection0}"></div>
-                    <@fb.IncludeUrl url="${initialSearchDocumentsCollection0}" start="<!--BEGINDOCUMENTS-->" end="<!--ENDDOCUMENTS-->" expiry=0 />
+                    <div class="fb-initial-documents">
+                      <@fb.IncludeUrl url="${initialSearchDocumentsCollection0}" start="<!--BEGINDOCUMENTS-->" end="<!--ENDDOCUMENTS-->" expiry=0 />
+                    </div>
                   </div>                    
               </div>
           </div><!-- .tabbable level 2 tabs -->
@@ -122,10 +117,8 @@
       <div class="tab-content lvl-1">
         <div class="tab-pane active" id="collection-1">
 
-        <#assign reportDetailsCollectionOne>${absoluteHtmlUrl}?collection=${collectionId0}&type=reportdetails</#assign>
-        <!-- Retrieve report details from ${reportDetailsCollectionOne} -->
-        <div class="fb-ajax-get fb-report-details" data-fb-get-url="${reportDetailsCollectionOne}"></div>
-        <@fb.IncludeUrl url="${reportDetailsCollectionOne}" start="<!--BEGINREPORTDETAILS-->" end="<!--ENDREPORTDETAILS-->" expiry=0 />  
+        <div class="fb-report-details"></div>
+        <#include "/web/templates/modernui/content-auditor/reportdetails.ftl" />
 
           <div class="tabbable lvl-2">
             <ul class="nav nav-tabs lvl-2">
@@ -134,16 +127,9 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="collection-1-tab-1">
-                    <#if QueryString?contains("type=")>
-                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=facets")}</#assign>
-                    <#else>
-                        <#assign afterSearchFacetsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=facets</#assign>
-                    </#if>
-                    
-                    <!-- Include from ${afterSearchFacetsCollectionOne} -->
-                    <div class="fb-ajax-get fb-after-search-facets" data-fb-get-url="${afterSearchFacetsCollectionOne}"></div>
-                    <@fb.IncludeUrl url="${afterSearchFacetsCollectionOne}" start="<!--BEGINFACETS-->" end="<!--ENDFACETS-->" expiry=1 />
-                </div>
+                    <div class="fb-after-search-facets"></div>
+                      <#include "/web/templates/modernui/content-auditor/facets.ftl" />
+                    </div>
                 <div class="tab-pane" id="collection-1-tab-2">
                     <#if QueryString?contains("type=")>
                         <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
@@ -152,8 +138,9 @@
                     </#if>                        
                     
                     <!-- Include from ${afterSearchDocumentsCollectionOne} -->
-                    <div class="fb-ajax-get fb-after-search-documents" data-fb-get-url="${afterSearchDocumentsCollectionOne}"></div>
-                    <@fb.IncludeUrl url="${afterSearchDocumentsCollectionOne}" start="<!--BEGINDOCUMENTS-->" end="<!--ENDDOCUMENTS-->" expiry=1 />
+                    <div class="fb-after-search-documents">
+                      <#include "/web/templates/modernui/content-auditor/documents.ftl" />
+                    </div>
                 </div>                    
             </div>
           </div><!-- .tabbable level 2 tabs -->      

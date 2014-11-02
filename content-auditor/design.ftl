@@ -34,6 +34,12 @@
             white-space: nowrap;
         }
     </style>
+
+    <!-- amcharts JS -->
+    <!-- TODO - Must use our local copy -->
+    <script type="text/javascript" src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script type="text/javascript" src="http://www.amcharts.com/lib/3/pie.js"></script>
+    <script type="text/javascript" src="http://www.amcharts.com/lib/3/themes/none.js"></script>
 </head>
 </#macro>
 
@@ -110,11 +116,6 @@
 <!-- SCRIPTS -->
 <script src="${SearchPrefix}js/jquery/jquery-1.10.2.min.js"></script>
 <script src="${SearchPrefix}js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
-
-<!-- amcharts JS -->
-<script src="/s/content-auditor/amcharts.js"></script>
-<script src="/s/content-auditor/serial.js"></script>
-<script src="/s/content-auditor/pie.js"></script>
 
 <!-- fancybox JS -->
 <script src="/s/content-auditor/jquery.fancybox.pack.js"></script>
