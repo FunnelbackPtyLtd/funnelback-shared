@@ -372,6 +372,9 @@ public class SearchQuestion {
         /** Parameter for enabling/disabling curator */
         public static final String CURATOR = "curator";
 
+        /** Parameter for controlling the number of documents considered in document at a time mode */
+        public static final String DAAT = "daat";
+
         /**
          * Common request header names
          * 

@@ -27,8 +27,13 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
+import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
@@ -75,25 +80,29 @@ public class ContentAuditorController {
         searchLink = searchLink.replace("search.html", "content-auditor.html");
         question.getCollection().getConfiguration().setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
         
-        // TODO - Manipulate the request if we need to
+        // Manipulate the request to suit content auditor
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+        question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
+        question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
         if (question.getQuery() == null) {
             question.setQuery("-padrenullquery");
         }
         
-        // TODO - Source this form somewhere? A collection.cfg setting?
+        // Read in the configured metadata classes
         Map<String, Character> metadataFields = new HashMap<String, Character>();
-        metadataFields.put("Creator", 'a');
-        metadataFields.put("Publisher", 'p');
-        metadataFields.put("Subject", 's');
-        metadataFields.put("Format", 'f');
-        metadataFields.put("Generator", 'y');
-        metadataFields.put("Page Type", '0');
-        metadataFields.put("Business Stage", 'B');
-        metadataFields.put("Business Structure", 'C');
-        metadataFields.put("Four Pillars", 'D');
-        metadataFields.put("Red Tape Reduction", 'E');
+
+        Config config = question.getCollection().getConfiguration();
+        for (String key : question.getCollection().getConfiguration().valueKeys()) {
+            if (key.startsWith(Keys.ModernUI.ContentAuditor.METADATA)) {
+                String className = key.substring(Keys.ModernUI.ContentAuditor.METADATA.length() + 1 /* Skip the '.' */);
+                String label = config.value(key);
+                
+                if (label.length() > 0) {
+                    metadataFields.put(label, className.charAt(0));
+                }
+            }
+        }
 
         // Overwrite the facet config with a custom one
         String qpOptions = " -rmcf="+constructRmcfValue(metadataFields)+" -count_dates=d -count_urls=1000";
@@ -106,18 +115,6 @@ public class ContentAuditorController {
         for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));            
         }
-
-        /*
-         * TODO - We need to somehow support detecting missing metadata, ideally without having
-         * to set gscope bits or running extra queries.
-         * 
-         * The current implementation uses gscope bits set with something like...
-         * 
-         *     <QueryItem>
-         *       <Data>Subject</Data>
-         *       <Query>-s:$++ $++</Query>
-         *     </QueryItem>
-         */
         
         FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
         
@@ -125,15 +122,37 @@ public class ContentAuditorController {
         
         ModelAndView mav =
             searchController.search(request, response, question, user);
-        
+                
         Map<String, Object> model = mav.getModel();
 
-        // Content auditor always uses the specific content auditor template
+        SearchResponse sr = (SearchResponse) model.get("response");
         
+        Integer totalMatching = sr.getResultPacket().getResultsSummary().getTotalMatching();
+        
+        // Insert 'missing' values for where there was no metadata of the given class in a document
+        for (Facet f : sr.getFacets()) {
+            for (Category c : f.getCategories()) {
+                int withCategoryValueCount = 0;
+                for (CategoryValue cv : c.getValues()) {
+                    withCategoryValueCount += cv.getCount();
+                }
+                
+                if (withCategoryValueCount < totalMatching) {
+                    /*
+                     * TODO - We need to somehow make the links go somewhere useful - Maybe with a query like
+                     * -s:"$++ $++"
+                     */
+                    c.getValues().add(new CategoryValue("None", "None", (totalMatching - withCategoryValueCount), "todo-qsparam", "todo-constraint"));
+                }
+            }
+            
+        }
+
         if (type == null) {
             type = "index";
         }
         
+        // Content auditor always uses the specific content auditor template
         String viewName = 
             DefaultValues.FOLDER_WEB + "/" +
             DefaultValues.FOLDER_TEMPLATES + "/" +
