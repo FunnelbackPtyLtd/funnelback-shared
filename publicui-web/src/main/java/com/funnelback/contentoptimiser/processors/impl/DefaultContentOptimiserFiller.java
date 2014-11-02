@@ -286,20 +286,21 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         ResultPacket allRp = searchTransaction.getResponse().getResultPacket();
         String urlString = MapUtils.getFirstString(searchTransaction.getQuestion().getRawInputParameters(), RequestParameters.CONTENT_OPTIMISER_URL, null);
 
+        Set<String> possibleUrls = new HashSet<String>();
+        possibleUrls.add(urlString);
+        possibleUrls.add(urlString + "/");
+        possibleUrls.add("http://" + urlString);
+        possibleUrls.add("http://"+ urlString + "/");
+        
         // See if the selected document appears for the long query
         Result importantResult = null;
         for (Result result : allRp.getResults()) {
-            Set<String> possibleUrls = new HashSet<String>();
-            possibleUrls.add(urlString);
-            possibleUrls.add(urlString + "/");
-            possibleUrls.add("http://" + urlString);
-            possibleUrls.add("http://"+ urlString + "/");
-            
             if(possibleUrls.contains(result.getDisplayUrl())
                     || possibleUrls.contains(result.getLiveUrl())
                     || possibleUrls.contains(result.getIndexUrl())
                     || urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*",""))) {
                 importantResult = result;
+                break;
             }
         }    
         
