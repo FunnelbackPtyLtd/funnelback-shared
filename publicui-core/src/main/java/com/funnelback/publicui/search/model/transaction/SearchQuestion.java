@@ -375,6 +375,9 @@ public class SearchQuestion {
         /** Parameter for controlling the number of documents considered in document at a time mode */
         public static final String DAAT = "daat";
 
+        /** Controls the type/level of stemming which should be used */
+        public static String STEM = "stem";
+
         /**
          * Common request header names
          * 

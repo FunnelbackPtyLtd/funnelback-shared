@@ -1,13 +1,17 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,8 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.MetadataAndValue;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
@@ -45,6 +51,89 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 @Controller
 @Log4j
 public class ContentAuditorController {
+
+    /**
+     * A custom metadata fill which is used to capture the 'remainder' documents (i.e. those which did not have any of the 
+     * desired type of metadata).
+     * 
+     * Note that the query which will be run by selecting this relies on -ifb having been used as an indexer option.
+     */
+    public class MetadataRemainderFill extends MetadataFieldFill {
+        
+        /** The category label shown for the remainder facet */
+        private static final String CATEGORY_LABEL = "None";
+        
+        /** Special value shown as the param value (though this is not actually used) */
+        private static final String UNSET_VALUE = "$unset";
+        
+        /**
+         * Works just like MetadataFieldFill's setData, but always prefixes a '-'
+         * to distinguish it from the MetadataFieldFill one.
+         */
+        @Override
+        public void setData(String data) {
+            this.data = "-" + data;
+        }
+        
+        /** 
+         * Produces only one categoryValue, which will have a count of the remaining documents
+         * (i.e. those for which no metadata in this class was set) which will select those documents.
+         */
+        @Override
+        @SneakyThrows(UnsupportedEncodingException.class)
+        public List<CategoryValue> computeValues(final SearchTransaction st) {
+            int remainderCount = st.getResponse().getResultPacket().getResultsSummary().getTotalMatching();
+            
+            // Subtract out the metadata entries which have been assigned
+            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
+                String item = entry.getKey();
+                int count = entry.getValue();
+                MetadataAndValue mdv = parseMetadata(item);
+                if (this.data.equals(mdv.metadata)) {
+                    remainderCount -= count;
+                }
+            }
+            List<CategoryValue> categories = new ArrayList<CategoryValue>();
+
+            if (remainderCount > 0) {
+                // There are some documents which didn't have any matches, so add a new remainder entry
+                categories.add(new CategoryValue(
+                    CATEGORY_LABEL,
+                    CATEGORY_LABEL,
+                    remainderCount,
+                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                    + "=" + URLEncoder.encode(UNSET_VALUE, "UTF-8"),
+                    getMetadataClass()));
+            }
+            
+            return categories;
+        }
+
+        /**
+        * Produces a query constraint like -x:$++ (i.e. all documents where x was never set to anything).
+        * 
+        * Value is ignored (but should be expected to be UNSET_VALUE).
+        */
+        @Override
+        public String getQueryConstraint(String value) {
+            // This produces a query like -x:$++ (i.e. all documents where x was never set to anything)
+            return data + ":" + MetadataBasedCategory.INDEX_FIELD_BOUNDARY;
+        }
+    }
+
+    /**
+     * Represents an unexpected error in the Content Auditor system
+     */
+    public class ContentAuditorException extends RuntimeException {
+        
+        /** ID for serialization */
+        private static final long serialVersionUID = 1L;
+
+        /** Construct with a message */
+        public ContentAuditorException(String message) {
+            super(message);
+        }
+    }
 
     /**
      * SearchController is used to perform the actual search requests to create the auditor report
@@ -81,11 +170,12 @@ public class ContentAuditorController {
         question.getCollection().getConfiguration().setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
         
         // Manipulate the request to suit content auditor
+        question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
-        if (question.getQuery() == null) {
+        if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery("-padrenullquery");
         }
         
@@ -109,7 +199,8 @@ public class ContentAuditorController {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
         // TODO - Source the base URL from somewhere (a collection.cfg setting?)
-        facetDefinitions.add(createPathFacetDefinition("Path", "http://www.business.qld.gov.au/"));
+        String pathConstraint = "http://www.business.qld.gov.au/";
+        facetDefinitions.add(createPathFacetDefinition("Path", pathConstraint));
         facetDefinitions.add(createDateFacetDefinition("Date modified"));
         
         for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
@@ -124,29 +215,34 @@ public class ContentAuditorController {
             searchController.search(request, response, question, user);
                 
         Map<String, Object> model = mav.getModel();
-
+        
         SearchResponse sr = (SearchResponse) model.get("response");
-        
-        Integer totalMatching = sr.getResultPacket().getResultsSummary().getTotalMatching();
-        
-        // Insert 'missing' values for where there was no metadata of the given class in a document
-        for (Facet f : sr.getFacets()) {
-            for (Category c : f.getCategories()) {
-                int withCategoryValueCount = 0;
-                for (CategoryValue cv : c.getValues()) {
-                    withCategoryValueCount += cv.getCount();
-                }
-                
-                if (withCategoryValueCount < totalMatching) {
-                    /*
-                     * TODO - We need to somehow make the links go somewhere useful - Maybe with a query like
-                     * -s:"$++ $++"
-                     */
-                    c.getValues().add(new CategoryValue("None", "None", (totalMatching - withCategoryValueCount), "todo-qsparam", "todo-constraint"));
-                }
-            }
-            
+
+        if (!sr.hasResultPacket()) {
+            throw new ContentAuditorException("Expected result packet for request, but got none");
         }
+        
+//        Integer totalMatching = sr.getResultPacket().getResultsSummary().getTotalMatching();
+//        
+//        // Insert 'missing' values for where there was no metadata of the given class in a document
+//        for (Facet f : sr.getFacets()) {
+//            for (Category c : f.getCategories()) {
+//                int withCategoryValueCount = 0;
+//                for (CategoryValue cv : c.getValues()) {
+//                    withCategoryValueCount += cv.getCount();
+//                }
+//                
+//                if (withCategoryValueCount < totalMatching) {
+//                    /*
+//                     * TODO - We need to somehow make the links go somewhere useful - Maybe with a query like
+//                     * -s:"$++ $++"
+//                     */
+//                    String metadataClass = Character.toString(c.getQueryStringParamName().charAt(c.getQueryStringParamName().length() - 1));
+//                    c.getValues().add(new CategoryValue("None", "None", (totalMatching - withCategoryValueCount), "s=-" + metadataClass + ":\"$++ $++\"", metadataClass));
+//                }
+//            }
+//            
+//        }
 
         if (type == null) {
             type = "index";
@@ -182,6 +278,8 @@ public class ContentAuditorController {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         DateFieldFill fill = new DateFieldFill();
         fill.setData("d");
+        fill.setLabel(label);
+        fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
         return new FacetDefinition(label, categoryDefinitions);
@@ -194,6 +292,8 @@ public class ContentAuditorController {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         URLFill fill = new URLFill();
         fill.setData(urlBase);
+        fill.setLabel(label);
+        fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
         return new FacetDefinition(label, categoryDefinitions);
@@ -202,13 +302,21 @@ public class ContentAuditorController {
     /**
      * Creates a metadata field based facet definition with the given label, populated from the given metadataClass
      */
-    private FacetDefinition createMetadataFacetDefinition(String Label, Character character) {
+    private FacetDefinition createMetadataFacetDefinition(String label, Character character) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         MetadataFieldFill fill = new MetadataFieldFill();
         fill.setData(character.toString());
+        fill.setLabel(label);
+        fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(Label, categoryDefinitions);
+        MetadataRemainderFill remainder = new MetadataRemainderFill();
+        remainder.setData("-" + character.toString());
+        remainder.setLabel(label);
+        remainder.setFacetName(label);
+        categoryDefinitions.add(remainder);
+        
+        return new FacetDefinition(label, categoryDefinitions);
     }
 
 }
