@@ -9,6 +9,7 @@ import java.util.Properties;
 import lombok.extern.log4j.Log4j;
 
 import com.funnelback.common.config.Collection;
+import com.funnelback.common.config.Collections;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
@@ -26,6 +27,7 @@ public class UrlStatus {
     }
     
     public static MatchResult UrlMatchesCrawlerIncludeExcludePattern(File searchHome, String collection, String url) {
+        
         Config config;
         try {
             config = new NoOptionsConfig(searchHome, collection);
@@ -34,6 +36,18 @@ public class UrlStatus {
         }
         if(Collection.Type.push2.toString().equals(config.value(Keys.COLLECTION_TYPE))){
             return MatchResult.NOT_RELEVENT;
+        } 
+        if(Collection.Type.meta.toString().equals(config.value(Keys.COLLECTION_TYPE))){
+            MatchResult best = MatchResult.FAILS;
+            for(String c : Collections.getComponentCollections(searchHome, collection)) {
+                MatchResult mResult = UrlMatchesCrawlerIncludeExcludePattern(searchHome, c, url);
+                if(MatchResult.MATCHES.equals(mResult)){
+                    return mResult;
+                } else if (MatchResult.NOT_RELEVENT.equals(mResult)){
+                    best = mResult;
+                }
+            }
+            return best;
         }
         SimpleLoadingPolicy loadingPolicy = new SimpleLoadingPolicy();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
