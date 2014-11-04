@@ -23,7 +23,7 @@ public class UrlStatus {
     public static enum MatchResult {
         MATCHES,
         FAILS,
-        NOT_RELEVENT;
+        NOT_RELEVANT;
     }
     
     public static MatchResult UrlMatchesCrawlerIncludeExcludePattern(File searchHome, String collection, String url) {
@@ -35,7 +35,7 @@ public class UrlStatus {
             throw new RuntimeException(e);
         }
         if(Collection.Type.push2.toString().equals(config.value(Keys.COLLECTION_TYPE))){
-            return MatchResult.NOT_RELEVENT;
+            return MatchResult.NOT_RELEVANT;
         } 
         if(Collection.Type.meta.toString().equals(config.value(Keys.COLLECTION_TYPE))){
             MatchResult best = MatchResult.FAILS;
@@ -43,7 +43,7 @@ public class UrlStatus {
                 MatchResult mResult = UrlMatchesCrawlerIncludeExcludePattern(searchHome, c, url);
                 if(MatchResult.MATCHES.equals(mResult)){
                     return mResult;
-                } else if (MatchResult.NOT_RELEVENT.equals(mResult)){
+                } else if (MatchResult.NOT_RELEVANT.equals(mResult)){
                     best = mResult;
                 }
             }
@@ -74,5 +74,7 @@ public class UrlStatus {
             throw t;
         }
     }
+    
+    
     
 }

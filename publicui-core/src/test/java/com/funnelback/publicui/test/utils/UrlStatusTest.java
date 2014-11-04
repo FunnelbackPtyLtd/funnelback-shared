@@ -84,13 +84,13 @@ public class UrlStatusTest {
             FileUtils.writeStringToFile(metaCollectionMetaCfg, "subcoll1\nsubcoll2", "UTF-8");
         }
         
-        Assert.assertEquals(MatchResult.NOT_RELEVENT, 
+        Assert.assertEquals(MatchResult.NOT_RELEVANT, 
             UrlStatus.UrlMatchesCrawlerIncludeExcludePattern(searchHome, "parent", "http://david-hawking.net/"));
         
         Assert.assertEquals(MatchResult.MATCHES, 
             UrlStatus.UrlMatchesCrawlerIncludeExcludePattern(searchHome, "parent", "http://david.net/"));
         
-        Assert.assertEquals(MatchResult.NOT_RELEVENT, 
+        Assert.assertEquals(MatchResult.NOT_RELEVANT, 
             UrlStatus.UrlMatchesCrawlerIncludeExcludePattern(searchHome, "parent", "http://tim-jones.net/"));    
     }
     
