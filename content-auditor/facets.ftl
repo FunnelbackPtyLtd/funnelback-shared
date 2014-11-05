@@ -8,11 +8,11 @@
 <!-- RESULTS SUMMARY -->
 <p>        
 <#if response.resultPacket.resultsSummary.totalMatching == 0>
-    No attributes are availiable as there are <strong class="fb-result-count" id="fb-total-matching">0</strong> search results for <strong><@s.QueryClean /></strong>
+    No attributes are availiable as there are <strong class="fb-result-count" id="fb-total-matching">0</strong> search results for <strong>${response.resultPacket.queryAsProcessed?html}</strong>
 </#if>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>
     Attributes attached to the <strong class="fb-result-count" class="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-    search results for <strong><@s.QueryClean /></strong>
+    search results for <strong>${response.resultPacket.queryAsProcessed?html}</strong>
 </#if>
 </p>
 
@@ -31,7 +31,6 @@
           <#if (assignFacetSummary?length > 11)>
             <p class="chosen-facets">chosen attributes <span>${assignFacetSummary?replace("&amp;type=facets","")}</span>&nbsp;</p>
           </#if>
-          <span class="facet-graph"><a href="#fb-facet-graph" class="facet-graph-button">(View Graph)</a></span>
         </div>
         <@s.Category max=1000>    
           <#assign assignCategoryName><@s.CategoryName /></#assign>

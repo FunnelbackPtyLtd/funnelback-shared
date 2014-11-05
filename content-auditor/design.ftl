@@ -79,8 +79,8 @@
               <input name="query" id="query" type="search" placeholder="Search terms&hellip;" value="${question.inputParameterMap["query"]!?html}" class="input-xlarge">
           </div>
           <div class="form-field input-text field-url">
-              <label for="meta_v_sand">Url or Path</label>
-              <input name="meta_v_sand" type="text" <@s.IfDefCGI name="meta_v_sand">value="${question.inputParameterMap["meta_v_sand"]!?html}"</@s.IfDefCGI> placeholder="/url/path" />
+              <label for="scoping_url">Scoping URL</label>
+              <input name="scoping_url" type="text" <@s.IfDefCGI name="scoping_url">value="${question.inputParameterMap["scoping_url"]!?html}"</@s.IfDefCGI> placeholder="http://example.com/directory/" />
           </div>
           
           <!-- ADD CUSTOM SORT MODES FOR ADDITIONAL METADATA FIELDS -->

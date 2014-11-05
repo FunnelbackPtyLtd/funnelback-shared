@@ -16,7 +16,6 @@
             <div class="facet-container">
             <div class="facet-header">
               <h4><@s.FacetLabel summary=false /><@s.FacetSummary /></h4>
-              <span class="facet-graph"><a href="#fb-facet-graph" class="facet-graph-button">(View Graph)</a></span>
             </div>
             <@s.Category max=1000>    
                 <#assign assignCategoryName><@s.CategoryName /></#assign>
