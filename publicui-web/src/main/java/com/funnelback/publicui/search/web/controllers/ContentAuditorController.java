@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -199,12 +200,15 @@ public class ContentAuditorController {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
         // TODO - Source the base URL from somewhere (a collection.cfg setting?)
-        String pathConstraint = "http://www.business.qld.gov.au/";
-        facetDefinitions.add(createPathFacetDefinition("Path", pathConstraint));
+        String scopingUrl = request.getParameter("scoping_url");
+        if (scopingUrl != null) {
+            facetDefinitions.add(createPathFacetDefinition("Path", scopingUrl));
+            question.getInputParameterMap().put("scope", scopingUrl.replaceFirst("^" + Pattern.quote("http://"), ""));
+        }
         facetDefinitions.add(createDateFacetDefinition("Date modified"));
         
         for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
-            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));            
+            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
         }
         
         FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
