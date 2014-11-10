@@ -1,6 +1,10 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -121,6 +126,105 @@ public class ContentAuditorController {
             return data + ":" + MetadataBasedCategory.INDEX_FIELD_BOUNDARY;
         }
     }
+    
+    public class HostnameFill extends CategoryDefinition implements MetadataBasedCategory {
+        
+        public HostnameFill(CategoryDefinition subCategory) {
+            this.subCategories.add(subCategory);
+        }
+        
+        /** Identifier used in query string parameter. */
+        private static final String TAG = "hostname";
+        
+        /** URLs are indexed in the metadata class <tt>v</tt> */
+        private static final String MD = "u";
+
+        @Override
+        @SneakyThrows(UnsupportedEncodingException.class)
+        public List<CategoryValue> computeValues(final SearchTransaction st) {
+            List<CategoryValue> categories = new ArrayList<CategoryValue>();
+            
+            Map<String, Integer> hostnameCounts = new HashMap<String, Integer>();
+            
+            int currentSelectionComponentCount = 0; // TODO - populate
+            Map<Integer, Map<String, Integer>> prefixCounts = new HashMap<Integer, Map<String, Integer>>();
+            
+            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
+                URI uri;
+                try {
+                    if (entry.getKey().contains("://")) {
+                        uri = new URI(entry.getKey());                        
+                    } else {
+                        // Padre strips the protocol if it's http :(
+                        uri = new URI("http://" + entry.getKey());                        
+                    }
+                } catch (URISyntaxException e) {
+                    // TODO - Is this possible? Decide how to deal with it.
+                    throw new RuntimeException(e);
+                }
+                String hostname = uri.getHost();
+                int count = entry.getValue();
+                updatePrefixCounts(prefixCounts, hostname, count);
+            }
+
+            for (Entry<String, Integer> entry : hostnameCounts.entrySet()) {
+                categories.add(new CategoryValue(
+                    entry.getKey(),
+                    entry.getKey(),
+                    entry.getValue(),
+                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                        + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
+                    getMetadataClass()));
+            }
+
+            return categories;
+        }
+
+        private void updatePrefixCounts(Map<Integer, Map<String, Integer>> prefixCounts, String hostname, Integer count) {
+            int position = hostname.indexOf('.', 0);
+            while (position != -1) {
+                String domainSuffix = hostname.substring(position + 1);
+                int segments = StringUtils.countMatches(domainSuffix, ".") + 1;
+                
+                if (!prefixCounts.containsKey(segments)) {
+                    prefixCounts.put(segments, new HashMap<String, Integer>());
+                }
+                
+                if (!prefixCounts.get(segments).containsKey(domainSuffix)) {
+                    prefixCounts.get(segments).put(domainSuffix, count);
+                } else {
+                    prefixCounts.get(segments).put(domainSuffix, prefixCounts.get(segments).get(domainSuffix) + count);
+                }
+                
+                position = hostname.indexOf('.', position + 1);
+            }
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getQueryConstraint(String value) {
+            return MD + ":\"" + value + "\"";
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getMetadataClass() {
+            return MD;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getQueryStringParamName() {
+            return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + TAG;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean matches(String value, String extraParams) {
+            return TAG.equals(extraParams);
+        }
+    }
+
 
     /**
      * Represents an unexpected error in the Content Auditor system
@@ -198,13 +302,11 @@ public class ContentAuditorController {
         // Overwrite the facet config with a custom one
         String qpOptions = " -rmcf="+constructRmcfValue(metadataFields)+" -count_dates=d -count_urls=1000";
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
-        
-        // TODO - Source the base URL from somewhere (a collection.cfg setting?)
-        String scopingUrl = request.getParameter("scoping_url");
-        if (scopingUrl != null) {
-            facetDefinitions.add(createPathFacetDefinition("Path", scopingUrl));
-            question.getInputParameterMap().put("scope", scopingUrl.replaceFirst("^" + Pattern.quote("http://"), ""));
-        }
+
+        String selectedHostname = request.getParameter("f.Hostname|hostname");
+
+        facetDefinitions.add(createUrlFacetDefinition("Hostname", selectedHostname));
+
         facetDefinitions.add(createDateFacetDefinition("Date modified"));
         
         for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
@@ -217,7 +319,7 @@ public class ContentAuditorController {
         
         ModelAndView mav =
             searchController.search(request, response, question, user);
-                
+        
         Map<String, Object> model = mav.getModel();
         
         SearchResponse sr = (SearchResponse) model.get("response");
@@ -225,7 +327,7 @@ public class ContentAuditorController {
         if (!sr.hasResultPacket()) {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
-        
+
 //        Integer totalMatching = sr.getResultPacket().getResultsSummary().getTotalMatching();
 //        
 //        // Insert 'missing' values for where there was no metadata of the given class in a document
@@ -292,15 +394,32 @@ public class ContentAuditorController {
     /**
      * Creates a URL path based facet definition with the given label, starting from urlBase
      */
-    private FacetDefinition createPathFacetDefinition(String label, String urlBase) {
+//    private FacetDefinition createPathFacetDefinition(String label, String urlBase) {
+//        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+//        URLFill fill = new URLFill();
+//        fill.setData(urlBase);
+//        fill.setLabel(label);
+//        fill.setFacetName(label);
+//        categoryDefinitions.add(fill);
+//        
+//        return new FacetDefinition(label, categoryDefinitions);
+//    }
+
+    private FacetDefinition createUrlFacetDefinition(String label, String selectedHostname) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        URLFill fill = new URLFill();
-        fill.setData(urlBase);
+        
+        URLFill urlFill = new URLFill();
+        urlFill.setData("http://" + selectedHostname + "/");
+        urlFill.setLabel(label);
+        urlFill.setFacetName(label);
+        
+        HostnameFill fill = new HostnameFill(urlFill);
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions);
+        FacetDefinition result = new FacetDefinition(label, categoryDefinitions);
+        return result;
     }
 
     /**
@@ -315,7 +434,7 @@ public class ContentAuditorController {
         categoryDefinitions.add(fill);
         
         MetadataRemainderFill remainder = new MetadataRemainderFill();
-        remainder.setData("-" + character.toString());
+        remainder.setData(character.toString());
         remainder.setLabel(label);
         remainder.setFacetName(label);
         categoryDefinitions.add(remainder);
