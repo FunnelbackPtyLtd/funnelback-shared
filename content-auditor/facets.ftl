@@ -43,23 +43,35 @@
                 var chart = AmCharts.makeChart("facet-chart-${facet_counter}", {
                     "type": "pie",
                     "dataProvider": [
-                      <#list s.facet.categories as c><#list c.values as cv>
-                      {
-                        "label": "${cv.label}",
-                        "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
-                      }
-                      <#if cv_index &gt; 5>
-                        <#if other_counter &gt; 0>
-                        ,
-                        {
-                          "label": "Other",
-                          "count": "${other_counter?c}"
-                        }
-                        </#if>
-                        <#break>
+
+                      <#assign categoriesToList = s.facet.categories>
+                      <#if (s.facet.categories[0].categories?size > 0)>
+                        <#assign categoriesToList = s.facet.categories[0].categories />
                       </#if>
-                      <#if cv_has_next>,</#if>
-                      </#list></#list>
+
+                      <#assign separator = ''>
+                      <#list categoriesToList as c>
+                        <#list c.values as cv>
+                          ${separator}
+                          {
+                            "label": "${cv.label}",
+                            "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
+                          }
+
+                          <#assign separator = ','>
+                          
+                          <#if cv_index &gt; 5>
+                            <#if other_counter &gt; 0>
+                            ${separator}
+                            {
+                              "label": "Other",
+                              "count": "${other_counter?c}"
+                            }
+                            </#if>
+                            <#break>
+                          </#if>
+                        </#list>
+                      </#list>
                     ],
                     "valueField": "count",
                     "titleField": "label"
