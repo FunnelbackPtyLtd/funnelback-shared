@@ -14,8 +14,8 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.crawl.CrawlerConfigUtils;
 import com.funnelback.common.policy.SimpleLoadingPolicy;
-import com.funnelback.crawler.config.CrawlerConfig;
 
 @Log4j
 public class UrlStatus {
@@ -55,7 +55,7 @@ public class UrlStatus {
         try  {
             
             File configFile = new File(config.getConfigDirectory(), Files.COLLECTION_FILENAME);
-            Properties properties = CrawlerConfig.readCollectionConfiguration(configFile.getAbsolutePath(), 
+            Properties properties = CrawlerConfigUtils.readCollectionConfiguration(configFile.getAbsolutePath(), 
                 searchHome.getAbsolutePath());
             int verbose = 0;
             if(log.isDebugEnabled()) {

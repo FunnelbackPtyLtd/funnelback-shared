@@ -136,11 +136,6 @@
 			<artifactId>funnelback-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.funnelback</groupId>
-			<artifactId>funnelback-crawler</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 		</dependency>
