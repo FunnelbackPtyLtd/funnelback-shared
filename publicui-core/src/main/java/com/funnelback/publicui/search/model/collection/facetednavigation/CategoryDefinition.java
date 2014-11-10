@@ -55,7 +55,7 @@ public abstract class CategoryDefinition {
     @Getter @Setter protected String label;
     
     /** List of nested category definitions */
-    @Getter private final List<CategoryDefinition> subCategories = new ArrayList<CategoryDefinition>();
+    @Getter protected final List<CategoryDefinition> subCategories = new ArrayList<CategoryDefinition>();
     
     /**
      * Recursively get the list of all query string parameters names used.
