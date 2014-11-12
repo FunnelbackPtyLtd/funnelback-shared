@@ -37,7 +37,7 @@
 				<entry key="ExtraSearches">
 					<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 						<property name="targetObject">
-							<ref local="freemarkerEnumModels" />
+							<ref bean="freemarkerEnumModels" />
 						</property>
 						<property name="targetMethod">
 							<value>get</value>

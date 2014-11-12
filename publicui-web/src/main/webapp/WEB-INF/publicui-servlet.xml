@@ -7,8 +7,8 @@
 
 				http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
-	<import resource="spring/freemarker.xml"/>
-	<import resource="spring/search-lifecycle.xml"/>
+	<import resource="/spring/freemarker.xml"/>
+	<import resource="/spring/search-lifecycle.xml"/>
 	
 	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender" />
 	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
