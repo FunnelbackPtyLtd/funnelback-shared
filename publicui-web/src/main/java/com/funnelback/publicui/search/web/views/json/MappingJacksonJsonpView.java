@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 /**
  * <p>Subclass of {@link MappingJacksonJsonView} that implements support
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
  * 
  * <p>The callback name should be provided as a request parameter.</p>
  */
-public class MappingJacksonJsonpView extends MappingJacksonJsonView {
+public class MappingJacksonJsonpView extends MappingJackson2JsonView {
 
     /** Pattern to validate the JS callback function name */
     private final static Pattern JS_FUNCTION_PATTERN = Pattern.compile("^[$A-Z_][0-9A-Z_$]*$", Pattern.CASE_INSENSITIVE);
