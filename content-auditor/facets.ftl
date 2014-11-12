@@ -42,6 +42,8 @@
             <script type="text/javascript">
                 var chart = AmCharts.makeChart("facet-chart-${facet_counter}", {
                     "type": "pie",
+                    "startAngle": "225",
+                    "startDuration": 0,
                     "dataProvider": [
 
                       <#assign categoriesToList = s.facet.categories>
@@ -55,9 +57,14 @@
                         <#list c.values as cv>
                           <#if cv.data != "d" || cv.label?matches("\\d*|Uncertain")>
 
+                            <#assign truncatedLabel=(cv.label!"")>
+                            <#if truncatedLabel?length &gt; 20>
+                              <#assign truncatedLabel=truncatedLabel?substring(0,19) + "...">
+                            </#if>
+
                             ${separator}
                             {
-                              "label": "${cv.label?js_string}",
+                              "label": "${truncatedLabel?js_string}",
                               "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
                             }
 
