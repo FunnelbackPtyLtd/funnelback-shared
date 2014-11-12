@@ -130,11 +130,6 @@
 	<bean id="jacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
 	<bean id="jacksonSerializationConfig" class="org.codehaus.jackson.map.SerializationConfig"
 		factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
-
-	<bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
-	<bean id="jackson2SerializationConfig" class="com.fasterxml.jackson.databind.SerializationConfig"
-		factory-bean="jackson2ObjectMapper" factory-method="getSerializationConfig" />
-
 	
 	<bean
 	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -146,6 +141,30 @@
 	        </list>
 	    </property>
 	</bean>	
+
+	<bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	<bean id="jackson2SerializationConfig" class="com.fasterxml.jackson.databind.SerializationConfig"
+		factory-bean="jackson2ObjectMapper" factory-method="getSerializationConfig" />
+
+	<bean
+	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	    <property name="targetObject" ref="jackson2ObjectMapper" />
+	    <property name="targetMethod" value="disable" />
+	    <property name="arguments" value="FAIL_ON_EMPTY_BEANS" />
+	</bean>	
+
+<!-- TODO - Must work out how to call this in Jackson2 world
+	<bean
+	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	    <property name="targetObject" ref="jackson2SerializationConfig" />
+	    <property name="targetMethod" value="setSerializationInclusion" />
+	    <property name="arguments">
+	        <list>
+	            <value type="com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion">#{ appProperties['json.inclusion'] }</value>
+	        </list>
+	    </property>
+	</bean>	
+	 -->
 	
 	<bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />	
 			
