@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 /**
- * <p>Subclass of {@link MappingJacksonJsonView} that implements support
+ * <p>Subclass of {@link MappingJackson2JsonView} that implements support
  * for <a href="http://en.wikipedia.org/wiki/JSONP">JSON-P</a> padding.</p>
  * 
  * <p>The callback name should be provided as a request parameter.</p>
