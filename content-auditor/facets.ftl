@@ -50,25 +50,31 @@
                       </#if>
 
                       <#assign separator = ''>
+                      <#assign counter = 0>
                       <#list categoriesToList as c>
                         <#list c.values as cv>
-                          ${separator}
-                          {
-                            "label": "${cv.label?js_string}",
-                            "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
-                          }
+                          <#if cv.data != "d" || cv.label?matches("\\d*|Uncertain")>
 
-                          <#assign separator = ','>
-                          
-                          <#if cv_index &gt; 5>
-                            <#if other_counter &gt; 0>
                             ${separator}
                             {
-                              "label": "Other",
-                              "count": "${other_counter?c}"
+                              "label": "${cv.label?js_string}",
+                              "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
                             }
+
+                            <#assign separator = ','>
+                            
+                            <#if counter &gt; 5>
+                              <#if other_counter &gt; 0>
+                              ${separator}
+                              {
+                                "label": "Other",
+                                "count": "${other_counter?c}"
+                              }
+                              </#if>
+                              <#break>
+                            <#else>
+                              <#assign counter = counter + 1>
                             </#if>
-                            <#break>
                           </#if>
                         </#list>
                       </#list>
