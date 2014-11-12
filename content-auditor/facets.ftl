@@ -54,7 +54,7 @@
                         <#list c.values as cv>
                           ${separator}
                           {
-                            "label": "${cv.label}",
+                            "label": "${cv.label?js_string}",
                             "count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
                           }
 
