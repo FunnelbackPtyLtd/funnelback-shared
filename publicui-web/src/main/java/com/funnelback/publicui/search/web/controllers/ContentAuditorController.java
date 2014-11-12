@@ -95,7 +95,7 @@ public class ContentAuditorController {
                 String item = entry.getKey();
                 int count = entry.getValue();
                 MetadataAndValue mdv = parseMetadata(item);
-                if (this.data.equals(mdv.metadata)) {
+                if (this.data.equals("-" + mdv.metadata)) {
                     remainderCount -= count;
                 }
             }
