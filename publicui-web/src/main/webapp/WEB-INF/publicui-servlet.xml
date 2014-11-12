@@ -105,7 +105,7 @@
 				<bean id="jsonView" class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
 					<property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
 					<property name="callbackParameterName" value="callback" />
-					<property name="objectMapper" ref="jacksonObjectMapper" />
+					<property name="objectMapper" ref="jackson2ObjectMapper" />
 				</bean>
 
 				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
@@ -130,6 +130,11 @@
 	<bean id="jacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
 	<bean id="jacksonSerializationConfig" class="org.codehaus.jackson.map.SerializationConfig"
 		factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
+
+	<bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	<bean id="jackson2SerializationConfig" class="com.fasterxml.jackson.databind.SerializationConfig"
+		factory-bean="jackson2ObjectMapper" factory-method="getSerializationConfig" />
+
 	
 	<bean
 	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
