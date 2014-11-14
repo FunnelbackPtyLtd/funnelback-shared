@@ -47,10 +47,8 @@ public class DefaultImageScaler implements ImageScaler {
             
             thumbnailor = thumbnailor.size(settings.getWidth(), settings.getHeight());
     
-            if (settings.getFormat() != null) {
-                thumbnailor = thumbnailor.outputFormat(settings.getFormat());
-            }        
-    
+            thumbnailor = thumbnailor.outputFormat(settings.getFormat());
+
             if (settings.getType() == null) {
                 thumbnailor = thumbnailor.keepAspectRatio(true);
             } else if (settings.getType() == ScaleType.keep_aspect) {

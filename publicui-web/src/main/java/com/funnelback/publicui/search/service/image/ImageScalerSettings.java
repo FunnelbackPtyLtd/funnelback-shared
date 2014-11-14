@@ -24,7 +24,7 @@ public class ImageScalerSettings {
     /**
      * The format (png, jpg etc.) the scaled image should be in.
      */
-    @Getter @Setter private String format;
+    @Getter @Setter private String format = "png";
     
     /**
      * The possible types of cropping which can occur

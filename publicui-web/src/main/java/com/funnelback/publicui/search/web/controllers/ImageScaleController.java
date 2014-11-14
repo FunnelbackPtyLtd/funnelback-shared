@@ -2,7 +2,10 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Iterator;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -45,6 +48,9 @@ public class ImageScaleController {
         byte[] unscaledImage = fetcher.fetch(url);
         byte[] scaledImage = scaler.scaleImage(url, unscaledImage, ss);
         
+        String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];
+        response.addHeader("Content-Type", mimeType);
+
         @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
         
         org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
