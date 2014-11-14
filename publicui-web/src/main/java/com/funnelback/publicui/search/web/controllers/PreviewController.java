@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.web.controllers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -60,6 +61,9 @@ public class PreviewController {
             byte[] scaledImage = scaler.scaleImage(
                     PreviewController.class.getCanonicalName() + "|" + url,
                     unscaledImage, ss);
+            
+            String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];
+            response.addHeader("Content-Type", mimeType);
             
             @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
             
