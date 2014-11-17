@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;

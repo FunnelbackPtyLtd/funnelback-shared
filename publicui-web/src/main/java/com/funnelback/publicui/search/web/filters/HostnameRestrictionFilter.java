@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;

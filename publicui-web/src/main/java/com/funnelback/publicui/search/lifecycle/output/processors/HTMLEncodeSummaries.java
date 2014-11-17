@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;

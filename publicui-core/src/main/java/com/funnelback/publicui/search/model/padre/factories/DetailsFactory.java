@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.xml.XmlStreamUtils;

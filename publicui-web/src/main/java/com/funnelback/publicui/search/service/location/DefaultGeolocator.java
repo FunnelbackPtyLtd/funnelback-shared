@@ -5,7 +5,7 @@ import java.io.IOException;
 import lombok.extern.log4j.Log4j;
 import lombok.Setter;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

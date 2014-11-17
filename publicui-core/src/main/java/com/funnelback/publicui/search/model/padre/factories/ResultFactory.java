@@ -7,9 +7,9 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

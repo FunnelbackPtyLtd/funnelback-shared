@@ -1,14 +1,11 @@
 package com.funnelback.publicui.search.model.log;
 
-import groovy.xml.XmlUtil;
-
 import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -47,12 +44,12 @@ public class ContextualNavigationLog extends Log {
         
         for (int i=0; i<previousClusters.size(); i++) {
             out.append("<cluster").append(i).append(">");
-            out.append(StringEscapeUtils.escapeXml(previousClusters.get(i)));
+            out.append(StringEscapeUtils.escapeXml11(previousClusters.get(i)));
             out.append("</cluster").append(i).append(">");
         }
         
         out.append("<coll>").append(collection.getId()).append("</coll>")
-            .append("<fluster>").append(StringEscapeUtils.escapeXml(cluster)).append("</fluster>")
+            .append("<fluster>").append(StringEscapeUtils.escapeXml11(cluster)).append("</fluster>")
             .append("<prof>").append(profile.getId()).append("</prof>")
             .append("<requestip>").append(requestId).append("</requestip>")
             .append("</cflus>");

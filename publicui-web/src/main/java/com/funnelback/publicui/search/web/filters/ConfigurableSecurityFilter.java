@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.exec.OS;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.DelegatingFilterProxy;
 

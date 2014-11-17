@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import lombok.Getter;
 import lombok.ToString;

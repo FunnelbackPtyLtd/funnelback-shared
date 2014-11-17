@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import lombok.SneakyThrows;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.publicui.utils.QueryStringUtils;
 

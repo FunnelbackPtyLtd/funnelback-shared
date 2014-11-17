@@ -1,6 +1,6 @@
 package com.funnelback.publicui.form.converter.operations;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.publicui.form.converter.Operation;
 

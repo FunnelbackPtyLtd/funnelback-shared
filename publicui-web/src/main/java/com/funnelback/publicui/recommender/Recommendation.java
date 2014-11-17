@@ -3,7 +3,7 @@ package com.funnelback.publicui.recommender;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import lombok.Getter;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.Date;
 import java.util.Map;
@@ -79,13 +79,13 @@ public class Recommendation {
         String value = metaData.get("c");
 
         if (value != null) {
-            this.description = StringEscapeUtils.escapeHtml(value);
+            this.description = StringEscapeUtils.escapeHtml4(value);
         }
 
         value = metaData.get("f");
 
         if (value != null) {
-            this.format = StringEscapeUtils.escapeHtml(value);
+            this.format = StringEscapeUtils.escapeHtml4(value);
         }
     }
 }

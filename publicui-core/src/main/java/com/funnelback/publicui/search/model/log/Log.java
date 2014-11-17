@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;

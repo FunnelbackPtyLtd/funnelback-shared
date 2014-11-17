@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-import org.apache.commons.lang.CharUtils;
+import org.apache.commons.lang3.CharUtils;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;

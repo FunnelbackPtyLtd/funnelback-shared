@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

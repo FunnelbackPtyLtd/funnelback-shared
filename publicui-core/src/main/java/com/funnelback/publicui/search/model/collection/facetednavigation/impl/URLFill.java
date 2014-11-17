@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;

@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.model.collection.paramtransform.criteria;
 
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * {@link Criteria} that checks that a specific parameter

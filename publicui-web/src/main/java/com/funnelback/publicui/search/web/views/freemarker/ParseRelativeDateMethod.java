@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;

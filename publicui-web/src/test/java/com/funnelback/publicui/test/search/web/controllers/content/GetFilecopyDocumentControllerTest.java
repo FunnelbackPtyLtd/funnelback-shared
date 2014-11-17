@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.vfs.FileSystemException;
 import org.junit.Assert;
 import org.junit.Before;

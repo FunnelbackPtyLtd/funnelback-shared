@@ -14,7 +14,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import lombok.Setter;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

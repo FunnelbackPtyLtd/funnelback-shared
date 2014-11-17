@@ -17,7 +17,7 @@ import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

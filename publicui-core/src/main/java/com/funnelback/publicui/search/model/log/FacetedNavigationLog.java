@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.model.log;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import lombok.Getter;
 
@@ -41,10 +41,10 @@ public class FacetedNavigationLog extends Log {
         out.append("<cfac>")
             .append("<t>").append(XML_DATE_FORMAT.format(date)).append("</t>")
             .append("<coll>").append(collection.getId()).append("</coll>")
-            .append("<facet>").append(StringEscapeUtils.escapeXml(facet)).append("</facet>")
+            .append("<facet>").append(StringEscapeUtils.escapeXml11(facet)).append("</facet>")
             .append("<prof>").append(profile.getId()).append("</prof>")
             .append("<requestip>").append(requestId).append("</requestip>")
-            .append("<squery>").append(StringEscapeUtils.escapeXml(query)).append("</squery>")
+            .append("<squery>").append(StringEscapeUtils.escapeXml11(query)).append("</squery>")
             .append("</cfac>");
         
         return out.toString();

@@ -5,7 +5,7 @@ import java.util.TreeSet;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;

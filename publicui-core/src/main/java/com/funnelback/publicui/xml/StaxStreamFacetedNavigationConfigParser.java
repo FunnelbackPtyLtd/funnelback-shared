@@ -12,8 +12,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;

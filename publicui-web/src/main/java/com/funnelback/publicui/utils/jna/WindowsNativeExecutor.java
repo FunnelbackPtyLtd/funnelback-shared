@@ -11,8 +11,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.Native;
