@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.maxmind.geoip.Location;
 import com.maxmind.geoip.LookupService;
 

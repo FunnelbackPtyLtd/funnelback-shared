@@ -1,8 +1,5 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
-import static com.funnelback.publicui.utils.web.MetricsConfiguration.VIEW_TYPE_NS;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -36,7 +33,6 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
 import com.funnelback.publicui.search.model.padre.Result;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;

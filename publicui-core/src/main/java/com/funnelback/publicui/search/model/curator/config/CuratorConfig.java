@@ -1,11 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

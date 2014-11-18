@@ -5,7 +5,6 @@ import java.util.Date;
 
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
 import com.funnelback.publicui.search.model.log.Log;
 

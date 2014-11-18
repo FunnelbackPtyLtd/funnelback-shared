@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.service.data.exception;
 
-import java.util.regex.Pattern;
-
 /**
  * Exception signaling that a TRIM record doesn't have an attachment
  */

@@ -2,9 +2,6 @@ package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 
 import java.io.IOException;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.bytes.FlatFileStore;

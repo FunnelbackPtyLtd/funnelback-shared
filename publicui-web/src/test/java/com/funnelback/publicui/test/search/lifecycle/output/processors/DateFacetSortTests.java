@@ -18,7 +18,6 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.DateFacetSort;
 import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.transaction.Facet;
-import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;

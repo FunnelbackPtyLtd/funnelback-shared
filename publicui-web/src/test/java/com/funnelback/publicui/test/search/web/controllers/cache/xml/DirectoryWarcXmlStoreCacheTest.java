@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 
 import lombok.SneakyThrows;
 
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.xml.WarcXmlStore;

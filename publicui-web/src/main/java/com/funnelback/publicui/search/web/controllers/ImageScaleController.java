@@ -2,10 +2,7 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Iterator;
-
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 

@@ -398,7 +398,7 @@ public class RecommenderControllerTest {
         indexURLTitles.add(OUTSIDE_SCOPE_TITLE);
 
         List<ItemTuple> cachedItems = getItemTuples(indexURLs);
-        List<ItemTuple> scopedItems = new ArrayList(cachedItems);
+        List<ItemTuple> scopedItems = new ArrayList<ItemTuple>(cachedItems);
         scopedItems.remove(1);
         indexURLs.remove(1);
 

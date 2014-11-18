@@ -1,22 +1,17 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
-import java.util.HashMap;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.ConfigRepository.GlobalConfiguration;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
 import com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
-import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModelException;
 
 public class AuthTokenMethodTest extends AbstractMethodTest {

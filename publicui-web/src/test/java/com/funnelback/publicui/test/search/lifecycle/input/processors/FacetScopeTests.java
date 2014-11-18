@@ -2,7 +2,6 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 

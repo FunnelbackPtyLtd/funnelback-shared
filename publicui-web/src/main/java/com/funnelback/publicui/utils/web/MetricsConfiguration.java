@@ -3,30 +3,21 @@ package com.funnelback.publicui.utils.web;
 import static com.codahale.metrics.MetricRegistry.name;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
-import javax.net.SocketFactory;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.graphite.Graphite;
-import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.metric.MetricRegistryReporter;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.springmvc.utils.web.LocalHostnameHolder;

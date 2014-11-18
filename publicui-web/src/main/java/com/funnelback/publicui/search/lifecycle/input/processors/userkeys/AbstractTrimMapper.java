@@ -22,7 +22,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
-import com.google.common.collect.Lists;
 
 /**
  * Fetch the user keys from TRIM by running an external tool

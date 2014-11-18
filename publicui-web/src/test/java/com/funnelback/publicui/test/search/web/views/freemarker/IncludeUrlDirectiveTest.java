@@ -1,11 +1,9 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

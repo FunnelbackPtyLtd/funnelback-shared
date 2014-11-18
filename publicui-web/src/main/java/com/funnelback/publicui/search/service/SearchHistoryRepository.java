@@ -3,7 +3,6 @@ package com.funnelback.publicui.search.service;
 import java.util.List;
 
 import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;

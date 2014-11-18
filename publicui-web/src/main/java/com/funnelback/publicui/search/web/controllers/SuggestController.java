@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +29,6 @@ import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion.ActionType;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion.DisplayType;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.SearchHistory;

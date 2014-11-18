@@ -1,18 +1,12 @@
 package com.funnelback.publicui.test.search.web.binding;
 
 import java.util.Locale;
-import static org.mockito.Mockito.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.web.servlet.LocaleResolver;
 
-import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 
 public class SearchQuestionBinderTest {

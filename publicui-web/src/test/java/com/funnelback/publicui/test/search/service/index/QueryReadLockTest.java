@@ -2,10 +2,7 @@ package com.funnelback.publicui.test.search.service.index;
 
 import com.funnelback.common.lock.Lock;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
-import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Files;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.index.DefaultQueryReadLock;

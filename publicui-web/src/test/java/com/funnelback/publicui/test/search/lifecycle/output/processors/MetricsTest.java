@@ -7,8 +7,6 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_ELAPS
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

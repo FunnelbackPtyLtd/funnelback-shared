@@ -8,11 +8,7 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 

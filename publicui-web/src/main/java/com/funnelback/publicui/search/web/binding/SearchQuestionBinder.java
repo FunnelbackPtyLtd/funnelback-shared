@@ -1,8 +1,6 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.LocaleResolver;
@@ -14,9 +12,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.log.LogUtils;
-import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
 

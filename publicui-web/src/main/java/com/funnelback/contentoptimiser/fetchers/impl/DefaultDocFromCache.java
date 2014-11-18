@@ -32,6 +32,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.StringRecord;
 import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
@@ -140,7 +141,7 @@ public class DefaultDocFromCache implements DocFromCache {
 
         try {
 
-            RecordAndMetadata cached =
+            RecordAndMetadata<? extends Record<?>> cached =
                 dataRepository.getCachedDocument(
                     new Collection(collectionId, config),
                     StoreView.live,
