@@ -29,7 +29,6 @@ public class UniqueLinesResource extends AbstractSingleFileResource<Set<String>>
     @Override
     public Set<String> parse() throws IOException {
         log.debug("Loading file '"+file.getAbsolutePath()+"'");
-        @SuppressWarnings("unchecked")
         List<String> lines = FileUtils.readLines(file);                
         CollectionUtils.filter(lines, new RemoveCommentsPredicate());
         return new HashSet<String>(lines);

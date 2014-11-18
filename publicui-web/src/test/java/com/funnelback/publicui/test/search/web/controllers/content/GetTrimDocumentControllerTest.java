@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;

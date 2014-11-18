@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.annotation.Resource;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;

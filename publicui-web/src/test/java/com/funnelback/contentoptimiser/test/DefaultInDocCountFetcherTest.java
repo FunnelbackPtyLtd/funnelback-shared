@@ -8,7 +8,7 @@ import com.funnelback.contentoptimiser.utils.PanLookFactory;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -3,7 +3,7 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

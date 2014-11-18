@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.io.FileUtils;

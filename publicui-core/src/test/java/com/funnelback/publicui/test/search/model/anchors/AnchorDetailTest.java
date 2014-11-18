@@ -1,11 +1,9 @@
 package com.funnelback.publicui.test.search.model.anchors;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.anchors.AnchorDetail;
-
 
 public class AnchorDetailTest {
 

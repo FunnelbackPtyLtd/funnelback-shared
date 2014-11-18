@@ -78,7 +78,6 @@ public abstract class AbstractLocalIndexRepository implements IndexRepository {
      * @throws UnsupportedOperationException If the collection doesn't have a
      * <code>.bldinfo</code> parameter (such as meta collections)
      */
-    @SuppressWarnings("unchecked")
     protected Map<String, String> loadBuildInfo(String collectionId) throws UnsupportedOperationException{
         Collection c = configRepository.getCollection(collectionId);
         if (c == null) {

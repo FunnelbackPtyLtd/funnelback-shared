@@ -46,7 +46,6 @@ public class SearchQuestionBinder {
      * @param request
      * @param question
      */
-    @SuppressWarnings("unchecked")
     public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
         question.getRawInputParameters().putAll(request.getParameterMap());
         

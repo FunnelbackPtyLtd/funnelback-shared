@@ -2,7 +2,7 @@ package com.funnelback.publicui.test.utils;
 
 import java.util.HashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

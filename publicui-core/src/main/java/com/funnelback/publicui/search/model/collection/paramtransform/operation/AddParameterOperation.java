@@ -30,7 +30,6 @@ public class AddParameterOperation implements Operation {
         this.parameterValues = new String[] {singleValue};
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String[]> apply(final Map<String, String[]> parameters) {
         HashMap<String, String[]> out = new HashMap<String, String[]>(parameters);

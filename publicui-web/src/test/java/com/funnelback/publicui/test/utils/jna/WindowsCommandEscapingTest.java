@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.utils.jna;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.jna.WindowsCommandEscaping;

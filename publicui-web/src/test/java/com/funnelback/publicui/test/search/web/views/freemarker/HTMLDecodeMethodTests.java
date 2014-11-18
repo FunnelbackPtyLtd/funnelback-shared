@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

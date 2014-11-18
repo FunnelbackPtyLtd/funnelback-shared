@@ -3,7 +3,7 @@ package com.funnelback.publicui.test.search.service.location;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;

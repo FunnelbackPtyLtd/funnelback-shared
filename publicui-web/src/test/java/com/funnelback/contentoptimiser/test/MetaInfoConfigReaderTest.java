@@ -2,7 +2,7 @@ package com.funnelback.contentoptimiser.test;
 
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

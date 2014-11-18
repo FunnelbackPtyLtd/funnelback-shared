@@ -2,7 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.UnsupportedEncodingException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

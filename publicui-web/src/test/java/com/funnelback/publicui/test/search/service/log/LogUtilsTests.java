@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.service.log;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;

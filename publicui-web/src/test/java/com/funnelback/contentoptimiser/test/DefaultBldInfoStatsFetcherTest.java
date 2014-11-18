@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

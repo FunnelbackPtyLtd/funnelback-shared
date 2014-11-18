@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.search.web.binding;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

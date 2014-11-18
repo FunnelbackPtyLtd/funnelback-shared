@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,9 +54,12 @@ public class MetaInfoFetcherTest {
         String profileName = "profile";
         c.getProfiles().put(profileName, profile);
         MetaInfoFetcher f = new MetaInfoFetcher(c,profileName);
-        Assert.assertEquals(0.2,f.getRankerOptions().getMetaWeight("k"));
-        Assert.assertEquals(0.1,f.getRankerOptions().getMetaWeight("t"));
-        Assert.assertEquals(0.3,f.getRankerOptions().getMetaWeight("J"));
+        
+        //Test equality within to within some arbitrary low delta
+        double eps = 0.001;
+        Assert.assertEquals(0.2,f.getRankerOptions().getMetaWeight("k"), eps);
+        Assert.assertEquals(0.1,f.getRankerOptions().getMetaWeight("t"), eps);
+        Assert.assertEquals(0.3,f.getRankerOptions().getMetaWeight("J"), eps);
     }
     
     @Test public void testDefaultMetaInfo() {

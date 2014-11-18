@@ -4,7 +4,7 @@ import com.funnelback.publicui.search.model.padre.*;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;

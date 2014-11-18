@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.search.lifecycle;
 
 import groovy.lang.GroovyClassLoader;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
