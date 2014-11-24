@@ -441,7 +441,7 @@
                     <#assign facet = f in s>
                     <#assign facet_index = f_index in s>
                     <#assign facet_has_next = f_has_next in s>
-                    <div class="${class}">
+                    <div id="facet-${facet_index}" class="${class}">
                         <#nested>
                     </div>
                 </#if>
