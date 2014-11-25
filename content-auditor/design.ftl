@@ -2,18 +2,6 @@
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 
-<#-- Assign global variables -->
-
-<#assign serviceName0>${question.inputParameterMap["collection"]!?html}</#assign>
-<#assign serviceName1>Funnelback sample report 2014</#assign>
-<#assign serviceName2>TODO</#assign>
-<#assign serviceName3>Todo</#assign>
-
-<#assign collectionId0>${question.inputParameterMap["collection"]!?html}</#assign>
-<#assign collectionId1>Todo</#assign>
-<#assign collectionId2>Todo</#assign>
-<#assign collectionId3>Todo</#assign>
-
 <#-- Contents of the HTML <head> tag -->
 
 <#assign pathToAssets = '/s/content-auditor/assets/' />
@@ -125,9 +113,6 @@
 
 <section id="page-mast">
 <div class="container-fluid">
-  <@s.InitialFormOnly>
-  
-  </@s.InitialFormOnly>
 
   <@s.AfterSearchOnly>
   
