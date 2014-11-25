@@ -36,51 +36,55 @@ POTENTIAL IMPROVEMENTS:
 <#-- Assign global variables -->
 
 <#assign serviceName0>${question.inputParameterMap["collection"]!?html}</#assign>
-<#assign serviceName1>TODO</#assign>
-<#assign serviceName2>TODO</#assign>
-<#assign serviceName3>TODO</#assign>
+<#assign serviceName1>Todo</#assign>
+<#assign serviceName2>Todo</#assign>
+<#assign serviceName3>Todo</#assign>
 
 <#assign collectionId0>${question.inputParameterMap["collection"]!?html}</#assign>
-<#assign collectionId1>TODO</#assign>
-<#assign collectionId2>TODO</#assign>
-<#assign collectionId3>TODO</#assign>
+<#assign collectionId1>Todo</#assign>
+<#assign collectionId2>Todo</#assign>
+<#assign collectionId3>Todo</#assign>
 
 <!DOCTYPE html>
 <html lang="en-us">
 
-<#-- Start:Macro: main.ftl - Head -->
-<@design.Head />
-<#-- End:Macro: main.ftl - Head -->
+	<#-- Start:Macro: main.ftl - Head -->
+	<@design.Head />
+	<#-- End:Macro: main.ftl - Head -->
 
-<@s.InitialFormOnly>
-<body class="initial-form">
-</@s.InitialFormOnly>
+	<@s.InitialFormOnly>
+	<body class="initial-form">
+	</@s.InitialFormOnly>
 
-<@s.AfterSearchOnly>
-<body class="after-search">
-</@s.AfterSearchOnly>
+	<@s.AfterSearchOnly>
+	<body class="after-search">
+	</@s.AfterSearchOnly>
 
-<#-- Start:Macro: main.ftl - Header -->
-<@design.Header />
-<#-- End:Macro: main.ftl - Header -->
+	<#-- Start:Macro: main.ftl - Header -->
+	<@design.Header />
+	<#-- End:Macro: main.ftl - Header -->
+	
+	<@s.InitialFormOnly>
+	<#-- Start:Macro: main.ftl - InitialTabs -->
 
-<@s.InitialFormOnly>
-<#-- Start:Macro: main.ftl - InitialTabs -->
-<@main.InitialTabs />
-<#-- End:Macro: main.ftl - InitialTabs -->
-</@s.InitialFormOnly>
+	<@main.InitialTabs />
+	<#-- End:Macro: main.ftl - InitialTabs -->
+	</@s.InitialFormOnly>
 
-<@fb.ErrorMessage />
+	<@fb.ErrorMessage />
 
-<@s.AfterSearchOnly>
-<#-- Start:Macro: main.ftl - ResultTabs -->
-<@main.ResultTabs />
-<#-- End:Macro: main.ftl - ResultTabs -->
-</@s.AfterSearchOnly>
+	<@s.AfterSearchOnly>
+	<#-- Start:Macro: main.ftl - ResultTabs -->
+	<@main.ResultTabs />
+	<#-- End:Macro: main.ftl - ResultTabs -->
+	
+	</@s.AfterSearchOnly>
 
-<#-- Start:Macro: main.ftl - FooterScripts -->
-<@design.FooterScripts />
-<#-- End:Macro: main.ftl - FooterScripts -->
-
+	
+	
+	<#-- Start:Macro: main.ftl - FooterScripts -->
+	<@design.FooterScripts />
+	<#-- End:Macro: main.ftl - FooterScripts -->
+	
 </body>
 </html>

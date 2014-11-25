@@ -52,7 +52,7 @@
                   }
                 );
             </script>
-            <#assign facet_counter = facet_counter + 1 />        </@s.Facet>
+            <#assign facet_counter = facet_counter + 1 /></@s.Facet>
     </div>
 </@s.FacetedSearch>
 

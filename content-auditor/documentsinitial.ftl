@@ -9,17 +9,17 @@
 <!-- Collection: <@s.cfg>service_name</@s.cfg> | Attributes last updated: ${response.resultPacket.details.collectionUpdated?datetime} -->
 
 <!-- RESULTS SUMMARY -->
-<p class="<@s.FacetedSearch>fb-with-faceting</@s.FacetedSearch>">        
-    <#if response.resultPacket.resultsSummary.totalMatching == 0>
-        <strong class="fb-result-count" id="fb-total-matching">0</strong> documents
-    </#if>
-    <#if response.resultPacket.resultsSummary.totalMatching != 0>
-        <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
-        <strong class="fb-result-count" id="fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
-        <strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-        documents</strong>
-    </#if>
-</p>
+	<p class="<@s.FacetedSearch>fb-with-faceting</@s.FacetedSearch>">        
+		<#if response.resultPacket.resultsSummary.totalMatching == 0>
+			<strong class="fb-result-count" id="fb-total-matching">0</strong> documents
+		</#if>
+		<#if response.resultPacket.resultsSummary.totalMatching != 0>
+			<strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
+			<strong class="fb-result-count" id="fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
+			<strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
+			documents</strong>
+		</#if>
+	</p>
 
     <!-- CSV DOWNLOAD -->
     <a class="btn" href="/s/search.html?${QueryString?replace("form=documentsinitial","form=csv_export")}&num_ranks=10000">Download as CSV (Maximum 10K Records)</a>          
@@ -178,3 +178,5 @@
     
 <!--ENDDOCUMENTS-->
 </@s.AfterSearchOnly>
+
+Hello World this is a sample footer
