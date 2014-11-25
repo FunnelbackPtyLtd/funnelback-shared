@@ -140,6 +140,7 @@
                 <div class="tab-pane active" id="collection-1-tab-1">
                     <div class="fb-after-search-facets"></div>
 					    <#include "/web/templates/modernui/content-auditor/facets.ftl" />
+              <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
                     </div>
                 <div class="tab-pane" id="collection-1-tab-2">
                     <#if QueryString?contains("type=")>
