@@ -340,5 +340,10 @@
             <classifier>natives-${platform}</classifier>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>io.mola.galimatias</groupId>
+			<artifactId>galimatias</artifactId>
+			<version>0.2.0</version>
+		</dependency>
     </dependencies>
 </project>

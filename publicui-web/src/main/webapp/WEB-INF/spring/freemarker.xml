@@ -106,6 +106,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FormListMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.FormListMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FilterListMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.FilterListMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.FacetedNavigationConfigMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.FacetedNavigationConfigMethod" />
 				</entry>

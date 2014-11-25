@@ -16,6 +16,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -116,6 +117,8 @@ public class FacetedNavigation extends AbstractInputProcessor {
                                     } else if (ct instanceof MetadataBasedCategory) {
                                         MetadataBasedCategory type = (MetadataBasedCategory) ct;
                                         queryFacetConstraints.add(type.getQueryConstraint(value));
+                                    } else if (ct instanceof UrlScopeFill) {
+                                        searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add("-scope=" + value);
                                     }
                                 }
                             }

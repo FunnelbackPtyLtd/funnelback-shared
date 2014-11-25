@@ -378,6 +378,12 @@ public class SearchQuestion {
         /** Controls the type/level of stemming which should be used */
         public static String STEM = "stem";
 
+        /** Controls whether or not result collapsing is performed */
+        public static String COLLAPSING = "collapsing";
+
+        /** Controls the field used for collapsing */
+        public static String COLLAPSING_SIGNATURE = "collapsing_sig";
+
         /**
          * Common request header names
          * 

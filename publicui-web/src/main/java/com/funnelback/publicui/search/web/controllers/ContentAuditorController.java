@@ -1,21 +1,15 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -27,18 +21,16 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.contentauditor.MetadataMissingFill;
+import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
-import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 /**
@@ -50,174 +42,6 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 @Controller
 @Log4j
 public class ContentAuditorController {
-
-    /**
-     * A custom metadata fill which is used to capture the 'remainder' documents (i.e. those which did not have any of the 
-     * desired type of metadata).
-     * 
-     * Note that the query which will be run by selecting this relies on -ifb having been used as an indexer option.
-     */
-    public class MetadataRemainderFill extends MetadataFieldFill {
-        
-        /** The category label shown for the remainder facet */
-        private static final String CATEGORY_LABEL = "None";
-        
-        /** Special value shown as the param value (though this is not actually used) */
-        private static final String UNSET_VALUE = "$unset";
-        
-        /**
-         * Works just like MetadataFieldFill's setData, but always prefixes a '-'
-         * to distinguish it from the MetadataFieldFill one.
-         */
-        @Override
-        public void setData(String data) {
-            this.data = "-" + data;
-        }
-        
-        /** 
-         * Produces only one categoryValue, which will have a count of the remaining documents
-         * (i.e. those for which no metadata in this class was set) which will select those documents.
-         */
-        @Override
-        @SneakyThrows(UnsupportedEncodingException.class)
-        public List<CategoryValue> computeValues(final SearchTransaction st) {
-            int remainderCount = st.getResponse().getResultPacket().getResultsSummary().getTotalMatching();
-            
-            // Subtract out the metadata entries which have been assigned
-            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
-                String item = entry.getKey();
-                int count = entry.getValue();
-                MetadataAndValue mdv = parseMetadata(item);
-                if (this.data.equals("-" + mdv.metadata)) {
-                    remainderCount -= count;
-                }
-            }
-            List<CategoryValue> categories = new ArrayList<CategoryValue>();
-
-            if (remainderCount > 0) {
-                // There are some documents which didn't have any matches, so add a new remainder entry
-                categories.add(new CategoryValue(
-                    CATEGORY_LABEL,
-                    CATEGORY_LABEL,
-                    remainderCount,
-                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                    + "=" + URLEncoder.encode(UNSET_VALUE, "UTF-8"),
-                    getMetadataClass()));
-            }
-            
-            return categories;
-        }
-
-        /**
-        * Produces a query constraint like -x:$++ (i.e. all documents where x was never set to anything).
-        * 
-        * Value is ignored (but should be expected to be UNSET_VALUE).
-        */
-        @Override
-        public String getQueryConstraint(String value) {
-            // This produces a query like -x:$++ (i.e. all documents where x was never set to anything)
-            return data + ":" + MetadataBasedCategory.INDEX_FIELD_BOUNDARY;
-        }
-    }
-    
-    public class HostnameFill extends CategoryDefinition implements MetadataBasedCategory {
-        
-        public HostnameFill(CategoryDefinition subCategory) {
-            this.subCategories.add(subCategory);
-        }
-        
-        /** Identifier used in query string parameter. */
-        private static final String TAG = "hostname";
-        
-        /** URLs are indexed in the metadata class <tt>v</tt> */
-        private static final String MD = "u";
-
-        @Override
-        @SneakyThrows(UnsupportedEncodingException.class)
-        public List<CategoryValue> computeValues(final SearchTransaction st) {
-            List<CategoryValue> categories = new ArrayList<CategoryValue>();
-            
-            Map<String, Integer> hostnameCounts = new HashMap<String, Integer>();
-            
-            int currentSelectionComponentCount = 0; // TODO - populate
-            Map<Integer, Map<String, Integer>> prefixCounts = new HashMap<Integer, Map<String, Integer>>();
-            
-            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
-                URI uri;
-                try {
-                    if (entry.getKey().contains("://")) {
-                        uri = new URI(entry.getKey());                        
-                    } else {
-                        // Padre strips the protocol if it's http :(
-                        uri = new URI("http://" + entry.getKey());                        
-                    }
-                } catch (URISyntaxException e) {
-                    // TODO - Is this possible? Decide how to deal with it.
-                    throw new RuntimeException(e);
-                }
-                String hostname = uri.getHost();
-                int count = entry.getValue();
-                updatePrefixCounts(prefixCounts, hostname, count);
-            }
-
-            for (Entry<String, Integer> entry : hostnameCounts.entrySet()) {
-                categories.add(new CategoryValue(
-                    entry.getKey(),
-                    entry.getKey(),
-                    entry.getValue(),
-                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                        + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
-                    getMetadataClass()));
-            }
-
-            return categories;
-        }
-
-        private void updatePrefixCounts(Map<Integer, Map<String, Integer>> prefixCounts, String hostname, Integer count) {
-            int position = hostname.indexOf('.', 0);
-            while (position != -1) {
-                String domainSuffix = hostname.substring(position + 1);
-                int segments = StringUtils.countMatches(domainSuffix, ".") + 1;
-                
-                if (!prefixCounts.containsKey(segments)) {
-                    prefixCounts.put(segments, new HashMap<String, Integer>());
-                }
-                
-                if (!prefixCounts.get(segments).containsKey(domainSuffix)) {
-                    prefixCounts.get(segments).put(domainSuffix, count);
-                } else {
-                    prefixCounts.get(segments).put(domainSuffix, prefixCounts.get(segments).get(domainSuffix) + count);
-                }
-                
-                position = hostname.indexOf('.', position + 1);
-            }
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public String getQueryConstraint(String value) {
-            return MD + ":\"" + value + "\"";
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public String getMetadataClass() {
-            return MD;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public String getQueryStringParamName() {
-            return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + TAG;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean matches(String value, String extraParams) {
-            return TAG.equals(extraParams);
-        }
-    }
-
 
     /**
      * Represents an unexpected error in the Content Auditor system
@@ -261,6 +85,26 @@ public class ContentAuditorController {
             @ModelAttribute SearchUser user,
             String type) {
         
+        customiseRequest(question);
+        
+        ModelAndView mav =
+            searchController.search(request, response, question, user);
+        
+        Map<String, Object> model = mav.getModel();
+        
+        SearchResponse sr = (SearchResponse) model.get("response");
+        
+        if (!sr.hasResultPacket()) {
+            throw new ContentAuditorException("Expected result packet for request, but got none");
+        }
+                
+        String viewName = getViewName(type);
+        
+        return new ModelAndView(viewName, model);
+    }
+
+    /** TODO */
+    private void customiseRequest(SearchQuestion question) {
         // We want search result links to come back to us
         // But still allow config to make it absolute
         String searchLink = question.getCollection().getConfiguration().value(Keys.ModernUI.SEARCH_LINK);
@@ -273,10 +117,43 @@ public class ContentAuditorController {
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
+        if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {"$"});
+        }
+
         if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery("-padrenullquery");
         }
+
+        question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
+    }
+
+    /** TODO */
+    private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
+        // Overwrite the facet config with a custom one
+        List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
+
+        facetDefinitions.add(createUrlFacetDefinition("URI"));
+
+        facetDefinitions.add(createDateFacetDefinition("Date modified"));
+
+        StringBuilder rmcfValue = new StringBuilder();
+        for (Map.Entry<String, Character> entry : readMetadataFacetInfo(question).entrySet()) {
+            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
+            rmcfValue.append(entry.getValue());
+        }
         
+        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000";
+        
+        // TODO - Add query based facets somehow?
+        
+        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
+        return facetedNavigationConfig;
+    }
+
+    /** TODO */
+    private Map<String, Character> readMetadataFacetInfo(SearchQuestion question) {
         // Read in the configured metadata classes
         Map<String, Character> metadataFields = new HashMap<String, Character>();
 
@@ -291,83 +168,7 @@ public class ContentAuditorController {
                 }
             }
         }
-
-        // Overwrite the facet config with a custom one
-        String qpOptions = " -rmcf="+constructRmcfValue(metadataFields)+" -count_dates=d -count_urls=1000";
-        List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
-
-        String selectedHostname = request.getParameter("f.Hostname|hostname");
-
-        facetDefinitions.add(createUrlFacetDefinition("Hostname", selectedHostname));
-
-        facetDefinitions.add(createDateFacetDefinition("Date modified"));
-        
-        for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
-            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
-        }
-        
-        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
-        
-        question.getCollection().setFacetedNavigationLiveConfig(facetedNavigationConfig);
-        
-        ModelAndView mav =
-            searchController.search(request, response, question, user);
-        
-        Map<String, Object> model = mav.getModel();
-        
-        SearchResponse sr = (SearchResponse) model.get("response");
-
-        if (!sr.hasResultPacket()) {
-            throw new ContentAuditorException("Expected result packet for request, but got none");
-        }
-
-//        Integer totalMatching = sr.getResultPacket().getResultsSummary().getTotalMatching();
-//        
-//        // Insert 'missing' values for where there was no metadata of the given class in a document
-//        for (Facet f : sr.getFacets()) {
-//            for (Category c : f.getCategories()) {
-//                int withCategoryValueCount = 0;
-//                for (CategoryValue cv : c.getValues()) {
-//                    withCategoryValueCount += cv.getCount();
-//                }
-//                
-//                if (withCategoryValueCount < totalMatching) {
-//                    /*
-//                     * TODO - We need to somehow make the links go somewhere useful - Maybe with a query like
-//                     * -s:"$++ $++"
-//                     */
-//                    String metadataClass = Character.toString(c.getQueryStringParamName().charAt(c.getQueryStringParamName().length() - 1));
-//                    c.getValues().add(new CategoryValue("None", "None", (totalMatching - withCategoryValueCount), "s=-" + metadataClass + ":\"$++ $++\"", metadataClass));
-//                }
-//            }
-//            
-//        }
-
-        if (type == null) {
-            type = "index";
-        }
-        
-        // Content auditor always uses the specific content auditor template
-        String viewName = 
-            DefaultValues.FOLDER_WEB + "/" +
-            DefaultValues.FOLDER_TEMPLATES + "/" +
-            DefaultValues.FOLDER_MODERNUI + "/" +
-            DefaultValues.FOLDER_CONTENT_AUDITOR + "/" +
-            type;
-        
-        return new ModelAndView(viewName, model);
-    }
-
-    /**
-     * Return an rmcf query processor option value covering all the given metadata fields
-     */
-    private String constructRmcfValue(Map<String, Character> metadataFields) {
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<String, Character> entry : metadataFields.entrySet()) {
-            result.append(entry.getValue());
-        }
-        
-        return result.toString();
+        return metadataFields;
     }
 
     /**
@@ -384,29 +185,11 @@ public class ContentAuditorController {
         return new FacetDefinition(label, categoryDefinitions);
     }
 
-    /**
-     * Creates a URL path based facet definition with the given label, starting from urlBase
-     */
-//    private FacetDefinition createPathFacetDefinition(String label, String urlBase) {
-//        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-//        URLFill fill = new URLFill();
-//        fill.setData(urlBase);
-//        fill.setLabel(label);
-//        fill.setFacetName(label);
-//        categoryDefinitions.add(fill);
-//        
-//        return new FacetDefinition(label, categoryDefinitions);
-//    }
-
-    private FacetDefinition createUrlFacetDefinition(String label, String selectedHostname) {
+    /** TODO */
+    private FacetDefinition createUrlFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         
-        URLFill urlFill = new URLFill();
-        urlFill.setData("http://" + selectedHostname + "/");
-        urlFill.setLabel(label);
-        urlFill.setFacetName(label);
-        
-        HostnameFill fill = new HostnameFill(urlFill);
+        UrlScopeFill fill = new UrlScopeFill();
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
@@ -426,13 +209,29 @@ public class ContentAuditorController {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        MetadataRemainderFill remainder = new MetadataRemainderFill();
+        MetadataMissingFill remainder = new MetadataMissingFill();
         remainder.setData(character.toString());
         remainder.setLabel(label);
         remainder.setFacetName(label);
         categoryDefinitions.add(remainder);
         
         return new FacetDefinition(label, categoryDefinitions);
+    }
+
+    /** TODO */
+    private String getViewName(String type) {
+        if (type == null) {
+            type = "index";
+        }
+        
+        // Content auditor always uses the specific content auditor template
+        String viewName = 
+            DefaultValues.FOLDER_WEB + "/" +
+            DefaultValues.FOLDER_TEMPLATES + "/" +
+            DefaultValues.FOLDER_MODERNUI + "/" +
+            DefaultValues.FOLDER_CONTENT_AUDITOR + "/" +
+            type;
+        return viewName;
     }
 
 }
