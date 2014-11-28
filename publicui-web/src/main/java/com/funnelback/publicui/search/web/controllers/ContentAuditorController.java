@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
@@ -27,11 +31,16 @@ import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.QueryItem;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+import com.funnelback.springmvc.service.resource.ResourceManager;
 
 /**
  * Presents a content auditor interface.
@@ -117,6 +126,10 @@ public class ContentAuditorController {
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
+        // TODO - Proper handling of page view counts
+        question.getRawInputParameters().put("SM", new String[] {"meta"});
+        question.getRawInputParameters().put("SF", new String[] {"x"});
+
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
             question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {"$"});
@@ -129,11 +142,43 @@ public class ContentAuditorController {
         question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
     }
 
-    /** TODO */
+    
+    @Autowired
+    @Setter
+    protected ResourceManager resourceManager;
+
+    @Autowired
+    @Setter
+    private FacetedNavigationConfigParser fnConfigParser;
+
+    /** Overwrite the facet config with a custom one */
     private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
-        // Overwrite the facet config with a custom one
+        String indexView = question.getInputParameterMap().get("view");
+        if (indexView == null) {
+            indexView = "live";
+        }
+
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
 
+        // Read the snapshot's faceted nav config and get any gscope based facets
+        File fnConfig = new File(question.getCollection().getConfiguration().getCollectionRoot(), indexView
+            + File.separator + DefaultValues.FOLDER_IDX + File.separator
+            + Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
+        try {
+            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser));
+            for (FacetDefinition fd : base.getFacetDefinitions()) {
+                for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
+                    if (cd instanceof GScopeItem || cd instanceof QueryItem) {
+                        facetDefinitions.add(fd);
+                    }
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        
         facetDefinitions.add(createUrlFacetDefinition("URI"));
 
         facetDefinitions.add(createDateFacetDefinition("Date modified"));
@@ -144,7 +189,7 @@ public class ContentAuditorController {
             rmcfValue.append(entry.getValue());
         }
         
-        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000";
+        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
         
         // TODO - Add query based facets somehow?
         
