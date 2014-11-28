@@ -100,6 +100,7 @@ public class ClickController extends SessionController {
             @RequestParam(required= true, value = RequestParameters.COLLECTION) String collectionId,
             @RequestParam(required = false) String profile,
             @RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType,
+            @RequestParam(required = false) String callback,
             @ModelAttribute SearchUser user) {
     
         Collection collection = configRepository.getCollection(collectionId);
@@ -125,6 +126,15 @@ public class ClickController extends SessionController {
                 new InteractionLog(new Date(), collection, collection.getProfiles().get(profile),
                     requestId, logType, referer, parameters,
                     LogUtils.getUserId(user)));
+            
+            response.setStatus(HttpServletResponse.SC_OK);
+            if (callback != null) {
+                try {
+                    response.getWriter().append(callback + "()");
+                } catch (IOException e) {
+                    throw new RuntimeException("Exception writing jsonp callback output.", e);
+                }
+            }
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
