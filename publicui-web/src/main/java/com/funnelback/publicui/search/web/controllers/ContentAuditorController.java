@@ -142,23 +142,38 @@ public class ContentAuditorController {
         question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
     }
 
-    
+    /** Resource manger for reading (and caching) config files */
     @Autowired
     @Setter
     protected ResourceManager resourceManager;
 
+    /** Parser for faceted_navigation.xml */
     @Autowired
     @Setter
     private FacetedNavigationConfigParser fnConfigParser;
 
     /** Overwrite the facet config with a custom one */
     private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
+
+        List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
+        
+        facetDefinitions.add(createUrlFacetDefinition("URI"));
+
+        facetDefinitions.add(createDateFacetDefinition("Date modified"));
+
+        StringBuilder rmcfValue = new StringBuilder();
+        for (Map.Entry<String, Character> entry : readMetadataFacetInfo(question).entrySet()) {
+            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
+            rmcfValue.append(entry.getValue());
+        }
+        
+        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
+
+        // Pull in any query based facets from the index's faceted_navigation.xml file
         String indexView = question.getInputParameterMap().get("view");
         if (indexView == null) {
             indexView = "live";
         }
-
-        List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
 
         // Read the snapshot's faceted nav config and get any gscope based facets
         File fnConfig = new File(question.getCollection().getConfiguration().getCollectionRoot(), indexView
@@ -177,21 +192,6 @@ public class ContentAuditorController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        
-        facetDefinitions.add(createUrlFacetDefinition("URI"));
-
-        facetDefinitions.add(createDateFacetDefinition("Date modified"));
-
-        StringBuilder rmcfValue = new StringBuilder();
-        for (Map.Entry<String, Character> entry : readMetadataFacetInfo(question).entrySet()) {
-            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
-            rmcfValue.append(entry.getValue());
-        }
-        
-        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
-        
-        // TODO - Add query based facets somehow?
         
         FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
         return facetedNavigationConfig;
