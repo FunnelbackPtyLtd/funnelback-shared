@@ -118,5 +118,15 @@
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
+	<!-- Cross domain requests for interaction logging -->
+	<filter>
+	    <filter-name>corsFilter</filter-name>
+	    <filter-class>com.funnelback.springmvc.web.filter.CorsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>corsFilter</filter-name>
+	    <url-pattern>/log</url-pattern>
+	</filter-mapping>
+	
 	
 </web-app>
