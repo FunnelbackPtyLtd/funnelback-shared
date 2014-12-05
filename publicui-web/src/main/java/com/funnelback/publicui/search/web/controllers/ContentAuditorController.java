@@ -109,6 +109,11 @@ public class ContentAuditorController {
                 
         String viewName = getViewName(type);
         
+        if (type.equals("csv_export")) {
+            response.setContentType("text/csv");
+            response.setHeader("content-disposition", "attachment; filename=export.csv");
+        }
+        
         return new ModelAndView(viewName, model);
     }
 
