@@ -43,7 +43,7 @@ public class AnchorsController {
     public ModelAndView anchors(HttpServletResponse response,
             @RequestParam(RequestParameters.COLLECTION) Collection collection, String docnum) throws IOException {
         
-        AnchorModel anchors = fetcher.fetchGeneral(Integer.parseInt(docnum),collection.getId());
+        AnchorModel anchors = fetcher.fetchGeneral(null, Integer.parseInt(docnum),collection.getId(), collection);
         
         Map<String,Object> model = new HashMap<String,Object>(); 
         model.put("anchors", anchors);
@@ -64,7 +64,7 @@ public class AnchorsController {
         if(start != null){ 
             startInt = Integer.parseInt(start);
         }
-        AnchorModel anchors = fetcher.fetchDetail(Integer.parseInt(docnum),collection.getId(),anchortext,startInt);
+        AnchorModel anchors = fetcher.fetchDetail(null, Integer.parseInt(docnum),collection.getId(),anchortext,startInt,collection);
         
         Map<String,Object> model = new HashMap<String,Object>(); 
         model.put("anchors", anchors);

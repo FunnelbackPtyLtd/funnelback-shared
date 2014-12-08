@@ -12,6 +12,7 @@ import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
@@ -61,7 +62,12 @@ public class ContentOptimiser extends AbstractOutputProcessor {
             
                 if(comparison.getSelectedDocument() != null){
                     log.debug("obtaining anchors");        
-                    AnchorModel anchors = anchorsFetcher.fetchGeneral(comparison.getSelectedDocument().getDocNum(),comparison.getSelectedDocument().getCollection());
+
+                    AnchorModel anchors = anchorsFetcher.fetchGeneral(
+                    		comparison.getSelectedDocument().getIndexUrl(),
+                    		comparison.getSelectedDocument().getDocNum(),
+                    		comparison.getSelectedDocument().getCollection(),
+                    		searchTransaction.getQuestion().getCollection());
 
                     log.debug("obtaining content");                    
                     filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());

@@ -2,12 +2,22 @@ package com.funnelback.publicui.search.service.anchors;
 
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Files;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
+import com.funnelback.common.padre.SdinfoFile;
+import com.funnelback.common.padre.SdinfoFile.SdinfoEntry;
 import com.funnelback.contentoptimiser.utils.PanLook;
 import com.funnelback.contentoptimiser.utils.PanLookFactory;
+import com.funnelback.dataapi.connector.padre.PadreConnector;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.anchors.AnchorDescription;
 import com.funnelback.publicui.search.model.anchors.AnchorDetail;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.service.index.QueryReadLock;
+
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.exec.*;
@@ -16,8 +26,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,10 +51,14 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
     @Autowired @Setter
     I18n i18n;
     
+    @Autowired
+    @Setter @Getter
+    protected QueryReadLock queryReadLock;
+
     @Override
-    public AnchorModel fetchGeneral(int docNum,String collectionName) {
+    public AnchorModel fetchGeneral(String indexUrl, int docNum,String collectionName, Collection col) {
         AnchorModel model = new AnchorModel();
-        Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collectionName, model);
+        Map<String,AnchorDescription> anchors = commonAnchorsProcessing(indexUrl, docNum, collectionName, model, col);
         
         List<AnchorDescription> anchorsList = new ArrayList<AnchorDescription>(anchors.values());
         Collections.sort(anchorsList);
@@ -47,10 +68,10 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
     }
     
     @Override
-    public AnchorModel fetchDetail(int docNum, String collectionName,
-            String anchortext,int start) {
+    public AnchorModel fetchDetail(String indexUrl, int docNum, String collectionName,
+            String anchortext,int start, Collection col) {
         AnchorModel model = new AnchorModel();
-        Map<String,AnchorDescription> anchors = commonAnchorsProcessing(docNum, collectionName, model);
+        Map<String,AnchorDescription> anchors = commonAnchorsProcessing(indexUrl, docNum, collectionName, model, col);
 
         String lookupAnchortext = AnchorDescription.cleanAnchorText(anchortext);
         AnchorDetail detail = new AnchorDetail(lookupAnchortext);
@@ -84,15 +105,50 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
         return model;
     }
 
-    private Map<String,AnchorDescription> commonAnchorsProcessing(int docNum, String collectionName,
-            AnchorModel model) {
+    private Map<String,AnchorDescription> commonAnchorsProcessing(String indexUrl, int docNum, String collectionName,
+            AnchorModel model, Collection col) {
         model.setCollection(collectionName);
         String formattedDocnum = String.format("%08d",docNum);
         model.setDocNum(formattedDocnum);
     
+	// Take the query read lock to prevent updates/commits from changing the index while we read it.
+	try {
+		queryReadLock.lock(col);
+	} catch (FileLockException fle) {
+		log.warn("Could not Query Read Lock: " + col.getId(), fle);
+		return new HashMap<>();
+	}
+
+	try {
+
         File indexStem = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionName
                         + File.separator + View.live + File.separator + DefaultValues.FOLDER_IDX
                         + File.separator + DefaultValues.INDEXFILES_PREFIX);
+
+	//If using push2 collection, try to find the correct generation containing the index url.  
+	switch (col.getType()) {
+		case push2:
+			if (indexUrl != null) {
+				for(SdinfoEntry entry : SdinfoFile.readSdinfoFile(new File(indexStem.getParentFile().getAbsolutePath() + File.separatorChar + Files.Index.SDINFO))) {
+					try {
+						File generationStem = new File (entry.getIndexPath());
+						DocInfoResult result = new PadreConnector(generationStem).docInfo(new URI(indexUrl)).fetch();
+						//Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
+						if (result.asList().size() > 0) {
+							indexStem = generationStem;
+							break;
+						}
+					} catch (URISyntaxException use) {
+						throw new RuntimeException(use);
+					}
+				}
+			}
+			//indexUrl was not found inside collection
+			return new HashMap<>(); 
+
+		default:
+			break;
+	}
         
         File distilledFile = new File(indexStem.getAbsolutePath() + ".distilled");
         model.setDistilledFileName(distilledFile.toString()); 
@@ -110,7 +166,13 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
         } else {
             return new HashMap<>();
         }
-    }
+
+		} catch (InterruptedException | FileNotFoundException ie) {
+			throw new RuntimeException(ie);
+		} finally {
+			queryReadLock.release(col);
+		}
+	}
 
     private PanLook callPanLook(AnchorModel model, String formattedDocnum,
             File distilledFile) {
