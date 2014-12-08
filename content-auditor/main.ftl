@@ -8,12 +8,12 @@
 
 	<#macro ResultTabsNavigaton>
     <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", "live") />
-    <li class="active"><a class="text-overflow" href="${url}" data-toggle="tab">Latest data</a></li>
+    <#--<li class="active"><a class="text-overflow" href="${url}" data-toggle="tab">Test Dummy Data</a></li>-->
     <#list question.collection.configuration.snapshotIds?sort?reverse as id>
-      <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", "snapshot" + id) />
-      <li><a class="text-overflow" href="${url}" data-toggle="tab">
-        ${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot ID:" + id)?html}
-      </a></li>
+      <#assign snapshotID = "snapshot" + id />  
+      <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", snapshotID) />
+
+      <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}">${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot ID:" + id)?html}</a></li>
     </#list>
 	</#macro>
 	
@@ -25,7 +25,7 @@
     <section id="result-tabs">
 	<div class="container-fluid">
      
-      <div class="tab-content">
+      <div class="tab-content clearfix">
         <div class="tab-pane active" id="collection-1">
 
         <div class="fb-report-details"></div>
@@ -35,12 +35,13 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#collection-1-tab-1" data-toggle="tab">Search Attributes</a></li>
                 <li><a href="#collection-1-tab-2" data-toggle="tab">Search Results</a></li>
+                <li><a href="#collection-1-tab-3" data-toggle="tab">Duplicate Pages</a></li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active" id="collection-1-tab-1">
+                <div class="tab-pane active clearfix" id="collection-1-tab-1">
                     <div class="fb-after-search-facets"></div>
 					    <#include "/web/templates/modernui/content-auditor/facets.ftl" />
-              <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
+                        
                     </div>
                 <div class="tab-pane" id="collection-1-tab-2">
                     <#if QueryString?contains("type=")>
@@ -53,21 +54,26 @@
                     
                       <#include "/web/templates/modernui/content-auditor/documents.ftl" />
                     
-                </div>                    
+                </div> 
+
+                <div id="collection-1-tab-3"  class="tab-pane clearfix">
+                    <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
+                </div> 
+
             </div>
           </div><!-- .tabbable level 2 tabs -->      
         </div>
         <div class="tab-pane" id="collection-2">
             <div class="tabbable">
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs clearfix">
                     <li class="active"><a href="#collection-2-tab-1" data-toggle="tab">Search Attributes</a></li>
                     <li><a href="#collection-2-tab-2" data-toggle="tab">Search Results</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="collection-2-tab-1">
+                    <div class="tab-pane active clearfix" id="collection-2-tab-1">
                         <p>Search attributes are not available</p>
                     </div>
-                    <div class="tab-pane" id="collection-2-tab-2">
+                    <div class="tab-pane clearfix" id="collection-2-tab-2">
                         <p>Search results are not avilable</p>
                     </div>                    
                 </div>
@@ -80,26 +86,26 @@
                     <li><a href="#collection-3-tab-2" data-toggle="tab">Search Results</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="collection-3-tab-1">
+                    <div class="tab-pane active clearfix" id="collection-3-tab-1">
                         <p>Search attributes are not available</p>
                     </div>
-                    <div class="tab-pane" id="collection-3-tab-2">
+                    <div class="tab-pane clearfix" id="collection-3-tab-2">
                         <p>Search results are not avilable</p>
                     </div>                    
                 </div>
             </div>
         </div>
         <div class="tab-pane" id="collection-4">
-            <div class="tabbable">
+            <div class="tabbable ">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#collection-4-tab-1" data-toggle="tab">Search Attributes</a></li>
                     <li><a href="#collection-4-tab-2" data-toggle="tab">Search Results</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="collection-4-tab-1">
+                    <div class="tab-pane active clearfix" id="collection-4-tab-1">
                         <p>Search attributes are not available</p>
                     </div>
-                    <div class="tab-pane" id="collection-4-tab-2">
+                    <div class="tab-pane clearfix" id="collection-4-tab-2">
                         <p>Search results are not avilable</p>
                     </div>                    
                 </div>
@@ -111,6 +117,9 @@
 	<@design.Footer />
 	<#-- End:Macro: main.ftl - Footer -->
 </#macro>          
+
+
+
     </section>
 	
 </div><!-- .tabbable level 1 tabs -->

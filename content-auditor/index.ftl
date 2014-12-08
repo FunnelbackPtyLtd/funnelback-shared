@@ -27,8 +27,6 @@
 	
 	</@s.AfterSearchOnly>
 
-	
-	
 	<#-- Start:Macro: main.ftl - FooterScripts -->
 	<@design.FooterScripts />
 	<#-- End:Macro: main.ftl - FooterScripts -->

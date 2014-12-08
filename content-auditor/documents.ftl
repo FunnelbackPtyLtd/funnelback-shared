@@ -82,12 +82,9 @@
   height: 100%;
   display: table-cell;
   text-align: center;
-  margin-right: 30px;
+  margin-right: 0px;
   padding-top:7px;">
-		<span class="fa-stack fa-xs">
-		<i class="fa fa-circle fa-stack-2x"></i>
-		<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
-		</span>
+		
 		
   
   </div>  
@@ -234,7 +231,7 @@
 </#if>
 
 <!-- RESULTS SUMMARY -->
-<p class="<@s.FacetedSearch>fb-with-faceting</@s.FacetedSearch>">        
+       
 
     <#if response.resultPacket.resultsSummary.totalMatching == 0>
         <#-- Display nothing - no need to display 0 results twice.
