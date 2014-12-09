@@ -1,11 +1,6 @@
 /*
-
-	 * Funnelback Content Master - style.css
- 	 * Steven Chan - FB Canberra
-
+	- Funnelback Content Auditor
 */
-
-
 
 @font-face {
 	font-family: 'MuseoSans';
@@ -22,32 +17,12 @@
 	font-style: normal;
 }
 
-/*
- * 0. bootstrap.min.css overrides
- */
+
 h1, h2, h3, h4, h5, h6,.tab-summary,.btn,.navbar-side,.search-form label  {
   font-weight: normal;
   font-family:MuseoSans;
 }
 .navbar-side .active a,.btn-sm{ font-weight:600}
-/*
-textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-  box-shadow: none;
-  transition: none;
-}
-select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-  border-radius: 0px;
-}*/
-
-/* 
- * 1. layout
- */
-
-
-/*
- * 7. query completion
- */
-
 .ui-helper-hidden-accessible,
 .ui-help-hidden { display: none; }
 
@@ -120,6 +95,7 @@ header ul,header li a{width:100%;display:block!important}
 .navbar-side .navbar-nav > li > a{display:block;overflow:hidden;padding:12px 5px 12px 20px;text-overflow:ellipsis;white-space:pre;word-wrap:normal}
 .navbar-side{background-color:#ebebeb}
 .navbar-side .nav-title{background:#ff9f32;color:#fafafa;font-size:13px;font-weight:500;padding:2px 5px 2px 15px;margin:0 0 1px;letter-spacing:1px}
+ 
 .tabbable .tab-content .tab-pane > div:first-child{margin-top:15px}
 .tabbable .tab-content .tab-pane > *{margin:0 15px 15px}
 .tabbable .nav{background:#fff;margin:0 -15px;padding:0}
@@ -149,7 +125,9 @@ header ul,header li a{width:100%;display:block!important}
 .tabbable .tab-content .tab-pane > table{margin-left:0;margin-right:0}
 .tabbable .tab-content .tab-pane > table tr > td:first-child{padding-left:23px}
 .table-hide{visibility:hidden}
-.table-row-clickable tr{cursor:pointer}
+.table-hide a:hover{ text-decoration:none !important}
+/*.table-row-clickable tr{cursor:pointer}*/
+table tr:hover td:first-child a, table tr:hover td:first-child a strong{ color:#f80 }
 .tabbable .tab-content .tab-pane > table tr > td:last-child{padding-right:25px}
 .table-striped > tbody > tr:nth-child(2n+1){background:#fcfcfc}
 .table-striped > tbody > tr:hover{background:#f4f4f4;box-shadow:4px 0 0 #ffac4e inset}
@@ -180,8 +158,11 @@ footer a{color:#f80}
 #facet-container-wrapper{border:1px solid #eee;background:#fbfbfb;transition:background-color 333ms ease 222ms}
 .facet-header{margin: 25px 15px -10px;}
 #fb-facets-navigation{margin-top:6px}
+/*#fb-facets-navigation ul li > .facetLabel a{ padding:10px 10px  10px 55px ; display:block  }*/
+
+#fb-facets-navigation ul li > .facetLabel .fa-circle-thin{ display:none}
 #fb-facets-navigation .nav{margin:0 -15px 0 -25px}
-h4 > .facetLabel,h3 > .facetLabel{display:inline}
+h4 > .facetLabel, h3 > .facetLabel{display:inline}
 
 #fb-facets-navigation .nav-stacked{background:none}
 #fb-facets-navigation .nav-stacked > li a:hover{border-left:solid #c5c5c5!important;background-color:rgba(0,0,0,0.05)}
@@ -199,6 +180,11 @@ h4 > .facetLabel,h3 > .facetLabel{display:inline}
 #fb-facets-navigation .nav-stacked > li.active > a .fa:before{content:"\f192"}
 #fb-facets-navigation .nav-stacked > li > a .fa{color:#f90}
 #fb-facets-navigation .nav-stacked > li.active > a .fa{color:#ff7600}
+#contentReportFacetedFilters {
+  border-bottom: 1px solid #ebebeb;
+  padding: 20px 30px;
+}
+
 
 body:after{transition:all 333ms ease-out; background: #fff; content:""; }
 #load {
@@ -222,7 +208,7 @@ body:after{transition:all 333ms ease-out; background: #fff; content:""; }
 .fb-loading #load{ display:block;  }
 .fb-loading #result-tabs{ transition:margin 2000ms ease; min-height:100%} 
 .fb-loading-after #result-tabs{transition:margin 2000ms ease} 
-.fb-loading #result-tabs, .fb-loading-after #result-tabs{ position:relative; margin-top:-25px}
+.fb-loading #result-tabs, .fb-loading-after #result-tabs{ position:relative; }
 #result-tabs:before{transition-delay: all 333ms ease; z-index:2 }
 .fb-loading #result-tabs:before{ content:""; position:absolute; top:0; bottom:0; left:0; right:0; background:rgba(255,255,255,0.9) ; z-index:2}
 
@@ -267,6 +253,10 @@ body:after{transition:all 333ms ease-out; background: #fff; content:""; }
   background-position:0 -22px ;
 
 }
+.facet-search-details table tbody tr td{
+  padding-left: 20px;
+}
+.table-row-clickable tbody tr:hover td-first-child a { color:#f80 }
 @media (max-width: 767px) {
 .search-form{box-shadow:0 1px 0 rgba(255,255,255,0.15)}
 header{height:50px}

@@ -6,18 +6,38 @@ function createIcons() {
 		target.each(function(key, elem) {
 			$(elem).prepend('<span class="fa fa-circle-thin"></span>&nbsp;');
 		});
-	}
+}
+	
+function cleanFacetsNavigation(){
+	var a = $('#fb-facets-navigation ul li > .facetLabel');
+			if(a.length){
+				
+				var facetFilters = 'contentReportFacetedFilters'; 
+				$('#fb-facet-details h3').after('<div id="' + facetFilters + '" class="col-md-12"><p><strong>Attributes Added<strong></p></div>');
+				
+				
+				$.each(a,function(){
+					if($(this).parents('li').hasClass('active')){$(this).addClass('active');}
+					$(this).appendTo('#'+facetFilters).css('marginBottom','5px');	
+				});
+					$('#' + facetFilters).append(a);
+				}
+}	
 	// jQuery 
 if (console) console.log('fb-content-auditor.js is initiated.');
 jQuery(function() {
 	$('[data-toggle="tooltip"]').tooltip();
-	$(document).on('click', '#fb-facet-details tbody tr', function() {
-			var anchor = $(this).find('td:first-child a');
-			//if(anchor.length > -1){
-			// var href = anchor.attr('href');
-			//window.location = href;
-			//window.open(href, '_blank');
-			//}  
+	$(document)
+		  /*.on('click', '.table-row-clickable tbody tr', function() {
+		 	var href = $(this).find('td:first-child a').attr('href');
+			
+		  })*/
+		.on('change', '.field-sort', function() {
+			var sort 	= $(this).val();
+			var target 	= $(this).attr('data-url');
+			alert('the params that change need to be implemented here');
+			//window.location = target + '&sort=' + sort;
+			
 		}).on('click', '.navbar-nav li a', function() {
 			var target = $(this).parents('li');
 			target.siblings('.active').removeClass('active');
@@ -37,9 +57,9 @@ jQuery(function() {
 			$(this).parents('form, div').addClass('has-focus');
 		}).on('blur', '.search-form input', function() {
 			$(this).parents('form, div').removeClass('has-focus');
-		}).on('click', '.table-row-clickable tr td:not(.table-hide)', function(e) {
+		}).on('click', '.table-row-clickable tr', function(e) {
 			if (!$(this).hasClass('fa-stack')) {
-				window.location = $(this).find('.clickable-link').attr('href');
+				//window.open($(this).find('.clickable-link').attr('href'), '_blank')
 			}
 		})
 		// bootstrap tab listener. on shown event.
@@ -50,7 +70,6 @@ jQuery(function() {
 			var index = chart.replace(/\D/g, '');
 			// look in the content_auditor js object for our charts. Force them to display on tab change
 			if (content_auditor[chart]) {
-				//console.log(content_auditor[chart]);
 				content_auditor[chart].invalidateSize();
 			}
 			if ($('.bootstrap-table #chart-attr-' + index).length) {
@@ -60,7 +79,6 @@ jQuery(function() {
 				// force tables to scroll	
 				var table = $('#chart-attr-' + index);
 				var rowCount = table.parents('.facet-container').find('.row-count').attr('data-row-count');
-				//alert(count);
 				if (rowCount > 10) {
 					table.tableScroll({
 						height: 400
@@ -72,9 +90,8 @@ jQuery(function() {
 			target.stop();
 		}).on('mouseover', '.table-scrollers span', function() {
 			var target = $(this).parents('.tablescroll').find('.tablescroll_wrapper');
-			//target.css({background:"#ff0033"});
 			var targetPos = target.scrollTop();
-			var scrollEnd = target.height();
+			var scrollEnd = target.find('tbody').height();
 			var scrollVal = 1;
 			var speed = 5;
 			if ($(this).hasClass('up')) {
@@ -89,7 +106,7 @@ jQuery(function() {
 			}
 		}).on('click', '.table-scrollers span', function() {
 			var target = $(this).parents('.tablescroll').find('.tablescroll_wrapper');
-			var scrollEnd = target.height();
+			var scrollEnd = target.find('tbody').height();
 			target.stop();
 			if ($(this).hasClass('up')) {
 				target.scrollTop(0);
@@ -100,34 +117,25 @@ jQuery(function() {
 		})
 		// DOM ready...
 		.ready(function() {
-			/*$('.facet-search-chart').affix({
-    offset: {
-      top: $('.facet-search-chart').offset().top;
-    , bottom: function () {
-        return (this.bottom = $('.footer').outerHeight(true))
-      }
-    }
-  });*/
-			//DOM is ready...
+		
 			var target = $('html');
 			//PJAX Magic...
 			pjax.connect({
 				'parseJS': true,
 				'container': 'result-tabs',
+				'excludeClass':'pass',
 				'beforeSend': function(e) {
 					target.addClass('fb-loading');
-					$('html, body').animate({
-						scrollTop: 0
-					}, 333);
+					$('html, body').animate({scrollTop:0},333);
 				},
 				'complete': function(e) {
 					target.removeClass('fb-loading').addClass('fb-loading-after');
-					setTimeout(function() {
-						target.removeClass('fb-loading-after');
-					}, 1);
+					setTimeout(function() {target.removeClass('fb-loading-after');}, 1);
 					createIcons();
+					cleanFacetsNavigation();
 				},
 			});
 			createIcons();
+			cleanFacetsNavigation();
 		}); //End of Daisy Chain
 });
