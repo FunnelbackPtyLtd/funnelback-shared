@@ -26,7 +26,8 @@
 	<#-- End:Macro: main.ftl - ResultTabs -->
 	
 	</@s.AfterSearchOnly>
-
+	
+	<@design.modalOverlay />
 	<#-- Start:Macro: main.ftl - FooterScripts -->
 	<@design.FooterScripts />
 	<#-- End:Macro: main.ftl - FooterScripts -->

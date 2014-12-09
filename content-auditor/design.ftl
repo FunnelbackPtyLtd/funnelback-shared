@@ -135,3 +135,24 @@
       <script type="text/javascript" src="${pathToAssets}/js/jquery.tablescroll.js"></script>
 
       </#macro>
+
+
+      <#macro modalOverlay>
+      <#-- Modal / #modal-overlay -->
+      <div class="modal fade" id="modal-overlay" tabindex="-1" role="dialog" aria-labelledby="modal-overlayLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title" id="modal-overlayLabel"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </#macro>

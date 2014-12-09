@@ -126,21 +126,30 @@
                   <td class="table-hide">
 				  	
 					
-					<a class="pass" target="_blank" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse page anchor links">
+					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags of this page">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-					<a class="pass" target="_blank" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?optimiser_url=${s.result.liveUrl?html?replace("http://","")}&collection=business-gov-internet&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}" data-toggle="tooltip" data-placement="bottom" title="Send to Content Optimiser">
+					<a class="open-content-optimiser pass" target="_blank" data-modal="overlay" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?optimiser_url=${s.result.liveUrl?html?replace("http://","")}&collection=business-gov-internet&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
-					&nbsp;
 					
+                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${question.inputParameterMap["url"]!?html}&amp;collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+                    <span class="fa-stack fa-xs">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
+                    </span>
+                    </a>
+
+                    &nbsp;
+					
+
 
 				<!--<form action="${httpRequest.requestURL}/../../content-optimiser/optimise.html">
 						<input type="hidden" name="optimiser_url" value="${s.result.liveUrl?html?replace("http://","")}" />
@@ -223,6 +232,9 @@
         </@s.Results>                
     </tbody>
 </table>
+<div class="tab-footer clearfix">
+
+
 
 <!-- NO RESULTS -->
 <#if response.resultPacket.resultsSummary.totalMatching == 0>
@@ -237,11 +249,11 @@
 
 <!-- RESULTS SUMMARY -->
        
-
+<#-- Display nothing - no need to display 0 results twice.
     <#if response.resultPacket.resultsSummary.totalMatching == 0>
-        <#-- Display nothing - no need to display 0 results twice.
+        
           <strong class="fb-result-count" id="fb-total-matching">0</strong> search results for <strong><@s.QueryClean /></strong>
-        -->
+        
     </#if>
     <#if response.resultPacket.resultsSummary.totalMatching != 0>
         <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
@@ -249,6 +261,7 @@
         <strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
         search results for <strong><@s.QueryClean /></strong>
     </#if>
+
     <#if response.resultPacket.resultsSummary.partiallyMatching != 0>
         where
         <span class="fb-result-count" id="fb-fully-matching">
@@ -260,11 +273,14 @@
         </span>
         match some words.
     </#if>
+
+
 </p>
 
-
+-->
 <!-- PAGINATION -->
 <#if response.resultPacket.resultsSummary.totalMatching != 0>
+
 <div>
   <ul class="pagination">
     <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}">Prev</a></li></@fb.Prev>
@@ -273,6 +289,8 @@
     </@fb.Page>
     <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}">Next</a></li></@fb.Next>
   </ul>
+</div>
+
 </div>
 </#if>
     

@@ -4,8 +4,6 @@
 
 <@s.AfterSearchOnly>
 
-
-
 <#macro duplicateTable totalDuplicates  >
 <div class="facet-container col-md-4 boxed">
 	<div class="facet-header">
@@ -26,7 +24,7 @@
 			<#assign duplicatesRowCounter = duplicatesRowCounter + 1 />
 			
 				<td class="text-center">
-					<a class="text-muted duplicates-count" href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2"> <div>x <strong>${result.collapsed.count}</div></strong> </td>
+					<a class="text-muted duplicates-count" href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count}</div></strong> </td>
 				<td>
 				<div class="pull-left">
 						<a href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2" title="${result.title?html}" class="clickable-link"><strong>${result.title?html} </strong></a> 
@@ -47,11 +45,9 @@
 </#macro>
 
 
-
-
 		<#if filterList(response.resultPacket.results, 'collapsed')?size < 1 >
 			
-			<div class="alert alert-success bg-success"><h4><strong><span class="fa fa-check-circle-o"></span> Content Duplicate Success</strong></h4> No duplicate content was found for this collection.</div> 		  	 
+			<div class="alert alert-success bg-success"><h4><strong><span class="fa fa-check-circle-o"></span> Content Duplicate Success</strong></h4> No duplicate content could be found for this collection.</div> 		  	 
 		<#else>
 			<@duplicateTable totalDuplicates =  filterList(response.resultPacket.results, 'collapsed')?size />
 		</#if>
