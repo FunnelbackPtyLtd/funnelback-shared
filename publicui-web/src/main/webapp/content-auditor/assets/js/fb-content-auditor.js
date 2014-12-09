@@ -9,7 +9,7 @@ function createIcons() {
 }
 	
 function cleanFacetsNavigation(){
-	var a = $('#fb-facets-navigation ul li > .facetLabel');
+/*	var a = $('#fb-facets-navigation ul li > .facetLabel');
 			if(a.length){
 				
 				var facetFilters = 'contentReportFacetedFilters'; 
@@ -21,17 +21,68 @@ function cleanFacetsNavigation(){
 					$(this).appendTo('#'+facetFilters).css('marginBottom','5px');	
 				});
 					$('#' + facetFilters).append(a);
-				}
+				}*/
 }	
-	// jQuery 
+
+function refreshModalContent(){
+
+		var modal = $('#modal-overlay .modal-content');
+		//modal.find('style, meta, title, script, head, img').remove();
+		//modal.find('h3, div, td').removeAttr('style');
+		modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
+									
+}
+
+
+// jQuery 
 if (console) console.log('fb-content-auditor.js is initiated.');
 jQuery(function() {
+	
 	$('[data-toggle="tooltip"]').tooltip();
 	$(document)
 		  /*.on('click', '.table-row-clickable tbody tr', function() {
 		 	var href = $(this).find('td:first-child a').attr('href');
 			
 		  })*/
+		.on('shown.bs.modal load', '#modal-overlay', function(){
+			
+			refreshModalContent();
+		})
+		.on('click','#modal-overlay', function(){
+			$('#modal-overlay').addClass('fade').removeClass('in').hide();
+			
+		})
+		.on('click','.modal-content a', function(){
+			
+			var href = $(this).attr('href');
+			var newHREF = '/s/anchors.html' + href + '&ajax=1';
+			var targetOutput = $(this).parents('.modal-content');
+			
+			
+			$.get(newHREF, function(data){
+				targetOutput.html(data);
+				refreshModalContent();
+			});
+			
+			return false;
+				
+		})
+		.on('click','[data-modal="overlay"]', function(e){
+			
+			
+			
+			$('#modal-overlay').addClass('fade');
+			var href = $(this).attr('href');
+			
+			$.get(href, function(data){
+				
+				$('#modal-overlay').show().addClass('in').find('.modal-content').html(data);
+				refreshModalContent();
+			});
+			
+			
+			return false;
+		})
 		.on('change', '.field-sort', function() {
 			var sort 	= $(this).val();
 			var target 	= $(this).attr('data-url');
