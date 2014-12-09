@@ -186,12 +186,14 @@ public class ContentAuditorController {
             + Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
         try {
             FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser));
-            for (FacetDefinition fd : base.getFacetDefinitions()) {
-                for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
-                    if (cd instanceof GScopeItem || cd instanceof QueryItem) {
-                        facetDefinitions.add(fd);
+            if (base != null) {
+                for (FacetDefinition fd : base.getFacetDefinitions()) {
+                    for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
+                        if (cd instanceof GScopeItem || cd instanceof QueryItem) {
+                            facetDefinitions.add(fd);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         } catch (IOException e) {
