@@ -27,10 +27,6 @@ public class FixDisplayUrlsTests extends FixPseudoLiveLinksTests {
                 rp.getResults().get(0).getDisplayUrl());
         
         Assert.assertEquals(
-                "local://serve-connector-document.tcgi?collection=collection-connector&primaryAttribute=1234",
-                rp.getResults().get(1).getDisplayUrl());
-
-        Assert.assertEquals(
                 "trim://45/356/",
                 rp.getResults().get(2).getDisplayUrl());
         
