@@ -1,11 +1,15 @@
 package com.funnelback.publicui.search.web.controllers.content;
 
+import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.CONTENT_DISPOSITION_HEADER;
+import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.CONTENT_DISPOSITION_VALUE;
+import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.OCTET_STRING_MIME_TYPE;
+import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.TEXT_HTML_MIME_TYPE;
+
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +24,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.funnelback.publicui.search.web.controllers.content.ContentConstants.*;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -108,8 +111,7 @@ public class GetFilecopyDocumentController {
             log.warn("Collection '"+collectionId+"' of type '"+collection.getType()
                  +"' not suitable for serving filecopy documents");
             return;
-        } else if (! authTokenManager.checkToken(authToken,
-                URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"),
+        } else if (! authTokenManager.checkToken(authToken, uri.toString(),
                 configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType(ContentConstants.TEXT_PLAIN_MIME_TYPE);

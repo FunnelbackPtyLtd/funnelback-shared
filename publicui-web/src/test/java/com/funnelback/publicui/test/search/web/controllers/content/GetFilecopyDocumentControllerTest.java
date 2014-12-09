@@ -3,7 +3,6 @@ package com.funnelback.publicui.test.search.web.controllers.content;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.security.Principal;
 
 import javax.servlet.http.HttpServletResponse;
@@ -291,16 +290,21 @@ public class GetFilecopyDocumentControllerTest {
         Assert.assertEquals("serve.bad_token", response.getContentAsString());
     }
     
+    /**
+     * Test that a token which contains a character not permitted in URLs (such as '+') and
+     * properly encoded works.
+     * @throws Exception
+     */
     @Test
-    public void testTokenUrlDecode() throws Exception {
-        URI uriShakespeare = new URI("smb://internalfilesha/DLS%20Share/Shakespeare/romeo_juliet/romeo_juliet.1.3.html");
-        String tokenShakespeare = tokenize(uriShakespeare);
-        Assert.assertTrue( "Token should contain a plus but was: "+tokenShakespeare, tokenShakespeare.contains("+"));
+    public void testTokenContainsUrlEncodedChars() throws Exception {
+        URI uri = new URI("smb://docshare.cbr.au.funnelback.com/funnelback/Administration/%23Rose/TRAINING/training%20catering.xlsx");
+        String token = tokenize(uri);
+        Assert.assertTrue( "Token should contain a plus but was: "+token, token.contains("+"));
         
         MockHttpServletResponse response = new MockHttpServletResponse();
         try {
             controller.getFilecopyDocument("filecopy",
-                uriShakespeare, false, tokenShakespeare, response, new MockHttpServletRequest());
+                uri, false, token, response, new MockHttpServletRequest());
             Assert.fail();
         } catch (FileSystemException fse) {
            // Thrown because we can't access the smb:// file from  unit test,
@@ -327,7 +331,7 @@ public class GetFilecopyDocumentControllerTest {
     }
 
     private String tokenize(URI uri) throws UnsupportedEncodingException {
-        return authTokenManager.getToken(URLDecoder.decode(uri.toString(), "UTF-8"), "autotest-server-secret");
+        return authTokenManager.getToken(uri.toString(), "autotest-server-secret");
     }
     
     private static class MockPrincipal implements Principal {

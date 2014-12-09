@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.net.URI;
+
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class FixDisplayUrls extends AbstractOutputProcessor {
                 case local:
                 case filecopy:
                 case connector:
-                    displayUrl = VFSURLUtils.vfsUrlToSystemUrl(displayUrl);
+                    displayUrl = VFSURLUtils.vfsUrlToSystemUrl(URI.create(displayUrl));
                     break;
                 default:
                     // Do nothing

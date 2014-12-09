@@ -219,8 +219,7 @@ public class LocalDataRepository implements DataRepository {
             boolean withDls) throws IOException {
         if (withDls) {
             // Convert the URI to a Windows path, taking care to preserve plus signs
-            String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(
-                            URLDecoder.decode(uri.toString().replace("+", "%2B"), "UTF-8"), true);
+            String windowsPath = VFSURLUtils.vfsUrlToSystemUrl(uri, true);
             return new WindowsFileInputStream(windowsPath);
         } else {
             // Use Filecopy credentials to fetch the content
@@ -232,7 +231,13 @@ public class LocalDataRepository implements DataRepository {
             DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(options, ua);
             
             FileSystemManager manager = VFS.getManager();
-            FileObject file = manager.resolveFile(uri.toString(), options);
+            // Rebuild the URL from its component, so that getPath() returns the *decoded* path.
+            // e.g. URI(smb://server/%C3%A9.txt).toString() would stay encoded and wouldn't match the real
+            // file on disk "é.txt". getPath() decodes the path part.
+            // In addition, Apache VFS expects % (and only %...) to be encoded, so encode it with vfsUrlEncode()
+            FileObject file = manager.resolveFile(VFSURLUtils.vfsUrlEncode(uri.getScheme() + "://"
+                + ((uri.getHost() != null) ? uri.getHost() : "")
+                + uri.getPath()), options);
             return file.getContent().getInputStream();
         }
     }
