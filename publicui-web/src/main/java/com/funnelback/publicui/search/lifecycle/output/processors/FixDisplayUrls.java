@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.net.URI;
+import java.nio.file.Paths;
 
 import lombok.extern.log4j.Log4j;
 
@@ -50,7 +51,6 @@ public class FixDisplayUrls extends AbstractOutputProcessor {
                 
                 case local:
                 case filecopy:
-                case connector:
                     displayUrl = VFSURLUtils.vfsUrlToSystemUrl(URI.create(displayUrl));
                     break;
                 default:
