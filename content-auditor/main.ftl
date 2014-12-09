@@ -35,8 +35,9 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#collection-1-tab-1" data-toggle="tab">Search Attributes</a></li>
                 <li><a href="#collection-1-tab-2" data-toggle="tab">Search Results</a></li>
-                <li><a href="#collection-1-tab-3" data-toggle="tab">Duplicate Pages</a></li>
+                <li><a href="#collection-1-tab-3" data-toggle="tab">Duplicate Content</a></li>
             </ul>
+
             <div class="tab-content">
                 <div class="tab-pane active clearfix" id="collection-1-tab-1">
                     <div class="fb-after-search-facets"></div>

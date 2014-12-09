@@ -33,6 +33,12 @@
 <!-- CSV DOWNLOAD -->
 <a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="/s/search.html?${QueryString?replace("form=documents","form=csv_export")}&num_ranks=10000"><span class="fa fa-lg fa-cloud-download"></span> Download Results</a>          
 </#if>
+
+<div class="form-field select field-sort pull-right" data-url="/s/search.html?${QueryString}">     
+      <@s.Select class="form-control input-sm" name="sort" id="sort" options=["=Relevance", "date=Date (Newest First)", "adate=Date (Oldest First)", "url=URL", "title=Title (A-Z)", "dtitle=Title (Z-A)"] />
+</div>
+
+
 </div>    
     <!-- START RESULTS -->
     <#-- Hide the table if there are no results -->
@@ -40,7 +46,6 @@
 
     <thead>
         <tr>
-            
 			<th scope="col"><span class="sr-only">Page</span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
 			<!--<th scope="col">URL/Path</th>-->          
@@ -89,7 +94,7 @@
   
   </div>  
 					<div class="pull-left">
-					<a class="clickable-link" href="${s.result.liveUrl?html}" title="${s.result.title}"><strong><@s.Truncate 150>${s.result.title}</@s.Truncate></strong></a> 
+					<a class="clickable-link" target="_blank" href="${s.result.liveUrl?html}" title="${s.result.title}"><strong><@s.Truncate 150>${s.result.title}</@s.Truncate></strong></a> 
 						<#if s.result.liveUrl??>
 						<!-- SITE (Z) -->
 						<br><span class="text-muted" href="#add link here">${s.result.liveUrl?html?replace("http://www.canberra.edu.au","")}</span><#else> &nbsp;
@@ -121,17 +126,17 @@
                   <td class="table-hide">
 				  	
 					
-					<a href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse page anchor links">
+					<a class="pass" target="_blank" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse page anchor links">
 					<span class="fa-stack fa-xs">
-					<i class="fa fa-circle fa-stack-2x"></i>
-					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
+    					<i class="fa fa-square fa-stack-2x"></i>
+    					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-					<a href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?optimiser_url=${s.result.liveUrl?html?replace("http://","")}&collection=business-gov-internet&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}" data-toggle="tooltip" data-placement="bottom" title="Send to Content Optimiser">
+					<a class="pass" target="_blank" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?optimiser_url=${s.result.liveUrl?html?replace("http://","")}&collection=business-gov-internet&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}" data-toggle="tooltip" data-placement="bottom" title="Send to Content Optimiser">
 					<span class="fa-stack fa-xs">
-					<i class="fa fa-circle fa-stack-2x"></i>
-					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
+    					<i class="fa fa-square fa-stack-2x"></i>
+    					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					&nbsp;
@@ -261,7 +266,7 @@
 <!-- PAGINATION -->
 <#if response.resultPacket.resultsSummary.totalMatching != 0>
 <div>
-  <ul class="pagination pagination-large">
+  <ul class="pagination">
     <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}">Prev</a></li></@fb.Prev>
     <@fb.Page>
     <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}">${fb.pageNumber}</a></li>

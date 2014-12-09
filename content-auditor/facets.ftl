@@ -38,14 +38,14 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					
 					<div id="fb-facet-details" class="col-md-10"role="tabpanel">
 						<h3><@s.FacetLabel summary=false /><@s.FacetSummary /></h3>
-						  <!-- Nav tabs -->
+						  <#-- Nav tabs 
 						  <ul class="nav nav-tabs" role="tablist">
 						    <li role="presentation" class="active"><a href="#facet-tab-chart-${facet_counter}" aria-controls="Content Attributes" role="tab" data-toggle="tab">Attributes</a></li>
 						    <li role="presentation"><a href="#facet-tab-urls-${facet_counter}" aria-controls="Pages" role="tab" data-toggle="tab">Pages </a></li>
 						    
 						    <li role="presentation"><a href="#facet-tab-page-${facet_counter}" aria-controls="Spare Page" role="tab" data-toggle="tab">Spare</a></li>
-						  </ul>
-
+						  </ul>-->
+							
 						  <!-- Tab panes -->
 						  <div class="tab-content">
 						    
@@ -189,7 +189,9 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 			<#assign FacetLabel><@s.FacetLabel/></#assign>
 		
 			<#assign facetNavigationItem>
-				<li ${facetNavigationClass} role="presentation"><a href="#facet-${s.facet_index}.tab-pane" class="" title="" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}">${FacetLabel}</a></li>
+				<li ${facetNavigationClass} role="presentation">
+					<a href="#facet-${s.facet_index}.tab-pane" class="" title="" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}">${FacetLabel}</a>
+				</li>
 			</#assign>
 
 			<#assign facetNavigation = facetNavigation + facetNavigationItem >
@@ -201,7 +203,7 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 
 
 	<@s.FacetedSearch>
-		<!-- <div id="fb-facets-navigation" class="fb-facets col-sm-12 col-md-2">
+		<#-- <div id="fb-facets-navigation" class="fb-facets col-sm-12 col-md-2">
 				<ul class="nav nav-pills nav-stacked"><@FacetAttributesNavigation /></ul>
 			</div> -->
 
