@@ -107,6 +107,8 @@ public class ContentAuditorController {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
                 
+        sr.getCustomData().put("displayMetadata", readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
+        
         String viewName = getViewName(type);
         
         if (type.equals("csv_export")) {
@@ -117,27 +119,33 @@ public class ContentAuditorController {
         return new ModelAndView(viewName, model);
     }
 
-    /** TODO */
+    /** Modify the given question to suit content auditor's needs */
     private void customiseRequest(SearchQuestion question) {
+        Config config = question.getCollection().getConfiguration();
+        
         // We want search result links to come back to us
         // But still allow config to make it absolute
-        String searchLink = question.getCollection().getConfiguration().value(Keys.ModernUI.SEARCH_LINK);
+        String searchLink = config.value(Keys.ModernUI.SEARCH_LINK);
         searchLink = searchLink.replace("search.html", "content-auditor.html");
-        question.getCollection().getConfiguration().setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
+        config.setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
         
         // Manipulate the request to suit content auditor
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS, "999")});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
-        // TODO - Proper handling of page view counts
+        // Metadata for displaying in the results view
         question.getRawInputParameters().put("SM", new String[] {"meta"});
-        question.getRawInputParameters().put("SF", new String[] {"x"});
+        StringBuilder sfValue = new StringBuilder();
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
+            sfValue.append("," + entry.getKey());
+        }
+        question.getRawInputParameters().put("SF", new String[] {sfValue.toString()});
 
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {"$"});
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE});
         }
 
         if (question.getQuery() == null || question.getQuery().length() < 1) {
@@ -167,9 +175,9 @@ public class ContentAuditorController {
         facetDefinitions.add(createDateFacetDefinition("Date modified"));
 
         StringBuilder rmcfValue = new StringBuilder();
-        for (Map.Entry<String, Character> entry : readMetadataFacetInfo(question).entrySet()) {
-            facetDefinitions.add(createMetadataFacetDefinition(entry.getKey(), entry.getValue()));
-            rmcfValue.append(entry.getValue());
+        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
+            facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
+            rmcfValue.append("," + entry.getKey());
         }
         
         String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
@@ -204,23 +212,29 @@ public class ContentAuditorController {
         return facetedNavigationConfig;
     }
 
-    /** TODO */
-    private Map<String, Character> readMetadataFacetInfo(SearchQuestion question) {
+    /** 
+     * Read all the metadata config settings for a prefix. The are expected to be in the form...
+     * 
+     * (prefix).(metadataClassName)=(label)
+     * 
+     * and will be returned as a hash of className to label
+     */
+    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
         // Read in the configured metadata classes
-        Map<String, Character> metadataFields = new HashMap<String, Character>();
+        Map<String, String> metadataClassToLabel = new HashMap<>();
 
         Config config = question.getCollection().getConfiguration();
         for (String key : question.getCollection().getConfiguration().valueKeys()) {
-            if (key.startsWith(Keys.ModernUI.ContentAuditor.METADATA)) {
-                String className = key.substring(Keys.ModernUI.ContentAuditor.METADATA.length() + 1 /* Skip the '.' */);
+            if (key.startsWith(keyPrefix)) {
+                String className = key.substring(keyPrefix.length() + 1 /* Skip the '.' */);
                 String label = config.value(key);
                 
                 if (label.length() > 0) {
-                    metadataFields.put(label, className.charAt(0));
+                    metadataClassToLabel.put(className, label);
                 }
             }
         }
-        return metadataFields;
+        return metadataClassToLabel;
     }
 
     /**
@@ -253,16 +267,16 @@ public class ContentAuditorController {
     /**
      * Creates a metadata field based facet definition with the given label, populated from the given metadataClass
      */
-    private FacetDefinition createMetadataFacetDefinition(String label, Character character) {
+    private FacetDefinition createMetadataFacetDefinition(String label, String metadataClass) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         MetadataFieldFill fill = new MetadataFieldFill();
-        fill.setData(character.toString());
+        fill.setData(metadataClass);
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
         MetadataMissingFill remainder = new MetadataMissingFill();
-        remainder.setData(character.toString());
+        remainder.setData(metadataClass);
         remainder.setLabel(label);
         remainder.setFacetName(label);
         categoryDefinitions.add(remainder);
