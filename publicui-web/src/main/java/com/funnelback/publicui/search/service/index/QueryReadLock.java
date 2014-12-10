@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 public interface QueryReadLock {
 
 	/**
-	 * Place a non-blocking shared lock on the index update lock file for a gievn collection.
+	 * Place a non-blocking shared lock on the index update lock file for a given collection.
 	 * 
 	 * <p>This will not give the caller a lock on the file, rather this call claims that a thread 
 	 * needs to have a shared lock kept on the file for some time.</p>
