@@ -215,14 +215,6 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.19</version>
@@ -344,6 +336,14 @@
 			<groupId>io.mola.galimatias</groupId>
 			<artifactId>galimatias</artifactId>
 			<version>0.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
     </dependencies>
 </project>
