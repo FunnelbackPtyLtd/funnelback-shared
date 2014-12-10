@@ -1,13 +1,14 @@
 package com.funnelback.publicui.recommender.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.json.ObjectMapperSingleton;
 import com.funnelback.common.counters.StringCount;
 import com.funnelback.reporting.database.AnalyticsDatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.utils.RecommenderUtils;
+
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.net.HttpURLConnection;

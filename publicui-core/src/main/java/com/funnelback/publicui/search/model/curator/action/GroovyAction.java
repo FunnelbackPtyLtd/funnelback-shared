@@ -13,9 +13,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;

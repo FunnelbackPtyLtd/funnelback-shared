@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-
-import org.codehaus.jackson.JsonParseException;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.funnelback.publicui.search.model.curator.action.DisplayMessage;
 import com.funnelback.publicui.search.model.curator.action.DisplayProperties;
 import com.funnelback.publicui.search.model.curator.action.DisplayUrlAdvert;

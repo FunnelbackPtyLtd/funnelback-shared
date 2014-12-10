@@ -1,8 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.annotate.JsonTypeIdResolver;
-
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**

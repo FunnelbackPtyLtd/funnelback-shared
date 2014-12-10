@@ -1,13 +1,12 @@
 package com.funnelback.publicui.search.model.curator.action;
 
-import org.codehaus.jackson.annotate.JsonUnwrapped;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.funnelback.publicui.search.model.curator.config.Action;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;

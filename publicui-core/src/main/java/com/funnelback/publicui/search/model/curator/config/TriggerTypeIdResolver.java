@@ -1,10 +1,10 @@
 package com.funnelback.publicui.search.model.curator.config;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
-import org.codehaus.jackson.map.jsontype.TypeIdResolver;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.map.util.ClassUtil;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.util.ClassUtil;
 
 /**
  * Jackson TypeIdResolver (works out which class to create for different JSON
@@ -77,5 +77,10 @@ public class TriggerTypeIdResolver implements TypeIdResolver {
     @Override
     public Id getMechanism() {
         return Id.CUSTOM;
+    }
+
+    @Override
+    public String idFromBaseType() {
+        throw new UnsupportedOperationException("TODO");
     }
 }

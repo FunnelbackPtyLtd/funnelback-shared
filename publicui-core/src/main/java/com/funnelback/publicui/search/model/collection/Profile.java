@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.model.collection;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
