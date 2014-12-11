@@ -127,17 +127,6 @@
 		</property>
 	</bean>
 
-	<bean
-	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject" ref="jacksonSerializationConfig" />
-	    <property name="targetMethod" value="setSerializationInclusion" />
-	    <property name="arguments">
-	        <list>
-	            <value type="org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion">#{ appProperties['json.inclusion'] }</value>
-	        </list>
-	    </property>
-	</bean>	
-
 	<bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 
 	<bean
