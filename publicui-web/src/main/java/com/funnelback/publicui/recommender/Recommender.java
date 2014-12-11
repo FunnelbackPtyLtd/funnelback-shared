@@ -1,5 +1,7 @@
 package com.funnelback.publicui.recommender;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -15,8 +17,6 @@ import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
 import lombok.Getter;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 import java.io.File;
 import java.util.*;

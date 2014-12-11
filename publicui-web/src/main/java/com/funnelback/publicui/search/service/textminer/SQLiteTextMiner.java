@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.textminer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.Config;
@@ -11,7 +12,6 @@ import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.TextMiner;
 import lombok.extern.log4j.Log4j;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

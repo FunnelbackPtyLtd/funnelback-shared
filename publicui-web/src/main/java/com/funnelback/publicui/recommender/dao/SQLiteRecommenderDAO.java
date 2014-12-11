@@ -1,5 +1,7 @@
 package com.funnelback.publicui.recommender.dao;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelback.common.views.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
@@ -7,8 +9,6 @@ import com.funnelback.common.cache.ObjectCache;
 import com.funnelback.common.cache.SQLiteCache;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

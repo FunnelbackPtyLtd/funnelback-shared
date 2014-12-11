@@ -9,11 +9,12 @@ import javax.xml.bind.DataBindingException;
 
 import lombok.extern.log4j.Log4j;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.TransactionException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Base class for session related controllers
