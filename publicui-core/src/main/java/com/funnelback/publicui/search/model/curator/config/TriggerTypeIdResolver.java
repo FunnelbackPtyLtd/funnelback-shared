@@ -81,6 +81,6 @@ public class TriggerTypeIdResolver implements TypeIdResolver {
 
     @Override
     public String idFromBaseType() {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("Missing trigger type information - Can not construct");
     }
 }

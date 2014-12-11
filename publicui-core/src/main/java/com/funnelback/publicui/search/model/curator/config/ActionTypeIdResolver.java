@@ -50,6 +50,6 @@ public class ActionTypeIdResolver implements TypeIdResolver {
 
     @Override
     public String idFromBaseType() {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("Missing action type information - Can not construct");
     }
 }
