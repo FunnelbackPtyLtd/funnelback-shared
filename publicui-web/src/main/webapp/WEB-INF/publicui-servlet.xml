@@ -127,10 +127,6 @@
 		</property>
 	</bean>
 
-	<bean id="jacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
-	<bean id="jacksonSerializationConfig" class="org.codehaus.jackson.map.SerializationConfig"
-		factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
-	
 	<bean
 	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 	    <property name="targetObject" ref="jacksonSerializationConfig" />
