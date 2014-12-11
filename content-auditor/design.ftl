@@ -1,6 +1,9 @@
 <#ftl encoding="utf-8" />
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
+
+<#if question.collection.configuration.snapshotIds?has_content><#global layoutSideBar=1><#else><#global layoutSideBar=0></#if>
+
 <#-- Contents of the HTML <head> tag -->
   <#assign pathToAssets = '/s/content-auditor/assets/' />
   <#macro Head>
@@ -41,11 +44,13 @@
         <a id="brand" href="#INSERT CONTENT AUDITOR HOME link here" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
         <h1>Content <span>Auditor</span></h1>
 
+        <#if layoutSideBar ==1>
         <a id="toggle-sidebar" class="btn btn-xs">
         <span class="sr-only">Toggle Sidebar Navigation</span>
         <span class="fa fa-bars fa-lg"></span>
         </a>
-
+        </#if>
+        
         <a id="toggle-search" class="btn btn-xs">
         <span class="sr-only">Toggle Sidebar Navigation</span>
         <span class="fa fa-search fa-lg"></span>
@@ -59,7 +64,7 @@
             
             <div class="search-input-group">
               <div class="search-input-wrap">
-                <input class="form-control fb-placeholder" name="query" id="query" type="search" placeholder="Keyword(s)" value="${question.inputParameterMap["query"]!?html}" >
+                <input class="form-control fb-placeholder" name="query" id="query" type="search" placeholder="Keyword(s)" value="${question.inputParameterMap["query"]!?html}">
                 <label for="query"><span>query</span></label>
               </div>
               <div class="search-input-wrap">
@@ -68,22 +73,22 @@
               </div>
             </div>
             <#-- ADD CUSTOM SORT MODES FOR ADDITIONAL METADATA FIELDS -->
-            <div class="form-group">
+            <#--<div class="form-group">
               <#assign scopeCheckbox><@s.FacetScope></@s.FacetScope></#assign>
               <#if (scopeCheckbox?length > 0)>
-              <div class="">
+              <div>
                 <@s.FacetScope>Restrict to selected attributes</@s.FacetScope>
               </div>
               </#if>
             </div>
-            
+            -->            
             <div class="form-group">
               <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!?html}">
               <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!?html}"></@s.IfDefCGI>
               <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!?html}"></@s.IfDefCGI>
               <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!?html}"></@s.IfDefCGI>
             </div>
-            
+            <input type="hidden" name="sort" value="<#if question.inputParameterMap["sort"]?? >${question.inputParameterMap["sort"]!?html}<#else>date</#if>">
             <input class="btn btn-primary pull-left" type="submit" value="search">
             
           </form>
@@ -91,14 +96,18 @@
         </ul>
       </div>
     </header>
-    <nav role="navigation" class="collapse navbar-collapse navbar-side">
-      <ul class="nav navbar-nav">
-        <li class="nav-title">search reports</li>
+    
+
+        
+
+        
+
+
         <@s.AfterSearchOnly>
-           <@main.ResultTabsNavigaton />
+          <@main.ResultTabsNavigaton />
         </@s.AfterSearchOnly>
-      </ul>
-    </nav>
+
+
     <section id="page-mast">
       <div class="container-fluid">
         <@s.AfterSearchOnly>
@@ -117,7 +126,7 @@
           <div class="col-sm-4 text-right"><p id="copyright">&copy; 2006 - 2014 <a target="_blank" href="http://funnelback.com" title="Funnelback">Funnelback</a> - All rights reserved.</p></div>
         </div>
         <div id="load" class="overlay">
-          <span><i class="fa fa-cog fa-spin fa-2x"></i>  Loading...</span>
+          <div class="loader pull-left"><img src="${pathToAssets}img/loader.gif"></div> <div class="loader-text pull-left">Loading...</div>
           <div class="loading"></div>
          </div>
       </footer>

@@ -10,8 +10,7 @@
 	<#-- Start:Macro: main.ftl - Head -->
 	<@design.Head />
 	<#-- End:Macro: main.ftl - Head -->
-
-	<body class="after-search">
+	<body class="after-search<#if layoutSideBar !=1> sidebar-closed sidebar-off</#if>">
 		<#-- TODO - Steve, is that class still needed? We now guarantee there is always a search in content auditor. -->
 
 	<#-- Start:Macro: main.ftl - Header -->

@@ -5,9 +5,7 @@
 <@s.AfterSearchOnly>
 <!--BEGINREPORTDETAILS-->
 <!-- reportdetails.ftl -->
-
 <!-- Collection: <@s.cfg>service_name</@s.cfg> | Attributes last updated: ${response.resultPacket.details.collectionUpdated?datetime} -->
-
 <div class="tab-summary">
   <div class="inner">
     <h2><span>Report Details</span></h2>
@@ -19,6 +17,5 @@
     <div id="content-age-chart" class="pie-chart"></div>
   </div>
 </div>
-    
 <!--ENDREPORTDETAILS-->
 </@s.AfterSearchOnly>

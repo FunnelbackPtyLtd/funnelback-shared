@@ -9,12 +9,17 @@
 	<#macro ResultTabsNavigaton>
     <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", "live") />
     <#--<li class="active"><a class="text-overflow" href="${url}" data-toggle="tab">Test Dummy Data</a></li>-->
-    <#list question.collection.configuration.snapshotIds?sort?reverse as id>
-      <#assign snapshotID = "snapshot" + id />  
-      <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", snapshotID) />
-
-      <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}">${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot ID:" + id)?html}</a></li>
-    </#list>
+        <nav role="navigation" class="collapse navbar-collapse navbar-side">
+            <ul class="nav navbar-nav">
+            <li class="nav-title">content snapshots</li>
+            <#list question.collection.configuration.snapshotIds?sort?reverse as id>
+                <#assign snapshotID = "snapshot" + id />  
+                <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", snapshotID) />
+             <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}">${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot ID:" + id)?html}</a></li>
+            </#list>
+            </ul>
+        </nav>
+        
 	</#macro>
 	
 		  

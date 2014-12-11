@@ -82,7 +82,8 @@
                 
                 <!-- PAGE and URL -->
 				<td>
-				<div class="pull-left table-hide" style="vertical-align: middle;
+				<div class="pull-left table-hide" style="
+  vertical-align: middle;
   width: 15px ;
   height: 100%;
   display: table-cell;
@@ -133,14 +134,14 @@
 					</span>
 					</a>
 					
-					<a class="open-content-optimiser pass" target="_blank" data-modal="overlay" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?optimiser_url=${s.result.liveUrl?html?replace("http://","")}&collection=business-gov-internet&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
+					<a class="open-content-optimiser pass" target="_blank" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?collection=business-gov-internet&optimiser_url=${s.result.liveUrl?html?replace("http://","")}&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${question.inputParameterMap["url"]!?html}&amp;collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?collection=${question.inputParameterMap["collection"]!?html}&amp;url=${s.result.liveUrl?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
                     <span class="fa-stack fa-xs">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
