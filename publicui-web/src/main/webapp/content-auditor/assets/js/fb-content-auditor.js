@@ -1,5 +1,9 @@
 // fb-content-auditor.js
 // Functions
+
+
+
+
 function createIcons() {
 		var target = $('#fb-facets-navigation .nav-stacked .facetLabel');
 		target.find('.fa-circle-thin').remove();
@@ -44,32 +48,56 @@ jQuery(function() {
 		 	var href = $(this).find('td:first-child a').attr('href');
 			
 		  })*/
+		.on('ready', function(){
+			//read the URL hash and open the tab.
+			var hash = window.location.hash;
+			$('a[href="' + hash + '"]').tab('show');
+			//history.pushState("", document.title, window.location.pathname + window.location.search);
+			//window.location.href.substr(0, window.location.href.indexOf('#'));
+			//window.location.href.split('#')[0];
+		})  
+		
 		.on('shown.bs.modal load', '#modal-overlay', function(){
-			
 			refreshModalContent();
 		})
+		
+		.on('click','.facet-search-details table tbody tr, #duplicates tbody tr', function(){
+			var href = $(this).find('a').attr('href');
+			window.location = href;
+		})
+		
 		.on('click','#modal-overlay', function(){
 			$('#modal-overlay').addClass('fade').removeClass('in').hide();
-			
 		})
+		
+		.on('click','.modal-content', function(){
+			return false; 	
+		})
+		
 		.on('click','.modal-content a', function(){
+			var t = $(this);
+			var href = t.attr('href');
+			var targetOutput =  t.parents('.modal-content');
 			
-			var href = $(this).attr('href');
-			var newHREF = '/s/anchors.html' + href + '&ajax=1';
-			var targetOutput = $(this).parents('.modal-content');
-			
-			
-			$.get(newHREF, function(data){
-				targetOutput.html(data);
-				refreshModalContent();
-			});
-			
+			if( t.hasClass('out')){
+				window.open(href,'_blank');
+			} 
+			/*else if(t.hasClass('in')){
+				$.get('/s/anchors-list.html' + href + '&ajax=1', function(data){
+					targetOutput.html(data);
+					refreshModalContent();
+				});
+			}*/
+			else{
+				$.get('/s/anchors.html' + href + '&ajax=1', function(data){
+					targetOutput.html(data);
+					refreshModalContent();
+				});
+			}
 			return false;
 				
 		})
 		.on('click','[data-modal="overlay"]', function(e){
-			
-			
 			
 			$('#modal-overlay').addClass('fade');
 			var href = $(this).attr('href');
@@ -80,13 +108,14 @@ jQuery(function() {
 				refreshModalContent();
 			});
 			
-			
 			return false;
 		})
 		.on('change', '.field-sort', function() {
 			var sort 	= $(this).val();
 			var target 	= $(this).attr('data-url');
-			alert('the params that change need to be implemented here');
+			//var currentURL = window.location.href;
+			
+			alert('the params that change need to be implemented onto this select box');
 			//window.location = target + '&sort=' + sort;
 			
 		}).on('click', '.navbar-nav li a', function() {
@@ -116,6 +145,34 @@ jQuery(function() {
 		// bootstrap tab listener. on shown event.
 		// mainly needed to update AM Charts
 		.on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+			
+			var hash = $(e.target).attr("href").substr(1);
+			window.location.hash = hash;
+			
+			
+			
+			/*//too heavy
+			$.each($('.facet-search-details a') , function(){
+				var href = $(this).attr('href'.split('#')[0])
+				//.replace(/#*$/, '#' + hash)
+				;
+				
+				console.log(href);
+				console.log('#' + hash);
+				$(this).attr('href',href + '#' + hash);
+			});*/
+			//(^|\s)#(\w*[a-zA-Z_]+\w*)
+			
+			
+			
+			if(!$('body').hasAttr('hash')){
+				alert('-');
+			}
+			
+			
+			
+			$('body').attr('hash', hash);
+		
 			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
 			var chart = $(this).attr('data-chart_ref');
 			var index = chart.replace(/\D/g, '');
@@ -171,7 +228,7 @@ jQuery(function() {
 		
 			var target = $('html');
 			//PJAX Magic...
-			pjax.connect({
+			/*pjax.connect({
 				'parseJS': true,
 				'container': 'result-tabs',
 				'excludeClass':'pass',
@@ -185,7 +242,7 @@ jQuery(function() {
 					createIcons();
 					cleanFacetsNavigation();
 				},
-			});
+			});*/
 			createIcons();
 			cleanFacetsNavigation();
 		}); //End of Daisy Chain
