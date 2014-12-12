@@ -35,7 +35,7 @@
 </#if>
 
 <div class="form-field select field-sort pull-right" data-url="/s/search.html?${QueryString}">     
-      <@s.Select class="form-control input-sm" name="sort" id="sort" options=["=Relevance", "date=Date (Newest First)", "adate=Date (Oldest First)", "url=URL", "title=Title (A-Z)", "dtitle=Title (Z-A)"] />
+      <div class="form-inline"><small>Sort by &nbsp;</small> <@s.Select class="form-control input-sm" name="sort" id="sort" options=["=Relevance", "date=Date (Newest First)", "adate=Date (Oldest First)", "url=URL", "title=Title (A-Z)", "dtitle=Title (Z-A)"] /></div>
 </div>
 
 
@@ -81,18 +81,7 @@
                 
                 <!-- PAGE and URL -->
 				<td>
-				<div class="pull-left table-hide" style="
-  vertical-align: middle;
-  width: 15px ;
-  height: 100%;
-  display: table-cell;
-  text-align: center;
-  margin-right: 0px;
-  padding-top:7px;">
-		
-		
-  
-  </div>  
+				
 					<div class="pull-left">
 					<a class="clickable-link" target="_blank" href="${s.result.liveUrl?html}" title="${s.result.title}"><strong><@s.Truncate 150>${s.result.title}</@s.Truncate></strong></a> 
 						<#if s.result.liveUrl??>
@@ -261,11 +250,11 @@
 
 <div>
   <ul class="pagination">
-    <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}">Prev</a></li></@fb.Prev>
+    <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-1-tab-2">Prev</a></li></@fb.Prev>
     <@fb.Page>
-    <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}">${fb.pageNumber}</a></li>
+    <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-1-tab-2">${fb.pageNumber}</a></li>
     </@fb.Page>
-    <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}">Next</a></li></@fb.Next>
+    <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-1-tab-2">Next</a></li></@fb.Next>
   </ul>
 </div>
 
