@@ -1,19 +1,15 @@
 // fb-content-auditor.js
 // Functions
-
-
-
-
 function createIcons() {
-		var target = $('#fb-facets-navigation .nav-stacked .facetLabel');
+	/*var target = $('#fb-facets-navigation .nav-stacked .facetLabel');
 		target.find('.fa-circle-thin').remove();
 		target.each(function(key, elem) {
 			$(elem).prepend('<span class="fa fa-circle-thin"></span>&nbsp;');
-		});
+		});*/
 }
-	
-function cleanFacetsNavigation(){
-/*	var a = $('#fb-facets-navigation ul li > .facetLabel');
+
+function cleanFacetsNavigation() {
+	/*	var a = $('#fb-facets-navigation ul li > .facetLabel');
 			if(a.length){
 				
 				var facetFilters = 'contentReportFacetedFilters'; 
@@ -26,98 +22,99 @@ function cleanFacetsNavigation(){
 				});
 					$('#' + facetFilters).append(a);
 				}*/
-}	
+}
 
-function refreshModalContent(){
-
+function refreshModalContent() {
 		var modal = $('#modal-overlay .modal-content');
 		//modal.find('style, meta, title, script, head, img').remove();
 		//modal.find('h3, div, td').removeAttr('style');
 		modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
-									
-}
-
-
-// jQuery 
+	}
+	// jQuery 
 if (console) console.log('fb-content-auditor.js is initiated.');
 jQuery(function() {
-	
 	$('[data-toggle="tooltip"]').tooltip();
 	$(document)
-		  /*.on('click', '.table-row-clickable tbody tr', function() {
+		/*.on('click', '.table-row-clickable tbody tr', function() {
 		 	var href = $(this).find('td:first-child a').attr('href');
-			
-		  })*/
-		.on('ready', function(){
+		})*/
+		.on('ready', function() {
 			//read the URL hash and open the tab.
 			var hash = window.location.hash;
 			$('a[href="' + hash + '"]').tab('show');
 			//history.pushState("", document.title, window.location.pathname + window.location.search);
 			//window.location.href.substr(0, window.location.href.indexOf('#'));
 			//window.location.href.split('#')[0];
-		})  
-		
-		.on('shown.bs.modal load', '#modal-overlay', function(){
+		})
+		.on('click', 'a[href="#collection-1-tab-1"]', function(){
+			chart = $('#fb-facets-navigation ul.nav li.active a').attr('data-chart_ref');
+			content_auditor[chart].invalidateSize();
+			
+		})
+		.on('click', '[data-dismiss="modal"]', function(){
+			var modal = $('.modal');
+			modal.removeClass('in');
+			setTimeout(function(){
+				modal.hide();
+			},888);	
+		})
+		.on('shown.bs.modal load', '#modal-overlay', function() {
 			refreshModalContent();
 		})
-		
-		.on('click','.facet-search-details table tbody tr, #duplicates tbody tr', function(){
+		.on('click', '.facet-search-details table tbody tr, #duplicates tbody tr', function() {
 			var href = $(this).find('a').attr('href');
 			window.location = href;
 		})
-		
-		.on('click','#modal-overlay', function(){
+		.on('click', '#modal-overlay', function() {
 			$('#modal-overlay').addClass('fade').removeClass('in').hide();
 		})
-		
-		.on('click','.modal-content', function(){
-			return false; 	
+		.on('click', '.modal-content', function() {
+			return false;
 		})
-		
-		.on('click','.modal-content a', function(){
+		.on('click', '.modal-content a', function() {
 			var t = $(this);
 			var href = t.attr('href');
-			var targetOutput =  t.parents('.modal-content');
-			
-			if( t.hasClass('out')){
-				window.open(href,'_blank');
-			} 
+			var targetOutput = t.parents('.modal-content');
+			if (t.hasClass('out')) {
+				window.open(href, '_blank');
+			}
 			/*else if(t.hasClass('in')){
 				$.get('/s/anchors-list.html' + href + '&ajax=1', function(data){
 					targetOutput.html(data);
 					refreshModalContent();
 				});
 			}*/
-			else{
-				$.get('/s/anchors.html' + href + '&ajax=1', function(data){
+			else {
+				$.get('/s/anchors.html' + href + '&ajax=1', function(data) {
+				})
+				 .done(function(data) {
 					targetOutput.html(data);
 					refreshModalContent();
+				})
+				.fail(function(error){
+					targetOutput.html("<h3>Error "+  error['status'] + '</h3><p>A processing error has occurred. Either the data is non-existent or has since been removed.</p><p><br><span class="btn btn-primary"  data-dismiss="modal"><i class="fa fa-remove"></i> Close</span></p>');
 				});
 			}
 			return false;
-				
 		})
-		.on('click','[data-modal="overlay"]', function(e){
-			
+		.on('click', '#btn-facet-container', function(){
+			$(this).parents('#tabbable-content').toggleClass('closed');
+		})
+		.on('click', '[data-modal="overlay"]', function(e) {
 			$('#modal-overlay').addClass('fade');
 			var href = $(this).attr('href');
-			
-			$.get(href, function(data){
+			$.get(href, function(data) {
 				
 				$('#modal-overlay').show().addClass('in').find('.modal-content').html(data);
 				refreshModalContent();
 			});
-			
 			return false;
-		})
-		.on('change', '.field-sort', function() {
-			var sort 	= $(this).val();
-			var target 	= $(this).attr('data-url');
+		}).on('change', '.field-sort', function() {
+			var sort = $(this).val();
+			var target = $(this).attr('data-url');
 			//var currentURL = window.location.href;
-			
 			alert('the params that change need to be implemented onto this select box');
 			//window.location = target + '&sort=' + sort;
-			
 		}).on('click', '.navbar-nav li a', function() {
 			var target = $(this).parents('li');
 			target.siblings('.active').removeClass('active');
@@ -145,12 +142,8 @@ jQuery(function() {
 		// bootstrap tab listener. on shown event.
 		// mainly needed to update AM Charts
 		.on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-			
 			var hash = $(e.target).attr("href").substr(1);
 			window.location.hash = hash;
-			
-			
-			
 			/*//too heavy
 			$.each($('.facet-search-details a') , function(){
 				var href = $(this).attr('href'.split('#')[0])
@@ -161,21 +154,33 @@ jQuery(function() {
 				console.log('#' + hash);
 				$(this).attr('href',href + '#' + hash);
 			});*/
+			
+			
 			//(^|\s)#(\w*[a-zA-Z_]+\w*)
 			
 			
+			/*
+			if(!$('body').attr('data-hash')){
+				$.each($('#my-tab-content .tab-pane'), function(){
+					var newHash =  $(this).attr('id');
+					
+					$.each($(this).find('a'),function(){
+					$(this).attr('href',$(this).attr('href') + '#' + newHash);
+					});
+				});	
+			} else{ }
 			
-			if(!$('body').hasAttr('hash')){
-				alert('-');
-			}
-			
-			
-			
+			*/
 			$('body').attr('hash', hash);
-		
 			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
+			
 			var chart = $(this).attr('data-chart_ref');
-			var index = chart.replace(/\D/g, '');
+			if(chart){
+				var index = chart.replace(/\D/g, '');
+			} else {
+			/* looks like we're in a different tab so open the first chart */	
+				var index = 0;
+			}
 			// look in the content_auditor js object for our charts. Force them to display on tab change
 			if (content_auditor[chart]) {
 				content_auditor[chart].invalidateSize();
@@ -225,7 +230,6 @@ jQuery(function() {
 		})
 		// DOM ready...
 		.ready(function() {
-		
 			var target = $('html');
 			//PJAX Magic...
 			/*pjax.connect({
@@ -243,7 +247,7 @@ jQuery(function() {
 					cleanFacetsNavigation();
 				},
 			});*/
-			createIcons();
-			cleanFacetsNavigation();
+			//createIcons();
+			//cleanFacetsNavigation();
 		}); //End of Daisy Chain
 });
