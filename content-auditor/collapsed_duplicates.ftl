@@ -6,7 +6,7 @@
 <div class="facet-container col-md-4 boxed">
 	<div class="facet-header">
 		<h3>Duplicate Content</h3>
-		<p class="text-danger"><span class="fa fa-exclamation-triangle "></span> <strong>There are ${totalDuplicates} pages  containing duplicate content.</strong></p>
+		<p class="text-danger"><span class="fa fa-exclamation-triangle "></span> <strong>${totalDuplicates} sets(s) of identical content on multiple pages were found.</strong></p>
 	</div>
 	<table id="duplicates" class="table table-striped">
 		<thead>
