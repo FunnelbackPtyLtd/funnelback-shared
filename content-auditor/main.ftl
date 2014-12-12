@@ -19,7 +19,7 @@
             </#list>
             </ul>
         </nav>
-        
+
 	</#macro>
 	
 		  
@@ -38,7 +38,7 @@
 
           <div class="tabbable">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#collection-1-tab-1" data-toggle="tab">Search Attributes</a></li>
+                <li class="active"><a href="#collection-1-tab-1" data-toggle="tab">Attributes</a></li>
                 <li><a href="#collection-1-tab-2" data-toggle="tab">Search Results</a></li>
                 <li><a href="#collection-1-tab-3" data-toggle="tab">Duplicate Content</a></li>
             </ul>

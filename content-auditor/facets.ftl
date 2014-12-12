@@ -23,8 +23,6 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					</ul>
 	</div>-->
 	<#macro FacetAttributesPanels>
-
-
 	<#assign facet_counter = 0 />
 	
 	<@s.Facet class="tab-pane active clearfix">
@@ -33,13 +31,9 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 	<#assign FacetSummary><@s.FacetSummary /></#assign>
 	<#assign FacetSummaryClean><@s.FacetSummary /></#assign>
 	<#assign FacetSummaryLabel>${FacetSummaryClean?replace("<[^>]*>","eeee","g")?replace(":","")?replace("all","")?replace("&rarr;","")}</#assign>
-
-
-
-
-
 	 
 	<div>
+		<div id="btn-facet-container"><span class="fa fa-bars fa-lg"></span></div>
 		<div id="facet-container-wrapper" class="row">
 			
 			<div id="fb-facet-details" class="col-md-10"role="tabpanel">
@@ -88,7 +82,7 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 									<#assign assignCategoryName><@s.CategoryName /></#assign>
 									<tr>
 										<#--<td>&nbsp;${catTableCounter}</td>-->
-										<td>${assignCategoryName?replace("&amp;type=facets","")}</td>
+										<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
 										<td><span class="badge"><@s.CategoryCount /></span> </td>
 										
 									</tr>
@@ -115,6 +109,13 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					"type": "pie",
 					"startAngle": "225",
 					"startDuration": 0,
+// Add in legend					
+//					"legend": {
+//					"markerType": "circle",
+//					"position": "right",
+//					"marginRight": 80,		
+//					"autoMargins": false
+//					},
 					"dataProvider": [
 			
 					<#assign categoriesToList = s.facet.categories>
@@ -180,7 +181,7 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 		<#assign FacetLabel><@s.FacetLabel summary=false /></#assign>
 		<#assign facetNavigationItem>
 		<li ${facetNavigationClass} role="presentation">
-			<a href="#facet-${s.facet_index}.tab-pane" class="" title="" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}">${FacetLabel}</a>
+			<a href="#facet-${s.facet_index}.tab-pane" class="" title="" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}"><span class="fa fa-circle-thin"></span>&nbsp;${FacetLabel}</a>
 		</li>
 		</#assign>
 		<#assign facetNavigation = facetNavigation + facetNavigationItem >
