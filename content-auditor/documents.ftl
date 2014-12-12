@@ -48,11 +48,10 @@
         <tr>
 			<th scope="col"><span class="sr-only">Page</span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
-			<!--<th scope="col">URL/Path</th>-->          
-			<th scope="col">Last Updated</th>
-			<th scope="col">DC.Format</th>
-			<th scope="col">Detected Format</th>
-			<th scope="col">Subjects</th>
+            <#list response.customData.displayMetadata?values as value>
+                <#assign heading = value?replace("^\\d*\\.","","r")>
+                <th scope="col">${heading?html}</th>
+            </#list>
         </tr>
     </thead>
     <tfoot class="hidden">
@@ -60,11 +59,11 @@
            
             <th scope="col">Page</th>
 			 <th scope="col"><span class="sr-only">Actions</span></th> 
-            <!--<th scope="col">URL/Path</th>-->            
-            <th scope="col">Last Updated</th>
-            <th scope="col">DC.Format</th>
-            <th scope="col">Detected Format</th>
-            <th scope="col">Subjects</th>                               
+            <#list response.customData.displayMetadata?values as value>
+                <#-- Remove the sorting prefix on the heading -->
+                <#assign heading = value?replace("^\\d*\\.","","r")>
+                <th scope="col">${heading?html}</th>
+            </#list>
         </tr>
     </tfoot>
     <tbody>
@@ -165,68 +164,46 @@
 							</span>
 						</div>  
 					</form>
+                    -->
 					
 					
 					
 				  
 				</td>	
 				
-                
-                <!-- DATE -->
-                <td class="nowrap">
-                <#if s.result.date??>
-                    ${s.result.date?date?string("dd MMM, yyyy")}                    
-                <#else>
-                    No Date
-                </#if>
-                </td>
-                <!-- DC.FORMAT -->
-                <td>
-                <#if s.result.metaData["f"]??>
-                    ${s.result.metaData["f"]}
-                <#else>
-                    &nbsp;
-                </#if>
-                </td>
-
-                <!-- DETECTED FORMAT  -->
-                <td>
-                <#if s.result.fileType??>
-                    ${s.result.fileType}
-                <#else>
-                    &nbsp;
-                </#if>
-                </td>
-             
-                <!-- AUTHOR -->
-                <#--
-                <td>
-                <#if s.result.metaData["a"]??>
-                    ul>
-                    <#list s.result.metaData["a"]?split("|") as value>
-                      <#if (value?length > 0)><li>${value}</li></#if>
-                    </#list>  
-                    </ul>
-                <#else>
-                    &nbsp;
-                </#if>
-                </td>
-                -->
-                
-                
-                <!-- SUBJECT (s) -->
-                <td>
-                <#if s.result.metaData["s"]??>
-                    <ul>
-                    <#list s.result.metaData["s"]?split(";") as value>
-                        <#if (value?length > 0)><li>${value}</li></#if>
-                    </#list>  
-                    </ul>
-                <#else>
-                    &nbsp;
-                </#if>
-                </td>
-                
+                <#list response.customData.displayMetadata?keys as key>
+                    <td>
+                    <#if key == "d">
+                        <#-- Special-case date -->
+                        <#if s.result.date??>
+                            ${s.result.date?date?string("dd MMM, yyyy")?replace(" ", "&nbsp;")}                    
+                        <#else>
+                            No Date
+                        </#if>
+                    <#elseif key == "f">
+                        <#-- Special-case format -->
+                        <#if s.result.fileType??>
+                            ${s.result.fileType}                    
+                        <#else>
+                            &nbsp;
+                        </#if>
+                    <#else>
+                        <#if s.result.metaData[key]??>
+                            <#if (s.result.metaData[key]?split("|")?size > 1)>
+                                <ul>
+                                    <#list s.result.metaData[key]?split("|") as value>
+                                        <#if (value?length > 0)><li>${value?html}</li></#if>
+                                    </#list>  
+                                </ul>
+                            <#else>
+                                ${s.result.metaData[key]?html}
+                            </#if>
+                        <#else>
+                            Unknown
+                        </#if>
+                    </#if>
+                    </td>
+                </#list>
 
             </tr>
             </#if>
