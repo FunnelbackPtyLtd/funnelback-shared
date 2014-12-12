@@ -374,6 +374,9 @@ public class SearchQuestion {
         /** Parameter for controlling the number of documents considered in document at a time mode */
         public static final String DAAT = "daat";
 
+        /** Parameter indicating only fully matching documents should be returned */
+        public static final String FULL_MATCHES_ONLY = "fmo";
+
         /** Controls the type/level of stemming which should be used */
         public static String STEM = "stem";
 

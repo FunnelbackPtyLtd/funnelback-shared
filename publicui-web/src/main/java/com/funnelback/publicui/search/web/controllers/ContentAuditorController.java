@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -97,7 +98,7 @@ public class ContentAuditorController {
             @ModelAttribute SearchUser user,
             String type) {
         
-        customiseRequest(question);
+        customiseRequest(question, request);
         
         ModelAndView mav =
             searchController.search(request, response, question, user);
@@ -122,8 +123,9 @@ public class ContentAuditorController {
         return new ModelAndView(viewName, model);
     }
 
-    /** Modify the given question to suit content auditor's needs */
-    private void customiseRequest(SearchQuestion question) {
+    /** Modify the given question to suit content auditor's needs 
+     * @param request */
+    private void customiseRequest(SearchQuestion question, HttpServletRequest request) {
         Config config = question.getCollection().getConfiguration();
         
         // We want search result links to come back to us
@@ -137,7 +139,18 @@ public class ContentAuditorController {
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS, "999")});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
-
+        
+        if (request.getParameter("duplicate_signature") != null) {
+            question.getRawInputParameters().put(RequestParameters.S, 
+                ArrayUtils.add(
+                    question.getRawInputParameters().get(RequestParameters.S),
+                    request.getParameter("duplicate_signature")
+                )
+            );
+            question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
+        }
+        
         // Metadata for displaying in the results view
         question.getRawInputParameters().put("SM", new String[] {"meta"});
         StringBuilder sfValue = new StringBuilder();
@@ -254,7 +267,7 @@ public class ContentAuditorController {
         return new FacetDefinition(label, categoryDefinitions);
     }
 
-    /** TODO */
+    /** Creates a URL scope based facet definition */
     private FacetDefinition createUrlFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         
@@ -287,13 +300,13 @@ public class ContentAuditorController {
         return new FacetDefinition(label, categoryDefinitions);
     }
 
-    /** TODO */
+    /** Constructs the path to the requested content auditor view (i.e. freemarker ftl file) */
     private String getViewName(String type) {
         if (type == null) {
             type = "index";
         }
         
-        // Content auditor always uses the specific content auditor template
+        // Content auditor always uses the specific content auditor templates, not collection ones
         String viewName = 
             DefaultValues.FOLDER_WEB + "/" +
             DefaultValues.FOLDER_TEMPLATES + "/" +
