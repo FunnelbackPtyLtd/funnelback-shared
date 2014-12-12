@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
@@ -145,7 +148,7 @@ public class ContentAuditorController {
 
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE});
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
         }
 
         if (question.getQuery() == null || question.getQuery().length() < 1) {
@@ -220,7 +223,7 @@ public class ContentAuditorController {
      * and will be returned as a hash of className to label
      */
     private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
-        // Read in the configured metadata classes
+        // Read in the configured metadata classes, sort by keys
         Map<String, String> metadataClassToLabel = new HashMap<>();
 
         Config config = question.getCollection().getConfiguration();
@@ -234,7 +237,7 @@ public class ContentAuditorController {
                 }
             }
         }
-        return metadataClassToLabel;
+        return MapUtil.sortByValue(metadataClassToLabel);
     }
 
     /**
