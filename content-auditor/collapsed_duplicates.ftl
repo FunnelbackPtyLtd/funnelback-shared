@@ -22,7 +22,7 @@
 				<#assign duplicatesRowCounter = duplicatesRowCounter + 1 />
 				
 				<td class="text-center">
-					<a class="text-muted duplicates-count" href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count}</div></strong> </td>
+					<a class="text-muted duplicates-count" href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count + 1}</div></strong> </td>
 					<td>
 						<div class="pull-left">
 							<a href="?${QueryString}&amp;s=%3F:${result.collapsed.signature}&amp;fmo=on&amp;collapsing=off#collection-1-tab-2" title="${result.title?html}" class="clickable-link"><strong>${result.title?html} </strong></a>
