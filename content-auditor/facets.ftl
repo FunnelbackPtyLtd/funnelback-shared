@@ -58,7 +58,7 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 						<!--<h3><@s.FacetLabel summary=false /><@s.FacetSummary /> Attribute</h3>-->
 						<div class="facet-search-chart facets-chart-wrapper col-md-12 ">
 							<h4 class="inline-block"><#if (FacetSummaryLabel)?trim != "">Breakdown of: <strong>${FacetSummaryLabel} <!--<a class="btn btn-xs btn-primary inline-block"><span class="fa fa-times fa-times"></span> Clear</a>--> </strong><#else>${s.facet.name} Breakdown</#if> </h4>
-							<div id="facet-chart-${facet_counter}" style="height : 500px"></div>
+							<div id="facet-chart-${facet_counter}" style="height : 700px"></div>
 						</div>
 						<!--URLS-->
 						<div class="facet-search-details boxed no-border-lr facet-container col-md-12 col-md-pull-0">
@@ -110,12 +110,11 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					"startAngle": "225",
 					"startDuration": 0,
 // Add in legend					
-//					"legend": {
-//					"markerType": "circle",
-//					"position": "right",
-//					"marginRight": 80,		
-//					"autoMargins": false
-//					},
+					"legend": {
+						"markerType": "circle",
+						"position": "bottom",
+						"align": "center"
+					},
 					"dataProvider": [
 			
 					<#assign categoriesToList = s.facet.categories>
@@ -127,39 +126,19 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					<#assign counter = 0>
 					<#list categoriesToList as c>
 						<#list c.values as cv>
-						<#if cv.data != "d" || cv.label?matches("\\d*|Uncertain")>
-			
-							<#assign truncatedLabel=(cv.label!"")>
-							<#if truncatedLabel?length &gt; 20>
-							<#assign truncatedLabel=truncatedLabel?substring(0,19) + "...">
-							</#if>
-			
 							${separator}
 							{
-							"label": "${truncatedLabel?js_string}",
-							"count": "${cv.count?c}"<#assign other_counter = other_counter - cv.count />
+								"label": "${cv.label?js_string}",
+								"count": "${cv.count?c}"
 							}
-			
 							<#assign separator = ','>
-							
-							<#if counter &gt; 5>
-							<#if other_counter &gt; 0>
-							${separator}
-							{
-								"label": "Other",
-								"count": "${other_counter?c}"
-							}
-							</#if>
-							<#break>
-							<#else>
-							<#assign counter = counter + 1>
-							</#if>
-						</#if>
 						</#list>
 					</#list>
 					],
 					"valueField": "count",
-					"titleField": "label"
+					"titleField": "label",
+					"groupPercent": "1",
+					"labelsEnabled": false
 				}
 				);
 			</script>
