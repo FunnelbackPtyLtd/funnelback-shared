@@ -10,7 +10,7 @@
 </#if>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>
 Attributes attached to the <strong class="fb-result-count" class="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-search results for <strong>${response.resultPacket.queryAsProcessed?html}</strong>
+search results for <strong>${queryToReport?html}</strong>
 </#if>
 </p>
 <!-- Collection: <@s.cfg>service_name</@s.cfg> | Attributes last updated: ${response.resultPacket.details.collectionUpdated?datetime} -->
@@ -109,6 +109,7 @@ search results for <strong>${response.resultPacket.queryAsProcessed?html}</stron
 					"type": "pie",
 					"startAngle": "225",
 					"startDuration": 0,
+
 // Add in legend					
 					"legend": {
 						"markerType": "circle",

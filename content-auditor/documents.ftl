@@ -15,7 +15,7 @@
 		Displaying <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
 		<strong class="fb-result-count" id="fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
 		<strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-		search results for <strong><@s.QueryClean /></strong>
+		search results for <strong>${queryToReport}</strong>
 	</#if>
 	<#if response.resultPacket.resultsSummary.partiallyMatching != 0>
 		where

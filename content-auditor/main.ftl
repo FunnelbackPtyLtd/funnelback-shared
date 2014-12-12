@@ -3,6 +3,10 @@
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 
 <#assign absoluteHtmlUrl>${httpRequest.requestURL}</#assign>
+<#assign queryToReport = response.resultPacket.queryAsProcessed?replace("-padrenullquery", "") />
+<#if queryToReport?matches("\\s*")>
+    <#assign queryToReport = "[All documents]" />
+</#if>
 
 <#-- ResultTabsNavigaton -->
 
