@@ -135,6 +135,7 @@ public class ContentAuditorController {
         config.setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
         
         // Manipulate the request to suit content auditor
+        question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS, "999")});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
@@ -147,7 +148,6 @@ public class ContentAuditorController {
                     request.getParameter("duplicate_signature")
                 )
             );
-            question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
         
@@ -199,10 +199,10 @@ public class ContentAuditorController {
         String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
 
         // Pull in any query based facets from the index's faceted_navigation.xml file
-        String indexView = question.getInputParameterMap().get("view");
-        if (indexView == null) {
-            indexView = "live";
+        if (!question.getInputParameterMap().containsKey("view")) {
+            question.getInputParameterMap().put("view", "live");
         }
+        String indexView = question.getInputParameterMap().get("view");
 
         // Read the snapshot's faceted nav config and get any gscope based facets
         File fnConfig = new File(question.getCollection().getConfiguration().getCollectionRoot(), indexView

@@ -8,14 +8,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,52 +52,18 @@ public class UrlScopeFill extends CategoryDefinition {
         public List<CategoryValue> computeValues(final SearchTransaction st) {
             List<CategoryValue> categories = new ArrayList<CategoryValue>();
             
-            Map<Integer, Map<String, Integer>> prefixCounts = new HashMap<Integer, Map<String, Integer>>();
+            SegmentCountTable segmentCounts = new SegmentCountTable();
             
             for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
-//                URI uri;
-                URL url;
-                try {
-                    if (entry.getKey().contains("://")) {
-//                        uri = new URI(entry.getKey());
-                        url = URL.parse(entry.getKey());
-                    } else {
-                        // Padre strips the protocol if it's http :(
-//                        uri = new URI("http://" + entry.getKey());
-                        url = URL.parse("http://" + entry.getKey());
-                    }
-//                } catch (URISyntaxException e) {
-//                    // TODO - Is this possible? Decide how to deal with it.
-//                    throw new RuntimeException(e);
-                } catch (GalimatiasParseException e) {
-                    // TODO - Is this possible? Decide how to deal with it.
-                    throw new RuntimeException(e);
-                }
-                
-                String hostname;
-                String path;
-                if (url.isHierarchical()) {
-                    hostname = url.host().toHumanString();
-                    path = url.path();                    
-                } else {
-                    String schemeData = url.schemeData();
-                    Matcher m = Pattern.compile("//(?<hostname>((\\w+)\\.)+\\w+)/(?<path>.*)").matcher(schemeData);
-                    if (m.matches()) {
-                        hostname = m.group("hostname");
-                        path = m.group("path");
-                    } else {
-                        hostname = "";
-                        path = url.schemeData();
-                    }
-                }
+                SimpleParsedUri uri = new SimpleParsedUri(entry.getKey());
                 int count = entry.getValue();
-                updateHostnamePrefixCounts(prefixCounts, hostname, count);
-                updatePathPrefixCounts(prefixCounts, hostname, path, count);
-            }
 
+                updateSegmentCounts(segmentCounts, uri, count);
+            }
+            
             // Find the smallest number of segments with more than one possible value
             Integer numSegmentsToUse = Integer.MAX_VALUE;
-            for (Entry<Integer, Map<String, Integer>> entry : prefixCounts.entrySet()) {
+            for (Entry<Integer, Map<String, Integer>> entry : segmentCounts.getSegmentCounts().entrySet()) {
                 if (entry.getKey() < numSegmentsToUse && entry.getValue().size() > 1) {
                     numSegmentsToUse = entry.getKey();
                 }
@@ -99,7 +71,7 @@ public class UrlScopeFill extends CategoryDefinition {
             
             if (numSegmentsToUse != Integer.MAX_VALUE) {
                 // We found some level  to return
-                for (Entry<String, Integer>  entry : prefixCounts.get(numSegmentsToUse).entrySet()) {
+                for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(numSegmentsToUse).entrySet()) {
                     categories.add(new CategoryValue(
                         entry.getKey(),
                         entry.getKey(),
@@ -113,50 +85,28 @@ public class UrlScopeFill extends CategoryDefinition {
             return categories;
         }
 
-        /** TODO */
-        private void updateHostnamePrefixCounts(Map<Integer, Map<String, Integer>> prefixCounts, String hostname, Integer count) {
-            int position = hostname.indexOf('.', 0);
-            while (position != -1) {
-                String domainSuffix = hostname.substring(position + 1);
-                int segments = StringUtils.countMatches(domainSuffix, ".") + 1;
-                
-                if (!prefixCounts.containsKey(segments)) {
-                    prefixCounts.put(segments, new HashMap<String, Integer>());
+        /** Updates segment counts for a hostname */
+        private void updateSegmentCounts(SegmentCountTable segmentCounts, SimpleParsedUri uri, Integer count) {
+            // Do the hostname
+            if (uri.getPath().isEmpty()) {
+                for (String hostnameSuffix : uri.getHostnameSuffixes()) {
+                    int depth = StringUtils.countMatches(hostnameSuffix, ".") + 1;
+                    segmentCounts.add(hostnameSuffix, depth, count);
                 }
-                
-                if (!prefixCounts.get(segments).containsKey(domainSuffix)) {
-                    prefixCounts.get(segments).put(domainSuffix, count);
-                } else {
-                    prefixCounts.get(segments).put(domainSuffix, prefixCounts.get(segments).get(domainSuffix) + count);
-                }
-                
-                position = hostname.indexOf('.', position + 1);
             }
-        }
 
-        /** TODO */
-        private void updatePathPrefixCounts(Map<Integer, Map<String, Integer>> prefixCounts, String hostname, String path, Integer count) {
-            int hostnameSegments = StringUtils.countMatches(hostname, ".") + 1;
+            // Do the path
+            String pathPrefix = uri.getPath();
+            
+            if (!pathPrefix.isEmpty()) {
+                // We want to always have exactly one trailing slash
+                String key = uri.getHostname() + "/" + pathPrefix + "/";
 
-            int position = path.indexOf('/', 0);
-            while (position != -1) {
-                String pathPrefix = path.substring(0, position);
-                String key = hostname + pathPrefix;
-
-                int segments = hostnameSegments + StringUtils.countMatches(pathPrefix, "/");
+                int depth = StringUtils.countMatches(uri.getHostname(), ".") + 1 + StringUtils.countMatches(pathPrefix, "/") + 1;
                 
-                if (!prefixCounts.containsKey(segments)) {
-                    prefixCounts.put(segments, new HashMap<String, Integer>());
-                }
-                
-                if (!prefixCounts.get(segments).containsKey(key)) {
-                    prefixCounts.get(segments).put(key, count);
-                } else {
-                    prefixCounts.get(segments).put(key, prefixCounts.get(segments).get(key) + count);
-                }
-                
-                position = path.indexOf('/', position + 1);
+                segmentCounts.add(key, depth, count);
             }
+
         }
 
         /** {@inheritDoc} */
@@ -174,5 +124,116 @@ public class UrlScopeFill extends CategoryDefinition {
         /** TODO */
         public String getScopeConstraint() {
             return this.getData();
+        }
+        
+        @ToString
+        public class SegmentCountTable {
+            @Getter
+            Map<Integer, Map<String, Integer>> segmentCounts = new HashMap<Integer, Map<String, Integer>>();
+            
+            public void add(String segment, int depth, int count) {
+                if (!segmentCounts.containsKey(depth)) {
+                    segmentCounts.put(depth, new HashMap<String, Integer>());
+                }
+                
+                if (!segmentCounts.get(depth).containsKey(segment)) {
+                    segmentCounts.get(depth).put(segment, count);
+                } else {
+                    segmentCounts.get(depth).put(segment, segmentCounts.get(depth).get(segment) + count);
+                }
+            }
+        }
+        
+        /**
+         * A very basic URI parsing class to deal simplistically with the (possibly invalid)
+         * URLs padre might give us.
+         */
+        @ToString
+        public static class SimpleParsedUri {
+            
+            public SimpleParsedUri (String uri) {
+                String protocolHostnameSeparator = "://";
+                String hostnamePathSeparator = "/";
+
+                if (!uri.contains(protocolHostnameSeparator)) {
+                    // Restore the protocol padre drops by default
+                    uri = "http" + protocolHostnameSeparator + uri;
+                }
+                
+                int protocolStart = 0;
+                int protocolEnd = uri.indexOf(protocolHostnameSeparator);
+                
+                this.protocol = uri.substring(protocolStart, protocolEnd);
+                
+                String remainingAfterProtocol = uri.substring(protocolEnd + protocolHostnameSeparator.length());
+                if (!remainingAfterProtocol.contains(hostnamePathSeparator)) {
+                    remainingAfterProtocol = remainingAfterProtocol + hostnamePathSeparator;
+                }
+                
+                int hostnameStart = 0;
+                int hostnameEnd = remainingAfterProtocol.indexOf(hostnamePathSeparator);
+                
+                this.hostname = remainingAfterProtocol.substring(hostnameStart, hostnameEnd);
+                
+                int pathStart = hostnameEnd + hostnamePathSeparator.length();
+                int pathEnd = remainingAfterProtocol.length();
+                
+                this.path = remainingAfterProtocol.substring(pathStart, pathEnd);
+            }
+            
+            @Getter
+            private String protocol;
+            
+            @Getter
+            private String hostname;
+            
+            @Getter
+            private String path;
+            
+            /**
+             * Get the '.' separated suffixes of the hostname.
+             * 
+             * e.g. www.funnelback.com -> com, funnelback.com, www.funnelback.com
+             */
+            public Set<String> getHostnameSuffixes() {
+                Set<String> result = new HashSet<>();
+                StringBuffer buffer = new StringBuffer();
+                
+                List<String> suffixes = Arrays.asList(hostname.split(Pattern.quote(".")));
+                Collections.reverse(suffixes);
+                
+                for (String segment : suffixes) {
+                    buffer.insert(0, segment);
+                    result.add(buffer.toString());
+                    buffer.insert(0, ".");
+                }
+                    
+                return result;
+            }
+            
+            /**
+             * Get the '/' separated prefixes of the path.
+             * 
+             * e.g. example.com/search/enterprise/whitepaper.html ->
+             *     search, search/enterprise, search/enterprise/whitepapter.html
+             */
+            public Set<String> getPathPrefixes() {
+                Set<String> result = new HashSet<>();
+                StringBuffer buffer = new StringBuffer();
+                
+                for(String segment : path.split("/")) {
+                    if (segment.isEmpty()) {
+                        continue;
+                    }
+                    if (!buffer.toString().isEmpty()) {
+                        buffer.append("/");
+                    }
+                    buffer.append(segment);
+                    
+                    result.add(buffer.toString());
+                }
+                
+                return result;
+            }
         }
     }
