@@ -12,12 +12,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
+import com.funnelback.publicui.search.model.padre.GeoBoundingBox;
 import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.search.model.padre.RMCItemResult;
@@ -111,6 +113,11 @@ public class StaxStreamParser implements PadreXmlParser {
                     } else if (ResultPacket.Schema.METADATA_RANGE.equals(xmlStreamReader.getLocalName())){
                         MetadataRange metadataRange = parseMetadataRange(xmlStreamReader);
                         packet.getMetadataRanges().put(metadataRange.field, new Range(metadataRange.min, metadataRange.max));
+                    } else if (ResultPacket.Schema.METADATA_GEO_RANGE.equals(xmlStreamReader.getLocalName())){
+                        MetadataGeoBoundingBox metadataBox = parseGeoBoundingBox(xmlStreamReader);
+                        if(metadataBox != null){
+                            packet.getBoundingBoxes().put(metadataBox.field, metadataBox.box);
+                        }
                     } else if (ResultPacket.Schema.URLCOUNT.equals(xmlStreamReader.getLocalName())) {
                         URLCount urlCount = parseURLCount(xmlStreamReader);
                         packet.getUrlCounts().put(urlCount.url, urlCount.count);
@@ -271,6 +278,30 @@ public class StaxStreamParser implements PadreXmlParser {
             return metadataRange; 
         }
         
+        return null;
+    }
+    
+    private MetadataGeoBoundingBox parseGeoBoundingBox(XMLStreamReader xmlStreamReader) {
+        if(!ResultPacket.Schema.METADATA_GEO_RANGE.equals(xmlStreamReader.getLocalName())){
+            throw new IllegalArgumentException();
+        }
+        if(xmlStreamReader.getAttributeCount() == 5
+            && ResultPacket.Schema.METADATA_GEO_RANGE_CLASS.equals(xmlStreamReader.getAttributeLocalName(0))
+            && ResultPacket.Schema.METADATA_GEO_RANGE_UPPER_RIGHT_LATITUDE.equals(xmlStreamReader.getAttributeLocalName(1))
+            && ResultPacket.Schema.METADATA_GEO_RANGE_UPPER_RIGHT_LONGITUDE.equals(xmlStreamReader.getAttributeLocalName(2))
+            && ResultPacket.Schema.METADATA_GEO_RANGE_LOWER_LEFT_LATITUDE.equals(xmlStreamReader.getAttributeLocalName(3))
+            && ResultPacket.Schema.METADATA_GEO_RANGE_LOWER_LEFT_LONGITUDE.equals(xmlStreamReader.getAttributeLocalName(4))
+            ){
+            GeoBoundingBox.LatLong upperRight = new GeoBoundingBox.LatLong(
+                                                                new Double(xmlStreamReader.getAttributeValue(1)), 
+                                                                new Double(xmlStreamReader.getAttributeValue(2)));
+            GeoBoundingBox.LatLong lowerLeft = new GeoBoundingBox.LatLong(
+                                                                new Double(xmlStreamReader.getAttributeValue(3)),
+                                                                new Double(xmlStreamReader.getAttributeValue(4)));
+            GeoBoundingBox box = new GeoBoundingBox(upperRight, lowerLeft);
+            String field = xmlStreamReader.getAttributeValue(0);
+            return new MetadataGeoBoundingBox(field, box);
+        }
         return null;
     }
 
@@ -495,6 +526,12 @@ public class StaxStreamParser implements PadreXmlParser {
         public String field;
         public double min;
         public double max;
+    }
+    
+    @AllArgsConstructor
+    private class MetadataGeoBoundingBox {
+        public String field;
+        public GeoBoundingBox box;
     }
 
     public static class CoolValue {

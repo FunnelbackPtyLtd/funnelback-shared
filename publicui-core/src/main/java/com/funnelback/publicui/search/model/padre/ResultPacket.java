@@ -183,6 +183,16 @@ public class ResultPacket {
     @Getter private final Map<String, Range> metadataRanges = new HashMap<String, Range>();
     
     /**
+     * <p>Bounding boxes for Geospatial metadata classes</p>
+     * 
+     * <p>The key is the <code>metadata_class</code> and the value is
+     * the bounding box for the coordinates for that class that appeared
+     * in the results (up to the DAAT limit).</p>
+     * 
+     */
+    @Getter public Map<String, GeoBoundingBox> boundingBoxes = new HashMap<>();
+    
+    /**
      * <p>URL counts (Used in faceted navigation).</p>
      * 
      * <p>The key is the URL itself and the value is the count.
@@ -368,6 +378,13 @@ public class ResultPacket {
         public static final String METADATA_RANGE_CLASS = "class";
         public static final String METADATA_RANGE_MIN = "min";
         public static final String METADATA_RANGE_MAX = "max";
+        
+        public static final String METADATA_GEO_RANGE = "md_geo_range";
+        public static final String METADATA_GEO_RANGE_CLASS = "class";
+        public static final String METADATA_GEO_RANGE_UPPER_RIGHT_LATITUDE  = "top_right.lat";
+        public static final String METADATA_GEO_RANGE_UPPER_RIGHT_LONGITUDE = "top_right.lng";
+        public static final String METADATA_GEO_RANGE_LOWER_LEFT_LATITUDE   = "bottom_left.lat";
+        public static final String METADATA_GEO_RANGE_LOWER_LEFT_LONGITUDE  = "bottom_left.lng";
 
         public static final String URLCOUNT = "urlcount";
         public static final String URLCOUNT_ITEM = "item";
