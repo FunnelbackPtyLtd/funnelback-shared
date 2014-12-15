@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_14.1.1447.25 MDPLFS (Web/Ent) [32 bit]</padre_version>
+    <collection_size>junk_geo_range: 0.0 MB, 8 docs</collection_size>
+    <collection_updated>
+          </collection_updated>
+  </details>
+
+  <query>left right</query>
+  <query_as_processed>left right</query_as_processed>
+  <query_raw>left right</query_raw>
+  <collection>junk_geo_range</collection>
+  <!-- full_matches  is allegedly 0 -->
+
+<results_summary>
+  <fully_matching>2</fully_matching>
+  <collapsed>0</collapsed>
+  <partially_matching>0</partially_matching>
+  <total_matching>2</total_matching>
+  <estimated_counts>false</estimated_counts>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>2</currend>
+</results_summary>
+
+  <qhlre>(?i)\bright\b|\bleft\b</qhlre>                                                                                                                                                                              
+                                                                                                                                                                                                                     
+<origin>nan,nan</origin>                                                                                                                                                                                             
+                                                                                                                                                                                                                     
+<results>                                                                                                                                                                                                            
+                                                                                                                                                                                                                     
+  <tier_bar>                                                                                                                                                                                                         
+  <matched>2</matched>                                                                                                                                                                                               
+  <outof>2</outof>                                                                                                                                                                                                   
+  </tier_bar>                                                                                                                                                                                                        
+                                                                                                                                                                                                                     
+  <result>                                                                                                                                                                                                           
+  <rank>1</rank>                                                                                                                                                                                                     
+  <score>1000</score>                                                                                                                                                                                                
+  <title>Just right</title>                                                                                                                                                                                          
+  <collection>junk_geo_range</collection>
+  <component>0</component>
+  <live_url>http://justright.com.au/</live_url>
+  <md f="1"><![CDATA[10.0, -160.0]]></md>
+  <cache_url>/search/cache.cgi?collection=junk_geo_range&amp;doc=geo_range.bundle&amp;off=1139&amp;len=212&amp;url=http%3A%2F%2Fjustright.com.au%2F</cache_url>
+  <date>No Date</date>
+  <filesize>146</filesize>
+  <filetype>html</filetype>
+  <gscopes_set></gscopes_set>
+  <tier>1</tier>
+  <docnum>5</docnum>
+  </result>
+
+  <result>
+  <rank>2</rank>
+  <score>807</score>
+  <title>Just left</title>
+  <collection>junk_geo_range</collection>
+  <component>0</component>
+  <live_url>http://justleft.com.au/</live_url>
+  <md f="1"><![CDATA[10.0, 160.0]]></md>
+  <cache_url>/search/cache.cgi?collection=junk_geo_range&amp;doc=geo_range.bundle&amp;off=929&amp;len=210&amp;url=http%3A%2F%2Fjustleft.com.au%2F</cache_url>
+  <date>No Date</date>
+  <filesize>145</filesize>
+  <filetype>html</filetype>
+  <gscopes_set></gscopes_set>
+  <tier>1</tier>
+  <docnum>4</docnum>
+  </result>
+
+</results>
+
+  <!-- Vbyte integers decoded:  this query: 14, this run: 14 -->
+  <!-- Vbyte bytes decoded: this query: 14, this run: 14 -->
+</PADRE_result_packet>

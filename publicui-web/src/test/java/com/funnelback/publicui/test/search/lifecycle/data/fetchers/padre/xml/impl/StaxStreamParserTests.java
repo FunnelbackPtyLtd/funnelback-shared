@@ -532,6 +532,14 @@ public class StaxStreamParserTests {
         Assert.assertEquals(5.000000d, box.getLowerLeft().getLatitude(), 0.0d);
         Assert.assertEquals(8.000000d, box.getLowerLeft().getLongitude(), 0.0d);
     }
+    
+    @Test
+    public void testNanOrgin() throws Exception{
+        ResultPacket resultPacket = new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/bounding-box.xml")),
+            false);
+        Assert.assertEquals("a nan,nan orgin returned by padre means the orgin was not set but was used", 0, resultPacket.getOrigin().length);
+    }
 }
 
 

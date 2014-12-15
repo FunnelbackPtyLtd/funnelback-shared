@@ -400,7 +400,12 @@ public class StaxStreamParser implements PadreXmlParser {
         
     }
     
+    private static final String UNKNOWN_ORIGIN = "nan,nan";
+    
     private Float[] parseOrigin(String originString) {
+        if(UNKNOWN_ORIGIN.equals(originString)){
+            return new Float[0];
+        }
         String[] origin = originString.split(",");
         
         if (origin.length != 2) {
