@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
  */
 @Log4j
 @Component
+@ToString
 public class DefaultBldInfoStatsFetcher implements BldInfoStatsFetcher {
     
     @Autowired @Setter

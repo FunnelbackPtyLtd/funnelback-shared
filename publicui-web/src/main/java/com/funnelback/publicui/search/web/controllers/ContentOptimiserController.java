@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.AllArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -24,6 +26,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
+import com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 @Controller
 public class ContentOptimiserController {
@@ -75,6 +79,27 @@ public class ContentOptimiserController {
         
         return "redirect:/content-optimiser.html" + paramString;
     }
+    
+    @AllArgsConstructor
+    public class Foo {
+        String a;
+        String b;
+    }
+    
+    @Autowired
+    private MappingJacksonJsonpView jsonview;
+    
+    @RequestMapping("/content-api.json")
+    @ApiOperation(
+        value = "Gets the foo.",
+        produces = "application/json"
+     )
+    public ModelAndView barbar() {
+        Foo foo =  new Foo("hello", "hi");
+        
+        return new ModelAndView(jsonview, "nameeeee", foo);
+    }
+    
 
     @RequestMapping("/content-optimiser.html")
     public ModelAndView mainEntry(

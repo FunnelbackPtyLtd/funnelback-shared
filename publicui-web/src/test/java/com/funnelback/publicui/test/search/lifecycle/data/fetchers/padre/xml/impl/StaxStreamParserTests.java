@@ -519,6 +519,19 @@ public class StaxStreamParserTests {
             FileUtils.readFileToString(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")),
             false);
     }
+    
+    @Test
+    public void testBoundingBox() throws Exception{
+        Map<String, GeoBoundingBox> boxes = new StaxStreamParser().parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/bounding-box.xml")),
+            false).boundingBoxes;
+        Assert.assertTrue(boxes.containsKey("location"));
+        GeoBoundingBox box = boxes.get("location");
+        Assert.assertEquals(45.000000d, box.getUpperRight().getLatitude(), 0.0d);
+        Assert.assertEquals(100.000000d, box.getUpperRight().getLongitude(), 0.0d);
+        Assert.assertEquals(5.000000d, box.getLowerLeft().getLatitude(), 0.0d);
+        Assert.assertEquals(8.000000d, box.getLowerLeft().getLongitude(), 0.0d);
+    }
 }
 
 
