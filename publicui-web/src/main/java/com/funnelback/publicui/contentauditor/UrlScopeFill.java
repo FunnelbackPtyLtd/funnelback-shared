@@ -75,7 +75,7 @@ public class UrlScopeFill extends CategoryDefinition {
                     path = url.path();                    
                 } else {
                     String schemeData = url.schemeData();
-                    Matcher m = Pattern.compile("//(?<hostname>((\\w+).)+\\w)/(?<path>.*)").matcher(schemeData);
+                    Matcher m = Pattern.compile("//(?<hostname>((\\w+)\\.)+\\w+)/(?<path>.*)").matcher(schemeData);
                     if (m.matches()) {
                         hostname = m.group("hostname");
                         path = m.group("path");
