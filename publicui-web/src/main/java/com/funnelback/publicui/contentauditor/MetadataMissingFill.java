@@ -44,28 +44,31 @@ public class MetadataMissingFill extends MetadataFieldFill {
     @Override
     @SneakyThrows(UnsupportedEncodingException.class)
     public List<CategoryValue> computeValues(final SearchTransaction st) {
-        int remainderCount = st.getResponse().getResultPacket().getResultsSummary().getTotalMatching();
-        
-        // Subtract out the metadata entries which have been assigned
-        for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
-            String item = entry.getKey();
-            int count = entry.getValue();
-            MetadataAndValue mdv = parseMetadata(item);
-            if (this.data.equals("-" + mdv.metadata)) {
-                remainderCount -= count;
-            }
-        }
         List<CategoryValue> categories = new ArrayList<CategoryValue>();
-
-        if (remainderCount > 0) {
-            // There are some documents which didn't have any matches, so add a new remainder entry
-            categories.add(new CategoryValue(
-                CATEGORY_LABEL,
-                CATEGORY_LABEL,
-                remainderCount,
-                URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                + "=" + URLEncoder.encode(UNSET_VALUE, "UTF-8"),
-                getMetadataClass()));
+        
+        if (st.hasResponse() && st.getResponse().hasResultPacket() && st.getResponse().getResultPacket().hasResults()) {
+            int remainderCount = st.getResponse().getResultPacket().getResultsSummary().getTotalMatching();
+            
+            // Subtract out the metadata entries which have been assigned
+            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
+                String item = entry.getKey();
+                int count = entry.getValue();
+                MetadataAndValue mdv = parseMetadata(item);
+                if (this.data.equals("-" + mdv.metadata)) {
+                    remainderCount -= count;
+                }
+            }
+    
+            if (remainderCount > 0) {
+                // There are some documents which didn't have any matches, so add a new remainder entry
+                categories.add(new CategoryValue(
+                    CATEGORY_LABEL,
+                    CATEGORY_LABEL,
+                    remainderCount,
+                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                    + "=" + URLEncoder.encode(UNSET_VALUE, "UTF-8"),
+                    getMetadataClass()));
+            }
         }
         
         return categories;
