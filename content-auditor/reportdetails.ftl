@@ -16,6 +16,7 @@
 
     <#-- applied facets block -->
     <#if question.selectedCategoryValues?has_content>
+        <@ClearFacetsLink  class="btn btn-xs btn-danger"/>
         <@AppliedFacets class="btn btn-xs btn-warning" group=true/>
     </#if>
   </div>
@@ -88,3 +89,14 @@ Displays all the currently applied facets
  
 </#list>
 </#compress></#macro>
+
+<#---
+Displays a link that, when clicked, clears all the facets.
+
+@param clearAllText Optional link text to display.
+-->
+<#macro ClearFacetsLink clearAllText="Clear all filters" class="clearFacetLink" title="Clear all filters">
+<#if question.selectedCategoryValues?has_content>
+<a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(QueryString,question.selectedCategoryValues?keys + ["start_rank","facetScope"])?html}" title="${title}" class="${class}">${clearAllText?html} <span class="glyphicon glyphicon-remove-circle"></span></a>
+</#if>
+</#macro>
