@@ -52,6 +52,13 @@ public class UrlScopeFill extends CategoryDefinition {
         public List<CategoryValue> computeValues(final SearchTransaction st) {
             List<CategoryValue> categories = new ArrayList<CategoryValue>();
             
+            // Find out the currently selected value and its depth
+            String currentlySelectedValue = st.getQuestion().getInputParameterMap().get(this.getQueryStringParamName());
+            if (currentlySelectedValue == null) {
+                currentlySelectedValue = "";
+            }
+            int currentDepth = countSegments(currentlySelectedValue);
+            
             SegmentCountTable segmentCounts = new SegmentCountTable();
             
             for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
@@ -64,7 +71,7 @@ public class UrlScopeFill extends CategoryDefinition {
             // Find the smallest number of segments with more than one possible value
             Integer numSegmentsToUse = Integer.MAX_VALUE;
             for (Entry<Integer, Map<String, Integer>> entry : segmentCounts.getSegmentCounts().entrySet()) {
-                if (entry.getKey() < numSegmentsToUse && entry.getValue().size() > 1) {
+                if (entry.getKey() < numSegmentsToUse && entry.getValue().size() > 1 && entry.getKey() > currentDepth) {
                     numSegmentsToUse = entry.getKey();
                 }
             }
@@ -90,8 +97,10 @@ public class UrlScopeFill extends CategoryDefinition {
             // Do the hostname
             if (uri.getPath().isEmpty()) {
                 for (String hostnameSuffix : uri.getHostnameSuffixes()) {
-                    int depth = StringUtils.countMatches(hostnameSuffix, ".") + 1;
-                    segmentCounts.add(hostnameSuffix, depth, count);
+                    // We want to always have exactly one trailing slash
+                    hostnameSuffix = hostnameSuffix + "/";
+
+                    segmentCounts.add(hostnameSuffix, countSegments(hostnameSuffix), count);
                 }
             }
 
@@ -101,12 +110,39 @@ public class UrlScopeFill extends CategoryDefinition {
             if (!pathPrefix.isEmpty()) {
                 // We want to always have exactly one trailing slash
                 String key = uri.getHostname() + "/" + pathPrefix + "/";
-
-                int depth = StringUtils.countMatches(uri.getHostname(), ".") + 1 + StringUtils.countMatches(pathPrefix, "/") + 1;
                 
-                segmentCounts.add(key, depth, count);
+                segmentCounts.add(key, countSegments(key), count);
             }
 
+        }
+        
+        /**
+         * Counts the number of segments (levels of domain and path) in a URL substring
+         */
+        public static int countSegments(String urlSubstring) {
+            int result = 0;
+            
+            if (urlSubstring.endsWith("/")) {
+                // Strip any trailing '/' for consistency
+                urlSubstring = urlSubstring.substring(0, urlSubstring.length() - 1);
+            }
+            
+            String hostname = "";
+            String path = "";
+            if (urlSubstring.contains("/")) {
+                int index = urlSubstring.indexOf("/");
+                hostname = urlSubstring.substring(0, index);
+                path = urlSubstring.substring(index + 1);
+                result += StringUtils.countMatches(path, "/") + 1;
+            } else {
+                hostname = urlSubstring;
+            }
+            
+            if (!hostname.isEmpty()) {
+                result += StringUtils.countMatches(hostname, ".") + 1;
+            }
+            
+            return result;
         }
 
         /** {@inheritDoc} */
