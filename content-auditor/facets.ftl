@@ -119,7 +119,7 @@ search results for <strong>${queryToReport?html}</strong>
 					"dataProvider": [
 			
 					<#assign categoriesToList = s.facet.categories>
-					<#if (s.facet.categories[0].categories?size > 0)>
+					<#if s.facet.categories[0]?? && (s.facet.categories[0].categories?size > 0)>
 						<#assign categoriesToList = s.facet.categories[0].categories />
 					</#if>
 			
