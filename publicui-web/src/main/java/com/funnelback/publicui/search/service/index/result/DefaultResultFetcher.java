@@ -1,15 +1,18 @@
 package com.funnelback.publicui.search.service.index.result;
 
-import com.funnelback.dataapi.connector.padre.PadreConnector;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
-import com.funnelback.dataapi.connector.padre.docinfo.DocInfoQuery;
-import com.funnelback.publicui.search.model.padre.Result;
-import lombok.extern.log4j.Log4j;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
+
+import lombok.extern.log4j.Log4j;
+
+import org.springframework.stereotype.Component;
+
+import com.funnelback.dataapi.connector.padre.PadreConnector;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfo;
+import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
+import com.funnelback.publicui.search.model.padre.Result;
 
 /**
  * Fetches result using the Padre Data Api connector.
@@ -24,9 +27,11 @@ public class DefaultResultFetcher implements ResultFetcher {
     @Override
     public Result fetchResult(File indexStem, URI resultUri) {
         
+        Set<String> metadata = DocInfoAccess.getMetadataForStem(indexStem);
+        
         List<DocInfo> dis = new PadreConnector(indexStem)
             .docInfo(resultUri)
-            .withMetadata(DocInfoQuery.ALL_METADATA)
+            .withMetadata(metadata.toArray(new String[0]))
             .fetch().asList();
 
         if (dis.size() < 1) {
