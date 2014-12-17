@@ -9,12 +9,12 @@
 <div class="tab-header clearfix">
 	<p class="pull-left">        
 	<#if response.resultPacket.resultsSummary.totalMatching == 0>
-		<strong class="fb-result-count" id="fb-total-matching">0</strong> search results for <strong><@s.QueryClean /></strong>
+		<strong class="fb-total-matching fb-result-count">0</strong> search results for <strong><@s.QueryClean /></strong>
 	</#if>
 	<#if response.resultPacket.resultsSummary.totalMatching != 0>
 		Displaying <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
-		<strong class="fb-result-count" id="fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
-		<strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
+		<strong class="fb-result-count fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
+		<strong class="fb-result-count fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
 		search results for <strong>${queryToReport}</strong>
 	</#if>
 	<#if response.resultPacket.resultsSummary.partiallyMatching != 0>
@@ -31,22 +31,31 @@
 	</p>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>       
 <!-- CSV DOWNLOAD -->
-<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&type=csv_export"><span class="fa fa-lg fa-cloud-download"></span> Download Results</a>          
+<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&type=csv_export"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
 </#if>
 
-<div class="form-field select field-sort pull-right" data-url="/s/search.html?${QueryString}">     
+<div class="form-field select field-sort pull-right" data-url="?${QueryString}">     
       <div class="form-inline"><small>Sort by &nbsp;</small> <@s.Select class="form-control input-sm" name="sort" id="sort" options=["=Relevance", "date=Date (Newest First)", "adate=Date (Oldest First)", "url=URL", "title=Title (A-Z)", "dtitle=Title (Z-A)"] /></div>
 </div>
 
 
-</div>    
+</div>
+
+    <#-- applied facets block -->
+    <#if question.selectedCategoryValues?has_content> 
+        <div class="drill-filters"><span class="fa fa-filter"></span>
+        <@AppliedFacets class="btn btn-xs btn-warning" group=true/>
+        <@ClearFacetsLink  class="btn btn-xs btn-danger"/>
+        </div>
+    </#if>
+
     <!-- START RESULTS -->
     <#-- Hide the table if there are no results -->
-    <table class="table table-hover table-responsive table-striped table-row-clickable <#if response.resultPacket.resultsSummary.totalMatching == 0>hidden</#if>">
+    <table id="report-details" class="table table-hover table-responsive table-striped table-row-clickable <#if response.resultPacket.resultsSummary.totalMatching == 0>hidden</#if>">
 
     <thead>
         <tr>
-			<th scope="col"><span class="sr-only">Page</span></th>
+			<th scope="col"><span>Page</span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
                 <#assign heading = value?replace("^\\d*\\.","","r")>
@@ -54,18 +63,20 @@
             </#list>
         </tr>
     </thead>
+    <#-- Unnecessasary
     <tfoot class="hidden">
         <tr>
            
             <th scope="col">Page</th>
 			 <th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
-                <#-- Remove the sorting prefix on the heading -->
+                Remove the sorting prefix on the heading 
                 <#assign heading = value?replace("^\\d*\\.","","r")>
                 <th scope="col">${heading?html}</th>
             </#list>
         </tr>
     </tfoot>
+    -->
     <tbody>
         <!-- EACH RESULT -->
         <@s.Results>
@@ -88,7 +99,9 @@
 						<!-- SITE (Z) -->
 						<br><span class="text-muted" href="#add link here">${s.result.liveUrl?html?replace("http://www.canberra.edu.au","")}</span><#else> &nbsp;
 						</#if> 
-					</div> 
+
+
+                        
 					
 					<!--<div style="clear:both; margin-left:45px" class="pull-left">
 					
@@ -114,7 +127,6 @@
                
                   <td class="table-hide">
 				  	
-					
 					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/content-optimiser.html/anchors.html?collection=${question.inputParameterMap["collection"]?url}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags of this page">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
@@ -136,7 +148,6 @@
                     </span>
                     </a>
 
-                    &nbsp;
 				</td>	
 				
                 <#list response.customData.displayMetadata?keys as key>
@@ -144,9 +155,9 @@
                     <#if key == "d">
                         <#-- Special-case date -->
                         <#if s.result.date??>
-                            ${s.result.date?date?string("dd MMM, yyyy")?replace(" ", "&nbsp;")}                    
+                           ${s.result.date?date?string("dd MMM, yyyy")?replace(" ", "&nbsp;")}                   
                         <#else>
-                            No Date
+                            unknown
                         </#if>
                     <#elseif key == "f">
                         <#-- Special-case format -->
@@ -167,7 +178,7 @@
                                 ${s.result.metaData[key]?html}
                             </#if>
                         <#else>
-                            Unknown
+                            unknown
                         </#if>
                     </#if>
                     </td>

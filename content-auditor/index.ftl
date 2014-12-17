@@ -3,10 +3,8 @@
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 <#import "/web/templates/modernui/content-auditor/main.ftl" as main />
 <#import "/web/templates/modernui/content-auditor/design.ftl" as design />
-
 <!DOCTYPE html>
 <html lang="en-us">
-
 	<#-- Start:Macro: main.ftl - Head -->
 	<@design.Head />
 	<#-- End:Macro: main.ftl - Head -->

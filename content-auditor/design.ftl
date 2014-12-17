@@ -19,20 +19,18 @@
     <link href="${pathToAssets}css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="${pathToAssets}css/font-awesome.min.css" rel="stylesheet" media="screen">
     <link href="${pathToAssets}css/fb-content-auditor.css" rel="stylesheet" media="screen">
-    <link href="${pathToAssets}css/jquery.tablescroll.css" rel="stylesheet" media="screen">
-
+    
     <!-- JS -->
     <script>var content_auditor = [];</script>
-    <script type="text/javascript" src="${pathToAssets}/js/amcharts/amcharts.js"></script>
-    <script type="text/javascript" src="${pathToAssets}/js/amcharts/pie.js"></script>
+    <script src="${pathToAssets}js/amcharts/amcharts.js" type="text/javascript"></script>
+    <script src="${pathToAssets}js/amcharts/pie.js" type="text/javascript"></script>
+    <script src="${pathToAssets}js/KolorWheel.js" type="text/javascript"></script>
     
-    
-  
   </head>
   </#macro>
   <#-- Header markup -->
   <#macro Header>
-  <div class="hidden" id="fb-query-string">${QueryString}</div>
+  <div class="hidden" id="fb-query-string">INSERT CONTENT AUDITOR HOME LINK HERE</div>
   <header role="banner" id="page-header" class="navbar navbar-fixed-top navbar-inverse">
     <div class="container-fluid">
       <div id="navbar-header">
@@ -41,7 +39,7 @@
         <span class="fa fa-bars fa-lg"></span>
         </button>-->
 
-        <a id="brand" href="#INSERT CONTENT AUDITOR HOME link here" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
+        <a id="brand" href="?${QueryString?html}" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
         <h1>Content <span>Auditor</span></h1>
 
         <#if layoutSideBar ==1>
@@ -57,20 +55,16 @@
         </a>
 
       </div>
-      <ul class="nav navbar-nav navbar-right">
+      <div class="nav navbar-nav navbar-right">
         <div class="search-form">
           <#-- QUERY FORM -->
           <form action="/s/content-auditor.html" method="GET" class="form form-inline">
             
             <div class="search-input-group">
-              <div class="search-input-wrap">
+              
                 <input class="form-control fb-placeholder" name="query" id="query" type="search" placeholder="Keyword(s)" value="${question.inputParameterMap["query"]!?html}">
                 <label for="query"><span>query</span></label>
-              </div>
-              <div class="search-input-wrap">
-                <input class="form-control fb-placeholder" name="scoping_url" type="text" <@s.IfDefCGI name="scoping_url">value="${question.inputParameterMap["scoping_url"]!?html}"</@s.IfDefCGI> placeholder="http://example.com/directory/" />
-                <label for="scoping_url"><span>URL</span></label>
-              </div>
+
             </div>
             <#-- ADD CUSTOM SORT MODES FOR ADDITIONAL METADATA FIELDS -->
             <#--<div class="form-group">
@@ -88,32 +82,22 @@
               <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!?html}"></@s.IfDefCGI>
               <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!?html}"></@s.IfDefCGI>
             </div>
-            <input type="hidden" name="sort" value="<#if question.inputParameterMap["sort"]?? >${question.inputParameterMap["sort"]!?html}<#else>date</#if>">
-            <input class="btn btn-primary pull-left" type="submit" value="search">
+            <input type="hidden" name="sort" value="${QueryString}<#if question.inputParameterMap["sort"]?? >${question.inputParameterMap["sort"]!?html}<#else>date</#if>">
+            <button class="btn btn-primary pull-left" type="submit"><span class="fa fa-search"></span> Search</button>
             
           </form>
           </div><#-- .search-form -->
-        </ul>
+        </div>
       </div>
     </header>
     
-
-        
-
-        
-
 
         <@s.AfterSearchOnly>
           <@main.ResultTabsNavigaton />
         </@s.AfterSearchOnly>
 
 
-    <section id="page-mast">
-      <div class="container-fluid">
-        <@s.AfterSearchOnly>
-        </@s.AfterSearchOnly>
-        </div><!-- .container-fluid -->
-      </section>
+   
       </#macro>
       <#-- Footer -->
       <#macro Footer>
@@ -134,14 +118,15 @@
       <#-- FooterScripts markup -->
       <#macro FooterScripts>
       <#-- SCRIPTS -->
-      <script src="${pathToAssets}/js/jquery.min.js"></script>
+      <script src="${pathToAssets}js/jquery.min.js"></script>
       <#-- query completion JS -->
-      <script src="${pathToAssets}/js/bootstrap.min.js"></script>
+      <script src="${pathToAssets}js/bootstrap.min.js"></script>
       <#-- Not sure what this applies to: <script src="${pathToAssets}/js/jquery.tmpl.min.js"></script>-->
       <#-- Not sure what this applies to + cannot find file: <script src="${pathToAssets}/js/jquery.funnelback-completion.js"></script>-->
-      <script src="${pathToAssets}/js/pjax-standalone.min.js" type="text/javascript"></script>
-      <script src="${pathToAssets}/js/fb-content-auditor.js" type="text/javascript"></script>
-      <script type="text/javascript" src="${pathToAssets}/js/jquery.tablescroll.js"></script>
+      <script src="${pathToAssets}js/pjax-standalone.min.js" type="text/javascript"></script>
+      <script src="${pathToAssets}js/jquery.tablescroll.js" type="text/javascript"></script>
+      <script src="${pathToAssets}js/fb-content-auditor.js" type="text/javascript"></script>
+      
 
       </#macro>
 
