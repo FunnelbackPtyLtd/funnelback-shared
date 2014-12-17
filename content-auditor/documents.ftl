@@ -115,21 +115,21 @@
                   <td class="table-hide">
 				  	
 					
-					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]!?html}&amp;docnum=${s.result.docNum?c}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags of this page">
+					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/content-optimiser.html/anchors.html?collection=${question.inputParameterMap["collection"]?url}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags of this page">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-					<a class="open-content-optimiser pass" target="_blank" href="${httpRequest.requestURL}/../../content-optimiser/optimise.html?collection=business-gov-internet&optimiser_url=${s.result.liveUrl?html?replace("http://","")}&profile=_default&name=optimiser_ts=1401176844554&query=${question.inputParameterMap["query"]!?html}&amp;ajax=true" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
+					<a class="open-content-optimiser pass" target="_blank" href="/s/content-optimiser.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?collection=${question.inputParameterMap["collection"]!?html}&amp;url=${s.result.liveUrl?html}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
                     <span class="fa-stack fa-xs">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
@@ -137,27 +137,6 @@
                     </a>
 
                     &nbsp;
-					
-
-
-				<!--<form action="${httpRequest.requestURL}/../../content-optimiser/optimise.html">
-						<input type="hidden" name="optimiser_url" value="${s.result.liveUrl?html?replace("http://","")}" />
-						<input type="hidden" name="collection" value="business-gov-internet" />
-						<input type="hidden" name="profile" value="_default" />
-						<input type="hidden" name="optimiser_ts" value="1401176844554" />
-						<label for="query"><strong>Content optimiser</strong></label>  
-						<div class="input-group">
-							<input type="text" name="query" value="${question.inputParameterMap["query"]!?html}" class="form-control" />
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-primary">Run</button>
-							</span>
-						</div>  
-					</form>
-                    -->
-					
-					
-					
-				  
 				</td>	
 				
                 <#list response.customData.displayMetadata?keys as key>
