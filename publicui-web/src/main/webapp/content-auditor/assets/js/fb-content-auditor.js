@@ -4,23 +4,73 @@
  
 */
 
-
+		
 // Functions
 function refreshModalContent() {
 		var modal = $('#modal-overlay .modal-content');
 		modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
-	}
+}
+
+function makeChartScrollable(index){
+	// force tables to scroll	
+				var table = $('#chart-attr-' + index);
+				var rowCount = table.parents('.facet-container').find('.row-count').attr('data-row-count');
+				if (rowCount > 13) {
+					table.tableScroll({
+						height: 592
+				});
+				
+				$('body').attr('make-chart-scrollable', 1);
+					
+				}
+}
+
 
 // jQuery 
 if (console) console.log('fb-content-auditor.js is initiated.');
 jQuery(function() {
 	$('[data-toggle="tooltip"]').tooltip();
-	$(document)
-		.on('ready', function() {
-			//read the URL hash and open the tab.
-			var hash = window.location.hash;
-			$('a[href="' + hash + '"]').tab('show');
+	
+	
+	$(window).on('hashchange',function(){ 
+	   
+	})
+	.on('popstate', function() {
+       var hash = '#'+location.hash.slice(1);
+	   $('a[href="' + hash + '"]').tab('show');
+	   $('body').attr('hash', hash);
 			
+    });
+	
+	$(document)
+		.on('shown.bs.modal load', '#modal-overlay', function() {
+			refreshModalContent();
+		})
+		.on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+			var hash = $(e.target).attr("href").substr(1);
+			window.location.hash = hash;
+			$('body').attr('hash', hash);
+			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
+			
+			var chart = $(this).attr('data-chart_ref');
+			if(chart){
+				var index = chart.replace(/\D/g, '');
+			} else {
+			/* looks like we're in a different tab so open the first chart */	
+				var index = 0;
+			}
+			// look in the content_auditor js object for our charts. Force them to display on tab change
+			if (content_auditor[chart]) {
+				content_auditor[chart].invalidateSize();
+			}
+			if ($('.bootstrap-table #chart-attr-' + index).length) {
+				// once is enough
+			}
+			else {
+				// force tables to scroll	
+				makeChartScrollable(index);
+			}
+			window.scrollTo(0,0);
 		})
 		.on('click', '.tab-pane .pagination li', function(){
 			var t = $(this);
@@ -48,9 +98,6 @@ jQuery(function() {
 			setTimeout(function(){
 				modal.hide();
 			},888);	
-		})
-		.on('shown.bs.modal load', '#modal-overlay', function() {
-			refreshModalContent();
 		})
 		.on('click', '.facet-search-details table tbody tr, #duplicates tbody tr', function() {
 			var href = $(this).find('a').attr('href');
@@ -90,17 +137,28 @@ jQuery(function() {
 			$('#modal-overlay').addClass('fade');
 			var href = $(this).attr('href');
 			$.get(href, function(data) {
-				
 				$('#modal-overlay').show().addClass('in').find('.modal-content').html(data);
 				refreshModalContent();
 			});
 			return false;
-		}).on('change', '.field-sort', function() {
-			var sort = $(this).val();
-			var target = $(this).attr('data-url');
-			//var currentURL = window.location.href;
-			alert('the params that change need to be implemented onto this select box');
-			//window.location = target + '&sort=' + sort;
+		}).on('change', '#sort', function() {
+			var sortValue = $(this).val();
+			var currentURL = $(this).parents('.form-field').attr('data-url');
+			
+			if(currentURL.indexOf('sort')  === -1)
+			{
+				var href = currentURL.replace(/(&nocache=)[^\&]+/, '') + '&sort=' + sortValue;
+			}
+			else
+			{
+				var href = currentURL.replace(/(sort=)[^\&]+/, '$1' + sortValue).replace(/(&nocache=)[^\&]+/, '');
+			}
+			var href = href + '&nocache=' + (new Date()).getTime();
+			
+			var hash = $('body').attr('hash');
+			if(hash){ hash = '#' + hash; } else { hash = '';}
+			window.location = href + hash;
+			
 		}).on('click', '.navbar-nav li a', function() {
 			var target = $(this).parents('li');
 			target.siblings('.active').removeClass('active');
@@ -127,37 +185,7 @@ jQuery(function() {
 		})
 		// bootstrap tab listener. on shown event.
 		// mainly needed to update AM Charts
-		.on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
-			var hash = $(e.target).attr("href").substr(1);
-			window.location.hash = hash;
-			$('body').attr('hash', hash);
-			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
-			
-			var chart = $(this).attr('data-chart_ref');
-			if(chart){
-				var index = chart.replace(/\D/g, '');
-			} else {
-			/* looks like we're in a different tab so open the first chart */	
-				var index = 0;
-			}
-			// look in the content_auditor js object for our charts. Force them to display on tab change
-			if (content_auditor[chart]) {
-				content_auditor[chart].invalidateSize();
-			}
-			if ($('.bootstrap-table #chart-attr-' + index).length) {
-				// once is enough
-			}
-			else {
-				// force tables to scroll	
-				var table = $('#chart-attr-' + index);
-				var rowCount = table.parents('.facet-container').find('.row-count').attr('data-row-count');
-				if (rowCount > 10) {
-					table.tableScroll({
-						height: 400
-					});
-				}
-			}
-		}).on('mouseout', '.table-scrollers span', function() {
+		.on('mouseout', '.table-scrollers span', function() {
 			var target = $(this).parents('.tablescroll').find('.tablescroll_wrapper');
 			target.stop();
 		}).on('mouseover', '.table-scrollers span', function() {
@@ -189,9 +217,75 @@ jQuery(function() {
 		})
 		// DOM ready...
 		.ready(function() {
-			var target = $('html');
+			
+			var what = [];
+			
+			if($('.drilled-to-last').length){
+				
+				
+				
+			
+			$.each($('.facet-search-details'),function(i,val){
+			
+			
+			if($(this).find('.page-attr').length){
+				var a = [];
+				    a['heading'] = $('#facet-' + i + ' .fb-facet-header h3').text().replace('\n','').trim();
+					a['index'] = i;
+					what[i] = a;
+			}	
+			else {
+				
+				what[i] = null;
+				}
+			
+			
+			});
+			
+			console.log(what);
+			
+			var html = '';
+			
+			$.each(what, function(i,val){
+				if (val !== null){
+					html += '<li><a href="#facet-' + val['index'] + '.tab-pane" aria-controls="profile" role="tab" data-toggle="tab" title="" aria-expanded="false"><span class="fa fa-long-arrow-right"></span> ' + val['heading'] + '</a></li>';
+				}
+				
+			});
+			
+			var html = '<hr><p>You can always drill down further in the following attributes: </p><ul class="list-nice">' + html + '</ul>';
+			
+				$('.drilled-to-last p').after(html);
+			
+			}
+			
+			//read the URL hash and open the tab.
+			var hash = window.location.hash;
+			if(hash){
+			var currentTab = $('a[href="' + hash + '"]'); 
+			currentTab.tab('show');
+			var id = hash;
+				if(id.indexOf('facet-')){
+					makeChartScrollable(hash.replace(/\D/g,''));
+				}
+			}
+			else{
+			// Make chart navigation active 	
+			if(!$('#fb-facets-navigation li.active')){
+				$('[data-chart_ref=chart_1]').parent('li').addClass('active');
+			}
+			
+			makeChartScrollable(0);
+			
+			}
+			
+			window.scrollTo(0,0);		
 			//PJAX Magic...
-			/*pjax.connect({
+			var target = $('html');
+			
+			
+			
+			pjax.connect({
 				'parseJS': true,
 				'container': 'result-tabs',
 				'excludeClass':'pass',
@@ -203,6 +297,7 @@ jQuery(function() {
 					target.removeClass('fb-loading').addClass('fb-loading-after');
 					setTimeout(function() {target.removeClass('fb-loading-after');}, 1);
 				},
-			});*/
+			});
 		}); //End of Daisy Chain
 });
+
