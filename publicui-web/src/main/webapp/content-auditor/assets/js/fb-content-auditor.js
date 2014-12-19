@@ -19,6 +19,7 @@ function makeChartScrollable(index) {
             height: 592
         });
         $('body').attr('make-chart-scrollable', 1);
+		
     }
 }
 
@@ -89,6 +90,18 @@ jQuery(function() {
         }).on('click', '#tab-nav-attributes', function() {
             chart = $('#fb-facets-navigation ul.nav li.active a').attr('data-chart_ref');
             content_auditor[chart].invalidateSize();
+			
+			var chart = $(this).attr('data-chart_ref');
+            if (chart) {
+                var index = chart.replace(/\D/g, '');
+            } else {
+                /* looks like we're in a different tab so open the first chart */
+                var index = 0;
+            }
+         	
+			makeChartScrollable(index);
+			
+			
         }).on('click', '[data-dismiss="modal"]', function() {
             var modal = $('.modal');
             modal.removeClass('in');
@@ -212,8 +225,7 @@ jQuery(function() {
 		.on('mouseenter','.open-thumbnail', function(){ 
 		
 		var href = $(this).attr('href');
-		var popoverContent = '<a class="thumb-preview img-responsive" href="' + href + '"><img src="/s/preview?url=' + href + '&width=310&height=160&render_width=350&render_height=230&type=keep_aspect"></a>';
-			
+		var popoverContent = '<a class="thumb-preview img-responsive" href="' + href + '"><img src="/s/preview?url=' + href + '&width=310&height=160&render_width=1024&render_height=768&type=keep_aspect"></a>';
 			$(this).popover({ html:true, content: popoverContent, title:"<span class=\"fa fa-eye\"></span> Preview "});
 			$(this).popover('show');
 			return false; 
@@ -222,12 +234,9 @@ jQuery(function() {
         .ready(function() {
 			
 			
-			
-			
-			
 			$.each($('#report-details tbody tr'), function(index,value){
 				
-				var href = 'http://www.chanified.com';
+				var href = $(this).find('.clickable-link').attr('href');
 				
 				var popoverContent = '<a href="' + href + '"><img src="/s/preview?url=' + href + '&width=350&height=230&render_width=350&render_height=230&type=keep_aspect"></a>';
 				
@@ -284,6 +293,9 @@ jQuery(function() {
                 }
                 makeChartScrollable(0);
             }
+			
+			
+			
             window.scrollTo(0, 0);
             //PJAX Magic...
             var target = $('html');
