@@ -136,9 +136,13 @@ public class ContentAuditorController {
         // Manipulate the request to suit content auditor
         question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS, "999")});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
+
+        if (request.getParameter(RequestParameters.NUM_RANKS) == null) {
+            // Set a default from collection.cfg
+            question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
+        }
         
         if (request.getParameter("duplicate_signature") != null) {
             question.getRawInputParameters().put(RequestParameters.S, 
