@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,7 +103,7 @@ public class ContentAuditorController {
         
         Map<String, Object> model = mav.getModel();
         
-        SearchResponse sr = (SearchResponse) model.get("response");
+        SearchResponse sr = (SearchResponse) model.get(SearchController.ModelAttributes.response);
         
         if (!sr.hasResultPacket()) {
             throw new ContentAuditorException("Expected result packet for request, but got none");
