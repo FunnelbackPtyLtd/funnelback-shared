@@ -160,7 +160,7 @@ public class ContentAuditorController {
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
             sfValue.append("," + entry.getKey());
         }
-        question.getRawInputParameters().put("SF", new String[] {sfValue.toString()});
+        question.getRawInputParameters().put("SF", new String[] {"[" + sfValue.toString() + "]"});
 
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
@@ -199,7 +199,7 @@ public class ContentAuditorController {
             rmcfValue.append("," + entry.getKey());
         }
         
-        String qpOptions = " -rmcf="+rmcfValue+" -count_dates=d -count_urls=1000 -countgbits=all";
+        String qpOptions = " -rmcf=["+rmcfValue+"] -count_dates=d -count_urls=1000 -countgbits=all";
 
         // Pull in any query based facets from the index's faceted_navigation.xml file
         if (!question.getInputParameterMap().containsKey("view")) {
