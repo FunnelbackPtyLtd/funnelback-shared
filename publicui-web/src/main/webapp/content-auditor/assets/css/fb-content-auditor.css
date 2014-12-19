@@ -44,7 +44,7 @@ header .nav, header li a{width:100%;display:block!important}
 .search-form input[type=text], .search-form input[type=search], .search-form input[type=url], .search-form select{background:none repeat scroll 0 0 rgba(0, 0, 0, 0.15);border-color:#734400;border-radius:0;border-style:solid;border-width:0 0 2px;color:#eee}
 .search-form .search-input-wrap{transition:width 100ms ease}
 .search-form .search-input-group input{width:100%!important}
-.search-form input:focus + label{display:inline-block}
+/* .search-form input:focus + label{display:inline-block} */ 
 .search-form label{background:#ff9115;border-bottom:2px solid #ff9115;font-size:10px;font-weight:500;height:100%;letter-spacing:1.3px;line-height:3.2;padding:0 12px;position:absolute;right:100%;white-space:nowrap;word-wrap:normal;z-index:1;display:none;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:#fff}
 .search-form label span{border-bottom:1px solid rgba(255, 255, 255, 0.5);padding:3px 0}
 .search-form .has-focus .search-input-wrap{transition:width 100ms ease, opacity 600ms ease;width:100%!important;opacity:.3}
@@ -116,7 +116,7 @@ table tr:hover td:first-child a, table tr:hover td:first-child a strong{color:#f
 .table-striped > tbody > tr:hover{background:#f4f4f4;box-shadow:4px 0 0 #ffac4e inset}
 .table-striped > thead > tr > th{padding-left:15px!important;padding-right:15px!important}
 .table > tbody > tr:hover > td{border-top:none}
-.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{padding:10px 8px;border-color:#eee;vertical-align:middle}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{padding:10px 8px;border-color:#eee;vertical-align:top}
 .table strong{color:#444;font-weight:600}
 .fa-stack-2x{color:#666}
 .fa-stack-1x{color:#fff}
@@ -139,6 +139,8 @@ footer a,footer a:focus,footer a:hover{color:#f90}
 #my-tab-content .tab-pane > div{margin-top:0;margin-bottom:0}
 #facet-container-wrapper{border:1px solid #eee;background:#fbfbfb;transition:background-color 333ms ease 222ms}
 .facet-header{margin:25px 15px -10px}
+.facets-chart-wrapper .facet-header{ margin-left: 25px;margin-top:15px;}
+
 .facet-chart-legend{ position:relative; height:auto; min-height:0 !important}
 #fb-facets-navigation{margin-top:6px}
 #fb-facets-navigation ul li > .facetLabel .fa-circle-thin{display:none}
@@ -150,7 +152,7 @@ h4 > .facetLabel, h3 > .facetLabel{display:inline}
 #fb-facets-navigation .nav-stacked > li > a span, #fb-facets-navigation .nav-stacked > li > a div{display:inline-block}
 #fb-facets-navigation .nav-stacked > li + li{margin-top:0}
 #fb-facets-navigation .nav-stacked > li.active > a, .nav-stacked > li.active > a:hover, .nav-stacked > li.active > a:hover, .nav-stacked > li.active > a:focus{background-color:rgba(0, 0, 0, 0.08);border-bottom:0 solid #ddd;border-radius:0;color:#fff;font-weight:600;border-left:3px solid #ff9f32!important;color:#333}
-.facet-search-details{border-top:1px solid #ebebeb;padding:25px;background-color:#fff}
+.facet-search-details{border-top:1px solid #ebebeb;padding:25px;background-color:#fff; border-right:1px solif #ebebeb !important}
 .fb-facets{margin:0}
 #tabbable-content{border-top:1px solid #ebebeb;margin:25px 0 0;padding:0 22px 8px;background:url(../img/bg-light.png) #fafafa}
 .sidebar-off #tabbable-content{background:#f5f5f5}
@@ -223,12 +225,19 @@ table ul{ padding:0; list-style-position:outside}
 table a.text-muted{font-weight:500!important}
 .amChartsLegend{ border-top:1px dashed #ebebeb; margin-left:20px;margin-right:20px; margin-top:30px}
 .amChartsLegend > svg { margin-top:20px}
-.facet-search-chart > div{ min-height:725px}
+.facet-search-chart .facet-chart-container { min-height:590px !important}
 .table-row-clickable tr td.table-hide{ min-width: 120px}
 .tbl-row-ftr{ margin-top:5px}
 
 /* Facet Filter Tags */
-.drill-filters{width:100%;background:#fafafa;border-bottom:1px solid #ebebeb;padding:11px 18px}
+.drill-filters{ width:100%;background:#fafafa;border-bottom:1px solid #ebebeb; padding:0 18px !important; margin-left:0 !important}
+.drill-filters .btn-danger{ margin-left:10px}
+.appliedFacets {
+    display: inline-block !important;
+    margin: 6px 0 !important;
+    padding: 3px 6px 3px 6px !important;
+}
+
 .selected_facets ul{padding:0}
 .selected_facets li{list-style-type:none;margin-bottom:.25em}
 .appliedFacets{background:none repeat scroll 0 0 #fff;border:1px solid #efefef;border-radius:2px;color:#666;font-size:11px;font-weight:600; margin:2px 6px 2px 0;padding:6px 0 8px 6px}
@@ -275,6 +284,11 @@ table a.text-muted{font-weight:500!important}
 .list-nice a { display:block;   width:100% !important; padding: 8px 10px; border-bottom:1px dashed #ebebeb }
 .list-nice a .fa-long-arrow-right {color:#ddd; margin-right:10px }
 .list-nice  {list-style: outside none; padding:0; }
+
+
+#error-no-results{padding:35px 25px }
+
+.thumb-preview .popover-content{ background:url(../img/loader.gif); }
 @media (max-width: 767px) {
 .search-form{box-shadow:0 1px 0 rgba(255, 255, 255, 0.15)}
 header{height:50px}
@@ -326,7 +340,7 @@ body > section{margin-left:250px}
 #fb-facets-content{width:87.333%}
 #fb-facet-details{width:87.333%}
 #fb-facets-navigation, #fb-facet-details{transition:width 333ms ease, padding 333ms ease}
-.facet-search-chart h4{padding:35px 25px 0}
+.facet-search-chart h4, .facet-search-details h4{padding:25px 15px 25px}
 .closed #fb-facets-navigation{width:.667%!important}
 #fb-facets-navigation .nav-stacked > li > a{transition:padding 333ms ease 222ms, color 333ms ease 222ms, opacity 222ms ease}
 .closed #facet-container-wrapper{background:#fff;box-shadow:#f3f3f3 260px 0 0 inset}
@@ -354,7 +368,7 @@ body > section{margin-left:250px}
 .tablescroll_body, .tablescroll_head{width:100%!important}
 .tablescroll_wrapper{width:98.3%!important}
 .closed #fb-facet-details{width:95.7%!important}
-.facet-search-chart, .facet-search-details{width:49.5%;margin:0!important;padding-left:15px;margin-right:0;background-color:transparent!important;min-height:800px;border-left:1px solid #ebebeb;border-top:none;margin-bottom:0;padding-bottom:0;border-bottom:0}
+.facet-search-chart, .facet-search-details{width:49.5%;margin:0!important;padding-left:0;margin-right:0;background-color:transparent!important;min-height:800px;border-left:1px solid #ebebeb;border-top:none;margin-bottom:0;padding-bottom:0;border-bottom:0}
 .facet-search-chart{float:left;padding-right:0}
 
 element.style {
