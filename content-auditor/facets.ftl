@@ -4,15 +4,6 @@
 <@s.AfterSearchOnly>
 <!--BEGINFACETS-->
 <!-- RESULTS SUMMARY -->
-<p class="lead-in">
-<#if response.resultPacket.resultsSummary.totalMatching == 0>
-<strong>No </strong>attributes are availiable as there are <strong class="fb-result-count fb-total-matching">0</strong> search results for <strong>${response.resultPacket.queryAsProcessed?html}</strong>
-</#if>
-<#if response.resultPacket.resultsSummary.totalMatching != 0>
-Attributes attached to the <strong class="fb-result-count fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-search results for <strong>${queryToReport?html}</strong>
-</#if>
-</p>
 <!-- Collection: <@s.cfg>service_name</@s.cfg> | Attributes last updated: ${response.resultPacket.details.collectionUpdated?datetime} -->
 <div id="tabbable-content" class="row">
 	<!--<div id="fb-facets" class="col-md-3 col-lg-2">

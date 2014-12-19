@@ -10,12 +10,7 @@
 <div class="tab-summary"> 
   <div class="inner">
     <h2><span>Report Details</span></h2>
-    <p><span class="text-muted">Scoping query:</span><strong> ${response.resultPacket.queryAsProcessed?html}</strong> &nbsp;&nbsp; <span class="text-muted">Collection:</span><strong> ${currentCollection}</strong> <small class="text-muted"><em>(last updated ${response.resultPacket.details.collectionUpdated?datetime})</em></small></p>
-	
-    <p><span class="data-total-doc-count" data-value="<#if response.resultPacket.resultsSummary.totalMatching != 0>${response.resultPacket.resultsSummary.totalMatching?string.number?replace(',','')}<#else>0</#if>"><span class="text-muted">Total documents:</span></span> <#if response.resultPacket.resultsSummary.totalMatching != 0><strong>${response.resultPacket.resultsSummary.totalMatching?string.number}</strong><#else><strong class="text-danger">No results found.</strong></#if></p>
-	
-
-    
+    <p><span class="text-muted">Collection:</span><strong> ${currentCollection}</strong> <small class="text-muted"><em>(last gathered ${response.resultPacket.details.collectionUpdated?datetime})</em></small></p>    
   </div>
 </div>
 <!--ENDREPORTDETAILS-->
