@@ -274,6 +274,30 @@ search results for <strong>${queryToReport?html}</strong>
 		</@s.Facet>
 		${facetNavigation}
 		</#macro>
+
+        <div>
+            <h3>Overview</h3>
+            <i>Maybe this should be a tab?</i>
+            <@s.FacetedSearch>
+                <@s.Facet>
+                  <#assign categoryCount = 0 />
+                  <#assign sep = '' />
+                  <@s.FacetLabel tag="b"/>:
+                  <@s.Category tag="span">
+                    <#assign categoryCount = categoryCount + 1 />
+                    <#if categoryCount &lt; 4>
+                       ${sep} <@s.CategoryName class="" />&nbsp;(<@s.CategoryCount />)
+                    </#if>
+                    <#assign sep = ',' />                    
+                    <#if categoryCount == 4>
+                        , more...
+                    </#if>
+                  </@s.Category>
+                </@s.Facet>
+                <br />
+            </@s.FacetedSearch>
+        </div>
+
 		<@s.FacetedSearch>
 		<#-- <div id="fb-facets-navigation" class="fb-facets col-sm-12 col-md-2">
 		<ul class="nav nav-pills nav-stacked"><@FacetAttributesNavigation /></ul>
