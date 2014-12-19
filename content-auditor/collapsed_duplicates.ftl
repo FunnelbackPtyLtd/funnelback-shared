@@ -22,14 +22,14 @@
 				<#assign duplicatesRowCounter = duplicatesRowCounter + 1 />
 				
 				<td class="text-center">
-					<a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-1-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count + 1}</div></strong> </td>
+					<a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count + 1}</div></strong> </td>
 					<td>
 						<div class="pull-left">
-							<a href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-1-tab-2" title="${result.title?html}" class="clickable-link"><strong>${result.title?html} </strong></a>
+							<a href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${result.title?html}" class="clickable-link"><strong>${result.title?html} </strong></a>
 							<span class="fa fa-open"></span>
 							<br>
 							<!-- SITE (Z) -->
-							<a class="text-muted" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-1-tab-2"> ${result.liveUrl?html}
+							<a class="text-muted" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${result.liveUrl?html}
 								<!-- has ${result.collapsed.count} duplicate<#if result.collapsed.count != 1>s</#if>) -->
 							</a>
 						</div>

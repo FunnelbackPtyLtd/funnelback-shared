@@ -18,6 +18,7 @@
 	<@fb.ErrorMessage />
 
 	<@s.AfterSearchOnly>
+	
 	<#-- Start:Macro: main.ftl - ResultTabs -->
 	<@main.ResultTabs />
 	<#-- End:Macro: main.ftl - ResultTabs -->

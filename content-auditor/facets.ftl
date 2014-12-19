@@ -3,14 +3,6 @@
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 <@s.AfterSearchOnly>
 <!--BEGINFACETS-->
-<script type="text/javascript">
-var baseColors = [];
-
-(new KolorWheel("#19CD9B")).abs( 255,255,75,50).each(function() {
-  baseColors[this.step] = this.getHex();
-});
-
-</script>
 <!-- RESULTS SUMMARY -->
 <p class="lead-in">
 <#if response.resultPacket.resultsSummary.totalMatching == 0>
@@ -58,8 +50,8 @@ search results for <strong>${queryToReport?html}</strong>
 			<#-- applied facets block -->
 		    <#if question.selectedCategoryValues?has_content> 
 		    	<div class="drill-filters"><span class="fa fa-filter"></span>
-		        <@AppliedFacets class="btn btn-xs btn-warning" group=true/>
-		        <@ClearFacetsLink  class="btn btn-xs btn-danger"/>
+		        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
+		        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
 		    	</div>
 		    </#if>
 			
@@ -76,9 +68,11 @@ search results for <strong>${queryToReport?html}</strong>
 					
 					<div role="tabpanel" class="tab-pane active" id="facet-tab-chart-${facet_counter}">
 						<!--<h3><@s.FacetLabel summary=false /><@s.FacetSummary /> Attribute</h3>-->
-						<div class="facet-search-chart facets-chart-wrapper col-md-12 ">
-							<h4 class="inline-block"><#if (FacetSummaryLabel)?trim != "">Breakdown of: <strong>${FacetSummaryLabel} <!--<a class="btn btn-xs btn-primary inline-block"><span class="fa fa-times fa-times"></span> Clear</a>--> </strong><#else>${s.facet.name} Breakdown</#if> </h4>
-							<div id="facet-chart-${facet_counter}" style="min-height:600px"></div>
+						<div class="facet-search-chart facets-chart-wrapper col-md-12">
+						<div class="facet-header inline-block">
+							<h4><#if (FacetSummaryLabel)?trim != "">Breakdown of: <strong>${FacetSummaryLabel} <!--<a class="btn btn-xs btn-primary inline-block"><span class="fa fa-times fa-times"></span> Clear</a>--> </strong><#else>${s.facet.name} Breakdown</#if> </h4>
+						</div>	
+							<div id="facet-chart-${facet_counter}" class="facet-chart-container"></div>
 							<div id="facet-chart-legend-${s.facet_index}" class="facet-chart-legend"></div>
 						</div>
 							
@@ -89,11 +83,9 @@ search results for <strong>${queryToReport?html}</strong>
 							<#assign catRowNum = catRowNum + 1>
 						</@s.Category>
 									
-						<div class="facet-search-details boxed no-border-lr facet-container col-md-12 col-md-pull-0">
+						<div class="facet-search-details boxed no-border-lr facet-container col-md-12">
 						
-						
-							
-							<div class="facet-header">
+						<div class="facet-header">
 								<h4><#if (FacetSummaryLabel)?trim !="">Attributes of: <strong>${FacetSummaryLabel}</strong><#else>${s.facet.name} Attributes <small>(${catRowNum})</small></#if></h4>
 							</div>
 
@@ -103,22 +95,23 @@ search results for <strong>${queryToReport?html}</strong>
 								<thead>
 									<tr>
 										<th>${s.facet.name}</th>
-										<th >Occurance</th>
+										<th >Occurrence</th>
 									</tr>
 								</thead>
 								<tbody>
 									<#assign catTableCounter = 0 />
 									<@s.Category max=1000>
-									<#assign catTableCounter = catTableCounter + 1>
+									
 									
 									<#assign assignCategoryName><@s.CategoryName /></#assign>
 									<#--TODO: Remove wrapping Div element. <div class="category"> -->
-									<tr>
+									<tr id="attr-${facet_counter}-${catTableCounter}">
 										<#--<td>&nbsp;${catTableCounter}</td>-->
 										<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
 										<td><span class="badge"><@s.CategoryCount /></span> </td>
 										
 									</tr>
+									<#assign catTableCounter = catTableCounter + 1>
 									</@s.Category>
 								</tbody>
 							</table>
@@ -150,18 +143,31 @@ search results for <strong>${queryToReport?html}</strong>
 			
 			<script type="text/javascript">
 
+				var baseColors = [];
+
+				<#if (catRowNum < 2) >
+				<#assign hexSteps = 2>
+				<#else>
+				<#assign hexSteps = catRowNum>
+				</#if>
+				(new KolorWheel("#19CD9B")).abs( 255,255,75,${hexSteps}).each(function() {
+					baseColors[this.step] = this.getHex();
+				});
+
+
 				content_auditor.chart_${s.facet_index} = AmCharts.makeChart("facet-chart-${facet_counter}", {
 					"type": "pie",
 					"startAngle": "225",
 					"startDuration": 0,
 					"innerRadius":"30%",
 					"colors":baseColors,
-					"legend": {
+					<#--"legend": {
 						"markerType": "triangleDown",
 						"position": "bottom",
 						"align": "center",
 						"divId": "facet-chart-legend-${s.facet_index}"
 					},
+					-->
 					"dataProvider": [
 			
 					<#assign categoriesToList = s.facet.categories>
@@ -188,6 +194,41 @@ search results for <strong>${queryToReport?html}</strong>
 					"labelsEnabled": false
 				}
 				);
+				
+				var targetChart = content_auditor.chart_${s.facet_index};
+				
+				targetChart.addListener('rendered', function (event) {
+				   
+				    var target = document.getElementById('chart-attr-${s.facet_index}');
+				    var targetTableHead = $('#facet-tab-chart-${s.facet_index} table thead tr');
+				    if(!targetTableHead.attr('data-chart-legend')){
+				    	targetTableHead.append('<th>Overall</th>').attr('data-chart-legend',true);
+					}	
+				    for( i = 0; i < content_auditor.chart_${s.facet_index}.chartData.length; ) {
+				    	
+				    	var row = content_auditor.chart_${s.facet_index}.chartData[i];
+				        var color = content_auditor.chart_${s.facet_index}.colors[i];
+				        var percent = Math.round( row.percents * 100 ) / 100;
+				        var value = row.value;
+				        var target = $('#attr-${facet_counter}-' + i );
+				       
+				        if(!target.attr('data-chart-legend')){
+				        	target.attr('data-chart-legend',true)
+				        	target.attr('data-chart-index',i)
+				        	.on('mouseover',function(){  hoverSlice($(this).attr('data-chart-index'), 'chart_' + ${s.facet_index}); })
+				        	.on('mouseleave',function(){ blurSlice($(this).attr('data-chart-index') , 'chart_' + ${s.facet_index}); })
+				        	.append('<td><strong>' + percent + '%</strong></td>')
+				        	.find('td:first-child').prepend('<span class="badge" style="background:'+color+'">&nbsp;</span>&nbsp;')
+				        	//.parent('tr').find('.badge').css({background: color })
+				        	//.append('<td>one</td>')
+				        	;
+				        }
+				        i++;  
+				    }
+
+					 	
+				});
+						
 
 				
 			</script>

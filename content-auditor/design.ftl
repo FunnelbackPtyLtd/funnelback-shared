@@ -6,6 +6,7 @@
 
 <#-- Contents of the HTML <head> tag -->
   <#assign pathToAssets = '/s/content-auditor/assets/' />
+
   <#macro Head>
   <head>
     <title>
@@ -90,14 +91,11 @@
         </div>
       </div>
     </header>
-    
 
         <@s.AfterSearchOnly>
           <@main.ResultTabsNavigaton />
         </@s.AfterSearchOnly>
 
-
-   
       </#macro>
       <#-- Footer -->
       <#macro Footer>

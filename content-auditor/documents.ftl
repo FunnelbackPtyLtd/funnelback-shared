@@ -44,8 +44,8 @@
     <#-- applied facets block -->
     <#if question.selectedCategoryValues?has_content> 
         <div class="drill-filters"><span class="fa fa-filter"></span>
-        <@AppliedFacets class="btn btn-xs btn-warning" group=true/>
-        <@ClearFacetsLink  class="btn btn-xs btn-danger"/>
+        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#collection-${currentCollection}-tab-2" />
+        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#collection-${currentCollection}-tab-2" />
         </div>
     </#if>
 
@@ -66,9 +66,8 @@
     <#-- Unnecessasary
     <tfoot class="hidden">
         <tr>
-           
             <th scope="col">Page</th>
-			 <th scope="col"><span class="sr-only">Actions</span></th> 
+			<th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
                 Remove the sorting prefix on the heading 
                 <#assign heading = value?replace("^\\d*\\.","","r")>
@@ -127,7 +126,8 @@
                
                   <td class="table-hide">
 				  	
-					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/content-optimiser.html/anchors.html?collection=${question.inputParameterMap["collection"]?url}&amp;docnum=${s.result.docNum?c}" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags of this page">
+					
+					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]?url}&docnum=${s.result.docNum?c}&ajax=1" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
@@ -142,12 +142,15 @@
 					</a>
 					
                     <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+					
                     <span class="fa-stack fa-xs">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
                     </span>
-                    </a>
-
+                    
+					</a>
+					
+				
 				</td>	
 				
                 <#list response.customData.displayMetadata?keys as key>
@@ -240,11 +243,11 @@
 
 <div>
   <ul class="pagination">
-    <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-1-tab-2">Prev</a></li></@fb.Prev>
+    <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
     <@fb.Page>
-    <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-1-tab-2">${fb.pageNumber}</a></li>
+    <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
     </@fb.Page>
-    <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-1-tab-2">Next</a></li></@fb.Next>
+    <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
   </ul>
 </div>
 
