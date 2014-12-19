@@ -29,6 +29,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
+import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -256,7 +257,7 @@ public class ContentAuditorController {
      */
     private FacetDefinition createDateFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        DateFieldFill fill = new DateFieldFill();
+        YearOnlyDateFieldFill fill = new YearOnlyDateFieldFill();
         fill.setData("d");
         fill.setLabel(label);
         fill.setFacetName(label);
