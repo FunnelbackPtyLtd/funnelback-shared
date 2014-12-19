@@ -103,9 +103,9 @@ public class ContentAuditorController {
         
         Map<String, Object> model = mav.getModel();
         
-        SearchResponse sr = (SearchResponse) model.get(SearchController.ModelAttributes.response);
+        SearchResponse sr = (SearchResponse) model.get(SearchController.ModelAttributes.response.toString());
         
-        if (!sr.hasResultPacket()) {
+        if (sr == null || !sr.hasResultPacket()) {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
                 
