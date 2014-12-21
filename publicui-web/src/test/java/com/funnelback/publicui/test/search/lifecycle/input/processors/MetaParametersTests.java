@@ -194,15 +194,17 @@ public class MetaParametersTests {
         st.getQuestion().getRawInputParameters().put("smeta_h_and", new String[] {"hulk"});
         st.getQuestion().getRawInputParameters().put("meta_i_sand", new String[] {"captainamerica"});    // Ran out of single words
         st.getQuestion().getRawInputParameters().put("smeta_i_sand", new String[] {"captainamerica"});
-        st.getQuestion().getRawInputParameters().put("meta_j_not", new String[] {"silversurfer"});
-        st.getQuestion().getRawInputParameters().put("smeta_j_not", new String[] {"silversurfer"});
+        st.getQuestion().getRawInputParameters().put("meta_jj_not", new String[] {"silversurfer"});
+        st.getQuestion().getRawInputParameters().put("smeta_jj_not", new String[] {"silversurfer"});
+        st.getQuestion().getRawInputParameters().put("smeta_klong", new String[] {"007"});
+        st.getQuestion().getRawInputParameters().put("meta_klong", new String[] {"007"});
         st.getQuestion().getRawInputParameters().put("dummy", new String[] {"value"});
         st.getQuestion().getRawInputParameters().put("sdummy", new String[] {"value"});
         
         MetaParameters processor = new MetaParameters();
         processor.processInput(st);
         
-        Assert.assertEquals(10, st.getQuestion().getMetaParameters().size());
+        Assert.assertEquals(11, st.getQuestion().getMetaParameters().size());
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("a:simple"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("b:*batman*"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+[c:spiderman]"));
@@ -212,9 +214,10 @@ public class MetaParametersTests {
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("g:`superman`"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("+h:hulk"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("|i:captainamerica"));
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("-j:silversurfer"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("-jj:silversurfer"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("klong:007"));
         
-        Assert.assertEquals(10, st.getQuestion().getSystemMetaParameters().size());
+        Assert.assertEquals(11, st.getQuestion().getSystemMetaParameters().size());
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("a:simple"));
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("b:*batman*"));
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("+[c:spiderman]"));
@@ -224,7 +227,8 @@ public class MetaParametersTests {
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("g:`superman`"));
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("+h:hulk"));
         Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("|i:captainamerica"));
-        Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("-j:silversurfer"));
+        Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("-jj:silversurfer"));
+        Assert.assertTrue(st.getQuestion().getSystemMetaParameters().contains("klong:007"));
     }
     
     @Test
@@ -383,6 +387,9 @@ public class MetaParametersTests {
 
     }
     
+    /**
+     * Tests that when we encounter invalid meta_ params we try to clean and process them.
+     */
     @Test
     public void testInvalidParameters() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
@@ -397,10 +404,10 @@ public class MetaParametersTests {
         st.getQuestion().getRawInputParameters().put("squery_invalid", new String[] {"first bad"});
         st.getQuestion().getRawInputParameters().put("query_", new String[] {"incomplete"});
         st.getQuestion().getRawInputParameters().put("squery_", new String[] {"incomplete"});
-        st.getQuestion().getRawInputParameters().put("meta_invalid", new String[] {"abc"});
-        st.getQuestion().getRawInputParameters().put("smeta_invalid", new String[] {"abc"});
-        st.getQuestion().getRawInputParameters().put("meta_inv_or", new String[] {"def"});
-        st.getQuestion().getRawInputParameters().put("smeta_inv_or", new String[] {"def"});
+        st.getQuestion().getRawInputParameters().put("meta_i%nvalid", new String[] {"abc"});
+        st.getQuestion().getRawInputParameters().put("smeta_i%nvalid", new String[] {"abc"});
+        st.getQuestion().getRawInputParameters().put("meta_i%nv_or", new String[] {"def"});
+        st.getQuestion().getRawInputParameters().put("smeta_i%nv_or", new String[] {"def"});
         
         MetaParameters processor = new MetaParameters();
         processor.processInput(st);
@@ -411,7 +418,7 @@ public class MetaParametersTests {
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("x:incomplete x:too"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("first bad"));
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("incomplete"));
-        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("abc"));
+        Assert.assertTrue(st.getQuestion().getMetaParameters().contains("abc")); 
         Assert.assertTrue(st.getQuestion().getMetaParameters().contains("[def]"));
         
         Assert.assertEquals(7, st.getQuestion().getSystemMetaParameters().size());

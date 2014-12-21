@@ -57,7 +57,7 @@ public class MetaParameters extends AbstractInputProcessor {
     /**
      * Pattern used to extract the metadata class
      */
-    private static final Pattern META_CLASS_PATTERN = Pattern.compile("^" + META_PREFIX + "(.)($|_)");
+    private static final Pattern META_CLASS_PATTERN = Pattern.compile("^" + META_PREFIX + "([a-zA-Z0-9]+)($|_)");
     
     /**
      * <p>Pattern used to prefix a value with the metadata class. Taken from the Perl UI:<br />
