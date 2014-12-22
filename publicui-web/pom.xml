@@ -21,6 +21,7 @@
                     <systemProperties>
                         <!-- Path to shared libraries -->
                         <jna.library.path>target/natives</jna.library.path>
+                        <funnelback.installdir>src/test/resources/dummy-search_home</funnelback.installdir>
                     </systemProperties>
                 </configuration>
             </plugin>
