@@ -60,27 +60,6 @@ public class ContentOptimiserController {
         return "redirect:/content-optimiser.html" + paramString;
     }
     
-    @AllArgsConstructor
-    public class Foo {
-        String a;
-        String b;
-    }
-    
-    @Autowired
-    private MappingJacksonJsonpView jsonview;
-    
-    @RequestMapping("/content-api.json")
-    @ApiOperation(
-        value = "Gets the foo.",
-        produces = "application/json"
-     )
-    public ModelAndView barbar() {
-        Foo foo =  new Foo("hello", "hi");
-        
-        return new ModelAndView(jsonview, "nameeeee", foo);
-    }
-    
-
     @RequestMapping("/content-optimiser.html")
     public ModelAndView mainEntry(
             HttpServletRequest request,
