@@ -40,11 +40,15 @@
 			<bean class="com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
-			<mvc:mapping path="/search.*" />
-            <mvc:mapping path="/anchors.*" />
-            <mvc:mapping path="/suggest.*" />
-            <mvc:mapping path="/content-optimiser.*" />
-            <mvc:mapping path="/recommender/*" />
+			<mvc:mapping path="/**"/>
+			<!-- Always allow click tracking logging (provides the user no info anyway) -->
+        	<mvc:exclude-mapping path="/log"/>
+        	<mvc:exclude-mapping path="/redirect"/>
+        	<!-- Search session related ones - Only gives users their own info -->
+        	<mvc:exclude-mapping path="/cart.json"/>
+        	<mvc:exclude-mapping path="/cart-process.html"/>
+        	<mvc:exclude-mapping path="/search-history.json"/>
+        	<mvc:exclude-mapping path="/click-history.json"/>
 			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
@@ -56,6 +60,10 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/content-optimiser.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/content-auditor.*" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.ContentAuditorRestrictionInterceptor" />
 		</mvc:interceptor>
         <mvc:interceptor>
       			<mvc:mapping path="/recommender/*.html" />
