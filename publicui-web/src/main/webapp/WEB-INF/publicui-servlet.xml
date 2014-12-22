@@ -61,10 +61,6 @@
 			<mvc:mapping path="/content-optimiser.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/content-auditor.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.ContentAuditorRestrictionInterceptor" />
-		</mvc:interceptor>
         <mvc:interceptor>
       			<mvc:mapping path="/recommender/*.html" />
       			<bean class="com.funnelback.publicui.recommender.interceptors.DevRecommenderInterceptor" />
