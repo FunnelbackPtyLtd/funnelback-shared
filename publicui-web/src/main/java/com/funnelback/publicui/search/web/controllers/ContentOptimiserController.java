@@ -42,26 +42,6 @@ public class ContentOptimiserController {
     public void initBinder(DataBinder binder) {
         searchController.initBinder(binder);
     }
-
-    @Autowired
-    private FreeMarkerView contentOptimiserAnchorsPage;
-    @RequestMapping("/content-optimiser.html/anchors.html")
-    public ModelAndView visitContentOptimiserAnchorsPage(HttpServletRequest request) {
-
-        Map<String, Object> model = new HashMap<String, Object>();
-
-        List<String> paramNames = new ArrayList<String>();
-        Enumeration<String> es = request.getParameterNames();
-        while (es.hasMoreElements()) {
-            paramNames.add(es.nextElement());
-        }
-
-        for(String paramName : paramNames ) {
-            model.put(paramName, request.getParameter(paramName));
-        }
-
-        return new ModelAndView(contentOptimiserAnchorsPage, model);
-    }
     
     @RequestMapping (value={
         "/content-optimiser/",

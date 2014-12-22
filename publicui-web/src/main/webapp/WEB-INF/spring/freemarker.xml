@@ -200,11 +200,6 @@
 		<property name="url" value="contentoptimiser/contentOptimiserModelDump.ftl" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
-	
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserAnchorsPage">
-		<property name="url" value="contentoptimiser/contentOptimiserAnchorsPage.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-	</bean>
 
 	<!-- Serve TRIM reference view -->
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="trimReferenceView">
