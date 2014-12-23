@@ -10,7 +10,13 @@
 <div class="tab-summary"> 
   <div class="inner">
     <h2><span>Report Details</span></h2>
-    <p><span class="text-muted">Collection:</span><strong> ${currentCollection}</strong> <small class="text-muted"><em>(last gathered ${response.resultPacket.details.collectionUpdated?datetime})</em></small></p>    
+
+    <p> <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${currentCollection}</strong>&nbsp; <small class="text-muted"><em class="fa fa-lg fa-clock-o link" data-toggle="tooltip" data-placement="top" title="${currentCollection} was last updated on ${response.resultPacket.details.collectionUpdated?datetime}"></em></small></p>
+
+    <p><span class="data-total-doc-count" data-value="<#if response.resultPacket.resultsSummary.totalMatching != 0>${response.resultPacket.resultsSummary.totalMatching?string.number?replace(',','')}<#else>0</#if>"></p>
+	
+
+    
   </div>
 </div>
 <!--ENDREPORTDETAILS-->

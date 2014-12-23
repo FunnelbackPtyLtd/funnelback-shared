@@ -55,11 +55,13 @@
 
     <thead>
         <tr>
-			<th scope="col"><span>Page</span></th>
+            <#assign url = "content-auditor.html?" + changeParam(QueryString, "sort",'dtitle') />
+			<th scope="col"><span><a href="${url}#collection-${currentCollection}-tab-2">Page <span class="fa fa-caret-down"></span></a> </span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
                 <#assign heading = value?replace("^\\d*\\.","","r")>
-                <th scope="col">${heading?html}</th>
+                 <#assign url = "content-auditor.html?" + changeParam(QueryString, "sort", heading)?replace(' ','_')?lower_case />
+                <th scope="col"><a href ="${url}#collection-${currentCollection}-tab-2">${heading?html} <span class="fa fa-caret-down"></span></a></th>
             </#list>
         </tr>
     </thead>

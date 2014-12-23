@@ -52,9 +52,9 @@
 	</#macro>
 	
 	<#if filterList(response.resultPacket.results, 'collapsed')?size < 1 >
-		<div class="alert<#-- alert-success bg-success-->"><h4><strong><#--<span class="fa fa-check-circle-o"></span>--> Content Duplicates</strong></h4> No duplicate content could be found for this collection.</div>
+	<div class="alert<#-- alert-success bg-success-->"><h4><strong><#--<span class="fa fa-check-circle-o"></span>--> Content Duplicates</strong></h4> No duplicate content could be found for this collection.</div>
 	<#else>
-		<@duplicateTable totalDuplicates =  filterList(response.resultPacket.results, 'collapsed')?size />
+	<@duplicateTable totalDuplicates =  filterList(response.resultPacket.results, 'collapsed')?size />
 	</#if>
 	
 	</@s.AfterSearchOnly>

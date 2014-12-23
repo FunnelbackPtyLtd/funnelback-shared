@@ -19,7 +19,8 @@
     <link href="${pathToAssets}css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="${pathToAssets}css/font-awesome.min.css" rel="stylesheet" media="screen">
     <link href="${pathToAssets}css/fb-content-auditor.css" rel="stylesheet" media="screen">
-    
+    <#-- CSS for Print-->
+    <link href="${pathToAssets}css/fb-content-auditor-print.css" rel="stylesheet" media="print">
     <!-- JS -->
     <script>var content_auditor = [];</script>
     <script src="${pathToAssets}js/amcharts/amcharts.js" type="text/javascript"></script>
@@ -39,19 +40,19 @@
         <span class="fa fa-bars fa-lg"></span>
         </button>-->
 
-        <a id="brand" href="?${QueryString?html}" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
+        <a id="brand" href="/s/search.html?collection=${question.inputParameterMap["collection"]?url}" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
         <h1>Content <span>Auditor</span></h1>
 
         <#if layoutSideBar ==1>
         <a id="toggle-sidebar" class="btn btn-xs">
-        <span class="sr-only">Toggle Sidebar Navigation</span>
-        <span class="fa fa-bars fa-lg"></span>
+          <span class="sr-only">Toggle Sidebar Navigation</span>
+          <span class="fa fa-bars fa-lg"></span>
         </a>
         </#if>
         
         <a id="toggle-search" class="btn btn-xs">
-        <span class="sr-only">Toggle Sidebar Navigation</span>
-        <span class="fa fa-search fa-lg"></span>
+          <span class="sr-only">Toggle Sidebar Navigation</span>
+          <span class="fa fa-search fa-lg"></span>
         </a>
 
       </div>
@@ -122,11 +123,9 @@
       <#-- Not sure what this applies to + cannot find file: <script src="${pathToAssets}/js/jquery.funnelback-completion.js"></script>-->
       <script src="${pathToAssets}js/pjax-standalone.min.js" type="text/javascript"></script>
       <script src="${pathToAssets}js/jquery.tablescroll.js" type="text/javascript"></script>
+      <script src="${pathToAssets}js/jquery-table-sorter.js" type="text/javascript"></script>
       <script src="${pathToAssets}js/fb-content-auditor.js" type="text/javascript"></script>
-      
-
       </#macro>
-
 
       <#macro modalOverlay>
       <#-- Modal / #modal-overlay -->

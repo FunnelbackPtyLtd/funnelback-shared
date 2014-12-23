@@ -8,9 +8,9 @@
 <div id="tabbable-content" class="row">
 	<!--<div id="fb-facets" class="col-md-3 col-lg-2">
 					<ul class="nav nav-pills nav-stacked">
-								<li class="active" role="presentation"><a href="#">Home</a></li>
-								<li role="presentation"><a href="#">Profile</a></li>
-								<li role="presentation"><a href="#">Messages</a></li>
+								<li class="active" role="presentation"><a href="#" title="home">Home</a></li>
+								<li role="presentation"><a href="#" title="Profile">Profile</a></li>
+								<li role="presentation"><a href="#" title="Messages">Messages</a></li>
 					</ul>
 	</div>-->
 	<#macro FacetAttributesPanels>
@@ -82,7 +82,7 @@
 
 							<#if (catRowNum > 0) >
 
-							<table id="chart-attr-${facet_counter}" class="page-attr table table-striped" data-rows="${catRowNum}" <#if facet_counter == 0>data-toggle="table"</#if> data-height="100">
+							<table id="chart-attr-${facet_counter}" data-attribute="${s.facet.name}" class="page-attr table table-striped" data-rows="${catRowNum}" <#if facet_counter == 0>data-toggle="table"</#if> data-height="100">
 								<thead>
 									<tr>
 										<th>${s.facet.name}</th>
@@ -99,7 +99,7 @@
 									<tr id="attr-${facet_counter}-${catTableCounter}">
 										<#--<td>&nbsp;${catTableCounter}</td>-->
 										<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
-										<td><span class="badge"><@s.CategoryCount /></span> </td>
+										<td><span class="badge detail-count"><@s.CategoryCount /></span> </td>
 										
 									</tr>
 									<#assign catTableCounter = catTableCounter + 1>
@@ -152,7 +152,8 @@
 					"startDuration": 0,
 					"innerRadius":"30%",
 					"colors":baseColors,
-					<#--"legend": {
+					<#--
+					"legend": {
 						"markerType": "triangleDown",
 						"position": "bottom",
 						"align": "center",
@@ -181,8 +182,10 @@
 					],
 					"valueField": "count",
 					"titleField": "label",
-					"groupPercent": "1",
-					"labelsEnabled": false
+					//"groupPercent": "1",
+					"labelsEnabled": false,
+					"pullOutOnlyOne":true,
+					"pullOutEffect":"elastic"
 				}
 				);
 				
@@ -191,7 +194,9 @@
 				targetChart.addListener('rendered', function (event) {
 				   
 				    var target = document.getElementById('chart-attr-${s.facet_index}');
-				    var targetTableHead = $('#facet-tab-chart-${s.facet_index} table thead tr');
+				    var targetID = '#facet-tab-chart-${s.facet_index}';
+				    var targetTableHead = $(targetID + ' table thead tr');
+
 				    if(!targetTableHead.attr('data-chart-legend')){
 				    	targetTableHead.append('<th>Overall</th>').attr('data-chart-legend',true);
 					}	
@@ -202,14 +207,27 @@
 				        var percent = Math.round( row.percents * 100 ) / 100;
 				        var value = row.value;
 				        var target = $('#attr-${facet_counter}-' + i );
-				       
+				        var title = row.title;
+				       //console.log(row);
 				        if(!target.attr('data-chart-legend')){
-				        	target.attr('data-chart-legend',true)
-				        	target.attr('data-chart-index',i)
-				        	.on('mouseover',function(){  hoverSlice($(this).attr('data-chart-index'), 'chart_' + ${s.facet_index}); })
-				        	.on('mouseleave',function(){ blurSlice($(this).attr('data-chart-index') , 'chart_' + ${s.facet_index}); })
-				        	.append('<td><strong>' + percent + '%</strong></td>')
-				        	.find('td:first-child').prepend('<span class="badge" style="background:'+color+'">&nbsp;</span>&nbsp;')
+				        	target
+				        	.attr('data-chart-legend',true)
+				        	.attr('data-chart-index',i)
+				        	.attr('data-title', title)
+				        	.attr('data-value', value)
+				        	.attr('data-percent', percent)
+				        	.attr('data-color', color)
+				        	.attr('data-target', row)
+				        	.on('mouseover',function(){  
+				        		var t = $(this);
+				        		hoverSlice($(this).attr('data-chart-index'), 'chart_' + ${s.facet_index}); 
+				        		//$('#facet-chart-legend-${s.facet_index}' ).html( '<h4>Summary for <strong>'+ t.attr('data-title') + '</strong></h4> <br>Found <strong>' + t.attr('data-value') + '</strong> times in the ' + $('#detail-current-collection').text() + ' collection, this makes up for <strong>' + t.attr('data-percent') + '%</strong> of the overall total <strong>' + t.parents('.page-attr').attr('data-attribute') + ' attributes</strong>. ');
+				        	})
+				        	.on('mouseleave',function(){ 
+				        		blurSlice($(this).attr('data-chart-index') , 'chart_' + ${s.facet_index}); 
+				        	})
+				        	.append('<td><strong class="detail-percent">' + percent + '%</strong></td>')
+				        	.find('td:first-child').prepend('<span class="badge detail-legend" style="background:'+color+'">&nbsp;</span>&nbsp;')
 				        	//.parent('tr').find('.badge').css({background: color })
 				        	//.append('<td>one</td>')
 				        	;
@@ -217,9 +235,23 @@
 				        i++;  
 				    }
 
+				    if( $(targetID + ' table').hasClass('sortable-table') === false && content_auditor.chart_${s.facet_index}.chartData.length > 1){
+
+
+				    	$(targetID + ' table thead tr th').append(' <span class="fa fa-caret-down"></span>').addClass('cursor-pointer');
+
+
+						$(targetID + ' table').addClass('sortable-table').tablesorter(); 
+
+						
+
+
+					}
 					 	
 				});
-						
+				
+				
+
 
 				
 			</script>
@@ -243,21 +275,34 @@
 		<#assign facetNavigationItem>
 		<#assign FacetLabel><@s.FacetLabel summary=false /></#assign>
 		<#assign FacetLabel = FacetLabel?replace("<[^>]*>", "", "r")?trim >
-		<#if 	 FacetLabel == 'URI'>			<#assign facetNavIcon ='link'>
-		<#elseif FacetLabel == 'Date modified'>	<#assign facetNavIcon ='calendar'>
-		<#elseif FacetLabel == 'Author'>		<#assign facetNavIcon ='user'>
-		<#elseif FacetLabel == 'Format'>		<#assign facetNavIcon ='file-text-o'>
-		<#elseif FacetLabel == 'Language'>		<#assign facetNavIcon ='globe'>
-		<#elseif FacetLabel == 'Subject'>		<#assign facetNavIcon ='book'>
-		<#elseif FacetLabel == 'Publisher'>		<#assign facetNavIcon ='newspaper-o'>
-		<#elseif FacetLabel == 'Title'>			<#assign facetNavIcon ='font'>
+		<#if 	 FacetLabel == 'URI'>				<#assign facetNavIcon ='link'>
+		<#elseif FacetLabel == 'Date modified'>		<#assign facetNavIcon ='calendar'>
+		<#elseif FacetLabel == 'Author'>			<#assign facetNavIcon ='user'>
+		<#elseif FacetLabel == 'Format'>			<#assign facetNavIcon ='file-text-o'>
+		<#elseif FacetLabel == 'Language'>			<#assign facetNavIcon ='globe'>
+		<#elseif FacetLabel == 'Subject'>			<#assign facetNavIcon ='book'>
+		<#elseif FacetLabel == 'Publisher'>			<#assign facetNavIcon ='newspaper-o'>
+		<#elseif FacetLabel == 'Title'>				<#assign facetNavIcon ='font'>
+		
+		<#-- These icons need checking as I cannot see this on my local copy ~ Steve  -->
+		
+		<#elseif FacetLabel == 'Busiess Stage'>	    <#assign facetNavIcon ='line-chart'>
+		<#elseif FacetLabel == 'Busiess Structure'>	<#assign facetNavIcon ='pie-chart'>
+		<#elseif FacetLabel == 'Generator'>			<#assign facetNavIcon ='cogs'>
+		<#elseif FacetLabel == 'Missing Content'>	<#assign facetNavIcon ='question'>
+		<#elseif FacetLabel == 'Missing Content Attributes'><#assign facetNavIcon ='question'>
+		<#elseif FacetLabel == 'Creator'>		    <#assign facetNavIcon ='user'>
+		<#elseif FacetLabel == 'page Type'>		    <#assign facetNavIcon ='file'>
+		<#elseif FacetLabel == 'Red Tape Reduction'><#assign facetNavIcon ='umbrella'>
+		<#elseif FacetLabel == 'Four Pillars'>		<#assign facetNavIcon ='certificate'> 
+		
 		<#else>
 		<!-- Default Icon -->
-												<#assign facetNavIcon ='circle-thin'>
+													<#assign facetNavIcon ='circle-o'>
 		</#if>
 
 		<li ${facetNavigationClass} role="presentation">
-			<a href="#facet-${s.facet_index}.tab-pane" class="" title="" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}"><span class="fa fa-${facetNavIcon}"></span> &nbsp;${FacetLabel}</a>
+			<a href="#facet-${s.facet_index}.tab-pane" class="" title="View ${FacetLabel} Attributes" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}"><span class="fa fa-${facetNavIcon}"></span> &nbsp;${FacetLabel}</a>
 		</li>
 		</#assign>
 		<#assign facetNavigation = facetNavigation + facetNavigationItem >
@@ -265,29 +310,9 @@
 		</@s.Facet>
 		${facetNavigation}
 		</#macro>
+		
 
-        <div>
-            <h3>Overview</h3>
-            <i>Maybe this should be a tab?</i>
-            <@s.FacetedSearch>
-                <@s.Facet>
-                  <#assign categoryCount = 0 />
-                  <#assign sep = '' />
-                  <@s.FacetLabel tag="b"/>:
-                  <@s.Category tag="span">
-                    <#assign categoryCount = categoryCount + 1 />
-                    <#if categoryCount &lt; 4>
-                       ${sep} <@s.CategoryName class="" />&nbsp;(<@s.CategoryCount />)
-                    </#if>
-                    <#assign sep = ',' />                    
-                    <#if categoryCount == 4>
-                        , more...
-                    </#if>
-                  </@s.Category>
-                </@s.Facet>
-                <br />
-            </@s.FacetedSearch>
-        </div>
+	
 
 		<@s.FacetedSearch>
 		<#-- <div id="fb-facets-navigation" class="fb-facets col-sm-12 col-md-2">
