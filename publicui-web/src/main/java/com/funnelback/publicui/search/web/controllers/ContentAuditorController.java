@@ -137,6 +137,7 @@ public class ContentAuditorController {
         question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {"10000000"}); // 10m is the max according to http://docs.funnelback.com/14.0/query_processor_options_collection_cfg.html
+        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(1024 * 20)}); // 20k ought be enough for anyone
         question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
 
         if (request.getParameter(RequestParameters.NUM_RANKS) == null) {
