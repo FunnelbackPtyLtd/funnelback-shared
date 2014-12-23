@@ -34,8 +34,16 @@
 <a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&amp;type=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
 </#if>
 
-<div class="form-field select field-sort pull-right" data-url="?${QueryString}">     
-      <div class="form-inline"><small>Sort by &nbsp;</small> <@s.Select class="form-control input-sm" name="sort" id="sort" options=["=Relevance", "date=Date (Newest First)", "adate=Date (Oldest First)", "url=URL", "title=Title (A-Z)", "dtitle=Title (Z-A)"] /></div>
+<div class="form-field select field-sort pull-right" data-url="?${QueryString}">   
+    <#assign optionsList=["=Relevance", "title=Title (A-Z)", "dtitle=Title (Z-A)", "url=URL (A-Z)", "durl=URL (Z-A)", "date=Date (New to Old", "ddate=Date (Old to New)"]>
+    <#list response.customData.displayMetadata?keys as key>
+        <#assign heading = response.customData.displayMetadata[key]?replace("^\\d*\\.","","r")>
+        <#if key != "d" && key != "t"> <#-- d and t are handled specially above -->
+            <#assign optionsList = optionsList + [ "meta" + key + "=" + heading + " (A-Z)" ] />
+            <#assign optionsList = optionsList + [ "dmeta" + key + "=" + heading + " (Z-A)" ] />
+        </#if>
+    </#list>
+    <div class="form-inline"><small>Sort by &nbsp;</small> <@s.Select class="form-control input-sm" name="sort" id="sort" options=optionsList /></div>
 </div>
 
 
