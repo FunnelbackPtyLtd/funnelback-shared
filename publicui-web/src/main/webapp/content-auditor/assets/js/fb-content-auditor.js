@@ -9,6 +9,46 @@ var delay = (function() {
     };
 })();
 
+
+function getSearchResult(href, paneId, historyPush){
+				
+				
+				$('html').addClass('fb-loading');
+				
+						
+				var hash = href.indexOf('#');
+					hash = href.substring(0, hash);
+					
+				cleanHref = hash.replace('&ajax','');
+				href = href.replace('&ajax','');
+				
+				//Need to add AJAX detection to cut off parts of the page as they are not needed in the .ftl files
+				//So if parameter ajax exists, do not render say the header, footer etc. Only render the content needed to be returned. Could also collect this data from an API also.
+                $.get(cleanHref + '&ajax' + ' ' + paneId , function(data) {
+					
+					var content = $(data).find(paneId).addClass('active');
+					var title = $(data).find('title');
+                    $(paneId).replaceWith(content);
+                    makePreviewIcons();
+                    window.scrollTo(0, 0);
+					
+					//Need to update the URL in the browser so we can access it in the browsers history
+					if(historyPush){
+						var stateObj = { paneId : paneId, popURL : href};
+						history.pushState(stateObj, title, href);
+					}
+					
+                        $('html').removeClass('fb-loading');
+                    
+					
+                }) .fail(function() {
+					// When all else fails just go to the page and let the browser use it's natural behaviour.
+					window.location = href;
+				});
+
+		return false;
+	}
+
 function refreshModalContent() {
     var modal = $('#modal-overlay .modal-content');
     modal.find('table').addClass(
@@ -33,16 +73,28 @@ function makePreviewIcons() {
     }
 }
 
-function makeChartScrollable(index) {
+function makeChartScrollable(index,bypassReset) {
     // force tables to scroll   
-    var table = $('#chart-attr-' + index);
+	
+	
+	if(!bypassReset){
+		
+		resetChartScrollable();
+    }
+	var table = $('#chart-attr-' + index);
+	
+	
     var rowCount = table.parents('.facet-container').find('.row-count').attr('data-row-count');
+	
+	
     if (rowCount > 13) {
         table.tableScroll({
             height: 592
         });
         $('body').attr('make-chart-scrollable', 1);
     }
+	
+	
 }
 
 function resetChartScrollable() {
@@ -63,7 +115,7 @@ function resetChartScrollable() {
     $('body').attr('make-chart-scrollable', 0);
 
     delay(function() {
-        makeChartScrollable(index);
+        makeChartScrollable(index, true);
     }, 500);
 
 }
@@ -75,10 +127,13 @@ function toggleSlice(item, chart) {
 
 function hoverSlice(item, chart) {
     content_auditor[chart].rollOverSlice(item);
+	content_auditor[chart].clickSlice(item);
+	
 }
 
 function blurSlice(item, chart) {
     content_auditor[chart].rollOutSlice(item);
+	content_auditor[chart].clickSlice(item);
 }
 
 
@@ -87,34 +142,51 @@ jQuery(function() {
     //Need to initiate BS popover & tooltip manually for Twitter Bootstrap.
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
+	
+	 
+	// Listeners
+	window.addEventListener('popstate', function(event) {
+  		if(event){
+			if(event.state && event.state.popURL ){
+				var href = event.state.popURL;
+				var paneId = event.state.paneId;
+				getSearchResult(href, paneId);
+				
+			}
+		}
+		
+	
+});
+	//Start daisy chain for window
     $(window)
         .on('hashchange', function() {})
         .on('popstate', function() {
-            var hash = '#' + location.hash.slice(1);
+		
+			
+			var hash = '#' + location.hash.slice(1);
             $('a[href="' + hash + '"]').tab('show');
             $('body').attr('hash', hash);
-        });
-
-
-
-
-
-    $(window).on('resize', function() {
-
-
-        resetChartScrollable();
-    });
+			
+			
+            
+        }).on('resize', function() {
+		
+		resetChartScrollable();
+    
+	});
 
 
     //Start daisy chain for document
     $(document)
         // Refresh the content of TWBS Modal on load 
-
+	
     .on('shown.bs.modal load', '#modal-overlay', function() {
+		
             refreshModalContent();
         })
         // Event on tab change, need to update the current chart as AMCharts will try and display at 0 x 0 because it is hidden. We need to correct this when the selected tab comes ito focus. Also we need to scroll to the top of the page and also reference the current URL hash somewhere.  
         .on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+			
             var hash = $(e.target).attr("href").substr(1);
             window.location.hash = hash;
             $('body').attr('hash', hash);
@@ -140,35 +212,37 @@ jQuery(function() {
         })
 
     //AJAX the pagination, why? Why wait for a page to re-load? 20 x Faster, the content is placed right in front of you. 
-    .on('click', '.tab-pane .pagination li', function() {
-
+    .on('click', '.tab-pane .pagination li', function(e) {
+		
+			e.preventDefault();
+			
+				
+	
             var t = $(this);
+			
             var pane = t.parents('.tab-pane');
             var paneId = '#' + pane.attr('id');
 
             pane.addClass('loading background-danger');
-            $('html').addClass('fb-loading');
+            
+			var href = t.find('a').attr('href');
+			//Need to cut out the hash so we can add in the ajax parameter
+			
+			
+			
             if (!t.hasClass('active')) {
 
                 var href = t.find('a').attr('href');
-
-                $.get(href + ' ' + paneId, function(data) {
-
-                    var content = $(data).find(paneId).addClass('active');
-                    $(paneId).replaceWith(content);
-                    makePreviewIcons();
-                    window.scrollTo(0, 0);
-                    setTimeout(function(){
-                        $('html').removeClass('fb-loading');
-                    },333);
-                });
-
-                return false;
+				
+				getSearchResult(href,paneId,true );
+				
+                
             }
 
-
+			return false;
         })
         .on('click', '#tab-nav-attributes', function() {
+			
             chart = $('#fb-facets-navigation ul.nav li.active a').attr('data-chart_ref');
             content_auditor[chart].invalidateSize();
             var chart = $(this).attr('data-chart_ref');
@@ -360,24 +434,34 @@ jQuery(function() {
                             val.heading + '</a></li>';
                     }
                 });
-                var html =
-                    '<hr><p>You can always drill down further in the following attributes: </p><ul class="list-nice">' + html + '</ul>';
-                $('.drilled-to-last p').after(html);
-            }
+				
+                var html = '<hr><p>You can always drill down further in the following attributes: </p><ul class="list-nice">' + html + '</ul>';
+                	$('.drilled-to-last p').after(html);
+           		 }
             //read the URL hash and open the tab.
-            var hash = window.location.hash;
+			
+			var hash = window.location.hash;
             if (hash) {
-                var currentTab = $('a[href="' + hash + '"]');
+				
+				var currentTab = $('a[href="' + hash + '"]');
                 currentTab.tab('show');
                 var id = hash;
-                if (id.indexOf('facet-')) {
+                if (id.indexOf('facet-') === 1) {
+				
                     makeChartScrollable(hash.replace(/\D/g, ''));
+					$('.tab-switch-1').tab('show');
+					
                 }
             } else {
                 // Make chart navigation active     
                 if (!$('#fb-facets-navigation li.active')) {
                     $('[data-chart_ref=chart_1]').parent('li').addClass('active');
                 }
+				
+				
+								
+				
+				
                 makeChartScrollable(0);
             }
             window.scrollTo(0, 0);
@@ -408,6 +492,6 @@ jQuery(function() {
             });
 
             End of PJAX turned off */
-
+			
         }); //End of Daisy Chain
 });
