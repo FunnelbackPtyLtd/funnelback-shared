@@ -3,11 +3,21 @@
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 <@s.AfterSearchOnly>
 <#macro duplicateTable totalDuplicates  >
-<div class="facet-container col-md-4 boxed">
-	<div class="facet-header">
-		<h3>Duplicate Content</h3>
-		<p class="text-danger"><span class="fa fa-exclamation-triangle "></span> <strong>${totalDuplicates} URL(s) contain content duplicated elsewhere in this collection.</strong></p>
+
+	<div class="tab-header clearfix">
+		<p class="pull-left">  <strong>${totalDuplicates}</strong> URL(s) contain content duplicated elsewhere in this collection.</strong></p>
 	</div>
+
+	<#-- applied facets block -->
+    <#if question.selectedCategoryValues?has_content> 
+    	<div class="drill-filters"><span class="fa fa-filter"></span>
+        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
+        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
+    	</div>
+    </#if>
+
+<div class="facet-container col-md-4 boxed">
+
 	<table id="duplicates" class="table table-striped">
 		<thead>
 			<tr>
