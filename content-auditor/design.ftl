@@ -10,8 +10,7 @@
   <#macro Head>
   <head>
     <title>
-    <@s.AfterSearchOnly>${question.inputParameterMap["query"]!?html}${question.inputParameterMap["query_prox"]!?html}<@s.IfDefCGI name="query">,</@s.IfDefCGI></@s.AfterSearchOnly>
-    <#--  <@s.cfg>service_name</@s.cfg>-->  - Content Auditor | Funnelback
+    <@s.cfg>collection</@s.cfg>  - Content Auditor | Funnelback
     </title>
     <link rel="icon" href="/s/content-auditor/assets/img/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="/s/content-auditor/assets/img/favicon.ico" type="image/x-icon"/>
