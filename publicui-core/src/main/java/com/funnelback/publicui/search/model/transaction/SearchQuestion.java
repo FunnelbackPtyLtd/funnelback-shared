@@ -377,6 +377,9 @@ public class SearchQuestion {
         /** Parameter indicating only fully matching documents should be returned */
         public static final String FULL_MATCHES_ONLY = "fmo";
 
+        /** Maximum bytes of metadata to return per result */
+        public static final String METADATA_BUFFER_LENGTH = "MBL";
+
         /** Controls the type/level of stemming which should be used */
         public static String STEM = "stem";
 
