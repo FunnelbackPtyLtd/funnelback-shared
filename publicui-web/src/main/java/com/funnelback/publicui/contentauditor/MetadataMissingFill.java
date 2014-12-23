@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 public class MetadataMissingFill extends MetadataFieldFill {
     
     /** The category label shown for the remainder facet */
-    private static final String CATEGORY_LABEL = "None";
+    private static final String CATEGORY_LABEL = "(No Value)";
     
     /** Special value shown as the param value (though this is not actually used) */
     private static final String UNSET_VALUE = "$unset";
