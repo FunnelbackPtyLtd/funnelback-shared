@@ -20,7 +20,7 @@
 	</bean>
 	
 	<bean id="createSearchHome" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetObject"><ref local="searchHome"></ref></property>
+		<property name="targetObject"><ref bean="searchHome"></ref></property>
 		<property name="targetMethod"><value>mkdirs</value></property>		
 	</bean>
 
