@@ -160,7 +160,7 @@
                         <#if s.result.date??>
                            ${s.result.date?date?string("dd MMM, yyyy")?replace(" ", "&nbsp;")}                   
                         <#else>
-                            unknown
+                            (No Value)
                         </#if>
                     <#elseif key == "f">
                         <#-- Special-case format -->
@@ -181,7 +181,7 @@
                                 ${s.result.metaData[key]?html}
                             </#if>
                         <#else>
-                            unknown
+                            (No Value)
                         </#if>
                     </#if>
                     </td>
