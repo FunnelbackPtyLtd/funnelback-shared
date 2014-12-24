@@ -10,25 +10,23 @@
 	<#-- End:Macro: main.ftl - Head -->
 	<body class="after-search<#if layoutSideBar !=1> sidebar-closed sidebar-off</#if> thumbnails-on">
 		<#-- TODO - Steve, is that class still needed? We now guarantee there is always a search in content auditor. -->
-
-	<#-- Start:Macro: main.ftl - Header -->
-	<@design.Header />
-	<#-- End:Macro: main.ftl - Header -->
-	
-	<@fb.ErrorMessage />
-
-	<@s.AfterSearchOnly>
-	
-	<#-- Start:Macro: main.ftl - ResultTabs -->
-	<@main.ResultTabs />
-	<#-- End:Macro: main.ftl - ResultTabs -->
-	
-	</@s.AfterSearchOnly>
-	
-	<@design.modalOverlay />
-	<#-- Start:Macro: main.ftl - FooterScripts -->
-	<@design.FooterScripts />
-	<#-- End:Macro: main.ftl - FooterScripts -->
-	
-</body>
+		<#-- Start:Macro: main.ftl - Header -->
+		<@design.Header />
+		<#-- End:Macro: main.ftl - Header -->
+		
+		<@fb.ErrorMessage />
+		<@s.AfterSearchOnly>
+		
+		<#-- Start:Macro: main.ftl - ResultTabs -->
+		<@main.ResultTabs />
+		<#-- End:Macro: main.ftl - ResultTabs -->
+		
+		</@s.AfterSearchOnly>
+		
+		<@design.modalOverlay />
+		<#-- Start:Macro: main.ftl - FooterScripts -->
+		<@design.FooterScripts />
+		<#-- End:Macro: main.ftl - FooterScripts -->
+		
+	</body>
 </html>
