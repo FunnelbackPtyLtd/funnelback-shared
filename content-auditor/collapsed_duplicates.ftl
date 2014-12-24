@@ -27,7 +27,7 @@
 		</thead>
 		<tbody>
 			<#assign duplicatesRowCounter = 0 />
-			<#list filterList(response.resultPacket.results, 'collapsed')?sort_by(['collapsed','count'])?reverse as result>
+			<#list filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?sort_by(['collapsed','count'])?reverse as result>
 			<tr>
 				<#assign duplicatesRowCounter = duplicatesRowCounter + 1 />
 				
@@ -51,10 +51,10 @@
 	</div>
 	</#macro>
 	
-	<#if filterList(response.resultPacket.results, 'collapsed')?size < 1 >
+	<#if filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size < 1 >
 	<div class="alert<#-- alert-success bg-success-->"><h4><strong><#--<span class="fa fa-check-circle-o"></span>--> Content Duplicates</strong></h4> No duplicate content could be found for this collection.</div>
 	<#else>
-	<@duplicateTable totalDuplicates =  filterList(response.resultPacket.results, 'collapsed')?size />
+	<@duplicateTable totalDuplicates =  filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
 	</#if>
 	
 	</@s.AfterSearchOnly>
