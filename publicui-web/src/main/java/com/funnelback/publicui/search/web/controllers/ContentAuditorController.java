@@ -115,14 +115,14 @@ public class ContentAuditorController {
         // Customise stuff for content auditor
         customiseMainQuestion(mainSearchQuestion, request);
 
-        SearchQuestion extraSearchQuestion = new SearchQuestion();
-        SearchQuestionBinder.bind(mainSearchQuestion, extraSearchQuestion);
 
-        // We run an extra search with a large num_ranks value to find duplicates
-        customiseExtraQuestion(extraSearchQuestion, request);
-        
         ModelAndView mav =
             searchController.search(request, response, mainSearchQuestion, user);
+
+        // We run an extra search with a large num_ranks value to find duplicates
+        SearchQuestion extraSearchQuestion = new SearchQuestion();
+        SearchQuestionBinder.bind(mainSearchQuestion, extraSearchQuestion);
+        customiseExtraQuestion(extraSearchQuestion, request);
 
         // TODO - Consider changing this to use a real input processor which could use a real extra search
         SearchTransaction duplicateListingSearchTransaction = transactionProcessor.process(extraSearchQuestion, user);
