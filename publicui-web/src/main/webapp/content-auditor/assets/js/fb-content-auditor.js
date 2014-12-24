@@ -122,6 +122,13 @@ function blurSlice(item, chart)
         content_auditor[chart].clickSlice(item);
 }
 
+function facetTabShow(tabID)
+{
+	
+	var tab = '#fb-facets-navigation li [data-chart_ref="chart_' + tabID + '"]';
+	$(tab).tab('show');
+}
+
 var delay = (function()
 {
     var timer = 0;

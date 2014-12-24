@@ -1528,10 +1528,8 @@ border-bottom: 1px solid #f8f8f8
 }
 
 .overviews .panel .panel-footer {
-border-top: 1px solid #eee;
-margin: 15px -15px -9px;
-padding: 10px 12px;
-display: block;
+	border-top: 1px solid #eee;
+	display: block;
 }
 
 /* header sort by */
