@@ -61,6 +61,7 @@ ${queryToReport}
                                     <div class="fb-facet-header"> <h3><span class="facetLabel">Overview</span></h3></div>
                                     
                                     <div class="overviews">
+                                        <#assign categoryMax = question.collection.configuration.value("ui.modern.content-auditor.overview-category-count")?number />
                                         <@s.FacetedSearch>
                                         <@s.Facet>
                                         <#assign categoryCount = 0 />
@@ -72,7 +73,7 @@ ${queryToReport}
                                                 </div>
                                                 <div class="panel-body">
                                                     
-                                                    <@s.Category max=4 tag="div">
+                                                    <@s.Category max=categoryMax tag="div">
                                                     <#assign categoryCount = categoryCount + 1 />
                                                     
                                                     ${sep} <@s.CategoryName class="" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
@@ -82,7 +83,7 @@ ${queryToReport}
                                                     
                                                 </div>
                                                 
-                                                <#if categoryCount == 4>
+                                                <#if categoryCount == categoryMax>
                                                 <div class="panel-footer"><a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All " data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All <span class="fa fa-arrow-right"></span></a>
                                             </div>
                                             </#if>
