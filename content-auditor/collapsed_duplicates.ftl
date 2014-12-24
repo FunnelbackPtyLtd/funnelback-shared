@@ -4,18 +4,6 @@
 <@s.AfterSearchOnly>
 <#macro duplicateTable totalDuplicates  >
 
-	<div class="tab-header clearfix">
-		<p class="pull-left">  <strong>${totalDuplicates}</strong> URL(s) contain content duplicated elsewhere in this collection.</strong></p>
-	</div>
-
-	<#-- applied facets block -->
-    <#if question.selectedCategoryValues?has_content> 
-    	<div class="drill-filters"><span class="fa fa-filter"></span>
-        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
-        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
-    	</div>
-    </#if>
-
 <div class="facet-container col-md-4 boxed">
 
 	<table id="duplicates" class="table table-striped">
@@ -51,10 +39,34 @@
 	</div>
 	</#macro>
 	
+	<#assign totalDuplicates=filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
+
 	<#if filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size < 1 >
-	<div class="alert<#-- alert-success bg-success-->"><h4><strong><#--<span class="fa fa-check-circle-o"></span>--> Duplicate Content</strong></h4> No duplicate content could be found for this collection.</div>
+		<div class="tab-header clearfix">
+			<p class="pull-left">No duplicate content was found.</strong></p>
+		</div>
+
+		<#-- applied facets block -->
+		<#if question.selectedCategoryValues?has_content> 
+			<div class="drill-filters"><span class="fa fa-filter"></span>
+		    <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
+		    <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
+			</div>
+		</#if>
 	<#else>
-	<@duplicateTable totalDuplicates =  filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
+		<div class="tab-header clearfix">
+			<p class="pull-left">  <strong>${totalDuplicates}</strong> URL(s) contain content duplicated elsewhere in this collection.</strong></p>
+		</div>
+
+		<#-- applied facets block -->
+		<#if question.selectedCategoryValues?has_content> 
+			<div class="drill-filters"><span class="fa fa-filter"></span>
+		    <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
+		    <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
+			</div>
+		</#if>
+
+		<@duplicateTable totalDuplicates=totalDuplicates />
 	</#if>
 	
 	</@s.AfterSearchOnly>
