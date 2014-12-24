@@ -75,7 +75,7 @@ Displays all the currently applied facets
     </#if>
   <${tag?html}><a href="${question.collection.configuration.value("ui.modern.search_link")}?${urlDecode(removeParam(facetScopeRemove(QueryString, key),["start_rank"]))?replace(key+"="+value,"")?replace("&+","&","r")?replace("&$","","r")?html}${urlHash}" title="Remove refinement - ${facetName?html}: ${valueLabel?html}" class="${class?html}"><#if !group>${facetName?html}: </#if>${valueLabel?html} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
   </#list>
- 
+
         <#if group>
         <#if tag == "li" || tag == "LI">
           </ul>
@@ -84,6 +84,26 @@ Displays all the currently applied facets
   </#if>
  
 </#list>
+<#if question.inputParameterMap["duplicate_signature"]??>
+  <#if group>
+        <${grouptag} class="appliedFacets"> Duplicates
+        <#if tag == "li" || tag == "LI">
+          <ul>
+        </#if>
+  </#if>
+
+  <#-- And lastly, one for the duplicate_signature -->
+  <${tag?html}><a href="${question.collection.configuration.value("ui.modern.search_link")}?${urlDecode(removeParam(QueryString,["duplicate_signature","start_rank"]))?html}${urlHash}" title="Remove duplicate constraint" class="${class?html}">${question.inputParameterMap["duplicate_signature"]} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
+
+  <#if group>
+  <#if tag == "li" || tag == "LI">
+    </ul>
+  </#if>
+  </${grouptag}>
+  </#if>
+
+
+</#if>
 </#compress></#macro>
 
 <#---
@@ -92,7 +112,7 @@ Displays a link that, when clicked, clears all the facets.
 @param clearAllText Optional link text to display.
 -->
 <#macro ClearFacetsLink clearAllText="Clear all filters" class="clearFacetLink" title="Clear all filters" urlHash="">
-<#if question.selectedCategoryValues?has_content>
-<a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(QueryString,question.selectedCategoryValues?keys + ["start_rank","facetScope"])?html}${urlHash}" title="${title}" class="${class}">${clearAllText?html} <span class="glyphicon glyphicon-remove-circle"></span></a>
+<#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??>
+<a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(QueryString,question.selectedCategoryValues?keys + ["start_rank","facetScope","duplicate_signature"])?html}${urlHash}" title="${title}" class="${class}">${clearAllText?html} <span class="glyphicon glyphicon-remove-circle"></span></a>
 </#if>
 </#macro>

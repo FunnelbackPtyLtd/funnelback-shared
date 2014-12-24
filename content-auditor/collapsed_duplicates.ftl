@@ -47,7 +47,7 @@
 		</div>
 
 		<#-- applied facets block -->
-		<#if question.selectedCategoryValues?has_content> 
+		<#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??> 
 			<div class="drill-filters"><span class="fa fa-filter"></span>
 		    <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
 		    <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
@@ -59,7 +59,7 @@
 		</div>
 
 		<#-- applied facets block -->
-		<#if question.selectedCategoryValues?has_content> 
+		<#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??> 
 			<div class="drill-filters"><span class="fa fa-filter"></span>
 		    <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#facet-${facet_counter}.tab-pane"/>
 		    <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#facet-${facet_counter}.tab-pane"/>
