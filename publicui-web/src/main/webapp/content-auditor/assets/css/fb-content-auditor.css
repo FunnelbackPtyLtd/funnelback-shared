@@ -1,8 +1,6 @@
-/* 
-
-Funnelback Content Auditor Styles 
-
- -----------------------------------*/
+/*------------------------------------ 
+    Funnelback Content Auditor Styles 
+------------------------------------*/
 
 /* FONTS - (The Smiley is a CSS hack for IE) */
 
@@ -55,6 +53,57 @@ Funnelback Content Auditor Styles
 @font-face {
     font-family:'Open Sans';src:url(../fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot);src:url(../fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot?#iefix) format('embedded-opentype'),url(../fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.woff) format('woff'),url(../fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.ttf) format('truetype'),url(../fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.svg#OpenSansExtraboldItalic) format('svg');font-weight:800;font-style:italic
 }
+
+
+/* Hyperlink Colours*/
+a {
+    outline: none!important;
+    color: #444
+}
+
+a:hover, a:focus {
+    color: #f80
+}
+
+.link:hover {
+    color: #ff8700;
+    cursor: pointer
+}
+
+/* CSS Helpers*/
+.inline {
+    display: inline
+}
+
+.inline-block {
+    display: inline-block
+}
+
+.no-border {
+    border: none !important
+}
+
+.no-margin {
+    margin: 0 !important
+}
+
+.no-padding {
+    padding: 0 !important
+}
+
+.no-border-lr {
+    border-left: none;
+    border-right: none!important
+}
+
+.nowrap {
+    white-space: nowrap
+}
+
+.cursor-pointer {
+    cursor: pointer
+}
+
 /* Typographic Styles*/
 h2, .h2 {
     padding: 0 0 15px;
@@ -121,6 +170,7 @@ h1, h2, h3, h4, h5, h6, .tab-summary, .btn, .navbar-side, .search-form label {
 h2, h3, h4, h5, h6, .tabbable > .nav a, .tab-summary, .nav-stacked > li {
     text-shadow: 0 1px 0 #fff
 }
+
 /* Icon Styles */
 .fa-stack-2x {
     color: #666
@@ -134,6 +184,7 @@ h2, h3, h4, h5, h6, .tabbable > .nav a, .tab-summary, .nav-stacked > li {
     color: #ff9115!important;
     text-decoration: none!important
 }
+
 /* Page Styles & Bootstrap Overrides */
 body,header {
     background: #ebebeb;
@@ -158,53 +209,7 @@ body > section, .search-form {
     transition: margin 333ms ease
 }
 
-/* Hyperlink Colours*/
-a {
-    outline: none!important;
-    color: #444
-}
 
-a:hover {
-    color: #f80
-}
-
-.link:hover {
-    color: #ff8700;
-    cursor: pointer
-}
-/* CSS Helpers*/
-.inline {
-    display: inline
-}
-
-.inline-block {
-    display: inline-block
-}
-
-.no-border {
-    border: none !important
-}
-
-.no-margin {
-    margin: 0 !important
-}
-
-.no-padding {
-    padding: 0 !important
-}
-
-.no-border-lr {
-    border-left: none;
-    border-right: none!important
-}
-
-.nowrap {
-    white-space: nowrap
-}
-
-.cursor-pointer {
-    cursor: pointer
-}
 
 /*Header*/
 header {
@@ -237,7 +242,7 @@ header .navbar-nav .btn {
 }
 
 header #toggle-sidebar:hover, header #toggle-search:hover {
-    background-color: #ff9800;
+    background-color: #ff9800;http://localhost:8080/s/content-auditor.html?collection=shakespeare
     border-color: transparent;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -247,6 +252,10 @@ header #toggle-sidebar:hover, header #toggle-search:hover {
 header h1 {
     margin-left: 30px
 }
+header h1 a{ color:#fafafa} 
+header h1 a, header h1 a span{  transition: color 333ms ease;} 
+
+header h1 a:hover, header h1 a:focus, header h1 a:focus span, header h1 a:hover span { color:#fff !important} 
 
 header .navbar-brand {
     height: 50px;
@@ -257,6 +266,7 @@ header .nav, header li a {
     width: 100%;
     display: block!important
 }
+
 /* Logo / Identity*/
 #brand {
     margin-left: 180px;
@@ -269,6 +279,7 @@ header .nav, header li a {
 #brand, h1, #toggle-sidebar, #toggle-search, .navbar-nav .btn {
     transition: all 333ms ease-in
 }
+
 /* #brand:hover{margin-left:-14px;width:250px}
 #brand:hover + h1, #brand:hover + h1 + a#toggle-sidebar{left:-200PX}
 */
@@ -337,6 +348,7 @@ left: auto!important;
 margin-right: 8px!important;
 right: 0!important
 }
+
 /* Search Form in Top Nav*/
 .search-form {
 margin-top: 8px;
@@ -423,6 +435,7 @@ width: 49.5%;
 display: inline-block;
 position: relative
 }
+
 /*Navbar overrides*/
 .navbar-static-top {
 position: fixed;
@@ -861,6 +874,7 @@ color: #bbb
 thead tr th:hover .fa {
 color: #f80
 }
+
 /* Facets */
 #facet-container-wrapper {
 border: 1px solid #eee;
@@ -1203,7 +1217,7 @@ padding: 25px 5px
 }
 
 footer a,footer a:focus,footer a:hover {
-color: #f90
+color: #f90;
 }
 
 .footer-brand {
@@ -1303,6 +1317,7 @@ border-radius: 4px!important;
 -moz-border-radius: 4px!important;
 border-color: transparent
 }
+
 /*Badges*/
 .badge-danger {
 background: #EF6573;
@@ -1507,26 +1522,28 @@ padding: 0
 }
 
 .overviews .panel .panel-body > div {
-padding: 12px 15px;
+padding: 8px 15px;
 display: block;
 border-bottom: 1px solid #f8f8f8
 }
 
 .overviews .panel .panel-footer {
 border-top: 1px solid #eee;
-margin: 15px -15px -12px;
+margin: 15px -15px -9px;
 padding: 10px 12px;
 display: block;
 }
+
 /* header sort by */
-.headerSortUp .fa:before,.headerSortDown .fa:before {
+.tablesorter-headerAsc .fa:before,.tablesorter-headerDesc .fa:before {
 color: #f00;
 }
 
-.headerSortUp .fa:before {
-content: "\f0d8"
+.tablesorter-headerAsc .fa:before {
+content: "\f0d8" 
 }
-/*Media Queries*/
+
+/*Media Queries */
 @media (max-width: 767px) {
 
 body > section {
