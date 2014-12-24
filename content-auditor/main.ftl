@@ -49,8 +49,8 @@ ${queryToReport}
                         <li class="active"><a href="#collection-${currentCollection}-tab-0" data-toggle="tab" id="tab-nav-overview" title="View Overview">Overview</a></li>
                         <li><a class="tab-switch-1" href="#collection-${currentCollection}-tab-1" data-toggle="tab" id="tab-nav-attributes" title="View Attributes">Attributes</a></li>
                         <li><a href="#collection-${currentCollection}-tab-2" data-toggle="tab" id="tab-nav-results" title="View Search Results">Search Results</a></li>
-                        <li><a href="#collection-${currentCollection}-tab-3" data-toggle="tab" id="tab-nav-duplicates" title="View Duplicate Content">Duplicate Content <#assign duplicateContentCount = filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size /><#if (duplicateContentCount > 0) ><span class="badge badge-danger"> ${duplicateContentCount} </span></a></li>
-                        </#if>
+                        <li><a href="#collection-${currentCollection}-tab-3" data-toggle="tab" id="tab-nav-duplicates" title="View Duplicate Content">Duplicate Content <#assign duplicateContentCount = filterList(response.resultPacket.results, 'collapsed')?size /><#if (duplicateContentCount > 0) ><span class="badge badge-danger"> ${duplicateContentCount} </span></#if></a></li>
+                       
                     </ul>
                     
                     <div class="tab-content">
@@ -71,6 +71,7 @@ ${queryToReport}
                                                 <div class="panel-heading">
                                                     <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
                                                 </div>
+
                                                 <div class="panel-body">
                                                     
                                                     <@s.Category max=categoryMax tag="div">
@@ -85,7 +86,7 @@ ${queryToReport}
                                                 
                                                 <#if categoryCount == categoryMax>
                                                 <div class="panel-footer"><a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All " data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All <span class="fa fa-arrow-right"></span></a>
-                                            </div>
+                                                </div>
                                             </#if>
                                         </div>
                                     </div>
