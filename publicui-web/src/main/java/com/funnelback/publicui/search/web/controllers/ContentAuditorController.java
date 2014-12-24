@@ -109,7 +109,7 @@ public class ContentAuditorController {
         if (sr == null || !sr.hasResultPacket()) {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
-                
+        
         sr.getCustomData().put("displayMetadata", readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
         
         String viewName = getViewName(type);
@@ -154,7 +154,12 @@ public class ContentAuditorController {
             );
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
-        
+
+        if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
+            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
+        }
+        question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+
         // Metadata for displaying in the results view
         question.getRawInputParameters().put("SM", new String[] {"meta"});
         StringBuilder sfValue = new StringBuilder();
@@ -162,11 +167,6 @@ public class ContentAuditorController {
             sfValue.append("," + entry.getKey());
         }
         question.getRawInputParameters().put("SF", new String[] {"[" + sfValue.toString() + "]"});
-
-        if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
-        }
 
         if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery("-padrenullquery");
