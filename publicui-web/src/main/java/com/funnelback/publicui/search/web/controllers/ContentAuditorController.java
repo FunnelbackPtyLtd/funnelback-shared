@@ -30,6 +30,8 @@ import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
+import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
+import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -38,10 +40,14 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GS
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.QueryItem;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
+import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
@@ -76,6 +82,12 @@ public class ContentAuditorController {
     private SearchController searchController;
 
     /**
+     * Used to perform extra searches
+     */
+    @Autowired
+    private SearchTransactionProcessor transactionProcessor;
+
+    /**
      * We apply the SearchController's initBinder (since we want to replicate how it handles requests).
      */
     @InitBinder
@@ -93,16 +105,33 @@ public class ContentAuditorController {
     public ModelAndView generateContentAuditorReport(
             HttpServletRequest request,
             HttpServletResponse response,
-            SearchQuestion question,
+            SearchQuestion originalQuestion,
             @ModelAttribute SearchUser user,
             String type) {
         
-        customiseRequest(question, request);
+        SearchQuestion mainSearchQuestion = new SearchQuestion();
+        SearchQuestionBinder.bind(originalQuestion, mainSearchQuestion);
+
+        // Customise stuff for content auditor
+        customiseMainQuestion(mainSearchQuestion, request);
+
+        SearchQuestion extraSearchQuestion = new SearchQuestion();
+        SearchQuestionBinder.bind(mainSearchQuestion, extraSearchQuestion);
+
+        // We run an extra search with a large num_ranks value to find duplicates
+        customiseExtraQuestion(extraSearchQuestion, request);
         
         ModelAndView mav =
-            searchController.search(request, response, question, user);
+            searchController.search(request, response, mainSearchQuestion, user);
+
+        // TODO - Consider changing this to use a real input processor which could use a real extra search
+        SearchTransaction duplicateListingSearchTransaction = transactionProcessor.process(extraSearchQuestion, user);
+        Map<String, SearchTransaction> extraSearches = new HashMap<>();
+        extraSearches.put("duplicates", duplicateListingSearchTransaction);
         
         Map<String, Object> model = mav.getModel();
+
+        model.put(ModelAttributes.extraSearches.toString(), extraSearches);
         
         SearchResponse sr = (SearchResponse) model.get(SearchController.ModelAttributes.response.toString());
         
@@ -110,7 +139,7 @@ public class ContentAuditorController {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
         
-        sr.getCustomData().put("displayMetadata", readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
+        sr.getCustomData().put("displayMetadata", readMetadataInfo(mainSearchQuestion, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
         
         String viewName = getViewName(type);
         
@@ -122,9 +151,21 @@ public class ContentAuditorController {
         return new ModelAndView(viewName, model);
     }
 
+    /**
+     * Customise the question to suit getting a large number of results to find duplicates
+     */
+    private void customiseExtraQuestion(SearchQuestion question, HttpServletRequest request) {
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {Integer.toString(1000)});
+
+        // Speedup settings
+        question.getRawInputParameters().put("SF", new String[] {});
+        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(0)});
+        question.getDynamicQueryProcessorOptions().add("-vsimple=1 -contextual_navigation=0 -spelling=0 -SQE=1 -SBL=1 -SHLM=0");
+    }
+
     /** Modify the given question to suit content auditor's needs 
      * @param request */
-    private void customiseRequest(SearchQuestion question, HttpServletRequest request) {
+    private void customiseMainQuestion(SearchQuestion question, HttpServletRequest request) {
         Config config = question.getCollection().getConfiguration();
         
         // We want search result links to come back to us
@@ -154,7 +195,7 @@ public class ContentAuditorController {
             );
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
-
+        
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
         }
