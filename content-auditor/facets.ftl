@@ -85,8 +85,8 @@
 							<table id="chart-attr-${facet_counter}" data-attribute="${s.facet.name}" class="page-attr table table-striped" data-rows="${catRowNum}" <#if facet_counter == 0>data-toggle="table"</#if> data-height="100">
 								<thead>
 									<tr>
-										<th>${s.facet.name}</th>
-										<th >Occurrence</th>
+										<th>Value</th>
+										<th>Occurrence</th>
 									</tr>
 								</thead>
 								<tbody>
