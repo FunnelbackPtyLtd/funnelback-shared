@@ -30,7 +30,7 @@ ${queryToReport}
         <#list question.collection.configuration.snapshotIds?sort?reverse as id>
         <#assign snapshotID = "snapshot" + id?c />
         <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", snapshotID)?replace("&_pjax","") />
-        <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}" title="View ${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot " + id)?html} report"> <span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-photo fa-stack-1x"></i></span>${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id)!("Snapshot " + id)?html}</a> </li>
+        <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}" title="View ${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id?c)!("Snapshot " + id?c)?html} report"> <span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-photo fa-stack-1x"></i></span>${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id?c)!("Snapshot " + id?c)?html}</a> </li>
         </#list>
     </ul>
 </nav>
