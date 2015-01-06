@@ -61,7 +61,7 @@
 						<!--<h3><@s.FacetLabel summary=false /><@s.FacetSummary /> Attribute</h3>-->
 						<div class="facet-search-chart facets-chart-wrapper col-md-12">
 						<div class="facet-header inline-block">
-							<h4><#if (FacetSummaryLabel)?trim != "">Breakdown of: <strong>${FacetSummaryLabel} <!--<a class="btn btn-xs btn-primary inline-block"><span class="fa fa-times fa-times"></span> Clear</a>--> </strong><#else>${s.facet.name} Breakdown</#if> </h4>
+							<h4>Breakdown</h4>
 						</div>	
 							<div id="facet-chart-${facet_counter}" class="facet-chart-container"></div>
 							<div id="facet-chart-legend-${s.facet_index}" class="facet-chart-legend"></div>
@@ -77,7 +77,7 @@
 						<div class="facet-search-details boxed no-border-lr facet-container col-md-12">
 						
 						<div class="facet-header">
-								<h4><#if (FacetSummaryLabel)?trim !="">Attributes of: <strong>${FacetSummaryLabel}</strong><#else>${s.facet.name} Attributes <small>(${catRowNum})</small></#if></h4>
+								<h4>Attributes <small>(${catRowNum})</small></h4>
 							</div>
 
 							<#if (catRowNum > 0) >
