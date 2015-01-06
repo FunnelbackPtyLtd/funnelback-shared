@@ -86,7 +86,7 @@
 								<thead>
 									<tr>
 										<th>Value</th>
-										<th>Occurrence</th>
+										<th>Count</th>
 									</tr>
 								</thead>
 								<tbody>
