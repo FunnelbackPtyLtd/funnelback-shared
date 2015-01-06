@@ -35,7 +35,7 @@
 </#if>
 
 <div class="form-field select field-sort pull-right" data-url="?${QueryString}">   
-    <#assign optionsList=["=Relevance", "title=Title (A-Z)", "dtitle=Title (Z-A)", "url=URL (A-Z)", "durl=URL (Z-A)", "date=Date (New to Old", "ddate=Date (Old to New)"]>
+    <#assign optionsList=["=Relevance", "title=Title (A-Z)", "dtitle=Title (Z-A)", "url=URL (A-Z)", "durl=URL (Z-A)", "date=Date (New to Old)", "ddate=Date (Old to New)"]>
     <#list response.customData.displayMetadata?keys as key>
         <#assign heading = response.customData.displayMetadata[key]?replace("^\\d*\\.","","r")>
         <#if key != "d" && key != "t"> <#-- d and t are handled specially above -->
