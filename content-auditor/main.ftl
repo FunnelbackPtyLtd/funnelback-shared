@@ -56,7 +56,7 @@ ${queryToReport}
                     <div class="tab-content">
                         <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-0">
                             <#include "/web/templates/modernui/content-auditor/overview.ftl" />
-                    </div>
+                        </div>
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
                     <div class="tab-pane clearfix switch-2" id="collection-${currentCollection}-tab-1">
                         

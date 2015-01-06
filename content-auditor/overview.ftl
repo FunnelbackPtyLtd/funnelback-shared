@@ -15,7 +15,7 @@
                         </div>
 
                         <div class="panel-body">
-                            
+
                             <@s.Category max=categoryMax tag="div">
                             <#assign categoryCount = categoryCount + 1 />
                             
@@ -29,37 +29,13 @@
                         <#if categoryCount == categoryMax>
                         <div class="panel-footer"><a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All " data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All <span class="fa fa-arrow-right"></span></a>
                         </div>
-                    </#if>
+                        </#if>
+                    </div>
                 </div>
+                
+                </@s.Facet>
+                
+                </@s.FacetedSearch>
             </div>
-            
-            </@s.Facet>
-            
-            </@s.FacetedSearch>
-            
-            
-            
-            <#--<@s.FacetedSearch>
-            <@s.Facet class="dl-horizontal" >
-            <#assign categoryCount = 0 />
-            <#assign sep = '' />
-            <dt><@s.FacetLabel tag="b"/>:</dt>
-            <dl class="col-xs-6"><@s.Category tag="span">
-                <#assign categoryCount = categoryCount + 1 />
-                <#if categoryCount &lt; 4>
-                ${sep} <@s.CategoryName class="" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
-                </#if>
-                <#assign sep = '<br>' />
-                <#if categoryCount == 4>
-                <br><a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View more...">View More...</a>
-                </#if>
-                </@s.Category>
-            </dl>
-            </@s.Facet>
-            
-            </@s.FacetedSearch>
-            -->
         </div>
     </div>
-</div>
-
