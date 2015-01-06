@@ -198,7 +198,7 @@
 				    var targetTableHead = $(targetID + ' table thead tr');
 
 				    if(!targetTableHead.attr('data-chart-legend')){
-				    	targetTableHead.append('<th>Overall</th>').attr('data-chart-legend',true);
+				    	targetTableHead.append('<th>Percent</th>').attr('data-chart-legend',true);
 					}	
 				    for( i = 0; i < content_auditor.chart_${s.facet_index}.chartData.length; ) {
 				    	
