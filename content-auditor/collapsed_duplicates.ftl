@@ -4,7 +4,7 @@
 <@s.AfterSearchOnly>
 <#macro duplicateTable totalDuplicates  >
 
-<div class="facet-container col-md-4 boxed">
+<div class="facet-container col-md-8 boxed">
 
 	<table id="duplicates" class="table table-striped">
 		<thead>
