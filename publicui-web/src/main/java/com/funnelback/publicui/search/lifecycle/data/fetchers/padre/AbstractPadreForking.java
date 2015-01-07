@@ -63,10 +63,6 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     @Setter
     protected PadreXmlParser padreXmlParser;
     
-    @Value("#{appProperties['padre.fork.timeout']?:30000}")
-    @Setter
-    protected int padreWaitTimeout;
-
     @Autowired
     protected I18n i18n;
     
@@ -133,10 +129,12 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     			throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
     		}	
             
+            long padreWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
+                .valueAsLong(Keys.ModernUI.PADRE_FORK_TIMEOUT, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS);
             
             try {
                 if (searchTransaction.getQuestion().isImpersonated()) {
-                    padreOutput = new WindowsNativePadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+                    padreOutput = new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env);
                 } else {
                     padreOutput = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
                 }

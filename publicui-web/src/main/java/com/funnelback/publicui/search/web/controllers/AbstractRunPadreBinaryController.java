@@ -43,13 +43,6 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
     private static final Pattern HEADER_CONTENT_PATTERN = Pattern.compile("^(.*?)\r?\n\r?\n(.*)$", Pattern.DOTALL);
     private static final String HEADER_NAME_SEPARATOR = ": ";
 
-    /**
-     * Timeout to wait for the padre binary to complete
-     */
-    @Value("#{appProperties['padre.fork.timeout']?:30000}")
-    @Setter
-    protected int padreWaitTimeout;
-
     @Autowired
     private I18n i18n;
 
@@ -81,7 +74,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         }
 
         try {
-            ExecutionReturn out = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+            ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env);
 
             if (detectHeaders) {
                 Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
