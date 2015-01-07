@@ -2,6 +2,8 @@
         <div class="col-md-12 no-border no-padding">
             <div class="fb-facet-header"> <h3><span class="facetLabel">Overview</span></h3></div>
             
+            <@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-0"/>
+
             <div class="overviews">
                 <#assign categoryMax = question.collection.configuration.value("ui.modern.content-auditor.overview-category-count")?number />
                 <@s.FacetedSearch>

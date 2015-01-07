@@ -49,13 +49,7 @@
 
 </div>
 
-    <#-- applied facets block -->
-    <#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??> 
-        <div class="drill-filters"><span class="fa fa-filter"></span>
-        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="#collection-${currentCollection}-tab-2" />
-        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="#collection-${currentCollection}-tab-2" />
-        </div>
-    </#if>
+    <@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-2"/>
 
     <!-- START RESULTS -->
     <#-- Hide the table if there are no results -->

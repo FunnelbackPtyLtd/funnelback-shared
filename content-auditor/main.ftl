@@ -20,6 +20,15 @@ ${queryToReport}
     </p>
 </div>
 </#macro>
+<#-- applied facets block -->
+<#macro appliedFacetsBlock urlHash>
+    <#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??> 
+        <div class="drill-filters"><span class="fa fa-filter"></span>
+        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="${urlHash}"/>
+        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="${urlHash}"/>
+        </div>
+    </#if>
+</#macro>
 <#-- ResultTabsNavigaton -->
 <#macro ResultTabsNavigaton>
 <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", "live") />
@@ -54,24 +63,27 @@ ${queryToReport}
                         </#if>
                     </ul>
                     
-                    <div class="tab-content">
-                        <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-0">
-                            <#include "/web/templates/modernui/content-auditor/overview.ftl" />
-                        </div>
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
-                    <div class="tab-pane clearfix switch-2" id="collection-${currentCollection}-tab-1">
-                        
-                        <#include "/web/templates/modernui/content-auditor/facets.ftl" />
-                    </div>
-                    <div class="tab-pane" id="collection-${currentCollection}-tab-2"> <#if QueryString?contains("type=")>
-                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
-                        <#else>
-                        <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=documents&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
-                        </#if>
-                        <!-- Include from ${afterSearchDocumentsCollectionOne} -->
-                    <#include "/web/templates/modernui/content-auditor/documents.ftl" /> </div>
-                    <div id="collection-${currentCollection}-tab-3" class="tab-pane clearfix"> <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" /> </div>
-                    
+                        <div class="tab-content">
+                            <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-0">
+                                <#include "/web/templates/modernui/content-auditor/overview.ftl" />
+                            </div>
+                            <div class="tab-pane clearfix switch-2" id="collection-${currentCollection}-tab-1">
+                                <#include "/web/templates/modernui/content-auditor/facets.ftl" />
+                            </div>
+                            <div class="tab-pane" id="collection-${currentCollection}-tab-2">
+                                <#if QueryString?contains("type=")>
+                                    <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
+                                <#else>
+                                    <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=documents&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
+                                </#if>
+                                <!-- Include from ${afterSearchDocumentsCollectionOne} -->
+                                <#include "/web/templates/modernui/content-auditor/documents.ftl" />
+                            </div>
+                            <div id="collection-${currentCollection}-tab-3" class="tab-pane clearfix">
+                                <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
+                            </div>
+                        </div>
                     <#else>
                     
                     <!-- NO RESULTS -->
@@ -79,7 +91,6 @@ ${queryToReport}
                     <@errorNoResults />
                     
                     </#if>
-                </div>
             </div>
             <!-- .tabbable level 2 tabs -->
         </div>
