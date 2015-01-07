@@ -14,7 +14,7 @@
 	<#if response.resultPacket.resultsSummary.totalMatching != 0>
 		Displaying <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
 		<strong class="fb-result-count fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
-		<strong class="fb-result-count fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
+		<strong class="fb-result-count fb-total-matching">${(response.resultPacket.resultsSummary.totalMatching - response.resultPacket.resultsSummary.collapsed)?string.number}</strong>
 		search results for <strong>${queryToReport}</strong>
 	</#if>
 	<#if response.resultPacket.resultsSummary.partiallyMatching != 0>
@@ -247,9 +247,13 @@
 <div>
   <ul class="pagination">
     <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
-    <@fb.Page>
-    <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
-    </@fb.Page>
+        <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
+            <#if response.resultPacket.resultsSummary.nextStart?exists || response.resultPacket.resultsSummary.prevStart?exists>
+                <@fb.Page>
+                <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
+                </@fb.Page>
+            </#if>
+        </#if>
     <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
   </ul>
 </div>
