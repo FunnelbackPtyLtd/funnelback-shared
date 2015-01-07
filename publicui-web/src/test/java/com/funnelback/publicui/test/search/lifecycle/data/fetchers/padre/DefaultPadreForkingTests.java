@@ -52,7 +52,6 @@ public class DefaultPadreForkingTests {
     public void before() {
         forking = new DefaultPadreForking();
         forking.setI18n(i18n);
-        forking.setPadreWaitTimeout(30000);
         forking.setPadreXmlParser(new StaxStreamParser());
         forking.setSearchHome(searchHome);
         forking.setQueryReadLock(queryReadLock);

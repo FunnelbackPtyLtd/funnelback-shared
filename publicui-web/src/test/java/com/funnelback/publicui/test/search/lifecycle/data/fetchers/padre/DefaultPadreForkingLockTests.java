@@ -51,7 +51,6 @@ public class DefaultPadreForkingLockTests {
     public void before() {
         forking = new DefaultPadreForking();
         forking.setI18n(i18n);
-        forking.setPadreWaitTimeout(30000);
         forking.setPadreXmlParser(new StaxStreamParser());
         forking.setSearchHome(new File("src/test/resources/dummy-search_home"));
         forking.setQueryReadLock(queryReadLock);
@@ -100,7 +99,6 @@ public class DefaultPadreForkingLockTests {
         // same collection
         DefaultPadreForking forking2 = new DefaultPadreForking();
         forking2.setI18n(i18n);
-        forking2.setPadreWaitTimeout(30000);
         forking2.setPadreXmlParser(new StaxStreamParser());
         forking2.setSearchHome(new File("src/test/resources/dummy-search_home"));
         forking2.setQueryReadLock(queryReadLock);
