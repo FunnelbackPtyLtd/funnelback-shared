@@ -25,9 +25,22 @@
                             </@s.Category>
                             
                         </div>
+
+                        <#-- Count up the number of category values there will be, so we can show the number -->
+                        <#assign countOfCategoryValues = 0 />
+                        <#assign categoriesToList = s.facet.categories>
+                        <#if s.facet.categories[0]?? && (s.facet.categories[0].categories?size > 0)>
+                            <#assign categoriesToList = s.facet.categories[0].categories />
+                        </#if>
+                        <#list categoriesToList as c>
+                        <#list c.values as cv>
+                            <#assign countOfCategoryValues = countOfCategoryValues + 1 />
+                        </#list>
+                        </#list>
                         
                         <#if categoryCount == categoryMax>
-                        <div class="panel-footer"><a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All " data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All <span class="fa fa-arrow-right"></span></a>
+                        <div class="panel-footer">
+                            <a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All ${countOfCategoryValues}" data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All ${countOfCategoryValues} <span class="fa fa-arrow-right"></span></a>
                         </div>
                         </#if>
                     </div>
