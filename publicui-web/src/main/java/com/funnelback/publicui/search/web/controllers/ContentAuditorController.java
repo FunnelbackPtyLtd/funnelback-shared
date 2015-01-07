@@ -155,7 +155,10 @@ public class ContentAuditorController {
      * Customise the question to suit getting a large number of results to find duplicates
      */
     private void customiseExtraQuestion(SearchQuestion question, HttpServletRequest request) {
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {Integer.toString(1000)});
+        Config config = question.getCollection().getConfiguration();
+
+        question.getRawInputParameters().put(RequestParameters.NUM_RANKS,
+            new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
 
         // Speedup settings
         question.getRawInputParameters().put("SF", new String[] {});
