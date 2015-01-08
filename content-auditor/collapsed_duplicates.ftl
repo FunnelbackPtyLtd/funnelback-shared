@@ -41,18 +41,16 @@
 	
 	<#assign totalDuplicates=filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
 
+	<@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-3" />
+
 	<#if filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size < 1 >
 		<div class="tab-header clearfix">
 			<p class="pull-left">No duplicate content was found.</strong></p>
 		</div>
-
-		<@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-3" />
 	<#else>
 		<div class="tab-header clearfix">
 			<p class="pull-left">  <strong>${totalDuplicates}</strong> URL(s) contain content duplicated elsewhere in this collection.</strong></p>
 		</div>
-
-		<@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-3" />
 
 		<@duplicateTable totalDuplicates=totalDuplicates />
 	</#if>
