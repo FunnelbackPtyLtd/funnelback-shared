@@ -63,7 +63,7 @@
 
 						<!--Attributes Coloumn-->
 						<#assign catRowNum = 0 />
-						<@s.Category max=1000>
+						<@s.Category max=2147483647 tag="">
 							<#assign catRowNum = catRowNum + 1>
 						</@s.Category>
 									
@@ -84,26 +84,19 @@
 								</thead>
 								<tbody>
 									<#assign catTableCounter = 0 />
-									<@s.Category max=1000>
-									
-									
-									<#assign assignCategoryName><@s.CategoryName /></#assign>
-									<#--TODO: Remove wrapping Div element. <div class="category"> -->
-									<tr id="attr-${facet_counter}-${catTableCounter}">
-										<#--<td>&nbsp;${catTableCounter}</td>-->
-										<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
-										<td><span class="badge detail-count"><@s.CategoryCount /></span> </td>
-										
-									</tr>
-									<#assign catTableCounter = catTableCounter + 1>
+									<@s.Category max=2147483647 tag="">
+										<#assign assignCategoryName><@s.CategoryName /></#assign>
+										<tr id="attr-${facet_counter}-${catTableCounter}">
+											<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
+											<td><span class="badge detail-count"><@s.CategoryCount /></span> </td>
+										</tr>
+										<#assign catTableCounter = catTableCounter + 1>
 									</@s.Category>
 								</tbody>
 							</table>
 
 							<div id="chart-attr-count-${facet_counter}" class="hide row-count" data-row-count="${catTableCounter}"></div>
 						
-						<!--Attributes Coloumn-->
-
 						<#else>
 						<hr>
 						<div class="drilled-to-last well well-fb" style="margin:0 28px 0 15px">
@@ -155,23 +148,16 @@
 					-->
 					"dataProvider": [
 			
-					<#assign categoriesToList = s.facet.categories>
-					<#if s.facet.categories[0]?? && (s.facet.categories[0].categories?size > 0)>
-						<#assign categoriesToList = s.facet.categories[0].categories />
-					</#if>
-			
 					<#assign separator = ''>
-					<#assign counter = 0>
-					<#list categoriesToList as c>
-						<#list c.values as cv>
+					<@s.Category max=2147483647 tag="">
 							${separator}
 							{
-								"label": "${cv.label?js_string}",
-								"count": "${cv.count?c}"
+								"label": "${s.categoryValue.label?js_string}",
+								"count": "${s.categoryValue.count?c}"
 							}
 							<#assign separator = ','>
-						</#list>
-					</#list>
+					</@s.Category>
+
 					],
 					"valueField": "count",
 					"titleField": "label",
