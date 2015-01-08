@@ -817,10 +817,14 @@
 
                         <#local nbCategories = nbCategories+1 />
                         <#if nbCategories &gt; max><#return></#if>
-
-                        <${tag} class="${class}">
-                            <#nested>
-                        </${tag}>
+                        
+                        <#if tag != "">
+                            <${tag} class="${class}">
+                                <#nested>
+                            </${tag}>
+                        <#else>
+                            <#nested>  
+                        </#if>
                     </#if>
                 </#list>
                 <#-- Recurse in sub categories -->
