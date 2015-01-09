@@ -626,7 +626,7 @@
     <#if s.categoryValue?exists>
         <#assign paramName = s.categoryValue.queryStringParam?split("=")[0]>
         <span class="${class}">
-            <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label}</a>
+            <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label?html}</a>
         </span>
     </#if>
 </#macro>
