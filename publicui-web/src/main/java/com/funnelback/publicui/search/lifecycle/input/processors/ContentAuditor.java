@@ -69,7 +69,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     private static final int METADATA_BUFFER_LENGTH_VALUE = 1024 * 20;
 
     /** Query to run if no query is specified - should return all results */
-    private static final String NULL_QUERY = "-padrenullquery";
+    private static final String NULL_QUERY = "-showalldocuments";
 
     /** 
      * Custom URL parameter used for indicating the duplicate signature to be applied.
@@ -82,6 +82,16 @@ public class ContentAuditor extends AbstractInputProcessor {
 
     /** Key by which the duplicates extra search is identified */
     private static final String DUPLICATES_EXTRA_SEARCH_KEY = "duplicates";
+
+    /** Resource manger for reading (and caching) config files */
+    @Autowired
+    @Setter
+    protected ResourceManager resourceManager;
+
+    /** Parser for faceted_navigation.xml */
+    @Autowired
+    @Setter
+    private FacetedNavigationConfigParser fnConfigParser;
 
     /** Reference to translations */
     @Autowired
@@ -98,7 +108,6 @@ public class ContentAuditor extends AbstractInputProcessor {
             SearchQuestionType questionType = searchTransaction.getQuestion().getQuestionType();
             
             if (questionType.equals(SearchQuestion.SearchQuestionType.CONTENT_AUDITOR)) {
-                searchTransaction.getExtraSearches().clear(); // Don't want to inherit any from the normal search service
                 SearchQuestion question = searchTransaction.getQuestion();
                 customiseMainQuestion(question);
 
@@ -163,16 +172,6 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
     }
-
-    /** Resource manger for reading (and caching) config files */
-    @Autowired
-    @Setter
-    protected ResourceManager resourceManager;
-
-    /** Parser for faceted_navigation.xml */
-    @Autowired
-    @Setter
-    private FacetedNavigationConfigParser fnConfigParser;
 
     /** Overwrite the facet config with a custom one */
     private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
@@ -311,8 +310,8 @@ public class ContentAuditor extends AbstractInputProcessor {
             new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
 
         // Speedup settings
-        question.getRawInputParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {});
-        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(0)});
+        question.getRawInputParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {""});
+        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {"0"});
         question.getDynamicQueryProcessorOptions().add(
              "-" + QueryProcessorOptionKeys.VSIMPLE + "=" + "1" +
             " -" + QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION + "=" + "0" +
