@@ -1,28 +1,76 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.io.FileNotFoundException;
+
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Keys;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MetadataAliases;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 public class MetadataAliasesTests {
 
+    private class ConfigStub extends Config {
+
+        public ConfigStub(String[] args) throws EnvironmentVariableException, FileNotFoundException {
+            super(args);
+        }
+
+        @Override
+        public Options makeOptions() {
+            Option example = new Option("example", true,
+            "This is a simple example");
+
+            Options myOptions = new Options();
+            myOptions.addOption(example);
+            
+            return myOptions;
+        }
+
+        public String getLogFileName() {
+            return "foo";
+        }
+    }
+    
     private MetadataAliases processor;
     private SearchTransaction st;
     
+    Config config;
+    
     @Before
-    public void before() {
+    public void before() throws EnvironmentVariableException, FileNotFoundException {
         processor = new MetadataAliases();
-        st = new SearchTransaction(new SearchQuestion(), null);
+        st = new SearchTransaction(new SearchQuestion(){
+            @Override
+            public Collection getCollection() {
+                return new Collection(){
+                    @Override
+                    public Config getConfiguration() {
+                        return config;
+                    }
+                };
+            }
+        }, null);
+        config = new ConfigStub(new String[0]);
+        config.setValue(Keys.ModernUI.metadataAlias("link"), "h");
+        config.setValue(Keys.ModernUI.metadataAlias("site"), "u");
+        config.setValue(Keys.ModernUI.metadataAlias("filetype"), "f");
+        config.setValue(Keys.ModernUI.metadataAlias("allinurl"), "v");
         
     }
 
     @Test
     public void testLink() throws InputProcessorException {
+        
         st.getQuestion().setQuery("abc link:http://www.funnelback.com def link:file:///file.txt link :me");
         processor.processInput(st);
         Assert.assertEquals("abc h:http://www.funnelback.com def h:file:///file.txt link :me", st.getQuestion().getQuery());
@@ -40,6 +88,22 @@ public class MetadataAliasesTests {
         st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg filetype :test file type :me");
         processor.processInput(st);
         Assert.assertEquals("abc f:pdf def doc f:jpeg filetype :test file type :me", st.getQuestion().getQuery());
+    }
+    
+    @Test
+    public void testFiletypeNull() throws InputProcessorException {
+        config.setValue(Keys.ModernUI.metadataAlias("filetype"), null);
+        st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg bam:hahaha site:sitesite");
+        processor.processInput(st);
+        Assert.assertEquals("abc filetype:pdf def doc filetype:jpeg bam:hahaha u:sitesite", st.getQuestion().getQuery());
+    }
+    
+    @Test
+    public void testFiletypeEmptyString() throws InputProcessorException {
+        config.setValue(Keys.ModernUI.metadataAlias("filetype"), "");
+        st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg bam:hahaha site:sitesite");
+        processor.processInput(st);
+        Assert.assertEquals("abc filetype:pdf def doc filetype:jpeg bam:hahaha u:sitesite", st.getQuestion().getQuery());
     }
     
     @Test
