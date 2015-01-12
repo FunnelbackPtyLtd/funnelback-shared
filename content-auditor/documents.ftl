@@ -31,7 +31,7 @@
 	</p>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>       
 <!-- CSV DOWNLOAD -->
-<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&amp;type=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
+<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&amp;form=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
 </#if>
 
 <div class="form-field select field-sort pull-right" data-url="?${QueryString}">   

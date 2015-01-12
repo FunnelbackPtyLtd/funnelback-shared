@@ -87,7 +87,7 @@
 									<@s.Category max=2147483647 tag="">
 										<#assign assignCategoryName><@s.CategoryName /></#assign>
 										<tr id="attr-${facet_counter}-${catTableCounter}">
-											<td>${assignCategoryName?replace("&amp;type=facets","")?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
+											<td>${assignCategoryName?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
 											<td><span class="badge detail-count"><@s.CategoryCount /></span> </td>
 										</tr>
 										<#assign catTableCounter = catTableCounter + 1>

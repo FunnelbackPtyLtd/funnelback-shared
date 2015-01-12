@@ -72,12 +72,6 @@ ${queryToReport}
                                 <#include "/web/templates/modernui/content-auditor/facets.ftl" />
                             </div>
                             <div class="tab-pane" id="collection-${currentCollection}-tab-2">
-                                <#if QueryString?contains("type=")>
-                                    <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString?replace("type=index","type=documents")}&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
-                                <#else>
-                                    <#assign afterSearchDocumentsCollectionOne>${absoluteHtmlUrl}?${QueryString}&type=documents&start_rank=${question.inputParameterMap["start_rank"]!?html}</#assign>
-                                </#if>
-                                <!-- Include from ${afterSearchDocumentsCollectionOne} -->
                                 <#include "/web/templates/modernui/content-auditor/documents.ftl" />
                             </div>
                             <div id="collection-${currentCollection}-tab-3" class="tab-pane clearfix">
