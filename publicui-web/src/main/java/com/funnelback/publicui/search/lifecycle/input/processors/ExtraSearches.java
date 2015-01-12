@@ -48,7 +48,7 @@ public class ExtraSearches extends AbstractInputProcessor implements Application
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getCollection().getConfiguration()
                     .hasValue(Keys.ModernUI.EXTRA_SEARCHES)
-                && ! searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.EXTRA_SEARCH) ) {
+                && searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.SEARCH) ) {
             
             String[] extraSearches = searchTransaction.getQuestion().getCollection()
                 .getConfiguration().value(Keys.ModernUI.EXTRA_SEARCHES).split(",");
