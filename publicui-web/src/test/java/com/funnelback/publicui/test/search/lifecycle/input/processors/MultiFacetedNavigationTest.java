@@ -1,7 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +11,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.MultiFacetedNav
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 
 public class MultiFacetedNavigationTest {
 
@@ -69,7 +69,7 @@ public class MultiFacetedNavigationTest {
     public void testExtraSearch() throws InputProcessorException {
         st.getQuestion().getCollection().getConfiguration()
             .setValue(Keys.ModernUI.FULL_FACETS_LIST, "true");
-        st.getQuestion().setExtraSearch(true);
+        st.getQuestion().setQuestionType(SearchQuestionType.EXTRA_SEARCH);
     
         processor.processInput(st);
         

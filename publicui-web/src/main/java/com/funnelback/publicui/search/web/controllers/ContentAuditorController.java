@@ -43,6 +43,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
@@ -82,12 +83,6 @@ public class ContentAuditorController {
     private SearchController searchController;
 
     /**
-     * Used to perform extra searches
-     */
-    @Autowired
-    private SearchTransactionProcessor transactionProcessor;
-
-    /**
      * We apply the SearchController's initBinder (since we want to replicate how it handles requests).
      */
     @InitBinder
@@ -109,38 +104,17 @@ public class ContentAuditorController {
             @ModelAttribute SearchUser user,
             String type) {
         
-        SearchQuestion mainSearchQuestion = new SearchQuestion();
-        SearchQuestionBinder.bind(originalQuestion, mainSearchQuestion);
-
-        // Customise stuff for content auditor
-        customiseMainQuestion(mainSearchQuestion, request);
-
+        originalQuestion.setQuestionType(SearchQuestionType.CONTENT_AUDITOR);
 
         ModelAndView mav =
-            searchController.search(request, response, mainSearchQuestion, user);
+            searchController.search(request, response, originalQuestion, user);
 
-        // We run an extra search with a large num_ranks value to find duplicates
-        SearchQuestion extraSearchQuestion = new SearchQuestion();
-        SearchQuestionBinder.bind(mainSearchQuestion, extraSearchQuestion);
-        customiseExtraQuestion(extraSearchQuestion, request);
-
-        // TODO - Consider changing this to use a real input processor which could use a real extra search
-        SearchTransaction duplicateListingSearchTransaction = transactionProcessor.process(extraSearchQuestion, user);
-        Map<String, SearchTransaction> extraSearches = new HashMap<>();
-        extraSearches.put("duplicates", duplicateListingSearchTransaction);
-        
-        Map<String, Object> model = mav.getModel();
-
-        model.put(ModelAttributes.extraSearches.toString(), extraSearches);
-        
-        SearchResponse sr = (SearchResponse) model.get(SearchController.ModelAttributes.response.toString());
+        SearchResponse sr = (SearchResponse) mav.getModel().get(SearchController.ModelAttributes.response.toString());
         
         if (sr == null || !sr.hasResultPacket()) {
             throw new ContentAuditorException("Expected result packet for request, but got none");
         }
-        
-        sr.getCustomData().put("displayMetadata", readMetadataInfo(mainSearchQuestion, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA));
-        
+                
         String viewName = getViewName(type);
         
         if (type != null && type.equals("csv_export")) {
@@ -148,204 +122,7 @@ public class ContentAuditorController {
             response.setHeader("content-disposition", "attachment; filename=export.csv");
         }
         
-        return new ModelAndView(viewName, model);
-    }
-
-    /**
-     * Customise the question to suit getting a large number of results to find duplicates
-     */
-    private void customiseExtraQuestion(SearchQuestion question, HttpServletRequest request) {
-        Config config = question.getCollection().getConfiguration();
-
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS,
-            new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
-
-        // Speedup settings
-        question.getRawInputParameters().put("SF", new String[] {});
-        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(0)});
-        question.getDynamicQueryProcessorOptions().add("-vsimple=1 -contextual_navigation=0 -spelling=0 -SQE=1 -SBL=1 -SHLM=0");
-    }
-
-    /** Modify the given question to suit content auditor's needs 
-     * @param request */
-    private void customiseMainQuestion(SearchQuestion question, HttpServletRequest request) {
-        Config config = question.getCollection().getConfiguration();
-        
-        // We want search result links to come back to us
-        // But still allow config to make it absolute
-        String searchLink = config.value(Keys.ModernUI.SEARCH_LINK);
-        searchLink = searchLink.replace("search.html", "content-auditor.html");
-        config.setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
-        
-        // Manipulate the request to suit content auditor
-        question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
-        question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
-        question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {config.value(Keys.ModernUI.ContentAuditor.DAAT_LIMIT)});
-        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(1024 * 20)}); // 20k ought be enough for anyone
-        question.getDynamicQueryProcessorOptions().add("-daat_timeout=3600.0"); // 1 hour - Hopefully excessive
-
-        if (request.getParameter(RequestParameters.NUM_RANKS) == null) {
-            // Set a default from collection.cfg
-            question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
-        }
-        
-        if (request.getParameter("duplicate_signature") != null) {
-            question.getRawInputParameters().put(RequestParameters.S, 
-                ArrayUtils.add(
-                    question.getRawInputParameters().get(RequestParameters.S),
-                    request.getParameter("duplicate_signature")
-                )
-            );
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
-        }
-        
-        if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-        }
-        question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
-
-        // Metadata for displaying in the results view
-        question.getRawInputParameters().put("SM", new String[] {"meta"});
-        StringBuilder sfValue = new StringBuilder();
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
-            sfValue.append("," + entry.getKey());
-        }
-        question.getRawInputParameters().put("SF", new String[] {"[" + sfValue.toString() + "]"});
-
-        if (question.getQuery() == null || question.getQuery().length() < 1) {
-            question.setQuery("-padrenullquery");
-        }
-
-        question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
-    }
-
-    /** Resource manger for reading (and caching) config files */
-    @Autowired
-    @Setter
-    protected ResourceManager resourceManager;
-
-    /** Parser for faceted_navigation.xml */
-    @Autowired
-    @Setter
-    private FacetedNavigationConfigParser fnConfigParser;
-
-    /** Overwrite the facet config with a custom one */
-    private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
-
-        List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
-        
-        facetDefinitions.add(createUrlFacetDefinition("URI"));
-
-        facetDefinitions.add(createDateFacetDefinition("Date modified"));
-
-        StringBuilder rmcfValue = new StringBuilder();
-        for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
-            facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
-            rmcfValue.append("," + entry.getKey());
-        }
-        
-        String qpOptions = " -rmcf=["+rmcfValue+"] -count_dates=d -count_urls=1000 -countgbits=all";
-
-        // Pull in any query based facets from the index's faceted_navigation.xml file
-        if (!question.getInputParameterMap().containsKey("view")) {
-            question.getInputParameterMap().put("view", "live");
-        }
-        String indexView = question.getInputParameterMap().get("view");
-
-        // Read the snapshot's faceted nav config and get any gscope based facets
-        File fnConfig = new File(question.getCollection().getConfiguration().getCollectionRoot(), indexView
-            + File.separator + DefaultValues.FOLDER_IDX + File.separator
-            + Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-        try {
-            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser));
-            if (base != null) {
-                for (FacetDefinition fd : base.getFacetDefinitions()) {
-                    for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
-                        if (cd instanceof GScopeItem || cd instanceof QueryItem) {
-                            facetDefinitions.add(fd);
-                        }
-                        break;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        
-        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
-        return facetedNavigationConfig;
-    }
-
-    /** 
-     * Read all the metadata config settings for a prefix. The are expected to be in the form...
-     * 
-     * (prefix).(metadataClassName)=(label)
-     * 
-     * and will be returned as a hash of className to label
-     */
-    private Map<String, String> readMetadataInfo(SearchQuestion question, String keyPrefix) {
-        // Read in the configured metadata classes, sort by keys
-        Map<String, String> metadataClassToLabel = new HashMap<>();
-
-        Config config = question.getCollection().getConfiguration();
-        for (String key : question.getCollection().getConfiguration().valueKeys()) {
-            if (key.startsWith(keyPrefix)) {
-                String className = key.substring(keyPrefix.length() + 1 /* Skip the '.' */);
-                String label = config.value(key);
-                
-                if (label.length() > 0) {
-                    metadataClassToLabel.put(className, label);
-                }
-            }
-        }
-        return MapUtil.sortByValue(metadataClassToLabel);
-    }
-
-    /**
-     * Creates a date based facet definition with the given label
-     */
-    private FacetDefinition createDateFacetDefinition(String label) {
-        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        YearOnlyDateFieldFill fill = new YearOnlyDateFieldFill();
-        fill.setData("d");
-        fill.setLabel(label);
-        fill.setFacetName(label);
-        categoryDefinitions.add(fill);
-        
-        return new FacetDefinition(label, categoryDefinitions);
-    }
-
-    /** Creates a URL scope based facet definition */
-    private FacetDefinition createUrlFacetDefinition(String label) {
-        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        
-        UrlScopeFill fill = new UrlScopeFill();
-        fill.setLabel(label);
-        fill.setFacetName(label);
-        categoryDefinitions.add(fill);
-        
-        FacetDefinition result = new FacetDefinition(label, categoryDefinitions);
-        return result;
-    }
-
-    /**
-     * Creates a metadata field based facet definition with the given label, populated from the given metadataClass
-     */
-    private FacetDefinition createMetadataFacetDefinition(String label, String metadataClass) {
-        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        MetadataFieldFill fill = new MetadataFieldFill();
-        fill.setData(metadataClass);
-        fill.setLabel(label);
-        fill.setFacetName(label);
-        categoryDefinitions.add(fill);
-        
-        MetadataMissingFill remainder = new MetadataMissingFill();
-        remainder.setData(metadataClass);
-        remainder.setLabel(label);
-        remainder.setFacetName(label);
-        categoryDefinitions.add(remainder);
-        
-        return new FacetDefinition(label, categoryDefinitions);
+        return new ModelAndView(viewName, mav.getModel());
     }
 
     /** Constructs the path to the requested content auditor view (i.e. freemarker ftl file) */

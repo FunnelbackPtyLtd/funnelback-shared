@@ -34,6 +34,7 @@
 			<list>
 				<value>i18n/errors</value>
 				<value>i18n/content-optimiser</value>
+				<value>i18n/content-auditor</value>
 			</list>
 		</property>
 		<property name="useCodeAsDefaultMessage"><value>true</value></property>

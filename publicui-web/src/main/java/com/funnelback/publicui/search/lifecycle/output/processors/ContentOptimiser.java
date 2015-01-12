@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
@@ -43,7 +44,7 @@ public class ContentOptimiser extends AbstractOutputProcessor {
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (searchTransaction.hasResponse() && searchTransaction.hasQuestion()
                 && searchTransaction.getQuestion().getRawInputParameters().containsKey(RequestParameters.EXPLAIN)
-                && !searchTransaction.getQuestion().isExtraSearch()) {
+                && !searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.EXTRA_SEARCH)) {
             ContentOptimiserModel comparison = new ContentOptimiserModel();
             log.debug("Process output content optimiser has all data");
             filler.consumeResultPacket(comparison, searchTransaction.getResponse().getResultPacket(),hintFactory);

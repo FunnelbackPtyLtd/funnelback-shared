@@ -229,14 +229,37 @@ public class SearchQuestion {
     @Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
     
     /**
+     * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>
+     * 
+     * <p>e.g. Extra searches or Content Auditor requests.</p>
+     */
+    @Getter @Setter private SearchQuestionType questionType = SearchQuestionType.SEARCH;    
+
+    /**
      * <p>Indicates if this question is part of the "main" search, or part of an "extra"
      * search.</p>
      * 
      * <p>This is needed to perform some actions only on the main search but not for every
      * extra search.</p>
+     * 
+     * @deprecated  As of release 14.2, replaced by {@link #questionType}
      */
-    @Getter @Setter private boolean extraSearch = false;
-    
+    @Deprecated
+    public boolean isExtraSearch() {
+        return questionType.equals(SearchQuestionType.EXTRA_SEARCH);
+    }
+
+    /**
+     * <p>Sets whether this question is part of the "main" search, or part of an "extra"
+     * search.</p>
+     * 
+     * @deprecated  As of release 14.2, replaced by {@link #questionType}
+     */
+    @Deprecated
+    public void setExtraSearch(boolean isExtraSearch) {
+        questionType = isExtraSearch ? SearchQuestionType.EXTRA_SEARCH : SearchQuestionType.SEARCH;
+    }
+
     /**
      * <p>{@link Locale} to use for the search.</p>
      * 
@@ -287,7 +310,7 @@ public class SearchQuestion {
         /** Query terms */
         public static final String QUERY = "query";
 
-	public static final String LOADED = "loaded";
+        public static final String LOADED = "loaded";
 
         /** System generated query */
         public static final String S = "s";
@@ -379,6 +402,12 @@ public class SearchQuestion {
 
         /** Maximum bytes of metadata to return per result */
         public static final String METADATA_BUFFER_LENGTH = "MBL";
+
+        /** Type of result summaries padre should return */
+        public static final String SUMMARY_MODE = "SM";
+
+        /** Metadata field list to be used in producing result metadata summaries */
+        public static final String SUMMARY_FIELDS = "SF";
 
         /** Controls the type/level of stemming which should be used */
         public static String STEM = "stem";
@@ -539,6 +568,11 @@ public class SearchQuestion {
              */
             public static final Pattern CN_PREV_PATTERN = Pattern.compile(CN_PREV_PREFIX + "\\d+");
         }
+    }
+    
+    /** Enum for identifying special types of search requests requiring special processing */
+    public enum SearchQuestionType {
+        SEARCH, EXTRA_SEARCH, CONTENT_AUDITOR, CONTENT_AUDITOR_DUPLICATES;
     }
     
 }
