@@ -17,6 +17,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
@@ -61,47 +62,11 @@ public class ContentAuditor extends AbstractInputProcessor {
     /** Maximum DAAT timeout value - 1 hour */
     private static final String DAAT_TIMEOUT_MAX_VALUE = "3600.0";
 
-    /** padre-sw daat timeout parameter */
-    private static final String DAAT_TIMEOUT_QP_OPTION = "daat_timeout";
-
-    /** padre-sw count gscope bits parameter */
-    private static final String COUNTGBITS_QP_OPTION = "countgbits";
-
-    /** padre-sw count urls parameter */
-    private static final String COUNT_URLS_QP_OPTION = "count_urls";
-
-    /** padre-sw count dates parameter */
-    private static final String COUNT_DATES_QP_OPTION = "count_dates";
-
-    /** padre-sw result metadata count fields parameter */
-    private static final String RMCF_QP_OPTION = "rmcf";
-
     /** Metadata field used for dates */
     private static final String DATE_METADATA_FIELD = "d";
 
-    /** padre-sw summary highlight mode parameter */
-    private static final String SHLM_QP_OPTION = "SHLM";
-
-    /** padre-sw summary buffer length parameter */
-    private static final String SBL_QP_OPTION = "SBL";
-
-    /** padre-sw summary query-biased excerpt parameter */
-    private static final String SQE_QP_OPTION = "SQE";
-
-    /** padre-sw spelling parameter */
-    private static final String SPELLING_QP_OPTION = "spelling";
-
-    /** padre-sw contextual navigation parameter */
-    private static final String CONTEXTUAL_NAVIGATION_QP_OPTION = "contextual_navigation";
-
-    /** padre-sw very simple ranking parameter */
-    private static final String VSIMPLE_QP_OPTION = "vsimple";
-
     /** How much metadata content auditor will display - 20k ought be enough for anyone. */
     private static final int METADATA_BUFFER_LENGTH_VALUE = 1024 * 20;
-
-    /** URL Parameter for specifiying the view (potentially a snapshot) to be queried. */
-    private static final String VIEW_URL_PARAM = "view";
 
     /** Query to run if no query is specified - should return all results */
     private static final String NULL_QUERY = "-padrenullquery";
@@ -162,7 +127,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
         question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {config.value(Keys.ModernUI.ContentAuditor.DAAT_LIMIT)});
         question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(ContentAuditor.METADATA_BUFFER_LENGTH_VALUE)});
-        question.getDynamicQueryProcessorOptions().add("-" + ContentAuditor.DAAT_TIMEOUT_QP_OPTION + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
 
         if (question.getRawInputParameters().get(RequestParameters.NUM_RANKS) == null) {
             // Set a default from collection.cfg
@@ -225,16 +190,16 @@ public class ContentAuditor extends AbstractInputProcessor {
         }
         
         String qpOptions = 
-            " -" + ContentAuditor.RMCF_QP_OPTION + "=["+rmcfValue+"]"
-            + " -" + ContentAuditor.COUNT_DATES_QP_OPTION + "=" + ContentAuditor.DATE_METADATA_FIELD
-            + " -" + ContentAuditor.COUNT_URLS_QP_OPTION + "=" + "1000"
-            + " -" + ContentAuditor.COUNTGBITS_QP_OPTION + "=" + "all";
+            " -" + QueryProcessorOptionKeys.RMCF + "=["+rmcfValue+"]"
+            + " -" + QueryProcessorOptionKeys.COUNT_DATES + "=" + ContentAuditor.DATE_METADATA_FIELD
+            + " -" + QueryProcessorOptionKeys.COUNT_URLS + "=" + "1000"
+            + " -" + QueryProcessorOptionKeys.COUNTGBITS + "=" + "all";
 
         // Pull in any query based facets from the index's faceted_navigation.xml file
-        if (!question.getInputParameterMap().containsKey(ContentAuditor.VIEW_URL_PARAM)) {
-            question.getInputParameterMap().put(ContentAuditor.VIEW_URL_PARAM, "live");
+        if (!question.getInputParameterMap().containsKey(QueryProcessorOptionKeys.VIEW)) {
+            question.getInputParameterMap().put(QueryProcessorOptionKeys.VIEW, "live");
         }
-        String indexView = question.getInputParameterMap().get(ContentAuditor.VIEW_URL_PARAM);
+        String indexView = question.getInputParameterMap().get(QueryProcessorOptionKeys.VIEW);
 
         // Read the snapshot's faceted nav config and get any gscope based facets
         File fnConfig = new File(question.getCollection().getConfiguration().getCollectionRoot(), indexView
@@ -349,12 +314,12 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getRawInputParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {});
         question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(0)});
         question.getDynamicQueryProcessorOptions().add(
-             "-" + ContentAuditor.VSIMPLE_QP_OPTION + "=" + "1" +
-            " -" + ContentAuditor.CONTEXTUAL_NAVIGATION_QP_OPTION + "=" + "0" +
-            " -" + ContentAuditor.SPELLING_QP_OPTION + "=" + "0" + 
-            " -" + ContentAuditor.SQE_QP_OPTION + "=" + "1" +
-            " -" + ContentAuditor.SBL_QP_OPTION + "=" + "1" + 
-            " -" + ContentAuditor.SHLM_QP_OPTION + "=" + "0");
+             "-" + QueryProcessorOptionKeys.VSIMPLE + "=" + "1" +
+            " -" + QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION + "=" + "0" +
+            " -" + QueryProcessorOptionKeys.SPELLING + "=" + "0" + 
+            " -" + QueryProcessorOptionKeys.SQE + "=" + "1" +
+            " -" + QueryProcessorOptionKeys.SBL + "=" + "1" + 
+            " -" + QueryProcessorOptionKeys.SHLM + "=" + "0");
         
         return question;
     }
