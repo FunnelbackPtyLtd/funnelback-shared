@@ -24,7 +24,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && Config.isTrue(searchTransaction.getQuestion()
                     .getCollection().getConfiguration().value(Keys.ModernUI.FULL_FACETS_LIST))
-                && ! searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.EXTRA_SEARCH)) {
+                && searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.SEARCH)) {
             SearchQuestion q = new FacetedNavigationQuestionFactory()
                 .buildQuestion(searchTransaction.getQuestion(), null);
             searchTransaction.addExtraSearch(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString(), q);
