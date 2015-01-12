@@ -37,6 +37,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
+import com.funnelback.publicui.search.web.controllers.ContentAuditorController;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
@@ -56,9 +57,6 @@ import com.funnelback.springmvc.service.resource.ResourceManager;
  */
 @Component("contentAuditorInputProcessor")
 public class ContentAuditor extends AbstractInputProcessor {
-
-    /** Link used for content auditor */
-    private static final String CONTENT_AUDITOR_LINK = "content-auditor.html";
 
     /** Maximum DAAT timeout value - 1 hour */
     private static final String DAAT_TIMEOUT_MAX_VALUE = "3600.0";
@@ -156,7 +154,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         // We want search result links to come back to us
         // But still allow config to make it absolute
         String searchLink = config.value(Keys.ModernUI.SEARCH_LINK);
-        searchLink = searchLink.replace(DefaultValues.ModernUI.SEARCH_LINK, ContentAuditor.CONTENT_AUDITOR_LINK);
+        searchLink = searchLink.replace(DefaultValues.ModernUI.SEARCH_LINK, ContentAuditorController.CONTENT_AUDITOR_LINK);
         config.setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
         
         // Manipulate the request to suit content auditor
