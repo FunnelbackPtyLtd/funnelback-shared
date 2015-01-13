@@ -125,12 +125,6 @@ public class ContentAuditor extends AbstractInputProcessor {
     private void customiseMainQuestion(SearchQuestion question) {
         Config config = question.getCollection().getConfiguration();
         
-        // We want search result links to come back to us
-        // But still allow config to make it absolute
-        String searchLink = config.value(Keys.ModernUI.SEARCH_LINK);
-        searchLink = searchLink.replace(DefaultValues.ModernUI.SEARCH_LINK, ContentAuditorController.CONTENT_AUDITOR_LINK);
-        config.setValue(Keys.ModernUI.SEARCH_LINK, searchLink);
-        
         // Manipulate the request to suit content auditor
         question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});

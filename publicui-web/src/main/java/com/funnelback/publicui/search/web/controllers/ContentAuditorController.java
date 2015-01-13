@@ -31,9 +31,6 @@ public class ContentAuditorController {
     /** Name of the template for content auditor CSV export */
     private static final String CSV_TEMPLATE_NAME = "csv_export";
 
-    /** Link used for content auditor */
-    public static final String CONTENT_AUDITOR_LINK = "content-auditor.html";
-
     /**
      * SearchController is used to perform the actual search requests to create the auditor report
      */
@@ -58,8 +55,8 @@ public class ContentAuditorController {
             HttpServletResponse response,
             SearchQuestion question,
             @ModelAttribute SearchUser user) {
-        
-        // Mark this question as a content auditor one (see the ContentAuditor input processor)
+        // Mark this question as a content auditor one.
+        // See the ContentAuditor input processor for what this triggers
         question.setQuestionType(SearchQuestionType.CONTENT_AUDITOR);
 
         // Pass off to the searchController
