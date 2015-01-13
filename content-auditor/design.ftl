@@ -59,7 +59,7 @@
       <div class="nav navbar-nav navbar-right">
         <div class="search-form">
           <#-- QUERY FORM -->
-          <form action="/s/content-auditor.html" method="GET" class="form form-inline">
+          <form action="${main.contentAuditorLink}" method="GET" class="form form-inline">
             
             <div class="search-input-group">
               

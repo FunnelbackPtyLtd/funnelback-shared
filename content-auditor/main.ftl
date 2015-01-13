@@ -1,6 +1,7 @@
 <#ftl encoding="utf-8" />
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
+<#assign contentAuditorLink="content-auditor.html">
 <#assign absoluteHtmlUrl>${httpRequest.requestURL}</#assign>
 <#assign queryToReport = response.resultPacket.queryAsProcessed!''?replace("-padrenullquery", "") />
 <#if queryToReport?matches("\\s*")>
@@ -24,21 +25,21 @@ ${queryToReport}
 <#macro appliedFacetsBlock urlHash>
     <#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??> 
         <div class="drill-filters"><span class="fa fa-filter"></span>
-        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="${urlHash}"/>
-        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="${urlHash}"/>
+        <@AppliedFacets class="btn btn-xs btn-warning" group=true urlHash="${urlHash}" link=main.contentAuditorLink/>
+        <@ClearFacetsLink  class="btn btn-xs btn-danger" urlHash="${urlHash}" link=main.contentAuditorLink/>
         </div>
     </#if>
 </#macro>
 <#-- ResultTabsNavigaton -->
 <#macro ResultTabsNavigaton>
-<#assign url = "content-auditor.html?" + changeParam(QueryString, "view", "live") />
+<#assign url = contentAuditorLink + "?" + changeParam(QueryString, "view", "live") />
 <nav role="navigation" class="collapse navbar-collapse navbar-side">
     <ul class="nav navbar-nav">
         <li class="nav-title">content reports</li>
         <li class="nav-live<#if QueryString?contains("view=live")> active</#if>"> <a class="text-overflow" href="${url}" title="View Live View report"><span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-flash fa-stack-1x"></i></span> Live View</a> </li>
         <#list question.collection.configuration.snapshotIds?sort?reverse as id>
         <#assign snapshotID = "snapshot" + id?c />
-        <#assign url = "content-auditor.html?" + changeParam(QueryString, "view", snapshotID)?replace("&_pjax","") />
+        <#assign url = contentAuditorLink + "?" + changeParam(QueryString, "view", snapshotID)?replace("&_pjax","") />
         <li class="nav-${snapshotID} <#if question.inputParameterMap["view"] == snapshotID>active</#if>"> <a class="text-overflow" href="${url}" title="View ${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id?c)!("Snapshot " + id?c)?html} report"> <span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-photo fa-stack-1x"></i></span>${question.collection.configuration.value("ui.modern.content-auditor.snapshot_name." + id?c)!("Snapshot " + id?c)?html}</a> </li>
         </#list>
     </ul>

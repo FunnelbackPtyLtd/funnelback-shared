@@ -85,7 +85,7 @@
 								<tbody>
 									<#assign catTableCounter = 0 />
 									<@s.Category max=2147483647 tag="">
-										<#assign assignCategoryName><@s.CategoryName link="content-auditor.html"/></#assign>
+										<#assign assignCategoryName><@s.CategoryName link=main.contentAuditorLink/></#assign>
 										<tr id="attr-${facet_counter}-${catTableCounter}">
 											<td>${assignCategoryName?replace('">', '#facet-' + facet_counter + '.tab-pane">')}</td>
 											<td><span class="badge detail-count"><@s.CategoryCount /></span> </td>

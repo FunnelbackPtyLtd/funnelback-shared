@@ -31,7 +31,7 @@
 	</p>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>       
 <!-- CSV DOWNLOAD -->
-<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="content-auditor.html?${QueryString}&amp;form=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
+<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="${main.contentAuditorLink}?${QueryString}&amp;form=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
 </#if>
 
 <div class="form-field select field-sort pull-right" data-url="?${QueryString}">   
@@ -57,7 +57,7 @@
 
     <thead>
         <tr>
-            <#assign url = "content-auditor.html?" + changeParam(QueryString, "sort",'dtitle') />
+            <#assign url = main.contentAuditorLink + "?" + changeParam(QueryString, "sort",'dtitle') />
 			<th scope="col"><span>Page</span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
@@ -246,15 +246,15 @@
 
 <div>
   <ul class="pagination">
-    <@fb.Prev link="content-auditor.html"><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
+    <@fb.Prev link=main.contentAuditorLink><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#if response.resultPacket.resultsSummary.nextStart?exists || response.resultPacket.resultsSummary.prevStart?exists>
-            <@fb.Page link="content-auditor.html">
+            <@fb.Page link=main.contentAuditorLink>
             <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
             </@fb.Page>
         </#if>
     </#if>
-    <@fb.Next link="content-auditor.html"><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
+    <@fb.Next link=main.contentAuditorLink><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
   </ul>
 </div>
 
