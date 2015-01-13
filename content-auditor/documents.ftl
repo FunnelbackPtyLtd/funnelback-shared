@@ -7,25 +7,11 @@
 
 <div class="tab-header clearfix">
 	<p class="pull-left">        
-	<#if response.resultPacket.resultsSummary.totalMatching == 0>
-		<strong class="fb-total-matching fb-result-count">0</strong> search results for <strong><@s.QueryClean /></strong>
-	</#if>
 	<#if response.resultPacket.resultsSummary.totalMatching != 0>
 		Displaying <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
 		<strong class="fb-result-count fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
 		<strong class="fb-result-count fb-total-matching">${(response.resultPacket.resultsSummary.totalMatching - response.resultPacket.resultsSummary.collapsed)?string.number}</strong>
-		search results for <strong>${queryToReport}</strong>
-	</#if>
-	<#if response.resultPacket.resultsSummary.partiallyMatching != 0>
-		where
-		<span class="fb-result-count" id="fb-fully-matching">
-			${response.resultPacket.resultsSummary.fullyMatching?string.number}
-		</span>
-		match all words and
-		<span class="fb-result-count" id="fb-partially-matching">
-			${response.resultPacket.resultsSummary.partiallyMatching?string.number}
-		</span>
-		match some words.
+		search results
 	</#if>
 	</p>
 <#if response.resultPacket.resultsSummary.totalMatching != 0>       
