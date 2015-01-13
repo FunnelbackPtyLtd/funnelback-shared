@@ -45,22 +45,20 @@ function refreshModalContent()
 
 function makePreviewIcons()
 {
-    // If the class of 'thumbnails-on' is detected then add thumbnail previews to the results rows.
-    if ($('body').hasClass('thumbnails-on'))
+    $.each($('#report-details tbody tr'), function(index, value)
     {
-        $.each($('#report-details tbody tr'), function(index, value)
-        {
-            var href = $(this).find('a').attr('href');
-            var popoverContent = '<a href="' + href + '"><img src="/s/preview?url=' + href +
-                '&width=350&height=230&render_width=350&render_height=230&type=keep_aspect"></a>';
-            var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
-                '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
-            $(this).find('.open-wcag').after(html).on('click', function()
-            {
-                return false;
-            });
-        });
-    }
+    	if ($(this).hasClass('previewable')) {
+			var href = $(this).find('a').attr('href');
+		    var popoverContent = '<a href="' + href + '"><img src="/s/preview?url=' + href +
+		        '&width=350&height=230&render_width=350&render_height=230&type=keep_aspect"></a>';
+		    var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
+		        '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
+		    $(this).find('.open-wcag').after(html).on('click', function()
+		    {
+		        return false;
+		    });
+    	}
+    });
 }
 
 function makeChartScrollable(index, bypassReset)
