@@ -2,14 +2,13 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import java.io.FileNotFoundException;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.junit.ConfigStub;
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MetadataAliases;
@@ -18,28 +17,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 public class MetadataAliasesTests {
-
-    private class ConfigStub extends Config {
-
-        public ConfigStub(String[] args) throws EnvironmentVariableException, FileNotFoundException {
-            super(args);
-        }
-
-        @Override
-        public Options makeOptions() {
-            Option example = new Option("example", true,
-            "This is a simple example");
-
-            Options myOptions = new Options();
-            myOptions.addOption(example);
-            
-            return myOptions;
-        }
-
-        public String getLogFileName() {
-            return "foo";
-        }
-    }
     
     private MetadataAliases processor;
     private SearchTransaction st;
