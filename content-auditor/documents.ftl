@@ -62,7 +62,7 @@
                     </tr>
                 </#if>
             <#else>
-            <tr>
+            <tr <#if s.result.fileType == 'html'>class="previewable"</#if>>
                 
                 <!-- PAGE and URL -->
 				<td>
@@ -70,8 +70,9 @@
 					<div class="pull-left">
 					<a class="clickable-link" target="_blank" href="${s.result.liveUrl?html}" title="${s.result.title}"><strong><@s.Truncate 150>${s.result.title}</@s.Truncate></strong></a> 
 						<#if s.result.liveUrl??>
-						<!-- SITE (Z) -->
-						<br><span class="text-muted" href="#add link here">${s.result.liveUrl?html?replace("http://www.canberra.edu.au","")}</span><#else> &nbsp;
+    						<br><span class="text-muted">${s.result.liveUrl?html}</span>
+                        <#else>
+                            &nbsp;
 						</#if> 
 				   </td>
 				
@@ -81,14 +82,14 @@
                   <td class="table-hide">
 				  	
 					
-					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="/s/anchors.html?collection=${question.inputParameterMap["collection"]?url}&docnum=${s.result.docNum?c}&ajax=1" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags">
+					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="anchors.html?collection=${question.inputParameterMap["collection"]?url}&docnum=${s.result.docNum?c}&ajax=1" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
 					</span>
 					</a>
 					
-					<a class="open-content-optimiser pass" target="_blank" href="/s/content-optimiser.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
+					<a class="open-content-optimiser pass" target="_blank" href="content-optimiser.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
