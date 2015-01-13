@@ -246,15 +246,15 @@
 
 <div>
   <ul class="pagination">
-    <@fb.Prev><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
-        <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
-            <#if response.resultPacket.resultsSummary.nextStart?exists || response.resultPacket.resultsSummary.prevStart?exists>
-                <@fb.Page>
-                <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
-                </@fb.Page>
-            </#if>
+    <@fb.Prev link="content-auditor.html"><li><a href="${fb.prevUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Prev</a></li></@fb.Prev>
+    <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
+        <#if response.resultPacket.resultsSummary.nextStart?exists || response.resultPacket.resultsSummary.prevStart?exists>
+            <@fb.Page link="content-auditor.html">
+            <li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">${fb.pageNumber}</a></li>
+            </@fb.Page>
         </#if>
-    <@fb.Next><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
+    </#if>
+    <@fb.Next link="content-auditor.html"><li><a href="${fb.nextUrl?replace('&form=documents','')?html}#collection-${currentCollection}-tab-2">Next</a></li></@fb.Next>
   </ul>
 </div>
 

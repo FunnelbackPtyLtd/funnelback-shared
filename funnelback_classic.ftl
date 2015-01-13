@@ -622,11 +622,11 @@
 
     @param class Optional CSS class to use, defaults to <code>categoryName</code>.
 -->
-<#macro CategoryName class="categoryName">
+<#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link")>
     <#if s.categoryValue?exists>
         <#assign paramName = s.categoryValue.queryStringParam?split("=")[0]>
         <span class="${class}">
-            <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label?html}</a>
+            <a href="${link}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label?html}</a>
         </span>
     </#if>
 </#macro>

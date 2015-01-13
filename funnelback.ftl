@@ -21,10 +21,10 @@
 
     @provides The URL of the previous page, as <code>${fb.prevUrl}</code>, the number of results on the previous page, as <code>${fb.prevRanks}</code>.
 -->
-<#macro Prev>
+<#macro Prev link=question.collection.configuration.value("ui.modern.search_link")>
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#if response.resultPacket.resultsSummary.prevStart?exists>
-            <#assign prevUrl = question.collection.configuration.value("ui.modern.search_link") + "?"
+            <#assign prevUrl = link + "?"
                 + changeParam(QueryString, "start_rank", response.resultPacket.resultsSummary.prevStart) in fb />
             <#assign prevRanks = response.resultPacket.resultsSummary.numRanks in fb />
             <#nested>
@@ -46,10 +46,10 @@
 
     @provides The URL of the next page, as <code>${fb.nextUrl}</code>, the number of results on the next page, as <code>${fb.nextRanks}</code>.
 -->
-<#macro Next>
+<#macro Next link=question.collection.configuration.value("ui.modern.search_link")>
     <#if response?exists && response.resultPacket?exists && response.resultPacket.resultsSummary?exists>
         <#if response.resultPacket.resultsSummary.nextStart?exists>
-            <#assign nextUrl = question.collection.configuration.value("ui.modern.search_link") + "?"
+            <#assign nextUrl = link + "?"
                 + changeParam(QueryString, "start_rank", response.resultPacket.resultsSummary.nextStart) in fb />
             <#assign nextRanks = response.resultPacket.resultsSummary.numRanks in fb />
             <#nested>
@@ -87,7 +87,7 @@
 
     @param numPages Number of pages links to display (default = 10)
 -->
-<#macro Page numPages=10>
+<#macro Page numPages=10 link=question.collection.configuration.value("ui.modern.search_link")>
     <#local rs = response.resultPacket.resultsSummary />
     <#local pages = 0 />
     <#if rs.fullyMatching??>
@@ -114,7 +114,7 @@
     <#list firstPage..firstPage+(numPages-1) as pg>
         <#if pg &gt; pages><#break /></#if>
         <#assign pageNumber = pg in fb />
-        <#assign pageUrl = question.collection.configuration.value("ui.modern.search_link") + "?" + changeParam(QueryString, "start_rank", (pg-1) * rs.numRanks+1) in fb />
+        <#assign pageUrl = link + "?" + changeParam(QueryString, "start_rank", (pg-1) * rs.numRanks+1) in fb />
 
         <#if pg == currentPage>
             <#assign pageCurrent = true in fb />
