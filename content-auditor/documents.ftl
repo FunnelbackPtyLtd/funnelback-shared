@@ -5,7 +5,6 @@
 <@s.AfterSearchOnly>
 <!--BEGINDOCUMENTS-->
 
-<!-- Collection: <@s.cfg>service_name</@s.cfg> | Attributes last updated: ${response.resultPacket.details.collectionUpdated?datetime} -->
 <div class="tab-header clearfix">
 	<p class="pull-left">        
 	<#if response.resultPacket.resultsSummary.totalMatching == 0>
@@ -66,19 +65,6 @@
             </#list>
         </tr>
     </thead>
-    <#-- Unnecessasary
-    <tfoot class="hidden">
-        <tr>
-            <th scope="col">Page</th>
-			<th scope="col"><span class="sr-only">Actions</span></th> 
-            <#list response.customData.displayMetadata?values as value>
-                Remove the sorting prefix on the heading 
-                <#assign heading = value?replace("^\\d*\\.","","r")>
-                <th scope="col">${heading?html}</th>
-            </#list>
-        </tr>
-    </tfoot>
-    -->
     <tbody>
         <!-- EACH RESULT -->
         <@s.Results>
@@ -101,27 +87,6 @@
 						<!-- SITE (Z) -->
 						<br><span class="text-muted" href="#add link here">${s.result.liveUrl?html?replace("http://www.canberra.edu.au","")}</span><#else> &nbsp;
 						</#if> 
-
-
-                        
-					
-					<!--<div style="clear:both; margin-left:45px" class="pull-left">
-					
-						<form action="${httpRequest.requestURL}/../../content-optimiser/optimise.html">
-							<input type="hidden" name="optimiser_url" value="${s.result.liveUrl?html?replace("http://","")}" />
-							<input type="hidden" name="collection" value="business-gov-internet" />
-							<input type="hidden" name="profile" value="_default" />
-							<input type="hidden" name="optimiser_ts" value="1401176844554" />
-							<label for="query"><strong>Content optimiser</strong></label>  
-							<div class="input-group">
-								<input type="text" name="query" value="" class="form-control" />
-								<span class="input-group-btn">
-									<button type="submit" class="btn btn-primary">Run</button>
-								</span>
-							</div>  
-						</form>
-						
-					</div>-->
 				   </td>
 				
 				
@@ -210,37 +175,7 @@
     </p> 
 </#if>
 
-<!-- RESULTS SUMMARY -->
-       
-<#-- Display nothing - no need to display 0 results twice.
-    <#if response.resultPacket.resultsSummary.totalMatching == 0>
-        
-          <strong class="fb-result-count" id="fb-total-matching">0</strong> search results for <strong><@s.QueryClean /></strong>
-        
-    </#if>
-    <#if response.resultPacket.resultsSummary.totalMatching != 0>
-        <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
-        <strong class="fb-result-count" id="fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
-        <strong class="fb-result-count" id="fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
-        search results for <strong><@s.QueryClean /></strong>
-    </#if>
 
-    <#if response.resultPacket.resultsSummary.partiallyMatching != 0>
-        where
-        <span class="fb-result-count" id="fb-fully-matching">
-            ${response.resultPacket.resultsSummary.fullyMatching?string.number}
-        </span>
-        match all words and
-        <span class="fb-result-count" id="fb-partially-matching">
-            ${response.resultPacket.resultsSummary.partiallyMatching?string.number}
-        </span>
-        match some words.
-    </#if>
-
-
-</p>
-
--->
 <!-- PAGINATION -->
 <#if response.resultPacket.resultsSummary.totalMatching != 0>
 
