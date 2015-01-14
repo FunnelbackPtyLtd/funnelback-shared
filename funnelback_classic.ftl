@@ -621,12 +621,14 @@
     Displays a link for a facet category value.
 
     @param class Optional CSS class to use, defaults to <code>categoryName</code>.
+    @param link Search link to use. Defaults to <code>ui.modern.search_link</code>.
+    @param extraParams Optional extra URL parameters to append to the link. Will be appended as is. Consider using <code>?url</code> when passing a value.
 -->
-<#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link")>
+<#macro CategoryName class="categoryName" link=question.collection.configuration.value("ui.modern.search_link") extraParams="">
     <#if s.categoryValue?exists>
         <#assign paramName = s.categoryValue.queryStringParam?split("=")[0]>
         <span class="${class}">
-            <a href="${link}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}">${s.categoryValue.label?html}</a>
+            <a href="${link}?${removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName])?html}&amp;${s.categoryValue.queryStringParam?html}${extraParams}">${s.categoryValue.label?html}</a>
         </span>
     </#if>
 </#macro>
