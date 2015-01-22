@@ -551,10 +551,12 @@
                 <#-- Don't display bread crumb for parts that are part
                      of the root URL -->
                 <#if ! def.data?lower_case?matches(".*[/\\\\]"+part?lower_case+"[/\\\\].*")>
+                    <#-- part needs to be url-decoded to be displayed nicely
+                         e.g. "with spaces" rather than "with%20spaces" -->
                     <#if part_has_next>
-                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${pathBuilding?url}">${part?html}</a>
+                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName?url}=${pathBuilding?url}">${urlDecode(part)?html}</a>
                     <#else>
-                        ${separator} ${part?html}
+                        ${separator} ${urlDecode(part)?html}
                     </#if>
                 </#if>
             </#list>
