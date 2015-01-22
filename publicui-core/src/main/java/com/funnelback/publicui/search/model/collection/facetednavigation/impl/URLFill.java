@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,9 +86,15 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
 
                 // Display only the folder name
                 String label = item.substring(item.lastIndexOf('/')+1);
+                
+                // FUN-7440:
+                // - The 'label' needs to be decoded as we want do present a nice name for
+                //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
+                // - The 'item' needs to be decoded as well. It get converted into a v:...
+                //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
                 categories.add(new CategoryValue(
-                        item,
-                        label,
+                        URLDecoder.decode(item, "UTF-8"),
+                        URLDecoder.decode(label, "UTF-8"),
                         count,
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(vValue, "UTF-8"),
@@ -152,8 +159,13 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     
     /** {@inheritDoc} */
     @Override
+    @SneakyThrows(UnsupportedEncodingException.class)
     public String getQueryConstraint(String value) {
-        return  MD + ":\"" + value + "\"";
+        // FUN-7440: The value (path constraint) needs to be URL decoded here
+        // because PADRE will actually strip out punctuation from the query
+        // e.g. v:"with%20spaces" will be processed as v:"with 20spaces", where what
+        // we want is "v:with spaces"
+        return  MD + ":\"" + URLDecoder.decode(value, "UTF-8") + "\"";
     }
 
     /** {@inheritDoc} */
