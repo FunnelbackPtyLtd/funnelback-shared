@@ -11,8 +11,8 @@
 <head>
 <meta charset="utf-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-<title>Content Optimiser | Funnelback</title>
-<meta name="description" content="Funnelback Content Optimiser">
+<title>SEO Auditor | Funnelback</title>
+<meta name="description" content="Funnelback SEO Auditor">
 <meta name="viewport" content="width=device-width">
 
 <link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
@@ -37,7 +37,7 @@
 
 			<a target="_blank" href="http://funnelback.com"><img
 				class="fb-logo" src="${ContextPath}/content-optimiser/img/fb-logo-lg.png"
-				alt="Funnelback - Content Optimiser" /></a>
+				alt="Funnelback - SEO Auditor" /></a>
 
 			<div class="row bump">
 

@@ -35,8 +35,8 @@
   <head>
       <meta charset="utf-8">
       <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-      <title>Content Optimiser | Funnelback</title>
-      <meta name="description" content="Funnelback Content Optimiser">
+      <title>SEO Auditor | Funnelback</title>
+      <meta name="description" content="Funnelback SEO Auditor">
       <meta name="viewport" content="width=device-width">
       <link rel="shortcut icon" href="${ContextPath}/content-optimiser/img/favicons/favicon.ico" />
       <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/bootstrap.min.css">
@@ -44,7 +44,6 @@
       <link rel="stylesheet" href="${ContextPath}/content-optimiser/css/content-optimiser.css">
 
       <script src="${ContextPath}/content-optimiser/js/modernizr-latest.js"></script>
-      <#--Needs to be replaced if we're in production mode and want to instantly see less css changes --> 
       <#--<script src="../common/vendor/less-1.7.0.min.js"></script>-->
       <script src="${ContextPath}/content-optimiser/js/jquery-1.11.0.min.js"></script> 
       <script src="${ContextPath}/content-optimiser/js/bootstrap.min.js"></script> 
@@ -92,7 +91,7 @@
       <nav role="navigation" class="navbar navbar-inverse navbar-static-top">
         <div class="container">
           <div class="navbar-header">
-            <a href="?collection=${collection}${profile}" title="Content Optimiser - Home"><span class="navbar-brand"><i>- &nbsp; Content Optimiser</i></span></a>
+            <a href="?collection=${collection}${profile}" title="SEO Auditor - Home"><span class="navbar-brand"><i>- &nbsp; SEO Auditor</i></span></a>
           </div>
           <div class="navbar-right pull-right">
           </div>
@@ -136,7 +135,7 @@
                     <div>
                       <div class="stack-btns pull-right">
                       </div>
-                      <form id="co-cs-form" method="get" action="content-optimiser.html" class="form-horizontal disguise" role="form">
+                      <form id="co-cs-form" method="get" action="seo-auditor.html" class="form-horizontal disguise" role="form">
                         <div class="form-group m0 pt15">
                           <div class="col-sm-1 m0">
                             <label for="form_query">Query</label>
@@ -456,7 +455,7 @@ $(function () {
             {title: 'PDF',format: 'pdf'}]
         }],
         menuItemOutput:{
-            fileName:"Funnelback Content Optimiser Top Ranking Breakdown for : stheurlinquestion.com "
+            fileName:"Funnelback SEO Auditor Top Ranking Breakdown for : stheurlinquestion.com "
         },
         menuItemStyle: {
             backgroundColor: 'transparent',
@@ -691,8 +690,8 @@ $(function () {
         //...But the actual results clickable
         } else {
 
-            var urlToVisit = "content-optimiser.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}${profile}&loaded=1";
-            var toolTip = "Run Content Optimiser for '${query}' on '" + v.unescaped_url + "'";
+            var urlToVisit = "seo-auditor.html?query=${query}&optimiser_url=" + v.url + "&collection=${collection}${profile}&loaded=1";
+            var toolTip = "Run SEO Auditor for '${query}' on '" + v.unescaped_url + "'";
 
             $("#ls-top-rank-url")
                 .append(

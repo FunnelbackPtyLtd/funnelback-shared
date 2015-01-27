@@ -1,16 +1,11 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,8 +21,6 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
-import com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView;
-import com.wordnik.swagger.annotations.ApiOperation;
 
 @Controller
 public class ContentOptimiserController {
@@ -46,7 +39,10 @@ public class ContentOptimiserController {
     @RequestMapping (value={
         "/content-optimiser/",
         "/content-optimiser.html/",
-        "content-optimiser"})
+        "content-optimiser",
+        "/seo-auditor/",
+        "/seo-auditor.html/",
+        "/seo-auditor"})
     public String redirects(HttpServletRequest request) {
 
         String paramString = continueParametersFrom (
@@ -57,10 +53,10 @@ public class ContentOptimiserController {
             RequestParameters.LOADED,
             RequestParameters.PROFILE);
         
-        return "redirect:/content-optimiser.html" + paramString;
+        return "redirect:/seo-auditor.html" + paramString;
     }
     
-    @RequestMapping("/content-optimiser.html")
+    @RequestMapping("/seo-auditor.html")
     public ModelAndView mainEntry(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -74,7 +70,7 @@ public class ContentOptimiserController {
 
         String profile = request.getParameter(RequestParameters.PROFILE);
         if(profile == null) {
-            throw new RuntimeException("Missing profile parameter in Content Optimiser");
+            throw new RuntimeException("Missing profile parameter in SEO Auditor");
         }
 
         //Check for each parameter, so we can route the user to the right page
