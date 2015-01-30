@@ -126,15 +126,15 @@ public class ContentAuditor extends AbstractInputProcessor {
         Config config = question.getCollection().getConfiguration();
         
         // Manipulate the request to suit content auditor
-        question.getRawInputParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
-        question.getRawInputParameters().put(RequestParameters.STEM, new String[] {"0"});
-        question.getRawInputParameters().put(RequestParameters.DAAT, new String[] {config.value(Keys.ModernUI.ContentAuditor.DAAT_LIMIT)});
-        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(ContentAuditor.METADATA_BUFFER_LENGTH_VALUE)});
+        question.getAdditionalParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
+        question.getAdditionalParameters().put(RequestParameters.STEM, new String[] {"0"});
+        question.getAdditionalParameters().put(RequestParameters.DAAT, new String[] {config.value(Keys.ModernUI.ContentAuditor.DAAT_LIMIT)});
+        question.getAdditionalParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(ContentAuditor.METADATA_BUFFER_LENGTH_VALUE)});
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
 
         if (question.getRawInputParameters().get(RequestParameters.NUM_RANKS) == null) {
             // Set a default from collection.cfg
-            question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
+            question.getAdditionalParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
         }
         
         if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) != null) {
@@ -144,21 +144,21 @@ public class ContentAuditor extends AbstractInputProcessor {
                     question.getInputParameterMap().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME)
                 )
             );
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
+            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
         
         if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
-            question.getRawInputParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
+            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
         }
-        question.getRawInputParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+        question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
 
         // Metadata for displaying in the results view
-        question.getRawInputParameters().put(RequestParameters.SUMMARY_MODE, new String[] {"meta"});
+        question.getAdditionalParameters().put(RequestParameters.SUMMARY_MODE, new String[] {"meta"});
         StringBuilder sfValue = new StringBuilder();
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
             sfValue.append("," + entry.getKey());
         }
-        question.getRawInputParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {"[" + sfValue.toString() + "]"});
+        question.getAdditionalParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {"[" + sfValue.toString() + "]"});
 
         if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery(ContentAuditor.NULL_QUERY);
@@ -300,12 +300,12 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.setQuestionType(SearchQuestionType.CONTENT_AUDITOR_DUPLICATES);
         Config config = question.getCollection().getConfiguration();
 
-        question.getRawInputParameters().put(RequestParameters.NUM_RANKS,
+        question.getAdditionalParameters().put(RequestParameters.NUM_RANKS,
             new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
 
         // Speedup settings
-        question.getRawInputParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {""});
-        question.getRawInputParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {"0"});
+        question.getAdditionalParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {""});
+        question.getAdditionalParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {"0"});
         question.getDynamicQueryProcessorOptions().add(
              "-" + QueryProcessorOptionKeys.VSIMPLE + "=" + "1" +
             " -" + QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION + "=" + "0" +
