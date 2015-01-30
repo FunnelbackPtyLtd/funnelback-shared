@@ -127,7 +127,7 @@
 			</div>     
        	<#else>
 		<p>Showing documents <strong>${anchors.detail.start?string.number}-${anchors.detail.end?string.number}</strong> of <b>${anchors.detail.size?string.number}</b> total documents linking to <a class="out" href="${anchors.url}">${anchors.url}</a> 
-		<#if RequestParameters.ajax??><br></#if> in the <strong>${anchors.collection}</strong> collection with the link text <strong>${anchors.detail.anchortext}</strong></p>	 
+		<#if RequestParameters.ajax??><br></#if> in the <strong id="collection">${anchors.collection}</strong> collection with the link text <strong>${anchors.detail.anchortext}</strong></p>	 
 	       		<!-- Document Number: ${anchors.docNum} -->
 	       		<!-- Distilled File: ${anchors.distilledFileName} --> 
  

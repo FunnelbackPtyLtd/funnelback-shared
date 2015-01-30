@@ -88,8 +88,7 @@
 				</ul>
 			</div>     
        	<#else>
-	    		<p>Showing links to document <a class="out" href="${anchors.url}">${anchors.url}</a> in 
-                collection <span>${anchors.collection}</span>:</p>
+	    		<p>Showing links to document <a class="out" href="${anchors.url}">${anchors.url}</a> in collection <strong id="collection">${anchors.collection}</strong>:</p>
 	  <!--  Document Number: {anchors.docNum} -->
 	  <!--  Distilled File: ${anchors.distilledFileName} -->
 	       	<table>
