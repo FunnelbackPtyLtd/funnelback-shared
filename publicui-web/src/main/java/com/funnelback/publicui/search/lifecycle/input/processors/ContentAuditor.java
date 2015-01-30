@@ -185,7 +185,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         String qpOptions = 
             " -" + QueryProcessorOptionKeys.RMCF + "=["+rmcfValue+"]"
             + " -" + QueryProcessorOptionKeys.COUNT_DATES + "=" + ContentAuditor.DATE_METADATA_FIELD
-            + " -" + QueryProcessorOptionKeys.COUNT_URLS + "=" + "1000"
+            + " -" + QueryProcessorOptionKeys.COUNT_URLS + "=" + Keys.ModernUI.ContentAuditor.COUNT_URLS
             + " -" + QueryProcessorOptionKeys.COUNTGBITS + "=" + "all";
 
         // Pull in any query based facets from the index's faceted_navigation.xml file
