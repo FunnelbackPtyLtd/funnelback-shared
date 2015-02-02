@@ -243,5 +243,18 @@ public class AccessRestrictionInterceptorTests {
 		Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
 		Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
 	}
+	
+	@Test
+    public void testXForwardedAllowedButUsedConnectingIP2() throws Exception {
+        request.addHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR, "150.203.238.14,150.203.239.15");
+        this.testCollectionConfig.setValue("access_restriction.prefer_x_forwarded_for", "true");
+        this.testCollectionConfig.setValue("access_restriction.ignored_ip_ranges", "150.203.239.0/24,150.203.238.0/24");
+        
+        testCollectionConfig.setValue(Keys.ACCESS_RESTRICTION, "150.203.238.0/24");
+        testCollectionConfig.setValue(Keys.ACCESS_ALTERNATE, null);
+        request.setRemoteAddr("127.0.0.1");
+        Assert.assertFalse("Intercepter should block", interceptor.preHandle(request, response, null));
+        Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+    }
 
 }

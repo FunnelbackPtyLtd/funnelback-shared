@@ -151,11 +151,13 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     
     public String getConnectingIp(HttpServletRequest request, Collection c) {
     	String ip = request.getRemoteAddr();
+    	log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
     	if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
-    		return NetUtils.getIpPreferingXForwardedFor(ip
+    		ip = NetUtils.getIpPreferingXForwardedFor(ip
     				, request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
     				, c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES));
     	}
+    	log.trace("Connecting IP is: " + ip);
     	return ip;
     }
 
