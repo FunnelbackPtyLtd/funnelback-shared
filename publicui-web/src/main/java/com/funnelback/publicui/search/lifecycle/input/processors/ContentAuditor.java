@@ -147,7 +147,7 @@ public class ContentAuditor extends AbstractInputProcessor {
             question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
         
-        if (!question.getRawInputParameters().containsKey(RequestParameters.COLLAPSING)) {
+        if (!question.getAdditionalParameters().containsKey(RequestParameters.COLLAPSING)) {
             question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
         }
         question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
@@ -296,6 +296,8 @@ public class ContentAuditor extends AbstractInputProcessor {
     private SearchQuestion createExtraQuestion(SearchQuestion originalQuestion) {
         SearchQuestion question = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, question);
+
+        question.getAdditionalParameters().putAll(originalQuestion.getAdditionalParameters());
 
         question.setQuestionType(SearchQuestionType.CONTENT_AUDITOR_DUPLICATES);
         Config config = question.getCollection().getConfiguration();
