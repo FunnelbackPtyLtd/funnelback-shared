@@ -10,7 +10,7 @@
 	<#if response.resultPacket.resultsSummary.totalMatching != 0>
 		Displaying <strong class="fb-result-count" id="fb-page-start">${response.resultPacket.resultsSummary.currStart}</strong> -
 		<strong class="fb-result-count fb-page-end">${response.resultPacket.resultsSummary.currEnd}</strong> of
-		<strong class="fb-result-count fb-total-matching">${(response.resultPacket.resultsSummary.totalMatching - response.resultPacket.resultsSummary.collapsed)?string.number}</strong>
+		<strong class="fb-result-count fb-total-matching">${response.resultPacket.resultsSummary.totalMatching?string.number}</strong>
 		search results
 	</#if>
 	</p>
