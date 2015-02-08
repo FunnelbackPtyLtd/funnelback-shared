@@ -136,21 +136,21 @@ public class ContentAuditor extends AbstractInputProcessor {
             // Set a default from collection.cfg
             question.getAdditionalParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
         }
-        
-        if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) != null) {
+
+        if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) == null) {
+            // Normal case - No duplicate group selected
+            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
+        } else {
+            // User scoped to a duplicate group, so we want to show only that
+            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
+            question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
             question.getRawInputParameters().put(RequestParameters.S, 
                 ArrayUtils.add(
                     question.getRawInputParameters().get(RequestParameters.S),
                     question.getInputParameterMap().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME)
                 )
             );
-            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
         }
-        
-        if (!question.getAdditionalParameters().containsKey(RequestParameters.COLLAPSING)) {
-            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-        }
-        question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
 
         // Metadata for displaying in the results view
         question.getAdditionalParameters().put(RequestParameters.SUMMARY_MODE, new String[] {"meta"});
@@ -301,6 +301,9 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         question.setQuestionType(SearchQuestionType.CONTENT_AUDITOR_DUPLICATES);
         Config config = question.getCollection().getConfiguration();
+
+        question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
+        question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
 
         question.getAdditionalParameters().put(RequestParameters.NUM_RANKS,
             new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
