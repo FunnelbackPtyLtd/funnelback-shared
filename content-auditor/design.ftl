@@ -83,7 +83,6 @@
               <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!?html}"></@s.IfDefCGI>
               <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!?html}"></@s.IfDefCGI>
             </div>
-            <input type="hidden" name="sort" value="${QueryString}<#if question.inputParameterMap["sort"]?? >${question.inputParameterMap["sort"]!?html}<#else>date</#if>">
             <button class="btn btn-primary pull-left" type="submit"><span class="fa fa-search"></span> Search</button>
             
           </form>
