@@ -61,9 +61,6 @@ public class ClickController extends SessionController {
 
     @Autowired
     private LogService logService;
-    
-    /** HTTP Referer header */
-    private static final String REFERER = "referer"; 
    
     @Autowired
     private AuthTokenManager authTokenManager;
@@ -115,7 +112,7 @@ public class ClickController extends SessionController {
                     		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
                     				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
 
-            URL referer = getReferrer(request);
+            URL referer = LogUtils.getReferrer(request);
             
             Set<String> boringParameters =  new HashSet<String>(Arrays.asList(BORING_INTERACTION_PARAMETERS));
             
@@ -197,7 +194,7 @@ public class ClickController extends SessionController {
                     		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
                     				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
             
-            URL referer = getReferrer(request);
+            URL referer = LogUtils.getReferrer(request);
             
             if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
                 && user != null) {
@@ -246,26 +243,6 @@ public class ClickController extends SessionController {
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-    }
-
-    /**
-     * Helper method to get the HTTP referrer out of a request
-     * 
-     * @param request 
-     * @return the URL for the HTTP referrer.
-     */
-    private URL getReferrer(HttpServletRequest request) {
-        URL referer = null;
-        if (request.getHeader(REFERER) != null) {
-            try {
-                referer = new URL(request.getHeader(REFERER));
-            } catch (MalformedURLException mue) {
-                log.warn(
-                        "Unable to parse referer '"
-                                + request.getHeader(REFERER) + "'", mue);
-            }
-        }
-        return referer;
     }
 
 }

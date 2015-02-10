@@ -14,11 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.log.CartClickLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
+import com.funnelback.publicui.search.service.log.LogService;
+import com.funnelback.publicui.search.service.log.LogUtils;
 
 /**
  * <p>Controller to process a result cart.</p>
@@ -36,6 +39,9 @@ public class ResultsCartProcessController extends SessionController {
 
     @Autowired
     private ResultsCartRepository cartRepository;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * <p>Processes the cart</p>
@@ -71,6 +77,12 @@ public class ResultsCartProcessController extends SessionController {
             
             CustomCartProcessor ctrl = (CustomCartProcessor) clazz.newInstance();
             List<CartResult> cart = cartRepository.getCart(user, c);
+            
+            for(CartResult result: cart) {
+            	logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request,
+            			c, CartClickLog.Type.PROCESS_CART, user));
+            }
+            
             ModelAndView mav = ctrl.process(c, user, cart, request, response);
             
             mav.addObject(RequestParameters.COLLECTION, c);

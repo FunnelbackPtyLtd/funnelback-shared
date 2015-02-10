@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.service.log;
 
+import com.funnelback.publicui.search.model.log.CartClickLog;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.ContextualNavigationLog;
 import com.funnelback.publicui.search.model.log.FacetedNavigationLog;
@@ -8,6 +9,9 @@ import com.funnelback.publicui.search.model.log.PublicUIWarningLog;
 
 /**
  * Logs clicks, queries, etc.
+ * 
+ * TODO: Refactor by abstracting log and implementing separate type of logs instead of 
+ * implementing method for each log type.
  */
 public interface LogService {
 
@@ -41,4 +45,9 @@ public interface LogService {
      */
     public void logInteraction(InteractionLog interactionLog);
     
+    /**
+     * Log a cart interaction (add links to cart, process cart etc.)
+     * @param cartLog {@link CartClickLog} to log
+     */
+    public void logCart(CartClickLog cartLog);
 }

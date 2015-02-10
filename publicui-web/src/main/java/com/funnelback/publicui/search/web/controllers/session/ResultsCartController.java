@@ -2,9 +2,11 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
@@ -17,7 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.log.CartClickLog;
+import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
@@ -25,6 +31,8 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.IndexRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
+import com.funnelback.publicui.search.service.log.LogService;
+import com.funnelback.publicui.search.service.log.LogUtils;
 
 /**
  * Controller for the results shopping cart.
@@ -42,6 +50,9 @@ public class ResultsCartController extends SessionApiControllerBase {
     
     @Autowired
     private ResultsCartRepository cartRepository;
+
+    @Autowired
+    private LogService logService;
 
     @Autowired
     @Setter private IndexRepository indexRepository;
@@ -75,6 +86,7 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param collection Collection the result belongs to
      * @param url URL of the result, identical to the index one
      * @param user User for which to update the cart
+     * @param response HTTP request
      * @param response HTTP response
      * @throws IOException 
      */
@@ -83,6 +95,7 @@ public class ResultsCartController extends SessionApiControllerBase {
             @RequestParam(required = true) String collection,
             @RequestParam(required = true) URI url,
             @ModelAttribute SearchUser user,
+            HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collection);
@@ -96,6 +109,8 @@ public class ResultsCartController extends SessionApiControllerBase {
                 cart.setAddedDate(new Date());
                 
                 cartRepository.addToCart(cart);
+                
+                logService.logCart(LogUtils.createCartLog(url, request, c, CartClickLog.Type.ADD_TO_CART, user));
             } else {
                 log.warn("Result with URL '"+url+"' not found in collection '"+c.getId()+"'");
             }
@@ -112,6 +127,7 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param url URL of the result to remove
      * @param user User for which to update the cart
      * @param response HTTP response
+     * @param response HTTP response
      * @throws IOException 
      */
     @RequestMapping(method=RequestMethod.DELETE, params = RequestParameters.Cart.URL)
@@ -119,11 +135,17 @@ public class ResultsCartController extends SessionApiControllerBase {
             @RequestParam(required = true) String collection,
             @RequestParam(required = true) URI url,
             @ModelAttribute SearchUser user,
+            HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         Collection c = configRepository.getCollection(collection);
         if (c != null && user != null) {
+
+            // Removing the result from cart
             cartRepository.removeFromCart(user, c, url);
+            
+            logService.logCart(LogUtils.createCartLog(url, request, c, CartClickLog.Type.REMOVE_FROM_CART, user));
+            
             cartList(collection, user, response);
         } else {
             sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
@@ -135,16 +157,22 @@ public class ResultsCartController extends SessionApiControllerBase {
      * @param collection Collection to clear the cart for
      * @param user User to clear the cart for
      * @param response HTTP response
+     * @param response HTTP response
      * @throws IOException 
      */
     @RequestMapping(method=RequestMethod.DELETE, params = "!"+RequestParameters.Cart.URL)
     public void cartClear(
             @RequestParam String collection,
             @ModelAttribute SearchUser user,
+            HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         
         Collection c = configRepository.getCollection(collection);
         if (c != null && user != null) {
+        	List<CartResult> cart = cartRepository.getCart(user, c);
+        	for(CartResult result: cart) {
+        		logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request, c, CartClickLog.Type.CLEAR_CART, user));
+        	}
             cartRepository.clearCart(user, c);
             cartList(collection, user, response);
         } else {
