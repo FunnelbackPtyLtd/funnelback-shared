@@ -89,7 +89,7 @@
 					</span>
 					</a>
 					
-					<a class="open-content-optimiser pass" target="_blank" href="content-optimiser.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="Optimise with Content Optimiser">
+					<a class="open-content-optimiser pass" target="_blank" href="seo-auditor.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="View in SEO Auditor">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
