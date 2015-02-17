@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
 import com.funnelback.contentoptimiser.SingleTermFrequencies;
 import com.funnelback.contentoptimiser.fetchers.BldInfoStatsFetcher;
@@ -412,7 +413,12 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             	String queryWordLower = queryWordRaw.toLowerCase();
 
                 SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWordLower,searchTransaction.getQuestion().getCollection());
-                Map<String,Integer> inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWordLower,anchors.getCollection());
+
+                Map<String,Integer> inDocFreqs = new HashMap<>();
+                if (!searchTransaction.getQuestion().getCollection().getType().equals(Type.push2)) {
+                    // No term weights for push2 until FUN-7486 is fixed
+                    inDocFreqs = inDocCountFetcher.getTermWeights(comparison,queryWordLower,anchors.getCollection());
+                }
                 
                 long totalDocuments = 0;
                 if(bldInfoStats != null) totalDocuments = bldInfoStats.getTotalDocuments();
