@@ -283,7 +283,7 @@ public class LocalLogService implements LogService {
         try {
             CSVWriter csvWriter = new CSVWriter(
             		new FileWriter(
-            			new File(il.getCollection().getConfiguration().getLogDir(null),
+            			new File(il.getCollection().getConfiguration().getLogDir(View.live),
             					getLogName(il.getCollection(),
             						Files.Log.INTERACTION_LOG_PREFIX,
             						Files.Log.INTERACTION_LOG_SEPARATOR,
