@@ -649,6 +649,27 @@
     ${authToken(content)}
 </#compress></#macro>
 
+<#---
+    Converts a size to its equivalent in gigabytes, megabytes, or kilobytes as appropriate.
+    kilobytes are rounded to no decimal places, giga and mega take one decimal place.
+    Conversion is done by 1024, not 1000.
+    returns a string
+-->
+<#function renderSize sz>
+    <#local giga = 1024 * 1024 * 1024>
+    <#local mega = 1024 * 1024>
+    <#local kilo = 1024>
+    <#if (sz > giga) >
+        <#return (sz / giga)?string[".#"] + "&nbspGB">
+    <#elseif (sz > mega)>
+        <#return (sz / mega)?string[".#"] + "&nbspMB">
+    <#elseif (sz > kilo)>
+        <#return (sz / kilo)?int + "&nbspKB">
+    <#else>
+        <#return sz + "&nbspB">
+    </#if>
+</#function>
+
 <#-- @begin Session features -->
 
 <#---

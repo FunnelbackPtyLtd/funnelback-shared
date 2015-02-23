@@ -20,7 +20,16 @@
 				<#assign duplicatesRowCounter = duplicatesRowCounter + 1 />
 				
 				<td class="text-center">
-					<a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2"> <div class="badge badge-danger"> x <strong>${result.collapsed.count + 1}</div></strong> </td>
+					<a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2">
+						<div class="badge badge-danger"> x <strong>${result.collapsed.count + 1}</strong>
+		                        </div>
+				</td>
+		                <td class="text-center">
+                            ${ fb.renderSize(result.fileSize) }
+                        </td>
+                        <td class="text-center">
+                        <i>${fb.renderSize((result.collapsed.count + 1) * result.fileSize)}</i>
+				</td>
 					<td>
 						<div class="pull-left">
 							<a href="?${QueryString}&amp;duplicate_signature=%3F:${result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${result.title?html}" class="clickable-link"><strong>${result.title?html} </strong></a>
