@@ -9,8 +9,10 @@
 	<table id="duplicates" class="table table-striped">
 		<thead>
 			<tr>
-				<th><!--Count--></th>
-				<th><!--Page--></th>
+				<th>Instances</th>
+				<th>Filesize</th>
+				<th>Total</th>
+				<th>Document</th>
 			</tr>
 		</thead>
 		<tbody>
