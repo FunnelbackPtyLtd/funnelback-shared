@@ -44,6 +44,7 @@
         <tr>
             <#assign url = main.contentAuditorLink + "?" + changeParam(QueryString, "sort",'dtitle') />
 			<th scope="col"><span>Page</span></th>
+			<th scope="col"><span>Filesize</span></th>
 			<th scope="col"><span class="sr-only">Actions</span></th> 
             <#list response.customData.displayMetadata?values as value>
                 <#assign heading = value?replace("^\\d*\\.","","r")>
@@ -76,6 +77,9 @@
 						</#if> 
 				   </td>
 				
+				<td>
+                    ${ fb.renderSize(s.result.fileSize) }
+                </td>
 				
 				<!-- ACTIONS -->
                
