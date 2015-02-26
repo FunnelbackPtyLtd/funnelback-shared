@@ -2,7 +2,8 @@
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 <@s.AfterSearchOnly>
-<#macro duplicateTable totalDuplicates  >
+<#macro duplicateTable totalDuplicateGroups  >
+
 
 <div class="facet-container col-md-8 boxed">
 
@@ -50,7 +51,7 @@
 	</div>
 	</#macro>
 	
-	<#assign totalDuplicates=filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
+	<#assign totalDuplicateGroups=filterList(extraSearches.duplicates.response.resultPacket.results, 'collapsed')?size />
 
 	<@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-3" />
 
@@ -60,10 +61,10 @@
 		</div>
 	<#else>
 		<div class="tab-header clearfix">
-			<p class="pull-left">  <strong>${totalDuplicates}</strong> URL(s) contain content duplicated elsewhere in this collection.</strong></p>
+			<p class="pull-left">  <strong>${totalDuplicateGroups}</strong> groups of duplicates found in the first ${extraSearches.duplicates.response.resultPacket.resultsSummary.numRanks} results are shown below.</strong></p>
 		</div>
 
-		<@duplicateTable totalDuplicates=totalDuplicates />
+		<@duplicateTable totalDuplicateGroups=totalDuplicateGroups />
 	</#if>
 	
 	</@s.AfterSearchOnly>
