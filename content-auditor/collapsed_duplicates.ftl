@@ -61,7 +61,7 @@
 		</div>
 	<#else>
 		<div class="tab-header clearfix">
-			<p class="pull-left">  <strong>${totalDuplicateGroups}</strong> group<#if (totalDuplicateGroups > 1)>s</#if> of duplicates found in the first ${extraSearches.duplicates.response.resultPacket.resultsSummary.numRanks} results are shown below.</strong></p>
+			<p class="pull-left">  <strong>${totalDuplicateGroups}</strong> group<#if (totalDuplicateGroups > 1)>s</#if> of duplicates found in the first ${extraSearches.duplicates.response.resultPacket.resultsSummary.numRanks} results <#if (totalDuplicateGroups = 1)>is<#else>are</#if> shown below.</strong></p>
 		</div>
 
 		<@duplicateTable totalDuplicateGroups=totalDuplicateGroups />
