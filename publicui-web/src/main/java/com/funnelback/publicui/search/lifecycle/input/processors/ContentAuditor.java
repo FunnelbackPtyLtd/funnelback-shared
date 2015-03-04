@@ -138,13 +138,15 @@ public class ContentAuditor extends AbstractInputProcessor {
             question.getAdditionalParameters().put(RequestParameters.NUM_RANKS, new String[] {config.value(Keys.ModernUI.ContentAuditor.NUM_RANKS)});
         }
 
-        if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) == null) {
-            // Normal case - No duplicate group selected
-            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
-        } else {
-            // User scoped to a duplicate group, so we want to show only that
-            question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"on"});
-            question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+        question.getAdditionalParameters().put(RequestParameters.COLLAPSING, new String[] {"off"});
+
+        if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) != null) {
+
+        	// User scoped to a duplicate group, so we want to show only that
+        	question.getAdditionalParameters().put(
+        			RequestParameters.COLLAPSING_SIGNATURE,
+        			new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+
             question.getRawInputParameters().put(RequestParameters.S, 
                 ArrayUtils.add(
                     question.getRawInputParameters().get(RequestParameters.S),
