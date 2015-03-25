@@ -10,13 +10,13 @@ import lombok.Setter;
  * results and clusters.</p>
  * 
  * <p>
- * For example you can follow a navigation path like:
+ * For example you can follow a navigation path like:</p>
  * <ul>
  *     <li>King</li>
  *  <li>King Richard</li>
  *  <li>King Richard the great</li>
  * </ul>
- * 
+ * <p>
  * For each step a {@link ClusterNav} item will be provided.
  * </p>
  * 
@@ -36,7 +36,7 @@ public class ClusterNav {
     @Getter @Setter private Integer level;
     
     /**
-     * URL to reach this navigation item.</p>
+     * <p>URL to reach this navigation item.</p>
      */
     @Getter @Setter private String url;
     

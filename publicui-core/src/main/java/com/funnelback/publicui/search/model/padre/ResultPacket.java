@@ -126,12 +126,11 @@ public class ResultPacket {
      * value is the count.</p>
      * 
      * <p>
-     *     Examples:
+     *     Examples:</p>
      *  <ul>
      *      <li>a:mozart =&gt; 12</li>
      *      <li>a:beethoven =&gt; 6</li>
      *  </ul>
-     * </p>
      */
     @Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();
     
@@ -144,7 +143,7 @@ public class ResultPacket {
      * 
      * <p>The key is the same one as the {@link ResultPacket#rmcs} map.</p>
      * 
-     * <p>Examples:
+     * <p>Examples:</p>
      *     <ul>
      *         <li>a:shakespeare =&gt;
      *             <ul>
@@ -161,7 +160,6 @@ public class ResultPacket {
      *             </ul>
      *         </li>
      *     </ul>
-     * </p>
      * 
      * @since 11.2
      */
@@ -174,11 +172,10 @@ public class ResultPacket {
      * value is a DoubleRange object with maximum and minimum values.</p>
      * 
      * <p>
-     *     Example:
+     *     Example:</p>
      *  <ul>
      *      <li>P =&gt; Range(100.0, 400.0)</li>
      *  </ul>
-     * </p>
      */
     @Getter private final Map<String, Range> metadataRanges = new HashMap<String, Range>();
     
@@ -313,7 +310,7 @@ public class ResultPacket {
     public boolean hasResults() { return results != null && results.size() > 0; }
     
     /**
-     * <p>Get the results <em>and</em the tier bars mixed together.</p>
+     * <p>Get the results <em>and</em> the tier bars mixed together.</p>
      * 
      * <p>This is a convenience method if you need to iterate over the result set
      * and display tier bars.</p>

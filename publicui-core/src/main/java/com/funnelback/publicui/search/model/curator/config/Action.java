@@ -51,7 +51,6 @@ public interface Action {
      * @param phase
      *            The phase being processed (Some actions may wish to behave
      *            differently depending on the current phase of processing).
-     * @param context Modern UI global application context
      */
     public void performAction(SearchTransaction searchTransaction, Phase phase);
 
@@ -59,7 +58,6 @@ public interface Action {
      * @param phase
      *            The phase being processed (Some actions may wish to behave
      *            differently depending on the current phase of processing).
-     * @param context Modern UI global application context
      * @return true if this action should be run in the given phase, otherwise
      *         return false.
      */

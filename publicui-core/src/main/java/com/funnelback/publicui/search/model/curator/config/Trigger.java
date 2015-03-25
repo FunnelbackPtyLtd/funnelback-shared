@@ -29,7 +29,6 @@ public interface Trigger {
 
     /**
      * @param searchTransaction Current search transaction
-     * @param context Modern UI global application context
      * @return true if this trigger should activate on the given
      * searchTransaction, and false otherwise.
      */

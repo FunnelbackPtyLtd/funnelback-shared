@@ -14,13 +14,13 @@ public class SearchHistoryPK implements Serializable {
 
     private static final long serialVersionUID = 3645177332051698516L;
 
-    /** @see {@link SearchHistory#userId} */
+    /** @see SearchHistory#userId */
     private String userId;
     
-    /** @see {@link SearchHistory#collection} */
+    /** @see SearchHistory#collection */
     private String collection;
 
-    /** @see {@link SearchHistory#searchParamsSignature} */
+    /** @see SearchHistory#searchParamsSignature */
     private int searchParamsSignature;
 
 }

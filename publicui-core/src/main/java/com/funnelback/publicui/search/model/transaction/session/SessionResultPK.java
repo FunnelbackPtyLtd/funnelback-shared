@@ -18,13 +18,13 @@ public class SessionResultPK implements Serializable {
 
     private static final long serialVersionUID = -694314277777986501L;
 
-    /** @see {@link SessionResult#userId} */
+    /** @see SessionResult#userId */
     private String userId;
 
-    /** @see {@link SessionResult#collection} */
+    /** @see SessionResult#collection */
     private String collection;
 
-    /** @see {@link SessionResult#indexUrl} */
+    /** @see SessionResult#indexUrl */
     private String indexUrl;
 
 }

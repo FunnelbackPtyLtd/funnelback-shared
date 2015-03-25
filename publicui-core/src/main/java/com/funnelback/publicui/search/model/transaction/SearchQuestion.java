@@ -157,7 +157,7 @@ public class SearchQuestion {
      * <p>List of selected facets categories.</p>
      * 
      * <p>Contains the actual values that were selected, indexed by facet.
-     * For example: "Location" => ("Sydney", "Melbourne").</p>
+     * For example: "Location" =&gt; ("Sydney", "Melbourne").</p>
      */
     @Getter final private Map<String, List<String>> selectedCategoryValues = new HashMap<String, List<String>>();
     
@@ -196,10 +196,10 @@ public class SearchQuestion {
      * value of the same parameter (e.g. <code>&amp;param=value1&amp;param=value2</code>).
      * Putting a single valued <code>String</code> in this Map will not work, it must be
      * an array of size one. Example in a Groovy hook script:
+     * </p>
      * <pre>
      * transaction.question.rawInputParameters["param"] = [ "value" ]
      * </pre>
-     * </p>
      * 
      * <p>{@link #inputParameterMap} provides a simpler way to inject or retrieve simple mono-valued
      * parameters. {@link #inputParameterMap} and {@link #rawInputParameters} are backed by the same Map: Any
@@ -520,7 +520,7 @@ public class SearchQuestion {
         }
 
         /**
-         * Common request parameters used in the {@link ResultsCartController}
+         * Common request parameters used in the ResultsCartController
          */
         public static class Cart {
 

@@ -166,7 +166,7 @@ public class Result implements ResultType {
      * can be used to display a different URL from the actual one, while
      * preserving the {@link #liveUrl} for the user to access the result.</p>
      * 
-     * <p>In the default form, this URL is displayed in the <code>&ltcite&gt;</code>
+     * <p>In the default form, this URL is displayed in the <code>&lt;cite&gt;</code>
      * block for the the result</p>
      **/
     @Getter @Setter private String displayUrl;

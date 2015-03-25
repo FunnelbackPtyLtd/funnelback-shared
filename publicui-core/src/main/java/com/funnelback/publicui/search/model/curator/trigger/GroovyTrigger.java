@@ -41,7 +41,7 @@ public class GroovyTrigger implements Trigger {
      * File specifying the Groovy class which implements the desired action.
      * 
      * This class is expected to implement the
-     * {@link com.funnelback.publicui.curator.action.GroovyActionInterface}
+     * {@link com.funnelback.publicui.search.model.curator.trigger.GroovyTriggerInterface}
      * interface.
      */
     @Getter

@@ -25,7 +25,6 @@ public class ActionSet {
      * Perform any actions within the set should be run in the given phase.
      * @param searchTransaction Current search transaction
      * @param phase current query lifecycle phase where the action is run
-     * @param context Modern UI global application context
      */
     public void performActions(SearchTransaction searchTransaction, Phase phase) {
         for (Action action : actions) {
@@ -37,7 +36,6 @@ public class ActionSet {
 
     /**
      * @param phase current query lifecycle phase where the action is run
-     * @param context Modern UI global application context
      * @return true if any of the actions in this set should be run within the specified phase.
      */
     public boolean hasActionForPhase(Phase phase) {

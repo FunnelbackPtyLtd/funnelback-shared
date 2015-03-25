@@ -16,7 +16,7 @@ public class DateCount {
 
     /**
      * <p>Date constraint to apply to select documents
-     * for this date count, e.g. <code>|d>1jan2003</code>.</p>
+     * for this date count, e.g. <code>|d&gt;1jan2003</code>.</p>
      */
     @Getter @Setter
     private String queryTerm;

@@ -62,7 +62,7 @@ public class SearchTransactionUtils {
     /**
      * Checks that a transaction has session data
      * @param st {@link SearchTransaction} to check
-     * @return true if the {@link SearchTransaction} is non null and has a {@link SearchSession}.
+     * @return true if the {@link SearchTransaction} is non null and has a {@link com.funnelback.publicui.search.model.transaction.session.SearchSession}.
      */
     public static boolean hasSession(SearchTransaction st) {
         return st != null && st.getSession() != null;
