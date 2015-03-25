@@ -95,14 +95,13 @@ public class SearchController extends SessionController {
     private MetricRegistry metrics;
 
     /**
-     * <p>Configures the binder to:
+     * <p>Configures the binder to:</p>
      * <ul>
      *     <li>Restrict which URL parameters can be mapped to Java objects</li>
      *     <li>Convert a collection ID into a proper collection object</li>
      * </ul>
-     * </p>
      * @param binder
-     * @see http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-webdatabinder
+     * @see "http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-webdatabinder"
      */
     @InitBinder
     public void initBinder(DataBinder binder) {

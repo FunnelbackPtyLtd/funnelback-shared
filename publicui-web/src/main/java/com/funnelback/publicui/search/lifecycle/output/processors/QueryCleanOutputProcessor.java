@@ -17,7 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * Cleans query by removing "technical" operators that we want
  * to hide to the user. Typically:
  * <ul>
- *     <li>Weighted query terns: term^1.234 => term</li>
+ *     <li>Weighted query terns: term^1.234 =&gt; term</li>
  *  <li>Faceted navigation query cooking</li>
  * </ul>
  *

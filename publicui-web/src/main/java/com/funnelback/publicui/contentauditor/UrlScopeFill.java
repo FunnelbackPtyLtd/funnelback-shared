@@ -229,7 +229,7 @@ public class UrlScopeFill extends CategoryDefinition {
             /**
              * Get the '.' separated suffixes of the hostname.
              * 
-             * e.g. www.funnelback.com -> com, funnelback.com, www.funnelback.com
+             * e.g. www.funnelback.com -&gt; com, funnelback.com, www.funnelback.com
              */
             public Set<String> getHostnameSuffixes() {
                 Set<String> result = new HashSet<>();
@@ -250,7 +250,7 @@ public class UrlScopeFill extends CategoryDefinition {
             /**
              * Get the '/' separated prefixes of the path.
              * 
-             * e.g. example.com/search/enterprise/whitepaper.html ->
+             * e.g. example.com/search/enterprise/whitepaper.html -&gt;
              *     search, search/enterprise, search/enterprise/whitepapter.html
              */
             public Set<String> getPathPrefixes() {

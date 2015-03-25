@@ -17,7 +17,7 @@ public interface LogService {
 
     /**
      * Log a click
-     * @param cl {@link Click} to log
+     * @param cl {@link ClickLog} to log
      */
     public void logClick(ClickLog cl);
     

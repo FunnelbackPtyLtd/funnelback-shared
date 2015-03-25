@@ -12,7 +12,6 @@ import java.util.Date;
 public interface IndexRepository {
     
     /**
-     * @param c
      * @return The last update date for the collection
      * @throws UnsupportedOperationException if the collection is a meta collection,
      * since they don't have a <code>index_time</code> file.
@@ -20,9 +19,7 @@ public interface IndexRepository {
     public Date getLastUpdated(String collectionId) throws UnsupportedOperationException;
     
     /**
-     * Retrieve a value from the <code>.bldinfo<code> file.
-     * @param key
-     * @return
+     * Retrieve a value from the <code>.bldinfo</code> file.
      * @throws UnsupportedOperationException if the collection is a meta collection,
      * since they don't have a <code>.bldinfo</code> file.
      */

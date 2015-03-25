@@ -14,7 +14,7 @@ import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 
 /**
- * Parses a range expression (used to build <select>)
+ * Parses a range expression (used to build &lt;select&gt;)
  */
 @Log4j
 public class ParseRangeMethod extends AbstractTemplateMethod {

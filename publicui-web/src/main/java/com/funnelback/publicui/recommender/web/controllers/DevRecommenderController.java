@@ -67,13 +67,12 @@ public class DevRecommenderController {
     private RecommenderDAO recommenderDAO;
     
     /**
-     * Return a HTML page displaying the recommendations for each result for the given query, collection & scope.
+     * Return a HTML page displaying the recommendations for each result for the given query, collection &amp; scope.
      * @param query              search term(s) (required)
      * @param collection         collection ID (required)
      * @param scope              comma separated list of scope(s) to apply to suggestions (may be null or empty)
      * @param maxRecommendations maximum number of recommendations to display for each item (less than 1 means unlimited)
      * @return HTML page with recommendations
-     * @throws Exception
      */
     @ResponseBody
     @RequestMapping(value = {"/" + SEARCH_RECOMMENDATIONS_HTML}, method = RequestMethod.GET)

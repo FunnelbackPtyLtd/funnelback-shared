@@ -110,7 +110,7 @@ public class Recommender {
     /**
      * Return a List of {@link com.funnelback.publicui.recommender.Recommendation}'s for the given item name.
      * Guarantees that the number of recommendations returned will never be greater than maxRecommendations
-     * (unless maxRecommendations is < 1, which means 'unlimited').
+     * (unless maxRecommendations is &lt; 1, which means 'unlimited').
      *
      * @param itemName           name (ID) of item
      * @param scope              comma separated list of item scopes

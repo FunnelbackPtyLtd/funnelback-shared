@@ -23,9 +23,9 @@ import java.io.File;
  * Sets the hostname in the question section if it 
  * is configured for display.
  * 
- * @see FUN-3306
- * @see FUN-5071
- * @see FUN-6100
+ * @see "FUN-3306"
+ * @see "FUN-5071"
+ * @see "FUN-6100"
  * @since v12.2
  */
 @Log4j

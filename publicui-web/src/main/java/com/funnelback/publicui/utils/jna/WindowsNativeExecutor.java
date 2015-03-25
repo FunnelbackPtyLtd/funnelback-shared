@@ -60,7 +60,7 @@ public class WindowsNativeExecutor {
     
     /**
      * Executes the command using native Windows API
-     * @param commandLine Command to execute
+     * @param commandLineList Command to execute (must be already split into components)
      * @param environment Environment to use, can be null
      * @param dir Current directory to use when executing the process
      * @return Result of the execution

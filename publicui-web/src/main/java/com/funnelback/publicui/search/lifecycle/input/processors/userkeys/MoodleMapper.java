@@ -149,8 +149,6 @@ public class MoodleMapper implements UserKeysMapper {
      * <p>
      * Method which closes the connection with the db.
      * </p>
-     * 
-     * @throws SQLException
      */
     public void closeConnection(Connection connection) {
         try {
@@ -164,8 +162,6 @@ public class MoodleMapper implements UserKeysMapper {
      * <p>
      * Method which closes a statement.
      * </p>
-     * 
-     * @throws SQLException
      */
     public void closeStatement(Statement stat) {
         try {

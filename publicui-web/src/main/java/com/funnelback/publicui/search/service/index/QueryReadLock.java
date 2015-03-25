@@ -19,7 +19,7 @@ public interface QueryReadLock {
 	 * to call lock() multiple times as long as release is called a equal number of times. To ensure this the release
 	 * must be called within a finally block.</p>
 	 * 
-	 * @param config Used to work out the collection and lock file to place the lock on.
+	 * @param collection The collection to place the lock on.
 	 * @throws FileLockException when the lock could not be acquired on the file.
 	 */
 	public void lock(Collection collection) throws FileLockException;
@@ -30,7 +30,7 @@ public interface QueryReadLock {
 	 * <p> This should only be called after a call to lock() on the given collection. This should never be called more 
 	 * than the number of previous lock() calls on a given collection.<p>
 	 *  
-	 * @param config Used to work out the collection and lock file.
+	 * @param collection The collection to release the lock from.
 	 */
 	public void release(Collection collection);
 

@@ -21,8 +21,6 @@ public class CuratorJsonConfigResource extends AbstractSingleFileResource<Curato
 
     /**
      * @param file JSON file to parse
-     * @param triggerResourceManager A resource manager for getting groovy trigger implementations 
-     * @param actionResourceManager A resource manager for getting groovy action implementations 
      */
     public CuratorJsonConfigResource(File file) {
         super(file);
