@@ -128,8 +128,8 @@ public class ResultPacket {
      * <p>
      *     Examples:
      *  <ul>
-     *      <li>a:mozart => 12</li>
-     *      <li>a:beethoven => 6</li>
+     *      <li>a:mozart =&gt; 12</li>
+     *      <li>a:beethoven =&gt; 6</li>
      *  </ul>
      * </p>
      */
@@ -146,7 +146,7 @@ public class ResultPacket {
      * 
      * <p>Examples:
      *     <ul>
-     *         <li>a:shakespeare =>
+     *         <li>a:shakespeare =&gt;
      *             <ul>
      *                 <li>Romeo and Juliet</li>
      *                 <li>Cleopatra</li>
@@ -154,7 +154,7 @@ public class ResultPacket {
      *             </ul>
      *         </li>
      * 
-     *         <li>a:voltaire =>
+     *         <li>a:voltaire =&gt;
      *             <ul>
      *                 <li>Zadig</li>
      *                 <li>...</li>
@@ -176,7 +176,7 @@ public class ResultPacket {
      * <p>
      *     Example:
      *  <ul>
-     *      <li>P => Range(100.0, 400.0)</li>
+     *      <li>P =&gt; Range(100.0, 400.0)</li>
      *  </ul>
      * </p>
      */
@@ -198,14 +198,12 @@ public class ResultPacket {
      * <p>The key is the URL itself and the value is the count.
      * If the URL starts with <code>http://</code>, it's omitted.</p>
      * 
-     * <p>
-     * Examples:
+     * <p>Examples:</p>
      *     <ul>
-     *         <li>www.example.com/about => 12</li>
-     *         <li>www.example.com/contact => 6 </li>
-     *      <li>https://secure.example.com/login => 5</li>
+     *         <li>www.example.com/about =&gt; 12</li>
+     *         <li>www.example.com/contact =&gt; 6 </li>
+     *      <li>https://secure.example.com/login =&gt; 5</li>
      *  </ul>
-     * </p>
      */
     @Getter private final Map<String, Integer> urlCounts = new HashMap<String, Integer>();
 

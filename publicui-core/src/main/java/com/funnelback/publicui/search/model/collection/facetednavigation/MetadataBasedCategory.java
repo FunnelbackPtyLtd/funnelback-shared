@@ -22,7 +22,7 @@ public interface MetadataBasedCategory {
     /**
      * The specific query constraint to apply for the passed value.
      * @param value Value for this category
-     * @return The corresponding query constraint (ex: "x:$++ <value> $++", or "v:<value>")
+     * @return The corresponding query constraint (ex: "x:$++ &lt;value&gt; $++", or "v:&lt;value&gt;")
      */
     public String getQueryConstraint(String value);
     

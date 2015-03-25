@@ -78,12 +78,11 @@ public abstract class CategoryDefinition {
      * <p>Used to generate categories values on the UI
      * from the faceted navigation configuration.</p>
      * 
-     * <p>The size of the list will depend of the type of the category:
+     * <p>The size of the list will depend of the type of the category:</p>
      *     <ul>
      *         <li>For "fill" types it will be a multivalued list (metadata field fill, etc.)</li>
      *         <li>For "item" types it will contain a single value (Gscope item, etc.)</li>
      *    </ul>
-     * </p>
      * 
      * @param st SearchTransaction to use to compute the values.
      * @return The computed values.
@@ -102,12 +101,12 @@ public abstract class CategoryDefinition {
      * <p>Given the value of a query string parameter, and any extra parameters,
      * whether this category types is relevant for this parameter.</p>
      * 
-     * <p>For example: <tt>f.By Date|dc.date=2010-01-01</tt>:
+     * <p>For example: <tt>f.By Date|dc.date=2010-01-01</tt>:</p>
      * <ul>
      *     <li>value = 2010-01-01</li>
      *     <li>extra = dc.date</li>
      * </ul>
-     * A category of type "metadata fill" for the "dc.date" metadata should return
+     * <p>A category of type "metadata fill" for the "dc.date" metadata should return
      * true.
      * </p>
      * 
