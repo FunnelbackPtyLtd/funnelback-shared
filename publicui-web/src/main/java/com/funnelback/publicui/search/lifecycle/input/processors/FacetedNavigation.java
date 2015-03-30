@@ -23,6 +23,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
@@ -58,32 +59,18 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 Set<Set<String>> gscope1Constraints = new HashSet<Set<String>>();
                 Set<Set<String>> queryConstraints = new HashSet<Set<String>>();
                 
-                // Read facet names from the 'raw' parameters since they can
-                // be multi-valued (Multiple categories selected for a single facet)
-                MapKeyFilter filter = new MapKeyFilter(searchTransaction.getQuestion().getRawInputParameters());
-                String[] selectedFacetsParams = filter.filter(RequestParameters.FACET_PARAM_PATTERN);
-                
-                if (selectedFacetsParams.length > 0) {
-                    for (final String selectedFacetParam: selectedFacetsParams) {
-                        log.debug("Found facet parameter '" + selectedFacetParam + "'");
-                        Matcher m = RequestParameters.FACET_PARAM_PATTERN.matcher(selectedFacetParam);
-                        m.find();
-                        
-                        final String facetName = m.group(1);
-                        final String extraParam = m.group(3);
-                        log.debug("Found facet name '" + facetName + "' and extra parameter '" + extraParam + "'");
-                        
+                List<FacetParameter> facetParamaters = FacetedNavigationUtils.getFacetParameters(searchTransaction.getQuestion());
+                if (facetParamaters.size() > 0) {
+                    for (final FacetParameter facetParameter : facetParamaters) {
                         // Find corresponding facet in config
                         FacetDefinition f = (FacetDefinition) CollectionUtils.find(config.getFacetDefinitions(), new Predicate() {
                             @Override
                             public boolean evaluate(Object o) {
-                                return ((FacetDefinition) o).getName().equals(facetName);
+                                return ((FacetDefinition) o).getName().equals(facetParameter.getName());
                             }
                         });
-                        
-                        final String values[] = searchTransaction.getQuestion().getRawInputParameters().get(selectedFacetParam);
                     
-                        if (f != null && values != null) {
+                        if (f != null && facetParameter.getValues() != null) {
                             searchTransaction.getQuestion().getSelectedFacets().add(f.getName());
                             
                             // Set of constraints for this specific facet
@@ -91,14 +78,14 @@ public class FacetedNavigation extends AbstractInputProcessor {
                             Set<String> queryFacetConstraints = new HashSet<String>();
                         
                             // Find corresponding category type, for each value
-                            for(final String value: values) {
+                            for(final String value: facetParameter.getValues()) {
                                 if ("".equals(value)) {
                                     // Skip empty strings
                                     continue;
                                 }
                                 
                                 // Find category or subcategory
-                                CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, extraParam);
+                                CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, facetParameter.getExtraParameter());
                                 
                                 if (ct != null) {
                                     List<String> selectedCategoriesValues = searchTransaction.getQuestion().getSelectedCategoryValues().get(ct.getQueryStringParamName());
