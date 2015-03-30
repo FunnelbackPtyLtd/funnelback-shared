@@ -1,7 +1,7 @@
 package com.funnelback.publicui.utils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import lombok.extern.log4j.Log4j;
@@ -62,8 +62,8 @@ public class FacetedNavigationUtils {
      * Returns a set of facet parameters (i.e. CGI parameters for facet selection)
      * which exist within the SearchQuestion.
      */
-    public static Set<FacetParameter> getFacetParameters(SearchQuestion searchQuestion) {
-        Set<FacetParameter> result = new HashSet<>();
+    public static List<FacetParameter> getFacetParameters(SearchQuestion searchQuestion) {
+        List<FacetParameter> result = new ArrayList<>();
         
         // Read facet names from the 'raw' parameters since they can
         // be multi-valued (Multiple categories selected for a single facet)
