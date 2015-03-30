@@ -132,7 +132,7 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
 				for(SdinfoEntry entry : SdinfoFile.readSdinfoFile(new File(indexStem.getParentFile().getAbsolutePath() + File.separatorChar + Files.Index.SDINFO))) {
 					try {
 						File generationStem = new File (entry.getIndexPath());
-						DocInfoResult result = new PadreConnector(generationStem).docInfo(new URI(indexUrl)).fetch();
+						DocInfoResult result = new PadreConnector(searchHome, generationStem).docInfo(new URI(indexUrl)).fetch();
 						//Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
 						if (result.asList().size() > 0) {
 							indexStem = generationStem;

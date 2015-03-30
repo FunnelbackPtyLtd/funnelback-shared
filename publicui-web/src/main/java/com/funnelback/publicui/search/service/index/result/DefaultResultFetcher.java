@@ -7,6 +7,7 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.dataapi.connector.padre.PadreConnector;
@@ -21,6 +22,9 @@ import com.funnelback.publicui.search.model.padre.Result;
 @Log4j
 public class DefaultResultFetcher implements ResultFetcher {
 
+    @Autowired
+    private File searchHome;
+    
     /**
      * Will fetch all existing metadata for a given result
      */
@@ -29,7 +33,7 @@ public class DefaultResultFetcher implements ResultFetcher {
         
         Set<String> metadata = DocInfoAccess.getMetadataForStem(indexStem);
         
-        List<DocInfo> dis = new PadreConnector(indexStem)
+        List<DocInfo> dis = new PadreConnector(searchHome, indexStem)
             .docInfo(resultUri)
             .withMetadata(metadata.toArray(new String[0]))
             .fetch().asList();

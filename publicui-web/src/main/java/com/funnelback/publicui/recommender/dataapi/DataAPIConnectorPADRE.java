@@ -7,7 +7,9 @@ import com.funnelback.dataapi.connector.padre.docinfo.DocInfoAccess;
 import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -26,6 +28,9 @@ import java.util.Map;
 public class DataAPIConnectorPADRE implements DataAPI {
     private static final Logger logger = Logger.getLogger(DataAPIConnectorPADRE.class);
 
+    @Autowired
+    private File searchHome;
+    
     /**
      * Return a list of URL recommendations which have been "decorated" with information from the Data API/libi4u.
      * @param urls             list of URL strings to decorate
@@ -79,7 +84,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     public DocInfoResult getDocInfoResult(List<String> urls, Config collectionConfig) {
         File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
-        return new DocInfoAccess().getDocInfoResult(urls, indexStem);
+        return new DocInfoAccess().getDocInfoResult(urls, searchHome, indexStem);
     }
 
     /**
@@ -91,7 +96,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
     public DocInfo getDocInfo(String url, Config collectionConfig) {
         File indexStem = new File(collectionConfig.getCollectionRoot() + File.separator + View.live
                 + File.separator + "idx" + File.separator + "index");
-        return new DocInfoAccess().getDocInfo(url, indexStem);
+        return new DocInfoAccess().getDocInfo(url, searchHome, indexStem);
     }
 
     /**

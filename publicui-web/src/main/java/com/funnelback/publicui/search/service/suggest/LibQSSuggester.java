@@ -7,6 +7,8 @@ import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.Suggester;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -21,6 +23,10 @@ import java.util.List;
 @Component
 public class LibQSSuggester implements Suggester {
     
+    @Autowired
+    private File searchHome;
+    
+    
     @Override
     public List<Suggestion> suggest(Collection c, String profileId, String partialQuery,
         int numSuggestions, Sort sort, double alpha, String category) {
@@ -30,7 +36,7 @@ public class LibQSSuggester implements Suggester {
             + File.separator + DefaultValues.FOLDER_IDX,
             DefaultValues.INDEXFILES_PREFIX);                
 
-        return new PadreConnector(indexStem)
+        return new PadreConnector(searchHome, indexStem)
             .suggest(partialQuery)
             .suggestionCount(numSuggestions)
             .alpha(alpha)
