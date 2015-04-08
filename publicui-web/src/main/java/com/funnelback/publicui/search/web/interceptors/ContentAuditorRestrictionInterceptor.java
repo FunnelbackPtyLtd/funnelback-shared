@@ -41,19 +41,20 @@ public class ContentAuditorRestrictionInterceptor implements
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) throws Exception {
         // We only allow access on the admin port
-        String adminPort = configRepository.getGlobalConfiguration().value(Keys.Urls.ADMIN_PORT);
+        String adminUrlPort = configRepository.getGlobalConfiguration().value(Keys.Urls.ADMIN_PORT);
+        String adminJettyPort = configRepository.getGlobalConfiguration().value(Keys.Jetty.ADMIN_PORT);
         
         // Also permit an additional development port (handy if you're running it in eclipse or from maven etc)
         String additionalAdminPort = configRepository.getGlobalConfiguration().value(Keys.ModernUI.ContentAuditor.ADDITIONAL_PORT);
         
         String actualPort = Integer.toString(request.getLocalPort());
-        if (actualPort.equals(adminPort) || actualPort.equals(additionalAdminPort)) {
+        if (actualPort.equals(adminJettyPort) || actualPort.equals(additionalAdminPort)) {
             return true;
         } else {
             // Redirect them to the right place - The admin version (so they get a login)
             URI originalUri = new URI(request.getRequestURL().toString());
             URI redirectUri = new URI("https", originalUri.getUserInfo(), originalUri.getHost(),
-                Integer.parseInt(adminPort), originalUri.getPath(), request.getQueryString(), null);
+                Integer.parseInt(adminUrlPort), originalUri.getPath(), request.getQueryString(), null);
                         
             response.sendRedirect(redirectUri.toString());
             return false;
