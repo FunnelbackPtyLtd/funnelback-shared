@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.web.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -196,7 +198,11 @@ public class ContentOptimiserController {
     private static String continueParameterFrom(HttpServletRequest request, String paramName) {
         String paramValue = request.getParameter(paramName);
 
-        paramValue = paramValue == null ? null : paramValue.trim();
+        try {
+        	paramValue = paramValue == null ? null : URLEncoder.encode(paramValue.trim(), "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+        	paramValue = null;
+        }
 
         return nullOrEmpty(paramValue)
             ? ""
