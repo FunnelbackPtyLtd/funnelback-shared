@@ -48,7 +48,7 @@ public class UserSegmentTrigger extends com.funnelback.publicui.search.model.cur
         }
         
         if (segmentInfo.containsKey(getSegmentType())) {
-            if (segmentInfo.get(getSegmentType()).contains(getSegmentValue())) {
+            if (getMatchType().matches(getSegmentValue(), segmentInfo.get(getSegmentType()))) {
                 return true;
             }
         }

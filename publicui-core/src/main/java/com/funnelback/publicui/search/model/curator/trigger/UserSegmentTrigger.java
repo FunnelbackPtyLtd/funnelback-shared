@@ -38,6 +38,16 @@ public class UserSegmentTrigger implements Trigger {
     private String segmentValue;
 
     /**
+     * The type of matching to be performed between the user's detected segment
+     * (haystack) and the given segmentValue (needle).
+     * 
+     * Default setting is case sensitive substring matching.
+     */
+    @Getter
+    @Setter
+    private StringMatchType matchType = StringMatchType.SUBSTRING;
+
+    /**
      * Check whether the given searchTransaction originates from a country
      * listed in targetCountries. If it does, return true, otherwise false.
      */
