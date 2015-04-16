@@ -1,5 +1,8 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.junit.Assert;
@@ -56,10 +59,25 @@ public class FacetedNavigationCombinedTests {
         
         Assert.assertNotNull(st.getQuestion().getFacetsGScopeConstraints());
         // FIXME: FUN-4480 This should be 1,10|41+
-        Assert.assertEquals("1,10,41++", st.getQuestion().getFacetsGScopeConstraints());
+        
+        Assert.assertTrue("We expect all three gscopes to be logical AND (note this is reverse polish)", 
+            st.getQuestion().getFacetsGScopeConstraints().endsWith("++"));
+        
+        //We will check we set the correct constrains, by chopping of the end bit (++) and spliting by comma
+        List<String> gscopesConstrains = Arrays.asList(
+            st.getQuestion().getFacetsGScopeConstraints().substring(0, 
+                                    st.getQuestion().getFacetsGScopeConstraints().length() - "++".length()
+                                    ).split(","));
+        Assert.assertTrue(gscopesConstrains.contains("1"));
+        Assert.assertTrue(gscopesConstrains.contains("10"));
+        Assert.assertTrue(gscopesConstrains.contains("41"));
         Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
-        Assert.assertEquals("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]", st.getQuestion().getFacetsQueryConstraints().get(0));
-        Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(1));
+        
+        Assert.assertTrue(
+            "we should see: '|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]' in facet query constraints",
+            st.getQuestion().getFacetsQueryConstraints().contains("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]"));
+        Assert.assertTrue("we should see: '|v:\"Shakespeare/cleopatra\"' in facet query constraints", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|v:\"Shakespeare/cleopatra\""));
         
     }
     
