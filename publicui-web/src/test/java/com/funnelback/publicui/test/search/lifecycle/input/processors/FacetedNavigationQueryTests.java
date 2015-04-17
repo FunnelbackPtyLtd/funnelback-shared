@@ -71,8 +71,9 @@ public class FacetedNavigationQueryTests {
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-        // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertEquals("3,1+", st.getQuestion().getFacetsGScopeConstraints());
+        // FIXME: FUN-4480 This should be 3,1| here because both values are part of the same facet
+        Assert.assertTrue("3,1+".equals(st.getQuestion().getFacetsGScopeConstraints())
+        		|| "1,3+".equals(st.getQuestion().getFacetsGScopeConstraints()));
         
     }
 

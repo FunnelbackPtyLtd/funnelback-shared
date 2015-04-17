@@ -72,7 +72,7 @@ public class FacetedNavigationGScopesTests {
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertEquals("10,1+", st.getQuestion().getFacetsGScopeConstraints());        
+        Assert.assertTrue("10,1+".equals(st.getQuestion().getFacetsGScopeConstraints()) || "1,10+".equals(st.getQuestion().getFacetsGScopeConstraints()));        
     }
     
     @Test
