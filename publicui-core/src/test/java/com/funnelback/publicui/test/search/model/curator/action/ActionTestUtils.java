@@ -14,10 +14,10 @@ public class ActionTestUtils {
         SearchResponse response = new SearchResponse();
         response.setCurator(new Curator());
         SearchTransaction searchTransaction = new SearchTransaction(new SearchQuestion(), response);
-        return runAllPhases(action, searchTransaction, null);
+        return runAllPhases(action, searchTransaction);
     }
     
-    public static SearchTransaction runAllPhases(Action action, SearchTransaction searchTransaction, ApplicationContext context) {
+    public static SearchTransaction runAllPhases(Action action, SearchTransaction searchTransaction) {
         for (Action.Phase phase : Action.Phase.values()) {
             if (action.runsInPhase(phase)) {
                 action.performAction(searchTransaction, phase);

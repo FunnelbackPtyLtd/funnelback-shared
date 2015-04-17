@@ -45,7 +45,7 @@ public class DisplayUrlAdvertTests {
         DisplayUrlAdvert dua2 = new DisplayUrlAdvert(advert2, true);
 
         SearchTransaction st = ActionTestUtils.runAllPhases(dua1);
-        ActionTestUtils.runAllPhases(dua2, st, null);
+        ActionTestUtils.runAllPhases(dua2, st);
         
         Assert.assertTrue("Expected url advert1 to be added to the response", st.getResponse().getCurator().getExhibits().contains(advert1));
         Assert.assertTrue("Expected url advert2 to be added to the response", st.getResponse().getCurator().getExhibits().contains(advert2));
