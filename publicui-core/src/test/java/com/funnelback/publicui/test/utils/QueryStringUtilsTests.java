@@ -1,9 +1,9 @@
 package com.funnelback.publicui.test.utils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class QueryStringUtilsTests {
 
     @Test
     public void testToString() {
-        HashMap<String, List<String>> qs = new HashMap<String, List<String>>();
+        TreeMap<String, List<String>> qs = new TreeMap<String, List<String>>();
         
         qs.put("param1", Arrays.asList(new String[] {"single-value"}));
         qs.put("param2", Arrays.asList(new String[] {"first value", "second value"}));
