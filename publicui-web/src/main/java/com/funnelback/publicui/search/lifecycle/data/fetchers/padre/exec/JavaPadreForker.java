@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 /**
  * Forks PADRE using Java API (Apache Commons Exec)
  */
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class JavaPadreForker implements PadreForker {
 

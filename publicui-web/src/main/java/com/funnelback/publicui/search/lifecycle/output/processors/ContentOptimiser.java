@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * Process explain output from PADRE and generates relevant data model for the
  * content optimiser
  */
-@Log4j
+@Log4j2
 @Component("contentOptimiserOutputProcessor")
 public class ContentOptimiser extends AbstractOutputProcessor {
 

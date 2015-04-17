@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 /**
  * Authenticates search users via SiteCore-provided XML.
  */
-@Log4j
+@Log4j2
 public class SitecoreMapper implements UserKeysMapper {
 
     private static final String xmlTagOfInterest = "roles";

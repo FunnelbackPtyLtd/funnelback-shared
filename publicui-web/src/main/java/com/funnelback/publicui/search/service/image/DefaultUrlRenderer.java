@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 /**
  * Renders URL using PhantomJS
  */
-@Log4j
+@Log4j2
 @Component
 public class DefaultUrlRenderer implements UrlRenderer {
 

@@ -11,13 +11,16 @@ import com.funnelback.common.utils.DocHdrUtils;
 import com.funnelback.common.cache.DummyObjectCache;
 import com.funnelback.common.log.Log4JPrintWriter;
 import com.funnelback.common.io.WriterFile;
-import lombok.extern.log4j.Log4j;
+
+import lombok.extern.log4j.Log4j2;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 
-@Log4j
+@Log4j2
 public class WebWarcStoreCacheTest extends
         AbstractRawBytesCacheControllerTest {
 
@@ -30,7 +33,7 @@ public class WebWarcStoreCacheTest extends
     
     @Override
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
-        Log4JPrintWriter pw = new Log4JPrintWriter(log);
+    	PrintWriter pw = new PrintWriter(System.out);
         WriterFile wf = new WriterFile(pw, null);
 
         // Because the WARCStore deals with views itself, we need to fake

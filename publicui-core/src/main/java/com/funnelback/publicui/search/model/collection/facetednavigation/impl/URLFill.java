@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * 
  * @since 11.0
  */
-@Log4j
+@Log4j2
 public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
 
     /** Identifier used in query string parameter. */

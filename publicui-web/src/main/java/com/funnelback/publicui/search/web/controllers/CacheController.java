@@ -20,7 +20,7 @@ import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
 import groovy.lang.Script;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ import java.util.Map;
  * Deal with cached copies
  */
 @Controller
-@Log4j
+@Log4j2
 public class CacheController {
 
     /** Default FTL file to use when cached copies are not available */

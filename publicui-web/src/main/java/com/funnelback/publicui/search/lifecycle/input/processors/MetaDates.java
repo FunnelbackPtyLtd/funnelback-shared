@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * X = d, d[1-4], w[1-2] ...
  */
 @Component("metaDatesInputProcessor")
-@Log4j
+@Log4j2
 public class MetaDates extends AbstractInputProcessor {
 
     private static final String PREFIX = "meta_";

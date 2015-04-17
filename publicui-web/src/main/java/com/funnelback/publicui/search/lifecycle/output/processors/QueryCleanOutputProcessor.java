@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  *
  */
 @Component("queryCleanOutputProcessor")
-@Log4j
+@Log4j2
 public class QueryCleanOutputProcessor extends AbstractOutputProcessor {
 
     private static final Pattern WEIGHTED_OPERATORS_PATTERN = Pattern.compile("\\^\\d+\\.\\d+");

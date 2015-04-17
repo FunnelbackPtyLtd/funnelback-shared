@@ -8,7 +8,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ import com.funnelback.publicui.xml.padre.PadreXmlParser;
  * Will choose either to fork using a Java API or Native Windows API
  * depending of the "impersonation" status of the transaction.
  */
-@Log4j
+@Log4j2
 public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
     public enum EnvironmentKeys {

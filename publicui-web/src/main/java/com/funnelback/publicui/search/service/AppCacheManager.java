@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.annotation.PreDestroy;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.Configuration;
@@ -22,7 +22,7 @@ import com.funnelback.publicui.utils.web.ExecutionContextHolder;
  * Bean used to construct and shutdown the EhCache instance
  */
 @Component
-@Log4j
+@Log4j2
 public class AppCacheManager {
     
     @Autowired

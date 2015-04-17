@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import lombok.Cleanup;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.service.ConfigRepository;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultImageFetcher implements ImageFetcher {
     

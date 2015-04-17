@@ -12,8 +12,10 @@ import com.funnelback.publicui.recommender.utils.SearchUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
+
 import lombok.Setter;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -39,8 +42,8 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/recommender")
+@Log4j2
 public class DevRecommenderController {
-    private static final Logger logger = Logger.getLogger(DevRecommenderController.class);
 
     public static final String SEARCH_RECOMMENDATIONS_HTML = "searchRecommendations.html";
     public static final String QUERY_ENTRY_HTML = "queryEntry.html";
@@ -100,7 +103,7 @@ public class DevRecommenderController {
             try {
                 results = searchUtils.getResults(query, searchServiceAddress, scope, DEFAULT_MAX_RECOMMENDATIONS);
             } catch (IOException exception) {
-                logger.error(exception);
+                log.error(exception);
             }
             long timeTaken = (System.currentTimeMillis() - startTime);
 
@@ -143,7 +146,7 @@ public class DevRecommenderController {
                                 scope, maxRecommendations));	
                     }
                     catch (IllegalStateException exception) {
-                    	logger.warn(exception);
+                    	log.warn(exception);
                     }
  
                     buf.append("</ul>\n");
@@ -245,7 +248,7 @@ public class DevRecommenderController {
                 }              
             }
             catch (IllegalStateException exception) {
-            	logger.warn(exception);
+            	log.warn(exception);
                 stringBuffer.append("<p>Unable to get a valid collection.</p>");
             }           
         }

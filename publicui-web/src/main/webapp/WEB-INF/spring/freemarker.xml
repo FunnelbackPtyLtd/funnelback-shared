@@ -24,7 +24,7 @@
 			<map>
 				<!-- Provide a logger within form files -->
 				<entry key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).Log.toString()}">
-					<bean class="org.apache.log4j.Logger" factory-method="getLogger">
+					<bean class="org.apache.logging.log4j.LogManager" factory-method="getLogger">
 						<constructor-arg type="java.lang.String" value="com.funnelback.form" />
 					</bean>
 				</entry>

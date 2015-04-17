@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Handles per-collection static resources
  */
 @Controller
-@Log4j
+@Log4j2
 public class ResourcesController implements ApplicationContextAware, ServletContextAware {
 
     /** Root path to use to access resources */

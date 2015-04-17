@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ import com.funnelback.publicui.search.model.transaction.contentoptimiser.Ranking
 import com.funnelback.publicui.utils.MapUtils;
 import com.google.common.collect.SetMultimap;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 

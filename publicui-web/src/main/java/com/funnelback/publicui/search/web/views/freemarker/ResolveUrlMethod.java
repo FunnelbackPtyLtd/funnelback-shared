@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
@@ -19,7 +19,7 @@ import freemarker.template.TemplateScalarModel;
  * 
  * See http://docs.oracle.com/javase/6/docs/api/java/net/URL.html#URL(java.net.URL, java.lang.String)
  */
-@Log4j
+@Log4j2
 public class ResolveUrlMethod extends AbstractTemplateMethod {
 
     public ResolveUrlMethod() {

@@ -9,7 +9,7 @@ import com.funnelback.publicui.search.model.transaction.EntityDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component("textMinerOutputProcessor")
-@Log4j
+@Log4j2
 public class TextMiner extends AbstractOutputProcessor {
     
     public static final String KEY_NOUN_PHRASES = "noun_phrases";

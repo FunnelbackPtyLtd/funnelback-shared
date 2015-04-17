@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -16,7 +16,7 @@ import com.funnelback.publicui.search.web.interceptors.SessionInterceptor;
  * 
  * @since 13.0
  */
-@Log4j
+@Log4j2
 public abstract class SessionController {
 
     /**

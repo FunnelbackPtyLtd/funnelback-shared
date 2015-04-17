@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -51,7 +51,7 @@ import freemarker.template.TemplateScalarModel;
  * - timeout: Time to wait in seconds for the remote resource
  * - convertrelative: wether we should attempt to convert relative links to absolute ones.
  */
-@Log4j
+@Log4j2
 public class IncludeUrlDirective implements TemplateDirectiveModel {
 
     public static final String NAME = "IncludeUrlInternal";

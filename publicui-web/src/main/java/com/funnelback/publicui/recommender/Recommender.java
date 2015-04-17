@@ -15,8 +15,9 @@ import com.funnelback.publicui.recommender.utils.SortUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.PreferenceTuple;
+
 import lombok.Getter;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.util.*;
@@ -27,8 +28,8 @@ import java.util.regex.Pattern;
  * This class provides recommendations from the Recommender System for a given collection.
  * @author fcrimmins@funnelback.com
  */
+@Log4j2
 public class Recommender {
-    private static final Logger logger = Logger.getLogger(Recommender.class);
 
     @Getter
     private Config collectionConfig;
@@ -159,7 +160,7 @@ public class Recommender {
                     recommendations = recommendations.subList(0, maxRecommendations);
                 }
             } else {
-                logger.info("No items in scope from original list of size: " + itemTuples.size());
+                log.info("No items in scope from original list of size: " + itemTuples.size());
             }
         }
 
@@ -277,7 +278,7 @@ public class Recommender {
                 if (sessions != null && sessions.size() > 0) {
                     // This collection has session information on the seed item - use it.
                     foundComponent = true;
-                    logger.debug("Found session info for seed item: " + seedItem + " in component: " + component);
+                    log.debug("Found session info for seed item: " + seedItem + " in component: " + component);
                     break;
                 } else if (dataAPI != null) {
                     DocInfo docInfo = dataAPI.getDocInfo(seedItem, componentConfig);
@@ -285,7 +286,7 @@ public class Recommender {
                     if (docInfo != null) {
                         // No sessions found, but we do have information from the Data API
                         foundComponent = true;
-                        logger.debug("Found Data API match info for seed item: " + seedItem
+                        log.debug("Found Data API match info for seed item: " + seedItem
                                 + " in component: " + component);
                         break;
                     }
@@ -298,7 +299,7 @@ public class Recommender {
                 DocInfo docInfo = dataAPI.getDocInfo(seedItem, componentConfig);
 
                 if (docInfo != null) {
-                    logger.debug("Found Data API match info for seed item: " + seedItem
+                    log.debug("Found Data API match info for seed item: " + seedItem
                             + " in requested collection: " + componentConfig.getCollectionName());
                     foundComponent = true;
                 }
@@ -309,7 +310,7 @@ public class Recommender {
         }
 
         if (!foundComponent) {
-            logger.debug("No matching component collection for seed item: " + seedItem);
+            log.debug("No matching component collection for seed item: " + seedItem);
             componentConfig = null;
         }
 
@@ -360,13 +361,13 @@ public class Recommender {
                             }
                         }
                     } else {
-                        logger.warn("No sessions found for item: " + itemName);
+                        log.warn("No sessions found for item: " + itemName);
                     }
                 } else {
-                    logger.warn("No value found in sessions cache for key: " + itemName);
+                    log.warn("No value found in sessions cache for key: " + itemName);
                 }
             } catch (Exception exception) {
-                logger.warn("Exception getting value and converting from JSON: " + exception);
+                log.warn("Exception getting value and converting from JSON: " + exception);
             } finally {
                 database.close();
             }

@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.config.Collection.Type;
@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @NoArgsConstructor
 @ToString
 @JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses", "cartProcessClass"})
-@Log4j
+@Log4j2
 public class Collection {
 
     public static final String COLLECTION_ID_PATTERN = "[\\w-]+"; 

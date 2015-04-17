@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.service.resource.impl;
 import java.io.File;
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,7 +16,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
 /**
  * Loads and parse a faceted navigation configuration file.
  */
-@Log4j
+@Log4j2
 public class FacetedNavigationConfigResource extends AbstractSingleFileResource<FacetedNavigationConfig> {
 
     private final FacetedNavigationConfigParser fnConfigParser;

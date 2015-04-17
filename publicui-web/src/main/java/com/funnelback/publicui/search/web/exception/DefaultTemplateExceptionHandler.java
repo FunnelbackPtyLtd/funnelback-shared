@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.web.exception;
 import java.io.IOException;
 import java.io.Writer;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import freemarker.template.TemplateHashModel;
  * @since v11.4
  */
 @Component
-@Log4j
+@Log4j2
 public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler {
 
     @Autowired

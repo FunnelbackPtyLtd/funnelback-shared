@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.util.StopWatch;
 
@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
  * that run the configured {@link InputProcessor}s, {@link DataFetcher}s
  * and {@link OutputProcessor}s.
  */
-@Log4j
+@Log4j2
 public class DefaultSearchTransactionProcessor implements SearchTransactionProcessor {
 
     private static final String INPUT = "input";

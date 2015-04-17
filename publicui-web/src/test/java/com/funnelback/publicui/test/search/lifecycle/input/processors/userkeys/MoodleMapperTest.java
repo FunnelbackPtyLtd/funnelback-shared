@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.input.processors.userkeys.MoodleMapper;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -23,8 +21,6 @@ public class MoodleMapperTest {
     public static void before() throws IOException {
         c = new Collection("moodle", new NoOptionsConfig(new File(
                 "src/test/resources/dummy-search_home"), "moodle"));
-        PropertyConfigurator
-                .configure(DefaultValues.DEFAULT_LOG4J_CONSOLE_DEBUG_PROPERTIES);
     }
 
     @Test

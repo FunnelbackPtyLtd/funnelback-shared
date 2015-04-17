@@ -33,7 +33,7 @@
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/*" />
-            <bean class="com.funnelback.springmvc.web.interceptor.Log4jMdcInterceptor" />
+            <bean class="com.funnelback.springmvc.web.interceptor.Log4j2ThreadContextInterceptor" />
         </mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />

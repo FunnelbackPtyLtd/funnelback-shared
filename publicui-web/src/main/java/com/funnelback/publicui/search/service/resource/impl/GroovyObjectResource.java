@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Loads, compiles and instantiates a Groovy class (with a no-arg constructor).
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j;
  * Note that any underlying Groovy object should be reusable and may need to be
  * thread-safe if it is to be used in a multi-threaded environment.
  */
-@Log4j
+@Log4j2
 public class GroovyObjectResource<T> extends AbstractSingleFileResource<T> {
     
     /**

@@ -7,7 +7,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.AbstractPadr
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreExecutor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteResultHandler;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Builds {@link PadreConnection} by forking new padre-sw processes.
  */
-@Log4j
+@Log4j2
 public class PadreConnectionFactory extends BaseKeyedPoolableObjectFactory {
 
     @Autowired

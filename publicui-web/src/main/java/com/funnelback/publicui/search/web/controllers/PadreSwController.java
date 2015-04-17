@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreFo
  * @since v12.0
  */
 @Controller
-@Log4j
+@Log4j2
 public class PadreSwController extends AbstractRunPadreBinaryController {
 
     private static final String PADRE_SW = "padre-sw";

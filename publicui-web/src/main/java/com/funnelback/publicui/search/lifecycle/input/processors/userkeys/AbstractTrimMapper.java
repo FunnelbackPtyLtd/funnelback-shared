@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +29,7 @@ import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionExceptio
  * 
  * @since 13.0
  */
-@Log4j
+@Log4j2
 public abstract class AbstractTrimMapper implements UserKeysMapper {
 
     /** How much time to wait for the user keys collector to return */

@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.json.CuratorConfigParser;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
@@ -16,7 +16,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  *
  * @see CuratorYamlConfigResource
  */
-@Log4j
+@Log4j2
 public class CuratorJsonConfigResource extends AbstractSingleFileResource<CuratorConfig> {
 
     /**

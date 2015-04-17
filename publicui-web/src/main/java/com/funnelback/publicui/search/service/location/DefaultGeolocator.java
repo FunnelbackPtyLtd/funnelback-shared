@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.service.location;
 
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.Setter;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -19,7 +19,7 @@ import com.maxmind.geoip.LookupService;
  * Provide a service which determines the user's location based on the IP
  * address of the user, using the MaxMind geocoding database.
  */
-@Log4j
+@Log4j2
 @Component
 public class DefaultGeolocator implements Geolocator {
 

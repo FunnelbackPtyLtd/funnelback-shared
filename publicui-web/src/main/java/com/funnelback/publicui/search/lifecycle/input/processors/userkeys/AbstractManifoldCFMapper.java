@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -37,7 +37,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * <p>Note that this approach is not secure unless Funnelback can be accessed only via
  * the portal.</p>
  */
-@Log4j
+@Log4j2
 public abstract class AbstractManifoldCFMapper implements UserKeysMapper {
 
     private final static String SERVICE_USERNAME = "_svc_manifoldcf";

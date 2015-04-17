@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
 import com.funnelback.publicui.search.service.index.result.ResultFetcher;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * Implementation that assumes that the indexes are on the local disk.
  */
-@Log4j
+@Log4j2
 public abstract class AbstractLocalIndexRepository implements IndexRepository {
 
     @Autowired

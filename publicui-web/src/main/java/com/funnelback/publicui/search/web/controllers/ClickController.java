@@ -14,7 +14,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -49,7 +49,7 @@ import com.funnelback.publicui.utils.web.MetricsConfiguration;
 /**
  * Click tracking controller
  */
-@Log4j
+@Log4j2
 @Controller
 public class ClickController extends SessionController {
 

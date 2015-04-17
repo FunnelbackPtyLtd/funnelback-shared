@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
@@ -41,7 +41,7 @@ import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 
-@Log4j
+@Log4j2
 public class StaxStreamParser implements PadreXmlParser {
 
     /** Tag marking the start of the XML document */

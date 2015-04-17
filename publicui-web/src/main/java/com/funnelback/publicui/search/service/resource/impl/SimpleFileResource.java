@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -16,7 +16,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  * Parses a key=value config files and returns an array of
  * Strings for each line, skipping comments
  */
-@Log4j
+@Log4j2
 public class SimpleFileResource extends AbstractSingleFileResource<String[]> {
     
     public SimpleFileResource(File file) {

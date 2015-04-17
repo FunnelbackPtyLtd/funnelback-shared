@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * cgi_transform.cfg.
  *
  */
-@Log4j
+@Log4j2
 public class RequestParametersTransformFilter implements Filter {
 
     @Autowired

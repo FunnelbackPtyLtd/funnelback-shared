@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
@@ -25,9 +25,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * @author mraymond
  * 
  */
+@Log4j2
 public class MoodleMapper implements UserKeysMapper {
-
-    static private Logger logger = Logger.getLogger(MoodleMapper.class);
 
     /**
      * Constant to get enrollments of a specific user
@@ -97,7 +96,7 @@ public class MoodleMapper implements UserKeysMapper {
             rc.add(userkeys);
 
         } catch (Exception e) {
-            logger.error("Unknown error while getting the userkeys", e);
+            log.error("Unknown error while getting the userkeys", e);
         } finally {
             // Close the statements and the connection through the db
             if (connection != null) {
@@ -154,7 +153,7 @@ public class MoodleMapper implements UserKeysMapper {
         try {
             connection.close();
         } catch (SQLException e) {
-            logger.warn("Could not close connection", e);
+            log.warn("Could not close connection", e);
         }
     }
 
@@ -167,7 +166,7 @@ public class MoodleMapper implements UserKeysMapper {
         try {
             stat.close();
         } catch (SQLException e) {
-            logger.warn("Could not close statement", e);
+            log.warn("Could not close statement", e);
         }
     }
 
@@ -193,7 +192,7 @@ public class MoodleMapper implements UserKeysMapper {
                     rc += "C" + Integer.parseInt(queryCourse.getString("course")) + SEPARATOR + "R"
                             + queryCourse.getString("role") + SEPARATOR;
                 } catch (NumberFormatException nfe) {
-                    logger.warn("Failed to parse courseId '"+queryCourse.getString("course")+"'", nfe);
+                    log.warn("Failed to parse courseId '"+queryCourse.getString("course")+"'", nfe);
                 }
             }
         }
@@ -206,13 +205,13 @@ public class MoodleMapper implements UserKeysMapper {
                         + Integer.parseInt(queryModule.getString("modules")) + SEPARATOR + "R"
                         + queryModule.getString("role") + SEPARATOR;
                 } catch (NumberFormatException nfe) {
-                    logger.warn("Failed to parse courseId '"+queryModule.getString("course")+"' or moduleId '"+queryModule.getString("modules")+"'");
+                    log.warn("Failed to parse courseId '"+queryModule.getString("course")+"' or moduleId '"+queryModule.getString("modules")+"'");
                 }
             }
         }
 
         // Log display
-        logger.debug("Keys for the user '" + username + "' = '" + rc + "'");
+        log.debug("Keys for the user '" + username + "' = '" + rc + "'");
 
         return rc;
     }

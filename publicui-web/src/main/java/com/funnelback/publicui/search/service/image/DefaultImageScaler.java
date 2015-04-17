@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.service.image;
 import com.funnelback.publicui.search.service.image.ImageScalerSettings.ScaleType;
 
 import lombok.Cleanup;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.Thumbnails.Builder;
 import net.coobird.thumbnailator.geometry.Positions;
@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultImageScaler implements ImageScaler {
     

@@ -10,7 +10,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 /**
  * Parses a faceted navigation configuration using a Stax Stream parser.
  */
-@Log4j
+@Log4j2
 @Component
 public class StaxStreamFacetedNavigationConfigParser implements FacetedNavigationConfigParser {
 

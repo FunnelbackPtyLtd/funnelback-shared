@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -39,7 +39,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * TODO - Document
  */
 @Controller
-@Log4j
+@Log4j2
 public class UrlScopeFill extends CategoryDefinition {
         
         /** Identifier used in query string parameter. */

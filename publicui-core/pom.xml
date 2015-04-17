@@ -12,8 +12,8 @@
 
 	<profiles>
 		<profile>
-			<!-- Only call doco generator if tests are enabled, otherwise the test
-				 class is not found and the build fails -->
+			<!-- Only call doco generator if tests are enabled, otherwise the test 
+				class is not found and the build fails -->
 			<activation>
 				<property>
 					<name>!maven.test.skip</name>
@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -140,7 +140,7 @@
 			<artifactId>groovy-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId> 			
+			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
@@ -164,8 +164,8 @@
 			<artifactId>validation-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.maxmind</groupId>

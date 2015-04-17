@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DataBindingException;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.TransactionException;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @since 13.0
  */
-@Log4j
+@Log4j2
 public abstract class SessionApiControllerBase extends SessionController {
 
     /** Key used in the JSON output for the status message */

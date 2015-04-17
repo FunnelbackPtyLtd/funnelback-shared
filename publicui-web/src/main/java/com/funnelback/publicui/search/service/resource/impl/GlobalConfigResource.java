@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.service.resource.impl;
 import java.io.File;
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
@@ -13,7 +13,7 @@ import com.funnelback.springmvc.service.resource.ParseableResource;
 /**
  * Loads the <code>global.cfg(.default)</code>
  */
-@Log4j
+@Log4j2
 public class GlobalConfigResource implements ParseableResource<GlobalOnlyConfig> {
 
     private final File searchHome;

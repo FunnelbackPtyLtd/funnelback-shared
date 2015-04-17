@@ -9,7 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -37,7 +37,7 @@ import com.funnelback.springmvc.utils.web.LocalHostnameHolder;
  * Writes log files locally in the LIVE folder of each collection
  */
 @Service
-@Log4j
+@Log4j2
 public class LocalLogService implements LogService {
 
     private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

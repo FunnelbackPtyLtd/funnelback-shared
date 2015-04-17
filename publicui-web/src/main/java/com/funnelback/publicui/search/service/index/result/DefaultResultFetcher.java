@@ -5,7 +5,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.model.padre.Result;
  * Fetches result using the Padre Data Api connector.
  */
 @Component
-@Log4j
+@Log4j2
 public class DefaultResultFetcher implements ResultFetcher {
 
     @Autowired

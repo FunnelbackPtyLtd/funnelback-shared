@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
  * <p>Wait for the extra searches to complete on the output phase.</p>
  */
 @Component
-@Log4j
+@Log4j2
 public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
     @Autowired

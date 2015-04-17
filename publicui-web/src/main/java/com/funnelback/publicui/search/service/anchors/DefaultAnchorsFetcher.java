@@ -19,7 +19,7 @@ import com.funnelback.publicui.search.service.index.QueryReadLock;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.exec.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultAnchorsFetcher implements AnchorsFetcher {
     

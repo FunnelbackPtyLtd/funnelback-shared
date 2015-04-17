@@ -8,7 +8,7 @@ import com.funnelback.contentoptimiser.utils.PanLookFactory;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultInDocCountFetcher implements InDocCountFetcher {
 

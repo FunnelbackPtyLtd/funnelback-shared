@@ -23,7 +23,7 @@ import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 
 import groovy.lang.Script;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * the underlying files</p>
  */
 @Repository("configRepository")
-@Log4j
+@Log4j2
 public class DefaultConfigRepository implements ConfigRepository {
             
     public static final String FTL_SUFFIX = ".ftl";

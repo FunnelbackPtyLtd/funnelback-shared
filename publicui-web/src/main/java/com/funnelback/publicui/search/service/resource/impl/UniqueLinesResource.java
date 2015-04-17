@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +19,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  * Reads a file and returns a Set of String containing
  * each unique line, skipping comments
  */
-@Log4j
+@Log4j2
 public class UniqueLinesResource extends AbstractSingleFileResource<Set<String>> {
     
     public UniqueLinesResource(File file) {

@@ -6,7 +6,7 @@ import com.funnelback.publicui.search.model.padre.QuickLinks;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.xml.XmlStreamUtils;
 import com.funnelback.publicui.xml.XmlStreamUtils.TagAndText;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -20,7 +20,7 @@ import java.util.regex.PatternSyntaxException;
  * Builds {@link Result}s from various input sources.
  * 
  */
-@Log4j
+@Log4j2
 public class ResultFactory {
 
     /**

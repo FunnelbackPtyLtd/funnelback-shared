@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.service.ResultsCartRepository;
  */
 @Repository
 @Transactional
-@Log4j
+@Log4j2
 public class ResultsCartDao implements ResultsCartRepository {
 
     @PersistenceContext

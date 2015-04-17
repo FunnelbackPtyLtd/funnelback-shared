@@ -9,7 +9,6 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import org.junit.Assert;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,10 +33,6 @@ public class DefaultInDocCountFetcherTest {
 
     @Test
     public void testSeriousError() throws FileNotFoundException, EnvironmentVariableException {
-        Properties properties = new Properties();
-        properties.put("log4j.rootLogger","FATAL");
-        PropertyConfigurator.configure(properties);
-        
         DefaultInDocCountFetcher fetcher = new DefaultInDocCountFetcher();
         ContentOptimiserModel comparison = new ContentOptimiserModel();
         Collection collection = new Collection("testcollection", new NoOptionsConfig("dummy"));

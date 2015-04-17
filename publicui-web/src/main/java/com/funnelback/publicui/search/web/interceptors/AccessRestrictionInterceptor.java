@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * Checks access restriction at a collection level and either grant access,
  * deny access, or redirects user to an alternate collection.
  */
-@Log4j
+@Log4j2
 public class AccessRestrictionInterceptor implements HandlerInterceptor {
 
     /**

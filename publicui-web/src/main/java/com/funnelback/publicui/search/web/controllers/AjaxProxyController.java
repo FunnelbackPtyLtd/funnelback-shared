@@ -6,7 +6,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * <p>Explicitly disabled for security reasons.</p>
  * 
  */
-@Log4j
+@Log4j2
 public class AjaxProxyController {
 
     @RequestMapping("/ajax-proxy.xml")

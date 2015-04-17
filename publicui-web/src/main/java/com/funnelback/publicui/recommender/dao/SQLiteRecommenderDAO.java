@@ -8,12 +8,14 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.cache.ObjectCache;
 import com.funnelback.common.cache.SQLiteCache;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
-import org.apache.log4j.Logger;
+
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class implements the Recommender system DAO (Data Access Object) interface. It uses the SQLite
@@ -22,8 +24,8 @@ import java.util.List;
  */
 
 @Component
+@Log4j2
 public class SQLiteRecommenderDAO implements RecommenderDAO {
-    private static final Logger logger = Logger.getLogger(SQLiteRecommenderDAO.class);
 
     /**
      * Get a list of recommendations for the given key (item ID) and collection.
@@ -51,10 +53,10 @@ public class SQLiteRecommenderDAO implements RecommenderDAO {
                     // See http://wiki.fasterxml.com/JacksonInFiveMinutes#Data_Binding_with_Generics
                     items = mapper.readValue(value, new TypeReference<List<ItemTuple>>() {});
                 } else {
-                    logger.warn("No value found in recommendations cache for key: " + key);
+                    log.warn("No value found in recommendations cache for key: " + key);
                 }
             } catch (Exception exception) {
-                logger.warn("Exception getting value and converting from JSON: " + exception);
+                log.warn("Exception getting value and converting from JSON: " + exception);
             } finally {
             	if (database != null) {
                     database.close();

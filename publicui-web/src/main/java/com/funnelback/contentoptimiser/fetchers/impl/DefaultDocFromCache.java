@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -50,7 +50,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-@Log4j
+@Log4j2
 @Component
 public class DefaultDocFromCache implements DocFromCache {
 

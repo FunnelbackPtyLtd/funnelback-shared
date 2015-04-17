@@ -13,9 +13,11 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
+
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -28,6 +30,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -39,8 +42,9 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/recommender")
+@Log4j2
 public class RecommenderController extends SessionController {
-    private static final Logger logger = Logger.getLogger(RecommenderController.class);
+
     public static final String SIMILAR_ITEMS_JSON = "similarItems.json";
     private static final String SEARCH_JSON = "search.json";
     public static final int UNLIMITED_RECOMMENDATIONS = -1;
@@ -164,7 +168,7 @@ public class RecommenderController extends SessionController {
             
         }
         catch (IllegalStateException exception) {
-        	logger.warn(exception);
+        	log.warn(exception);
         }
 
         recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,

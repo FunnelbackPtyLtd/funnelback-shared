@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Enumeration of different string matching types available within Curator triggers.
  */
-@Log4j
+@Log4j2
 public enum StringMatchType {
 
     /**

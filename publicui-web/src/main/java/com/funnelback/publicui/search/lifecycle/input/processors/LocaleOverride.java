@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Locale;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 
  * @since 12.0
  */
-@Log4j
+@Log4j2
 @Component("localeOverrideInputProcessor")
 public class LocaleOverride extends AbstractInputProcessor {
 

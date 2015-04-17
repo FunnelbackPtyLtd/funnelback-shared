@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.IOUtils;
 import org.yaml.snakeyaml.DumperOptions;
@@ -24,7 +24,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  * 
  * @see CuratorJsonConfigResource
  */
-@Log4j
+@Log4j2
 public class CuratorYamlConfigResource extends AbstractSingleFileResource<CuratorYamlConfig> {
 
     /**

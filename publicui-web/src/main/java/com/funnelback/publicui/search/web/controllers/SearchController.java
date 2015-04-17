@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
  *
  */
 @Controller
-@Log4j
+@Log4j2
 public class SearchController extends SessionController {
 
     /**

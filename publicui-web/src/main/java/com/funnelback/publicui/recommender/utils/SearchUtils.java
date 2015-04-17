@@ -8,8 +8,6 @@ import com.funnelback.reporting.database.AnalyticsDatabaseAccess;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.utils.RecommenderUtils;
 
-import org.apache.log4j.Logger;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,13 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * This class provides utilities for interacting with the Funnelback Search Service as
  * part of the Recommender lifecycle.
  * @author fcrimmins@funnelback.com
  */
+@Log4j2
 public final class SearchUtils {
-    private static final Logger logger = Logger.getLogger(SearchUtils.class);
+
     public static final String EXPLORE_QUERY_PREFIX = "explore:";
     public static final int DEFAULT_NUM_RANKS = 30;
 
@@ -56,7 +57,7 @@ public final class SearchUtils {
             try {
                 utf8Scope = URLEncoder.encode(scope, "utf-8");
             } catch (UnsupportedEncodingException exception) {
-                logger.warn(exception);
+                log.warn(exception);
             }
 
             if (!("").equals(utf8Scope)) {
@@ -82,9 +83,9 @@ public final class SearchUtils {
                 Map<String, Object> resultPacket = (Map<String, Object>) response.get("resultPacket");
                 results = (List<Map<String, Object>>) resultPacket.get("results");
             } catch (NullPointerException nullPointerException) {
-                logger.error("FBRecommenderREST.getResults(): " + nullPointerException);
+                log.error("FBRecommenderREST.getResults(): " + nullPointerException);
             } catch (UnsupportedEncodingException exception) {
-                logger.error("FBRecommenderREST.getResults(): " + exception);
+                log.error("FBRecommenderREST.getResults(): " + exception);
             } finally {
                 urlConnection.disconnect();
             }
@@ -144,13 +145,13 @@ public final class SearchUtils {
 
                 for (StringCount relatedQuery : relatedQueries) {
                     String query = relatedQuery.getString();
-                    logger.debug("About to run query: " + query);
+                    log.debug("About to run query: " + query);
                     List<Map<String, Object>> results = null;
 
                     try {
                         results = getResults(query, searchServiceAddress, scope, DEFAULT_NUM_RANKS);
                     } catch (IOException ioe) {
-                        logger.warn(ioe);
+                        log.warn(ioe);
                     }
 
                     if (results != null && !results.isEmpty()) {
@@ -170,10 +171,10 @@ public final class SearchUtils {
                     }
                 }
             } else {
-                logger.debug("No related queries found for item: " + itemName);
+                log.debug("No related queries found for item: " + itemName);
             }
         } catch (Exception exception) {
-            logger.warn("Error getting blended queries for item: " + itemName + " - " + exception);
+            log.warn("Error getting blended queries for item: " + itemName + " - " + exception);
         } finally {
             if (dba != null) {
                 try {
@@ -203,7 +204,7 @@ public final class SearchUtils {
         try {
             results = getResults(exploreQuery, searchServiceAddress, scope, DEFAULT_NUM_RANKS);
         } catch (IOException ioe) {
-            logger.warn(ioe);
+            log.warn(ioe);
         }
 
         if (results != null && !results.isEmpty()) {

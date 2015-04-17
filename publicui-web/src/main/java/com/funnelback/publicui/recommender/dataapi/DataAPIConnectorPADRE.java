@@ -8,7 +8,6 @@ import com.funnelback.dataapi.connector.padre.docinfo.DocInfoResult;
 import com.funnelback.publicui.recommender.Recommendation;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * DataAPIConnectorPADRE implements the DataAPI interface, which provides access to the Funnelback Data API.
  * This is mainly used to "decorate" suggestions returned by the Recommender with information from PADRE
@@ -25,8 +26,8 @@ import java.util.Map;
  * @author fcrimmins@funnelback.com
  */
 @Component
+@Log4j2
 public class DataAPIConnectorPADRE implements DataAPI {
-    private static final Logger logger = Logger.getLogger(DataAPIConnectorPADRE.class);
 
     @Autowired
     private File searchHome;
@@ -66,7 +67,7 @@ public class DataAPIConnectorPADRE implements DataAPI {
                 recommendations.add(recommendation);
             }
         } else {
-            logger.warn("Null or empty DocInfo list returned from getDocInfoResult.");
+            log.warn("Null or empty DocInfo list returned from getDocInfoResult.");
         }
 
         return recommendations;

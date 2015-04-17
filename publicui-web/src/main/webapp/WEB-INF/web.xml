@@ -18,18 +18,13 @@
 	</context-param>
 	
 	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>file:${funnelback.installdir}/web/conf/modernui/log4j.properties</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>log4jExposeWebAppRoot</param-name>
-		<param-value>false</param-value>
+		<param-name>log4jConfiguration</param-name>
+		<param-value>file:${funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
 	</context-param>
 
 	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -46,6 +41,19 @@
         <url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	
+	 <filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+    </filter>
+     <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    
 	<filter>
 		<filter-name>encodingFilter</filter-name>
     	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

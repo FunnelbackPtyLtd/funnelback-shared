@@ -15,7 +15,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  *
  */
 @Component("fixPseudoLiveLinksOutputProcessor")
-@Log4j
+@Log4j2
 public class FixPseudoLiveLinks extends AbstractOutputProcessor {
 
     @Autowired

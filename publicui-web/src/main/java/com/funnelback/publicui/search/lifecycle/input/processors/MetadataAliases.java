@@ -1,6 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 'filetype:pdf' we can change that to 'f:pdf'.
  */
 @Component("metadataAliasesInputProcessor")
-@Log4j
+@Log4j2
 public class MetadataAliases extends AbstractInputProcessor {
 
     private static final String SEPARATOR = ":";

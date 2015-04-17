@@ -14,7 +14,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.lang3.ArrayUtils;
@@ -39,7 +39,7 @@ import com.funnelback.publicui.search.web.controllers.ResourcesController;
  * Spring-specific parameter (As we use the {@link DelegatingFilterProxy} facility) and
  * it's passed along to WAFFLE, which doesn't recognize it and throws an exception.</p>
  */
-@Log4j
+@Log4j2
 public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
 
     @Autowired

@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -37,7 +37,7 @@ import com.funnelback.publicui.utils.MapKeyFilter;
  * <p>Checks for any selected category(ies) and adds corresponding constraints
  * to the search question (gscopes or query expressions).</p>
  */
-@Log4j
+@Log4j2
 @Component("facetedNavigationInputProcessor")
 public class FacetedNavigation extends AbstractInputProcessor {
     

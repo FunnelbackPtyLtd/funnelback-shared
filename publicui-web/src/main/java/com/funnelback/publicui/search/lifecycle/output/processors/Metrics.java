@@ -10,7 +10,7 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
 
 import javax.annotation.PostConstruct;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * Update internal performance metrics
  */
 @Component("metricsOutputProcessor")
-@Log4j
+@Log4j2
 public class Metrics extends AbstractOutputProcessor {
     
     @Autowired

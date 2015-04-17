@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.model.curator.config.TriggerActions;
 /**
  * Parser for JSON curator config files.
  */
-@Log4j
+@Log4j2
 public class CuratorConfigParser {
 
     /**

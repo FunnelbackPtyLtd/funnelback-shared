@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.DefaultValues.FacetedNavigation.DateSortMode;
@@ -31,7 +31,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
  * 
  * @since v12.5
  */
-@Log4j
+@Log4j2
 @Component("dateFacetSortOutputProcessor")
 public class DateFacetSort extends AbstractOutputProcessor {
 

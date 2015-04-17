@@ -19,7 +19,7 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs.*;
@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * local filesystem
  */
 @Repository
-@Log4j
+@Log4j2
 public class LocalDataRepository implements DataRepository {
     
     /** Name of the parameter containing the record id for database collections */

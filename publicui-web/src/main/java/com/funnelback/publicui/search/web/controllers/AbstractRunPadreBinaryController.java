@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.OS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import com.funnelback.publicui.utils.web.CGIEnvironment;
  * 
  * Controllers can subclass it to easily map an URL to a PADRE binary.
  */
-@Log4j
+@Log4j2
 public abstract class AbstractRunPadreBinaryController extends SessionController {
 
     protected abstract File getSearchHome();

@@ -2,7 +2,7 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -24,7 +24,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * <p>Applies white and black list to faceted navigation categories.</p>
  */
 @Component("facetedNavigationWhiteBlackListOutputProcessor")
-@Log4j
+@Log4j2
 public class FacetedNavigationWhiteBlackList extends AbstractOutputProcessor {
 
     private static final String SEP = ",";

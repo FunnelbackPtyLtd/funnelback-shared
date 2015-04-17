@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.ExecutionReturn;
@@ -31,7 +31,7 @@ import com.sun.jna.ptr.IntByReference;
  * through JNA
  *
  */
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class WindowsNativeExecutor {
 

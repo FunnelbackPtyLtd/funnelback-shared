@@ -3,7 +3,7 @@ package com.funnelback.publicui.utils.web;
 import javax.servlet.ServletContext;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
@@ -13,7 +13,7 @@ import org.springframework.web.context.ServletContextAware;
  * context path ('/s') or if we're running as part of the
  * Public or Admin search interface
  */
-@Log4j
+@Log4j2
 @Component
 public class ExecutionContextHolder implements ServletContextAware {
 

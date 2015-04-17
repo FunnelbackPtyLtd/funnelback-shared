@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -30,7 +30,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 
  */
 @Component("userKeysInputProcessor")
-@Log4j
+@Log4j2
 public class UserKeys extends AbstractInputProcessor {
     
     /** Suffix of classes implementing the user key mapper interface */

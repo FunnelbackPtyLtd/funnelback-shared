@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
@@ -16,7 +16,7 @@ import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
-@Log4j
+@Log4j2
 public class FacetedNavigationUtils {
 
     /**

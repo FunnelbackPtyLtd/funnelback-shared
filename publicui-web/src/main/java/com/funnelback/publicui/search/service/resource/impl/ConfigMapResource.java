@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
@@ -14,7 +14,7 @@ import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource
  * config data in a Map
  *
  */
-@Log4j
+@Log4j2
 public class ConfigMapResource extends AbstractSingleFileResource<Map<String, String>> {
 
     private final String collectionId;

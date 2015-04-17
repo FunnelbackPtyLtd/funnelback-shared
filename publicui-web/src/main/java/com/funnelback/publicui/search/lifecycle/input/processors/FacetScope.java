@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
  * "within the same category" checkox) to valid facet parameters
  */
 @Component("facetScopeInputProcessor")
-@Log4j
+@Log4j2
 public class FacetScope extends AbstractInputProcessor {
 
     @Override

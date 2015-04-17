@@ -9,7 +9,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
  * Utilities for queries / click logging
  *
  */
-@Log4j
+@Log4j2
 public class LogUtils {
 
     /** HTTP Referer header */

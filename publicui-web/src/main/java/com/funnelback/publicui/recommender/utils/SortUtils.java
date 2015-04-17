@@ -4,19 +4,20 @@ import com.funnelback.reporting.recommender.tuple.ItemTuple;
 import com.funnelback.reporting.recommender.tuple.ItemTupleComparator;
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
-import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Sorting utilities.
  * @author fcrimmins@funnelback.com
  */
+@Log4j2
 public final class SortUtils {
-    private static final Logger logger = Logger.getLogger(SortUtils.class);
 
     // Private constructor to avoid unnecessary instantiation of the class
     private SortUtils() {
@@ -54,7 +55,7 @@ public final class SortUtils {
         Collections.sort(output, new ItemTupleComparator());
 
         long timeTaken = System.currentTimeMillis() - startTime.getTime();
-        logger.debug("Sorted list of size " + originalSize + " in " + timeTaken + "ms");
+        log.debug("Sorted list of size " + originalSize + " in " + timeTaken + "ms");
 
         return output;
     }

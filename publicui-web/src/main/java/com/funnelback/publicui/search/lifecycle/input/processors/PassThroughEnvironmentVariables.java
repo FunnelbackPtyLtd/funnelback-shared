@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * be passed-trough as environment variables to PADRE.
  */
 @Component("passThroughEnvironmentVariabesInputProcessor")
-@Log4j
+@Log4j2
 public class PassThroughEnvironmentVariables extends AbstractInputProcessor {
 
     // FIXME Found these other ones in PADRE source code. Are they really needed ?

@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Win32Exception;
@@ -16,7 +16,7 @@ import com.sun.jna.platform.win32.WinNT;
  * through JNA.
  *
  */
-@Log4j
+@Log4j2
 public class WindowsFileInputStream extends WindowsHandleInputStream {
 
     /**

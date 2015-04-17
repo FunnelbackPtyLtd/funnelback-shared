@@ -9,12 +9,12 @@ import java.io.IOException;
 
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Loads and compiles a Groovy script
  */
-@Log4j
+@Log4j2
 public class GroovyScriptResource extends AbstractSingleFileResource<Class<Script>> {
     
     public GroovyScriptResource(File file) {

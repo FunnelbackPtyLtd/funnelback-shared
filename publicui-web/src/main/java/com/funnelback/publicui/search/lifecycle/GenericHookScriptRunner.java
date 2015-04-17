@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -31,7 +31,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
  * 
  * @see Collection.Hook
  */
-@Log4j
+@Log4j2
 public class GenericHookScriptRunner implements DataFetcher, InputProcessor, OutputProcessor {
 
     public static enum Phase {

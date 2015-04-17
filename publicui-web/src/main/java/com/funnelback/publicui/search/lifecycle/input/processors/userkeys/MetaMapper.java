@@ -3,7 +3,7 @@ package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -23,7 +23,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
  * 
  * @since 11.4
  */
-@Log4j
+@Log4j2
 public class MetaMapper implements UserKeysMapper {
 
     @Autowired

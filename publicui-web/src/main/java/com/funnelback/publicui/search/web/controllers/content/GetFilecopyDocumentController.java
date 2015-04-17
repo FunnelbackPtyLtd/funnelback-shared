@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ import com.funnelback.publicui.utils.jna.WindowsFileInputStream.AccessDeniedExce
  * @since 12.4
  */
 @Controller
-@Log4j
+@Log4j2
 public class GetFilecopyDocumentController {
 
     /** Pattern to detect HTML documents */

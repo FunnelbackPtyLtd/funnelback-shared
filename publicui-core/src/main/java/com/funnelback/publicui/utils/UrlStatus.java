@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Collection;
 import com.funnelback.common.config.Collections;
@@ -17,7 +17,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.crawl.CrawlerConfigUtils;
 import com.funnelback.common.policy.SimpleLoadingPolicy;
 
-@Log4j
+@Log4j2
 public class UrlStatus {
 
     public static enum MatchResult {

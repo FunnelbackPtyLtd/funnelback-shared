@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.Date;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -30,7 +30,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
  * @since 12.5
  */
 @Component("searchHistoryOutputProcessor")
-@Log4j
+@Log4j2
 public class SearchHistory extends AbstractOutputProcessor {
 
     @Autowired

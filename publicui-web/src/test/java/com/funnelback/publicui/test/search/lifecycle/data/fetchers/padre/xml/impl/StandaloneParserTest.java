@@ -5,9 +5,9 @@ import java.io.FilenameFilter;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
@@ -37,8 +37,6 @@ public class StandaloneParserTest {
                 return name.endsWith(".xml");
             }
         });
-
-        configureLogging();
         
         int errors = 0;
         StaxStreamParser parser = new StaxStreamParser();
@@ -66,14 +64,4 @@ public class StandaloneParserTest {
         
     }
     
-    private static void configureLogging() {
-        Properties p = new Properties();
-        p.put("log4j.rootLogger", "DEBUG, console");
-        p.put("log4j.appender.console", ConsoleAppender.class.getName());
-        p.put("log4j.appender.console.layout", PatternLayout.class.getName());
-        p.put("log4j.appender.console.layout.ConversionPattern", "%d [%t] %-5p %c{2} %x - %m%n");
-        
-        PropertyConfigurator.configure(p);
-    }
-
 }

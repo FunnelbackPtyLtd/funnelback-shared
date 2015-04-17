@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,7 +42,7 @@ import com.funnelback.publicui.utils.web.ExecutionContextHolder;
  * Query completion / suggestion controller.
  */
 @Controller
-@Log4j
+@Log4j2
 public class SuggestController extends AbstractRunPadreBinaryController {
 
     private static final String PADRE_QS = "padre-qs";
