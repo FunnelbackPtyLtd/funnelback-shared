@@ -35,7 +35,6 @@
 	<modules>
 		<module>publicui-web</module>
 		<module>publicui-core</module>
-		<module>publicui-api</module>
 		<module>publicui-doc</module>
 		<module>publicui-form-converter</module>
 	</modules>
