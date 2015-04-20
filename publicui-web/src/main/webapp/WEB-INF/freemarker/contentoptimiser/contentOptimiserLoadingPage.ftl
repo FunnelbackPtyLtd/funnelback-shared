@@ -22,12 +22,6 @@
     
 </head>
 
-<#if RequestParameters.profile??>
-    <#assign profile = "&profile=" + RequestParameters.profile>
-<#else>
-    <#assign profile = "">
-</#if>
-
 <body>
     <div id="app">
         <div class="container text-center">
@@ -51,7 +45,7 @@
         <#assign maybeUrl = "">
     </#if>
 
-    <meta http-equiv="refresh" content="0; url=?query=${query}${maybeUrl}&collection=${collection}&loaded=1${profile}">
+    <meta http-equiv="refresh" content="0; url=?query=${query?url}${maybeUrl}&collection=${collection?url}&loaded=1&profile=${profile?url}">
 </body>
 </html>
 

@@ -91,6 +91,7 @@ public class ContentOptimiserController {
             //Plumb the parameters through the loading page so we can get them back later
             Map<String, String> loadingPageModel = new TreeMap<String, String>();
             loadingPageModel.put(RequestParameters.COLLECTION, collection);
+            loadingPageModel.put(RequestParameters.PROFILE, profile);
             loadingPageModel.put(RequestParameters.QUERY, query);
 
             if(nullOrEmpty(optimiserUrl)) {
