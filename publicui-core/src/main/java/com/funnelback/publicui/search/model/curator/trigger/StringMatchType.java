@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -19,7 +18,7 @@ public enum StringMatchType {
      */
     EXACT {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             return haystack.equals(needle);
         }
     },
@@ -30,7 +29,7 @@ public enum StringMatchType {
      */
     CASE_INSENSITIVE_EXACT {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             return haystack.equalsIgnoreCase(needle);
         }
     },
@@ -39,7 +38,7 @@ public enum StringMatchType {
      */
     SUBSTRING {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             return haystack.contains(needle);
         }
     },
@@ -49,7 +48,7 @@ public enum StringMatchType {
      */
     CASE_INSENSITIVE_SUBSTRING {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             return haystack.toLowerCase().contains(needle.toLowerCase());
         }
     },
@@ -61,7 +60,7 @@ public enum StringMatchType {
      */
     REGULAR_EXPRESSION {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             try {
                 return haystack.matches(needle);
             } catch (Exception e) {
@@ -77,7 +76,7 @@ public enum StringMatchType {
      */
     ALL_WORDS_CONTAINED {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             Set<String> needleWords = new HashSet<String>();
             needleWords.addAll(Arrays.asList(needle.split("\\b")));
 
@@ -94,7 +93,7 @@ public enum StringMatchType {
      */
     CASE_INSENSITIVE_ALL_WORDS_CONTAINED {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             return ALL_WORDS_CONTAINED.matches(needle.toLowerCase(), haystack.toLowerCase());
         }
     },
@@ -104,7 +103,7 @@ public enum StringMatchType {
      */
     NUMERIC_GREATER_THAN {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             try {
                 return Float.parseFloat(needle) > Float.parseFloat(haystack);
             } catch (NumberFormatException e) {
@@ -119,7 +118,7 @@ public enum StringMatchType {
      */
     NUMERIC_LESS_THAN {
         @Override
-        public Boolean matches(@NonNull String needle, @NonNull String haystack) {
+        public Boolean matches(String needle, String haystack) {
             try {
                 return Float.parseFloat(needle) < Float.parseFloat(haystack);
             } catch (NumberFormatException e) {
