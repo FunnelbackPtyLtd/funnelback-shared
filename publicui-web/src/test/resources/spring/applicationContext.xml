@@ -13,20 +13,6 @@
 	
 	<!-- aop:aspectj-autoproxy / -->
 
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetClass">
-			<value>org.springframework.util.Log4jConfigurer</value>
-		</property>
-		<property name="targetMethod">
-			<value>initLogging</value>
-		</property>
-		<property name="arguments">
-			<list>
-				<value>src/test/resources/dummy-search_home/conf/log4j.properties</value>
-			</list>
-		</property>
-	</bean>
-
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 
