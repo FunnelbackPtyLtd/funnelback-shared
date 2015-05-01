@@ -165,7 +165,7 @@
     <bean class="com.funnelback.publicui.search.service.index.DefaultQueryReadLock" />
 
     <bean name="recommenderJsonView"
-   		class="com.funnelback.publicui.search.web.views.json.MappingJacksonJsonpView">
+   		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
            <property name="renderedAttributes" value="RecommendationResponse" />
    	</bean>
 	
