@@ -109,7 +109,7 @@ public class LocalDataRepository implements DataRepository {
     
     @Override
     public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, StoreView view,
-        String url, File relativePath, int offset, int length) {
+        String url, File relativePath, long offset, int length) {
         
         if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath.getName()))) {
             // FUN-5956 WARC files not supported yet

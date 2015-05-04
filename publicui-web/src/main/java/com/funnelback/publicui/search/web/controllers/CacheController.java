@@ -113,7 +113,7 @@ public class CacheController {
             @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
             @RequestParam(required=true) String url,
             @RequestParam String doc,
-            @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") int offset,
+            @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") long offset,
             @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
         if (url == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
