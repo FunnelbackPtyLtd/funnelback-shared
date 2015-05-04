@@ -24,7 +24,10 @@ import lombok.ToString;
 public abstract class SessionResult {
     
     /** Size of the column holding the summary */
-    private static final int MAX_LEN_SUMMARY = 1024;
+    public static final int MAX_LEN_SUMMARY = 1024;
+    
+    /** Size of the column holding metadata fields */
+    public static final int MAX_LEN_METADATA = 4096;
 
     /**
      * ID of the user who clicked on the result
@@ -76,7 +79,7 @@ public abstract class SessionResult {
      * before saving to database
      */
     @PrePersist
-    private void prePersist() {
+    protected void prePersist() {
         if (summary != null && summary.length() > MAX_LEN_SUMMARY) {
             summary = summary.substring(0, MAX_LEN_SUMMARY-1);
         }

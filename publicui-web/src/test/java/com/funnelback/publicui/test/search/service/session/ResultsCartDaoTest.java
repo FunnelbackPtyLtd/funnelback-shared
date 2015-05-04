@@ -8,13 +8,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
+import com.funnelback.publicui.search.model.transaction.session.SessionResult;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -118,6 +121,37 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(1, cart.size());
         assertEquals(URI.create("funnelback://test.result/"), cart.get(0).getIndexUrl());       
+    }
+    
+    @Test
+    public void testSummaryTruncation() {
+        CartResult cr = super.generateRandomCartResult();
+        cr.setCollection(collection.getId());
+        cr.setUserId(user.getId());
+        cr.setSummary(new String(new byte[8192]));
+        
+        repository.addToCart(cr);
+        
+        List<CartResult> cart = repository.getCart(user, collection);
+        assertEquals(1, cart.size());
+        assertEquals(cr.getIndexUrl(), cart.get(0).getIndexUrl());
+        assertEquals(SessionResult.MAX_LEN_SUMMARY-1, cart.get(0).getSummary().length());
+    }
+    
+    @Test
+    @Transactional  // Needed for lazy initialisation of the metaData collection
+    public void testMetadataTruncation() {
+        CartResult cr = super.generateRandomCartResult();
+        cr.setCollection(collection.getId());
+        cr.setUserId(user.getId());
+        cr.getMetaData().put("a", new String(new byte[8192]));
+        
+        repository.addToCart(cr);
+        
+        List<CartResult> cart = repository.getCart(user, collection);
+        assertEquals(1, cart.size());
+        assertEquals(cr.getIndexUrl(), cart.get(0).getIndexUrl());
+        assertEquals(SessionResult.MAX_LEN_METADATA-1, cart.get(0).getMetaData().get("a").length());
     }
     
 }

@@ -10,6 +10,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.PrePersist;
 
 import com.funnelback.publicui.search.model.padre.Result;
 
@@ -63,6 +64,21 @@ public class ClickHistory extends SessionResult {
         
         return ch;
 
+    }
+
+    /**
+     * Truncate metadata to maximum size allowed in the database
+     * before saving to database
+     */
+    @PrePersist
+    protected void prePersist() {
+        super.prePersist();
+        
+        for (Map.Entry<String, String> entry: metaData.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().length() > MAX_LEN_METADATA) {
+                entry.setValue(entry.getValue().substring(0, MAX_LEN_METADATA-1));
+            }
+        }
     }
 
 }

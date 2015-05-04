@@ -3,18 +3,21 @@ package com.funnelback.publicui.search.model.transaction.session;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
-
-import com.funnelback.publicui.search.model.padre.Result;
+import javax.persistence.PrePersist;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import com.funnelback.publicui.search.model.padre.Result;
 
 /**
  * A result in a results cart
@@ -57,5 +60,19 @@ public class CartResult extends SessionResult {
         return cr;
     }
 
+    /**
+     * Truncate metadata to maximum size allowed in the database
+     * before saving to database
+     */
+    @PrePersist
+    protected void prePersist() {
+        super.prePersist();
+        
+        for (Map.Entry<String, String> entry: metaData.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().length() > MAX_LEN_METADATA) {
+                entry.setValue(entry.getValue().substring(0, MAX_LEN_METADATA-1));
+            }
+        }
+    }
     
 }
