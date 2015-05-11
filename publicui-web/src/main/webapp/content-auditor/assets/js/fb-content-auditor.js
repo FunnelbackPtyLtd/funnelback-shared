@@ -53,10 +53,11 @@ function makePreviewIcons()
 		        '&width=350&height=230&render_width=350&render_height=230&type=keep_aspect"></a>';
 		    var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
 		        '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
-		    $(this).find('.open-wcag').after(html).on('click', function()
-		    {
-		        return false;
-		    });
+                // deprecated v14.2. FUN-7615. - Was blocking the link from opening. 
+                // $(this).find('.open-wcag').after(html).on('click', function()
+                // {
+                //    return false;
+                // });
     	}
     });
 }
@@ -493,6 +494,20 @@ jQuery(function()
                 makeChartScrollable(0);
             }
             window.scrollTo(0, 0);
+
+
+            /* Trying to fix the hover on the attributes links (no success)
+
+            $('.page-attr tbody tr a').on('mouseover',function(){  
+                                var t = $(this);
+                                var chartIndex = $(this).parent('tr').attr('data-chart-index');
+                                hoverSlice(chartIndex, 'chart_' + chartIndex); 
+                                alert('f');
+                                
+            });
+
+             */   
+
             //PJAX, load pages via AJAX and change the URL 
             /* PJAX is turned off
 
