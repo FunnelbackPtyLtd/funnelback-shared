@@ -43,6 +43,8 @@ import com.funnelback.publicui.search.web.binding.StringDefaultValueEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
+import freemarker.template.TemplateException;
+
 /**
  * <p>Main controller for the Modern UI.</p>
  * 
@@ -248,6 +250,11 @@ public class SearchController extends SessionController {
     @ExceptionHandler(ViewTypeNotFoundException.class)
     public void viewTypeNotFound(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+    
+    @ExceptionHandler(TemplateException.class)
+    public void templateException(TemplateException ex) {
+        log.error("Error processing FreeMarker template", ex);
     }
     
 }

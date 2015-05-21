@@ -2,14 +2,17 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import lombok.Cleanup;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,6 +26,7 @@ import com.funnelback.publicui.search.service.image.ImageScalerSettings;
  * Funnelback results.
  */
 @Controller
+@Log4j2
 public class ImageScaleController {
 
     @Autowired
@@ -77,5 +81,15 @@ public class ImageScaleController {
         fetcher.clearAllCache();
         scaler.clearAllCache();
         return null;
+    }
+    
+    /**
+     * Catch exceptions to avoid them bubbling up and being
+     * written to stderr
+     * @param ex
+     */
+    @ExceptionHandler(Exception.class)
+    public void exceptionHandler(Exception ex) {
+        log.error("Unknown error in "+ImageScaleController.class.getName(), ex);
     }
 }
