@@ -12,30 +12,31 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>
- * A trigger which activates when a CGI parameter has a particular value.
+ * A trigger which activates when a request parameter has a particular value
+ * (e.g. the request URL contains &amp;parameter=value)
  * </p>
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CgiParameterTrigger implements Trigger {
+public class RequestParameterTrigger implements Trigger {
     
     /**
-     * The CGI parameter to check
+     * The request parameter to check
      */
     @Getter
     @Setter
     private String parameter;
 
     /**
-     * The 'value' to check for in the CGI parameter
+     * The 'value' to check for in the request parameter
      */
     @Getter
     @Setter
     private String value;
 
     /**
-     * The type of matching to be performed between each CGI parameter value
+     * The type of matching to be performed between each request parameter value
      * (haystack) and the given value parameter (needle).
      */
     @Getter

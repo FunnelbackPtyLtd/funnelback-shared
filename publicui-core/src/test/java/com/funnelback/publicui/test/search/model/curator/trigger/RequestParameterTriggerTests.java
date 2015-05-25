@@ -3,16 +3,16 @@ package com.funnelback.publicui.test.search.model.curator.trigger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.model.curator.trigger.CgiParameterTrigger;
+import com.funnelback.publicui.search.model.curator.trigger.RequestParameterTrigger;
 import com.funnelback.publicui.search.model.curator.trigger.StringMatchType;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-public class CgiParameterTriggerTests {
+public class RequestParameterTriggerTests {
 
     @Test
-    public void testCgiParameterTrigger() {
-        CgiParameterTrigger cpt = new CgiParameterTrigger("paramname", "paramvalue", StringMatchType.EXACT);
+    public void testRequestParameterTrigger() {
+        RequestParameterTrigger cpt = new RequestParameterTrigger("paramname", "paramvalue", StringMatchType.EXACT);
         
         SearchQuestion question = new SearchQuestion();
         SearchTransaction st = new SearchTransaction(question, null);
