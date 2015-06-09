@@ -19,7 +19,9 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+
 import lombok.extern.log4j.Log4j2;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs.*;
@@ -48,13 +50,6 @@ public class LocalDataRepository implements DataRepository {
 
     /** How long to wait (in ms.) to get a document out of TRIM */
     private static final int GET_DOCUMENT_WAIT_TIMEOUT = 1000*60;
-
-    /**
-     * Folder containing the binary to get a TRIM document,
-     * relative to SEARCH_HOME
-     */
-    private final static String GET_DOCUMENT_BINARY_PATH =
-        DefaultValues.FOLDER_WINDOWS_BIN + File.separator + DefaultValues.FOLDER_TRIM;
     
     /** File name of the program to get a TRIM document*/
     private final static String GET_DOCUMENT_BINARY = "Funnelback.TRIM.GetDocument.exe";
@@ -81,8 +76,8 @@ public class LocalDataRepository implements DataRepository {
     private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a[^>]*>(.*?)</a>",
         Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-    /** Full path to the binary to get a document from TRIM */
-    private final File getDocumentBinary;
+    /** Base folder containing the the binaries to get a document from TRIM, one per TRIM version */
+    private final File getDocumentBinaryBase;
     
     /** Environment used when calling the binary to get a document */
     private final Map<String, String> getDocumentEnvironment;
@@ -96,10 +91,7 @@ public class LocalDataRepository implements DataRepository {
      */
     @Autowired
     public LocalDataRepository(File searchHome) {
-        getDocumentBinary = new File(searchHome
-            + File.separator + GET_DOCUMENT_BINARY_PATH,
-            GET_DOCUMENT_BINARY);
-
+        getDocumentBinaryBase = new File(searchHome, DefaultValues.FOLDER_WINDOWS_BIN);
 
         // Copy ALL the environment here. The TRIM SDK requires some environment
         // variables to be set, such as "SystemRoot" and "CommonProgramFiles"
@@ -247,6 +239,10 @@ public class LocalDataRepository implements DataRepository {
         File tempFolder = new File(collection.getConfiguration().getCollectionRoot()
             + File.separator + View.live,
             File.separator + DefaultValues.FOLDER_TMP);
+
+        File getDocumentBinary = new File(getDocumentBinaryBase
+                + File.separator + collection.getConfiguration().value(Keys.Trim.VERSION, DefaultValues.Trim.VERSION),
+                GET_DOCUMENT_BINARY);
         
         List<String> cmdLine = new ArrayList<String>(
             Arrays.asList(new String[] {

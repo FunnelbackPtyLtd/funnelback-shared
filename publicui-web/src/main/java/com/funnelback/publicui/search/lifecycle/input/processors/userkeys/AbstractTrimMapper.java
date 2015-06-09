@@ -41,13 +41,6 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
      */
     protected static enum KeyStringFormat { v1, v2 };
     
-    /**
-     * Folder containing the binary to get the user keys,
-     * relative to SEARCH_HOME
-     */
-    private final static String GET_USER_KEYS_BINARY_PATH =
-        DefaultValues.FOLDER_WINDOWS_BIN + File.separator + DefaultValues.FOLDER_TRIM;
-    
     /** File name of the program to get the user keys */
     private final static String GET_USER_KEYS_BINARY = "Funnelback.TRIM.GetUserKeys.exe";
 
@@ -73,7 +66,8 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
         if (SearchTransactionUtils.hasQuestion(st)) {
             if (st.getQuestion().getPrincipal() != null) {
                 File getUserKeysBinary = new File(searchHome
-                    + File.separator + GET_USER_KEYS_BINARY_PATH,
+                    + File.separator + DefaultValues.FOLDER_WINDOWS_BIN
+                    + File.separator + collection.getConfiguration().value(Keys.Trim.VERSION, DefaultValues.Trim.VERSION),
                     GET_USER_KEYS_BINARY);
                 
                 // Copy ALL the environment here. The TRIM SDK requires some environment
