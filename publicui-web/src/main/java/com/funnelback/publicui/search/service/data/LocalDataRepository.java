@@ -1,13 +1,45 @@
 package com.funnelback.publicui.search.service.data;
 
-import com.funnelback.common.utils.XMLUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import lombok.extern.log4j.Log4j2;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.FileSystemOptions;
+import org.apache.commons.vfs.UserAuthenticator;
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.auth.StaticUserAuthenticator;
+import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
+
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.io.store.*;
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.common.io.store.StoreType;
+import com.funnelback.common.io.store.XmlRecord;
 import com.funnelback.common.io.warc.WarcConstants;
 import com.funnelback.common.url.VFSURLUtils;
+import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.common.views.View;
 import com.funnelback.publicui.i18n.I18n;
@@ -19,23 +51,6 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
-
-import lombok.extern.log4j.Log4j2;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.vfs.*;
-import org.apache.commons.vfs.auth.StaticUserAuthenticator;
-import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Repository;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -69,13 +84,6 @@ public class LocalDataRepository implements DataRepository {
     /** Document fetcher output field containing the file path */
     private static final String FILE_KEY = "File";
     
-    /** Document fetcher output field indicating a Trim HTML email */
-    private static final String IS_EMAIL_KEY = "IsTRIMMail";
-    
-    /** Pattern to detect HTML links in TRIM emails */
-    private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a[^>]*>(.*?)</a>",
-        Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
     /** Base folder containing the the binaries to get a document from TRIM, one per TRIM version */
     private final File getDocumentBinaryBase;
     
@@ -272,13 +280,6 @@ public class LocalDataRepository implements DataRepository {
                 File trimDoc = new File(executionOutput.get(FILE_KEY));
                 
                 if (trimDoc.canRead() && trimDoc.isFile()) {
-                    if (Boolean.parseBoolean(executionOutput.get(IS_EMAIL_KEY))) {
-                        // Strip links to attachments
-                        
-                        FileUtils.writeStringToFile(trimDoc,
-                            HTML_LINK_PATTERN.matcher(FileUtils.readFileToString(trimDoc))
-                                .replaceAll("$1"));
-                    }
                     return trimDoc;
                 } else {
                     throw new IllegalStateException("Could not read temporary file '"+trimDoc.getAbsolutePath()+"'");
