@@ -53,11 +53,9 @@ function makePreviewIcons()
 		        '&width=350&height=230&render_width=350&render_height=230&type=keep_aspect"></a>';
 		    var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
 		        '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
-                // deprecated v14.2. FUN-7615. - Was blocking the link from opening. 
-                // $(this).find('.open-wcag').after(html).on('click', function()
-                // {
-                //    return false;
-                // });
+                
+                $(this).find('.open-wcag').after(html);
+               
     	}
     });
 }
