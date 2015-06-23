@@ -299,7 +299,7 @@
     @param label Label to use for the link.
 -->
 <#macro Explore label="Explore">
-    <a class="search-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl)?html}">${label}</a>
+    <a class="search-explore" href="?${changeParam(QueryString, "query", "explore:" + s.result.liveUrl?url)?html}">${label}</a>
 </#macro>
 
 <#---
