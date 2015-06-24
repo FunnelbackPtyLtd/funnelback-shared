@@ -21,7 +21,7 @@
 	<#assign FacetLabel><@s.FacetLabel /></#assign>
 	<#assign FacetSummary><@s.FacetSummary /></#assign>
 	<#assign FacetSummaryClean><@s.FacetSummary /></#assign>
-	<#assign FacetSummaryLabel>${FacetSummaryClean?replace("<[^>]*>","eeee","g")?replace(":","")?replace("all","")?replace("&rarr;","")}</#assign>
+	<#assign FacetSummaryLabel>${FacetSummaryClean?replace("<[^>]*>","eeee","r")?replace(":","")?replace("all","")?replace("&rarr;","")}</#assign>
 	 
 	<div>
 
