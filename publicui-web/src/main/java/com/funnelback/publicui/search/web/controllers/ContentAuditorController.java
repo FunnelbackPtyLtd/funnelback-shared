@@ -27,6 +27,9 @@ public class ContentAuditorController {
 
     /** Name of the default template used by content auditor */
     private static final String DEFAULT_TEMPLATE_NAME = "index";
+    
+    /** Name of the summary view for the Marketing Dashboard */
+    private static final String SUMMARY_TEMPLATE_NAME = "summary";
 
     /** Name of the template for content auditor CSV export */
     private static final String CSV_TEMPLATE_NAME = "csv_export";
@@ -69,6 +72,9 @@ public class ContentAuditorController {
             viewName = templateDirectory + "/" + ContentAuditorController.CSV_TEMPLATE_NAME;
             response.setContentType("text/csv");
             response.setHeader("content-disposition", "attachment; filename=content-auditor-export.csv");            
+        } else if (SUMMARY_TEMPLATE_NAME.equals(question.getForm())) {
+            viewName = templateDirectory + "/" + SUMMARY_TEMPLATE_NAME;
+            response.setContentType("application/json");
         }
         
         return new ModelAndView(viewName, mav.getModel());
