@@ -14,6 +14,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.utils.DocHdrUtils;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 
 public class TRIMStoreCacheTest extends
@@ -61,10 +62,11 @@ public class TRIMStoreCacheTest extends
     public void testUnknownRecord() throws Exception {
         ModelAndView mav = cacheController.cache(request,
                 response,
-                configRepository.getCollection(collectionId),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "trim://12/345/", null, 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection(collectionId),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        "trim://12/345/", null, 0, -1));
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }

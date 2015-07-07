@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
@@ -61,10 +62,11 @@ public class LocalCollectionCacheControllerTest {
     public void test() throws Exception {
         ModelAndView mav = cacheController.cache(request,
                 response,
-                configRepository.getCollection("cache-local"),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "unknown-record", "local-collection-cached-document.txt", 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection("cache-local"),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        "unknown-record", "local-collection-cached-document.txt", 0, -1));
 
         Assert.assertEquals(200, response.getStatus());
         
@@ -88,10 +90,11 @@ public class LocalCollectionCacheControllerTest {
     public void testPathOutsideDataRoot() throws Exception {
         cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-local"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", "src/test/resources/dummy-search_home/global.cfg.default", 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-local"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", "src/test/resources/dummy-search_home/global.cfg.default", 0, -1));
         
         Assert.assertEquals(404, response.getStatus());
 

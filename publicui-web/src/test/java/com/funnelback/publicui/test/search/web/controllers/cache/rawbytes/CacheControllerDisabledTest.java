@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
@@ -61,10 +62,11 @@ public class CacheControllerDisabledTest {
         configRepository.getCollection("cache-disabled").getConfiguration().setValue(Keys.UI_CACHE_DISABLED, "true");
         ModelAndView mav = cacheController.cache(request,
                 response,
-                configRepository.getCollection("cache-disabled"),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "unused", null, 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection("cache-disabled"),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        "unused", null, 0, -1));
         Assert.assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }

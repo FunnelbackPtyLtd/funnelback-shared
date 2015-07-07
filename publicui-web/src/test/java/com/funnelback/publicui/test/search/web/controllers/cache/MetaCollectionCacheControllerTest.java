@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
@@ -56,10 +57,11 @@ public class MetaCollectionCacheControllerTest {
     public void test() throws Exception {
         cacheController.cache(request,
                 response,
-                configRepository.getCollection("cache-meta"),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "unknown-record", null, 0, -1);
+                new CacheQuestion(
+                    configRepository.getCollection("cache-meta"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", null, 0, -1));
         
         Assert.assertEquals(404, response.getStatus());
 

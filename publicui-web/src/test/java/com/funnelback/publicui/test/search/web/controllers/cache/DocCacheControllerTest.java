@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.annotation.Resource;
 
 import com.funnelback.common.utils.XMLUtils;
+
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
@@ -64,10 +66,11 @@ public class DocCacheControllerTest {
     public void testHtml() throws Exception {
         ModelAndView mav = cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-doc"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", "folder/document.html", 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-doc"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", "folder/document.html", 0, -1));
         
         Assert.assertEquals(200, response.getStatus());
         
@@ -90,10 +93,11 @@ public class DocCacheControllerTest {
     public void testXml() throws Exception {
         cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-doc"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", "folder/document.xml", 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-doc"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", "folder/document.xml", 0, -1));
         
         Assert.assertEquals(200, response.getStatus());
         
@@ -116,10 +120,11 @@ public class DocCacheControllerTest {
     public void testNoFile() throws Exception {
         cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-doc"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", "non-existent/document.html", 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-doc"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", "non-existent/document.html", 0, -1));
 
         Assert.assertEquals(404, response.getStatus());
 
@@ -138,10 +143,11 @@ public class DocCacheControllerTest {
     public void testParentFile() throws Exception {
         cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-doc"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", "../../etc/passwd", 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-doc"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", "../../etc/passwd", 0, -1));
     }
 
 
@@ -154,9 +160,10 @@ public class DocCacheControllerTest {
         
         cacheController.cache(request,
             response,
-            configRepository.getCollection("cache-doc"),
-            DefaultValues.PREVIEW_SUFFIX,
-            DefaultValues.DEFAULT_FORM,
-            "unknown-record", f, 0, -1);
+            new CacheQuestion(
+                    configRepository.getCollection("cache-doc"),
+                    DefaultValues.PREVIEW_SUFFIX,
+                    DefaultValues.DEFAULT_FORM,
+                    "unknown-record", f, 0, -1));
     }
 }

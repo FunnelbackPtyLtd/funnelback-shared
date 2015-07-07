@@ -6,7 +6,6 @@ import java.io.IOException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import com.funnelback.common.utils.XMLUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,6 +24,8 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.utils.XMLUtils;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.controllers.CacheController;
@@ -88,10 +89,11 @@ public abstract class AbstractXmlCacheControllerTest {
     public void testUnknownRecord() throws Exception {
         ModelAndView mav = cacheController.cache(request,
                 response,
-                configRepository.getCollection(collectionId),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "unknown-record", null, 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection(collectionId),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        "unknown-record", null, 0, -1));
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
         Assert.assertEquals(
@@ -109,10 +111,11 @@ public abstract class AbstractXmlCacheControllerTest {
     public void test() throws Exception {
         cacheController.cache(request,
                 response,
-                configRepository.getCollection(collectionId),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                cacheUrl.toString(), null, 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection(collectionId),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        cacheUrl.toString(), null, 0, -1));
         
         Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         Assert.assertEquals("text/xml", response.getContentType());

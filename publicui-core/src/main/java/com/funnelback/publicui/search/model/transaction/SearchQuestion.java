@@ -456,6 +456,9 @@ public class SearchQuestion {
             /** URL of the original document */
             public static final String URL = "url";
             
+            /** Document path */
+            public static final String DOC = "doc";
+            
             /** Offset where to read the file from */
             public static final String OFFSET = "off";
             

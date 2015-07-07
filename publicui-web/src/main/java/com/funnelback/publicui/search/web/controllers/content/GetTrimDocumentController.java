@@ -29,6 +29,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.data.exception.AccessToRecordDeniedException;
@@ -175,10 +176,8 @@ public class GetTrimDocumentController {
                 // We can't just redirect to the cache URL here since there's an interceptor
                 // that will prevent the request to complete if the collection has DLS enabled.
                 log.debug("No attachment for record " + trimUri + ", returning cached copy");
-                return cacheController.cache(request, response, collection,
-                    DefaultValues.DEFAULT_PROFILE,
-                    DefaultValues.DEFAULT_FORM, url,
-                    null, 0, -1);
+                return cacheController.cache(request, response,
+                        new CacheQuestion(collection, DefaultValues.DEFAULT_PROFILE, DefaultValues.DEFAULT_FORM, url, null, 0, -1));
                 
             } finally {
                 IOUtils.closeQuietly(fis);
