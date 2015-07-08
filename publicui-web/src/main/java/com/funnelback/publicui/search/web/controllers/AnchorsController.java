@@ -41,9 +41,9 @@ public class AnchorsController {
     
     @RequestMapping(value="/anchors.html",params={RequestParameters.COLLECTION,"docnum","!anchortext"})
     public ModelAndView anchors(HttpServletResponse response,
-            @RequestParam(RequestParameters.COLLECTION) Collection collection, String docnum) throws IOException {
+            @RequestParam(RequestParameters.COLLECTION) Collection collection, int docnum) throws IOException {
         
-        AnchorModel anchors = fetcher.fetchGeneral(null, Integer.parseInt(docnum),collection.getId(), collection);
+        AnchorModel anchors = fetcher.fetchGeneral(null, docnum,collection.getId(), collection);
         
         Map<String,Object> model = new HashMap<String,Object>(); 
         model.put("anchors", anchors);
