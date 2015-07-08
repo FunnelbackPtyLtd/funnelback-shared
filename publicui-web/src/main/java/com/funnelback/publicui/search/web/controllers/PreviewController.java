@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class PreviewController {
     public ModelAndView preview(
             HttpServletRequest request,
             HttpServletResponse response,
-            String url,
+            URL url,
             @Valid ImageScalerSettings ss,
             @RequestParam(value = "render_width", required = false) Integer renderWidth,
             @RequestParam(value = "render_height", required = false) Integer renderHeight)
@@ -56,10 +57,10 @@ public class PreviewController {
             renderHeight = DEFAULT_HEIGHT;
         }
 
-        byte[] unscaledImage = renderer.renderUrl(url, renderWidth, renderHeight);
+        byte[] unscaledImage = renderer.renderUrl(url.toString(), renderWidth, renderHeight);
         if (unscaledImage.length > 0) {
             byte[] scaledImage = scaler.scaleImage(
-                    PreviewController.class.getCanonicalName() + "|" + url,
+                    PreviewController.class.getCanonicalName() + "|" + url.toString(),
                     unscaledImage, ss);
             
             String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];

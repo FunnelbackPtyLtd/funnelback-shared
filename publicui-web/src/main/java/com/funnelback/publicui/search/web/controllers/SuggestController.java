@@ -12,10 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.View;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.ProfileId;
 import com.funnelback.dataapi.connector.padre.suggest.SuggestQuery.Sort;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion.ActionType;
@@ -36,17 +38,16 @@ import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.service.Suggester;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.ProfileEditor;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 
 /**
  * Query completion / suggestion controller.
  */
 @Controller
-@Log4j2
 public class SuggestController extends AbstractRunPadreBinaryController {
 
-    private static final String PADRE_QS = "padre-qs";
-    
     /** Template token for the query terms */
     private static final String HISTORY_SUGGEST_QUERY = "{query}";
     
@@ -102,6 +103,12 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     @Resource(name="suggestViewRich")
     private View richView;
 
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+        binder.registerCustomEditor(ProfileId.class, new ProfileEditor(DefaultValues.DEFAULT_PROFILE));
+    }
+
     /**
      * Get suggestions using LibQS
      * @param response HTTP response
@@ -130,8 +137,8 @@ public class SuggestController extends AbstractRunPadreBinaryController {
      * @throws IOException 
      */
     @RequestMapping(value="/suggest.json", params=RequestParameters.COLLECTION)
-    public ModelAndView suggestJava(@RequestParam("collection") String collectionId,
-            @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
+    public ModelAndView suggestJava(@RequestParam("collection") Collection collection,
+            @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) ProfileId profile,
             @RequestParam("partial_query") String partialQuery,
             @RequestParam(defaultValue="10") int show,
             @RequestParam(defaultValue="0") int sort,
@@ -143,13 +150,12 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         
-        Collection c = configRepository.getCollection(collectionId);
-        if (c != null) {
+        if (collection != null) {
             // Get organic/CSV suggestions from PADRE
-            List<Suggestion> suggestions = suggester.suggest(c, profile, partialQuery, show, Sort.valueOf(sort), alpha, category);
+            List<Suggestion> suggestions = suggester.suggest(collection, profile.getId(), partialQuery, show, Sort.valueOf(sort), alpha, category);
 
             // Augment them with search history if needed
-            augmentSuggestionsWithHistory(suggestions, c, user, getSearchUrl(request, c.getConfiguration()));
+            augmentSuggestionsWithHistory(suggestions, collection, user, getSearchUrl(request, collection.getConfiguration()));
             
             ModelAndView mav = new ModelAndView();
             mav.addObject("suggestions", suggestions);
@@ -170,7 +176,6 @@ public class SuggestController extends AbstractRunPadreBinaryController {
             return mav;
         } else {
             // Collection not found
-            log.warn("Collection '"+collectionId+"' not found");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }

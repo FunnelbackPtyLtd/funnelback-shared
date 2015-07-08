@@ -1,23 +1,21 @@
 package com.funnelback.publicui.search.web.controllers;
 
-import com.codahale.metrics.MetricRegistry;
-import com.funnelback.common.views.StoreView;
-import com.funnelback.common.utils.XMLUtils;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.io.store.*;
-import com.funnelback.common.io.store.Store.RecordAndMetadata;
-import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Collection.Hook;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.web.binding.CollectionEditor;
-import com.funnelback.publicui.utils.web.MetricsConfiguration;
-import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
-
 import groovy.lang.Script;
+
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -25,22 +23,37 @@ import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindException;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import com.codahale.metrics.MetricRegistry;
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Keys;
+import com.funnelback.common.io.store.RawBytesRecord;
+import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
+import com.funnelback.common.io.store.StringRecord;
+import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.utils.XMLUtils;
+import com.funnelback.common.views.StoreView;
+import com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Hook;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
+import com.funnelback.publicui.search.web.binding.StringDefaultValueEditor;
+import com.funnelback.publicui.utils.web.MetricsConfiguration;
+import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
 
 /**
  * Deal with cached copies
@@ -86,6 +99,18 @@ public class CacheController {
 
     @InitBinder
     public void initBinder(DataBinder binder) {
+        // For security reasons, only allow specific fields for
+        // data binding
+        binder.setAllowedFields(
+                RequestParameters.COLLECTION,
+                RequestParameters.PROFILE,
+                RequestParameters.FORM,
+                RequestParameters.Cache.URL,
+                RequestParameters.Cache.DOC,
+                RequestParameters.Cache.OFFSET,
+                RequestParameters.Cache.LENGTH);
+        binder.registerCustomEditor(String.class, RequestParameters.PROFILE, new StringArrayFirstSlotEditor());
+        binder.registerCustomEditor(String.class, RequestParameters.FORM, new StringDefaultValueEditor(DefaultValues.DEFAULT_FORM));
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
         binder.registerCustomEditor(File.class, new RelativeFileOnlyEditor());
     }
@@ -108,29 +133,23 @@ public class CacheController {
     @RequestMapping(value="/cache", method=RequestMethod.GET)
     public ModelAndView cache(HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(value=RequestParameters.COLLECTION, required=true) Collection collection,
-            @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
-            @RequestParam(defaultValue=DefaultValues.DEFAULT_FORM) String form,
-            @RequestParam(required=true) String url,
-            @RequestParam String doc,
-            @RequestParam(value=RequestParameters.Cache.OFFSET, defaultValue="0") long offset,
-            @RequestParam(value=RequestParameters.Cache.LENGTH, defaultValue="-1") int length) throws Exception {
-        if (url == null) {
+            @Valid CacheQuestion question) throws Exception {
+        if (question.getUrl() == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else if (collection.getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
+        } else if (question.getCollection().getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else { 
             RecordAndMetadata<? extends Record<?>> rmd
-                    = dataRepository.getCachedDocument(collection, StoreView.live, url);
-            if ((rmd == null || rmd.record == null) && doc != null) {
+                    = dataRepository.getCachedDocument(question.getCollection(), StoreView.live, question.getUrl());
+            if ((rmd == null || rmd.record == null) && question.getDoc() != null) {
                 // Attempt with DOC parameter
-                File docFile = RelativeFileOnlyEditor.transformToFile(doc);
+                File docFile = RelativeFileOnlyEditor.transformToFile(question.getDoc());
                 // Attempt with DOC parameter
-                rmd = dataRepository.getDocument(collection, StoreView.live, url, docFile, offset, length);
+                rmd = dataRepository.getDocument(question.getCollection(), StoreView.live, question.getUrl(), docFile, question.getOff(), question.getLen());
             }
                 
             if (rmd != null && rmd.record != null) {
-                HookScriptResult hookResult = runHookScript(collection, Hook.pre_cache, rmd);
+                HookScriptResult hookResult = runHookScript(question.getCollection(), Hook.pre_cache, rmd);
                 if (hookResult.authorized) {
                     if (hookResult.record != null && hookResult.metadata != null) {
                         rmd = new RecordAndMetadata<Record<?>>(hookResult.record, hookResult.metadata);
@@ -140,10 +159,10 @@ public class CacheController {
                         String content = getContent(rmd.record);
                         
                         Map<String, Object> model = new HashMap<String, Object>();
-                        model.put(RequestParameters.Cache.URL, url);
-                        model.put(RequestParameters.COLLECTION, collection);
-                        model.put(RequestParameters.PROFILE, profile);
-                        model.put(RequestParameters.FORM, form);
+                        model.put(RequestParameters.Cache.URL, question.getUrl());
+                        model.put(RequestParameters.COLLECTION, question.getCollection());
+                        model.put(RequestParameters.PROFILE, question.getProfile());
+                        model.put(RequestParameters.FORM, question.getForm());
                         model.put(MODEL_REQUEST_URL, new URL(request.getRequestURL().toString()));
                         model.put(MODEL_METADATA, rmd.metadata);
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
@@ -152,11 +171,11 @@ public class CacheController {
                         model.put(MODEL_DOCUMENT, Jsoup.parse(content, charset));
                         
                         String view = DefaultValues.FOLDER_CONF
-                                + "/" + collection.getId()
-                                + "/" + profile
-                                + "/" + form + DefaultValues.CACHE_FORM_SUFFIX;
+                                + "/" + question.getCollection().getId()
+                                + "/" + question.getProfile()
+                                + "/" + question.getForm() + DefaultValues.CACHE_FORM_SUFFIX;
 
-                        incrementMetrics(collection, profile);
+                        incrementMetrics(question.getCollection(), question.getProfile());
                         
                         return new ModelAndView(view, model);
                         
@@ -165,13 +184,13 @@ public class CacheController {
     
                         // Set custom content-type if any
                         response.setContentType(
-                                collection.getConfiguration().value(
+                                question.getCollection().getConfiguration().value(
                                         Keys.ModernUI.Cache.FORM_PREFIX
-                                        + "." + form + "." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX,
+                                        + "." + question.getForm() + "." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX,
                                 DEFAULT_XML_CONTENT_TYPE));
                         
                         // XSL Transform if there's an XSL template
-                        File xslTemplate = configRepository.getXslTemplate(collection.getId(), profile);
+                        File xslTemplate = configRepository.getXslTemplate(question.getCollection().getId(), question.getProfile());
                         if (xslTemplate != null) {
                             Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslTemplate));
                             DOMSource xmlSource = new DOMSource(xmlRecord.getContent());
@@ -180,7 +199,7 @@ public class CacheController {
                             response.getWriter().write(XMLUtils.toString(xmlRecord.getContent()));
                         }
 
-                        incrementMetrics(collection, profile);
+                        incrementMetrics(question.getCollection(), question.getProfile());
                         
                         return null;
                     } else {
@@ -192,7 +211,7 @@ public class CacheController {
                 }
             } else {
                 // Record not found
-                log.debug("Cached copy of '"+url+"' not found on collection '"+collection.getId()+"'");
+                log.debug("Cached copy of '"+question.getUrl()+"' not found on collection '"+question.getCollection().getId()+"'");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         }
@@ -275,6 +294,17 @@ public class CacheController {
         public final boolean authorized;
         public final Record<?> record;
         public final Map<String, String> metadata;
+    }
+    
+    /**
+     * Handle bind exception (validation error, happens when a bad
+     * parameter is passed in and cannot be mapped to an object field)
+     * @param response
+     */
+    @ExceptionHandler(BindException.class)
+    public void handleBindException(HttpServletResponse response, BindException be) {
+        log.error("Validation error", be);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
     
     /**

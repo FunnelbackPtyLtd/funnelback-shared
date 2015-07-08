@@ -7,16 +7,17 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.funnelback.common.utils.XMLUtils;
+import lombok.SneakyThrows;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
-import lombok.SneakyThrows;
-
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.XmlRecord;
+import com.funnelback.common.utils.XMLUtils;
+import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 
 public class TRIMPushFolderXmlStoreCacheTest extends
@@ -67,10 +68,11 @@ public class TRIMPushFolderXmlStoreCacheTest extends
     public void testUnknownRecord() throws Exception {
         ModelAndView mav = cacheController.cache(request,
                 response,
-                configRepository.getCollection(collectionId),
-                DefaultValues.PREVIEW_SUFFIX,
-                DefaultValues.DEFAULT_FORM,
-                "trim://55/1234", null, 0, -1);
+                new CacheQuestion(
+                        configRepository.getCollection(collectionId),
+                        DefaultValues.PREVIEW_SUFFIX,
+                        DefaultValues.DEFAULT_FORM,
+                        "trim://55/1234", null, 0, -1));
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         Assert.assertEquals(CacheController.CACHED_COPY_UNAVAILABLE_VIEW, mav.getViewName());
     }

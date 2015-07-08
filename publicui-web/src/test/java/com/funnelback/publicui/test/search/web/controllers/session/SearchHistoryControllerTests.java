@@ -37,23 +37,23 @@ public class SearchHistoryControllerTests extends SessionDaoTest {
     @Test
     public void testInvalidCollection() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.searchHistoryClear("invalid", user, response);
-        assertEquals(400, response.getStatus());
+        controller.searchHistoryClear(null, user, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.clickHistoryClear("invalid", user, response);
-        assertEquals(400, response.getStatus());
+        controller.clickHistoryClear(null, user, response);
+        assertEquals(404, response.getStatus());
     }
     
     @Test
     public void testNoUser() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.searchHistoryClear(collection.getId(), null, response);
-        assertEquals(400, response.getStatus());
+        controller.searchHistoryClear(collection, null, response);
+        assertEquals(404, response.getStatus());
         
         response = new MockHttpServletResponse();
-        controller.clickHistoryClear(collection.getId(), null, response);
-        assertEquals(400, response.getStatus());
+        controller.clickHistoryClear(collection, null, response);
+        assertEquals(404, response.getStatus());
     }
     
     @Test
@@ -62,14 +62,14 @@ public class SearchHistoryControllerTests extends SessionDaoTest {
         assertEquals(0, repository.getClickHistory(user, collection, 10).size());
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.searchHistoryClear(collection.getId(), user, response);
+        controller.searchHistoryClear(collection, user, response);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertEquals("{\"status\":\"ok\"}", response.getContentAsString());
 
         response = new MockHttpServletResponse();
-        controller.clickHistoryClear(collection.getId(), user, response);
+        controller.clickHistoryClear(collection, user, response);
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
@@ -84,7 +84,7 @@ public class SearchHistoryControllerTests extends SessionDaoTest {
         assertEquals(3, repository.getSearchHistory(user, collection, 10).size());
         
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.searchHistoryClear(collection.getId(), user, response);
+        controller.searchHistoryClear(collection, user, response);
         
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
         assertEquals(200, response.getStatus());
@@ -102,7 +102,7 @@ public class SearchHistoryControllerTests extends SessionDaoTest {
         assertEquals(3, repository.getClickHistory(user, collection, 10).size());
         
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.clickHistoryClear(collection.getId(), user, response);
+        controller.clickHistoryClear(collection, user, response);
         
         assertEquals(0, repository.getClickHistory(user, collection, 10).size());
         assertEquals(200, response.getStatus());

@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.ProfileId;
 import com.funnelback.publicui.search.web.controllers.SuggestController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
@@ -43,8 +44,8 @@ public class SuggestControllerTest {
     @Test
     public void testInvalidCollection() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        suggestController.suggestJava("invalid",
-                DefaultValues.DEFAULT_PROFILE,
+        suggestController.suggestJava(null,
+                new ProfileId(DefaultValues.DEFAULT_PROFILE),
                 "ab", 0, 0, "json", 0.5, "abc", "cb", null, new MockHttpServletRequest(), response);
         
         Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());

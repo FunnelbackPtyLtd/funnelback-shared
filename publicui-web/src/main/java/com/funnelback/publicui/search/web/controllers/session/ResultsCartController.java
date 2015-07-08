@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.web.controllers.session;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -14,16 +13,15 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.CartClickLog;
-import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
@@ -33,6 +31,7 @@ import com.funnelback.publicui.search.service.IndexRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
 
 /**
  * Controller for the results shopping cart.
@@ -56,7 +55,12 @@ public class ResultsCartController extends SessionApiControllerBase {
 
     @Autowired
     @Setter private IndexRepository indexRepository;
-    
+
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+    }
+
     /**
      * List the cart
      * 
@@ -67,16 +71,15 @@ public class ResultsCartController extends SessionApiControllerBase {
      */
     @RequestMapping(method = RequestMethod.GET)
     public void cartList(
-        @RequestParam("collection") String collectionId,
+        @RequestParam("collection") Collection collection,
         @ModelAttribute SearchUser user,
         HttpServletResponse response) throws IOException {
 
-        Collection c = configRepository.getCollection(collectionId);
-        if (c != null && user != null) {
-            List<CartResult> cart = cartRepository.getCart(user, c);
+        if (collection != null && user != null) {
+            List<CartResult> cart = cartRepository.getCart(user, collection);
             sendResponse(response, HttpServletResponse.SC_OK, cart);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
     
@@ -92,31 +95,30 @@ public class ResultsCartController extends SessionApiControllerBase {
      */
     @RequestMapping(method=RequestMethod.POST)
     public void cartAdd(
-            @RequestParam(required = true) String collection,
+            @RequestParam(required = true) Collection collection,
             @RequestParam(required = true) URI url,
             @ModelAttribute SearchUser user,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        Collection c = configRepository.getCollection(collection);
-        if (c != null && user != null) {
+        if (collection != null && user != null) {
 
-            Result r = indexRepository.getResult(c, url);
+            Result r = indexRepository.getResult(collection, url);
             if (r != null) {
                 CartResult cart = CartResult.fromResult(r);
-                cart.setCollection(c.getId());
+                cart.setCollection(collection.getId());
                 cart.setUserId(user.getId());
                 cart.setAddedDate(new Date());
                 
                 cartRepository.addToCart(cart);
                 
-                logService.logCart(LogUtils.createCartLog(url, request, c, CartClickLog.Type.ADD_TO_CART, user));
+                logService.logCart(LogUtils.createCartLog(url, request, collection, CartClickLog.Type.ADD_TO_CART, user));
             } else {
-                log.warn("Result with URL '"+url+"' not found in collection '"+c.getId()+"'");
+                log.warn("Result with URL '"+url+"' not found in collection '"+collection.getId()+"'");
             }
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
     
@@ -132,23 +134,22 @@ public class ResultsCartController extends SessionApiControllerBase {
      */
     @RequestMapping(method=RequestMethod.DELETE, params = RequestParameters.Cart.URL)
     public void cartRemove(
-            @RequestParam(required = true) String collection,
+            @RequestParam(required = true) Collection collection,
             @RequestParam(required = true) URI url,
             @ModelAttribute SearchUser user,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        Collection c = configRepository.getCollection(collection);
-        if (c != null && user != null) {
+        if (collection != null && user != null) {
 
             // Removing the result from cart
-            cartRepository.removeFromCart(user, c, url);
+            cartRepository.removeFromCart(user, collection, url);
             
-            logService.logCart(LogUtils.createCartLog(url, request, c, CartClickLog.Type.REMOVE_FROM_CART, user));
+            logService.logCart(LogUtils.createCartLog(url, request, collection, CartClickLog.Type.REMOVE_FROM_CART, user));
             
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
 
@@ -162,21 +163,20 @@ public class ResultsCartController extends SessionApiControllerBase {
      */
     @RequestMapping(method=RequestMethod.DELETE, params = "!"+RequestParameters.Cart.URL)
     public void cartClear(
-            @RequestParam String collection,
+            @RequestParam Collection collection,
             @ModelAttribute SearchUser user,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         
-        Collection c = configRepository.getCollection(collection);
-        if (c != null && user != null) {
-        	List<CartResult> cart = cartRepository.getCart(user, c);
+        if (collection != null && user != null) {
+        	List<CartResult> cart = cartRepository.getCart(user, collection);
         	for(CartResult result: cart) {
-        		logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request, c, CartClickLog.Type.CLEAR_CART, user));
+        		logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request, collection, CartClickLog.Type.CLEAR_CART, user));
         	}
-            cartRepository.clearCart(user, c);
+            cartRepository.clearCart(user, collection);
             cartList(collection, user, response);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
     

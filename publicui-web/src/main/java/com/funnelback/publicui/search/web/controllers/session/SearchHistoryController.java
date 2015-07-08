@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +17,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
 
 /**
  * Controller for the user search and click history
@@ -29,7 +32,12 @@ public class SearchHistoryController extends SessionApiControllerBase {
     
     @Autowired
     private SearchHistoryRepository historyRepository;
-    
+
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+    }
+
     /**
      * Clear the search history of a user
      * 
@@ -40,16 +48,15 @@ public class SearchHistoryController extends SessionApiControllerBase {
      */
     @RequestMapping(value="/search-history.json", method=RequestMethod.DELETE)
     public void searchHistoryClear(
-            @RequestParam("collection") String collectionId,
+            @RequestParam("collection") Collection collection,
             @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
-        Collection c = configRepository.getCollection(collectionId);
-        if (c != null && user != null) {
-            historyRepository.clearSearchHistory(user, c);
+        if (collection != null && user != null) {
+            historyRepository.clearSearchHistory(user, collection);
             sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
     
@@ -62,16 +69,15 @@ public class SearchHistoryController extends SessionApiControllerBase {
      */
     @RequestMapping(value="/click-history.json", method=RequestMethod.DELETE)
     public void clickHistoryClear(
-            @RequestParam("collection") String collectionId,
+            @RequestParam("collection") Collection collection,
             @ModelAttribute SearchUser user,
             HttpServletResponse response) throws IOException {
 
-        Collection c = configRepository.getCollection(collectionId);
-        if (c != null && user != null) {
-            historyRepository.clearClickHistory(user, c);
+        if (collection != null && user != null) {
+            historyRepository.clearClickHistory(user, collection);
             sendResponse(response, HttpServletResponse.SC_OK, OK_STATUS_MAP);
         } else {
-            sendResponse(response, HttpServletResponse.SC_BAD_REQUEST, KO_STATUS_MAP);
+            sendResponse(response, HttpServletResponse.SC_NOT_FOUND, KO_STATUS_MAP);
         }
     }
     

@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -43,11 +44,11 @@ public class ImageScaleController {
      * must be manually cleared if the source image is changed.
      */
     @RequestMapping(value="/scale", method=RequestMethod.GET)
-    public ModelAndView scale(HttpServletResponse response, String url, @Valid ImageScalerSettings ss)
+    public ModelAndView scale(HttpServletResponse response, URL url, @Valid ImageScalerSettings ss)
         throws Exception {
         
-        byte[] unscaledImage = fetcher.fetch(url);
-        byte[] scaledImage = scaler.scaleImage(url, unscaledImage, ss);
+        byte[] unscaledImage = fetcher.fetch(url.toString());
+        byte[] scaledImage = scaler.scaleImage(url.toString(), unscaledImage, ss);
         
         String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];
         response.addHeader("Content-Type", mimeType);
@@ -65,10 +66,10 @@ public class ImageScaleController {
      * Clear the cache for the specified image and scaling settings.
      */
     @RequestMapping(value="/scale/clear-cache", method=RequestMethod.GET)
-    public ModelAndView clearCache(String url, @Valid ImageScalerSettings ss)
+    public ModelAndView clearCache(URL url, @Valid ImageScalerSettings ss)
         throws Exception {
-        fetcher.clearCache(url);
-        scaler.clearCache(url, ss);
+        fetcher.clearCache(url.toString());
+        scaler.clearCache(url.toString(), ss);
         return null;
     }
 
