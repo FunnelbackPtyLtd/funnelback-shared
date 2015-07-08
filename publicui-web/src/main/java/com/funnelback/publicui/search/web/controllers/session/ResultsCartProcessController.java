@@ -7,12 +7,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.ProfileId;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.CartClickLog;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -22,6 +25,8 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.ProfileEditor;
 
 /**
  * <p>Controller to process a result cart.</p>
@@ -43,6 +48,12 @@ public class ResultsCartProcessController extends SessionController {
     @Autowired
     private LogService logService;
 
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+        binder.registerCustomEditor(ProfileId.class, new ProfileEditor(DefaultValues.DEFAULT_PROFILE));
+    }
+
     /**
      * <p>Processes the cart</p>
      * 
@@ -61,42 +72,41 @@ public class ResultsCartProcessController extends SessionController {
      */
     @RequestMapping(value="/cart-process.html")
     public ModelAndView cartProcess(
-        @RequestParam(required=true) String collection,
-        @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) String profile,
+        @RequestParam(required=true) Collection collection,
+        @RequestParam(defaultValue=DefaultValues.DEFAULT_PROFILE) ProfileId profile,
         @ModelAttribute SearchUser user,
         HttpServletRequest request,
         HttpServletResponse response) throws InstantiationException, IllegalAccessException {
         
-        Collection c = configRepository.getCollection(collection);
-        if (c != null && user != null) {
-            Class<?> clazz = c.getCartProcessClass();
+        if (collection != null && user != null) {
+            Class<?> clazz = collection.getCartProcessClass();
             if (clazz == null) {
                 // Default empty implementation
                 clazz = CustomCartProcessor.class;
             }
             
             CustomCartProcessor ctrl = (CustomCartProcessor) clazz.newInstance();
-            List<CartResult> cart = cartRepository.getCart(user, c);
+            List<CartResult> cart = cartRepository.getCart(user, collection);
             
             for(CartResult result: cart) {
             	logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request,
-            			c, CartClickLog.Type.PROCESS_CART, user));
+            	        collection, CartClickLog.Type.PROCESS_CART, user));
             }
             
-            ModelAndView mav = ctrl.process(c, user, cart, request, response);
+            ModelAndView mav = ctrl.process(collection, user, cart, request, response);
             
-            mav.addObject(RequestParameters.COLLECTION, c);
+            mav.addObject(RequestParameters.COLLECTION, collection);
             mav.addObject("user", user);
             mav.addObject("cart", cart);
             
             // Patch view name to include full relative path from SEARCH_HOME
             mav.setViewName( DefaultValues.FOLDER_CONF + "/"
-                + c.getId()    + "/"
-                + profile + "/"
+                + collection.getId()    + "/"
+                + profile.getId() + "/"
                 + mav.getViewName());
             return mav;
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
     }
