@@ -63,20 +63,20 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartClear("invalid", user, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartClear(null, user, request, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartAdd("invalid", URI.create("funnelback://result/"), user, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartAdd(null, URI.create("funnelback://result/"), user, request, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartList("invalid", user, response);
-        assertEquals(400, response.getStatus());
+        controller.cartList(null, user, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartRemove("invalid", URI.create("funnelback://result/"), user, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartRemove(null, URI.create("funnelback://result/"), user, request, response);
+        assertEquals(404, response.getStatus());
     }
 
     @Test
@@ -84,20 +84,20 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartClear(collection.getId(), null, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartClear(collection, null, request, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartAdd(collection.getId(), URI.create("funnelback://result/"), null, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartAdd(collection, URI.create("funnelback://result/"), null, request, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartList(collection.getId(), null, response);
-        assertEquals(400, response.getStatus());
+        controller.cartList(collection, null, response);
+        assertEquals(404, response.getStatus());
 
         response = new MockHttpServletResponse();
-        controller.cartRemove(collection.getId(), URI.create("funnelback://result/"), null, request, response);
-        assertEquals(400, response.getStatus());
+        controller.cartRemove(collection, URI.create("funnelback://result/"), null, request, response);
+        assertEquals(404, response.getStatus());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartClear(collection.getId(), user, request, response);
+        controller.cartClear(collection, user, request, response);
 
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
@@ -133,7 +133,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartClear(collection.getId(), user, request, response);
+        controller.cartClear(collection, user, request, response);
 
         // Then cart clear logs must be created
         assertEquals(0, repository.getCart(user, collection).size());
@@ -150,7 +150,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartClear(collection.getId(), user, request, response);
+        controller.cartClear(collection, user, request, response);
 
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
@@ -169,7 +169,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // When cart is cleared
-        controller.cartClear(collection.getId(), user, request, response);
+        controller.cartClear(collection, user, request, response);
 
         // Then cart log must not be created
         assertEquals(0, repository.getCart(user, collection).size());
@@ -179,7 +179,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
     @Test
     public void testCartListEmptyList() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.cartList(collection.getId(), user, response);
+        controller.cartList(collection, user, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertEquals("[]", response.getContentAsString());
@@ -193,7 +193,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         assertEquals(3, repository.getCart(user, collection).size());
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.cartList(collection.getId(), user, response);
+        controller.cartList(collection, user, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertNotSame("[]", response.getContentAsString());
@@ -212,7 +212,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartRemove(collection.getId(), uri, user, request, response);
+        controller.cartRemove(collection, uri, user, request, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertNotSame("[]", response.getContentAsString());
@@ -239,7 +239,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartRemove(collection.getId(), uri, user, request, response);
+        controller.cartRemove(collection, uri, user, request, response);
 
         cart.remove(1);
 
@@ -257,7 +257,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartRemove(collection.getId(), URI.create("funnelback://non-existent/"), user, request, response);
+        controller.cartRemove(collection, URI.create("funnelback://non-existent/"), user, request, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertNotSame("[]", response.getContentAsString());
@@ -279,7 +279,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartRemove(collection.getId(), URI.create("funnelback://non-existent/"), user, request, response);
+        controller.cartRemove(collection, URI.create("funnelback://non-existent/"), user, request, response);
 
         // Then cart removal must be logged
         assertEquals(1, logService.getCartLogs().size());
@@ -304,7 +304,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartAdd(collection.getId(), URI.create("funnelback://result.url/"), user, request, response);
+        controller.cartAdd(collection, URI.create("funnelback://result.url/"), user, request, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertNotSame("[]", response.getContentAsString());
@@ -335,7 +335,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartAdd(collection.getId(), URI.create("funnelback://result.url/"), user, request, response);
+        controller.cartAdd(collection, URI.create("funnelback://result.url/"), user, request, response);
 
         // Then the creation is logged
         assertEquals(CartClickLog.Type.ADD_TO_CART, logService.getCartLogs().get(0).getType());
@@ -353,7 +353,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartAdd(collection.getId(), URI.create("funnelback://result.url/"), user, request, response);
+        controller.cartAdd(collection, URI.create("funnelback://result.url/"), user, request, response);
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         assertEquals("[]", response.getContentAsString());
@@ -376,7 +376,7 @@ public class ResultsCartControllerTests extends SessionDaoTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        controller.cartAdd(collection.getId(), URI.create("funnelback://result.url/"), user, request, response);
+        controller.cartAdd(collection, URI.create("funnelback://result.url/"), user, request, response);
 
         // Then it is not logged
         assertEquals(0, logService.getCartLogs().size());

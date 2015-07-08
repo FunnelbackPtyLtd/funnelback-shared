@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.ProfileId;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.CartClickLog;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
@@ -53,21 +54,21 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
     @Test
     public void testInvalidParameters() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.cartProcess("invalid", "profile", user, new MockHttpServletRequest(), response);
-        assertEquals(400, response.getStatus());
+        controller.cartProcess(null, new ProfileId("profile"), user, new MockHttpServletRequest(), response);
+        assertEquals(404, response.getStatus());
     }
 
     @Test
     public void testNoUser() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        controller.cartProcess(collection.getId(), "profile", null, new MockHttpServletRequest(), response);
-        assertEquals(400, response.getStatus());
+        controller.cartProcess(collection, new ProfileId("profile"), null, new MockHttpServletRequest(), response);
+        assertEquals(404, response.getStatus());
     }
 
     @Test
     public void testEmptyCart() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, new MockHttpServletRequest(),
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, new MockHttpServletRequest(),
             response);
 
         assertEquals(200, response.getStatus());
@@ -83,7 +84,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
 
         // When its results are processed
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, new MockHttpServletRequest(),
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, new MockHttpServletRequest(),
             response);
 
         // Then interactions are not logged
@@ -97,7 +98,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
         }
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, new MockHttpServletRequest(),
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, new MockHttpServletRequest(),
             response);
 
         assertEquals(200, response.getStatus());
@@ -116,7 +117,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
 
         // When the cart results are processed
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, new MockHttpServletRequest(),
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, new MockHttpServletRequest(),
             response);
 
         // The interaction is logged
@@ -134,7 +135,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
 
         collection.setCartProcessClass(SimpleCustomCartProcessor.class);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, new MockHttpServletRequest(),
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, new MockHttpServletRequest(),
             response);
 
         assertEquals(200, response.getStatus());
@@ -155,7 +156,7 @@ public class ResultsCartProcessControllerTests extends SessionDaoTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setAttribute("an-attribute", "42");
-        ModelAndView mav = controller.cartProcess(collection.getId(), "profile", user, request, response);
+        ModelAndView mav = controller.cartProcess(collection, new ProfileId("profile"), user, request, response);
 
         assertEquals(200, response.getStatus());
         assertEquals("conf/" + collection.getId() + "/profile/a-view", mav.getViewName());
