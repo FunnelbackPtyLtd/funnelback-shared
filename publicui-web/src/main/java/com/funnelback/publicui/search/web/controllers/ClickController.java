@@ -1,7 +1,6 @@
 package com.funnelback.publicui.search.web.controllers;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
@@ -20,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionException;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.ProfileId;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
@@ -42,6 +44,8 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.log.LogService;
 import com.funnelback.publicui.search.service.log.LogUtils;
+import com.funnelback.publicui.search.web.binding.CollectionEditor;
+import com.funnelback.publicui.search.web.binding.ProfileEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
@@ -80,6 +84,12 @@ public class ClickController extends SessionController {
     @Autowired
     private MetricRegistry metrics;
 
+    @InitBinder
+    public void initBinder(DataBinder binder) {
+        binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
+        binder.registerCustomEditor(ProfileId.class, new ProfileEditor(DefaultValues.DEFAULT_PROFILE));
+    }
+    
     /**
      * Controller for interaction logging. 
      * 
@@ -94,14 +104,12 @@ public class ClickController extends SessionController {
     public void log(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required= true, value = RequestParameters.COLLECTION) String collectionId,
-            @RequestParam(required = false) String profile,
+            @RequestParam(required= true, value = RequestParameters.COLLECTION) Collection collection,
+            @RequestParam(required = false) ProfileId profile,
             @RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType,
             @RequestParam(required = false) String callback,
             @ModelAttribute SearchUser user) {
     
-        Collection collection = configRepository.getCollection(collectionId);
-        
         if (collection != null) {
             // Get the user id
             String requestId = LogUtils.getRequestIdentifier(request,
@@ -120,7 +128,7 @@ public class ClickController extends SessionController {
             parameters.keySet().removeAll(boringParameters);
             
             logService.logInteraction(
-                new InteractionLog(new Date(), collection, collection.getProfiles().get(profile),
+                new InteractionLog(new Date(), collection, collection.getProfiles().get(profile.getId()),
                     requestId, logType, referer, parameters,
                     LogUtils.getUserId(user)));
             
@@ -133,7 +141,7 @@ public class ClickController extends SessionController {
                 }
             }
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
     
@@ -158,10 +166,10 @@ public class ClickController extends SessionController {
     public void redirect(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(RequestParameters.COLLECTION) String collectionId,
+            @RequestParam(RequestParameters.COLLECTION) Collection collection,
             @RequestParam(required = false, defaultValue = "CLICK") ClickLog.Type type,
             @RequestParam(required = false, defaultValue = "0") Integer rank,
-            @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) String profile,
+            @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) ProfileId profile,
             @RequestParam(value = RequestParameters.Click.URL, required = true) URI redirectUrl,
             @RequestParam(value = RequestParameters.Click.INDEX_URL, required = true) URI indexUrl,
             @RequestParam(value = RequestParameters.Click.AUTH, required = true) String authtoken,
@@ -169,8 +177,6 @@ public class ClickController extends SessionController {
                            required = false, defaultValue = "false") boolean noAttachment,
             @ModelAttribute SearchUser user) throws IOException {
 
-        Collection collection = configRepository.getCollection(collectionId);
-        
         if (collection != null) {
             // Does the token match the target? Forbidden if not.
             if (!authTokenManager.checkToken(authtoken, redirectUrl.toString(),
@@ -232,7 +238,7 @@ public class ClickController extends SessionController {
 
             metrics.counter(MetricRegistry.name(
                 MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                profile, MetricsConfiguration.CLICK)).inc();
+                profile.getId(), MetricsConfiguration.CLICK)).inc();
             
             response.sendRedirect(
                 redirectUrl.toString()
@@ -241,7 +247,7 @@ public class ClickController extends SessionController {
                     : "")
             );
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
