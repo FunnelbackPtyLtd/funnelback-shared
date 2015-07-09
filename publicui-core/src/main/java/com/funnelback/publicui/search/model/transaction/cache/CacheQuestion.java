@@ -39,7 +39,7 @@ public class CacheQuestion {
      * and have the extension <code>.ftl</code>
      */
     @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]*")        
+    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
     @Getter @Setter
     private String form = DefaultValues.DEFAULT_FORM;
     
