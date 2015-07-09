@@ -75,7 +75,7 @@ public class SearchQuestion {
      * Display form (template)
      */
     @NonNull
-    @javax.validation.constraints.Pattern(regexp="[\\w-_]*")        
+    @javax.validation.constraints.Pattern(regexp="[\\w-_]+")        
     @Getter @Setter private String form = DefaultValues.DEFAULT_FORM;
     
     /**

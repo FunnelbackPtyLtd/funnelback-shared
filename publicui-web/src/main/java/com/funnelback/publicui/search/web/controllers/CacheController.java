@@ -51,7 +51,6 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
-import com.funnelback.publicui.search.web.binding.StringDefaultValueEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
 
@@ -110,7 +109,6 @@ public class CacheController {
                 RequestParameters.Cache.OFFSET,
                 RequestParameters.Cache.LENGTH);
         binder.registerCustomEditor(String.class, RequestParameters.PROFILE, new StringArrayFirstSlotEditor());
-        binder.registerCustomEditor(String.class, RequestParameters.FORM, new StringDefaultValueEditor(DefaultValues.DEFAULT_FORM));
         binder.registerCustomEditor(Collection.class, new CollectionEditor(configRepository));
         binder.registerCustomEditor(File.class, new RelativeFileOnlyEditor());
     }
