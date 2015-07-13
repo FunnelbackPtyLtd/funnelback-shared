@@ -53,10 +53,10 @@ public abstract class SessionApiControllerBase extends SessionController {
     }
     
     @ExceptionHandler({DataAccessException.class, TransactionException.class})
-    private void daeExceptionHandler(DataAccessException dae, HttpServletResponse response) throws IOException {
-        log.error("Error while accessing session data", dae);
+    private void daeExceptionHandler(Exception e, HttpServletResponse response) throws IOException {
+        log.error("Error while accessing session data", e);
         sendResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-            "Error while accessing session data: " + dae.getMessage());
+            "Error while accessing session data: " + e.getMessage());
     }
     
     @ExceptionHandler(value={DataBindingException.class, BindException.class})
