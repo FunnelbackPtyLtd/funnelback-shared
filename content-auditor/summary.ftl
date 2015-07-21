@@ -15,7 +15,7 @@
                 "categories": [
                     <#-- Content Auditor facets always have only one category -->
                     <#list f.categories[0].values as v>
-                        { "category": "${v.label?js_string}", "count": ${v.count} }<#if v_has_next>,</#if>
+                        { "category": "${v.label?js_string}", "count": ${v.count?c} }<#if v_has_next>,</#if>
                     </#list>
                 ]
             }
