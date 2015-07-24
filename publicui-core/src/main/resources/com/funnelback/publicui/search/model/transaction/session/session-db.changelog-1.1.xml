@@ -4,12 +4,13 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
   
   <changeSet author="lbutters" id="2">
-      <modifyDataType 
+    <comment>Support multichar metadata classes</comment>
+    <modifyDataType 
               columnName="key"
               newDataType="varchar(64)"
               tableName="clickhistorymetadata"/>
       
-      <modifyDataType 
+    <modifyDataType 
               columnName="key"
               newDataType="varchar(64)"
               tableName="cartresultmetadata"/>
