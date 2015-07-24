@@ -15,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
 import com.funnelback.publicui.search.model.transaction.session.SessionResult;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
@@ -157,14 +156,14 @@ public class SearchHistoryDaoClickTest extends SessionDaoTest {
         ClickHistory ch = super.generateRandomClickHistory();
         ch.setCollection(collection.getId());
         ch.setUserId(user.getId());
-        ch.getMetaData().put("a", new String(new byte[8192]));
+        ch.getMetaData().put("abc", new String(new byte[8192]));
         
         repository.saveClick(ch);
         
         List<ClickHistory> history = repository.getClickHistory(user, collection, 10);
         assertEquals(1, history.size());
         assertEquals(ch.getIndexUrl(), history.get(0).getIndexUrl());
-        assertEquals(SessionResult.MAX_LEN_METADATA-1, history.get(0).getMetaData().get("a").length());
+        assertEquals(SessionResult.MAX_LEN_METADATA-1, history.get(0).getMetaData().get("abc").length());
     }
 
 
