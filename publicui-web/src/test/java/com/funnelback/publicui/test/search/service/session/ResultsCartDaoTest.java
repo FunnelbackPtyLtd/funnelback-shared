@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,14 +143,14 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         CartResult cr = super.generateRandomCartResult();
         cr.setCollection(collection.getId());
         cr.setUserId(user.getId());
-        cr.getMetaData().put("a", new String(new byte[8192]));
+        cr.getMetaData().put("abc", new String(new byte[8192]));
         
         repository.addToCart(cr);
         
         List<CartResult> cart = repository.getCart(user, collection);
         assertEquals(1, cart.size());
         assertEquals(cr.getIndexUrl(), cart.get(0).getIndexUrl());
-        assertEquals(SessionResult.MAX_LEN_METADATA-1, cart.get(0).getMetaData().get("a").length());
+        assertEquals(SessionResult.MAX_LEN_METADATA-1, cart.get(0).getMetaData().get("abc").length());
     }
     
 }
