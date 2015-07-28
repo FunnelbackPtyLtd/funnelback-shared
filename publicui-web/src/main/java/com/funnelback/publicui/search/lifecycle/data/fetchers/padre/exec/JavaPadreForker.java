@@ -68,6 +68,7 @@ public class JavaPadreForker implements PadreForker {
             if(!er.getErr().trim().isEmpty()) {
                 log.warn(er.getErr());
             }
+            return er;
         } catch (ExecuteException ee) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
         } catch (IOException ioe) {
