@@ -25,6 +25,14 @@
                               <#assign countOfCategoryValues = countOfCategoryValues + 1 />
                           </@s.Category>
 
+                          <script type="text/javascript">
+                            function navigateToDataContextUrl(event) {
+                              if (event.item.dataContext.url != undefined) {
+                                window.location = event.item.dataContext.url;
+                              }
+                            }
+                          </script>
+
                           <#if FacetLabel == 'Reading Grade'>
                             <div class="panel-body">
                               <div id="reading-grade-chartdiv" style="width: 100%; height: 300px;"></div>
@@ -36,8 +44,9 @@
                                                 ${separator}
                                                 {
                                                     "label": "${s.categoryValue.label?js_string}",
-                                                    "count": "${s.categoryValue.count?c}"
-                                                }
+                                                    "count": "${s.categoryValue.count?c}",
+                                                    "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}"
+                                                 }
                                                 <#assign separator = ','>
                                         </@s.Category>
                                       ];
@@ -54,6 +63,8 @@
                                     "categoryField": "label",
                                     "height": 300
                                   } );
+
+                                  chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
                               </script>
 
                             <div class="panel-footer">
@@ -71,8 +82,9 @@
                                                 ${separator}
                                                 {
                                                     "label": "${s.categoryValue.label?js_string}",
-                                                    "count": "${s.categoryValue.count?c}"
-                                                }
+                                                    "count": "${s.categoryValue.count?c}",
+                                                    "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}"
+                                                 }
                                                 <#assign separator = ','>
                                         </@s.Category>
                                       ];
@@ -89,6 +101,9 @@
                                     "categoryField": "label",
                                     "height": 300
                                   } );
+
+                                  chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
+
                               </script>
 
                             <div class="panel-footer">
@@ -106,14 +121,16 @@
                                         <@s.Category max=2147483647 tag="">
                                                 ${separator}
                                                 {
+                                                    "sort": "${s.categoryValue.label?keep_before("-")?js_string}",
                                                     "label": "${s.categoryValue.label?js_string}",
-                                                    "count": "${s.categoryValue.count?c}"
+                                                    "count": "${s.categoryValue.count?c}",
+                                                    "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}"
                                                 }
                                                 <#assign separator = ','>
                                         </@s.Category>
                                       ];
 
-                                  data.sort(function(a,b) { return a.label - b.label; });
+                                  data.sort(function(a,b) { return a.sort - b.sort; });
 
                                   var chartNew = AmCharts.makeChart( "response-time-chartdiv", {
                                     "type": "serial",
@@ -125,6 +142,8 @@
                                     "categoryField": "label",
                                     "height": 300
                                   } );
+
+                                  chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
                               </script>
 
                             <div class="panel-footer">
