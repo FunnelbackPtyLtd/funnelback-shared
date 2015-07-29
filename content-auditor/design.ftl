@@ -25,6 +25,7 @@
     <script>var content_auditor = [];</script>
     <script src="${pathToAssets}js/amcharts/amcharts.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/amcharts/pie.js" type="text/javascript"></script>
+    <script src="${pathToAssets}js/amcharts/serial.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/KolorWheel.js" type="text/javascript"></script>
     
   </head>
