@@ -56,7 +56,8 @@ ${queryToReport}
                 <#include "/web/templates/modernui/content-auditor/reportdetails.ftl" />
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#collection-${currentCollection}-tab-0" data-toggle="tab" id="tab-nav-overview" title="View Overview">Overview</a></li>
+                        <li class="active"><a href="#collection-${currentCollection}-tab-recommendations" data-toggle="tab" id="tab-nav-recommendations" title="View Recommendations">Recommendations</a></li>
+                        <li><a href="#collection-${currentCollection}-tab-0" data-toggle="tab" id="tab-nav-overview" title="View Overview">Overview</a></li>
                         <li><a class="tab-switch-1" href="#collection-${currentCollection}-tab-1" data-toggle="tab" id="tab-nav-attributes" title="View Attributes">Attributes</a></li>
                         <li><a href="#collection-${currentCollection}-tab-2" data-toggle="tab" id="tab-nav-results" title="View Search Results">Search Results</a></li>
                         <#if !(question.inputParameterMap["duplicate_signature"]??)>
@@ -66,6 +67,9 @@ ${queryToReport}
                     
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
                         <div class="tab-content">
+                            <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-recommendations">
+                                <#include "/web/templates/modernui/content-auditor/recommendations.ftl" />
+                            </div>
                             <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-0">
                                 <#include "/web/templates/modernui/content-auditor/overview.ftl" />
                             </div>

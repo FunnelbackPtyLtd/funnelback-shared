@@ -108,7 +108,26 @@
                     </span>
                     
 					</a>
-					
+
+                    <a class="open-cache pass" target="_blank" href="${s.result.cacheUrl?html}" data-toggle="tooltip" data-placement="bottom" title="Check Cached Copy of Content">
+                    
+                    <span class="fa-stack fa-xs">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-history fa-stack-1x fa-inverse"></i>
+                    </span>
+                    
+                    </a>
+
+                    <#if s.result.metaData["FunEditLink"]??>
+                        <a class="open-edit pass" target="_blank" href="${s.result.metaData["FunEditLink"]?html}" data-toggle="tooltip" data-placement="bottom" title="Edit in Content Source">
+                        
+                        <span class="fa-stack fa-xs">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                        </span>
+                        
+                        </a>
+                    </#if>
 				
 				</td>	
 				
