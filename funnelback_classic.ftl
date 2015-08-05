@@ -503,10 +503,14 @@
     <#if QueryString?contains("f." + facetDef.name?url)
         || urlDecode(QueryString)?contains("f." + facetDef.name)
         || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
-        : <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank"] + facetDef.allQueryStringParamNames)?html}">${alltext}</a>
+        : <a href="${.namespace.FacetAllUrl(facetDef)?html}">${alltext}</a>
     </#if>
     <@FacetBreadCrumb categoryDefinitions=facetDef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
 </#macro>
+
+<#function FacetAllUrl facetDef link=question.collection.configuration.value("ui.modern.search_link")>
+    <#return link + "?" + removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank"] + facetDef.allQueryStringParamNames) />
+</#function>
 
 <#---
     Displays facet title or value of the current category.

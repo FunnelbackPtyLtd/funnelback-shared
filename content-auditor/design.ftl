@@ -88,6 +88,28 @@
             
           </form>
           </div><#-- .search-form -->
+          <div style="color: white;">
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                URI: ${question.inputParameterMap["f.URI|url"]!?html}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <@s.FacetedSearch><@s.Facet name="URI">
+                  <#assign facetDef = facetedNavigationConfig(question.collection, question.profile).getFacetDefinition(s.facet.name) >
+                  <#if QueryString?contains("f." + facetDef.name?url)
+                      || urlDecode(QueryString)?contains("f." + facetDef.name)
+                      || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
+                      <li><a href="${s.FacetAllUrl(facetedNavigationConfig(question.collection, question.profile).getFacetDefinition(s.facet.name), main.contentAuditorLink)?html}">All URIs</a></li>
+                  </#if>
+                  
+                  <@s.Category max=categoryMax tag="li">
+                    <@s.CategoryName class="" link=main.contentAuditorLink />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+                  </@s.Category>
+                </@s.Facet></@s.FacetedSearch>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </header>
