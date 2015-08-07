@@ -11,7 +11,8 @@
 
                 <#assign FacetLabel><@s.FacetLabel summary=false /></#assign>
                 <#assign FacetLabel = FacetLabel?replace("<[^>]*>", "", "r")?trim >
-                    <#if FacetLabel != 'Reading Grade' && FacetLabel != 'Date modified' && FacetLabel != 'Response Time' && FacetLabel != 'Duplicate Titles' && FacetLabel != 'Undesirable Text' && FacetLabel != 'URI'>
+                    <#if FacetLabel != 'Reading Grade' && FacetLabel != 'Date modified' && FacetLabel != 'Response Time' && FacetLabel != 'Duplicate Titles' && FacetLabel != 'Undesirable Text'
+                     && FacetLabel != 'Missing Metadata' && FacetLabel != 'URI'>
                     <#-- Exclude the facets we already show elsewhere -->
 
                       <#assign categoryCount = 0 />
