@@ -152,7 +152,7 @@
                     </div>
                   </@s.Facet>
 
-                  <@s.Facet name="Date modified">
+                  <@s.Facet name="Date Modified">
                     <div class="col-md-6">
                       <div class="panel panel-default">
                         <div class="panel-heading">
