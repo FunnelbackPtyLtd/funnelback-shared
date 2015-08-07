@@ -20,6 +20,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MetadataMissingFill;
+import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
 import com.funnelback.publicui.i18n.I18n;
@@ -69,7 +70,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     private static final int METADATA_BUFFER_LENGTH_VALUE = 1024 * 20;
 
     /** Query to run if no query is specified - should return all results */
-    private static final String NULL_QUERY = "-showalldocuments";
+    private static final String NULL_QUERY = "-FUN:showalldocuments";
 
     /** 
      * Custom URL parameter used for indicating the duplicate signature to be applied.
@@ -179,6 +180,8 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         facetDefinitions.add(createDateFacetDefinition(i18n.tr("label.dateModifiedFacet")));
 
+        facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
+
         StringBuilder rmcfValue = new StringBuilder();
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
@@ -260,6 +263,19 @@ public class ContentAuditor extends AbstractInputProcessor {
         return new FacetDefinition(label, categoryDefinitions);
     }
 
+    /**
+     * Creates a date based facet definition with the given label
+     */
+    private FacetDefinition createMissingMetadataFacetDefinition(String label) {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        MissingMetadataFill fill = new MissingMetadataFill();
+        fill.setLabel(label);
+        fill.setFacetName(label);
+        categoryDefinitions.add(fill);
+        
+        return new FacetDefinition(label, categoryDefinitions);
+    }
+
     /** Creates a URL scope based facet definition */
     private FacetDefinition createUrlFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
@@ -284,11 +300,11 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        MetadataMissingFill remainder = new MetadataMissingFill();
-        remainder.setData(metadataClass);
-        remainder.setLabel(label);
-        remainder.setFacetName(label);
-        categoryDefinitions.add(remainder);
+//        MetadataMissingFill remainder = new MetadataMissingFill();
+//        remainder.setData(metadataClass);
+//        remainder.setLabel(label);
+//        remainder.setFacetName(label);
+//        categoryDefinitions.add(remainder);
         
         return new FacetDefinition(label, categoryDefinitions);
     }

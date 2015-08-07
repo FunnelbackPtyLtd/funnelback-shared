@@ -81,6 +81,7 @@
 <rmc item="A:Indigenous Peoples">1</rmc>
 <rmc item="A:Women">1</rmc>
 <rmc item="A:Jobseekers">1</rmc>
+<rmc item="-A:">1</rmc>
 <rmc item="C:Topics">87</rmc>
 <rmc item="C:People">54</rmc>
 <rmc item="C:A-Z list of govt sites">48</rmc>
@@ -88,6 +89,7 @@
 <rmc item="C:Life Events">15</rmc>
 <rmc item="C:FAQ">4</rmc>
 <rmc item="C:Form">3</rmc>
+<rmc item="-C:">2</rmc>
 <rmc item="J:Australia">180</rmc>
 <rmc item="J:ACT">5</rmc>
 <rmc item="J:WA">3</rmc>
@@ -97,6 +99,7 @@
 <rmc item="J:QLD">2</rmc>
 <rmc item="J:TAS">2</rmc>
 <rmc item="J:VIC">1</rmc>
+<rmc item="-J:">1</rmc>
 <rmc item="a:Department of Finance and Deregulation">54</rmc>
 <rmc item="a:Department of Immigration and Citizenship">51</rmc>
 <rmc item="a:Department of Foreign Affairs and Trade">42</rmc>
@@ -126,6 +129,7 @@
 <rmc item="a:Australian Federal Police">1</rmc>
 <rmc item="a:VIC Government agency">1</rmc>
 <rmc item="a:Australian Human Rights Commission">1</rmc>
+<rmc item="-a:">1</rmc>
 <rmc item="s:visas">19</rmc>
 <rmc item="s:skilled-migrants">9</rmc>
 <rmc item="s:tourist-visas">9</rmc>
@@ -203,6 +207,7 @@
 <rmc item="s:legislation">1</rmc>
 <rmc item="s:working-conditions">1</rmc>
 <rmc item="s:travel-safety">1</rmc>
+<rmc item="-s:">1</rmc>
 <urlcount item="www.portugal.embassy.gov.au/lbon">1</urlcount>
 <urlcount item="www.aei.gov.au/AEI/QualificationsRecognition/Information">1</urlcount>
 <urlcount item="www.edna.edu.au/edna">1</urlcount>
