@@ -10,11 +10,37 @@
   <div class="inner">
     <h2><span>Report Details</span></h2>
 
+    <div class="uri-selector"> <span class="text-muted">URI:</span>
+
+    <div class="dropdown">
+              <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                 ${question.inputParameterMap["f.URI|url"]!?html}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <@s.FacetedSearch><@s.Facet name="URI">
+                  <#assign facetDef = facetedNavigationConfig(question.collection, question.profile).getFacetDefinition(s.facet.name) >
+                  <#if QueryString?contains("f." + facetDef.name?url)
+                      || urlDecode(QueryString)?contains("f." + facetDef.name)
+                      || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
+                      <li><a href="${s.FacetAllUrl(facetedNavigationConfig(question.collection, question.profile).getFacetDefinition(s.facet.name), main.contentAuditorLink)?html}">All URIs</a></li>
+                  </#if>
+                  
+                  <@s.Category max=categoryMax tag="li">
+                    <@s.CategoryName class="" link=main.contentAuditorLink />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+                  </@s.Category>
+                </@s.Facet></@s.FacetedSearch>
+              </ul>
+            </div>
+    </div>
+
+    
+
     <p> <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${currentCollection}</strong>&nbsp; <small class="text-muted"><em class="fa fa-lg fa-clock-o link" data-toggle="tooltip" data-placement="top" title="${currentCollection} was last updated on ${response.resultPacket.details.collectionUpdated?datetime}"></em></small></p>
 
     <p><span class="data-total-doc-count" data-value="<#if response.resultPacket.resultsSummary.totalMatching != 0>${response.resultPacket.resultsSummary.totalMatching?string.number?replace(',','')}<#else>0</#if>"></p>
 	
-
+    
     
   </div>
 </div>
