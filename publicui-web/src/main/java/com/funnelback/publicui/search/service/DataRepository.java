@@ -33,7 +33,7 @@ public interface DataRepository {
     
     /**
      * Gets a cached document.
-     * @param collection Collection to lookup the document from
+     * @param collection Collection to lookup the document from (Note - Must not be a meta collection)
      * @param view View to lookup the document from (Usually the live view)
      * @param url URL of the document
      * @return Cached document + metadata, or null on both fields if not found
