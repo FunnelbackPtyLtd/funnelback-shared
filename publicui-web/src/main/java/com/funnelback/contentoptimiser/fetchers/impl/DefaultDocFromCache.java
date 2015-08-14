@@ -33,16 +33,15 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.indexer.BuildInfoUtils;
 import com.funnelback.common.io.store.RawBytesRecord;
 import com.funnelback.common.io.store.Record;
+import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.StringRecord;
 import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.utils.DocHdrUtils;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
 import com.funnelback.contentoptimiser.fetchers.DocFromCache;
 import com.funnelback.contentoptimiser.utils.CgiRunnerFactory;
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
@@ -117,7 +116,8 @@ public class DefaultDocFromCache implements DocFromCache {
     /**
      * Extracts a document from the cache, and indexes it in a temporary location to find out the words in the document. 
      * 
-     *  @return a string containing all the words in the document in the order that they appear.
+     *  @return a string containing all the words in the document in the order that they appear or null if
+     *  the document cannot be obtained.
      */
     @Override
     public String getDocument(ContentOptimiserModel comparison, String cacheUrl,Config config,String collectionId) {
@@ -140,13 +140,19 @@ public class DefaultDocFromCache implements DocFromCache {
         boolean assumeUtf8 = false;
 
         try {
+            // The collection the document actually occurs in (below any meta collections involved)
+            String documentCollectionId = comparison.getSelectedDocument().getCollection();
 
             RecordAndMetadata<? extends Record<?>> cached =
                 dataRepository.getCachedDocument(
-                    new Collection(collectionId, config),
+                    configRepository.getCollection(documentCollectionId),
                     StoreView.live,
                     comparison.getSelectedDocument().getIndexUrl());
-
+            
+            if (cached.record == null || cached.metadata == null) {
+                return null;
+            }
+            
             cached.metadata.put(
         		DocHdrUtils.BASE_KEY, 
         		"<BASE HREF=\"" + comparison.getSelectedDocument().getLiveUrl() + "\"/>");
