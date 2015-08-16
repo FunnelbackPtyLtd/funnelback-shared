@@ -19,7 +19,6 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.MapUtil;
-import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
 import com.funnelback.publicui.i18n.I18n;
@@ -38,7 +37,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
-import com.funnelback.publicui.search.web.controllers.ContentAuditorController;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
@@ -283,12 +281,6 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
-        
-        MetadataMissingFill remainder = new MetadataMissingFill();
-        remainder.setData(metadataClass);
-        remainder.setLabel(label);
-        remainder.setFacetName(label);
-        categoryDefinitions.add(remainder);
         
         return new FacetDefinition(label, categoryDefinitions);
     }
