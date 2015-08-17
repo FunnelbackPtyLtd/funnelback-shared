@@ -300,12 +300,6 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-//        MetadataMissingFill remainder = new MetadataMissingFill();
-//        remainder.setData(metadataClass);
-//        remainder.setLabel(label);
-//        remainder.setFacetName(label);
-//        categoryDefinitions.add(remainder);
-        
         return new FacetDefinition(label, categoryDefinitions);
     }
 
