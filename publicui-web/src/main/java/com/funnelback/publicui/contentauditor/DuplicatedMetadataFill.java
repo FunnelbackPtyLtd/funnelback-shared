@@ -15,7 +15,6 @@ public class DuplicatedMetadataFill extends MetadataFieldFill {
     @Override
     public List<CategoryValue> computeValues(final SearchTransaction st) {
         List<CategoryValue> result = super.computeValues(st);
-        result = result.stream().filter((cv) -> cv.getCount() > 1).collect(Collectors.toList());
-        return result;
+        return result.stream().filter((cv) -> cv.getCount() > 1).collect(Collectors.toList());
     }
 }
