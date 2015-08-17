@@ -20,7 +20,7 @@
                       <div class="col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                                <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                             </div>
 
                             <#-- Count up the number of category values there will be, so we can show the number -->

@@ -19,7 +19,7 @@
                   <@s.Facet name="Reading Grade" class="col-md-6">
                       <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <div id="reading-grade-chartdiv" style="width: 100%; height: 300px;"></div>
@@ -96,7 +96,7 @@
                   <@s.Facet name="Undesirable Text" class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <#assign categoryCount = 0 />
@@ -124,7 +124,7 @@
                   <@s.Facet name="Missing Metadata" class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <#assign categoryCount = 0 />
@@ -152,7 +152,7 @@
                   <@s.Facet name="Duplicated Titles" class="col-md-6">
                    <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <#assign categoryCount = 0 />
@@ -183,7 +183,7 @@
                   <@s.Facet name="Date Modified" class="col-md-6">
                       <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <div id="date-modified-chartdiv" style="width: 100%; height: 300px;"></div>
@@ -236,7 +236,7 @@
                   <@s.Facet name="Response Time" class="col-md-6">
                       <div class="panel panel-default">
                         <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
                           <div id="response-time-chartdiv" style="width: 100%; height: 300px;"></div>

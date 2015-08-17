@@ -469,7 +469,7 @@
     @param summary Set to true if you want this tag to display the summary + breadcrumb, otherwise use <code>&lt;@s.FacetSummary /&gt;</code>.
     @param tag HTML tag to wrap the name and summary
 -->
-<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div">
+<#macro FacetLabel class="facetLabel" separator="&rarr;" summary=true tag="div" link=question.collection.configuration.value("ui.modern.search_link")>
     <#local fn = facetedNavigationConfig(question.collection, question.profile) >
     <#if fn?exists>
         <#-- Find facet definition in the configuration corresponding
@@ -480,7 +480,7 @@
                 <#assign facetDef_index = fdef_index in s />
                 <#assign facetDef_has_next = fdef_has_next in s />
                 <${tag} class="${class}"> ${s.facet.name}
-                    <#if summary><@FacetSummary separator=separator alltext="all" /></#if>
+                    <#if summary><@FacetSummary separator=separator alltext="all" link=link /></#if>
                 </${tag}>
             </#if>
         </#list> 
@@ -496,14 +496,14 @@
     @param separator Separator to use in the breadcrumb.
     @param alltext Text to use to completely remove the facet constraints. Defaults to &quot;all&quot;.
 -->
-<#macro FacetSummary separator="&rarr;" alltext="all">
+<#macro FacetSummary separator="&rarr;" alltext="all" link=question.collection.configuration.value("ui.modern.search_link")>
     <#-- We must test various combinations here as different browsers will encode
          some characters differently (i.e. '/' will sometimes be preserved, sometimes
          encoded as '%2F' -->
     <#if QueryString?contains("f." + facetDef.name?url)
         || urlDecode(QueryString)?contains("f." + facetDef.name)
         || urlDecode(QueryString)?contains("f." + facetDef.name?url)>
-        : <a href="${.namespace.FacetAllUrl(facetDef)?html}">${alltext}</a>
+        : <a href="${.namespace.FacetAllUrl(facetDef, link)?html}">${alltext}</a>
     </#if>
     <@FacetBreadCrumb categoryDefinitions=facetDef.categoryDefinitions selectedCategoryValues=question.selectedCategoryValues separator=separator />
 </#macro>
