@@ -121,7 +121,7 @@
                       </div>
                   </@s.Facet>
 
-                  <@s.Facet name="Duplicate Titles" class="col-md-6">
+                  <@s.Facet name="Duplicated Titles" class="col-md-6">
                    <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
