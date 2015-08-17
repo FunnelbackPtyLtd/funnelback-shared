@@ -38,7 +38,7 @@
                                   </@s.Category>
                                 ];
 
-                            data.sort(function(a,b) { return a.label - b.label; });
+                            data.sort(function(a,b) { return parseInt(a.label, 10) - parseInt(b.label, 10); });
 
                             var chartNew = AmCharts.makeChart( "reading-grade-chartdiv", {
                               "type": "serial",
@@ -59,7 +59,7 @@
                                     "gridPosition": "start",
                                     "fillAlpha": 0.05,
                                     "position": "left",
-                                    "title": "Reading Quality"
+                                    "title": "Reading Grade"
                                 },
                                 "chartScrollbar": {
                                     "graph": "g1",
@@ -148,7 +148,7 @@
                         </#if>
                       </div>
                   </@s.Facet>
-                  
+
                   <@s.Facet name="Duplicated Titles" class="col-md-6">
                    <div class="panel panel-default">
                         <div class="panel-heading">
