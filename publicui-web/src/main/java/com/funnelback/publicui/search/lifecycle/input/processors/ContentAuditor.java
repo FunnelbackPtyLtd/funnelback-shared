@@ -18,7 +18,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-import com.funnelback.publicui.contentauditor.DuplicatedMetadataFill;
+import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
@@ -294,7 +294,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     
     private FacetDefinition createDuplicateTitlesFacetDefinition(String label, String metadataClass) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        MetadataFieldFill fill = new DuplicatedMetadataFill();
+        MetadataFieldFill fill = new CountThresholdMetadataFieldFill(1);
         fill.setData(metadataClass);
         fill.setLabel(label);
         fill.setFacetName(label);
