@@ -1,6 +1,5 @@
 /* fb-content-auditor.js */
 
-
 // Functions
 function getSearchResult(href, paneId, historyPush)
 {
@@ -139,6 +138,21 @@ var delay = (function()
     //jQuery 
 jQuery(function()
 {
+   
+    var goodBadGradient = ["#008F58", "#55AA3A", "#AAC51D", "#FFE100", "#F49600", "#E94B00", "#DF0000"];
+    
+    
+    var rtc = jQuery('#response-time-chartdiv');
+    
+    if(rtc.length){
+        var legends = '';  
+        jQuery(goodBadGradient).each(function(idx,val){
+           legends += '<div class="rtc-legend" style="background:'+ val +'"></div>'; 
+        });    
+       rtc.after('<div class="rtc-legends"><div class="rtc-legend">Fast </div>' + legends + '<div class="rtc-legend"> Slow</div> </div>');
+    }
+    
+    
     //Need to initiate BS popover & tooltip manually for Twitter Bootstrap.
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();

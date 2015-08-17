@@ -1541,6 +1541,56 @@ color: #f00;
 content: "\f0d8" 
 }
 
+/* New Styles for Recommendations */
+.uri-selector {   
+    float: left;
+    margin-right: 15px;
+}
+.uri-selector  > span, #uri-selector  > div{
+    float:left;
+    display:block;
+    }
+
+.uri-selector .dropdown {
+    margin-left: 30px;
+} 
+.uri-selector .dropdown .facet li, .recommendations .category {
+    display: block;
+    padding: 3px 17px;
+    width: 100%;
+    font-weight:700;
+}
+
+.uri-selector .dropdown .facet li:hover{
+    background: #eee;
+    box-shadow: 4px 0 0 #f80 inset;
+    
+    }
+    
+.uri-selector .dropdown .facet li:hover a{ 
+    color: #f80;
+    text-decoration:underline;
+    }
+    
+.rtc-legend{   
+    margin-right:1%;
+    width:8%;
+    display:inline-block;
+    height:8px;
+    border-radius:200px;
+}        
+.rtc-legends{
+    text-align:center;
+    margin:30px 0;
+}
+
+.rtc-legends .rtc-legend:first-child{
+    text-align:right;
+}
+
+.rtc-legends .rtc-legend:last-child{
+    text-align:left;
+}
 /*Media Queries */
 @media (max-width: 767px) {
 

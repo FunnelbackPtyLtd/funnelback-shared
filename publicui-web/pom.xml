@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.funnelback.publicui</groupId>
 		<artifactId>publicui-parent</artifactId>
-		<version>14.3.1530-SNAPSHOT</version>
+		<version>14.3.1532-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -246,7 +246,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.1.0.Final</version>
+			<version>4.3.11.Final</version>
 			<exclusions>
 				<exclusion>
 					<groupId>xml-apis</groupId>
