@@ -121,6 +121,34 @@
                       </div>
                   </@s.Facet>
 
+                  <@s.Facet name="Missing Metadata" class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
+                        </div>
+                        <div class="panel-body">
+                          <#assign categoryCount = 0 />
+                          <@s.Category max=categoryMax tag="div">
+                            <#assign categoryCount = categoryCount + 1 />
+                                
+                            <@s.CategoryName class="" link=main.contentAuditorLink  extraParams="#collection-test-content-auditor-tab-2" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+
+                          </@s.Category>
+                        </div>
+                        <#if categoryCount == categoryMax>
+                          <#-- Count up the number of category values there will be, so we can show the number -->
+                          <#assign countOfCategoryValues = 0 />
+                          <@s.Category max=2147483647 tag="">
+                              <#assign countOfCategoryValues = countOfCategoryValues + 1 />
+                          </@s.Category>
+
+                          <div class="panel-footer">
+                            <a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All ${countOfCategoryValues}" data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All ${countOfCategoryValues} <span class="fa fa-arrow-right"></span></a>
+                          </div>
+                        </#if>
+                      </div>
+                  </@s.Facet>
+                  
                   <@s.Facet name="Duplicated Titles" class="col-md-6">
                    <div class="panel panel-default">
                         <div class="panel-heading">
