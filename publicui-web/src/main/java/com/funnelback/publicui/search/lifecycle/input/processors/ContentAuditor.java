@@ -19,7 +19,6 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.MapUtil;
-import com.funnelback.publicui.contentauditor.MetadataMissingFill;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
@@ -39,7 +38,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
-import com.funnelback.publicui.search.web.controllers.ContentAuditorController;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
