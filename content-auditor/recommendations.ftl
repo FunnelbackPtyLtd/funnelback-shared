@@ -25,6 +25,13 @@
                           <div id="reading-grade-chartdiv" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
+                            function colourForGrade(grade){
+                              if(grade < 7 || grade > 20)
+                                return 'red';
+                              else 
+                                return 'green';
+                            }
+
                             var data = [
                                   <#assign separator = ''>
                                   <@s.Category max=2147483647 tag="">
@@ -32,7 +39,8 @@
                                           {
                                               "label": "${s.categoryValue.label?js_string}",
                                               "count": "${s.categoryValue.count?c}",
-                                              "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2"
+                                              "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2",
+                                              "colour": colourForGrade(parseInt("${s.categoryValue.label?js_string}", 10))
                                            }
                                           <#assign separator = ','>
                                   </@s.Category>
@@ -48,6 +56,9 @@
                                 "id": "g1",
                                 "type": "column",
                                 "valueField": "count",
+                                "lineAlpha": 0.2,
+                                "fillColorsField": "colour",
+                                "lineColors": "colour",
                                 "fillAlphas": 0.75
                               } ],
                                 "valueAxes": [{
@@ -189,6 +200,14 @@
                           <div id="date-modified-chartdiv" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
+                            function colourForYear(year){
+                              var now = new Date().getFullYear();
+                              if(year < (now - 2) || year > now)
+                                return 'red';
+                              else 
+                                return 'green';
+                            }
+
                             var data = [
                                   <#assign separator = ''>
                                   <@s.Category max=2147483647 tag="">
@@ -196,7 +215,8 @@
                                           {
                                               "label": "${s.categoryValue.label?js_string}",
                                               "count": "${s.categoryValue.count?c}",
-                                              "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2"
+                                              "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2",
+                                              "colour": colourForYear(${s.categoryValue.label?js_string})
                                            }
                                           <#assign separator = ','>
                                   </@s.Category>
@@ -210,6 +230,9 @@
                               "graphs": [ {
                                 "type": "column",
                                 "valueField": "count",
+                                "lineAlpha": 0.2,
+                                "fillColorsField": "colour",
+                                "lineColors": "colour",
                                 "fillAlphas": 0.75
                               } ],
                               "categoryField": "label",
