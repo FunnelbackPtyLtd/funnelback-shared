@@ -152,7 +152,7 @@
                    
                   </@s.Facet>
 
-                  <@s.Facet name="Date modified" class="col-md-6">
+                  <@s.Facet name="Date Modified" class="col-md-6">
                       <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong"/></h3>
