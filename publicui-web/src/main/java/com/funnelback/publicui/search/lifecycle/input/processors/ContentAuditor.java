@@ -68,7 +68,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     private static final int METADATA_BUFFER_LENGTH_VALUE = 1024 * 20;
 
     /** Query to run if no query is specified - should return all results */
-    private static final String NULL_QUERY = "-FUN:showalldocuments";
+    private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
 
     /** 
      * Custom URL parameter used for indicating the duplicate signature to be applied.
@@ -262,7 +262,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     }
 
     /**
-     * Creates a date based facet definition with the given label
+     * Creates a facet definition listing out the numbers of documents with each type of metadata absent.
      */
     private FacetDefinition createMissingMetadataFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();

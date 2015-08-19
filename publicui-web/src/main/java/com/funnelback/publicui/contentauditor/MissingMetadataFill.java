@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import lombok.SneakyThrows;
 
+import com.funnelback.common.padre.MetadataClass;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -18,12 +19,17 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * desired type of metadata).
  * 
  * Note that the query which will be run by selecting this relies on -ifb having been used as an indexer option.
+ * 
+ * @since 15.0
  */
 public class MissingMetadataFill extends MetadataFieldFill {
     
+    /** Value for use as the MetadataFieldFill's 'data' */
+    private static final String MISSING_DATA_VALUE = "missing";
+
     public MissingMetadataFill() {
         super();
-        this.data = "missing";
+        this.data = MissingMetadataFill.MISSING_DATA_VALUE;
     }
     
     /** 
@@ -40,17 +46,18 @@ public class MissingMetadataFill extends MetadataFieldFill {
             // Subtract out the metadata entries which have been assigned
             for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
                 String item = entry.getKey();
-                if (!item.startsWith("-")) {
+                if (!item.startsWith(MetadataBasedCategory.METADATA_ABSENT_PREFIX)) {
                     continue; // Skip the actual entry counts
                 }
                 
                 int count = entry.getValue();
                 MetadataAndValue mdv = parseMetadata(item);
 
-                if (!mdv.metadata.startsWith("-Fun")) {
-                    // Don't report auto-generated ones
-                    
-                    String metadataClass = mdv.metadata.replaceFirst("^-", "");
+                // Strip absent prefix
+                String metadataClass = mdv.metadata.substring(MetadataBasedCategory.METADATA_ABSENT_PREFIX.length());
+
+                if (!MetadataClass.RESERVED_CLASS_PATTERN.matcher(metadataClass).matches()) {
+                    // Don't report reserved classes (should not be user-visible)
                     
                     categories.add(new CategoryValue(
                         metadataClass,
