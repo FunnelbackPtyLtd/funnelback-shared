@@ -3,7 +3,10 @@ package com.funnelback.publicui.contentauditor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -16,11 +19,12 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  *  
  *  @since 15.0
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class CountThresholdMetadataFieldFill extends MetadataFieldFill {
 
-    /** Only categories with a count greater than this threshold will be included. */
-    private final Integer threshold;
+    /** Only categories with a count greater than this threshold will be included. Default is 1. */
+    @Getter @Setter private Integer threshold = 1;
     
     @Override
     public List<CategoryValue> computeValues(final SearchTransaction st) {
