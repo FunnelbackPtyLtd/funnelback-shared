@@ -227,7 +227,7 @@ public class StaxStreamParserTests {
     @Test
     public void testRMC() {
         Map<String, Integer> rmcs = rp.getRmcs();
-        assertEquals(138, rmcs.size());
+        assertEquals(143, rmcs.size());
         
         // Pick some random keys/values
         assertEquals(139, rmcs.get("A:All").intValue());
@@ -238,6 +238,7 @@ public class StaxStreamParserTests {
         assertEquals(1, rmcs.get("a:Australian Federal Police").intValue());
         assertEquals(2, rmcs.get("s:tourists").intValue());
         assertEquals(1, rmcs.get("s:real-estate").intValue());
+        assertEquals(1, rmcs.get("-s:").intValue());
     }
     
     @Test

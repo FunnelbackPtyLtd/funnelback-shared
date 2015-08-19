@@ -28,8 +28,10 @@
 <rmc item="V:fitting/welding">3</rmc>
 <rmc item="V:plumbing">2</rmc>
 <rmc item="V:apprentice">1</rmc>
+<rmc item="-V:">7</rmc>
 <rmc item="W:divtrades &amp; servicesdiv">26</rmc>
 <rmc item="W:divconstruction, architecture &amp; interiorsdiv">1</rmc>
+<rmc item="-W:">7</rmc>
 <rmc item="X:melbourne">5</rmc>
 <rmc item="X:surry hills">4</rmc>
 <rmc item="X:bowen hills">4</rmc>
@@ -44,11 +46,13 @@
 <rmc item="X:holland park">1</rmc>
 <rmc item="X:sydney">1</rmc>
 <rmc item="X:diamond creek">1</rmc>
+<rmc item="-X:">7</rmc>
 <rmc item="Y:qld">9</rmc>
 <rmc item="Y:vic">7</rmc>
 <rmc item="Y:nsw">5</rmc>
 <rmc item="Y:sa">4</rmc>
 <rmc item="Y:nt">2</rmc>
+<rmc item="-Y:">7</rmc>
 <rmc item="Z:australia">27</rmc>
 <gscope_counts>
   <gscope_matching value="1">27</gscope_matching>

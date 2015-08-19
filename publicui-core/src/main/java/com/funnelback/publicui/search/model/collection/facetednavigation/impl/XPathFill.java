@@ -42,6 +42,9 @@ public class XPathFill extends CategoryDefinition implements MetadataBasedCatego
         // For each metadata count <rmc item="a:new south wales">42</rmc>
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getRmcs().entrySet()) {
             String item = entry.getKey();
+            if (item.startsWith(MetadataBasedCategory.METADATA_ABSENT_PREFIX)) {
+                continue; // Skip the 'documents with none of this metadata' count
+            }
             int count = entry.getValue();
             MetadataAndValue mdv = parseMetadata(item);
             

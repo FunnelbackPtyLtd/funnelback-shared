@@ -130,6 +130,7 @@ public class ResultPacket {
      *  <ul>
      *      <li>a:mozart =&gt; 12</li>
      *      <li>a:beethoven =&gt; 6</li>
+     *      <li>-a: =&gt; 10 (i.e. items with no a metadata)</li>
      *  </ul>
      */
     @Getter private final Map<String, Integer> rmcs = new HashMap<String, Integer>();

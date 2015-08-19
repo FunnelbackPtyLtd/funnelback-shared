@@ -20,6 +20,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
+import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
 import com.funnelback.publicui.i18n.I18n;
@@ -68,7 +69,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     private static final int METADATA_BUFFER_LENGTH_VALUE = 1024 * 20;
 
     /** Query to run if no query is specified - should return all results */
-    private static final String NULL_QUERY = "-showalldocuments";
+    private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
 
     /** 
      * Custom URL parameter used for indicating the duplicate signature to be applied.
@@ -258,6 +259,19 @@ public class ContentAuditor extends AbstractInputProcessor {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         YearOnlyDateFieldFill fill = new YearOnlyDateFieldFill();
         fill.setData(ContentAuditor.DATE_METADATA_FIELD);
+        fill.setLabel(label);
+        fill.setFacetName(label);
+        categoryDefinitions.add(fill);
+        
+        return new FacetDefinition(label, categoryDefinitions);
+    }
+
+    /**
+     * Creates a facet definition listing out the numbers of documents with each type of metadata absent.
+     */
+    private FacetDefinition createMissingMetadataFacetDefinition(String label) {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        MissingMetadataFill fill = new MissingMetadataFill();
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);

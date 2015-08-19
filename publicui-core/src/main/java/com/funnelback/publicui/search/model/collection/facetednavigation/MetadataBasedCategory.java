@@ -13,6 +13,14 @@ public interface MetadataBasedCategory {
      * <p>See: <tt>padre-iw</tt>'s <tt>-ifb</tt> option.</p>
      */
     public static final String INDEX_FIELD_BOUNDARY = "$++";
+
+    /**
+     * <p>
+     * Result metadata count prefix which indicates a count of the absence of any value
+     * for the given metadata class within a document.
+     * </p>
+     */
+    public static final String METADATA_ABSENT_PREFIX = "-";
     
     /**
      * @return The metadata class for this category type
