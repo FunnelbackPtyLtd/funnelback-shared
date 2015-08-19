@@ -18,6 +18,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
+import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
@@ -81,6 +82,9 @@ public class ContentAuditor extends AbstractInputProcessor {
     /** Key by which the duplicates extra search is identified */
     private static final String DUPLICATES_EXTRA_SEARCH_KEY = "duplicates";
 
+    /** The class in which duplicated title info is returned */
+    private static final String DUPLICATE_TITLE_META_CLASS = "FunDuplicateTitle";
+    
     /** Resource manger for reading (and caching) config files */
     @Autowired
     @Setter
@@ -177,11 +181,14 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         facetDefinitions.add(createDateFacetDefinition(i18n.tr("label.dateModifiedFacet")));
 
+        facetDefinitions.add(createDuplicateTitlesFacetDefinition(i18n.tr("label.duplicateTitlesFacet"), DUPLICATE_TITLE_META_CLASS));
+
         StringBuilder rmcfValue = new StringBuilder();
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
             rmcfValue.append("," + entry.getKey());
         }
+        rmcfValue.append("," + DUPLICATE_TITLE_META_CLASS);
         
         String qpOptions = 
             " -" + QueryProcessorOptionKeys.RMCF + "=["+rmcfValue+"]"
@@ -284,6 +291,18 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         return new FacetDefinition(label, categoryDefinitions);
     }
+    
+    private FacetDefinition createDuplicateTitlesFacetDefinition(String label, String metadataClass) {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        MetadataFieldFill fill = new CountThresholdMetadataFieldFill(1);
+        fill.setData(metadataClass);
+        fill.setLabel(label);
+        fill.setFacetName(label);
+        categoryDefinitions.add(fill);
+
+        return new FacetDefinition(label, categoryDefinitions);
+    }
+
 
     /**
      * Customise the question to suit getting a large number of results to find duplicates
