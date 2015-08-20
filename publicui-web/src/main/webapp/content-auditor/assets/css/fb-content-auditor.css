@@ -62,7 +62,7 @@ a {
 }
 
 a:hover, a:focus {
-    color: #f80
+    color: #F88615
 }
 
 .link:hover {
@@ -159,7 +159,8 @@ h2:before {
 }
 
 .table > thead > tr > th, .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus, b, strong {
-    font-weight: 600
+    font-weight: 600;
+	color:#222;
 }
 
 h1, h2, h3, h4, h5, h6, .tab-summary, .btn, .navbar-side, .search-form label {
@@ -316,13 +317,13 @@ margin: -5px 0 0 25px
 }
 
 .btn-primary {
-background-color: #ff9f32;
+background-color: #FF8000;
 border: transparent;
 color: #fff
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-background-color: #F80
+background-color: #F88615
 }
 
 .btn-default {
@@ -742,7 +743,7 @@ z-index: 2
 }
 
 #anchors-pane p a {
-color: #f80;
+color: #FF8000;
 font-weight: 600
 }
 
@@ -773,7 +774,7 @@ margin-bottom: 0!important
 }
 
 table tr:hover td:first-child a, table tr:hover td:first-child a strong {
-color: #f80
+color: #F88615
 }
 
 .tabbable .tab-content .tab-pane > table tr > td:last-child {
@@ -820,11 +821,11 @@ visibility: visible!important
 }
 
 .table-row-clickable tbody tr:hover td-first-child a {
-color: #f80
+color: #F88615
 }
 
 .table-striped tbody tr:hover a {
-color: #f80!important
+color: #F88615!important
 }
 
 .table-striped tbody tr:hover a.text-muted {
@@ -872,10 +873,12 @@ color: #bbb
 }
 
 thead tr th:hover .fa {
-color: #f80
+color: #F88615
 }
 
 /* Facets */
+.facets{ padding-top:15px  } 
+
 #facet-container-wrapper {
 border: 1px solid #eee;
 background: #fbfbfb;
@@ -1104,7 +1107,7 @@ font-weight: 900
 }
 
 #fb-facet-details tbody tr:hover a {
-color: #f80
+color: #F88615
 }
 
 #facet-container-wrapper, .tabbable > .nav {
@@ -1118,9 +1121,12 @@ box-shadow: 0 0 0 1px #fff inset
 border-radius: 0px!important;
 -webkit-border-radius: 0px!important;
 -moz-border-radius: 0px!important;
-border-color: #ebebeb
+border-color: #dfdfdf;
+border-width: 3px;
 }
-
+ 
+   
+   
 .boxed {
 padding: 0!important
 }
@@ -1130,7 +1136,7 @@ padding: 20px 0
 }
 
 .panel, .boxed, .boxed-inner.boxed {
-border: 1px solid #ebebeb;
+border: 1px solid #E3E3E3;
 border-radius: 0px!important;
 -webkit-border-radius: 0px!important;
 -moz-border-radius: 0px!important;
@@ -1140,7 +1146,8 @@ box-shadow: none;
 }
 
 .panel-default > .panel-heading {
-background-color: #f8f8f8
+background-color: #eee;
+padding:12px 15px 8px;
 }
 
 .boxed-inner.boxed {
@@ -1168,7 +1175,7 @@ text-align: left;
 top: 0;
 width: 100%;
 z-index: 2;
-color: #f80;
+color: #FF8000;
 display: none;
 transition-delay: all 333ms ease;
 padding: 50px
@@ -1517,17 +1524,19 @@ overflow: hidden;
 padding-top: 15px;
 }
 
-.overviews .panel .panel-body {
-padding: 0
+.facets .panel .panel-body {
+padding: 0 
 }
-
-.overviews .panel .panel-body > div {
+.facets .panel .panel-body.chart{ padding-bottom:30px} 
+.facets .panel .panel-body > div {
 padding: 8px 15px;
 display: block;
-border-bottom: 1px solid #f8f8f8
-}
 
-.overviews .panel .panel-footer {
+}
+.facets .panel .panel-body .category{border-bottom: 1px solid #eee}
+.facets .panel .panel-body .category:hover{  cursor:pointer;}
+.facets .panel .panel-body .category:hover a{ color:#F88615}
+.facets .panel .panel-footer {
 	border-top: 1px solid #eee;
 	display: block;
 }
@@ -1563,12 +1572,12 @@ content: "\f0d8"
 
 .uri-selector .dropdown .facet li:hover{
     background: #eee;
-    box-shadow: 4px 0 0 #f80 inset;
+    box-shadow: 4px 0 0 #F88615 inset;
     
     }
     
 .uri-selector .dropdown .facet li:hover a{ 
-    color: #f80;
+    color: #FF8000;
     text-decoration:underline;
     }
     
@@ -1582,6 +1591,7 @@ content: "\f0d8"
 .rtc-legends{
     text-align:center;
     margin:30px 0;
+	border-bottom:none !important;
 }
 
 .rtc-legends .rtc-legend:first-child{
@@ -1591,6 +1601,27 @@ content: "\f0d8"
 .rtc-legends .rtc-legend:last-child{
     text-align:left;
 }
+
+ 
+
+/*No Info / Content fills */
+.no-info{ display:table; width:100%; background:#f8f8f8; text-align:center;  position: relative;}
+.no-info .inner{ color:#888; width:100% !important; display:block; height:155px; background:#f8f8f8; text-align:center; display:table-cell; vertical-align:middle}
+
+.no-info::after {
+  border: 2px dashed #ddd;
+  bottom: 6px;
+  content: "";
+  left: 6px;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+
+
+
+
+
 /*Media Queries */
 @media (max-width: 767px) {
 
@@ -1832,7 +1863,7 @@ header {
 
     #btn-facet-container:hover {
         background: none repeat scroll 0 0 #eee;
-        color: #f80;
+        color: #FF8000;
         -webkit-box-shadow: 0 0 0 1px #fff inset;
         -moz-box-shadow: 0 0 0 1px #fff inset;
         box-shadow: 0 0 0 1px #fff inset;

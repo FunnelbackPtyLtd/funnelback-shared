@@ -38,8 +38,7 @@ function getSearchResult(href, paneId, historyPush)
 function refreshModalContent()
 {
     var modal = $('#modal-overlay .modal-content');
-    modal.find('table').addClass(
-        'table table-hover table-condenesed table-responsive table-striped table-row-clickable');
+    modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
 }
 
 function makePreviewIcons()
@@ -82,6 +81,7 @@ function resetChartScrollable()
 {
     // reset scroll on scrollable tables    
     chart = $('#fb-facets-navigation ul.nav li.active a').attr('data-chart_ref');
+	
     content_auditor[chart].invalidateSize();
     if (chart)
     {
@@ -181,6 +181,10 @@ jQuery(function()
     });
     //Start daisy chain for document
     $(document)
+		.on('click', '.facets .category',function(){
+			var href = $(this).find('a').attr('href');
+			window.location = href;
+			})
         // Refresh the content of TWBS Modal on load 
         .on('shown.bs.modal load', '#modal-overlay', function()
         {
@@ -189,10 +193,21 @@ jQuery(function()
         // Event on tab change, need to update the current chart as AMCharts will try and display at 0 x 0 because it is hidden. We need to correct this when the selected tab comes ito focus. Also we need to scroll to the top of the page and also reference the current URL hash somewhere.  
         .on('shown.bs.tab', 'a[data-toggle="tab"]', function(e)
         {
-            var hash = $(e.target).attr("href").substr(1);
-            window.location.hash = hash;
+			
+			var hash = $(e.target).attr("href").substr(1);
+            
+			window.location.hash = hash;
             $('body').attr('hash', hash);
-            // This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
+            
+			
+			if('collection-test-anu-tab-recommendations' == hash)
+			{
+			//Update the Recommendations charts on corresponding tab click 
+				content_auditor.readingGradeChart.invalidateSize();
+				content_auditor.dateModifiedChart.invalidateSize();
+				content_auditor.responseTimeChart.invalidateSize();
+			}
+			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
             var chart = $(this).attr('data-chart_ref');
             if (chart)
             {
@@ -258,6 +273,7 @@ jQuery(function()
             {
                 modal.hide();
             }, 888);
+			
         }).on('click', '.facet-search-details table tbody tr, #duplicates tbody tr', function()
         {
             var href = $(this).find('a').attr('href');
@@ -283,6 +299,7 @@ jQuery(function()
                 {
                     targetOutput.html(data);
                     refreshModalContent();
+					
                 }).fail(function(error)
                 {
                     targetOutput.html("<h3>Error " + error.status +
