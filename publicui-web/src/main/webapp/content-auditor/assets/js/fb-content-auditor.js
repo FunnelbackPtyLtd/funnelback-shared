@@ -181,6 +181,10 @@ jQuery(function()
     });
     //Start daisy chain for document
     $(document)
+		.on('click', '.facets .category',function(){
+			var href = $(this).find('a').attr('href');
+			window.location = href;
+			})
         // Refresh the content of TWBS Modal on load 
         .on('shown.bs.modal load', '#modal-overlay', function()
         {
