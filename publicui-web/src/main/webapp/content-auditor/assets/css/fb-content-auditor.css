@@ -876,6 +876,8 @@ color: #f80
 }
 
 /* Facets */
+.facets{ padding-top:15px  } 
+
 #facet-container-wrapper {
 border: 1px solid #eee;
 background: #fbfbfb;
@@ -1517,17 +1519,17 @@ overflow: hidden;
 padding-top: 15px;
 }
 
-.overviews .panel .panel-body {
+.facets .panel .panel-body {
 padding: 0
 }
 
-.overviews .panel .panel-body > div {
+.facets .panel .panel-body > div {
 padding: 8px 15px;
 display: block;
 border-bottom: 1px solid #f8f8f8
 }
 
-.overviews .panel .panel-footer {
+.facets .panel .panel-footer {
 	border-top: 1px solid #eee;
 	display: block;
 }
