@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(of={"triggerWords"})
 public class AllQueryWordsTrigger implements Trigger {
 
     /**

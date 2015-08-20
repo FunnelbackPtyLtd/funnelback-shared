@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.curator.trigger;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class FacetSelectionTrigger implements Trigger {
     
     /**

@@ -46,7 +46,6 @@ public class CategoryDefinitionTests {
         Assert.assertEquals(null, mv.metadata);
         Assert.assertEquals(null, mv.metadata);
 
-
     }
     
 }

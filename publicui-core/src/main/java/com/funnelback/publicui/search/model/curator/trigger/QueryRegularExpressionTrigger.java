@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.curator.trigger;
 import java.util.regex.Pattern;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class QueryRegularExpressionTrigger implements Trigger {
 
     /** The regular expression to run against the current query */

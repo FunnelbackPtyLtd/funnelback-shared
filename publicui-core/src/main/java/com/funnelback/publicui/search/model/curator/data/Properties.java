@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.data;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Properties implements Exhibit {
 
     /**

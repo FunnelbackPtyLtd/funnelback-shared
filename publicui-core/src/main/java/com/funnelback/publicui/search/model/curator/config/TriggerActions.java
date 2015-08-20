@@ -1,9 +1,12 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.funnelback.api.core.models.Identifiable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +23,8 @@ import lombok.ToString;
  */
 @NoArgsConstructor
 @ToString
-public class TriggerActions {
+@EqualsAndHashCode(of={"Id","name","enabled","actions","trigger"})
+public class TriggerActions implements Identifiable {
     
     /**
      * Name for the TriggerAction (a nice name to present to the user)
