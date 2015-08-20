@@ -40,11 +40,6 @@ public abstract class CategoryDefinition {
      */
     public static final String QS_PARAM_SEPARATOR = "|";
     
-    /**
-     * <p>Prefix used to denote empty metadata</p>
-     */
-    public static final String EMPTY_METADATA_PREFIX = "-";
-    
     /** Name of the facet containing this category type */
     @Getter @Setter protected String facetName;
     
@@ -131,16 +126,11 @@ public abstract class CategoryDefinition {
      */
     public static MetadataAndValue parseMetadata(String item) {
         if (item == null || item.indexOf(MD_VALUE_SEPARATOR) < 0) {
-            return new MetadataAndValue(null, null, null);
+            return new MetadataAndValue(null, null);
         }
         
-        boolean empty = false;
-        if(item.startsWith(EMPTY_METADATA_PREFIX)) {
-            empty = true;
-            item = item.substring(1);
-        }
         int colon = item.indexOf(MD_VALUE_SEPARATOR);
-        return new MetadataAndValue(item.substring(0, colon), item.substring(colon + 1), empty);
+        return new MetadataAndValue(item.substring(0, colon), item.substring(colon + 1));
     }
 
     /**
@@ -154,8 +144,6 @@ public abstract class CategoryDefinition {
         
         /** Value. */
         public String value;
-        
-        public Boolean empty;
     }
     
 }
