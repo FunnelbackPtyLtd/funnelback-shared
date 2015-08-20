@@ -159,7 +159,8 @@ h2:before {
 }
 
 .table > thead > tr > th, .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus, b, strong {
-    font-weight: 600
+    font-weight: 600;
+	color:#222;
 }
 
 h1, h2, h3, h4, h5, h6, .tab-summary, .btn, .navbar-side, .search-form label {
@@ -316,7 +317,7 @@ margin: -5px 0 0 25px
 }
 
 .btn-primary {
-background-color: #ff9f32;
+background-color: #FF8000;
 border: transparent;
 color: #fff
 }
@@ -742,7 +743,7 @@ z-index: 2
 }
 
 #anchors-pane p a {
-color: #f80;
+color: #FF8000;
 font-weight: 600
 }
 
@@ -1142,7 +1143,7 @@ box-shadow: none;
 }
 
 .panel-default > .panel-heading {
-background-color: #f8f8f8
+background-color: #eee
 }
 
 .boxed-inner.boxed {
@@ -1170,7 +1171,7 @@ text-align: left;
 top: 0;
 width: 100%;
 z-index: 2;
-color: #f80;
+color: #FF8000;
 display: none;
 transition-delay: all 333ms ease;
 padding: 50px
@@ -1526,7 +1527,7 @@ padding: 0
 .facets .panel .panel-body > div {
 padding: 8px 15px;
 display: block;
-border-bottom: 1px solid #f8f8f8
+border-bottom: 1px solid #eee
 }
 
 .facets .panel .panel-footer {
@@ -1570,7 +1571,7 @@ content: "\f0d8"
     }
     
 .uri-selector .dropdown .facet li:hover a{ 
-    color: #f80;
+    color: #FF8000;
     text-decoration:underline;
     }
     
@@ -1834,7 +1835,7 @@ header {
 
     #btn-facet-container:hover {
         background: none repeat scroll 0 0 #eee;
-        color: #f80;
+        color: #FF8000;
         -webkit-box-shadow: 0 0 0 1px #fff inset;
         -moz-box-shadow: 0 0 0 1px #fff inset;
         box-shadow: 0 0 0 1px #fff inset;
