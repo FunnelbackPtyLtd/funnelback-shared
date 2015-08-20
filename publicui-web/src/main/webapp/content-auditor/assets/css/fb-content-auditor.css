@@ -1585,6 +1585,7 @@ content: "\f0d8"
 .rtc-legends{
     text-align:center;
     margin:30px 0;
+	border-bottom:none !important;
 }
 
 .rtc-legends .rtc-legend:first-child{
@@ -1594,6 +1595,26 @@ content: "\f0d8"
 .rtc-legends .rtc-legend:last-child{
     text-align:left;
 }
+
+/*No Info / Content fills */
+.no-info{ display:table; width:100%; background:#f8f8f8; text-align:center;  position: relative;}
+.no-info .inner{ color:#888; width:100% !important; display:block; height:155px; background:#f8f8f8; text-align:center; display:table-cell; vertical-align:middle}
+
+
+.no-info::after {
+  border: 2px dashed #ddd;
+  bottom: 6px;
+  content: "";
+  left: 6px;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+
+
+
+
+
 /*Media Queries */
 @media (max-width: 767px) {
 
