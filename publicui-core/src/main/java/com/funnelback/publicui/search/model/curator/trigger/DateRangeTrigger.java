@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -40,6 +42,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class DateRangeTrigger implements Trigger {
 
     /**

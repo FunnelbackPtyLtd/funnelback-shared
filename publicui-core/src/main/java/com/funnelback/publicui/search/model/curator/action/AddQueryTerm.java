@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class AddQueryTerm implements Action {
 
     /**

@@ -46,6 +46,9 @@ public class CategoryDefinitionTests {
         Assert.assertEquals(null, mv.metadata);
         Assert.assertEquals(null, mv.metadata);
 
+        mv = CategoryDefinition.parseMetadata("-a:");
+        Assert.assertEquals("-a", mv.metadata);
+        Assert.assertEquals("", mv.value);
 
     }
     

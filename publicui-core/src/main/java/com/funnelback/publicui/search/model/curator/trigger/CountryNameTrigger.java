@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class CountryNameTrigger implements Trigger {
 
     /**

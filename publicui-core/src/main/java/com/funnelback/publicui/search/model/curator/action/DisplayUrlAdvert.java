@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class DisplayUrlAdvert implements Action {
 
     /** The URL advert object to be displayed. */

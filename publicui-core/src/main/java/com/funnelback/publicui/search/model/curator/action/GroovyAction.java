@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
 import groovy.lang.GroovyClassLoader;
+import lombok.EqualsAndHashCode;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @Component
+@EqualsAndHashCode
 public class GroovyAction implements Action {
 
     /**

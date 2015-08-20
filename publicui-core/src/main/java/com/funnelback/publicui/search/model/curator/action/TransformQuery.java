@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class TransformQuery implements Action {
 
     /** The regular expression to match */

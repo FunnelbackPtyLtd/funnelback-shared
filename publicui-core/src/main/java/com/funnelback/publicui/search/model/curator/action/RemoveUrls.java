@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.action;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +34,7 @@ import com.google.common.base.Joiner;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class RemoveUrls implements Action {
 
     /** The list of URLs to be removed from the results */

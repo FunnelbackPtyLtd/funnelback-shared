@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * provides convenience methods across the group.
  */
 @ToString
+@EqualsAndHashCode
 public class ActionSet {
     
     /** The actual actions contained within the set */

@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.data;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ import com.funnelback.publicui.search.model.curator.Exhibit;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class UrlAdvert implements Exhibit {
     /** The title (in HTML) of the advert. */
     @Getter

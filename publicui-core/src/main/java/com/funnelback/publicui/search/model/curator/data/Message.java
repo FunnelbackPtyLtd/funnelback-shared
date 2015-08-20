@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.data;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import com.funnelback.publicui.search.model.curator.Exhibit;
  */
 @AllArgsConstructor @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class Message implements Exhibit {
 
     /** The HTML content of the message to display. */
