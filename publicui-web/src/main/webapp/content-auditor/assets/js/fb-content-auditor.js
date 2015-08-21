@@ -175,16 +175,14 @@ jQuery(function()
         var hash = '#' + location.hash.slice(1);
         $('a[href="' + hash + '"]').tab('show');
         $('body').attr('hash', hash);
-    }).on('resize', function()
+    })
+	.on('resize', function()
     {
         resetChartScrollable();
     });
     //Start daisy chain for document
     $(document)
-		.on('click', '.facets .category',function(){
-			var href = $(this).find('a').attr('href');
-			window.location = href;
-			})
+		
         // Refresh the content of TWBS Modal on load 
         .on('shown.bs.modal load', '#modal-overlay', function()
         {
@@ -200,7 +198,7 @@ jQuery(function()
             $('body').attr('hash', hash);
             
 			
-			if('collection-test-anu-tab-recommendations' == hash)
+			if(hash == 'collection-test-anu-tab-recommendations')
 			{
 			//Update the Recommendations charts on corresponding tab click 
 				content_auditor.readingGradeChart.invalidateSize();
@@ -523,7 +521,15 @@ jQuery(function()
                 makeChartScrollable(0);
             }
             window.scrollTo(0, 0);
-
+			
+			setTimeout(function(){
+			$('.facet').each(function(i,elem){
+				var content = $(this).html().trim();
+				if(!content){
+					$(this).remove();
+					}
+			});	
+			},2000);
 
             /* Trying to fix the hover on the attributes links (no success)
 
