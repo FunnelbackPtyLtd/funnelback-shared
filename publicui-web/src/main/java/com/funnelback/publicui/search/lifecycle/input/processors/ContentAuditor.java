@@ -127,7 +127,6 @@ public class ContentAuditor extends AbstractInputProcessor {
      * @param request */
     private void customiseMainQuestion(SearchQuestion question) {
         Config config = question.getCollection().getConfiguration();
-        
         // Manipulate the request to suit content auditor
         question.getAdditionalParameters().put(RequestParameters.FULL_MATCHES_ONLY, new String[] {"on"});
         question.getAdditionalParameters().put(RequestParameters.STEM, new String[] {"0"});
@@ -183,6 +182,8 @@ public class ContentAuditor extends AbstractInputProcessor {
         facetDefinitions.add(createDateFacetDefinition(i18n.tr("label.dateModifiedFacet")));
 
         facetDefinitions.add(createDuplicateTitlesFacetDefinition(i18n.tr("label.duplicateTitlesFacet"), DUPLICATE_TITLE_META_CLASS));
+        
+        facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
         StringBuilder rmcfValue = new StringBuilder();
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
