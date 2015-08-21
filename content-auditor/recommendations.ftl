@@ -126,7 +126,20 @@
                           <@s.Category max=categoryMax tag="div">
                             <#assign categoryCount = categoryCount + 1 />
                                 
-                            <@s.CategoryName class="" link=main.contentAuditorLink  extraParams="#collection-test-content-auditor-tab-2" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+                            <#assign key = "ui.modern.content-auditor.facet-metadata." + s.categoryValue.label />
+                            <#if s.categoryValue?exists>
+                                <span>
+                                    <a href="${s.CategoryUrl(main.contentAuditorLink,"#collection-test-content-auditor-tab-2")?html}">
+                                      <#if question.collection.configuration.hasValue(key)>
+                                        ${question.collection.configuration.value(key)?html}
+                                      <#else>
+                                        Metadata Class: ${s.categoryValue.label?html}
+                                      </#if>
+                                    </a>
+                                </span>
+                            </#if>
+                            &nbsp;
+                            <small class="text-muted">(<@s.CategoryCount />)</small>
 
                           </@s.Category>
                         </div>
