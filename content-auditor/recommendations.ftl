@@ -14,14 +14,20 @@
                         window.location = event.item.dataContext.url;
                       }
                     }
-                  </script>
+                    function noContentFiller(){
 
-                  <@s.Facet name="Reading Grade" class="col-md-6">
+                      return '<div class="no-info"><div class="inner">No information avaliable</div></div>';
+
+                    }
+                  </script>
+                 
+                   
+                  <@s.Facet name="Reading Grade">
                       <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body chart">
                           <div id="reading-grade-chartdiv" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
@@ -45,12 +51,18 @@
                                           <#assign separator = ','>
                                   </@s.Category>
                                 ];
+                           
+                            if(data.length  < 1){
+                              setTimeout(function(){
+                                $('#reading-grade-chartdiv').parent().replaceWith(noContentFiller());
+                              },888);
+                            }
 
                             data.sort(function(a,b) { return parseInt(a.label, 10) - parseInt(b.label, 10); });
 
-                            var chartNew = AmCharts.makeChart( "reading-grade-chartdiv", {
+                            content_auditor.readingGradeChart= AmCharts.makeChart( "reading-grade-chartdiv", {
                               "type": "serial",
-                               "marginTop":0,
+                              "marginTop":0,
                               "dataProvider": data,
                               "graphs": [{
                                 "id": "g1",
@@ -69,8 +81,8 @@
                                 "categoryAxis": {
                                     "gridPosition": "start",
                                     "fillAlpha": 0.05,
-                                    "position": "left",
-                                    "title": "Reading Grade"
+                                    "position": "bottom",
+                                    "title": "Grade"
                                 },
                                 "chartScrollbar": {
                                     "graph": "g1",
@@ -96,15 +108,15 @@
                                   },
                               "categoryField": "label",
                               "height": 300,
-                               "colors": 	['#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74', '#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333', '#990000'],
+                               "colors": 	['#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74', '#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333', '#990000']
                             } );
 
-                            chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
+                           content_auditor.readingGradeChart.addListener("clickGraphItem", navigateToDataContextUrl);
                         </script>
                       </div>
                   </@s.Facet>
 
-                  <@s.Facet name="Undesirable Text" class="col-md-6">
+                  <@s.Facet name="Missing Metadata">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
@@ -132,35 +144,7 @@
                       </div>
                   </@s.Facet>
 
-                  <@s.Facet name="Missing Metadata" class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
-                        </div>
-                        <div class="panel-body">
-                          <#assign categoryCount = 0 />
-                          <@s.Category max=categoryMax tag="div">
-                            <#assign categoryCount = categoryCount + 1 />
-                                
-                            <@s.CategoryName class="" link=main.contentAuditorLink  extraParams="#collection-test-content-auditor-tab-2" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
-
-                          </@s.Category>
-                        </div>
-                        <#if categoryCount == categoryMax>
-                          <#-- Count up the number of category values there will be, so we can show the number -->
-                          <#assign countOfCategoryValues = 0 />
-                          <@s.Category max=2147483647 tag="">
-                              <#assign countOfCategoryValues = countOfCategoryValues + 1 />
-                          </@s.Category>
-
-                          <div class="panel-footer">
-                            <a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All ${countOfCategoryValues}" data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All ${countOfCategoryValues} <span class="fa fa-arrow-right"></span></a>
-                          </div>
-                        </#if>
-                      </div>
-                  </@s.Facet>
-
-                  <@s.Facet name="Duplicated Titles" class="col-md-6">
+                  <@s.Facet name="Duplicated Titles">
                    <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
@@ -191,12 +175,12 @@
                    
                   </@s.Facet>
 
-                  <@s.Facet name="Date Modified" class="col-md-6">
+                  <@s.Facet name="Date Modified">
                       <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body chart">
                           <div id="date-modified-chartdiv" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
@@ -224,7 +208,15 @@
 
                             data.sort(function(a,b) { return a.label - b.label; });
 
-                            var chartNew = AmCharts.makeChart( "date-modified-chartdiv", {
+                            if(data.length  < 1){
+                              setTimeout(function(){
+
+                                $('#date-modified-chartdiv').parent().replaceWith(noContentFiller());
+
+                              },888);
+                            }
+
+                            content_auditor.dateModifiedChart = AmCharts.makeChart( "date-modified-chartdiv", {
                               "type": "serial",
                               "dataProvider": data,
                               "graphs": [ {
@@ -250,13 +242,13 @@
                                     },
                             } );
 
-                            chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
+                            content_auditor.dateModifiedChart.addListener("clickGraphItem", navigateToDataContextUrl);
 
                         </script>
                       </div>
                   </@s.Facet>
 
-                  <@s.Facet name="Response Time" class="col-md-6">
+                  <@s.Facet name="Response Time">
                       <div class="panel panel-default">
                         <div class="panel-heading">
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
@@ -330,10 +322,19 @@
                                           <#assign separator = ','>
                                   </@s.Category>
                                 ];
+
+
+                            if(data.length  < 1){
+                              setTimeout(function(){
+
+                                $('#response-time-chartdiv').parent().replaceWith(noContentFiller());
+
+                              },888);
+                            }    
                             //alert(JSON.stringify(data, null, 4));
                             data.sort(function(a,b) { return a.sort - b.sort; });
                             
-                            var chartNew = AmCharts.makeChart( "response-time-chartdiv", {
+                            content_auditor.responseTimeChart = AmCharts.makeChart( "response-time-chartdiv", {
                               "type": "serial",
                               "dataProvider": data,
                               "graphs": [{
@@ -361,13 +362,40 @@
                              
                             });
                             
-                            
-                            chartNew.addListener("clickGraphItem", navigateToDataContextUrl);
-                            
+                            content_auditor.responseTimeChart.addListener("clickGraphItem", navigateToDataContextUrl);
                             
                         </script>
                       </div>
                   </@s.Facet>
+                  
+                  <@s.Facet name="Undesirable Text">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
+                        </div>
+                        <div class="panel-body">
+                          <#assign categoryCount = 0 />
+                          <@s.Category max=categoryMax tag="div">
+                            <#assign categoryCount = categoryCount + 1 />
+                                
+                            <@s.CategoryName class="" link=main.contentAuditorLink  extraParams="#collection-test-content-auditor-tab-2" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+
+                          </@s.Category>
+                        </div>
+                        <#if categoryCount == categoryMax>
+                          <#-- Count up the number of category values there will be, so we can show the number -->
+                          <#assign countOfCategoryValues = 0 />
+                          <@s.Category max=2147483647 tag="">
+                              <#assign countOfCategoryValues = countOfCategoryValues + 1 />
+                          </@s.Category>
+
+                          <div class="panel-footer">
+                            <a class="btn btn-xs btn-primary" data-toggle="tab" href="#collection-${currentCollection}-tab-1" aria-expanded="true" title="View All ${countOfCategoryValues}" data-chart_ref="chart_${s.facet_index}" onClick="facetTabShow(${s.facet_index})"> View All ${countOfCategoryValues} <span class="fa fa-arrow-right"></span></a>
+                          </div>
+                        </#if>
+                      </div>
+                  </@s.Facet>
+                  
                 
                 </@s.FacetedSearch>
             </div>

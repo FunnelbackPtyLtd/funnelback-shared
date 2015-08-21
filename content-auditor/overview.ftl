@@ -4,7 +4,7 @@
             
             <@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-0"/>
 
-            <div class="overviews">
+            <div class="facets">
                 <#assign categoryMax = question.collection.configuration.value("ui.modern.content-auditor.overview-category-count")?number />
                 <@s.FacetedSearch>
                 <@s.Facet>
@@ -17,7 +17,7 @@
 
                       <#assign categoryCount = 0 />
                       <#assign sep = '' />
-                      <div class="col-md-6">
+                      <div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
@@ -28,6 +28,17 @@
                             <@s.Category max=2147483647 tag="">
                                 <#assign countOfCategoryValues = countOfCategoryValues + 1 />
                             </@s.Category>
+
+                           <#assign textNoContent = 'No information avaliable'> 
+                            <#if countOfCategoryValues < 1>
+
+                                <div class="no-info">
+                                  <div class="inner">
+                                    ${textNoContent}
+                                  </div>
+                                </div>      
+
+                            </#if>
 
                             <script type="text/javascript">
                               function navigateToDataContextUrl(event) {
