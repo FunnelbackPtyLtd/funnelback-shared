@@ -5,8 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -53,11 +55,17 @@ public class CuratorConfigParser {
         result.addAll(triggerActions);
         return result;
     }
-
-    public String generateJsonCuratorConfiguration(CuratorConfig newConfig) {
+    
+    /**
+     * 
+     * @param newConfig
+     * @param toType converts the ByteArrayOutputStream to the type wanted.
+     * @return
+     */
+    private <T> T generateJsonCuratorConfiguration(CuratorConfig newConfig, Function<ByteArrayOutputStream, T> toType) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonFactory f = new JsonFactory();
-
+    
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             JsonGenerator jg = f.createJsonGenerator(baos);
             jg.setCodec(objectMapper);
@@ -70,11 +78,28 @@ public class CuratorConfigParser {
             jg.writeEndArray();
             jg.close();
             
-            return baos.toString("UTF-8");
+            return toType.apply(baos);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public String generateJsonCuratorConfiguration(CuratorConfig newConfig) {
+            return generateJsonCuratorConfiguration(newConfig, (byteArrayOutputStream) -> {
+                try {
+                    return byteArrayOutputStream.toString(StandardCharsets.UTF_8.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+    }
+    
+    public byte[] generateJsonCuratorConfigurationAsBytes(CuratorConfig newConfig) {
+        return generateJsonCuratorConfiguration(newConfig, (byteArrayOutputStream) -> {
+           return byteArrayOutputStream.toByteArray(); 
+        });
+    }
+
 
     public TriggerActions parseTriggerActionsJson(byte[] content) {
         TriggerActions newTriggerActions;
