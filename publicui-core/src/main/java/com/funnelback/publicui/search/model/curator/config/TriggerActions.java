@@ -38,7 +38,14 @@ public class TriggerActions implements Identifiable {
      */
     @Getter
     @Setter
-    private String Id = null;    
+    private String Id = null;
+    
+    /**
+     * Label for the TriggerAction (a way to label the TriggerAction).
+     */
+    @Getter
+    @Setter
+    private String label;
 
     /**
      * Indicates whether this TriggerActions is enabled (i.e. should be considered for new requests).
