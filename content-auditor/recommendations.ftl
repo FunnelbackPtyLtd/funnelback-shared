@@ -45,7 +45,7 @@
                                           {
                                               "label": "${s.categoryValue.label?js_string}",
                                               "count": "${s.categoryValue.count?c}",
-                                              "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2",
+                                              "url":   "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2",
                                               "colour": colourForGrade(parseInt("${s.categoryValue.label?js_string}", 10))
                                            }
                                           <#assign separator = ','>
@@ -58,9 +58,11 @@
                               },888);
                             }
 
+
+
                             data.sort(function(a,b) { return parseInt(a.label, 10) - parseInt(b.label, 10); });
 
-                            content_auditor.readingGradeChart= AmCharts.makeChart( "reading-grade-chartdiv", {
+                            content_auditor.readingGradeChart = AmCharts.makeChart( "reading-grade-chartdiv", {
                               "type": "serial",
                               "marginTop":0,
                               "dataProvider": data,
@@ -100,18 +102,11 @@
                                     "autoGridCount": true,
                                     "color": "#444"
                                 },
-                                "chartCursor": {
-                                    "pan": true,
-                                    "valueLineEnabled": true,
-                                    "valueLineBalloonEnabled": true,
-                                    "cursorAlpha": 0,
-                                    "valueLineAlpha": 0.2
-                                  },
                               "categoryField": "label",
                               "height": 300,
                                "colors": 	['#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74', '#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333', '#990000']
                             } );
-
+                         
                            content_auditor.readingGradeChart.addListener("clickGraphItem", navigateToDataContextUrl);
                         </script>
                       </div>
@@ -365,7 +360,7 @@
 
                               },888);
                             }    
-                            //alert(JSON.stringify(data, null, 4));
+
                             data.sort(function(a,b) { return a.sort - b.sort; });
                             
                             content_auditor.responseTimeChart = AmCharts.makeChart( "response-time-chartdiv", {
