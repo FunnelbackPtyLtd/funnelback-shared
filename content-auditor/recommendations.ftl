@@ -64,6 +64,7 @@
                               "type": "serial",
                               "marginTop":0,
                               "dataProvider": data,
+                              "pathToImages": "content-auditor/assets/img/amcharts/",
                               "graphs": [{
                                 "id": "g1",
                                 "type": "column",
@@ -232,6 +233,7 @@
                             content_auditor.dateModifiedChart = AmCharts.makeChart( "date-modified-chartdiv", {
                               "type": "serial",
                               "dataProvider": data,
+                              "pathToImages": "content-auditor/assets/img/amcharts/",
                               "graphs": [ {
                                 "type": "column",
                                 "valueField": "count",
@@ -357,6 +359,7 @@
                                     "lineAlpha": 0.2,
                                     "fillColorsField": "colour",
                                     "lineColors": "colour",
+                                    "pathToImages": "content-auditor/assets/img/amcharts/",
                                     "balloonText": "<b>[[count]]</b> pages take between <b>[[category]]</b> milliseconds to load. <br> This is considered: <b> [[description]] </b>" 
                               }],
                                     "valueAxes": [{
