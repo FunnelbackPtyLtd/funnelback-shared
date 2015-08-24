@@ -274,52 +274,71 @@
                         <script type="text/javascript">
                         
                             function gradeResponseTime(time){
-                                if(time == 5001)
+                                if(time >= 5001)
                                     return '#DF0000';
-                                else if(time == 4001)
+                                else if(time >= 4001)
                                     return '#DF0000';
-                                else if(time == 3001)
+                                else if(time >= 3001)
                                     return '#DF0000';
-                                else if(time == 2001)
+                                else if(time >= 2001)
                                     return '#DF0000';
-                                else if(time == 1000)
+                                else if(time >= 1000)
                                     return '#E94B00';
-                                else if(time == 501)
+                                else if(time >= 501)
                                     return '#F49600';    
-                                else if(time == 201)
+                                else if(time >= 201)
                                     return '#FFE100';
-                                else if(time == 101)
+                                else if(time >= 101)
                                     return '#AAC51D';    
-                                else if(time == 21)
+                                else if(time >= 21)
                                     return '#55AA3A';
-                                else if(time == 0)
+                                else if(time >= 0)
                                     return '#008F58';    
                                 else 
                                     return '#888';
                             }
-                            function cateogroiseResponseTime(time){
-                                if(time == 5001)
-                                    return 'Unworthy of the web';
-                                else if(time == 4001)
+                            function categoriseResponseTime(time){
+                                if(time >= 5001)
+                                    return 'Too Slow';
+                                else if(time >= 4001)
                                     return 'Painfully Slow';
-                                else if(time == 3001)
+                                else if(time >= 3001)
                                     return 'Annoyingly Slow';
-                                else if(time == 2001)
+                                else if(time >= 2001)
                                     return 'Very Slow';
-                                else if(time == 1000)
+                                else if(time >= 1000)
                                     return 'Slow';
-                                else if(time == 501)
+                                else if(time >= 501)
                                     return 'Sluggish';    
-                                else if(time == 201)
+                                else if(time >= 201)
                                     return 'Normal';
-                                else if(time == 101)
+                                else if(time >= 101)
                                     return 'Quite Fast';    
-                                else if(time == 21)
-                                    return 'Awesomely Fast';
-                                else if(time == 0)
-                                    return 'Extremely Super Fast';    
+                                else if(time >= 21)
+                                    return 'Very Fast';
+                                else if(time >= 0)
+                                    return 'Extremely Fast';    
                                 else 
                                     return 'Not Ranked';
+                            }
+
+                            function cleanDecimal(val){
+                               if(val == 0 ){ 
+                                return val; 
+                               }
+                               else if(val >= 40000 ){
+                                return '+';
+                               } 
+                                
+                                val = (val / 1000).toFixed(2).replace('0.','.').replace('.00','');
+
+                                return val;      
+                            }
+
+                            function constructLabel(labelStart, labelEnd){
+
+                                var constructed = (cleanDecimal(labelStart) + ' to ' + cleanDecimal(labelEnd)).replace('0s','s').replace(' to +','+');                
+                                return constructed;
                             }
                             
                             var data = [
@@ -328,8 +347,8 @@
                                           ${separator}
                                           {
                                               "sort": "${s.categoryValue.label?keep_before("-")?js_string}",
-                                              "description": cateogroiseResponseTime(${s.categoryValue.label?keep_before("-")?js_string}),
-                                              "label": "${s.categoryValue.label?js_string}",
+                                              "description": categoriseResponseTime(${s.categoryValue.label?keep_before("-")?js_string}),
+                                              "label": constructLabel(${s.categoryValue.label?keep_before("-")?js_string}, ${s.categoryValue.label?keep_after("-")?js_string}),
                                               "count": "${s.categoryValue.count?c}",
                                               "colour": gradeResponseTime(${s.categoryValue.label?keep_before("-")?js_string}),
                                               "url": "${s.CategoryUrl(main.contentAuditorLink)?js_string}#collection-test-content-auditor-tab-2"
@@ -360,7 +379,7 @@
                                     "fillColorsField": "colour",
                                     "lineColors": "colour",
                                     "pathToImages": "content-auditor/assets/img/amcharts/",
-                                    "balloonText": "<b>[[count]]</b> pages take between <b>[[category]]</b> milliseconds to load. <br> This is considered: <b> [[description]] </b>" 
+                                    "balloonText": "<b>[[count]]</b> pages take between <b>[[category]]</b> seconds to load. <br> This is considered: <b> [[description]] </b>" 
                               }],
                                     "valueAxes": [{
                                         "axisAlpha": 1,
@@ -371,7 +390,7 @@
                                         "gridPosition": "start",
                                         "fillAlpha": 0.05,
                                         "position": "left",
-                                        "title": "Response Time (milliseconds)"
+                                        "title": "Response Time (seconds)"
                                     },
                               "categoryField": "label",
                               "height": 300
