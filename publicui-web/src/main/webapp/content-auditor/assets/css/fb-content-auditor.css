@@ -631,6 +631,10 @@ margin: 0 -15px;
 padding: 0
 }
 
+.tabbable .badge{
+text-shadow:none;	
+}
+
 .tabbable .tab-content {
 background: #fff;
 margin: 0 -15px
