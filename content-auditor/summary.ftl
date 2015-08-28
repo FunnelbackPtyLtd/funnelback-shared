@@ -11,11 +11,11 @@
     <#list response.facets as f>
         <#if f.categories?size &gt; 0>
             {
-                "name": "${f.name?js_string}",
+                "name": "${f.name?json_string}",
                 "categories": [
                     <#-- Content Auditor facets always have only one category -->
                     <#list f.categories[0].values as v>
-                        { "category": "${v.label?js_string}", "count": ${v.count?c} }<#if v_has_next>,</#if>
+                        { "category": "${v.label?json_string}", "count": ${v.count?c} }<#if v_has_next>,</#if>
                     </#list>
                 ]
             }
