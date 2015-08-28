@@ -32,7 +32,7 @@
                         </div>
                         <script type="text/javascript">
                             function colourForGrade(grade){
-                              if(grade < 7 || grade > 20)
+                              if(grade < 7 || grade > 15)
                                 return 'red';
                               else 
                                 return 'green';
