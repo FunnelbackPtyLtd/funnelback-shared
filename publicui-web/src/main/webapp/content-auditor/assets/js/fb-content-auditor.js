@@ -198,13 +198,17 @@ jQuery(function()
             $('body').attr('hash', hash);
             
 			
-			if(hash == 'collection-test-anu-tab-recommendations')
-			{
 			//Update the Recommendations charts on corresponding tab click 
+			var locationHashChangingTo = e.delegateTarget.location.hash;
+			
+			if(locationHashChangingTo.indexOf('tab-recommendations') >= 0){
+			
 				content_auditor.readingGradeChart.invalidateSize();
 				content_auditor.dateModifiedChart.invalidateSize();
 				content_auditor.responseTimeChart.invalidateSize();
 			}
+			
+			
 			// This is for AMCharts and if the tab element has an attribute of 'data-chart_ref'
             var chart = $(this).attr('data-chart_ref');
             if (chart)
