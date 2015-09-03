@@ -28,7 +28,7 @@
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body chart">
-                          <div id="reading-grade-chartdiv" style="width: 100%; height: 300px;"></div>
+                          <div id="reading-grade-chartdiv" class="chart-container" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
                             function colourForGrade(grade){
@@ -190,7 +190,7 @@
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body chart">
-                          <div id="date-modified-chartdiv" style="width: 100%; height: 300px;"></div>
+                          <div id="date-modified-chartdiv" class="chart-container" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
                             function colourForYear(year){
@@ -264,7 +264,7 @@
                           <h3 class="panel-title"><@s.FacetLabel tag="strong" link=main.contentAuditorLink/></h3>
                         </div>
                         <div class="panel-body">
-                          <div id="response-time-chartdiv" style="width: 100%; height: 300px;"></div>
+                          <div id="response-time-chartdiv" class="chart-container" style="width: 100%; height: 300px;"></div>
                         </div>
                         <script type="text/javascript">
                         
