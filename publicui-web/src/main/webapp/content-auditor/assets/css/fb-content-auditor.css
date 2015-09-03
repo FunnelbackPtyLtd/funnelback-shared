@@ -2282,3 +2282,8 @@ header {
 		 column-width: 550px;
 }
 }
+
+.chart-container{ display:block}
+.chart-container > div { position: inherit !important}
+.chart-container > div > div{ position:inherit !important }
+.chart-container svg { position: inherit !important}
