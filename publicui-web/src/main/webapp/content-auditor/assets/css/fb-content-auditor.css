@@ -2282,3 +2282,17 @@ header {
 		 column-width: 550px;
 }
 }
+
+/* 
+Chart Fixes. Fixes bugs in Chrome and Safari. 
+*/
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+.facet > .panel { display: inline-table; table-layout: fixed; width: 100%}
+.chart-container{ /* display:block */ }
+.chart-container > div { position: inherit !important}
+.chart-container > div > div{ position:inherit !important }
+.chart-container svg { position: inherit !important}
+
+/* Note: need to fix the chart overlay bubble somehow with JS. CSS not working and needs to be calculated */
+/* .chart-container svg > div { position: inherit !important}*/
+}
