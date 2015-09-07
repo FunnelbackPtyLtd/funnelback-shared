@@ -572,4 +572,49 @@ jQuery(function()
 
             End of PJAX turned off */
         }); //End of Daisy Chain
+
+	/* -------------------------------------------
+	 >- Hackish charts fix for chrome and Safari -<
+	---------------------------------------------*/
+	
+	var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	// Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+	var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+	var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+	// At least Safari 3+: "[object HTMLElementConstructor]"
+	var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+	var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
+	
+	if(isSafari || isChrome){
+
+		var x, y, timer;
+		var currentPos = { x: -1, y: -1 };
+		
+		$('.chart-container').mousemove(function(event) {
+			
+			var that = $('.amcharts-balloon-bg');
+			currentPos.x = that.position().left;
+			currentPos.y = that.position().top + 5;
+			var target = $(this).find('svg + div');
+			that.append(Math.random());
+			target.stop().css({
+				left: currentPos.x,
+				top : currentPos.y
+				});
+				
+				clearTimeout(timer);
+				
+				timer = setTimeout(function(){ 
+					target.css({
+						visibility : 'visible', 
+						display : 'block'
+						//opacity: 0
+						})
+						.animate({ 
+							opacity: 1 
+							}, 300);
+				});
+		});
+	}
+
 });
