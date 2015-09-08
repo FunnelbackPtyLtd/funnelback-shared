@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.funnelback.api.core.models.AbstractIdentifiableDated;
+import com.funnelback.api.core.models.Dated;
 import com.funnelback.api.core.models.Identifiable;
 
 import lombok.Getter;
@@ -24,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of={"Id","name","enabled","actions","trigger"})
-public class TriggerActions implements Identifiable {
+public class TriggerActions extends AbstractIdentifiableDated {
     
     /**
      * Name for the TriggerAction (a nice name to present to the user)
