@@ -53,7 +53,7 @@ public class PadreConnection {
         return out.toString();
     }
     
-    public void close() {
+    public void close() throws IOException {
         log.debug("Closing connection");
         executor.getStreamHandler().stop();
     }
