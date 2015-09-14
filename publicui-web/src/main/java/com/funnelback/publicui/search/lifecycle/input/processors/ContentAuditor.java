@@ -346,7 +346,14 @@ public class ContentAuditor extends AbstractInputProcessor {
             " -" + QueryProcessorOptionKeys.SPELLING + "=" + "0" + 
             " -" + QueryProcessorOptionKeys.SQE + "=" + "1" +
             " -" + QueryProcessorOptionKeys.SBL + "=" + "1" + 
-            " -" + QueryProcessorOptionKeys.SHLM + "=" + "0");
+            " -" + QueryProcessorOptionKeys.SHLM + "=" + "0" +
+            " -" + QueryProcessorOptionKeys.SCO + "=" + "1"
+            );
+        
+        // We want the facet definitions so query constraints are created, but we don't want the expensive QP options
+        // the produce output we would ignore anyway.
+        List<FacetDefinition> facetDefinitions = question.getCollection().getFacetedNavigationLiveConfig().getFacetDefinitions();
+        question.getCollection().setFacetedNavigationLiveConfig(new FacetedNavigationConfig("", facetDefinitions));
         
         return question;
     }
