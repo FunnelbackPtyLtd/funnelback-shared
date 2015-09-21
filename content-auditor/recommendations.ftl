@@ -32,7 +32,11 @@
                         </div>
                         <script type="text/javascript">
                             function colourForGrade(grade){
-                              if(grade < 7 || grade > 15)
+                              if(
+                                  grade <= ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.lower-ok-limit")!("6"))?number?c} 
+                                  || 
+                                  grade >= ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.upper-ok-limit")!("16"))?number?c}
+                                )
                                 return 'red';
                               else 
                                 return 'green';
@@ -195,7 +199,7 @@
                         <script type="text/javascript">
                             function colourForYear(year){
                               var now = new Date().getFullYear();
-                              if(year < (now - 2) || year > now)
+                              if(year < (now - ${(question.collection.configuration.value("ui.modern.content-auditor.date-modified.ok-age-years")!("2"))?number?c}) || year > now)
                                 return 'red';
                               else 
                                 return 'green';
