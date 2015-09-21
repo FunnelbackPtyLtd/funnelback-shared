@@ -33,9 +33,9 @@
                         <script type="text/javascript">
                             function colourForGrade(grade){
                               if(
-                                  grade <= ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.lower-ok-limit")!("6"))?number?c} 
+                                  grade < ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.lower-ok-limit")!("6"))?number?c} 
                                   || 
-                                  grade >= ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.upper-ok-limit")!("16"))?number?c}
+                                  grade > ${(question.collection.configuration.value("ui.modern.content-auditor.reading-grade.upper-ok-limit")!("16"))?number?c}
                                 )
                                 return 'red';
                               else 
