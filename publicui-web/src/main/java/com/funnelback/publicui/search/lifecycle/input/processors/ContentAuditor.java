@@ -134,6 +134,8 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getAdditionalParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {Integer.toString(ContentAuditor.METADATA_BUFFER_LENGTH_VALUE)});
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + ContentAuditor.DAAT_TIMEOUT_MAX_VALUE);
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.RMC_MAXPERFIELD + "=" + config.value(Keys.ModernUI.ContentAuditor.MAX_METADATA_FACET_CATEGORIES));
+        // FUN-7978 Do not pollute analytics
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.LOG + "=off");
 
         if (question.getRawInputParameters().get(RequestParameters.NUM_RANKS) == null) {
             // Set a default from collection.cfg
