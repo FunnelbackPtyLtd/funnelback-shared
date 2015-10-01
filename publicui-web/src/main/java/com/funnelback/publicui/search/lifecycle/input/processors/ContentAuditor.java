@@ -26,6 +26,7 @@ import com.funnelback.publicui.contentauditor.YearOnlyDateFieldFill;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -342,20 +343,25 @@ public class ContentAuditor extends AbstractInputProcessor {
         // Speedup settings
         question.getAdditionalParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {""});
         question.getAdditionalParameters().put(RequestParameters.METADATA_BUFFER_LENGTH, new String[] {"0"});
-        question.getDynamicQueryProcessorOptions().add(
-             "-" + QueryProcessorOptionKeys.VSIMPLE + "=" + "1" +
-            " -" + QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION + "=" + "0" +
-            " -" + QueryProcessorOptionKeys.SPELLING + "=" + "0" + 
-            " -" + QueryProcessorOptionKeys.SQE + "=" + "1" +
-            " -" + QueryProcessorOptionKeys.SBL + "=" + "1" + 
-            " -" + QueryProcessorOptionKeys.SHLM + "=" + "0" +
-            " -" + QueryProcessorOptionKeys.SCO + "=" + "1"
-            );
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.VSIMPLE + "=" + "1");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION + "=" + "0");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SPELLING + "=" + "0");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SQE + "=" + "1");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SBL + "=" + "1");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SHLM + "=" + "0");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SCO + "=" + "1");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.COLLAPSING_SCOPED + "=" + "on");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SORT + "=" + "collapse_count");
         
         // We want the facet definitions so query constraints are created, but we don't want the expensive QP options
         // the produce output we would ignore anyway.
         List<FacetDefinition> facetDefinitions = question.getCollection().getFacetedNavigationLiveConfig().getFacetDefinitions();
-        question.getCollection().setFacetedNavigationLiveConfig(new FacetedNavigationConfig("", facetDefinitions));
+
+        // We must construct a new collection object, otherwise we modify both searches here
+        Collection collectionForExtraSearch = new Collection(question.getCollection().getId(), question.getCollection().getConfiguration());
+        collectionForExtraSearch.setFacetedNavigationLiveConfig(new FacetedNavigationConfig("", facetDefinitions));
+        
+        question.setCollection(collectionForExtraSearch);
         
         return question;
     }
