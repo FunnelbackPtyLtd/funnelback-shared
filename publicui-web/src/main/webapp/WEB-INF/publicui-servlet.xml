@@ -35,6 +35,10 @@
             <mvc:mapping path="/*" />
             <bean class="com.funnelback.springmvc.web.interceptor.Log4j2ThreadContextInterceptor" />
         </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/*" />
+            <bean class="com.funnelback.publicui.search.web.interceptors.ConfigurableCorsInterceptor" />
+        </mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/search.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor" />
