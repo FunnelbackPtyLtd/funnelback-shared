@@ -329,7 +329,10 @@ public class SearchQuestion {
         
         /** Number of results per page */
         public static final String NUM_RANKS = "num_ranks";
-        
+
+        /** Rank of the first result to display */
+        public static final String START_RANK = "start_rank";
+
         /** Explore: Number of query terms */
         public static final String EXP = "exp";
 

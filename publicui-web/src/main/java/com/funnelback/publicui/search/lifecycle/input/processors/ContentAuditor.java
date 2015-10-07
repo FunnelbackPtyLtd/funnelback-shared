@@ -338,7 +338,9 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getAdditionalParameters().put(RequestParameters.COLLAPSING_SIGNATURE, new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
 
         question.getAdditionalParameters().put(RequestParameters.NUM_RANKS,
-            new String[] { config.value(Keys.ModernUI.ContentAuditor.DUPLICATE_NUM_RANKS) });
+            new String[] { config.value(Keys.ModernUI.ContentAuditor.OVERVIEW_CATEGORY_COUNT) });
+        
+        question.getAdditionalParameters().put(RequestParameters.START_RANK, question.getAdditionalParameters().getOrDefault("duplicate_" + RequestParameters.START_RANK, new String[]{"0"}));
 
         // Speedup settings
         question.getAdditionalParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {""});
