@@ -60,9 +60,6 @@ ${queryToReport}
                         <li><a href="#collection-${currentCollection}-tab-0" data-toggle="tab" id="tab-nav-overview" title="View Overview">Overview</a></li>
                         <li><a class="tab-switch-1" href="#collection-${currentCollection}-tab-1" data-toggle="tab" id="tab-nav-attributes" title="View Attributes">Attributes</a></li>
                         <li><a href="#collection-${currentCollection}-tab-2" data-toggle="tab" id="tab-nav-results" title="View Search Results">Search Results</a></li>
-                        <#if !(question.inputParameterMap["duplicate_signature"]??)>
-                            <li><a href="#collection-${currentCollection}-tab-3" data-toggle="tab" id="tab-nav-duplicates" title="View Duplicate Content">Duplicate Content <#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></a></li>
-                        </#if>
                     </ul>
                     
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
@@ -78,9 +75,6 @@ ${queryToReport}
                             </div>
                             <div class="tab-pane" id="collection-${currentCollection}-tab-2">
                                 <#include "/web/templates/modernui/content-auditor/documents.ftl" />
-                            </div>
-                            <div id="collection-${currentCollection}-tab-3" class="tab-pane clearfix">
-                                <#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
                             </div>
                         </div>
                     <#else>

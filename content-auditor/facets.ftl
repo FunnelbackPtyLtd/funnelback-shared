@@ -109,9 +109,6 @@
 
 					</div>
 					<div role="tabpanel" class="tab-pane" id="facet-tab-urls-${facet_counter}"></div>
-					<div role="tabpanel" class="tab-pane" id="facet-tab-dupes-${facet_counter}">
-						<#include "/web/templates/modernui/content-auditor/collapsed_duplicates.ftl" />
-					</div>
 					<div role="tabpanel" class="tab-pane" id="facet-tab-page-${facet_counter}">...</div>
 				</div>
 			</div>
