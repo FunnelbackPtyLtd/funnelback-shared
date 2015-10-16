@@ -2,7 +2,7 @@
         <div class="col-md-12 no-border no-padding">
             <div class="fb-facet-header"> <h3><span class="facetLabel">Recommendations</span></h3></div>
             
-            <@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-0"/>
+            <@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-recommendations"/>
 
             <div class="recommendations facets">
                 <#assign categoryMax = 10 />
@@ -436,7 +436,7 @@
                 <div class="facet">
                   <div class="panel panel-default">
                       <div class="panel-heading">
-                        <h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></h3>
+                        <h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span id="duplicateCount" class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></h3>
                       </div>
                       <div class="panel-body">
                         <@fb.ExtraResults name="duplicates">
