@@ -433,7 +433,7 @@
                 
                 </@s.FacetedSearch>
 
-                <div class="facet">
+                <div id="duplicateContentTab" class="facet">
                   <div class="panel panel-default">
                       <div class="panel-heading">
                         <h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span id="duplicateCount" class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></h3>
