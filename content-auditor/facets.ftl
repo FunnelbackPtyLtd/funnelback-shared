@@ -37,7 +37,7 @@
 				<div class="set-all-anchor hidden">${FacetSummaryLabel}</div>
 			</div>
 
-			<@appliedFacetsBlock urlHash="#facet-${facet_counter}.tab-pane" />
+			<@appliedFacetsBlock urlHash="#collection-${currentCollection}-tab-1"/>
 			
 				<#-- Nav tabs
 				<ul class="nav nav-tabs" role="tablist">
