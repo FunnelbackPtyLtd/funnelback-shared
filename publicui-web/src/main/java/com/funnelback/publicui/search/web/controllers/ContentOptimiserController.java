@@ -9,6 +9,9 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.log4j.Log4j2;
+
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
@@ -23,7 +26,11 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
+import com.funnelback.publicui.search.web.controllers.SearchController.ViewTypes;
+import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
 
+import org.springframework.web.servlet.View;
+@Log4j2
 @Controller
 public class ContentOptimiserController {
 
@@ -57,6 +64,14 @@ public class ContentOptimiserController {
         
         return "redirect:/seo-auditor.html" + paramString;
     }
+    @RequestMapping("/seo-auditor.json")
+    public ModelAndView mainEntryJson(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question,
+            @ModelAttribute SearchUser user) {
+        return mainEntryInner(request, response, question, user);
+    }
     
     @RequestMapping("/seo-auditor.html")
     public ModelAndView mainEntry(
@@ -64,7 +79,14 @@ public class ContentOptimiserController {
             HttpServletResponse response,
             SearchQuestion question,
             @ModelAttribute SearchUser user) {
-
+        return mainEntryInner(request, response, question, user);
+    }
+    
+    private ModelAndView mainEntryInner(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        SearchQuestion question,
+        @ModelAttribute SearchUser user) {
         String collection = request.getParameter(RequestParameters.COLLECTION);
         String query = request.getParameter(RequestParameters.QUERY);
         String optimiserUrl = request.getParameter(RequestParameters.CONTENT_OPTIMISER_URL);
@@ -139,7 +161,11 @@ public class ContentOptimiserController {
 
     @Autowired
     private FreeMarkerView contentOptimiserResultsPage;
-    public ModelAndView visitContentOptimiserResultsPage(HttpServletRequest request, HttpServletResponse response, SearchQuestion question, SearchUser user) {
+    
+    public ModelAndView visitContentOptimiserResultsPage(HttpServletRequest request, 
+                                                            HttpServletResponse response, 
+                                                            SearchQuestion question, 
+                                                            SearchUser user) {
 
         question.getRawInputParameters().put(RequestParameters.EXPLAIN, new String[] {"on"});
         question.getRawInputParameters().put(RequestParameters.NUM_RANKS, new String[] {"999"});
@@ -148,6 +174,17 @@ public class ContentOptimiserController {
             searchController.search(request, response, question, user);
 
         Map<String, Object> model = mav.getModel();
+        
+        try {
+            ViewTypes vt = ViewTypes.valueOf(FilenameUtils.getExtension(request.getRequestURI()));
+            if(vt.equals(ViewTypes.json)) {
+                return new ModelAndView("json", model);
+            }
+        } catch (IllegalArgumentException iae) {
+            log.warn("SEO auditor called with an unknown extension '"+request.getRequestURL()+"'.");
+            throw new ViewTypeNotFoundException(FilenameUtils.getExtension(request.getRequestURI()));
+        }
+        
 
         return new ModelAndView(contentOptimiserResultsPage, model);
     }
