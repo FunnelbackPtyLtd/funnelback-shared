@@ -1,4 +1,4 @@
-package com.funnelback.publicui.test.search.web.interceptors;
+package com.funnelback.publicui.test.search.web.filters;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,22 +6,20 @@ import java.io.FileNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
-import com.funnelback.publicui.search.web.interceptors.ConfigurableCorsInterceptor;
+import com.funnelback.publicui.search.web.filters.ConfigurableCorsFilter;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
-public class ConfigurableCorsInterceptorTests {
+public class ConfigurableCorsFilterTests {
 
     private static final String COLLECTION_ID = "interceptor";
 
@@ -30,10 +28,11 @@ public class ConfigurableCorsInterceptorTests {
 
     private Config testCollectionConfig;
 
-    private ConfigurableCorsInterceptor interceptor;
+    private ConfigurableCorsFilter filter;
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
+    private MockFilterChain filterChain;
 
     @Before
     public void before() throws FileNotFoundException {
@@ -45,14 +44,15 @@ public class ConfigurableCorsInterceptorTests {
         request.setParameter(RequestParameters.COLLECTION, COLLECTION_ID);
 
         response = new MockHttpServletResponse();
+        filterChain = new MockFilterChain();
         
-        interceptor = new ConfigurableCorsInterceptor();
-        interceptor.setConfigRepository(configRepository);
+        filter = new ConfigurableCorsFilter();
+        filter.setConfigRepository(configRepository);
     }
     
     @Test
     public void testNoHeader() throws Exception {
-        interceptor.postHandle(request, response, null, null);
+        filter.doFilter(request, response, filterChain);
         
         Assert.assertNull(response.getHeader("Access-Control-Allow-Origin"));
     }
@@ -60,7 +60,7 @@ public class ConfigurableCorsInterceptorTests {
     @Test
     public void testHeader() throws Exception {
         testCollectionConfig.setValue(Keys.ModernUI.CORS_ALLOW_ORIGIN, "*.test.com");
-        interceptor.postHandle(request, response, null, null);
+        filter.doFilter(request, response, filterChain);
         
         Assert.assertEquals("*.test.com", response.getHeader("Access-Control-Allow-Origin"));
     }
