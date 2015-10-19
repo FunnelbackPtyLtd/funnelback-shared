@@ -43,6 +43,7 @@
 	<bean id="RequestParametersTransformFilter" class="com.funnelback.publicui.search.web.filters.RequestParametersTransformFilter" />
 	<bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />	
 	<bean id="ConfigurableSecurityFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableSecurityFilter" />
+	<bean id="ConfigurableCorsFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableCorsFilter" />
 	
 	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool" destroy-method="close">
 		<constructor-arg index="0">
