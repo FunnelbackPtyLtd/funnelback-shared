@@ -55,6 +55,26 @@
 		<finalName>funnelback-${project.artifactId}-${project.version}</finalName>
 		<plugins>
 			<plugin>
+			    <groupId>com.fasterxml.jackson</groupId>
+			    <artifactId>jackson-json-schema-plugin</artifactId>
+			    <version>2.4.4-SNAPSHOT</version>
+			    <executions>
+			        <execution>
+			            <id>generate1</id>
+			            <phase>generate-sources</phase>
+			            <goals>
+			                <goal>generate</goal>
+			            </goals>
+			            <configuration>
+			                <includes>
+			                    <include>com/funnelback/publicui/search/model/transaction/SearchTransaction</include>
+			                </includes>
+			                <outputSchema>${project.basedir}/src/main/javadoc/doc-files/SearchTransactionSchema.json</outputSchema>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+ 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.8</version>
@@ -64,6 +84,7 @@
 					<excludePackageNames>
 						com.funnelback.publicui.utils:com.funnelback.publicui.xml:com.funnelback.publicui.search.model.log:com.funnelback.publicui.search.model.padre.factories:com.funnelback.publicui.search.model.collection.paramtransform:com.funnelback.publicui.search.model.transaction.contentoptimiser:com.funnelback.publicui.search.model.anchors
 					</excludePackageNames>
+					<docfilessubdirs>true</docfilessubdirs>
 				</configuration>
 				<executions>
 					<execution>
