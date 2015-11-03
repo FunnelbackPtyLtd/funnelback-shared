@@ -18,26 +18,15 @@ public class SecurityConfig extends SecurityConfigBase {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-        .anyRequest()
-        .authenticated()
-        .and()
-        .rememberMe()
-        .rememberMeServices(tokenBasedRememberMeServices())
-        .and().httpBasic()
-        ;
-        if(true) return;
         switch (executionContextHolder.getExecutionContext()) {
         case Admin:
             http.authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .rememberMe()
-                .rememberMeServices(tokenBasedRememberMeServices())
-                ;
-                
-                
+            .anyRequest()
+            .authenticated()
+            .and()
+            .rememberMe()
+            .rememberMeServices(tokenBasedRememberMeServices())
+            .and().httpBasic();
             break;
         case Novell:
             break;
