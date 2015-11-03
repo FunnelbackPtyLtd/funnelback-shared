@@ -1,0 +1,48 @@
+package com.funnelback.publicui.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.springmvc.api.config.security.SecurityConfigBase;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends SecurityConfigBase {
+    
+    @Autowired
+    ExecutionContextHolder executionContextHolder;
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        switch (executionContextHolder.getExecutionContext()) {
+        case Admin:
+            http.authorizeRequests()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .rememberMe()
+            .rememberMeServices(tokenBasedRememberMeServices())
+            .and().httpBasic();
+            break;
+        case Novell:
+            break;
+        case Public:
+            http
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll();
+            break;
+        case Unknown:
+            break;
+        default:
+            break;
+
+        }
+        
+    }
+
+}
