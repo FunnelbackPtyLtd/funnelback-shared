@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.curator.trigger;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
@@ -21,6 +23,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Log4j2
 public class QueryRegularExpressionTrigger implements Trigger {
 
     /** The regular expression to run against the current query */
@@ -35,7 +38,12 @@ public class QueryRegularExpressionTrigger implements Trigger {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
         String query = searchTransaction.getQuestion().getQuery();
-        return Pattern.compile(triggerPattern).matcher(query).find();
+        try {
+            return Pattern.compile(triggerPattern).matcher(query).find();
+        } catch (PatternSyntaxException e) {
+            log.error("Invalid syntax in curator query regular expression trigger", e);
+            return false;
+        }
     }
 
     /** Configure this trigger (expected to autowire in any dependencies) */

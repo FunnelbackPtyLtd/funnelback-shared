@@ -10,7 +10,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class QueryRegularExpressionTriggerTests {
 
     @Test
-    public void testAllQueryWordsTrigger() {
+    public void testSimpleCases() {
         QueryRegularExpressionTrigger qret = new QueryRegularExpressionTrigger();
         
         SearchQuestion question = new SearchQuestion();
@@ -23,6 +23,19 @@ public class QueryRegularExpressionTriggerTests {
 
         question.setQuery("foo");
         Assert.assertTrue("Expected to pass because regex matches", qret.activatesOn(st));
+    }
+
+    @Test
+    public void testInvalidRegex() {
+        QueryRegularExpressionTrigger qret = new QueryRegularExpressionTrigger();
+        
+        SearchQuestion question = new SearchQuestion();
+        SearchTransaction st = new SearchTransaction(question, null);
+        
+        qret.setTriggerPattern("(?i)\\b(Foo\\b");
+
+        question.setQuery("foo");
+        Assert.assertFalse("Expected to fail because regex is invalid (but should not throw an exception)", qret.activatesOn(st));
     }
 
 //  Needs to move to a CuratorYamlConfigResourceTest
