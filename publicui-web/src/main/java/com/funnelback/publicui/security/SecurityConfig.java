@@ -19,7 +19,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     protected void configure(HttpSecurity http) throws Exception {
         switch (executionContextHolder.getExecutionContext()) {
         case Admin:
-            super.configure(http);;
+            super.configureHttpbasicAndToken(http);
             break;
         case Novell:
             break;
