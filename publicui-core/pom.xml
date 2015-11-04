@@ -67,7 +67,7 @@
 			            </goals>
 			            <configuration>
 			                <includes>
-			                    <include>com/funnelback/publicui/search/model/transaction/SearchTransaction</include>
+			                    <include>com/funnelback/publicui/search/model/transaction/SearchTransaction.class</include>
 			                </includes>
 			                <outputSchema>${project.basedir}/src/main/javadoc/doc-files/SearchTransactionSchema.json</outputSchema>
 			            </configuration>
