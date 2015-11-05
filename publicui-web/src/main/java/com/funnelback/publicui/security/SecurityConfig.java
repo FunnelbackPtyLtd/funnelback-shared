@@ -33,7 +33,8 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             break;
         default:
             break;
-
         }
+        //Disable csrf, as we don't care to protect anything here with it.
+        http.csrf().disable();
     }
 }
