@@ -1,55 +1,43 @@
 package com.funnelback.publicui.search.web.filters;
 
-import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.springmvc.web.filter.CorsFilter;
 
 /**
  * Filter to add a CORS allow origin header
- * if configured on the collection
  * 
  * @author nguillaumin@funnelback.com
  */
-public class ConfigurableCorsFilter implements Filter {
+public class ConfigurableCorsFilter extends CorsFilter implements Filter {
 
     @Autowired
     @Setter
     private ConfigRepository configRepository;
-
+    
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException { }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
-        if (request.getParameter(RequestParameters.COLLECTION) != null
-                && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
-            Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-            
-            if (c.getConfiguration().hasValue(Keys.ModernUI.CORS_ALLOW_ORIGIN)) {
-                ((HttpServletResponse) response).addHeader("Access-Control-Allow-Origin", c.getConfiguration().value(Keys.ModernUI.CORS_ALLOW_ORIGIN));
-            }
+    public Optional<String> getCorsAllowOrigin(ServletRequest request, ServletResponse response) {
+        Optional<String> opt = Optional.ofNullable(request.getParameter(RequestParameters.COLLECTION))
+            .map(collectionName -> configRepository.getCollection(collectionName))
+            .map(collection -> collection.getConfiguration())
+            .map(config -> config.value(Keys.ModernUI.CORS_ALLOW_ORIGIN));
+        if(opt.isPresent()){
+            //Try reading from global
+            return opt;
         }
         
-        chain.doFilter(request, response);
+        return super.getCorsAllowOrigin(request, response);
     }
-
-    @Override
-    public void destroy() { }
 
 }
