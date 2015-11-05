@@ -61,13 +61,13 @@
 			    <executions>
 			        <execution>
 			            <id>generate1</id>
-			            <phase>generate-sources</phase>
+			            <phase>process-classes</phase>
 			            <goals>
 			                <goal>generate</goal>
 			            </goals>
 			            <configuration>
 			                <includes>
-			                    <include>com/funnelback/publicui/search/model/transaction/SearchTransaction.class</include>
+			                    <include>com/funnelback/publicui/search/model/transaction/SearchTransaction</include>
 			                </includes>
 			                <outputSchema>${project.basedir}/src/main/javadoc/doc-files/SearchTransactionSchema.json</outputSchema>
 			            </configuration>
