@@ -8,8 +8,11 @@
     "facets":
 <#if (response.facets)!?size &gt; 0>
     [
+    <#assign x = 0> 
     <#list response.facets as f>
         <#if f.categories?size &gt; 0>
+            <#if x == 1>,</#if>
+            <#assign x = 1>
             {
                 "name": "${f.name?json_string}",
                 "categories": [
@@ -19,7 +22,6 @@
                     </#list>
                 ]
             }
-            <#if f_has_next>,</#if>
         </#if>
     </#list>
     ]
