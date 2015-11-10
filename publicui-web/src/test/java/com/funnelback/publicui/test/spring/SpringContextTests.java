@@ -79,7 +79,6 @@ public class SpringContextTests {
                 props.remove("funnelback.installdir");
             }
         }
-        props.remove("java.naming.factory.initial");
     }
     
     /** Mock request provided by the WebAppConfiguration annotation */
