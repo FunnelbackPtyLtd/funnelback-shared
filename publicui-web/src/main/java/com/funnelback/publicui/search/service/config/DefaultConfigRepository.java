@@ -180,7 +180,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
             if (hookScriptFile.exists()) {
                 try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile));
+                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome));
                     c.getHookScriptsClasses().put(hook, hookScript);
                 } catch (CompilationFailedException cfe) {
                     log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
@@ -188,7 +188,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             }
         }
         
-        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))));
+        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome)));
         
         return c;
     }
