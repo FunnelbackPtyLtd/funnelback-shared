@@ -255,4 +255,9 @@ public class SearchController extends SessionController {
         log.error("Error processing FreeMarker template", ex);
     }
     
+    @ExceptionHandler(Exception.class)
+    public void exception(Exception ex) {
+        log.catching(ex);
+    }
+    
 }
