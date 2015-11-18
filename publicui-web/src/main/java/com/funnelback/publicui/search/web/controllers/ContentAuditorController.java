@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -53,6 +54,7 @@ public class ContentAuditorController {
      * SearchController to get the necessary raw data.
      */
     @RequestMapping("/content-auditor.*")
+    @PreAuthorize("hasRole('sec.content-auditor','ROLE_ANONYMOUS')")
     public ModelAndView generateContentAuditorReport(
             HttpServletRequest request,
             HttpServletResponse response,
