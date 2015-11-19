@@ -41,6 +41,13 @@ public class ContentOptimiserController {
      */
     public static final String REQUEST_MAPPING_MATCHER = REQUEST_MAPPING_PREFIX + ".*";
     
+    /**
+     * Authenticated users don't have the ROLE_ANONYMOUSE so they require sec.content-auditor 
+     * anonymous users (which can only be over non admin) may be denied depending on what is in
+     * global.cfg
+     */
+    private static final String PRE_AUTH = "hasRole('sec.seo-auditor','ROLE_ANONYMOUS')";
+    
     @Autowired
     private ConfigRepository configRepository;
 
@@ -59,7 +66,7 @@ public class ContentOptimiserController {
         "/seo-auditor/",
         "/seo-auditor.html/",
         "/seo-auditor"})
-    @PreAuthorize("hasAnyRole('sec.seo-auditor','ROLE_ANONYMOUS')")
+    @PreAuthorize(PRE_AUTH)
     public String redirects(HttpServletRequest request) {
 
         String paramString = continueParametersFrom (
@@ -74,7 +81,7 @@ public class ContentOptimiserController {
     }
     
     @RequestMapping(REQUEST_MAPPING_PREFIX + ".json")
-    @PreAuthorize("hasAnyRole('sec.seo-auditor','ROLE_ANONYMOUS')")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView mainEntryJson(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -84,7 +91,7 @@ public class ContentOptimiserController {
     }
     
     @RequestMapping(REQUEST_MAPPING_PREFIX + ".html")
-    @PreAuthorize("hasAnyRole('sec.seo-auditor','ROLE_ANONYMOUS')")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView mainEntry(
             HttpServletRequest request,
             HttpServletResponse response,

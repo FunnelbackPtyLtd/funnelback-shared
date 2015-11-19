@@ -36,6 +36,13 @@ public class ContentAuditorController {
     private static final String CSV_TEMPLATE_NAME = "csv_export";
 
     /**
+     * Authenticated users don't have the ROLE_ANONYMOUSE so they require sec.content-auditor 
+     * anonymous users (which can only be over non admin) may be denied depending on what is in
+     * global.cfg
+     */
+    private static final String PRE_AUTH = "hasRole('sec.content-auditor','ROLE_ANONYMOUS')";
+    
+    /**
      * SearchController is used to perform the actual search requests to create the auditor report
      */
     @Autowired
@@ -54,7 +61,7 @@ public class ContentAuditorController {
      * SearchController to get the necessary raw data.
      */
     @RequestMapping("/content-auditor.*")
-    @PreAuthorize("hasRole('sec.content-auditor','ROLE_ANONYMOUS')")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView generateContentAuditorReport(
             HttpServletRequest request,
             HttpServletResponse response,
