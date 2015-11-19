@@ -40,7 +40,7 @@ public class ContentAuditorController {
      * anonymous users (which can only be over non admin) may be denied depending on what is in
      * global.cfg
      */
-    private static final String PRE_AUTH = "hasRole('sec.content-auditor','ROLE_ANONYMOUS')";
+    private static final String PRE_AUTH = "hasAnyRole('sec.content-auditor','ROLE_ANONYMOUS')";
     
     /**
      * SearchController is used to perform the actual search requests to create the auditor report

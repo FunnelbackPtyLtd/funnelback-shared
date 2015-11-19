@@ -46,7 +46,7 @@ public class ContentOptimiserController {
      * anonymous users (which can only be over non admin) may be denied depending on what is in
      * global.cfg
      */
-    private static final String PRE_AUTH = "hasRole('sec.seo-auditor','ROLE_ANONYMOUS')";
+    private static final String PRE_AUTH = "hasAnyRole('sec.seo-auditor','ROLE_ANONYMOUS')";
     
     @Autowired
     private ConfigRepository configRepository;
