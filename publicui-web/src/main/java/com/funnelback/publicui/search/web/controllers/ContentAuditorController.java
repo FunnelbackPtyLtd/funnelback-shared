@@ -36,7 +36,7 @@ public class ContentAuditorController {
     private static final String CSV_TEMPLATE_NAME = "csv_export";
 
     /**
-     * Authenticated users don't have the ROLE_ANONYMOUSE so they require sec.content-auditor 
+     * Authenticated users don't have the ROLE_ANONYMOUS so they require sec.content-auditor 
      * anonymous users (which can only be over non admin) may be denied depending on what is in
      * global.cfg
      */
