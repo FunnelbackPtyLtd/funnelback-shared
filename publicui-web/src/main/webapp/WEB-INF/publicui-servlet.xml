@@ -10,7 +10,7 @@
 	<import resource="/spring/freemarker.xml"/>
 	<import resource="/spring/search-lifecycle.xml"/>
 	
-	<context:component-scan base-package="com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender" />
+	<context:component-scan base-package="com.funnelback.springmvc.service.resource,com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender" />
 	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
@@ -57,8 +57,9 @@
             <mvc:mapping path="/content-optimiser.*" />
 			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
 		</mvc:interceptor>
+
 		<mvc:interceptor>
-			<mvc:mapping path="/content-optimiser.*" />
+			<mvc:mapping path="#{T(com.funnelback.publicui.search.web.controllers.ContentOptimiserController).REQUEST_MAPPING_MATCHER}"/>
 			<bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>

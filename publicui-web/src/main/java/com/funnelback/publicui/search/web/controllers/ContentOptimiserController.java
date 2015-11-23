@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -28,12 +29,25 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.SearchController.ModelAttributes;
 import com.funnelback.publicui.search.web.controllers.SearchController.ViewTypes;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
-
-import org.springframework.web.servlet.View;
 @Log4j2
 @Controller
 public class ContentOptimiserController {
 
+    
+    private static final String REQUEST_MAPPING_PREFIX = "/seo-auditor";
+    /**
+     * Defines the mvc:mapping path= that would be required when setting up a intercepter
+     * for the content optimiser.
+     */
+    public static final String REQUEST_MAPPING_MATCHER = REQUEST_MAPPING_PREFIX + ".*";
+    
+    /**
+     * Authenticated users don't have the ROLE_ANONYMOUS so they require sec.content-auditor 
+     * anonymous users (which can only be over non admin) may be denied depending on what is in
+     * global.cfg
+     */
+    private static final String PRE_AUTH = "hasAnyRole('sec.seo-auditor','ROLE_ANONYMOUS')";
+    
     @Autowired
     private ConfigRepository configRepository;
 
@@ -52,6 +66,7 @@ public class ContentOptimiserController {
         "/seo-auditor/",
         "/seo-auditor.html/",
         "/seo-auditor"})
+    @PreAuthorize(PRE_AUTH)
     public String redirects(HttpServletRequest request) {
 
         String paramString = continueParametersFrom (
@@ -62,9 +77,11 @@ public class ContentOptimiserController {
             RequestParameters.LOADED,
             RequestParameters.PROFILE);
         
-        return "redirect:/seo-auditor.html" + paramString;
+        return "redirect:/" + REQUEST_MAPPING_PREFIX + ".html" + paramString;
     }
-    @RequestMapping("/seo-auditor.json")
+    
+    @RequestMapping(REQUEST_MAPPING_PREFIX + ".json")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView mainEntryJson(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -73,7 +90,8 @@ public class ContentOptimiserController {
         return mainEntryInner(request, response, question, user);
     }
     
-    @RequestMapping("/seo-auditor.html")
+    @RequestMapping(REQUEST_MAPPING_PREFIX + ".html")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView mainEntry(
             HttpServletRequest request,
             HttpServletResponse response,
