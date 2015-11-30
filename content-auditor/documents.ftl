@@ -2,6 +2,15 @@
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
 
+<#function displayOption configOption>
+    <#if question.collection.configuration.value(configOption)?exists>
+        <#assign retVal = question.collection.configuration.value(configOption)?boolean />
+    <#else>
+        <#assign retVal = true/>
+    </#if>
+    <#return retVal>
+</#function>
+
 <@s.AfterSearchOnly>
 <!--BEGINDOCUMENTS-->
 
@@ -93,21 +102,24 @@
 					</span>
 					</a>
 					
-					<a class="open-content-optimiser pass" target="_blank" href="seo-auditor.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!"_default"?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="View in SEO Auditor">
-					<span class="fa-stack fa-xs">
-    					<i class="fa fa-square fa-stack-2x"></i>
-    					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
-					</span>
-					</a>
+                    <#if displayOption("ui.modern.content-auditor.search_results.show_seo_link") >
+    					<a class="open-content-optimiser pass" target="_blank" href="seo-auditor.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]!"_default"?url}&amp;optimiser_url=${s.result.liveUrl?replace("http://","")?url}&amp;query=${response.resultPacket.queryAsProcessed?url}" data-toggle="tooltip" data-placement="bottom" title="View in SEO Auditor">
+    					<span class="fa-stack fa-xs">
+        					<i class="fa fa-square fa-stack-2x"></i>
+        					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
+    					</span>
+    					</a>
+                    </#if>
 					
-                    <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
-					
-                    <span class="fa-stack fa-xs">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
-                    </span>
-                    
-					</a>
+                    <#if displayOption("ui.modern.content-auditor.search_results.show_wcag_link") >
+                        <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+    					
+                        <span class="fa-stack fa-xs">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
+                        </span>
+    					</a>
+                    </#if>
 
                     <a class="open-cache pass" target="_blank" href="${s.result.cacheUrl?html}" data-toggle="tooltip" data-placement="bottom" title="Check Cached Copy of Content">
                     
