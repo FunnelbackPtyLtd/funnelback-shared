@@ -7,11 +7,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
@@ -35,6 +30,10 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
+import lombok.extern.log4j.Log4j2;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * Includes an external URL.
@@ -258,9 +257,16 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
                     lastEnd = m.end();
                     
                     replaced.append("<")
-                        .append(m.group(1)).append(m.group(2)).append("=\"")
-                        .append(baseURI.resolve(m.group(4)))
-                        .append("\"").append(m.group(5)).append(">");
+                        .append(m.group(1)).append(m.group(2)).append("=\"");
+                    try {
+                        replaced.append(baseURI.resolve(m.group(4)));
+                    } catch(Exception e) {
+                        log.warn("Unable to resolve '"+m.group(4)+"' against URL " + baseURI, e);
+                        // We failed, possibly the URL was invalid. Just use the original string
+                        replaced.append(m.group(4));
+                    }
+                    
+                    replaced.append("\"").append(m.group(5)).append(">");
                 }
 
                 // Copy last segment
