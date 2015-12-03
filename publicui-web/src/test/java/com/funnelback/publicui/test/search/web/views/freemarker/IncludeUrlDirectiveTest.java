@@ -67,6 +67,7 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
             actual);
     }
 
+    @Test
     public void testConvertRelativeAlternate() throws TemplateModelException {
         Map<String, TemplateModel> params = new HashMap<>();
         params.put(Parameters.convertrelative.toString(), TemplateBooleanModel.TRUE);
@@ -74,6 +75,17 @@ public class IncludeUrlDirectiveTest extends IncludeUrlDirective {
         String actual = this.transformContent("http://server.com/folder/file.html", "<a href='test.html'>Link</a>", params);
         Assert.assertEquals(
             "<a href=\"http://server.com/folder/test.html\">Link</a>",
+            actual);        
+    }
+    
+    @Test
+    public void testTransformInvalidUrls() throws TemplateModelException {
+        Map<String, TemplateModel> params = new HashMap<>();
+        params.put(Parameters.convertRelative.toString(), TemplateBooleanModel.TRUE);
+        
+        String actual = this.transformContent("http://server.com/folder/file.html", "<a href='invalid with spaces.html'>Link</a> <a href='valid.html'>Other</a>", params);
+        Assert.assertEquals(
+            "<a href=\"invalid with spaces.html\">Link</a> <a href=\"http://server.com/folder/valid.html\">Other</a>",
             actual);        
     }
     
