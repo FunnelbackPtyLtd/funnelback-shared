@@ -27,7 +27,7 @@
     <script src="${pathToAssets}js/amcharts/pie.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/amcharts/serial.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/KolorWheel.js" type="text/javascript"></script>
-    <!--[if lt IE 10]>
+    <!--[if lt IE 11]>
     <script src="${pathToAssets}js/CSS3MultiColumn/css3-multi-column.min.js" type="text/javascript"></script>
     <![endif]-->
 
