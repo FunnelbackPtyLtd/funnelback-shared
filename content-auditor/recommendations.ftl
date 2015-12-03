@@ -397,6 +397,7 @@
                             });
                             
                             content_auditor.responseTimeChart.addListener("clickGraphItem", navigateToDataContextUrl);
+                            $('#response-time-chartdiv').html().appendTo('.recommendations .facets');
                             
                         </script>
                       </div>
