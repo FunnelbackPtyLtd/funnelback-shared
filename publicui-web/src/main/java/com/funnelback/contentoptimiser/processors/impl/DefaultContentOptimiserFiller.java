@@ -410,7 +410,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
             for(String queryWordRaw : queryWords) {
 
-            	String queryWordLower = queryWordRaw.toLowerCase();
+                String queryWordLower = queryWordRaw.toLowerCase();
 
                 SingleTermFrequencies frequencies = dwp.explainQueryTerm(queryWordLower,searchTransaction.getQuestion().getCollection());
 

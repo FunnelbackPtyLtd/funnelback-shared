@@ -169,10 +169,10 @@ public class ResultsCartController extends SessionApiControllerBase {
             HttpServletResponse response) throws IOException {
         
         if (collection != null && user != null) {
-        	List<CartResult> cart = cartRepository.getCart(user, collection);
-        	for(CartResult result: cart) {
-        		logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request, collection, CartClickLog.Type.CLEAR_CART, user));
-        	}
+            List<CartResult> cart = cartRepository.getCart(user, collection);
+            for(CartResult result: cart) {
+                logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request, collection, CartClickLog.Type.CLEAR_CART, user));
+            }
             cartRepository.clearCart(user, collection);
             cartList(collection, user, response);
         } else {

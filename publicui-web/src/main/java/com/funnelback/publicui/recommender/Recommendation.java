@@ -12,9 +12,9 @@ import java.util.Map;
  * @author fcrimmins@funnelback.com
  */
 public class Recommendation {
-	/**
-	 * The canonical name or ID for the item e.g. URL address, musician name, product ID etc.
-	 */
+    /**
+     * The canonical name or ID for the item e.g. URL address, musician name, product ID etc.
+     */
     @Getter
     private String itemID = "";
 
@@ -25,21 +25,21 @@ public class Recommendation {
     private ItemTuple.Source source;
 
     /**
-   	 * The title of the item e.g. title of web page etc.
-   	 */
+        * The title of the item e.g. title of web page etc.
+        */
     @Getter
     private String title = "";
 
     /**
-   	 * The date of the item (which may be null). The semantics of the date will depend on
+        * The date of the item (which may be null). The semantics of the date will depend on
      * the type of item, but usually defaults to Last-Modified-Date.
-   	 */
+        */
     @Getter
     private Date date;
 
     /**
-   	 * The QIE score of the item (-1 if not available/applicable).
-   	 */
+        * The QIE score of the item (-1 if not available/applicable).
+        */
     @Getter
     private float qieScore = -1;
 

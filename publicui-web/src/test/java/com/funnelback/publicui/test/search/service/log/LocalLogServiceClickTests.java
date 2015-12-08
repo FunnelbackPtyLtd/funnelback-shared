@@ -59,24 +59,24 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
     
     @Test 
     public void testClickCsvWithHostName() throws Exception {
-    	LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
-    	when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
-    	when(lhh.isLocalhost()).thenReturn(false);
-    	logService.setLocalHostnameHolder(lhh);
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        when(lhh.isLocalhost()).thenReturn(false);
+        logService.setLocalHostnameHolder(lhh);
 
-    	Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
-    	.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
-    	Collection c = new Collection(COLLECTION_NAME, config);
-    	Profile p = new Profile("profile");
-    	Date date = new Date(1361331439286L);
+        Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
+        .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
+        Collection c = new Collection(COLLECTION_NAME, config);
+        Profile p = new Profile("profile");
+        Date date = new Date(1361331439286L);
 
-    	ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
 
-    	logService.logClick(cl);
-    	String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
+        logService.logClick(cl);
+        String csvWritten = FileUtils.readFileToString(clickLogFileWithHostname);
 
-    	Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,-\n", 
-    			csvWritten);
+        Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,-\n", 
+                csvWritten);
     }
     
     @Test 
@@ -107,25 +107,25 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
                 csvWritten);
     }
     
-	@Test
-	public void testClickCsvNonexistentDirectoryDoesntCrashLoging() throws Exception {
-		LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
-		when(lhh.getShortHostname()).thenReturn(null);
-		logService.setLocalHostnameHolder(lhh);
+    @Test
+    public void testClickCsvNonexistentDirectoryDoesntCrashLoging() throws Exception {
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(null);
+        logService.setLocalHostnameHolder(lhh);
 
-		Config config = mock(Config.class);
-		when(config.getLogDir(View.live)).thenReturn(clickLogFileDoesntExist);
-		Collection c = new Collection(UNKNOWN_COLLECTION, config);
-		Profile p = new Profile("profile");
-		Date date = new Date(1361331439286L);
+        Config config = mock(Config.class);
+        when(config.getLogDir(View.live)).thenReturn(clickLogFileDoesntExist);
+        Collection c = new Collection(UNKNOWN_COLLECTION, config);
+        Profile p = new Profile("profile");
+        Date date = new Date(1361331439286L);
 
-		ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL(
-				"http://referrer.com"), 1, new URI("http://example.com/click"),
-				ClickLog.Type.CLICK, null);
+        ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL(
+                "http://referrer.com"), 1, new URI("http://example.com/click"),
+                ClickLog.Type.CLICK, null);
 
-		logService.logClick(cl);
-		Assert.assertFalse(clickLogFileDoesntExist.exists());
-	}
+        logService.logClick(cl);
+        Assert.assertFalse(clickLogFileDoesntExist.exists());
+    }
 
     
     
@@ -134,7 +134,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
         when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
         logService.setLocalHostnameHolder(lhh);
-    	
+
         Config config = new NoOptionsConfig(TEST_OUT_ROOT, COLLECTION_NAME)
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
@@ -142,7 +142,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "user-id");
-		logService.logClick(cl);
+        logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\n", 
@@ -150,7 +150,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         
         // Now check for append.
         
-		logService.logClick(cl);
+        logService.logClick(cl);
         csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\nWed Feb 20 14:37:19 2013,192.168.0.1,http://referrer.com,1,http://example.com/click,CLICK,user-id\n", 
@@ -169,7 +169,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
-		logService.logClick(cl);
+        logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,http://example.com/click,CLICK,-\n", 
@@ -188,7 +188,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         Date date = new Date(1361331439286L);
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, null, ClickLog.Type.FP, null);
-		logService.logClick(cl);
+        logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals("Wed Feb 20 14:37:19 2013,192.168.0.1,,1,,FP,-\n", 
@@ -206,7 +206,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         Profile p = new Profile("profile");
     
         ClickLog cl = new ClickLog(null, c, p, null, null, 0, null, null, null);
-		logService.logClick(cl);
+        logService.logClick(cl);
         String csvWritten = FileUtils.readFileToString(clickLogFileNoHostname);
         
         Assert.assertEquals(",,,0,,,-\n", 

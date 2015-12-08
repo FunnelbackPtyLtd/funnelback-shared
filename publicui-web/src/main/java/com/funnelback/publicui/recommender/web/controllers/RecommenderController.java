@@ -168,7 +168,7 @@ public class RecommenderController extends SessionController {
             
         }
         catch (IllegalStateException exception) {
-        	log.warn(exception);
+            log.warn(exception);
         }
 
         recommendationResponse = new RecommendationResponse(status, seedItem, requestCollection, scope,

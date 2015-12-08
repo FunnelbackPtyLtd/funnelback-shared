@@ -147,10 +147,10 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         if (question.getRawInputParameters().get(ContentAuditor.DUPLICATE_SIGNATURE_URL_PARAMETER_NAME) != null) {
 
-        	// User scoped to a duplicate group, so we want to show only that
-        	question.getAdditionalParameters().put(
-        			RequestParameters.COLLAPSING_SIGNATURE,
-        			new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
+            // User scoped to a duplicate group, so we want to show only that
+            question.getAdditionalParameters().put(
+                    RequestParameters.COLLAPSING_SIGNATURE,
+                    new String[] {question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COLLAPSING_SIGNATURE)});
 
             question.getRawInputParameters().put(RequestParameters.S, 
                 ArrayUtils.add(

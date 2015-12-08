@@ -154,8 +154,8 @@ public class DefaultDocFromCache implements DocFromCache {
             }
             
             cached.metadata.put(
-        		DocHdrUtils.BASE_KEY, 
-        		"<BASE HREF=\"" + comparison.getSelectedDocument().getLiveUrl() + "\"/>");
+                DocHdrUtils.BASE_KEY, 
+                "<BASE HREF=\"" + comparison.getSelectedDocument().getLiveUrl() + "\"/>");
 
             fos.write(DocHdrUtils.mapToDocHdr(cached.metadata).getBytes("UTF-8"));
 

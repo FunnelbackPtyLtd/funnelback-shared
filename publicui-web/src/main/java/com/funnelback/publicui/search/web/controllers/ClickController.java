@@ -114,11 +114,11 @@ public class ClickController extends SessionController {
             // Get the user id
             String requestId = LogUtils.getRequestIdentifier(request,
                     DefaultValues.RequestId.valueOf(collection.getConfiguration()
-                    		.value(Keys.REQUEST_ID_TO_LOG, 
-                    				DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                            .value(Keys.REQUEST_ID_TO_LOG, 
+                                    DefaultValues.REQUEST_ID_TO_LOG.toString())),
                     collection.getConfiguration()
-                    		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                    				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+                            .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                                    DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
 
             URL referer = LogUtils.getReferrer(request);
             
@@ -194,11 +194,11 @@ public class ClickController extends SessionController {
             // Get the user id
             String requestId = LogUtils.getRequestIdentifier(request,
                     DefaultValues.RequestId.valueOf(collection.getConfiguration()
-                    		.value(Keys.REQUEST_ID_TO_LOG, 
-                    				DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                            .value(Keys.REQUEST_ID_TO_LOG, 
+                                    DefaultValues.REQUEST_ID_TO_LOG.toString())),
                     collection.getConfiguration()
-                    		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                    				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+                            .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                                    DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
             
             URL referer = LogUtils.getReferrer(request);
             

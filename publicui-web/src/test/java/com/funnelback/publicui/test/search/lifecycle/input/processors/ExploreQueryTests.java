@@ -70,7 +70,7 @@ public class ExploreQueryTests {
     
     @Test
     public void testExploreUrlIsRemoved() throws Exception {
-    	SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
         st.getQuestion().setQuery("explore:http://host.com/url.html and another term");
         st.getQuestion().setCollection(new Collection("dummy", null));
         

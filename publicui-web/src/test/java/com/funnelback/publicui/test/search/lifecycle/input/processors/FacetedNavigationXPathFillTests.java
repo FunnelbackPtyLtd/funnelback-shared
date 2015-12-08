@@ -113,8 +113,8 @@ public class FacetedNavigationXPathFillTests {
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertTrue(
-        		"|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0))
-        		|| "|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0)));
+                "|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0))
+                || "|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0)));
         
         // Multiple facets
         st.getQuestion().getRawInputParameters().clear();
@@ -126,8 +126,8 @@ public class FacetedNavigationXPathFillTests {
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertTrue(
-        		st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\"")
-        		|| st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ nsw $++\""));
+                st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\"")
+                || st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ nsw $++\""));
         
         // Multiple values + multiple facets
         st.getQuestion().getRawInputParameters().clear();
@@ -139,11 +139,11 @@ public class FacetedNavigationXPathFillTests {
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertTrue(
-        		st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]")
-        		|| st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]"));
+                st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]")
+                || st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]"));
         Assert.assertTrue(
-        		st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ nsw $++\" Y:\"$++ tas $++\"]")
-        		|| st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ tas $++\" Y:\"$++ nsw $++\"]")); 
+                st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ nsw $++\" Y:\"$++ tas $++\"]")
+                || st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ tas $++\" Y:\"$++ nsw $++\"]")); 
     }
     
 

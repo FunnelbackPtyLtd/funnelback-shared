@@ -68,7 +68,7 @@ public class HostnameTest {
                 new Collection("dummy",
                         new NoOptionsConfig("dummy").setValue(Keys.ModernUI.SHOW_HOSTNAME, "false")));
         processor.processInput(st);
-        Assert.assertNull(st.getQuestion().getHostname());	
+        Assert.assertNull(st.getQuestion().getHostname());
     }
     
     @Test
@@ -77,7 +77,7 @@ public class HostnameTest {
                 new Collection("dummy",
                         new NoOptionsConfig("dummy").setValue(Keys.ModernUI.SHOW_HOSTNAME, "true")));
         processor.processInput(st);
-        Assert.assertEquals(st.getQuestion().getHostname(),localHostnameHolder.getHostname());	
+        Assert.assertEquals(st.getQuestion().getHostname(),localHostnameHolder.getHostname());
     }
 
     @Test

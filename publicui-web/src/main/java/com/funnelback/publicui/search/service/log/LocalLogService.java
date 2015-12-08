@@ -61,14 +61,14 @@ public class LocalLogService implements LogService {
         try {
 
             CSVWriter csvWriter= new CSVWriter(
-            				new FileWriter(
-	            				new File(cl.getCollection().getConfiguration().getLogDir(View.live),
-	            					getLogName(cl.getCollection(),
-	            						Files.Log.CLICKS_LOG_PREFIX,
-	            						Files.Log.CLICKS_LOG_SEPARATOR,
-	            						Files.Log.CLICKS_LOG_EXT)),
-	            				true),
-            				CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
+                            new FileWriter(
+                                new File(cl.getCollection().getConfiguration().getLogDir(View.live),
+                                    getLogName(cl.getCollection(),
+                                        Files.Log.CLICKS_LOG_PREFIX,
+                                        Files.Log.CLICKS_LOG_SEPARATOR,
+                                        Files.Log.CLICKS_LOG_EXT)),
+                                true),
+                            CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
 
             String[] entry = new String[Files.Log.CLICK_LOGS_COLUMNS];
 
@@ -105,14 +105,14 @@ public class LocalLogService implements LogService {
         try {
 
             CSVWriter csvWriter= new CSVWriter(
-            				new FileWriter(
-	            				new File(cl.getCollection().getConfiguration().getLogDir(View.live),
-	            					getLogName(cl.getCollection(),
-	            						Files.Log.CART_CLICKS_LOG_PREFIX,
-	            						Files.Log.CART_CLICKS_LOG_SEPARATOR,
-	            						Files.Log.CART_CLICKS_LOG_EXT)),
-	            				true),
-            				CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
+                            new FileWriter(
+                                new File(cl.getCollection().getConfiguration().getLogDir(View.live),
+                                    getLogName(cl.getCollection(),
+                                        Files.Log.CART_CLICKS_LOG_PREFIX,
+                                        Files.Log.CART_CLICKS_LOG_SEPARATOR,
+                                        Files.Log.CART_CLICKS_LOG_EXT)),
+                                true),
+                            CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
 
             String[] entry = new String[Files.Log.CART_CLICKS_LOGS_COLUMNS];
 
@@ -282,13 +282,13 @@ public class LocalLogService implements LogService {
     public synchronized void logInteraction(InteractionLog il) {
         try {
             CSVWriter csvWriter = new CSVWriter(
-            		new FileWriter(
-            			new File(il.getCollection().getConfiguration().getLogDir(View.live),
-            					getLogName(il.getCollection(),
-            						Files.Log.INTERACTION_LOG_PREFIX,
-            						Files.Log.INTERACTION_LOG_SEPARATOR,
-            						Files.Log.INTERACTION_LOG_EXT))
-            		, true));
+                    new FileWriter(
+                        new File(il.getCollection().getConfiguration().getLogDir(View.live),
+                                getLogName(il.getCollection(),
+                                    Files.Log.INTERACTION_LOG_PREFIX,
+                                    Files.Log.INTERACTION_LOG_SEPARATOR,
+                                    Files.Log.INTERACTION_LOG_EXT))
+                    , true));
 
             ArrayList<String> logToWrite = new ArrayList<String>();
 
@@ -332,8 +332,8 @@ public class LocalLogService implements LogService {
     }
 
     private String getLogName(Collection c, String prefix, String seperator, String extension){
-    	String shortHostname = localHostnameHolder.getShortHostname();
-    	if (shortHostname != null
+        String shortHostname = localHostnameHolder.getShortHostname();
+        if (shortHostname != null
                 && ! localHostnameHolder.isLocalhost()
                 && c.getConfiguration().valueAsBoolean(
                         Keys.Logging.HOSTNAME_IN_FILENAME,
@@ -341,7 +341,7 @@ public class LocalLogService implements LogService {
             // Use hostname in filename
             return prefix + seperator + shortHostname + extension;
         } else {
-        	return prefix + extension;
+            return prefix + extension;
         }
     }
 

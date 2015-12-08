@@ -62,7 +62,7 @@ public class Hostname extends AbstractInputProcessor {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getCollection().getConfiguration()
                 .valueAsBoolean(Keys.ModernUI.SHOW_HOSTNAME, DefaultValues.ModernUI.SHOW_HOSTNAME)) {
-        	searchTransaction.getQuestion().setHostname(localHostnameHolder.getHostname());
+            searchTransaction.getQuestion().setHostname(localHostnameHolder.getHostname());
         }
     }
 

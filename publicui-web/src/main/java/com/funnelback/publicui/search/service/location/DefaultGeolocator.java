@@ -58,10 +58,10 @@ public class DefaultGeolocator implements Geolocator {
             String newLookupServiceDatabase = configRepository
                     .getGlobalConfiguration().value(Keys.GEOLOCATION_DATABASE_KEY);
             if (newLookupServiceDatabase == null){
-            	log.error("Error cannot create lookup service when " 
-            				+ Keys.GEOLOCATION_DATABASE_KEY + " is null." );
-            	lookupServiceDatabase = "";
-            	lookupService = null;
+                log.error("Error cannot create lookup service when " 
+                            + Keys.GEOLOCATION_DATABASE_KEY + " is null." );
+                lookupServiceDatabase = "";
+                lookupService = null;
             } else if (!lookupServiceDatabase.equals(newLookupServiceDatabase)) {
                 // Recreate the lookup service
 

@@ -255,9 +255,9 @@ public class ContentOptimiserController {
         String paramValue = request.getParameter(paramName);
 
         try {
-        	paramValue = paramValue == null ? null : URLEncoder.encode(paramValue.trim(), "UTF-8");
+            paramValue = paramValue == null ? null : URLEncoder.encode(paramValue.trim(), "UTF-8");
         } catch (UnsupportedEncodingException uee) {
-        	paramValue = null;
+            paramValue = null;
         }
 
         return nullOrEmpty(paramValue)

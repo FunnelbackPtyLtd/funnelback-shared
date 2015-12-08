@@ -44,10 +44,10 @@ public abstract class AbstractLocalLogServiceXmlTests extends AbstractLocalLogSe
     
     @Test
     public void testLogWithHostName() throws Exception {
-    	LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
-    	when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
-    	when(lhh.isLocalhost()).thenReturn(false);
-    	logService.setLocalHostnameHolder(lhh);
+        LocalHostnameHolder lhh = mock(LocalHostnameHolder.class);
+        when(lhh.getShortHostname()).thenReturn(TEST_HOSTNAME);
+        when(lhh.isLocalhost()).thenReturn(false);
+        logService.setLocalHostnameHolder(lhh);
         config.setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
  
         Date now = new Date();
