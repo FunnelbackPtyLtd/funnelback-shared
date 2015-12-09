@@ -14,17 +14,17 @@
 	<@s.OpenSearch></@s.OpenSearch>
 	<meta name="robots" content="nofollow">
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">	
-        <link rel="stylesheet" media="screen" href="${SearchPrefix}search.css" type="text/css">
+        <link rel="stylesheet" media="screen" href="${GlobalResourcesPrefix}search.css" type="text/css">
 	<!--[if !IE]>-->
-        <link rel="stylesheet" media="handheld, only screen and (max-device-width: 480px)" href="${SearchPrefix}search-mobile.css" type="text/css">
+        <link rel="stylesheet" media="handheld, only screen and (max-device-width: 480px)" href="${GlobalResourcesPrefix}search-mobile.css" type="text/css">
 	<!--<![endif]-->
 	<meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;">
 
 	<!-- Query completion -->
-	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
-	<script type="text/javascript" src="${SearchPrefix}js/jquery/jquery.tmpl.min.js"></script>
-	<script type="text/javascript" src="${SearchPrefix}js/jquery.funnelback-completion.js"></script>
+	<script type="text/javascript" src="${GlobalResourcesPrefix}js/jquery/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="${GlobalResourcesPrefix}js/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+	<script type="text/javascript" src="${GlobalResourcesPrefix}js/jquery/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="${GlobalResourcesPrefix}js/jquery.funnelback-completion.js"></script>
 
 	<script type="text/javascript">
                 // Query completion setup.
@@ -32,7 +32,7 @@
                     jQuery("#query").fbcompletion({
                         'enabled'    : '<@s.cfg>query_completion</@s.cfg>',
                         'collection' : '<@s.cfg>collection</@s.cfg>',
-                        'program'    : '${SearchPrefix}<@s.cfg>query_completion.program</@s.cfg>',
+                        'program'    : '${GlobalResourcesPrefix}<@s.cfg>query_completion.program</@s.cfg>',
                         <#if question.collection.configuration.value("query_completion.source")?exists && question.collection.configuration.value("query_completion.source") != "internal">'source'     : 'external',</#if>
                         'format'     : '<@s.cfg>query_completion.format</@s.cfg>',
                         'alpha'      : '<@s.cfg>query_completion.alpha</@s.cfg>',
@@ -104,13 +104,13 @@
 	<!-- NO QUERY SPECIFIED -->
 	<@s.InitialFormOnly>
 		<div id="fb-initial">
-			<a href="http://funnelback.com/"><img src="${SearchPrefix}funnelback.png" alt="Funnelback logo"></a>
+			<a href="http://funnelback.com/"><img src="${GlobalResourcesPrefix}funnelback.png" alt="Funnelback logo"></a>
 		</div>
 	</@s.InitialFormOnly>
 
 
 	<!-- SEARCH LOGO -->	
-	<div><a id="fb-logo" <@s.InitialFormOnly>class="fb-initial"</@s.InitialFormOnly> href="http://funnelback.com/"><img src="${SearchPrefix}funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
+	<div><a id="fb-logo" <@s.InitialFormOnly>class="fb-initial"</@s.InitialFormOnly> href="http://funnelback.com/"><img src="${GlobalResourcesPrefix}funnelback-small.png" alt="Funnelback logo" width="170" height="36"></a></div>
 
 
 	<!-- QUERY FORM -->
@@ -215,7 +215,7 @@
 				<a href="?collection=${question.inputParameterMap["collection"]!?html}&amp;form=${question.inputParameterMap["form"]!?html}&amp;query=${question.inputParameterMap["query"]!?html}" id="fb-advanced-toggle">Simple search</a>
 			</@s.IfDefCGI>
 
-			<span id="fb-help">| <a href="${SearchPrefix}help/simple_search.html">Help</a></span>
+			<span id="fb-help">| <a href="${GlobalResourcesPrefix}help/simple_search.html">Help</a></span>
 		</span>
 
 		<#if response.resultPacket.resultsSummary.totalMatching == 0>

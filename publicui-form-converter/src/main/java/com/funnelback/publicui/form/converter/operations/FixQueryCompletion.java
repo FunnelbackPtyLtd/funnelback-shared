@@ -11,7 +11,7 @@ public class FixQueryCompletion implements Operation {
     @Override
     public String process(String in) {
         
-        return in.replace("<@s.cfg>query_completion.program", "${SearchPrefix}<@s.cfg>query_completion.program");
+        return in.replace("<@s.cfg>query_completion.program", "${GlobalResourcesPrefix}<@s.cfg>query_completion.program");
     }
 
 }
