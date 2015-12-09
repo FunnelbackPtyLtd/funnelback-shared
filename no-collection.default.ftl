@@ -34,7 +34,7 @@
     -->
 
 	<a href="http://www.funnelback.com/">
-		<img src="/search/funnelback.png" alt="Funnelback Enterprise Search" />
+		<img src="${GlobalResourcesPrefix}/funnelback.png" alt="Funnelback Enterprise Search" />
 	</a>
 	
 	<p>Welcome to the Funnelback search service.</p>

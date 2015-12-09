@@ -6,6 +6,7 @@
     <p>Some tags assume that the library has been imported under the <code>fb</code> namespace.</p>
 -->
 
+
 <#--- @begin Navigation -->
 <#---
     Generates a link to the previous page of results.
@@ -283,7 +284,7 @@
                         }
                     }
                     script.onload = loadPublishLink;
-                    script.src = "${SearchPrefix}js/jquery/jquery-1.10.2.min.js";
+                    script.src = "${GlobalResourcesPrefix}js/jquery/jquery-1.10.2.min.js";
                     head.appendChild(script);
                 } else {
                     loadPublishLink();

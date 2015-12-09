@@ -77,7 +77,7 @@
     <div id="anchors-pane">
         <div id="heading">
         	<h3>Anchors Summary</h3>
-        	<#if !RequestParameters.ajax??><img src="/search/funnelback-small.png" alt="Funnelback logo" width="170" height="36"></#if>
+        	<#if !RequestParameters.ajax??><img src="${GlobalResourcesPrefix}funnelback-small.png" alt="Funnelback logo" width="170" height="36"></#if>
        	</div>
 
 
