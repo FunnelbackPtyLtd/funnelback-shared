@@ -143,10 +143,10 @@ public class DevRecommenderController {
                                 recommender.getRecommendationsForItem(resultURL, scope,
                                         maxRecommendations, com.funnelback.reporting.recommender.tuple.ItemTuple.Source.DEFAULT);
                         buf.append(HTMLUtils.getHTMLRecommendations(recommendations, resultURL, collection,
-                                scope, maxRecommendations));	
+                                scope, maxRecommendations));    
                     }
                     catch (IllegalStateException exception) {
-                    	log.warn(exception);
+                        log.warn(exception);
                     }
  
                     buf.append("</ul>\n");
@@ -188,7 +188,7 @@ public class DevRecommenderController {
         Collection collectionRef
                 = configRepository.getCollection(collection);
 
-        if (collectionRef != null) {      	
+        if (collectionRef != null) {
             try {
                 Recommender recommender =
                         new Recommender(collectionRef, dataAPI, recommenderDAO, itemName, "", configRepository);
@@ -248,7 +248,7 @@ public class DevRecommenderController {
                 }              
             }
             catch (IllegalStateException exception) {
-            	log.warn(exception);
+                log.warn(exception);
                 stringBuffer.append("<p>Unable to get a valid collection.</p>");
             }           
         }

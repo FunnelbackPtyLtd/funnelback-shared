@@ -89,8 +89,8 @@ public class ResultsCartProcessController extends SessionController {
             List<CartResult> cart = cartRepository.getCart(user, collection);
             
             for(CartResult result: cart) {
-            	logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request,
-            	        collection, CartClickLog.Type.PROCESS_CART, user));
+                logService.logCart(LogUtils.createCartLog(result.getIndexUrl(), request,
+                        collection, CartClickLog.Type.PROCESS_CART, user));
             }
             
             ModelAndView mav = ctrl.process(collection, user, cart, request, response);

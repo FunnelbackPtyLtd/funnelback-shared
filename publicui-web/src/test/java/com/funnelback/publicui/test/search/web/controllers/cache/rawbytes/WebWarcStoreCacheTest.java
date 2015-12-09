@@ -31,7 +31,7 @@ public class WebWarcStoreCacheTest extends
     
     @Override
     protected void storeContent(RecordAndMetadata<RawBytesRecord> rmd) throws IOException {
-    	PrintWriter pw = new PrintWriter(System.out);
+        PrintWriter pw = new PrintWriter(System.out);
         WriterFile wf = new WriterFile(pw, null);
 
         // Because the WARCStore deals with views itself, we need to fake

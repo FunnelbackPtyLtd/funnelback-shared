@@ -19,7 +19,7 @@ public class SortUtilsTest {
     }
 
     @Test
-   	public void testSort() throws Exception {
+    public void testSort() throws Exception {
         List<ItemTuple> recommendations = new ArrayList<>();
 
         ItemTuple item0 =

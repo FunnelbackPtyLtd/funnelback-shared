@@ -34,7 +34,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     /**
      * A regex to check if the supplied IP range is in the old, unsupported, format
      */
-	@Getter
+    @Getter
     private final static Pattern OLD_IP_PATTERN = Pattern.compile("^[\\d\\.]+$");
     
     
@@ -74,28 +74,28 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                         denyAccess(request, response, c);
                         return false;
                     } else {
-                    	String ip = getConnectingIp(request, c);
+                        String ip = getConnectingIp(request, c);
                         String hostName = request.getRemoteHost();
                         
                         String[] authorized = StringUtils.split(accessRestriction, ",");
                         for (String range : authorized) {
-                        	if (NetUtils.isCIDR(range)) {
-                        		if (NetUtils.isIPv4AddressinCIDR(ip, range)){
-                        			return true;
-                        		}
-                        	}else if (OLD_IP_PATTERN.matcher(range).matches()) {
-                        		//Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
-                        		//unsupported format
-                        		denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
-                        				" in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
-                        		return false;
-                        	} else {
-                        		// It's a hostname
-                        		if (hostName.matches("^.*" + range + "$")) {
-                        			log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-                        			return true;
-                        		}
-                        	}
+                            if (NetUtils.isCIDR(range)) {
+                                if (NetUtils.isIPv4AddressinCIDR(ip, range)){
+                                    return true;
+                                }
+                            }else if (OLD_IP_PATTERN.matcher(range).matches()) {
+                                //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
+                                //unsupported format
+                                denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
+                                        " in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
+                                return false;
+                            } else {
+                                // It's a hostname
+                                if (hostName.matches("^.*" + range + "$")) {
+                                    log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
+                                    return true;
+                                }
+                            }
                         }
                         log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
                         denyAccess(request, response, c);
@@ -146,19 +146,19 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     }
     
     private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
-    	denyAccess(request, response, collection, "");
+        denyAccess(request, response, collection, "");
     }
     
     public String getConnectingIp(HttpServletRequest request, Collection c) {
-    	String ip = request.getRemoteAddr();
-    	log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
-    	if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
-    		ip = NetUtils.getIpPreferingXForwardedFor(ip
-    				, request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
-    				, c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES));
-    	}
-    	log.trace("Connecting IP is: " + ip);
-    	return ip;
+        String ip = request.getRemoteAddr();
+        log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
+        if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
+            ip = NetUtils.getIpPreferingXForwardedFor(ip
+                    , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
+                    , c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES));
+        }
+        log.trace("Connecting IP is: " + ip);
+        return ip;
     }
 
 }

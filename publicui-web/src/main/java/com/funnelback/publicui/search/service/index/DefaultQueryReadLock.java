@@ -9,15 +9,15 @@ import com.funnelback.publicui.search.model.collection.Collection;
 @Component
 public class DefaultQueryReadLock implements QueryReadLock{
 
-	@Override
-	public void lock(Collection collection) throws FileLockException {
-	    Config config = collection.getConfiguration();
-	    com.funnelback.common.lock.QueryReadLock.lock(config);
-	}
+    @Override
+    public void lock(Collection collection) throws FileLockException {
+        Config config = collection.getConfiguration();
+        com.funnelback.common.lock.QueryReadLock.lock(config);
+    }
 
-	@Override
-	public void release(Collection collection) {
-	    Config config = collection.getConfiguration();
-	    com.funnelback.common.lock.QueryReadLock.release(config);
-	}
+    @Override
+    public void release(Collection collection) {
+        Config config = collection.getConfiguration();
+        com.funnelback.common.lock.QueryReadLock.release(config);
+    }
 }

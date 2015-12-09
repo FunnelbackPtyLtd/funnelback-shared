@@ -27,8 +27,8 @@ public final class HTMLUtils {
         private final String type;
 
         private ResultFormat(final String value) {
-        	this.type = value;
-		}
+            this.type = value;
+        }
 
         @Override
         public String toString() {

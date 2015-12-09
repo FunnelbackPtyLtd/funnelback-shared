@@ -33,14 +33,14 @@ public class Main {
         LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME); 
 
         if (opts.verbose) {
-        	loggerConfig.setLevel(Level.INFO);
+            loggerConfig.setLevel(Level.INFO);
         } else if (opts.veryVerbose) {
-        	loggerConfig.setLevel(Level.DEBUG);
+            loggerConfig.setLevel(Level.DEBUG);
         }
 
         loggerCtx.updateLoggers(); 
 
-    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("form-converter.xml");
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("form-converter.xml");
 
         FormConverter converter = ctx.getBean(FormConverter.class);
         

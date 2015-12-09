@@ -50,7 +50,7 @@ public class SearchQuestionBinder {
             DefaultValues.RequestId.valueOf(question.getCollection()
                     .getConfiguration().value(Keys.REQUEST_ID_TO_LOG, DefaultValues.REQUEST_ID_TO_LOG.toString())),
                     question.getCollection().getConfiguration().value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                    		DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+                            DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
 
         //Environment variables for padre
         MapUtils.putAsStringArrayIfNotNull(

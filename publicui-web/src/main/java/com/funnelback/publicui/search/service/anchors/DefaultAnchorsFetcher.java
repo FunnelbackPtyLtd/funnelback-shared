@@ -111,44 +111,44 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
         String formattedDocnum = String.format("%08d",docNum);
         model.setDocNum(formattedDocnum);
     
-	// Take the query read lock to prevent updates/commits from changing the index while we read it.
-	try {
-		queryReadLock.lock(col);
-	} catch (FileLockException fle) {
-		log.warn("Could not Query Read Lock: " + col.getId(), fle);
-		return new HashMap<>();
-	}
+    // Take the query read lock to prevent updates/commits from changing the index while we read it.
+    try {
+        queryReadLock.lock(col);
+    } catch (FileLockException fle) {
+        log.warn("Could not Query Read Lock: " + col.getId(), fle);
+        return new HashMap<>();
+    }
 
-	try {
+    try {
 
         File indexStem = new File(searchHome, DefaultValues.FOLDER_DATA + File.separator + collectionName
                         + File.separator + View.live + File.separator + DefaultValues.FOLDER_IDX
                         + File.separator + DefaultValues.INDEXFILES_PREFIX);
 
-	//If using push2 collection, try to find the correct generation containing the index url.  
-	switch (col.getType()) {
-		case push2:
-			if (indexUrl != null) {
-				for(SdinfoEntry entry : SdinfoFile.readSdinfoFile(new File(indexStem.getParentFile().getAbsolutePath() + File.separatorChar + Files.Index.SDINFO))) {
-					try {
-						File generationStem = new File (entry.getIndexPath());
-						DocInfoResult result = new PadreConnector(searchHome, generationStem).docInfo(new URI(indexUrl)).fetch();
-						//Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
-						if (result.asList().size() > 0) {
-							indexStem = generationStem;
-							break;
-						}
-					} catch (URISyntaxException use) {
-						throw new RuntimeException(use);
-					}
-				}
-			}
-			//indexUrl was not found inside collection
-			return new HashMap<>(); 
+    //If using push2 collection, try to find the correct generation containing the index url.  
+    switch (col.getType()) {
+        case push2:
+            if (indexUrl != null) {
+                for(SdinfoEntry entry : SdinfoFile.readSdinfoFile(new File(indexStem.getParentFile().getAbsolutePath() + File.separatorChar + Files.Index.SDINFO))) {
+                    try {
+                        File generationStem = new File (entry.getIndexPath());
+                        DocInfoResult result = new PadreConnector(searchHome, generationStem).docInfo(new URI(indexUrl)).fetch();
+                        //Erroneous/missing results are not returned here, so if we get a result, it's the right one. 
+                        if (result.asList().size() > 0) {
+                            indexStem = generationStem;
+                            break;
+                        }
+                    } catch (URISyntaxException use) {
+                        throw new RuntimeException(use);
+                    }
+                }
+            }
+            //indexUrl was not found inside collection
+            return new HashMap<>(); 
 
-		default:
-			break;
-	}
+        default:
+            break;
+    }
         
         File distilledFile = new File(indexStem.getAbsolutePath() + ".distilled");
         model.setDistilledFileName(distilledFile.toString()); 
@@ -167,12 +167,12 @@ public class DefaultAnchorsFetcher implements AnchorsFetcher {
             return new HashMap<>();
         }
 
-		} catch (InterruptedException | FileNotFoundException ie) {
-			throw new RuntimeException(ie);
-		} finally {
-			queryReadLock.release(col);
-		}
-	}
+        } catch (InterruptedException | FileNotFoundException ie) {
+            throw new RuntimeException(ie);
+        } finally {
+            queryReadLock.release(col);
+        }
+    }
 
     private PanLook callPanLook(AnchorModel model, String formattedDocnum,
             File distilledFile) {

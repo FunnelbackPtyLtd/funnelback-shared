@@ -58,9 +58,9 @@ public class SQLiteRecommenderDAO implements RecommenderDAO {
             } catch (Exception exception) {
                 log.warn("Exception getting value and converting from JSON: " + exception);
             } finally {
-            	if (database != null) {
+                if (database != null) {
                     database.close();
-            	}
+                }
             }
         } else {
             String collectionName = collectionConfig.getCollectionName();

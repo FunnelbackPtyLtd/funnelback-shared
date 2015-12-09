@@ -71,7 +71,7 @@ public class DefaultPadreForkingLockTests {
         
         SearchQuestion qs = new SearchQuestion();
         qs.setCollection(new Collection("padre-forking", 
-	            new NoOptionsConfig(searchHome, "padre-forking")
+                new NoOptionsConfig(searchHome, "padre-forking")
             .setValue("query_processor", getMockPadre())));
         qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
         qs.setQuery("test");

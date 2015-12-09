@@ -65,10 +65,10 @@ public class ContentOptimiser extends AbstractOutputProcessor {
                     log.debug("obtaining anchors");        
 
                     AnchorModel anchors = anchorsFetcher.fetchGeneral(
-                    		comparison.getSelectedDocument().getIndexUrl(),
-                    		comparison.getSelectedDocument().getDocNum(),
-                    		comparison.getSelectedDocument().getCollection(),
-                    		searchTransaction.getQuestion().getCollection());
+                            comparison.getSelectedDocument().getIndexUrl(),
+                            comparison.getSelectedDocument().getDocNum(),
+                            comparison.getSelectedDocument().getCollection(),
+                            searchTransaction.getQuestion().getCollection());
 
                     log.debug("obtaining content");                    
                     filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());

@@ -41,8 +41,8 @@ public class LogUtils {
      * @return The transformed address
      */
     public static String getRequestIdentifier(HttpServletRequest request, 
-    		DefaultValues.RequestId idType,
-    		String ignoredXForwardedForIPRanges) {
+            DefaultValues.RequestId idType,
+            String ignoredXForwardedForIPRanges) {
         if (request == null) {
             return Log.REQUEST_ID_NOTHING;
         }
@@ -123,15 +123,15 @@ public class LogUtils {
         // Gather information for logging cart
         String requestId = LogUtils.getRequestIdentifier(request,
                 DefaultValues.RequestId.valueOf(collection.getConfiguration()
-                		.value(Keys.REQUEST_ID_TO_LOG, 
-                				DefaultValues.REQUEST_ID_TO_LOG.toString())),
-                				collection.getConfiguration()
-                		.value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                				DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
+                        .value(Keys.REQUEST_ID_TO_LOG, 
+                                DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                                collection.getConfiguration()
+                        .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                                DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
         
         URL referer = LogUtils.getReferrer(request);
-    	return new CartClickLog(new Date(), collection, collection.getProfiles()
-        		.get(DefaultValues.DEFAULT_PROFILE), requestId, referer,
+        return new CartClickLog(new Date(), collection, collection.getProfiles()
+                .get(DefaultValues.DEFAULT_PROFILE), requestId, referer,
                 targetUri, logType, LogUtils.getUserId(user));
     }
     
@@ -143,9 +143,9 @@ public class LogUtils {
      * @return IP address
      */
     private static String selectIp(HttpServletRequest request, String ignoredXForwardedForIPRanges) {
-        	return NetUtils.getIpPreferingXForwardedFor(request.getRemoteAddr()
-    				, request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
-    				, ignoredXForwardedForIPRanges);
+            return NetUtils.getIpPreferingXForwardedFor(request.getRemoteAddr()
+                    , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
+                    , ignoredXForwardedForIPRanges);
     }
     
 }

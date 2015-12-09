@@ -293,7 +293,7 @@ public class SearchQuestion {
 
     /**
      * <p>Name of the host where PADRE executed the query.</p>
-     * @since 14.0	
+     * @since 14.0
      */
     @Getter @Setter private String hostname;
     

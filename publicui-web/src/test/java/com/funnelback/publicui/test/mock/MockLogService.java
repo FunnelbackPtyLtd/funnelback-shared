@@ -43,10 +43,10 @@ public class MockLogService implements LogService {
         publicUiWarnings.add(warning);        
     }
 
-	@Override
-	public void logInteraction(InteractionLog interactionLog) {
-		throw new NotImplementedException("MockLogService doesn't implement logInteraction");
-	}
+    @Override
+    public void logInteraction(InteractionLog interactionLog) {
+        throw new NotImplementedException("MockLogService doesn't implement logInteraction");
+    }
 
     @Override
     public void logCart(CartClickLog cartLog) {

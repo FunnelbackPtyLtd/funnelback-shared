@@ -22,8 +22,8 @@ public class RecommendationResponse {
         private final String status;
 
         private Status(final String value) {
-        	this.status = value;
-		}
+            this.status = value;
+        }
 
         @Override
         public String toString() {
@@ -38,24 +38,24 @@ public class RecommendationResponse {
     private String seedItem;
 
     @Getter
-   	private String collection;
+    private String collection;
 
     @Getter
-   	private String scope;
+    private String scope;
 
     @Getter
-   	private int maxRecommendations;
+    private int maxRecommendations;
 
     @Getter
-   	private String sourceCollection;
+    private String sourceCollection;
 
     @Getter
-   	private ItemTuple.Source source;
+    private ItemTuple.Source source;
 
     @Setter
     @Getter
-   	private long timeTaken;
+    private long timeTaken;
 
     @Getter
-   	private List<Recommendation> recommendations;
+    private List<Recommendation> recommendations;
 }
