@@ -584,8 +584,12 @@ jQuery(function()
 	// At least Safari 3+: "[object HTMLElementConstructor]"
 	var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
 	var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
-	
+      
 	if(isSafari || isChrome){
+        
+        if(isChrome){
+            $('html').addClass('chrome');
+        }
 
 		var x, y, timer;
 		var currentPos = { x: -1, y: -1 };

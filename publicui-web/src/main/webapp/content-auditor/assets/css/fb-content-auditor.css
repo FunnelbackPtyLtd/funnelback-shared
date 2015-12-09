@@ -2382,6 +2382,7 @@ th.visible-xl,td.visible-xl {
     -webkit-column-width: 450px;
     column-width: 450px;
 }
+html.chrome .facets .facet{ width:49.5% !important; float:left; margin: 0.25em .2% !important;}
 }
 
 @media (min-width: 1200px) {
@@ -2390,6 +2391,12 @@ th.visible-xl,td.visible-xl {
     -webkit-column-width: 550px;
     column-width: 550px;
 }
+html.chrome .facets .facet{ width:49.5% !important; float:left; margin: 0.25em .2% !important;}
+}
+
+@media (min-width: 1600px) {
+
+html.chrome .facets .facet{ width:33% !important; float:left; margin: 0.25em .03% !important;}
 }
 
 /* 
@@ -2422,4 +2429,13 @@ Chart Fixes. Fixes bugs in Chrome and Safari.
     visibility: hidden;
     opacity: 0;
 }
+}
+#response-time-chartdiv, #response-time-chartdiv .amcharts-main-div, #response-time-chartdiv .amcharts-chart-div, #response-time-chartdiv svg{
+    transform: translateZ(0);
+}
+html.chrome .facets {
+    column-gap: normal !important;
+    column-width: auto !important;
+    -webkit-column-gap: normal !important;
+    -webkit-column-width: auto !important;
 }
