@@ -64,7 +64,7 @@ public class SearchController extends SessionController {
      */
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
-        extraSearches, question, response, session, error, httpRequest;
+        extraSearches, question, response, session, error, httpRequest, GlobalResourcesPrefix;
         
         public static Set<String> getNames() {
             HashSet<String> out = new HashSet<String>();
@@ -74,6 +74,17 @@ public class SearchController extends SessionController {
             return out;
         }
     }
+    
+    /** The relative location of global resources used by the default search form and some other
+     * forms in the modern UI. I think this can be accessed in the model with 
+     * {@link ModelAttributes#GlobalResourcesPrefix}
+     */
+    public static final String GLOBAL_RESOURCES_LOCATION = "resources-global/";
+    
+    /**
+     * The mapping used in our servlet config to map the global resources location
+     */
+    public static final String GLOBAL_RESOURCES_MAPPING = "/" + GLOBAL_RESOURCES_LOCATION + "/**";
 
     /**
      * Supported view types to return results. Tied to the

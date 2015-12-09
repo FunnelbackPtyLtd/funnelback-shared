@@ -31,6 +31,9 @@
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchPrefix.toString()}"
 					value="#{appProperties['urls.search.prefix']}" />
+                <entry
+                    key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).GlobalResourcesPrefix.toString()}"
+                    value="#{T(com.funnelback.publicui.search.web.controllers.SearchController).GLOBAL_RESOURCES_LOCATION}" />
 				<entry
 					key="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).ContextPath.toString()}"
 					value="#{executionContextHolder.contextPath}" />
