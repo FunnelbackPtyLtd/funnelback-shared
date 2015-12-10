@@ -159,5 +159,6 @@
 			
 	<mvc:resources mapping="/content-optimiser/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-optimiser')}, /content-optimiser/" />
 	<mvc:resources mapping="/content-auditor/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-auditor')}, /content-auditor/" />
+	<mvc:resources mapping="#{T(com.funnelback.publicui.search.web.controllers.SearchController).GLOBAL_RESOURCES_MAPPING}" location="file:#{globalFunnelbackConfig.value('dev.resources.resourcesfb')}, /resources-global/" />
 		
 </beans>
