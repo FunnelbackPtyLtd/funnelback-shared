@@ -14,6 +14,7 @@
 		<bean class="com.funnelback.publicui.form.converter.operations.ResultsTierBarsConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.IfDefCGIConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.AddUrlPrefix" />
+		<bean class="com.funnelback.publicui.form.converter.operations.SwitchToGlobalResources" />
 		<bean class="com.funnelback.publicui.form.converter.operations.BestBetsConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.CGIConversion" />
 		<bean class="com.funnelback.publicui.form.converter.operations.ResConversion" />
