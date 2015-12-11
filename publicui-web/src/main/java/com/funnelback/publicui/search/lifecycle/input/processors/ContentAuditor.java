@@ -356,6 +356,8 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SCO + "=" + "1");
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.COLLAPSING_SCOPED + "=" + "on");
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SORT + "=" + "collapse_count");
+        // FUN-7978 Do not pollute analytics
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.LOG + "=off");
         
         // We want the facet definitions so query constraints are created, but we don't want the expensive QP options
         // the produce output we would ignore anyway.
