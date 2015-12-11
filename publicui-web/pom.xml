@@ -68,24 +68,25 @@
 					<version>2.0</version>
 					<executions>
 						<execution>
-							<phase>initialize</phase>
+							<phase>process-resources</phase>
 							<goals>
 								<goal>execute</goal>
 							</goals>
 							<configuration>
 								<source>
-        java.lang.String version = project.version;
-        version = version.replace(&quot;-SNAPSHOT&quot;, &quot;&quot;);
-        java.lang.String[] parts = version.split(java.util.regex.Pattern.quote(&quot;.&quot;));
-        if(Integer.parseInt(parts[1]) % 2 == 0) {
-            
-            java.io.File jquery = new java.io.File(&quot;src&quot;+java.io.File.separator+&quot;main&quot;+java.io.File.separator+&quot;webapp&quot;+java.io.File.separator+&quot;resources-global&quot;+java.io.File.separator+&quot;js&quot;+java.io.File.separator
-                   +&quot;jquery.funnelback-completion-&quot; + version + &quot;.js&quot;); //The jquery completion file name
-            if(!jquery.exists()){
-                log.error('************* Missing versioned query completion file: ' + jquery + ' ***************');
-                throw new Exception(&quot;Missing &quot; + jquery);
-            }
-        }
+									// Ensure we always ship a versionned version of the jQuery completion
+									// file for release version (even numbers)
+									
+									def version = project.version.replace("-SNAPSHOT", "")
+									def parts = version.split(java.util.regex.Pattern.quote("."))
+									
+									if(parts[1].toInteger() % 2 == 0) {
+										// The jquery completion file name
+										def jQuery = java.nio.file.Paths.get("src", "main", "webapp", "resources-global", "js", "jquery.funnelback-completion-" + version + ".js").toFile() 
+										if (!jQuery.exists()) {
+											fail("Missing versionned jQuery completion file: ${jQuery}")
+										}
+									}
 								</source>
 							</configuration>
 						</execution>
