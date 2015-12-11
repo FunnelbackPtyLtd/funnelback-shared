@@ -20,8 +20,9 @@ public class SearchQuestionBinder {
     
     /**
      * Binds a {@link SearchQuestion} to another one by copying relevant fields.
-     * @param from
-     * @param to
+     * 
+     * We define 'relevant' here as things that might be bound initally from the request,
+     * not things which are subsequently set by input processors.
      */
     public static void bind(SearchQuestion from, SearchQuestion to) {
         to.getRawInputParameters().putAll(from.getRawInputParameters());
