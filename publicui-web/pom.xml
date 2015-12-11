@@ -74,10 +74,6 @@
 							</goals>
 							<configuration>
 								<source>
-
-
-
-
         java.lang.String version = project.version;
         version = version.replace(&quot;-SNAPSHOT&quot;, &quot;&quot;);
         java.lang.String[] parts = version.split(java.util.regex.Pattern.quote(&quot;.&quot;));
@@ -86,7 +82,6 @@
             java.io.File jquery = new java.io.File(&quot;src&quot;+java.io.File.separator+&quot;main&quot;+java.io.File.separator+&quot;webapp&quot;+java.io.File.separator+&quot;resources-global&quot;+java.io.File.separator+&quot;js&quot;+java.io.File.separator
                    +&quot;jquery.funnelback-completion-&quot; + version + &quot;.js&quot;); //The jquery completion file name
             if(!jquery.exists()){
-                //log
                 log.error('************* Missing versioned query completion file: ' + jquery + ' ***************');
                 throw new Exception(&quot;Missing &quot; + jquery);
             }
