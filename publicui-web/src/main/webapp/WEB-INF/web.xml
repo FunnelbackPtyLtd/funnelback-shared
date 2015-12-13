@@ -19,7 +19,7 @@
 	
 	<context-param>
 		<param-name>log4jConfiguration</param-name>
-		<param-value>file:${sys:funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
+		<param-value>file://${sys:funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
 	</context-param>
 
 	<listener>
