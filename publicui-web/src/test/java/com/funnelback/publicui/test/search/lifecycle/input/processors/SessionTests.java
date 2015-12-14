@@ -3,9 +3,11 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
-import org.junit.Assert;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.QueryTimeoutException;
@@ -16,6 +18,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.Session;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.CartResult;
 import com.funnelback.publicui.search.model.transaction.session.ClickHistory;
@@ -174,6 +177,33 @@ public class SessionTests {
         Assert.assertEquals(0, st.getSession().getSearchHistory().size());
         Assert.assertEquals(0, st.getSession().getClickHistory().size());
         Assert.assertEquals(0, st.getSession().getResultsCart().size());
+    }
+    
+    /**
+     * @see FUN-8076
+     * @throws InputProcessorException
+     */
+    @Test
+    public void testExtraSearch() throws InputProcessorException {
+        for (SearchQuestionType type: SearchQuestionType.values()) {
+            if (SearchQuestionType.SEARCH.equals(type)) {
+                continue;
+            }
+            
+            st.getQuestion().setQuestionType(type);
+            
+            SearchHistoryRepository r = mock(SearchHistoryRepository.class);
+            ResultsCartRepository rc = mock(ResultsCartRepository.class);
+    
+            processor.setSearchHistoryRepository(r);
+            processor.setResultsCartRepository(rc);
+    
+            processor.processInput(st);
+    
+            // Repositories should not be queried on anything but the main search
+            verify(r, never()).getSearchHistory(any(SearchUser.class), any(Collection.class), anyInt());
+            verify(rc, never()).getCart(any(SearchUser.class), any(Collection.class));
+        }
     }
 
 }
