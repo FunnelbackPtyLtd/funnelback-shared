@@ -3,6 +3,7 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -162,6 +163,20 @@ public class SearchHistoryTests extends SessionDaoTest {
         assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
     }
 
-    
+    /**
+     * @see FUN-8054
+     * @throws OutputProcessorException
+     */
+    @Test
+    public void testNoOriginalQuery() throws OutputProcessorException {
+        collection.getConfiguration().setValue(Keys.ModernUI.SESSION, "true");
+        st.getQuestion().setOriginalQuery(null);
+        processor.processOutput(st);
+        
+        List<com.funnelback.publicui.search.model.transaction.session.SearchHistory> history = repository.getSearchHistory(user, collection, 10);
+        assertEquals(1, history.size());
+        
+        assertNull("Original query should be permitted to be NULL", history.get(0).getOriginalQuery());
+    }    
 
 }
