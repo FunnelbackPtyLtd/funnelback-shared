@@ -15,6 +15,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.service.ResultsCartRepository;
 import com.funnelback.publicui.search.service.SearchHistoryRepository;
@@ -40,6 +41,8 @@ public class Session extends AbstractInputProcessor {
             && SearchTransactionUtils.hasCollection(st)
             && st.getQuestion().getCollection()
                 .getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+            // FUN-8076: Only allow on main search
+            && SearchQuestionType.SEARCH.equals(st.getQuestion().getQuestionType())
             && st.getSession().getSearchUser() != null) {
             
             SearchQuestion q = st.getQuestion();
