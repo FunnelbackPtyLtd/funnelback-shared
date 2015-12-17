@@ -82,7 +82,7 @@
 									
 									if(parts[1].toInteger() % 2 == 0) {
 										// The jquery completion file name
-										def jQuery = java.nio.file.Paths.get("src", "main", "webapp", "resources-global", "js", "jquery.funnelback-completion-" + version + ".js").toFile() 
+										def jQuery = java.nio.file.Paths.get(project.build.sourceDirectory, "..", "webapp", "resources-global", "js", "jquery.funnelback-completion-" + version + ".js").toFile() 
 										if (!jQuery.exists()) {
 											fail("Missing versionned jQuery completion file: ${jQuery}")
 										}

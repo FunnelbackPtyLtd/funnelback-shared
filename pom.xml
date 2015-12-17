@@ -11,7 +11,7 @@
 		<artifactId>java-parent</artifactId>
 		<version>15.1.1550-SNAPSHOT</version>
 	</parent>
-
+ 
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://jira.cbr.au.funnelback.com/browse/FUN</url>
