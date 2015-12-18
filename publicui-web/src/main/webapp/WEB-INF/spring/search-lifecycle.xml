@@ -28,7 +28,6 @@
 		<ref bean="exploreQueryInputProcessor" />
 		<ref bean="hostname" />
 		<ref bean="userIdInQueryLogs" />
-		<!-- <ref bean="contentOptimiserSelectDocumentInputProcessor"/> -->
 		<ref bean="extraSearchesInputProcessor" />
 			<bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
 				<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).extra_searches }" />
