@@ -554,13 +554,13 @@
 </#macro>
 
 <#---
-    Generates an &quot;optimise&quot; link to the content optimiser (From the admin side only)
+    Generates an &quot;audit SEO&quot; link to the SEO Auditor (From the admin side only)
 
     @param label Text to use for the link.
 -->
-<#macro Optimise label="Optimise">
+<#macro Optimise label="Audit SEO">
     <@AdminUIOnly>
-        <a class="search-optimise" href="content-optimiser.html?optimiser_url=${s.result.indexUrl}&amp;query=${response.resultPacket.query}&amp;collection=${s.result.collection}&amp;profile=${question.profile}">${label}</a>
+        <a class="search-optimise" href="/a/#/${s.result.collection}:${question.profile}/analyse/seo-auditor/${response.resultPacket.query?url}/${urlEncodeFragment(s.result.indexUrl)?replace("/", "%2F")}">${label}</a>
     </@AdminUIOnly>
 </#macro>
 
