@@ -100,6 +100,9 @@
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.URLDecodeMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.URLDecodeMethod" />
 				</entry>
+				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.URLEncodeFragmentMethod).NAME}">
+					<bean class="com.funnelback.publicui.search.web.views.freemarker.URLEncodeFragmentMethod" />
+				</entry>
 				<entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod).NAME}">
 					<bean class="com.funnelback.publicui.search.web.views.freemarker.CurrentDateMethod" />
 				</entry>
@@ -175,33 +178,6 @@
 	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" id="suggestViewRich">
 		<property name="url" value="suggest/rich.ftl" />
 		<property name="contentType" value="application/json;charset=UTF-8" />
-	</bean>
-
-	<!-- Content optimiser views -->
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserChooseCollectionPage">
-		<property name="url" value="contentoptimiser/contentOptimiserChooseCollectionPage.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserCollectionQueryPage">
-		<property name="url" value="contentoptimiser/contentOptimiserCollectionQueryPage.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserLoadingPage">
-		<property name="url" value="contentoptimiser/contentOptimiserLoadingPage.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserResultsPage">
-		<property name="url" value="contentoptimiser/contentOptimiserResultsPage.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-	</bean>
-
-	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerView" name="contentOptimiserModelDump">
-		<property name="url" value="contentoptimiser/contentOptimiserModelDump.ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
 	</bean>
 
 	<!-- Serve TRIM reference view -->

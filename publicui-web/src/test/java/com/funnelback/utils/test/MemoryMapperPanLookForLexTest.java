@@ -79,7 +79,7 @@ public class MemoryMapperPanLookForLexTest {
         int count = 0;
         PanLook panlook = new DefaultPanLookFactory().getPanLookForLex(testFile,prefix);
         for(String line : panlook) {
-            Assert.assertEquals("pan-look should return the correct line(s) for prefix '" + prefix +"'",expected[count], line);
+            Assert.assertEquals("pan-look should return the correct line(s) for prefix '" + prefix +"'",expected[count], line.replaceAll("\r", ""));
             count++;
         }
         panlook.close();
