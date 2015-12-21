@@ -23,6 +23,7 @@
     <link href="${pathToAssets}css/fb-content-auditor-print.css" rel="stylesheet" media="print">
     <!-- JS -->
     <script>var content_auditor = [];</script>
+    <script src="${pathToAssets}js/jquery.min.js"></script>
     <script src="${pathToAssets}js/amcharts/amcharts.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/amcharts/pie.js" type="text/javascript"></script>
     <script src="${pathToAssets}js/amcharts/serial.js" type="text/javascript"></script>
@@ -123,7 +124,6 @@
       <#-- FooterScripts markup -->
       <#macro FooterScripts>
       <#-- SCRIPTS -->
-      <script src="${pathToAssets}js/jquery.min.js"></script>
       <#-- query completion JS -->
       <script src="${pathToAssets}js/bootstrap.min.js"></script>
       <#-- Not sure what this applies to: <script src="${pathToAssets}/js/jquery.tmpl.min.js"></script>-->
