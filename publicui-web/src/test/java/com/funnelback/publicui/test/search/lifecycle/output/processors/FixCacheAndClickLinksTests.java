@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -15,6 +16,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -24,17 +26,15 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
+import lombok.SneakyThrows;
+
 public class FixCacheAndClickLinksTests {
 
+    private static final String CURATOR_ADVERT_LINK = "http://www.link.com";
     private FixCacheAndClickLinks processor;
     
-    private SearchTransaction st;
-    
-    @Before
-    public void before() throws Exception{
-        processor = new FixCacheAndClickLinks();
-        processor.setAuthTokenManager(new DefaultAuthTokenManager());
-        
+    @SneakyThrows
+    private SearchTransaction getTestSearchTransaction() {
         SearchQuestion question = new SearchQuestion();
         question.setQuery("livelinks & pumpkins ");
         question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
@@ -47,9 +47,16 @@ public class FixCacheAndClickLinksTests {
             false));
         response.getResultPacket().getBestBets().add(
                 new BestBet("trigger", "http://www.url.com", "title", "description", "http://www.url.com"));
+        response.getCurator().getExhibits()
+            .add(new UrlAdvert("titleHtml", "http://www.display.com", CURATOR_ADVERT_LINK, "descriptionHtml", new HashMap<>(), "category"));
         
-        st = new SearchTransaction(question, response);
-
+        return new SearchTransaction(question, response);
+    };
+    
+    @Before
+    public void before() throws Exception{
+        processor = new FixCacheAndClickLinks();
+        processor.setAuthTokenManager(new DefaultAuthTokenManager());
     }
     
     @Test
@@ -77,6 +84,7 @@ public class FixCacheAndClickLinksTests {
     
     @Test
     public void testNoClickTracking() throws OutputProcessorException {
+        SearchTransaction st = getTestSearchTransaction();
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "false");
         processor.processOutput(st);
 
@@ -85,9 +93,22 @@ public class FixCacheAndClickLinksTests {
             Assert.assertEquals(r.getClickTrackingUrl(), r.getLiveUrl());
         }
     }
-    
+
     @Test
     public void testClickTracking() throws OutputProcessorException, UnsupportedEncodingException {
+        SearchTransaction st = getTestSearchTransaction();
+        processAndAssertClickTracking(st);
+    }
+    
+    @Test
+    public void testNoUserEnteredQuery() throws OutputProcessorException, UnsupportedEncodingException {
+        SearchTransaction st = getTestSearchTransaction();
+        st.getQuestion().setQuery(null);
+        st.getQuestion().getMetaParameters().add("livelinks & pumpkins");
+        processAndAssertClickTracking(st);
+    }
+
+    public void processAndAssertClickTracking(SearchTransaction st) throws OutputProcessorException, UnsupportedEncodingException {
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.CLICK_LINK, "CLICK_LINK");
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.SERVER_SECRET, "plop");
@@ -112,20 +133,23 @@ public class FixCacheAndClickLinksTests {
         
         BestBet bb = st.getResponse().getResultPacket().getBestBets().get(0);
         Assert.assertFalse(bb.getClickTrackingUrl().contains("null"));
-        String trackingUrl = bb.getClickTrackingUrl();
-        Assert.assertTrue(trackingUrl.contains("CLICK_LINK?"));
-        Assert.assertTrue(trackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
-        Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
-        Assert.assertTrue(trackingUrl.contains("index_url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
-        Assert.assertTrue(trackingUrl.contains("type=FP"));
-        Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
+        String bbTrackingUrl = bb.getClickTrackingUrl();
+        Assert.assertTrue(bbTrackingUrl.contains("CLICK_LINK?"));
+        Assert.assertTrue(bbTrackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
+        Assert.assertTrue(bbTrackingUrl.contains("url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
+        Assert.assertTrue(bbTrackingUrl.contains("index_url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
+        Assert.assertTrue(bbTrackingUrl.contains("type=FP"));
+        Assert.assertTrue(bbTrackingUrl.contains("profile=" + st.getQuestion().getProfile()));
 
+        UrlAdvert advert = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
+        Assert.assertFalse(advert.getLinkUrl().contains("null"));
+        String advertTrackingUrl = advert.getLinkUrl();
+        Assert.assertTrue(advertTrackingUrl.contains("CLICK_LINK?"));
+        Assert.assertTrue(advertTrackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
+        Assert.assertTrue(advertTrackingUrl.contains("url=" + URLEncoder.encode(CURATOR_ADVERT_LINK, "UTF-8")));
+        Assert.assertTrue(advertTrackingUrl.contains("index_url=" + URLEncoder.encode(CURATOR_ADVERT_LINK, "UTF-8")));
+        Assert.assertTrue(advertTrackingUrl.contains("type=FP"));
+        Assert.assertTrue(advertTrackingUrl.contains("profile=" + st.getQuestion().getProfile()));
     }
     
-    @Test
-    public void testNoUserEnteredQuery() throws OutputProcessorException, UnsupportedEncodingException {
-        st.getQuestion().setQuery(null);
-        st.getQuestion().getMetaParameters().add("livelinks & pumpkins");
-        testClickTracking();
-    }
 }

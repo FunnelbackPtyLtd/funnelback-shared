@@ -14,6 +14,8 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQu
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.curator.Exhibit;
+import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -61,6 +63,18 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
                 }
             }
         }
+
+        // Apply click tracking to curator UrlAdvert's, even if there are no results
+        if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
+            if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                for (Exhibit exhibit : searchTransaction.getResponse().getCurator().getExhibits()) {
+                    if (exhibit instanceof UrlAdvert) {
+                        UrlAdvert advert = (UrlAdvert) exhibit;
+                        ((UrlAdvert) exhibit).setLinkUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), advert));
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -71,18 +85,10 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      */
     @SneakyThrows(UnsupportedEncodingException.class)
     private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
-        final StringBuffer out = new StringBuffer()
-            .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
-            .append("rank=").append(r.getRank().toString())
-            .append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
-            .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(r.getLiveUrl(), "UTF-8"))
-            .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(r.getIndexUrl(), "UTF-8"))
-            .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(r.getLiveUrl(),question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
+        final StringBuffer out = buildGenericClickTrackingUrl(question, r.getLiveUrl(), r.getIndexUrl());
+
+        out.append("rank=").append(r.getRank().toString())
             .append("&").append(RequestParameters.QUERY).append("=").append(URLEncoder.encode(queryExpr, "UTF-8"));
-        
-        if (question.getProfile() != null) {
-            out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
-        }
         
         if (question.getRawInputParameters().get(PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString()) != null) {
             out.append("&")
@@ -100,21 +106,37 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      * @param bb
      * @return
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     private String buildClickTrackingUrl(SearchQuestion question, BestBet bb) {
+        return buildGenericClickTrackingUrl(question, bb.getLink(), bb.getLink())
+            .append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP)
+            .toString();
+    }
+
+    /**
+     * Builds a click-tracking URL for a curator UrlAdvert
+     */
+    private String buildClickTrackingUrl(SearchQuestion question, UrlAdvert advert) {
+        return buildGenericClickTrackingUrl(question, advert.getLinkUrl(), advert.getLinkUrl())
+            .append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP)
+            .toString();
+    }
+
+    /**
+     * Builds a click-tracking URL for a given url, which does not include type-specific parameters (like rank, query and type)
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
         StringBuffer out = new StringBuffer()
         .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
         .append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
-        .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(bb.getLink(), "UTF-8"))
-        .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(bb.getLink(), "UTF-8"))
-        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(bb.getLink(),question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"))
-        .append("&").append(RequestParameters.Click.TYPE).append("=").append(RequestParameters.Click.TYPE_FP);
+        .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
+        .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
+        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"));
 
         if (question.getProfile() != null) {
             out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
         }
-    
-        return out.toString();
+        return out;
     }
 
 }
