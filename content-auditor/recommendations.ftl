@@ -79,7 +79,7 @@
                                 "fillColorsField": "colour",
                                 "lineColors": "colour",
                                 "fillAlphas": 0.75
-                              } ],
+                              }],
                                 "valueAxes": [{
                                     "axisAlpha": 1,
                                     "position": "left",
@@ -93,7 +93,7 @@
                                 },
                                 "chartScrollbar": {
                                     "graph": "g1",
-                                    "oppositeAxis": false,
+                                    "oppositeAxis": true,
                                     "offset": 0,
                                     "scrollbarHeight": 30,
                                     "backgroundAlpha": 0,
@@ -397,7 +397,7 @@
                             });
                             
                             content_auditor.responseTimeChart.addListener("clickGraphItem", navigateToDataContextUrl);
-                            $('#response-time-chartdiv').html().appendTo('.recommendations .facets');
+                            $('.recommendations .facets').append($('#response-time-chartdiv').html());
                             
                         </script>
                       </div>
