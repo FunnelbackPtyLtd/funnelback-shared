@@ -2439,3 +2439,9 @@ html.chrome .facets {
     -webkit-column-gap: normal !important;
     -webkit-column-width: auto !important;
 }
+
+
+/* Fix for chrome, opera & safari where charts do not show */
+.chart-container{ position: inherit !important;}
+.chart-container > div, .chart-container > div > div{  position: inherit !important;}
+.chart-container svg{  position: inherit !important;}
