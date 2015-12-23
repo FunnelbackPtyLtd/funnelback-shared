@@ -52,6 +52,7 @@
 	<util:list id="outputFlow">
 		<ref bean="padreReturnCodeOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
+        <ref bean="curatorOutputProcessor" />
 		<ref bean="fixCacheAndClickLinks" />
 		<ref bean="fixDisplayUrlsOutputProcessor" />
 		<ref bean="htmlEncodeSummaries" />
@@ -63,7 +64,6 @@
 		<ref bean="queryCleanOutputProcessor" />
 		<ref bean="extraSearchesExecutor" />
 		<ref bean="contentOptimiserOutputProcessor" />
-        <ref bean="curatorOutputProcessor" />
 		<ref bean="textMinerOutputProcessor" />
 		<ref bean="getTranslationsOutputProcessor" />
 		<ref bean="searchHistoryOutputProcessor" />
