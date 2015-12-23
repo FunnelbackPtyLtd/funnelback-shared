@@ -482,7 +482,7 @@ jQuery(function()
                 var count = -1;
                 $.each(what, function(i, val)
                 {
-                    if (val !== null)
+                    if (val !== null && val.heading.length > 0)
                     {
                         html += '<li><a href="#facet-' + val.index +
                             '.tab-pane" aria-controls="profile" role="tab" data-toggle="tab" title="" aria-expanded="false"><span class="fa fa-long-arrow-right"></span> ' +
