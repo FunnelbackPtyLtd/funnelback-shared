@@ -22,7 +22,7 @@
 		<ref bean="metaParametersInputProcessor" />
 		<ref bean="metadataAliasesInputProcessor" />
 		<ref bean="metaDatesInputProcessor" />
-        <ref bean="curatorInputProcessor" />
+		<ref bean="curatorInputProcessor" />
 		<ref bean="cliveMappingInputProcessor" />
 		<ref bean="quickLinksInputProcessor" />
 		<ref bean="exploreQueryInputProcessor" />
@@ -52,7 +52,7 @@
 	<util:list id="outputFlow">
 		<ref bean="padreReturnCodeOutputProcessor" />
 		<ref bean="fixPseudoLiveLinksOutputProcessor" />
-        <ref bean="curatorOutputProcessor" />
+		<ref bean="curatorOutputProcessor" />
 		<ref bean="fixCacheAndClickLinks" />
 		<ref bean="fixDisplayUrlsOutputProcessor" />
 		<ref bean="htmlEncodeSummaries" />
