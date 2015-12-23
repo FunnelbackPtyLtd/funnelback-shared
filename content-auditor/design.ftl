@@ -46,7 +46,7 @@
         <span class="fa fa-bars fa-lg"></span>
         </button>-->
 
-        <a id="brand" href="/s/search.html?collection=${question.inputParameterMap["collection"]?url}" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
+        <a id="brand" href="/s/content-auditor.html?collection=${question.inputParameterMap["collection"]?url}" title="Funnelback"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
         <h1><a href="?collection=${question.inputParameterMap["collection"]?url}" title="Funnelback Content Auditor Home">Content <span>Auditor</span></h1>
 
         <#if layoutSideBar ==1>
