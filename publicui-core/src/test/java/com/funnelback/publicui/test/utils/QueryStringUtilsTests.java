@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.utils;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,10 @@ public class QueryStringUtilsTests {
             + "&param2=second%20value"
             + "&param3=%0A%09"
             + "&param4="
-            + "&param5=null";
-            
+            + "&param5=null"
+            + "&param6=something=with=equals"
+            + "&param7=something%26with%26ampersands";
+        
         Map<String, List<String>> map = QueryStringUtils.toMap("?" + input);
         
         Assert.assertEquals(Arrays.asList(new String[] {"value1"}), map.get("param1"));
@@ -55,6 +58,8 @@ public class QueryStringUtilsTests {
         Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
         Assert.assertEquals(Arrays.asList(new String[0]), map.get("param4"));
         Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
+        Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
+        Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
         
         map = QueryStringUtils.toMap(input);
 
@@ -63,6 +68,8 @@ public class QueryStringUtilsTests {
         Assert.assertEquals(Arrays.asList(new String[] {"\n\t"}), map.get("param3"));
         Assert.assertEquals(Arrays.asList(new String[0]), map.get("param4"));
         Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
+        Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
+        Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
     }
     
 }

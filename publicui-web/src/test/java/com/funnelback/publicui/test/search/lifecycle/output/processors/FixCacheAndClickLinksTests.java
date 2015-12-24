@@ -2,9 +2,11 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -24,6 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
+import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 import lombok.SneakyThrows;
@@ -121,35 +124,43 @@ public class FixCacheAndClickLinksTests {
             String trackingUrl = r.getClickTrackingUrl();
             Assert.assertTrue(trackingUrl.contains("CLICK_LINK?"));
             
-            Assert.assertTrue(trackingUrl.contains("rank=" + r.getRank()));
-            Assert.assertTrue(trackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
-            Assert.assertTrue(trackingUrl.contains("url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
-            Assert.assertTrue(trackingUrl.contains("index_url=" + URLEncoder.encode(r.getLiveUrl(), "UTF-8")));
-            Assert.assertTrue(URLDecoder.decode(trackingUrl, "UTF-8").matches(".*auth=[a-zA-Z0-9+/]{22}.*"));
-            Assert.assertTrue(trackingUrl.contains("query=livelinks+%26+pumpkins&"));
-            Assert.assertTrue(trackingUrl.contains("profile=" + st.getQuestion().getProfile()));
-            Assert.assertTrue(trackingUrl.contains("referer=REFERER"));
+            Map<String, String> qs = QueryStringUtils.toSingleMap(URI.create(trackingUrl).getRawQuery());
+            
+            Assert.assertEquals(Integer.toString(r.getRank()), qs.get("rank"));
+            Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
+            Assert.assertEquals(r.getLiveUrl(), qs.get("url"));
+            Assert.assertEquals(r.getLiveUrl(), qs.get("index_url"));
+            Assert.assertTrue(qs.get("auth").matches(".*[a-zA-Z0-9+/]{22}.*"));
+            Assert.assertEquals("livelinks & pumpkins", qs.get("query"));
+            Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
+            Assert.assertEquals("REFERER", qs.get("search_referer"));
         }
         
         BestBet bb = st.getResponse().getResultPacket().getBestBets().get(0);
         Assert.assertFalse(bb.getClickTrackingUrl().contains("null"));
         String bbTrackingUrl = bb.getClickTrackingUrl();
         Assert.assertTrue(bbTrackingUrl.contains("CLICK_LINK?"));
-        Assert.assertTrue(bbTrackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
-        Assert.assertTrue(bbTrackingUrl.contains("url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
-        Assert.assertTrue(bbTrackingUrl.contains("index_url=" + URLEncoder.encode(bb.getLink(), "UTF-8")));
-        Assert.assertTrue(bbTrackingUrl.contains("type=FP"));
-        Assert.assertTrue(bbTrackingUrl.contains("profile=" + st.getQuestion().getProfile()));
+        
+        Map<String, String> qs = QueryStringUtils.toSingleMap(URI.create(bbTrackingUrl).getRawQuery());
+        
+        Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
+        Assert.assertEquals(bb.getLink(), qs.get("url"));
+        Assert.assertEquals(bb.getLink(), qs.get("index_url"));
+        Assert.assertEquals("FP", qs.get("type"));
+        Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
 
         UrlAdvert advert = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
         Assert.assertFalse(advert.getLinkUrl().contains("null"));
         String advertTrackingUrl = advert.getLinkUrl();
         Assert.assertTrue(advertTrackingUrl.contains("CLICK_LINK?"));
-        Assert.assertTrue(advertTrackingUrl.contains("collection=" + st.getQuestion().getCollection().getId()));
-        Assert.assertTrue(advertTrackingUrl.contains("url=" + URLEncoder.encode(CURATOR_ADVERT_LINK, "UTF-8")));
-        Assert.assertTrue(advertTrackingUrl.contains("index_url=" + URLEncoder.encode(CURATOR_ADVERT_LINK, "UTF-8")));
-        Assert.assertTrue(advertTrackingUrl.contains("type=FP"));
-        Assert.assertTrue(advertTrackingUrl.contains("profile=" + st.getQuestion().getProfile()));
+        
+        qs = QueryStringUtils.toSingleMap(URI.create(advertTrackingUrl).getRawQuery());
+        
+        Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
+        Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("url"));
+        Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("index_url"));
+        Assert.assertEquals("FP", qs.get("type"));
+        Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
     }
     
 }

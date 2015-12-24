@@ -87,7 +87,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
     private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
         final StringBuffer out = buildGenericClickTrackingUrl(question, r.getLiveUrl(), r.getIndexUrl());
 
-        out.append("rank=").append(r.getRank().toString())
+        out.append("&rank=").append(r.getRank().toString())
             .append("&").append(RequestParameters.QUERY).append("=").append(URLEncoder.encode(queryExpr, "UTF-8"));
         
         if (question.getRawInputParameters().get(PassThroughEnvironmentVariables.Keys.HTTP_REFERER.toString()) != null) {
@@ -127,8 +127,8 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
     @SneakyThrows(UnsupportedEncodingException.class)
     private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
         StringBuffer out = new StringBuffer()
-        .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK)).append("?")
-        .append("&").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
+        .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK))
+        .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
         .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
         .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"));

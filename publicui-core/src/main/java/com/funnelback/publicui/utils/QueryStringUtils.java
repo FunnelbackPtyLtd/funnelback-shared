@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.SneakyThrows;
 
 /**
@@ -76,7 +78,9 @@ public class QueryStringUtils {
             if (key != null && ! "".equals(key)) {
                 String value = null;
                 if (pair.length > 1) {
-                    value = URLDecoder.decode(pair[1], "UTF-8");
+                    // If there are more than 1 part, join them back with "="
+                    // "=" is permitted unencoded within a query string parameter
+                    value = URLDecoder.decode(StringUtils.join(pair, "=", 1, pair.length), "UTF-8");
                 }
                 List<String> values = params.get(key);
                 if (values == null) {
