@@ -440,55 +440,61 @@
                         <h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span id="duplicateCount" class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></h3>
                       </div>
                       <div class="panel-body">
-                        <@fb.ExtraResults name="duplicates">
-                          <table id="duplicates" class="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>Instances</th>
-                                <th>Filesize</th>
-                                <th>Total</th>
-                                <th>Document</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <@s.Results>
-                                <#if s.result.collapsed??>
-                                  <tr>
-                                    <td class="text-center">
-                                      <a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
-                                        <div class="badge badge-danger"> x <strong>${s.result.collapsed.count + 1}</strong>
-                                                        </div>
-                                    </td>
-                                            <td class="text-center">
-                                                        ${ fb.renderSize(s.result.fileSize) }
-                                            </td>
-                                            <td class="text-center">
-                                                    <i>${fb.renderSize((s.result.collapsed.count + 1) * s.result.fileSize)}</i>
-                                    </td>
-                                    <td>
-                                      <div class="pull-left">
-                                        <a href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
-                                        <span class="fa fa-open"></span>
-                                        <br>
-                                        <!-- SITE (Z) -->
-                                        <a class="text-muted" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}
-                                        </a>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </#if>
-                              </@s.Results>
+                        <#if extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed &gt; 0>
+                          <@fb.ExtraResults name="duplicates">
+                            <table id="duplicates" class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Instances</th>
+                                  <th>Filesize</th>
+                                  <th>Total</th>
+                                  <th>Document</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <@s.Results>
+                                  <#if s.result.collapsed??>
+                                    <tr>
+                                      <td class="text-center">
+                                        <a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
+                                          <div class="badge badge-danger"> x <strong>${s.result.collapsed.count + 1}</strong>
+                                                          </div>
+                                      </td>
+                                              <td class="text-center">
+                                                          ${ fb.renderSize(s.result.fileSize) }
+                                              </td>
+                                              <td class="text-center">
+                                                      <i>${fb.renderSize((s.result.collapsed.count + 1) * s.result.fileSize)}</i>
+                                      </td>
+                                      <td>
+                                        <div class="pull-left">
+                                          <a href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
+                                          <span class="fa fa-open"></span>
+                                          <br>
+                                          <!-- SITE (Z) -->
+                                          <a class="text-muted" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}
+                                          </a>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </#if>
+                                </@s.Results>
 
-                            </tbody>
-                          </table>
-                          <div class="text-center">
-                            <ul class="pagination">
-                              <@fb.Prev link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.prevUrl}" rel="prev"><small><i class="glyphicon glyphicon-chevron-left"></i></small> Prev</a></li></@fb.Prev>
-                              <@fb.Page link=main.contentAuditorLink startParamName="duplicate_start_rank"><li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl}">${fb.pageNumber}</a></li></@fb.Page>
-                              <@fb.Next link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.nextUrl}" rel="next">Next <small><i class="glyphicon glyphicon-chevron-right"></i></small></a></li></@fb.Next>
-                            </ul>
+                              </tbody>
+                            </table>
+                            <div class="text-center">
+                              <ul class="pagination">
+                                <@fb.Prev link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.prevUrl}" rel="prev"><small><i class="glyphicon glyphicon-chevron-left"></i></small> Prev</a></li></@fb.Prev>
+                                <@fb.Page link=main.contentAuditorLink startParamName="duplicate_start_rank"><li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl}">${fb.pageNumber}</a></li></@fb.Page>
+                                <@fb.Next link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.nextUrl}" rel="next">Next <small><i class="glyphicon glyphicon-chevron-right"></i></small></a></li></@fb.Next>
+                              </ul>
+                            </div>
+                          </@fb.ExtraResults>
+                        <#else>
+                          <div class="panel-body">
+                            <p>No duplicate content found</p>
                           </div>
-                        </@fb.ExtraResults>
+                        </#if>
                       </div>
                   </div>
                 </div>
