@@ -53,7 +53,7 @@
                                 <@s.Category max=categoryMax tag="div">
                                 <#assign categoryCount = categoryCount + 1 />
                                 
-                                ${sep} <@s.CategoryName class="" link=main.contentAuditorLink />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
+                                ${sep} <@s.CategoryName class="" link=main.contentAuditorLink extraParams="#collection-${currentCollection}-tab-0" />&nbsp;<small class="text-muted">(<@s.CategoryCount />)</small>
                                 
                                 <#assign sep = '' />
                                 </@s.Category>
