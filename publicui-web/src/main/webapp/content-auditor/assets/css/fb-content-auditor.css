@@ -2377,12 +2377,16 @@ th.visible-xl,td.visible-xl {
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-.facets {
-    -moz-column-width: 450px;
-    -webkit-column-width: 450px;
-    column-width: 450px;
-}
-html.chrome .facets .facet{ width:49.5% !important; float:left; margin: 0.25em .2% !important;}
+    .facets {
+        -moz-column-width: 450px;
+        -webkit-column-width: 450px;
+        column-width: 450px;
+    }
+
+    html.chrome .facets .facet{ 
+    width:49% !important; float:left; margin: 0.25em .5% !important;
+   
+    }
 }
 
 @media (min-width: 1200px) {
@@ -2391,12 +2395,12 @@ html.chrome .facets .facet{ width:49.5% !important; float:left; margin: 0.25em .
     -webkit-column-width: 550px;
     column-width: 550px;
 }
-html.chrome .facets .facet{ width:49.5% !important; float:left; margin: 0.25em .2% !important;}
+html.chrome .facets .facet{ width:49% !important; float:left; margin: 0.25em .5% !important;}
 }
 
 @media (min-width: 1600px) {
 
-html.chrome .facets .facet{ width:33% !important; float:left; margin: 0.25em .03% !important;}
+html.chrome .facets .facet{ width:32.5% !important; float:left; margin: 0.25em .3% !important;}
 }
 
 /* 
@@ -2438,4 +2442,12 @@ html.chrome .facets {
     column-width: auto !important;
     -webkit-column-gap: normal !important;
     -webkit-column-width: auto !important;
+}
+
+
+/* Fix for chrome. Apply to long URLs within tables to prevent non-wrapping of long text and overflow */
+
+.break-word{
+    word-break:break-all;
+    
 }
