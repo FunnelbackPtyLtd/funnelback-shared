@@ -560,7 +560,7 @@
 -->
 <#macro Optimise label="Audit SEO">
     <@AdminUIOnly>
-        <a class="search-optimise" href="/a/#/${s.result.collection}:${question.profile}/analyse/seo-auditor/${response.resultPacket.query?url}/${urlEncodeFragment(s.result.indexUrl)?replace("/", "%2F")}">${label}</a>
+        <a class="search-optimise" href="/a/#/${s.result.collection}:${question.profile}/analyse/seo-auditor/${response.resultPacket.query?url}/${urlEncodeFragment(s.result.indexUrl)?replace("/", "%252F")}">${label}</a>
     </@AdminUIOnly>
 </#macro>
 
