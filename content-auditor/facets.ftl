@@ -75,7 +75,7 @@
 
 							<#if (catRowNum > 0) >
 
-							<table id="chart-attr-${facet_counter}" data-attribute="${s.facet.name}" class="page-attr table table-striped" data-rows="${catRowNum}" <#if facet_counter == 0>data-toggle="table"</#if> data-height="100">
+							<table id="chart-attr-${facet_counter}" data-attribute="${s.facet.name}" class="table table-striped table-responsive page-attr" data-rows="${catRowNum}" <#if facet_counter == 0>data-toggle="table"</#if> data-height="100">
 								<thead>
 									<tr>
 										<th>Value</th>
