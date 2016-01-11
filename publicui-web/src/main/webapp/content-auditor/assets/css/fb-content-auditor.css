@@ -220,7 +220,7 @@ h2:before {
 
 h1,h2,h3,h4,h5,h6,.tab-summary,.btn,.navbar-side,.search-form label {
     font-weight: 400;
-    font-family: MuseoSans;
+    font-family: MuseoSans, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 h2,h3,h4,h5,h6,.tabbable > .nav a,.tab-summary,.nav-stacked > li {
@@ -760,7 +760,7 @@ header .nav,header li a {
     margin: 0 10px;
     padding: 12px 0;
     color: #666;
-    font: 15px/1.42857 MuseoSans;
+    font-size: 15px/1.42857; font-family: MuseoSans, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .nav-tabs > li > a:hover {
@@ -868,14 +868,21 @@ table tr:hover td:first-child a,table tr:hover td:first-child a strong {
 .table-striped > tbody > tr:nth-child(2n+1) {
     background: #fcfcfc;
 }
-
-.table-striped > tbody > tr:hover {
-    background: #f4f4f4;
+#duplicates > tbody > tr:hover > td:first-child {
+    -webkit-box-shadow: 4px 0 0 #F59F9F inset;
+    -moz-box-shadow: 4px 0 0 #F59F9F inset;
+    box-shadow: 4px 0 0 #F59F9F inset;
+    cursor: pointer;
+}
+.table-striped > tbody > tr:hover > td:first-child {
     -webkit-box-shadow: 4px 0 0 #e42b12 inset;
     -moz-box-shadow: 4px 0 0 #e42b12 inset;
     box-shadow: 4px 0 0 #e42b12 inset;
 }
 
+.table-striped > tbody > tr:hover {
+    background: #f4f4f4;
+}
 .table-striped > thead > tr > th {
     padding-left: 15px !important;
     padding-right: 15px !important;
@@ -924,12 +931,7 @@ table tbody tr:hover .table-hidden {
     color: #da2822 !important;
 }
 
-#duplicates > tbody > tr:hover {
-    -webkit-box-shadow: 4px 0 0 #F59F9F inset;
-    -moz-box-shadow: 4px 0 0 #F59F9F inset;
-    box-shadow: 4px 0 0 #F59F9F inset;
-    cursor: pointer;
-}
+
 
 #duplicates .clickable-link:hover {
     color: #000 !important;
@@ -2450,4 +2452,11 @@ html.chrome .facets {
 .break-word{
     word-break:break-all;
     
+}
+
+
+/* IE10 Fixes */
+
+html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand{ 
+    background-position: 0 0; 
 }
