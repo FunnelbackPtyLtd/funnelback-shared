@@ -2455,6 +2455,6 @@ html.chrome .facets {
 
 /* IE10 Fixes */
 
-html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand{ 
+html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-useragent*='MSIE 11.0'] .navbar-inverse .navbar-brand{ 
     background-position: 0 0; 
 }
