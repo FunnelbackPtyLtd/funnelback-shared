@@ -36,6 +36,8 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DefaultPadreForkingLockTests {
 
+    private static final File LOCK_FILE = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
+    
     @Autowired
     private I18n i18n;
     
@@ -49,6 +51,9 @@ public class DefaultPadreForkingLockTests {
     
     @Before
     public void before() {
+        LOCK_FILE.delete();
+        Assert.assertFalse(LOCK_FILE.exists());
+        
         forking = new DefaultPadreForking();
         forking.setI18n(i18n);
         forking.setPadreXmlParser(new StaxStreamParser());
@@ -62,10 +67,6 @@ public class DefaultPadreForkingLockTests {
      */
     @Test
     public void testLockTwoSearches() throws Exception {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
-        lockFile.delete();
-        Assert.assertFalse(lockFile.exists());
-        
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2"}));
         
@@ -129,14 +130,12 @@ public class DefaultPadreForkingLockTests {
         assertResults(st);
         assertResults(st2);
         
-        Assert.assertTrue(lockFile.exists());
-        ensureLockReleased(lockFile);        
+        Assert.assertTrue(LOCK_FILE.exists());
+        ensureLockReleased(LOCK_FILE);        
     }
 
     @Test
     public void testLockCreated() throws DataFetchException, EnvironmentVariableException, IOException {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
-        
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{
                 "src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
@@ -150,14 +149,12 @@ public class DefaultPadreForkingLockTests {
         forking.fetchData(st);
         assertResults(st);
         
-        Assert.assertTrue(lockFile.exists());
-        ensureLockReleased(lockFile);
+        Assert.assertTrue(LOCK_FILE.exists());
+        ensureLockReleased(LOCK_FILE);
     }
 
     @Test
     public void testLockWaits() throws Exception {
-        File lockFile = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
-        
         String qp = "mock-padre-wait.sh";
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
             new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2"}));
@@ -175,7 +172,7 @@ public class DefaultPadreForkingLockTests {
                 new String[]{
                     "/NoLogo",
                     new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath(),
-                    "2",
+                    "5",
                     new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath()}));
 
         }
@@ -204,7 +201,7 @@ public class DefaultPadreForkingLockTests {
         // Wait a bit so the main search acquire the lock
         Thread.sleep(100);
 
-        RandomAccessFile raf = new RandomAccessFile(lockFile, "rw");
+        RandomAccessFile raf = new RandomAccessFile(LOCK_FILE, "rw");
         FileChannel channel = raf.getChannel();
         FileLock fl = null;
         try {
@@ -222,8 +219,8 @@ public class DefaultPadreForkingLockTests {
         }
         
         assertResults(st);
-        Assert.assertTrue(lockFile.exists());
-        ensureLockReleased(lockFile);        
+        Assert.assertTrue(LOCK_FILE.exists());
+        ensureLockReleased(LOCK_FILE);        
     }
 
     private void assertResults(SearchTransaction st) throws IOException {
