@@ -67,7 +67,7 @@ public class JavaPadreForker implements PadreForker {
             }
             ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toString(), padreError.toString());
             if(!er.getErr().trim().isEmpty()) {
-                log.warn("PADRE printed the following to STDERR: " + er.getErr() + getExecutionDetails(padreCmdLine, environment));
+                log.debug("PADRE printed the following to STDERR: " + er.getErr() + getExecutionDetails(padreCmdLine, environment));
             }
             return er;
         } catch (ExecuteException ee) {
