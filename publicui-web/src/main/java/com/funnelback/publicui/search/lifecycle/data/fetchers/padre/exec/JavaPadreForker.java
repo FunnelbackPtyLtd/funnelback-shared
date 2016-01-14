@@ -2,11 +2,9 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
@@ -15,6 +13,9 @@ import org.apache.commons.exec.PumpStreamHandler;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.ExecutionReturn;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Forks PADRE using Java API (Apache Commons Exec)
@@ -62,11 +63,11 @@ public class JavaPadreForker implements PadreForker {
         try {
             int rc = executor.execute(padreCmdLine, environment);
             if (rc != 0) {
-                log.debug("PADRE returned a non-zero exit code: " + rc);
+                log.debug("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
             }
             ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toString(), padreError.toString());
             if(!er.getErr().trim().isEmpty()) {
-                log.warn("PADRE printed the following to STDERR: " + er.getErr());
+                log.warn("PADRE printed the following to STDERR: " + er.getErr() + getExecutionDetails(padreCmdLine, environment));
             }
             return er;
         } catch (ExecuteException ee) {
@@ -76,9 +77,20 @@ public class JavaPadreForker implements PadreForker {
         } finally {
             if (watchdog.killedProcess()) {
                 log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
-                        + " Command line was '"+padreCmdLine.toString()+"', environment was '"+environment.toString());
+                    + getExecutionDetails(padreCmdLine, environment));
             }
         }
+    }
+    
+    /**
+     * Get details about the PADRE execution environment as a string
+     * @param cmdLine PADRE command line
+     * @param environment Environment map
+     * @return String containing the command line and the details of the environment map
+     */
+    private String getExecutionDetails(CommandLine cmdLine, Map<String, String> environment) {
+        return " Command line was: "+cmdLine.toString()
+            + System.getProperty("line.separator") + "Environment was: "+Arrays.asList(environment.entrySet().toArray());
     }
 
 }
