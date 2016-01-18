@@ -10,18 +10,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j2;
+
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.common.testutils.TmpFolderProvider;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.DefaultPadreForking;
@@ -34,9 +39,12 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
+@Log4j2
 public class DefaultPadreForkingLockTests {
 
     private static final File LOCK_FILE = new File("src/test/resources/dummy-search_home/data/padre-forking/live/idx_update.lock");
+    
+    @Rule public TestName testName = new TestName();
     
     @Autowired
     private I18n i18n;
@@ -153,11 +161,16 @@ public class DefaultPadreForkingLockTests {
         ensureLockReleased(LOCK_FILE);
     }
 
-    @Test
+    
+
+    @Test(timeout=4000)//mock padre sleeps for 2s
     public void testLockWaits() throws Exception {
         String qp = "mock-padre-wait.sh";
+        File tmpDir = TmpFolderProvider.getTmpDir(getClass(), testName);
+        File programRunningFile = new File(tmpDir, "started");
+        
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2"}));
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2", programRunningFile.getAbsolutePath()}));
         
         if (OS.isFamilyWindows()) {
             // Can't sleep/wait in a batch script except when using PING or TIMEOUT,
@@ -198,8 +211,9 @@ public class DefaultPadreForkingLockTests {
         };
         t.start();
         
-        // Wait a bit so the main search acquire the lock
-        Thread.sleep(100);
+        while(!programRunningFile.exists()) {
+            Thread.sleep(10);
+        }
 
         RandomAccessFile raf = new RandomAccessFile(LOCK_FILE, "rw");
         FileChannel channel = raf.getChannel();
