@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ "$#" -eq 3 ]; then
+if [ "$#" -gt 2 ]; then
 	echo "started" >> $3
 fi
 sleep $2
