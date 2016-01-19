@@ -308,12 +308,12 @@ public class CacheController {
     /**
      * Display an error message is something went wrong
      * @param response HTTP Response, to set the status code to 500
-     * @param e Exception that occured
+     * @param e Exception that occurred
      * @return {@link ModelAndView}
      */
     @ExceptionHandler
     public ModelAndView handleException(HttpServletResponse response, Exception e) {
-        log.error("An error occured while processing a cache request", e);
+        log.error("An error occurred while processing a cache request", e);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.setContentType("text/html");
         return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, "exception", e);

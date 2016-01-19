@@ -80,7 +80,7 @@ public class SearchTransaction {
     /**
      * <p><em>Internal use</em>: Additional {@link SearchQuestion}s to process as extra searches.</p>
      * 
-     * <p>These questions will be submitted in parrallel to the main search.</p>
+     * <p>These questions will be submitted in parallel to the main search.</p>
      */
     @XStreamOmitField
     @Getter private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();

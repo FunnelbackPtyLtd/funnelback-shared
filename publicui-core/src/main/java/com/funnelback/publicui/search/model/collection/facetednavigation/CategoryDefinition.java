@@ -113,7 +113,7 @@ public abstract class CategoryDefinition {
      * 
      * @param value The value to check for.
      * @param extraParams The extra parameter to check for.
-     * @return true if this category definiton matches, false otherwise.
+     * @return true if this category definition matches, false otherwise.
      */
     public abstract boolean matches(String value, String extraParams);
     

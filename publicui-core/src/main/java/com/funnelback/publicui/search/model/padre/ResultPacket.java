@@ -98,7 +98,7 @@ public class ResultPacket {
     /** List of tier bars */
     @Getter final private List<TierBar> tierBars = new ArrayList<TierBar>();
     
-    /** Error occured during the search, if any. */
+    /** Error occurred during the search, if any. */
     @Getter @Setter private Error error;
     
     /** Time spent by PADRE processing the query, in milliseconds */
