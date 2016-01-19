@@ -39,7 +39,7 @@ public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler
     
     @Override
     public void handleTemplateException(TemplateException te, Environment env, Writer out) throws TemplateException {
-        log.error("An error occured while processing a template", te);
+        log.error("An error occurred while processing a template", te);
         
         // Try to get the source collection config
         TemplateHashModel model = env.getDataModel();

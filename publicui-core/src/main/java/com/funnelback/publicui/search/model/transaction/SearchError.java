@@ -40,7 +40,7 @@ public class SearchError {
     @Getter    private final Reason reason;
     
     /**
-     * The original {@link Exception} that occured,
+     * The original {@link Exception} that occurred,
      * if available.
      */
     @Getter @Setter private Exception additionalData;
