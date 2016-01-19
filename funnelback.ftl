@@ -310,7 +310,7 @@
 
     @param defaultMessage Default message to use if there's no detailed error message.
 -->
-<#macro ErrorMessage defaultMessage="An unkown error has occured. Please try again">
+<#macro ErrorMessage defaultMessage="An unknown error has occurred. Please try again">
     <#-- PADRE error -->
     <#if response?exists && response.resultPacket?exists
         && response.resultPacket.error?exists>
