@@ -185,8 +185,9 @@ public class DefaultPadreForkingLockTests {
                 new String[]{
                     "/NoLogo",
                     new File(searchHome, "bin/mock-padre-wait.vbs").getAbsolutePath(),
-                    "5",
-                    new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath()}));
+                    "2",
+                    new File(searchHome, "conf/padre-forking/mock-packet.xml").getAbsolutePath(),
+                    programRunningFile.getAbsolutePath()}));
 
         }
 
