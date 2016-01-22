@@ -3,9 +3,13 @@ package com.funnelback.publicui.search.web.controllers;
 import groovy.lang.Script;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +26,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.validation.DataBinder;
@@ -154,7 +159,9 @@ public class CacheController {
                     }
                     
                     if (rmd.record instanceof RawBytesRecord || rmd.record instanceof StringRecord) {
-                        String content = getContent(rmd.record);
+                        String charset = getCharset(rmd.metadata);
+                        
+                        String content = getContent(rmd.record, charset);
                         
                         Map<String, Object> model = new HashMap<String, Object>();
                         model.put(RequestParameters.Cache.URL, question.getUrl());
@@ -165,7 +172,8 @@ public class CacheController {
                         model.put(MODEL_METADATA, rmd.metadata);
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
-                        String charset = getCharset(rmd.metadata);
+                        
+                        charset = "iso-8859-15";
                         model.put(MODEL_DOCUMENT, Jsoup.parse(content, charset));
                         
                         String view = DefaultValues.FOLDER_CONF
@@ -221,12 +229,45 @@ public class CacheController {
      * @param headers List of headers for the content, from the store
      * @return The charset for the document, defaulting to UTF-8 is not found
      */
-    private String getCharset(Map<String, String> headers) {
+    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+    public String getCharset(Map<String, String> headers) {
         if (headers.containsKey(Store.Header.Charset.toString())) {
             return headers.get(Store.Header.Charset.toString());
-        } else {
-            return DEFAULT_CHARSET;
         }
+        
+        Optional<String> contentTypeValue = getContentTypeFromHeaders(headers);
+        if(contentTypeValue.isPresent()) {
+            Matcher m = charsetPattern.matcher(contentTypeValue.get());
+            if (m.find()) {
+              return m.group(1).trim();
+            }
+        }
+        return DEFAULT_CHARSET;
+    }
+    
+    /**
+     * Gets the Content-Type http header value from the headers.
+     * 
+     * <p>This deals with the case the http headers are case insensitive</p>
+     * @param headers
+     * @return
+     */
+    private Optional<String> getContentTypeFromHeaders(Map<String, String> headers) {
+        String value = headers.get(HttpHeaders.CONTENT_TYPE);
+        if(value != null) return Optional.of(value);
+        
+        final String contentTypeLower = HttpHeaders.CONTENT_TYPE.toLowerCase();
+        
+        value = headers.get(contentTypeLower);
+        if(value != null) return Optional.of(value);
+        
+        
+        for(Map.Entry<String, String> h : headers.entrySet()) {
+            if(contentTypeLower.equals(h.getKey().toLowerCase())) {
+                return Optional.of(h.getValue());
+            }
+        }
+        return Optional.empty();
     }
     
     /**
@@ -235,9 +276,14 @@ public class CacheController {
      * @param r The record to get the content from
      * @return The content as a String
      */
-    private String getContent(Record<?> r) {
+    public String getContent(Record<?> r, String charset) {
         if (r instanceof RawBytesRecord) {
-            return new String(((RawBytesRecord) r).getContent());
+            try {
+                return new String(((RawBytesRecord) r).getContent(), charset);
+            } catch (UnsupportedEncodingException e) {
+                log.warn("Unsuppported charset encountered using default charset");
+                return new String(((RawBytesRecord) r).getContent());
+            }
         } else if (r instanceof StringRecord) {
             return ((StringRecord) r).getContent();
         } else {
