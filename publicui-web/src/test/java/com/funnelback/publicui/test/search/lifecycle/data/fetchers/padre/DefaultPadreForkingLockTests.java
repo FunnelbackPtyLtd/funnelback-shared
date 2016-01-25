@@ -60,7 +60,7 @@ public class DefaultPadreForkingLockTests {
     @Before
     public void before() {
         LOCK_FILE.delete();
-        Assert.assertFalse(LOCK_FILE.exists());
+        Assert.assertFalse("Lock file '"+LOCK_FILE.getAbsolutePath()+"' should have been delete", LOCK_FILE.exists());
         
         forking = new DefaultPadreForking();
         forking.setI18n(i18n);
@@ -163,7 +163,7 @@ public class DefaultPadreForkingLockTests {
 
     
 
-    @Test(timeout=4000)//mock padre sleeps for 2s
+    @Test(timeout=8000)//mock padre sleeps for 2s
     public void testLockWaits() throws Exception {
         String qp = "mock-padre-wait.sh";
         File tmpDir = TmpFolderProvider.getTmpDir(getClass(), testName);
