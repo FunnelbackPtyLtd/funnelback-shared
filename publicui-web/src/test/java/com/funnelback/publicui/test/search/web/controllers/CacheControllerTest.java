@@ -87,10 +87,19 @@ public class CacheControllerTest {
         
         Assert.assertEquals("When a bad charset is detected we should use the default charset", NON_ASCII_STRING, res);
     }
-    
+    //
     
     @Test
-    public void cacheTestComplexCharset() throws Exception {
+    public void cacheTestCharsetIso_8859_15() throws Exception {
+        cacheTestACharset("iso-8859-15");
+    }
+    
+    @Test
+    public void cacheTestCharsetUTF_8() throws Exception {
+        cacheTestACharset("utf-8");
+    }
+    
+    private void cacheTestACharset(String charset) throws Exception {
         CacheQuestion question = mock(CacheQuestion.class);
         when(question.getUrl()).thenReturn("http://coal.ila/");
         
@@ -103,9 +112,9 @@ public class CacheControllerTest {
         DataRepository dataRepository = mock(DataRepository.class);
         
         Map<String, String> m = new HashMap<>();
-        m.put("content-type", "charset=\"iso-8859-15\"");
+        m.put("content-type", "charset=\"" + charset + "\"");
         
-        RawBytesRecord r = new RawBytesRecord(SIMPLE_NON_ASCII_STRING.getBytes("iso-8859-15"), "key");
+        RawBytesRecord r = new RawBytesRecord(SIMPLE_NON_ASCII_STRING.getBytes(charset), "key");
         RecordAndMetadata<RawBytesRecord> ram = new RecordAndMetadata<RawBytesRecord>(r, m);
         
         when(dataRepository.getCachedDocument(collection, StoreView.live, question.getUrl())).thenReturn((RecordAndMetadata) ram);

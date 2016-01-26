@@ -173,7 +173,6 @@ public class CacheController {
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
                         
-                        charset = "iso-8859-15";
                         model.put(MODEL_DOCUMENT, Jsoup.parse(content, charset));
                         
                         String view = DefaultValues.FOLDER_CONF
@@ -253,15 +252,18 @@ public class CacheController {
      * @return
      */
     private Optional<String> getContentTypeFromHeaders(Map<String, String> headers) {
+        //Try standard case Content-Type
         String value = headers.get(HttpHeaders.CONTENT_TYPE);
         if(value != null) return Optional.of(value);
         
         final String contentTypeLower = HttpHeaders.CONTENT_TYPE.toLowerCase();
         
+        //Try lower case content-type
         value = headers.get(contentTypeLower);
         if(value != null) return Optional.of(value);
         
-        
+        //Look for headers where the case is messed up for example:
+        //Content-type, CONTENT-TYPE, etc
         for(Map.Entry<String, String> h : headers.entrySet()) {
             if(contentTypeLower.equals(h.getKey().toLowerCase())) {
                 return Optional.of(h.getValue());
