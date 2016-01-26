@@ -64,7 +64,7 @@ jQuery.fn.fbhighlight = function(options) {
             scrolled = 0;
         }
 
-        jQuery('body').animate({
+        jQuery('body', 'html').animate({
             scrollTop: jQuery('body .'+settings.className+':eq('+scrolled+')').offset().top
         }, 250);
     });
@@ -77,7 +77,7 @@ jQuery.fn.fbhighlight = function(options) {
             scrolled = maxScrolled;
         }
 
-        jQuery('body').animate({
+        jQuery('body', 'html').animate({
             scrollTop: jQuery('body .'+settings.className+':eq('+scrolled+')').offset().top
         }, 250);
     });
