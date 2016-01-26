@@ -283,7 +283,7 @@ public class CacheController {
             try {
                 return new String(((RawBytesRecord) r).getContent(), charset);
             } catch (UnsupportedEncodingException e) {
-                log.warn("Unsuppported charset encountered using default charset for document: {}", r.getPrimaryKey());
+                log.debug("Unsuppported charset encountered using default charset for document: {}", r.getPrimaryKey());
                 return new String(((RawBytesRecord) r).getContent());
             }
         } else if (r instanceof StringRecord) {
