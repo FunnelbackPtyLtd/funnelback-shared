@@ -35,8 +35,12 @@
     </div>
 
     
-
-    <p> <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${currentCollection}</strong>&nbsp; <small class="text-muted"><em class="fa fa-lg fa-clock-o link" data-toggle="tooltip" data-placement="top" title="${currentCollection} was last updated on ${response.resultPacket.details.collectionUpdated?datetime}"></em></small></p>
+    <p>
+        <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${currentCollection}</strong>
+        <#if question.collection.type! != "meta">
+            &nbsp; <small class="text-muted"><em class="fa fa-lg fa-clock-o link" data-toggle="tooltip" data-placement="top" title="${currentCollection} was last updated on ${response.resultPacket.details.collectionUpdated?datetime}"></em></small>
+        </#if>
+    </p>
 
     <p><span class="data-total-doc-count" data-value="<#if response.resultPacket.resultsSummary.totalMatching != 0>${response.resultPacket.resultsSummary.totalMatching?string.number?replace(',','')}<#else>0</#if>"></p>
 	
