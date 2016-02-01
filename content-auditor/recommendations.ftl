@@ -378,7 +378,7 @@
                                     "fillColorsField": "colour",
                                     "lineColors": "colour",
                                     "pathToImages": "content-auditor/assets/img/amcharts/",
-                                    "balloonText": "<b>[[count]]</b> pages take between <b>[[category]]</b> seconds to load. <br> This is considered: <b> [[description]] </b>" 
+                                    "balloonText": "<b>[[count]]</b> page(s) take between <b>[[category]]</b> seconds to load. <br> This is considered: <b> [[description]] </b>" 
                               }],
                                     "valueAxes": [{
                                         "axisAlpha": 1,
