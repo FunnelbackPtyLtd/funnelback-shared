@@ -883,9 +883,8 @@ table tr:hover td:first-child a,table tr:hover td:first-child a strong {
 .table-striped > tbody > tr:hover {
     background: #f4f4f4;
 }
-.table-striped > thead > tr > th {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+.table-striped > thead > tr > th:first-child {
+    padding-left: 25px !important;
 }
 
 .table > tbody > tr:hover > td {
@@ -1330,7 +1329,7 @@ footer a,footer a:focus,footer a:hover {
 }
 
 .pagination > li > a:hover {
-    color: #f80;
+    color: #e42b12;
 }
 
 .pagination > .active > a,.pagination > .active > span,.pagination > .active > a:hover,.pagination > .active > span:hover,.pagination > .active > a:focus,.pagination > .active > span:focus {
@@ -1387,7 +1386,7 @@ footer a,footer a:focus,footer a:hover {
 }
 
 .modal-content #anchors-pane .table-row-clickable tbody tr:hover a {
-    color: #f80;
+    color: #e42b12;
 }
 
 .modal-content #anchors-pane table tfoot {
