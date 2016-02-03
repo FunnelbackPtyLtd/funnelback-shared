@@ -581,7 +581,7 @@
         <#if labels[s.result.collapsed.column]??>
             <#assign text = labels[s.result.collapsed.column] />
         </#if>
-        <a class="search-collapsed" href="?${removeParam(QueryString, ["start_rank"])?html}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
+        <a class="search-collapsed" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])?html}&amp;s=%3F:${s.result.collapsed.signature}&amp;fmo=on&amp;collapsing=off">${text?replace("{0}", s.result.collapsed.count)}</a>
     </#if>
 </#macro>
 

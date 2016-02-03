@@ -455,7 +455,7 @@
                                 <#if s.result.collapsed??>
                                   <tr>
                                     <td class="text-center">
-                                      <a class="text-muted duplicates-count" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
+                                      <a class="text-muted duplicates-count" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
                                         <div class="badge badge-danger"> x <strong>${s.result.collapsed.count + 1}</strong>
                                                         </div>
                                     </td>
@@ -467,11 +467,11 @@
                                     </td>
                                     <td>
                                       <div class="pull-left">
-                                        <a href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
+                                        <a href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
                                         <span class="fa fa-open"></span>
                                         <br>
                                         <!-- SITE (Z) -->
-                                        <a class="text-muted break-word" href="?${QueryString}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}
+                                        <a class="text-muted break-word" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}
                                         </a>
                                       </div>
                                     </td>

@@ -103,7 +103,7 @@ Displays all the currently applied facets
             </#if>
         </#list>
     </#if>
-  <${tag?html}><a href="${link}?${urlDecode(removeParam(facetScopeRemove(QueryString, key),["start_rank"]))?replace(key+"="+value,"")?replace("&+","&","r")?replace("&$","","r")?html}${urlHash}" title="Remove refinement - ${facetName?html}: ${valueLabel?html}" class="${class?html}"><#if !group>${facetName?html}: </#if>${valueLabel?html} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
+  <${tag?html}><a href="${link}?${urlDecode(removeParam(facetScopeRemove(QueryString, key),["start_rank","duplicate_start_rank"]))?replace(key+"="+value,"")?replace("&+","&","r")?replace("&$","","r")?html}${urlHash}" title="Remove refinement - ${facetName?html}: ${valueLabel?html}" class="${class?html}"><#if !group>${facetName?html}: </#if>${valueLabel?html} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
   </#list>
 
         <#if group>
@@ -123,7 +123,7 @@ Displays all the currently applied facets
   </#if>
 
   <#-- And lastly, one for the duplicate_signature -->
-  <${tag?html}><a href="${link}?${urlDecode(removeParam(QueryString,["duplicate_signature","start_rank"]))?html}${urlHash}" title="Remove duplicate constraint" class="${class?html}">${question.inputParameterMap["duplicate_signature"]} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
+  <${tag?html}><a href="${link}?${urlDecode(removeParam(QueryString,["duplicate_signature","start_rank","duplicate_start_rank"]))?html}${urlHash}" title="Remove duplicate constraint" class="${class?html}">${question.inputParameterMap["duplicate_signature"]} <span class="glyphicon glyphicon-remove-circle"></span></a></${tag?html}>
 
   <#if group>
   <#if tag == "li" || tag == "LI">
@@ -143,6 +143,6 @@ Displays a link that, when clicked, clears all the facets.
 -->
 <#macro ClearFacetsLink clearAllText="Clear all filters" class="clearFacetLink" title="Clear all filters" urlHash="" link=question.collection.configuration.value("ui.modern.search_link")>
 <#if question.selectedCategoryValues?has_content || question.inputParameterMap["duplicate_signature"]??>
-<a href="${link}?${removeParam(QueryString,question.selectedCategoryValues?keys + ["start_rank","facetScope","duplicate_signature"])?html}${urlHash}" title="${title}" class="${class}">${clearAllText?html} <span class="glyphicon glyphicon-remove-circle"></span></a>
+<a href="${link}?${removeParam(QueryString,question.selectedCategoryValues?keys + ["start_rank","duplicate_start_rank","facetScope","duplicate_signature"])?html}${urlHash}" title="${title}" class="${class}">${clearAllText?html} <span class="glyphicon glyphicon-remove-circle"></span></a>
 </#if>
 </#macro>

@@ -509,7 +509,7 @@
 </#macro>
 
 <#function FacetAllUrl facetDef link=question.collection.configuration.value("ui.modern.search_link")>
-    <#return link + "?" + removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank"] + facetDef.allQueryStringParamNames) />
+    <#return link + "?" + removeParam(facetScopeRemove(QueryString, facetDef.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + facetDef.allQueryStringParamNames) />
 </#function>
 
 <#---
@@ -558,7 +558,7 @@
                     <#-- part needs to be url-decoded to be displayed nicely
                          e.g. "with spaces" rather than "with%20spaces" -->
                     <#if part_has_next>
-                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName?url}=${pathBuilding?url}">${urlDecode(part)?html}</a>
+                        ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName?url}=${pathBuilding?url}">${urlDecode(part)?html}</a>
                     <#else>
                         ${separator} ${urlDecode(part)?html}
                     </#if>
@@ -603,7 +603,7 @@
                 <#if last == true>
                     ${separator} ${valueLabel?html}
                 <#else>
-                    ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
+                    ${separator} <a href="${question.collection.configuration.value("ui.modern.search_link")}?${removeParam(facetScopeRemove(QueryString, def.allQueryStringParamNames), ["start_rank","duplicate_start_rank"] + def.allQueryStringParamNames)?html}&amp;${def.queryStringParamName}=${selectedCategoryValues[def.queryStringParamName][0]?url}">
                         ${valueLabel?html}
                     </a>
                     <@FacetBreadCrumb categoryDefinitions=def.subCategories selectedCategoryValues=selectedCategoryValues separator=separator/>
@@ -646,7 +646,7 @@
 -->
 <#function CategoryUrl link=question.collection.configuration.value("ui.modern.search_link") extraParams=""><#compress>
     <#assign paramName = .namespace.categoryValue.queryStringParam?split("=")[0]>
-    <#return link + "?" + removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", paramName]) + "&" + .namespace.categoryValue.queryStringParam + extraParams />
+    <#return link + "?" + removeParam(facetScopeRemove(QueryString, paramName), ["start_rank", "duplicate_start_rank", paramName]) + "&" + .namespace.categoryValue.queryStringParam + extraParams />
 </#compress></#function>
 
 <#---
