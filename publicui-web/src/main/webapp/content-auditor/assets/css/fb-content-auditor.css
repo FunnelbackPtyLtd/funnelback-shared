@@ -1657,22 +1657,59 @@ footer a,footer a:focus,footer a:hover {
     margin-right: 15px;
 }
 
-.uri-selector > span,#uri-selector > div {
+.uri-selector > span, #uri-selector > div {
     float: left;
     display: block;
 }
 
 .uri-selector .dropdown {
     margin-left: 30px;
+    white-space: pre;
+    line-height:0;
 }
 
 .uri-selector .dropdown .facet li,.recommendations .category {
     display: block;
-    padding: 3px 17px;
+    padding: 0;
     width: 100%;
     font-weight: 700;
+    line-height:0;
+}
+.uri-selector .facet{
+    display:block;
+}
+.uri-selector .facet li{
+}
+.uri-selector .dropdown-menu{ 
+    
+}
+.uri-selector .categoryCount {
+    float: none !important;
+}
+.recommendations .category{ 
+    white-space:pre;
 }
 
+.uri-selector .dropdown  .category > span, .uri-selector .dropdown .category > small {
+    display:inline;
+    float: left;
+}
+.uri-selector .dropdown  .category > span{
+    margin-left: -25px;
+}
+.uri-selector .dropdown .facet li {
+    padding-bottom: 10px;
+    padding-right: 50px;
+    padding-top: 11px;
+}
+.uri-selector .facet{
+    width:100%;
+}
+.uri-selector .dropdown .category > small {
+    color: #bbb;
+    margin: 0 -38px 0 0;
+    float:right;
+}    
 .uri-selector .dropdown .facet li:hover {
     background: #eee;
     box-shadow: 4px 0 0 #e42b12 inset;
