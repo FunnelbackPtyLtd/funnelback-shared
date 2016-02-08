@@ -37,7 +37,7 @@ public class QueryRegularExpressionTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
-        String query = searchTransaction.getQuestion().getQuery();
+        String query = Trigger.queryToMatchAgainst(searchTransaction);
         try {
             return Pattern.compile(triggerPattern).matcher(query).find();
         } catch (PatternSyntaxException e) {

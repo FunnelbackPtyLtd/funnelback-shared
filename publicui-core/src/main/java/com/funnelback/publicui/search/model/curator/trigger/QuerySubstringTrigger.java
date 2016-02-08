@@ -41,7 +41,7 @@ public class QuerySubstringTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
-        String query = searchTransaction.getQuestion().getQuery().toLowerCase();
+        String query = Trigger.queryToMatchAgainst(searchTransaction).toLowerCase();
         return query.contains(triggerSubstring.toLowerCase());
     }
 
