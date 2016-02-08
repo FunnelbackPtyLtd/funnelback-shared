@@ -54,7 +54,7 @@ public interface Trigger {
     public static String queryToMatchAgainst(SearchTransaction searchTransaction) {
         // Adrian and I discussed a bit whether each value should me matched individually or
         // if we should join them (in some order) and match across everything. In the end, combining
-        // them seemed like it would be useful sometimes, and wouldn't likely still work for anyone
+        // them seemed like it would be useful sometimes, and would likely still work for anyone
         // assuming the values were matched individually. Using the key sort order because
         // nothing else seems like it would be easy to explain to users. -- Matt
         String queryParameterPatternString = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
