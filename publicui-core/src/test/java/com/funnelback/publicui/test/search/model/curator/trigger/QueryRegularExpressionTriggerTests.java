@@ -76,14 +76,4 @@ public class QueryRegularExpressionTriggerTests {
         question.getInputParameterMap().put("query_sand", "S");
         Assert.assertTrue("Expected to pass because regex matches", qret.activatesOn(st));
     }
-
-//  Needs to move to a CuratorYamlConfigResourceTest
-//    @Test
-//    public void testSerializeAllQueryWordsTrigger() {
-//        QueryRegularExpressionTrigger qret = new QueryRegularExpressionTrigger();
-//        qret.setTriggerPattern("(?i)\\buniqueword\\b");
-//        
-//        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(qret);
-//        Assert.assertTrue("", yaml.contains("uniqueword"));
-//    }
 }

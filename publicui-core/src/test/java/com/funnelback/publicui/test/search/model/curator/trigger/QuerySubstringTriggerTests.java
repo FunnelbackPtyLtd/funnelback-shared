@@ -65,14 +65,4 @@ public class QuerySubstringTriggerTests {
         qst.setTriggerSubstring("second thrid");
         Assert.assertFalse("Expected to pass because substring matches", qst.activatesOn(st));
     }
-
-//  Needs to move to a CuratorYamlConfigResourceTest
-//    @Test
-//    public void testSerializeQuerySubstringTrigger() {
-//        QuerySubstringTrigger qst = new QuerySubstringTrigger();
-//        qst.setTriggerSubstring("uniqueword");
-//        
-//        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(qst);
-//        Assert.assertTrue("", yaml.contains("uniqueword"));
-//    }
 }

@@ -74,14 +74,4 @@ public class ExactQueryTriggerTests {
         question.getInputParameterMap().put("b_query", "B c");
         Assert.assertTrue("Expected to pass because query should match after concatenation", eqt.activatesOn(st));
     }
-
-//  Needs to move to a CuratorYamlConfigResourceTest
-//    @Test
-//    public void testSerializeExactQueryTrigger() {
-//        ExactQueryTrigger eqt = new ExactQueryTrigger();
-//        eqt.setTriggerQuery("uniquequery");
-//
-//        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(eqt);
-//        Assert.assertTrue("", yaml.contains("uniquequery"));
-//    }
 }

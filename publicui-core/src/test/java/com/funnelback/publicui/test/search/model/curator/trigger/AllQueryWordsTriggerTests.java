@@ -53,13 +53,4 @@ public class AllQueryWordsTriggerTests {
         question.getInputParameterMap().put("query", "b a");
         Assert.assertTrue("Expected to succeed because a and b are present (order doesn't matter)", aqwt.activatesOn(st));
     }
-    
-//  Needs to move to a CuratorYamlConfigResourceTest
-//    @Test
-//    public void testSerializeAllQueryWordsTrigger() {
-//        AllQueryWordsTrigger aqwt = new AllQueryWordsTrigger(Arrays.asList(new String[]{"uniqueword"}));
-//
-//        String yaml = CuratorYamlConfigResource.getYamlObject().dumpAsMap(aqwt);
-//        Assert.assertTrue("", yaml.contains("uniqueword"));
-//    }
 }
