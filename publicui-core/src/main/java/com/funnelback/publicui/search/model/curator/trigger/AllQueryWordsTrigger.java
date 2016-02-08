@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.Trigger;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -51,7 +53,7 @@ public class AllQueryWordsTrigger implements Trigger {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
         Set<String> queryWords = new HashSet<String>();
-        queryWords.addAll(Arrays.asList(searchTransaction.getQuestion().getQuery().toLowerCase().split("\\b")));
+        queryWords.addAll(Arrays.asList(Trigger.queryToMatchAgainst(searchTransaction).toLowerCase().split("\\b")));
         
         List<String> lowercasedTriggerWords = new ArrayList<String>();
         for (String triggerWord : triggerWords) {

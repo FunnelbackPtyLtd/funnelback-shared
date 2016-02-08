@@ -50,7 +50,7 @@ public class ExactQueryTrigger implements Trigger {
      */
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
-        String query = searchTransaction.getQuestion().getQuery();
+        String query = Trigger.queryToMatchAgainst(searchTransaction);
         if (ignoreCase) {
             return query.equalsIgnoreCase(triggerQuery);
         } else {
