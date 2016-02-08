@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.curator.trigger.AllQueryWordsTrigger;
@@ -24,33 +25,35 @@ public class AllQueryWordsTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^query$");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);
         
-        question.getInputParameterMap().put("query", "a c");
+        question.setQuery("a c");
         Assert.assertFalse("Expected to fail because b is missing", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "b c");
+        question.setQuery("b c");
         Assert.assertFalse("Expected to fail because a is missing", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "ab");
+        question.setQuery("ab");
         Assert.assertFalse("Expected to fail because a and b are missing (as unique words)", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "a b");
+        question.setQuery("a b");
         Assert.assertTrue("Expected to succeed because a and b are present", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "a b c");
+        question.setQuery("a b c");
         Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
         
-        question.getInputParameterMap().put("query", "c a b");
+        question.setQuery("c a b");
         Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "c a b d");
+        question.setQuery("c a b d");
         Assert.assertTrue("Expected to succeed because a and b are present (other words don't matter)", aqwt.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "b a");
+        question.setQuery("b a");
         Assert.assertTrue("Expected to succeed because a and b are present (order doesn't matter)", aqwt.activatesOn(st));
     }
 }

@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
@@ -70,10 +72,24 @@ public interface Trigger {
             return "";
         }
         
-        return searchTransaction.getQuestion().getInputParameterMap().keySet().stream()
+        Set<String> keys = new HashSet<>();
+        keys.addAll(searchTransaction.getQuestion().getInputParameterMap().keySet());
+        keys.add("query"); // Ensure query is always included in case it was added by a hook script
+        
+        return keys.stream()
             .filter(k -> p.matcher(k).matches())
             .sorted()
-            .map(k -> searchTransaction.getQuestion().getInputParameterMap().get(k))
+            .map(k -> {
+                if (k.equals("query")) {
+                    if (searchTransaction.getQuestion().getQuery() != null) {
+                        return searchTransaction.getQuestion().getQuery(); 
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return searchTransaction.getQuestion().getInputParameterMap().get(k);
+                }
+            })
             .collect(Collectors.joining(" "));
     }
 }
