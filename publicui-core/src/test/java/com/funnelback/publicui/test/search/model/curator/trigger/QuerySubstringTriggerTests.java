@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.curator.trigger.QuerySubstringTrigger;
@@ -22,20 +23,22 @@ public class QuerySubstringTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^query$");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);
         
         qst.setTriggerSubstring("bar");
 
-        question.getInputParameterMap().put("query", "foo");
+        question.setQuery("foo");
         Assert.assertFalse("Expected to fail because substring doesn't match", qst.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "bar");
+        question.setQuery("bar");
         Assert.assertTrue("Expected to pass because substring matches whole query", qst.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "foo bar foo");
+        question.setQuery("foo bar foo");
         Assert.assertTrue("Expected to pass because substring matches as a substring", qst.activatesOn(st));
     }
 
@@ -46,7 +49,9 @@ public class QuerySubstringTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^q.*");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn("^q.*");
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);

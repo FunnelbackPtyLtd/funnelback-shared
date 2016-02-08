@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -26,17 +27,19 @@ public class QueryRegularExpressionTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^query$");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);
         
         qret.setTriggerPattern("(?i)\\bFoo\\b");
 
-        question.getInputParameterMap().put("query", "Food");
+        question.setQuery("Food");
         Assert.assertFalse("Expected to fail because regex doesn't match", qret.activatesOn(st));
 
-        question.getInputParameterMap().put("query", "foo");
+        question.setQuery("foo");
         Assert.assertTrue("Expected to pass because regex matches", qret.activatesOn(st));
     }
 
@@ -47,14 +50,16 @@ public class QueryRegularExpressionTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^query$");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);
         
         qret.setTriggerPattern("(?i)\\b(Foo\\b");
 
-        question.getInputParameterMap().put("query", "foo");
+        question.setQuery("foo");
         Assert.assertFalse("Expected to fail because regex is invalid (but should not throw an exception)", qret.activatesOn(st));
     }
 
@@ -65,7 +70,9 @@ public class QueryRegularExpressionTriggerTests {
         SearchQuestion question = new SearchQuestion();
         
         Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN)).thenReturn("^query.*");
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn("^query.*");
         question.setCollection(new Collection("test-collection", config));
         
         SearchTransaction st = new SearchTransaction(question, null);

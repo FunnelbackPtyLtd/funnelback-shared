@@ -51,6 +51,7 @@ public class ExactQueryTrigger implements Trigger {
     @Override
     public boolean activatesOn(SearchTransaction searchTransaction) {
         String query = Trigger.queryToMatchAgainst(searchTransaction);
+        query = query.replaceAll("\\s+", " ").trim(); // Remove any extra whitespace
         if (ignoreCase) {
             return query.equalsIgnoreCase(triggerQuery);
         } else {
