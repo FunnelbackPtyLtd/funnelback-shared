@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -57,14 +58,8 @@ public interface Trigger {
         // them seemed like it would be useful sometimes, and would likely still work for anyone
         // assuming the values were matched individually. Using the key sort order because
         // nothing else seems like it would be easy to explain to users. -- Matt
-        String queryParameterPatternString = searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
-        
-        if (queryParameterPatternString == null) {
-            // @Log4j2 doesn't work on interfaces apparently
-            Logger log = org.apache.logging.log4j.LogManager.getLogger(Trigger.class);
-            log.error(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN + " not set - Curator will not trigger on any query parameters");
-            return "";
-        }
+        String queryParameterPatternString = searchTransaction.getQuestion().getCollection().getConfiguration()
+            .value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
         
         Pattern p;
         try {
