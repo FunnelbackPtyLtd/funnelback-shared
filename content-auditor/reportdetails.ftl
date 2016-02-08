@@ -36,7 +36,7 @@
 
     
     <p>
-        <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${currentCollection}</strong>
+        <span class="text-muted">Collection:</span><strong id="detail-current-collection"> ${question.collection.configuration.value("service_name")!currentCollection}</strong>
         <#if question.collection.type! != "meta">
             &nbsp; <small class="text-muted"><em class="fa fa-lg fa-clock-o link" data-toggle="tooltip" data-placement="top" title="${currentCollection} was last updated on ${response.resultPacket.details.collectionUpdated?datetime}"></em></small>
         </#if>
