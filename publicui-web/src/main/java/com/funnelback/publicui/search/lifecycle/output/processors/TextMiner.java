@@ -40,9 +40,13 @@ public class TextMiner extends AbstractOutputProcessor {
             if (searchTransaction.getQuestion().getCollection().getTextMinerBlacklist().contains(query.toLowerCase())) {
                 log.debug("Blacklisted query: " + query);
             } else {
-                generateDefinition(query, searchTransaction);
-                generateNounPhrases(searchTransaction);
-                generateCustomData(query, searchTransaction);
+                try {
+                    generateDefinition(query, searchTransaction);
+                    generateNounPhrases(searchTransaction);
+                    generateCustomData(query, searchTransaction);
+                } catch (Exception e) {
+                    log.warn("Error while generating text miner data", e);
+                }
             }
         }
     }
