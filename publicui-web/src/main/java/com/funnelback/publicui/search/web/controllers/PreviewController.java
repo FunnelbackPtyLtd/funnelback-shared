@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import lombok.Cleanup;
-
 import org.apache.commons.io.IOUtils;
-import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +21,14 @@ import com.funnelback.publicui.search.service.image.ImageScaler;
 import com.funnelback.publicui.search.service.image.ImageScalerSettings;
 import com.funnelback.publicui.search.service.image.UrlRenderer;
 
+import lombok.Cleanup;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Return a preview image of a given URL.
  */
 @Controller
+@Log4j2
 public class PreviewController {
 
     private static final String DEFAULT_PNG = "/1x1.png";
@@ -73,7 +74,7 @@ public class PreviewController {
             response.getOutputStream().close();
         } else {
             // Something went wrong
-            Log.error("Unable to obtain a preview for '"+url+"'. Please check the application logs");
+            log.error("Unable to obtain a preview for '"+url+"'. Please check the application logs");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("image/png");
             IOUtils.copy(getClass().getResourceAsStream(DEFAULT_PNG), response.getOutputStream());
