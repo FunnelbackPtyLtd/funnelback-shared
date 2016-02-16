@@ -78,7 +78,7 @@
             'alpha'                        : 0.5,
             'program'                      : '/s/redirect',
             'interactionLog'               : '/s/log',
-            'format'                       : 'simple',
+            'format'                       : 'extended',
             'enabled'                      : 'disabled',
             'standardCompletionEnabled'    : true, 
             'logging'                      : 'enabled',
