@@ -39,6 +39,9 @@ function refreshModalContent()
 {
     var modal = $('#modal-overlay .modal-content');
     modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
+    $('html').css({
+        overflow:'hidden'
+        });
 }
 
 function makePreviewIcons()
@@ -274,6 +277,7 @@ jQuery(function()
             setTimeout(function()
             {
                 modal.hide();
+               
             }, 888);
 			
         }).on('click', '.facet-search-details table tbody tr, #duplicates tbody tr', function()
@@ -283,6 +287,10 @@ jQuery(function()
         }).on('click', '#modal-overlay', function()
         {
             $('#modal-overlay').addClass('fade').removeClass('in').hide();
+            $('html').css({
+              overflow:''
+            });
+             
         }).on('click', '.modal-content', function()
         {
             return false;
