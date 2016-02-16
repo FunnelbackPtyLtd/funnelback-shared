@@ -1396,7 +1396,7 @@ footer a,footer a:focus,footer a:hover {
 
 .modal {
     background-color: #666;
-    background: rgba(45,32,26,0.75) url(../img/bg-px.png) repeat;
+    background: rgba(35, 42, 60, 0.75) url(../img/bg-px.png) repeat;
 }
 
 .modal-content {
