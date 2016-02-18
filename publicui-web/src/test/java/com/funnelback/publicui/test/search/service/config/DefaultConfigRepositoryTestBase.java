@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.service.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 import net.sf.ehcache.CacheManager;
 
@@ -30,6 +31,9 @@ public abstract class DefaultConfigRepositoryTestBase {
     @Autowired
     private AutowireCapableBeanFactory autowireCapableBeanFactory;
     
+    /** A counter of when we modify a file so that we always increase the modified time of a file
+     * by at least one second */
+    public static final AtomicLong modifiedTimes = new AtomicLong(0);
 
     /**
      * Create fake SEARCH_HOME in target/
@@ -78,11 +82,11 @@ public abstract class DefaultConfigRepositoryTestBase {
      * Touches a file in the future (current time
      * + 1 second). This is to be able to run tests
      * on filesystems where the time resolution is 1s
-     * like ext3
+     * like ext3 and ext4
      * @param f
      */
     public static void touchFuture(File f) {
-        long ts = System.currentTimeMillis() + 2000;
+        long ts = Math.max(System.currentTimeMillis(), f.lastModified()) + 1000 * modifiedTimes.incrementAndGet();
         f.setLastModified(ts);
     }
     

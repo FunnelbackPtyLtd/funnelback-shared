@@ -34,7 +34,7 @@ public class GlobalConfigResource implements ParseableResource<GlobalOnlyConfig>
     }
     
     @Override
-    public boolean isStale(long timestamp) {
+    public boolean isStale(long timestamp, GlobalOnlyConfig globalOnlyConfig) {
         for (File f: filesToCheck) {
             if (f.lastModified() > timestamp) {
                 log.debug("Stale check for file '"+f.getAbsolutePath()+"' returned true (lastModified="+f.lastModified()+",timestamp="+timestamp+")");

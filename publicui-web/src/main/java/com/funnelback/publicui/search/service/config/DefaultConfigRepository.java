@@ -1,27 +1,21 @@
 package com.funnelback.publicui.search.service.config;
 
-import com.funnelback.common.views.View;
-import com.funnelback.common.config.Collection.Type;
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.ConfigReader;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Files;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.collection.Collection.Hook;
-import com.funnelback.publicui.search.model.collection.Profile;
-import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
-import com.funnelback.publicui.search.model.curator.config.Configurer;
-import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
-import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
-import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.search.service.resource.impl.*;
-import com.funnelback.publicui.utils.MapUtils;
-import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
-import com.funnelback.springmvc.service.resource.ResourceManager;
-import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
-import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
-
 import groovy.lang.Script;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
@@ -35,12 +29,36 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
+import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.ConfigReader;
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Files;
+import com.funnelback.common.views.View;
+import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Collection.Hook;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
+import com.funnelback.publicui.search.model.curator.config.Configurer;
+import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
+import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.GlobalConfigResource;
+import com.funnelback.publicui.search.service.resource.impl.GroovyScriptResource;
+import com.funnelback.publicui.search.service.resource.impl.ParameterTransformResource;
+import com.funnelback.publicui.search.service.resource.impl.SimpleFileResource;
+import com.funnelback.publicui.search.service.resource.impl.UniqueLinesResource;
+import com.funnelback.publicui.utils.MapUtils;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+import com.funnelback.springmvc.service.resource.ResourceManager;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
+import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
@@ -142,7 +160,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             return null;
         }
         
-        Config config = resourceManager.load(new ConfigResource(searchHome, collectionId));
+        Config config = resourceManager.load(new CollectionConfigResource(searchHome, new CollectionId(collectionId)));
         if (config == null) {
             return null;
         }
