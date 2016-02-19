@@ -89,13 +89,13 @@ public class SuggestController extends AbstractRunPadreBinaryController {
     private File searchHome;
     
     @Autowired
-    private Suggester suggester;
+    @Setter private Suggester suggester;
     
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
     
     @Autowired
-    private ExecutionContextHolder executionContextHolder;
+    @Setter private ExecutionContextHolder executionContextHolder;
     
     @Resource(name="suggestViewSimple")
     private View simpleView;
@@ -173,6 +173,11 @@ public class SuggestController extends AbstractRunPadreBinaryController {
                 throw new IllegalArgumentException("Unrecognized format " + format);
             }
             
+            if (callback != null) {
+                // JSONP request: Change the content type to application/javascript
+                // required by JSONP (SUPPORT-2099)
+                response.setContentType("application/javascript");
+            }
             return mav;
         } else {
             // Collection not found
