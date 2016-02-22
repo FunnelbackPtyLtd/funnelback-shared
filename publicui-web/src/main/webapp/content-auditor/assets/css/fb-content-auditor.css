@@ -1793,6 +1793,10 @@ footer a,footer a:focus,footer a:hover {
     margin: .25em 0;
 }
 
+.facet .category {
+    padding: 15px 0 !important;
+}
+
 .facet .col-md-6 {
     width: 100%;
     padding: 0;
