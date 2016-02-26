@@ -2,6 +2,9 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -14,6 +17,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQu
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.Exhibit;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
@@ -67,15 +71,32 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         // Apply click tracking to curator UrlAdvert's, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
             if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                //Curator is shared between all request, we must create a new Curator if we wish to edit any entry.
+                List<Exhibit> exhibits = new ArrayList<>();
                 for (Exhibit exhibit : searchTransaction.getResponse().getCurator().getExhibits()) {
                     if (exhibit instanceof UrlAdvert) {
                         UrlAdvert advert = (UrlAdvert) exhibit;
-                        ((UrlAdvert) exhibit).setLinkUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), advert));
+                        String newLink = buildClickTrackingUrl(searchTransaction.getQuestion(), advert);
+                        //Create a new UrlAdvert as they are shared.
+                        exhibits.add(new UrlAdvert(advert.getTitleHtml(), 
+                                                        advert.getDisplayUrl(), 
+                                                        newLink, 
+                                                        advert.getDescriptionHtml(), 
+                                                        new HashMap<>(advert.getAdditionalProperties()), 
+                                                        advert.getCategory()));
+                    } else {
+                        exhibits.add(exhibit);
                     }
                 }
+                Curator curator = new Curator();
+                curator.setExhibits(exhibits);
+                searchTransaction.getResponse().setCurator(curator);
             }
         }
     }
+    
+    
+    
     
     /**
      * Generates a click tracking URL with all the required parameters for a result.

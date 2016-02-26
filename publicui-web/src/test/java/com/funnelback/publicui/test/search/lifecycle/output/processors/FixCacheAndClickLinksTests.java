@@ -3,10 +3,10 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.SneakyThrows;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -18,6 +18,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -29,18 +30,21 @@ import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
-import lombok.SneakyThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FixCacheAndClickLinksTests {
 
     private static final String CURATOR_ADVERT_LINK = "http://www.link.com";
     private FixCacheAndClickLinks processor;
     
+    private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
+    
     @SneakyThrows
     private SearchTransaction getTestSearchTransaction() {
         SearchQuestion question = new SearchQuestion();
         question.setQuery("livelinks & pumpkins ");
-        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        question.setCollection(new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy")));
         question.setProfile("profile-test");
         question.getRawInputParameters().put("HTTP_REFERER", new String[] {"REFERER"});
         
@@ -112,6 +116,9 @@ public class FixCacheAndClickLinksTests {
     }
 
     public void processAndAssertClickTracking(SearchTransaction st) throws OutputProcessorException, UnsupportedEncodingException {
+        Curator curatorOrig = st.getResponse().getCurator();
+        UrlAdvert urlAdvertOrig = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
+        
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.CLICK_LINK, "CLICK_LINK");
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.SERVER_SECRET, "plop");
@@ -154,6 +161,12 @@ public class FixCacheAndClickLinksTests {
         String advertTrackingUrl = advert.getLinkUrl();
         Assert.assertTrue(advertTrackingUrl.contains("CLICK_LINK?"));
         
+        Assert.assertFalse("The curator object may be shared between requests, we must create a new Curator instance"
+            + " so that we may mess with its elements", curatorOrig == st.getResponse().getCurator());
+        
+        Assert.assertFalse("As UrlAdvert instances are shared between request we must create new UrlAdvert instances"
+            + " rather than modifing the shared ones.", 
+            urlAdvertOrig == st.getResponse().getCurator().getExhibits().get(0));
         qs = QueryStringUtils.toSingleMap(URI.create(advertTrackingUrl).getRawQuery());
         
         Assert.assertEquals(st.getQuestion().getCollection().getId(), qs.get("collection"));
