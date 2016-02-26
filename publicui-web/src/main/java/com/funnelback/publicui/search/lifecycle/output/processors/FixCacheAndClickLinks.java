@@ -2,9 +2,13 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +18,7 @@ import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQu
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
+import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.Exhibit;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
@@ -30,6 +35,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * adding click tracking URLs.
  */
 @Component("fixCacheAndClickLinks")
+@Log4j2
 public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
     @Autowired @Setter
@@ -67,15 +73,28 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         // Apply click tracking to curator UrlAdvert's, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
             if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                List<Exhibit> exhibits = new ArrayList<>();
                 for (Exhibit exhibit : searchTransaction.getResponse().getCurator().getExhibits()) {
                     if (exhibit instanceof UrlAdvert) {
+                        log.fatal("We are looking at advert:" + exhibit.toString() + " " + System.identityHashCode(exhibit));
                         UrlAdvert advert = (UrlAdvert) exhibit;
-                        ((UrlAdvert) exhibit).setLinkUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), advert));
+                        
+                        String newLink = buildClickTrackingUrl(searchTransaction.getQuestion(), advert);
+                        exhibits.add(new UrlAdvert(advert.getTitleHtml(), advert.getDisplayUrl(), newLink, advert.getDescriptionHtml(), new HashMap<>(advert.getAdditionalProperties()), advert.getCategory()));
+                        
+                    } else {
+                        exhibits.add(exhibit);
                     }
                 }
+                Curator curator = new Curator();
+                curator.setExhibits(exhibits);
+                searchTransaction.getResponse().setCurator(curator);
             }
         }
     }
+    
+    
+    
     
     /**
      * Generates a click tracking URL with all the required parameters for a result.
@@ -126,12 +145,19 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      */
     @SneakyThrows(UnsupportedEncodingException.class)
     private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
+        log.fatal("", new Exception("So the exception"));
+        log.fatal("So the url is :" + url);
+        log.fatal("So the index is: " + indexUrl);
+        String authToken = authTokenManager.getToken(url,question.getCollection().getConfiguration().value(Keys.SERVER_SECRET));
+        log.fatal("So the auth token is: " + authToken);
+        String encodedAuthToken = URLEncoder.encode(authToken, "UTF-8");
+        log.fatal("So the encoded auth token is: " + encodedAuthToken);
         StringBuffer out = new StringBuffer()
         .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK))
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
         .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
-        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"));
+        .append("&").append(RequestParameters.Click.AUTH).append("=").append(encodedAuthToken);
 
         if (question.getProfile() != null) {
             out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
