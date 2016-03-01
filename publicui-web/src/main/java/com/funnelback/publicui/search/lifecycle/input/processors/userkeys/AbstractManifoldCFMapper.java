@@ -26,7 +26,7 @@ import com.funnelback.common.system.Security;
 import com.funnelback.common.system.Security.System;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.net.TrustAllCertsX509TrustManager;
+import com.funnelback.common.net.TrustAllCertsX509ExtendedTrustManager;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -45,7 +45,7 @@ public abstract class AbstractManifoldCFMapper implements UserKeysMapper {
     public AbstractManifoldCFMapper() throws NoSuchAlgorithmException, KeyManagementException {
         // Arrange to trust all SSL certificates (because the admin UI usually has a self signed one
         SSLContext sc = SSLContext.getInstance("SSL");
-        TrustManager[] trustAllCerts = new TrustManager[] {new TrustAllCertsX509TrustManager()};
+        TrustManager[] trustAllCerts = new TrustManager[] {new TrustAllCertsX509ExtendedTrustManager()};
         sc.init(null, trustAllCerts, new java.security.SecureRandom());
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
