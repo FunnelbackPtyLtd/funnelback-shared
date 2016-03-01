@@ -18,7 +18,13 @@ import com.funnelback.publicui.xml.XmlStreamUtils;
 @Log4j2
 public class DetailsFactory {
                                                                                     
-    private static final Map<Long, SimpleDateFormat> dateFormatters = new HashMap<Long, SimpleDateFormat>();
+    
+    private static ThreadLocal<SimpleDateFormat> dateFormatters = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat(Details.UPDATED_DATE_PATTERN);
+        }
+    };
     
     public static Details fromMap(Map<String, String> data) {
         Date updated = new Date(0);
@@ -43,11 +49,6 @@ public class DetailsFactory {
     }
     
     private static SimpleDateFormat getDateFormatter() {
-        SimpleDateFormat df = dateFormatters.get(Thread.currentThread().getId());
-        if (df == null) {
-            df = new SimpleDateFormat(Details.UPDATED_DATE_PATTERN);
-            dateFormatters.put(Thread.currentThread().getId(), df);
-        }
-        return df;
+        return dateFormatters.get();
     }
 }
