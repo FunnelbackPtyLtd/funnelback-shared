@@ -1,0 +1,9 @@
+image: funnelback-rnd/base
+
+build:
+    script:
+        - mvn -B -U -Dmaven.test.failure.ignore=false clean package
+    tags:
+        - funnelback-rnd
+        - docker
+
