@@ -68,7 +68,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "true");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
 
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
 
@@ -90,7 +90,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
         
@@ -117,7 +117,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
         when(config.getLogDir(View.live)).thenReturn(clickLogFileDoesntExist);
         Collection c = new Collection(UNKNOWN_COLLECTION, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
 
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL(
                 "http://referrer.com"), 1, new URI("http://example.com/click"),
@@ -139,7 +139,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", new URL("http://referrer.com"), 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, "user-id");
         logService.logClick(cl);
@@ -166,7 +166,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, new URI("http://example.com/click"), ClickLog.Type.CLICK, null);
         logService.logClick(cl);
@@ -185,7 +185,7 @@ public class LocalLogServiceClickTests extends AbstractLocalLogServiceTests {
             .setValue(Keys.Logging.HOSTNAME_IN_FILENAME, "false");
         Collection c = new Collection(COLLECTION_NAME, config);
         Profile p = new Profile("profile");
-        Date date = new Date(1361331439286L);
+        Date date = Files.Log.DATE_FORMAT.parse("Wed Feb 20 14:37:19 2013");
     
         ClickLog cl = new ClickLog(date, c, p, "192.168.0.1", null, 1, null, ClickLog.Type.FP, null);
         logService.logClick(cl);

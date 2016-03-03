@@ -1,6 +1,7 @@
 target/
 .*
 !.gitignore
+!.gitlab-ci.yml
 # overview.html is generated
 publicui-core/src/main/javadoc/overview.html
 publicui-web/src/test/resources/dummy-search_home/data/cache-*
