@@ -55,7 +55,7 @@ function makePreviewIcons()
 		    var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
 		        '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
                 
-                $(this).find('.open-wcag').after(html);
+                $(this).find('.open-thumbnail').replaceWith(html);
                
     	}
     });
