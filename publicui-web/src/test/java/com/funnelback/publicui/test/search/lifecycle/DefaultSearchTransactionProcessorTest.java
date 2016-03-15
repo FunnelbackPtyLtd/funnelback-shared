@@ -11,6 +11,7 @@ import com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcesso
 import com.funnelback.publicui.search.lifecycle.data.DataFetcher;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockDataFetcher;
@@ -35,7 +36,11 @@ public class DefaultSearchTransactionProcessorTest {
         processor.setOutputFlow(output);
         processor.setDataFetchers(fetcher);
         
-        SearchTransaction st = processor.process(new SearchQuestion(), null);
+        SearchQuestion q = new SearchQuestion();
+        q.setCollection(new Collection("a-test", null));
+        q.setProfile("a-profile");
+        
+        SearchTransaction st = processor.process(q, null);
         
         Assert.assertNotNull(st);
         Assert.assertNotNull(st.getResponse());

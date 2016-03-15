@@ -59,14 +59,14 @@
         <filter-name>log4jServletFilter</filter-name>
         <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
     </filter>
-     <filter-mapping>
-        <filter-name>log4jServletFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
+    <filter-mapping>
+       <filter-name>log4jServletFilter</filter-name>
+       <url-pattern>/*</url-pattern>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+       <dispatcher>ERROR</dispatcher>
+   </filter-mapping>
     
 	<filter>
 		<filter-name>encodingFilter</filter-name>
@@ -150,5 +150,15 @@
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
+	<!-- Unhandled Exception logging -->
+	<!-- *** MUST BE LAST TO HANDLE ALL EXCEPTIONS FROM PREVIOUS COMPONENTS *** -->
+	<filter>
+	   <filter-name>UnhandledExceptionFilter</filter-name>
+	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	   <filter-name>UnhandledExceptionFilter</filter-name>
+	   <servlet-name>publicui</servlet-name>
+	</filter-mapping>
 	
 </web-app>
