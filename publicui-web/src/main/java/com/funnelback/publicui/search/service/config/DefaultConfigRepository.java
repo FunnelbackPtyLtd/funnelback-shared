@@ -48,7 +48,6 @@ import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorYamlConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationConfigResource;
-import com.funnelback.publicui.search.service.resource.impl.GlobalConfigResource;
 import com.funnelback.publicui.search.service.resource.impl.GroovyScriptResource;
 import com.funnelback.publicui.search.service.resource.impl.ParameterTransformResource;
 import com.funnelback.publicui.search.service.resource.impl.SimpleFileResource;
@@ -59,6 +58,7 @@ import com.funnelback.springmvc.service.resource.ResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
+import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
