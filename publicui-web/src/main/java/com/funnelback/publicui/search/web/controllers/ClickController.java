@@ -105,7 +105,7 @@ public class ClickController extends SessionController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required= true, value = RequestParameters.COLLECTION) Collection collection,
-            @RequestParam(required = false) ProfileId profile,
+            @RequestParam(required = false, defaultValue = DefaultValues.DEFAULT_PROFILE) ProfileId profile,
             @RequestParam(required = true, value = RequestParameters.Click.TYPE) String logType,
             @RequestParam(required = false) String callback,
             @ModelAttribute SearchUser user) {
