@@ -14,7 +14,7 @@
 				http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
 				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
-	<context:component-scan base-package="com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils,com.funnelback.publicui.utils.web,com.funnelback.publicui.search.service.index" />
+	<context:component-scan base-package="com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.i18n,com.funnelback.publicui.log,com.funnelback.publicui.search.service,com.funnelback.publicui.xml,com.funnelback.contentoptimiser,com.funnelback.publicui.search.service.anchors,com.funnelback.utils,com.funnelback.publicui.utils.web,com.funnelback.publicui.search.service.index,com.funnelback.springmvc.service.resource.impl.config.ConfigBeans" />
 		
 	<task:annotation-driven executor="taskExecutor" />
 	<task:executor id="taskExecutor" pool-size="100" rejection-policy="DISCARD" />
