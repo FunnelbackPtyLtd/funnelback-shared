@@ -569,7 +569,7 @@
     Generates a link to show the results that were collapsed with this specific result.
 
     @param defaultLabel Label to use when there's no label for the current collapsing column
-    @param labels Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String.
+    @param labels Text to use for the link. <code>{0}</code> will be replaced by the number of collapsed results. This is a hash where the key is the collapsing column, as a String, for example: &lt;@fb.Collapsed labels={"[X]": "{0} results from the same state", "[Y]": "{0} results from the same employer"} /&gt;
 
 -->
 <#macro Collapsed defaultLabel="{0} very similar results" defaultApproximateLabel="About {0} very similar results" labels={}>
