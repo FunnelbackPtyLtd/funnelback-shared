@@ -10,6 +10,7 @@
 		<groupId>com.funnelback</groupId>
 		<artifactId>java-parent</artifactId>
 		<version>15.3.1612-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
  
 	<issueManagement>
