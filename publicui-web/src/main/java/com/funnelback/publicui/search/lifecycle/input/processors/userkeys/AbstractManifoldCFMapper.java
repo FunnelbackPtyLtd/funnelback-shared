@@ -118,12 +118,7 @@ public abstract class AbstractManifoldCFMapper implements UserKeysMapper {
                 String[] fields = line.split(":");
                 
                 if (fields.length == 3 && "TOKEN".equals(fields[0])) {
-                    try {
-                        // We base64 encode the keys to hide any 'special' characters - SUPPORT-1339
-                        result.add(new String(Base64.encodeBase64(fields[2].getBytes("UTF-8"))));
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException("UTF-8 not available - Should never happen", e);
-                    }
+                    result.add(fields[2]);
                 } else if (fields.length == 2 && "AUTHORIZED".equals(fields[0])) {
                     // Not sure what to do with these
                 } else if (fields.length == 2 && "USERNOTFOUND".equals(fields[0])) {
