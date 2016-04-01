@@ -121,9 +121,6 @@
     					</a>
                     </#if>
 
-
-                     <a data-toggle="popover" data-placement="top"  href="${s.result.liveUrl?html}" data-html="true" target="_blank" class="open-thumbnail open-thumbnail-${s.result.rank}"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>
-
                     <a class="open-cache pass" target="_blank" href="${s.result.cacheUrl?html}" data-toggle="tooltip" data-placement="bottom" title="Check Cached Copy of Content">
                     
                     <span class="fa-stack fa-xs">
