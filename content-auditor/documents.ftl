@@ -94,8 +94,8 @@
                
                   <td class="table-hide">
 				  	
-					
-					<a class="open-anchors pass" target="_blank" data-modal="overlay" href="anchors.html?collection=${question.inputParameterMap["collection"]?url}&docnum=${s.result.docNum?c}&ajax=1" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags">
+
+                   <a class="open-anchors pass" target="_blank" data-modal="overlay" href="anchors.html?collection=${question.inputParameterMap["collection"]?url}&docnum=${s.result.docNum?c}&ajax=1" data-toggle="tooltip" data-placement="bottom" title="Analyse Anchor Tags">
 					<span class="fa-stack fa-xs">
     					<i class="fa fa-square fa-stack-2x"></i>
     					<i class="fa fa-anchor fa-stack-1x fa-inverse"></i>
@@ -119,6 +119,10 @@
                             <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
                         </span>
     					</a>
+                    </#if>
+
+                    <#if s.result.fileType == 'html'>
+                        <a data-toggle="popover" data-placement="top"  href="${s.result.liveUrl?html}" data-html="true" target="_blank" class="open-thumbnail open-thumbnail-${s.result.rank}"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>
                     </#if>
 
                     <a class="open-cache pass" target="_blank" href="${s.result.cacheUrl?html}" data-toggle="tooltip" data-placement="bottom" title="Check Cached Copy of Content">
