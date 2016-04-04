@@ -39,6 +39,9 @@ function refreshModalContent()
 {
     var modal = $('#modal-overlay .modal-content');
     modal.find('table').addClass('table table-hover table-condenesed table-responsive table-striped table-row-clickable');
+    $('html').css({
+        overflow:'hidden'
+        });
 }
 
 function makePreviewIcons()
@@ -52,7 +55,7 @@ function makePreviewIcons()
 		    var html = '<a data-toggle="popover" data-placement="top"  href="' + href +
 		        '" data-html="true" target="_blank" class="open-thumbnail"><span class="fa-stack fa-xs"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-eye fa-stack-1x fa-inverse"></i></span></a>';
                 
-                $(this).find('.open-wcag').after(html);
+                $(this).find('.open-thumbnail').replaceWith(html);
                
     	}
     });
@@ -274,6 +277,7 @@ jQuery(function()
             setTimeout(function()
             {
                 modal.hide();
+               
             }, 888);
 			
         }).on('click', '.facet-search-details table tbody tr, #duplicates tbody tr', function()
@@ -283,6 +287,10 @@ jQuery(function()
         }).on('click', '#modal-overlay', function()
         {
             $('#modal-overlay').addClass('fade').removeClass('in').hide();
+            $('html').css({
+              overflow:''
+            });
+             
         }).on('click', '.modal-content', function()
         {
             return false;

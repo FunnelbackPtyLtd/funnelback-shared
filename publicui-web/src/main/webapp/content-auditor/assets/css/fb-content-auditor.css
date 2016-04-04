@@ -1376,9 +1376,8 @@ footer a,footer a:focus,footer a:hover {
 
 .modal-content {
     max-height: 600px;
-    overflow: scroll;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .modal-content #anchors-pane .table-row-clickable tbody tr a {
@@ -1397,7 +1396,7 @@ footer a,footer a:focus,footer a:hover {
 
 .modal {
     background-color: #666;
-    background: rgba(45,32,26,0.75) url(../img/bg-px.png) repeat;
+    background: rgba(35, 42, 60, 0.75) url(../img/bg-px.png) repeat;
 }
 
 .modal-content {
@@ -1792,6 +1791,10 @@ footer a,footer a:focus,footer a:hover {
     padding: 0;
     width: 99.5%;
     margin: .25em 0;
+}
+
+.facet .category {
+    padding: 15px 0 !important;
 }
 
 .facet .col-md-6 {
