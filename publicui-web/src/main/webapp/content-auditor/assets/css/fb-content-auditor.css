@@ -1685,10 +1685,11 @@ footer a,footer a:focus,footer a:hover {
 .uri-selector .categoryCount {
     float: none !important;
 }
+/*
 .recommendations .category{ 
     white-space:pre;
 }
-
+*/
 .uri-selector .dropdown  .category > span, .uri-selector .dropdown .category > small {
     display:inline;
     float: left;
@@ -1794,7 +1795,7 @@ footer a,footer a:focus,footer a:hover {
 }
 
 .facet .category {
-    padding: 15px 0 !important;
+    padding: 15px !important;
 }
 
 .facet .col-md-6 {
