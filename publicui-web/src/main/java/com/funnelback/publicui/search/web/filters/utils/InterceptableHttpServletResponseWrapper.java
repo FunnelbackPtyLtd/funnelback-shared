@@ -47,13 +47,14 @@ public class InterceptableHttpServletResponseWrapper extends HttpServletResponse
         ByteArrayPrintWriter (OutputStream os) {
             baos = os;
             pw = new PrintWriter(baos);
+            sos = new ByteArrayServletStream(baos);
         }
         
         private OutputStream baos;
 
         private PrintWriter pw;
 
-        private ServletOutputStream sos = new ByteArrayServletStream(baos);
+        private ServletOutputStream sos;
 
         public PrintWriter getWriter() {
             return pw;
