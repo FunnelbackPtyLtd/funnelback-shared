@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,19 +24,25 @@ import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>
- * Filter to allow a groovy script to operate on the public ui output just
- * before it is returned.
+ * Filter to allow a groovy script to operate on the public ui input before it's
+ * processed, and output just before it is returned.
  * </p>
  * 
  * <p>
  * Useful for recording information for auditing purposes, or programmatically
  * modifying Funnelback output before it is returned to the user.
  * </p>
+ * 
+ * <p>
+ * Note: For modifying input parameters, a pre_process hook script should be
+ * used in preference.
+ * </p>
  */
 @Log4j2
 public class GroovyFilter implements Filter {
 
-    private static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "PublicUIImpl" + Files.HOOK_SUFFIX;
+    private static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "PublicUIImpl"
+        + Files.HOOK_SUFFIX;
 
     @Autowired
     protected ResourceManager resourceManager;
@@ -45,9 +50,14 @@ public class GroovyFilter implements Filter {
     @Autowired
     protected File searchHome;
 
+    @Autowired
+    protected UnhandledExceptionFilter unhandledExceptionFilter;
+
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             Optional<File> groovyOutputFilterClassFile = Optional.empty();
@@ -87,16 +97,16 @@ public class GroovyFilter implements Filter {
                 chain.doFilter(request, response);
             }
         } catch (Exception e) {
+            // We sit outside UnhandledExceptionFilter (so we can capture its
+            // output for auditing, but we reuse its response if something fails
+            // here).
             e.printStackTrace();
-            HttpServletResponse resp = (HttpServletResponse) response;
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-            HttpServletRequest req = (HttpServletRequest) request;
-            log.error("Unhandled exception for URL '{}?{}'", req.getRequestURL(), req.getQueryString(), e);
+            unhandledExceptionFilter.sendUnhandledExceptionErrorResponse(request, response, e);
         }
 
     }
 
+    @Override
     public void destroy() {
     }
 }

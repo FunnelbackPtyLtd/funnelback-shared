@@ -34,12 +34,16 @@ public class UnhandledExceptionFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Exception e) {
-            HttpServletResponse resp = (HttpServletResponse) response;
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-            HttpServletRequest req = (HttpServletRequest) request;
-            log.error("Unhandled exception for URL '{}?{}'", req.getRequestURL(), req.getQueryString(), e);
+            sendUnhandledExceptionErrorResponse(request, response, e);
         }
+    }
+
+    public void sendUnhandledExceptionErrorResponse(ServletRequest request, ServletResponse response, Exception e) {
+        HttpServletResponse resp = (HttpServletResponse) response;
+        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+        HttpServletRequest req = (HttpServletRequest) request;
+        log.error("Unhandled exception for URL '{}?{}'", req.getRequestURL(), req.getQueryString(), e);
     }
 
     @Override

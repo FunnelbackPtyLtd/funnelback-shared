@@ -13,7 +13,7 @@ import com.funnelback.common.filter.GroovyClassLoaderCache;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
- * Loads and compiles a Groovy script of type T
+ * Loads and compiles a Groovy class of type T
  */
 @Log4j2
 public class GroovyClassResource<T> extends AbstractSingleFileResource<Class<T>> {

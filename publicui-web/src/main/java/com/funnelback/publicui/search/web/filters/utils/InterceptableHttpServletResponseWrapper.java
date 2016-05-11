@@ -19,15 +19,17 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Based on http://stackoverflow.com/a/14741213/797
  */
 public class InterceptableHttpServletResponseWrapper extends HttpServletResponseWrapper {
-    private static class ByteArrayServletStream extends ServletOutputStream {
-        OutputStream baos;
+    
+    /** A ServletOutputStream which allows us to set what OutputStream it will actually write to. */
+    private static class OutputStreamConfigurableServletOutputStream extends ServletOutputStream {
+        OutputStream os;
 
-        ByteArrayServletStream(OutputStream baos) {
-            this.baos = baos;
+        OutputStreamConfigurableServletOutputStream(OutputStream os) {
+            this.os = os;
         }
 
         public void write(int param) throws IOException {
-            baos.write(param);
+            os.write(param);
         }
 
         @Override
@@ -42,15 +44,13 @@ public class InterceptableHttpServletResponseWrapper extends HttpServletResponse
         }
     }
 
-    private static class ByteArrayPrintWriter {
+    /** Provides a ServletOutputStream and a PringWriter referring to the same (provided) OutputStream  */
+    private static class ServletOutputStreamAndPrintWriter {
 
-        ByteArrayPrintWriter (OutputStream os) {
-            baos = os;
-            pw = new PrintWriter(baos);
-            sos = new ByteArrayServletStream(baos);
+        ServletOutputStreamAndPrintWriter (OutputStream os) {
+            pw = new PrintWriter(os);
+            sos = new OutputStreamConfigurableServletOutputStream(os);
         }
-        
-        private OutputStream baos;
 
         private PrintWriter pw;
 
@@ -65,13 +65,14 @@ public class InterceptableHttpServletResponseWrapper extends HttpServletResponse
         }
     }
 
-    private ByteArrayPrintWriter output;
+    private ServletOutputStreamAndPrintWriter output;
+    
     private boolean usingWriter;
 
     public InterceptableHttpServletResponseWrapper(HttpServletResponse response, OutputStream os) {
         super(response);
         usingWriter = false;
-        output = new ByteArrayPrintWriter(os);
+        output = new ServletOutputStreamAndPrintWriter(os);
     }
 
     @Override
@@ -94,9 +95,5 @@ public class InterceptableHttpServletResponseWrapper extends HttpServletResponse
         }
         usingWriter = true;
         return output.getWriter();
-    }
-
-    public String toString() {
-        return output.toString();
     }
 }
