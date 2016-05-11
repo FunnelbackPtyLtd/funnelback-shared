@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.service.resource.impl.GroovyClassResource;
 import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -41,14 +42,19 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GroovyFilter implements Filter {
 
-    private static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "PublicUIImpl"
+    public static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "PublicUIImpl"
         + Files.HOOK_SUFFIX;
 
     @Autowired
+    @Setter
     protected ResourceManager resourceManager;
 
     @Autowired
+    @Setter
     protected File searchHome;
+    
+    @Setter
+    protected FilterParameterHandling filterParameterHandling = new FilterParameterHandling();
 
     @Autowired
     protected UnhandledExceptionFilter unhandledExceptionFilter;
@@ -67,7 +73,7 @@ public class GroovyFilter implements Filter {
             // Would need to consider whether to have per profile classloaders
             // with their own @groovy directories or not.
 
-            String collectionId = new FilterParameterHandling().getCollectionId((HttpServletRequest) request);
+            String collectionId = filterParameterHandling.getCollectionId((HttpServletRequest) request);
             if (collectionId != null) {
                 // Look for a collection level groovy script
                 File configDirectory = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF);
