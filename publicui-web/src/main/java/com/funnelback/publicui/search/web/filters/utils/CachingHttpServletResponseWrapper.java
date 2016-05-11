@@ -22,8 +22,6 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
     private static class ByteArrayServletStream extends ServletOutputStream {
         ByteArrayOutputStream baos;
 
-        WriteListener writeListener;
-
         ByteArrayServletStream(ByteArrayOutputStream baos) {
             this.baos = baos;
         }
@@ -39,9 +37,8 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
 
         @Override
         public void setWriteListener(WriteListener writeListener) {
-            // TODO - I'm unclear how we're supposed to use the writeListener,
+            // I'm unclear how we're supposed to use the writeListener,
             // but I suspect it's relevant only if isReady ever returns false.
-            this.writeListener = writeListener;
         }
     }
 
@@ -81,7 +78,8 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        // will error out, if in use
+        // As I understand, this prevents the outputStream and the writer being
+        // used simultaneously - See http://stackoverflow.com/a/14741213/797
         if (usingWriter) {
             super.getOutputStream();
         }
@@ -91,7 +89,8 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        // will error out, if in use
+        // As I understand, this prevents the outputStream and the writer being
+        // used simultaneously - See http://stackoverflow.com/a/14741213/797
         if (usingWriter) {
             super.getWriter();
         }
