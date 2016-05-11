@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.publicui.search.service.resource.impl.GroovyClassResource;
-import com.funnelback.publicui.search.web.filters.utils.CachingHttpServletResponseWrapper;
 import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 
@@ -38,7 +37,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GroovyFilter implements Filter {
 
-    private static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "Impl" + Files.HOOK_SUFFIX;
+    private static final String OUTPUT_FILTER_CLASS_FILE_NAME = GroovyServletFilterHook.class.getSimpleName() + "PublicUIImpl" + Files.HOOK_SUFFIX;
 
     @Autowired
     protected ResourceManager resourceManager;
@@ -77,30 +76,13 @@ public class GroovyFilter implements Filter {
                 Class<GroovyServletFilterHook> clazz = resourceManager
                     .load(new GroovyClassResource<GroovyServletFilterHook>(groovyOutputFilterClassFile.get(), collectionId, searchHome));
 
-                // We use this to detach the response from the user, caching
-                // what's written so we can process it via the groovy script
-                CachingHttpServletResponseWrapper wrappedResponse = new CachingHttpServletResponseWrapper((HttpServletResponse) response);
+                GroovyServletFilterHook gsfh = clazz.newInstance();
 
-                chain.doFilter(request, wrappedResponse);
+                ServletResponse possiblyWrappedResponse = gsfh.preFilterResponse(request, response);
 
-                // Run the groovy output filter
-                byte[] originalBytes = wrappedResponse.getByteArray();
-                byte[] alteredBytes = null;
-                try {
-                    alteredBytes = clazz.newInstance().postFilterResponse(request, originalBytes, wrappedResponse);
-                } catch (InstantiationException e) {
-                    throw new RuntimeException("TODO", e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("TODO", e);
-                }
+                chain.doFilter(request, possiblyWrappedResponse);
 
-                // Write the response back out to the client
-                if (alteredBytes != null) {
-                    wrappedResponse.setContentLength(alteredBytes.length);
-                    response.getOutputStream().write(alteredBytes);
-                } else {
-                    response.getOutputStream().write(originalBytes);
-                }
+                gsfh.postFilterResponse(request, possiblyWrappedResponse);
             } else {
                 chain.doFilter(request, response);
             }

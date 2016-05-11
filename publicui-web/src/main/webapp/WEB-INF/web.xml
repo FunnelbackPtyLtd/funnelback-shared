@@ -165,11 +165,11 @@
 	<!-- *** MUST BE AFTER ANYTHING WHICH SHOULD BE INCLUDED IN AUDIT OUTPUT -->
 	<!-- (and does its own unhandled exception logging) *** -->
 	<filter>
-	   <filter-name>GroovyOutputFilter</filter-name>
+	   <filter-name>GroovyFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
-	   <filter-name>GroovyOutputFilter</filter-name>
+	   <filter-name>GroovyFilter</filter-name>
 	   <servlet-name>publicui</servlet-name>
 	</filter-mapping>
 	

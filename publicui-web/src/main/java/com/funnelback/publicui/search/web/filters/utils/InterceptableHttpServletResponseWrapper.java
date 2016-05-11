@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.web.filters.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * 
  * Based on http://stackoverflow.com/a/14741213/797
  */
-public class CachingHttpServletResponseWrapper extends HttpServletResponseWrapper {
+public class InterceptableHttpServletResponseWrapper extends HttpServletResponseWrapper {
     private static class ByteArrayServletStream extends ServletOutputStream {
-        ByteArrayOutputStream baos;
+        OutputStream baos;
 
-        ByteArrayServletStream(ByteArrayOutputStream baos) {
+        ByteArrayServletStream(OutputStream baos) {
             this.baos = baos;
         }
 
@@ -44,9 +44,14 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
 
     private static class ByteArrayPrintWriter {
 
-        private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayPrintWriter (OutputStream os) {
+            baos = os;
+            pw = new PrintWriter(baos);
+        }
+        
+        private OutputStream baos;
 
-        private PrintWriter pw = new PrintWriter(baos);
+        private PrintWriter pw;
 
         private ServletOutputStream sos = new ByteArrayServletStream(baos);
 
@@ -57,23 +62,15 @@ public class CachingHttpServletResponseWrapper extends HttpServletResponseWrappe
         public ServletOutputStream getStream() {
             return sos;
         }
-
-        byte[] toByteArray() {
-            return baos.toByteArray();
-        }
     }
 
     private ByteArrayPrintWriter output;
     private boolean usingWriter;
 
-    public CachingHttpServletResponseWrapper(HttpServletResponse response) {
+    public InterceptableHttpServletResponseWrapper(HttpServletResponse response, OutputStream os) {
         super(response);
         usingWriter = false;
-        output = new ByteArrayPrintWriter();
-    }
-
-    public byte[] getByteArray() {
-        return output.toByteArray();
+        output = new ByteArrayPrintWriter(os);
     }
 
     @Override
