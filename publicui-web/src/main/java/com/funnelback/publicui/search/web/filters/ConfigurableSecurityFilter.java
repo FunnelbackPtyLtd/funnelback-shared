@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.web.controllers.ResourcesController;
+import com.funnelback.publicui.search.web.filters.utils.FilterParameterHandling;
 
 /**
  * <p>Wrapper around the WAFFLE filter so that it can be disabled
@@ -62,7 +63,7 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
             ServletException {
 
         if (active) {
-            String collectionId = getCollectionId((HttpServletRequest) request);
+            String collectionId = new FilterParameterHandling().getCollectionId((HttpServletRequest) request);
             
             Collection collection = null;            
             if (collectionId != null) {
@@ -76,27 +77,6 @@ public class ConfigurableSecurityFilter extends NegotiateSecurityFilter {
         }
         
         chain.doFilter(request, response);
-    }
-    
-    /**
-     * Look for the collection id in the query string as well
-     * as in the Path part of the URI for static requests like
-     * /resources/&lt;collection&gt;/&lt;profile&gt;/file.ext
-     * @param request
-     * @return
-     */
-    private String getCollectionId(HttpServletRequest request) {
-        String collectionId = request.getParameter(RequestParameters.COLLECTION);
-        if (collectionId == null
-                && request.getPathInfo() != null
-                && request.getPathInfo().startsWith(ResourcesController.MAPPING_PATH)
-                && request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()) > -1) {
-            collectionId = request.getPathInfo().substring(
-                    ResourcesController.MAPPING_PATH.length(),
-                    request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));
-        }
-        
-        return collectionId;
     }
         
     /**
