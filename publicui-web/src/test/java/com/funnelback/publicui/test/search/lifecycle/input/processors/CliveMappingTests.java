@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
@@ -23,7 +24,9 @@ public class CliveMappingTests {
     @Before
     public void before() throws FileNotFoundException, EnvironmentVariableException {
         processor = new CliveMapping();
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(
+                new File("src/test/resources/dummy-search_home"), 
+            "dummy"));
         SearchQuestion question = new SearchQuestion();
         question.setCollection(c);
         st = new SearchTransaction(question, null);
@@ -45,16 +48,7 @@ public class CliveMappingTests {
     }
     
     @Test
-    public void testCliveParameterButNoMetaComponents() throws InputProcessorException {
-        st.getQuestion().setClive(new String[] {"clive1", "clive2"});
-        processor.processInput(st);
-        
-        Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
-    }
-    
-    @Test
-    public void testNoCliveParameterButMetaComponents() throws InputProcessorException {
-        st.getQuestion().getCollection().setMetaComponents(new String[] {"value1", "value2"});
+    public void testNoClive() throws InputProcessorException {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getClive());
@@ -62,35 +56,45 @@ public class CliveMappingTests {
     }
     
     @Test
-    public void test() throws InputProcessorException {
-        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-        st.getQuestion().setClive(new String[] {"component1", "component2"});
+    public void testCliveZeroLengthArray() throws InputProcessorException {
+        
+        st.getQuestion().setClive(new String[] {});
 
         processor.processInput(st);
-        Assert.assertArrayEquals(new String[]  {"0", "1"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
         
-        st.getQuestion().setClive(new String[] {"component3"});
-        processor.processInput(st);
-        Assert.assertArrayEquals(new String[]  {"2"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+        Assert.assertNull(st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
     }
     
     @Test
-    public void testInvalidCliveParameter2() throws InputProcessorException {
-        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-        st.getQuestion().setClive(new String[] {"invalid", "component1"});
-
-        processor.processInput(st);
-        Assert.assertArrayEquals(new String[]  {"0"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+    public void testCliveParameterSingleValues() throws InputProcessorException {
+        String[] origClive = new String[] {"clive1"};
         
+        st.getQuestion().setClive(origClive);
+        processor.processInput(st);
+        
+        String[] clive = st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE);
+        
+        Assert.assertFalse("We should have copied the array, lets avoid shared arrays", 
+            origClive == clive);
+        
+        Assert.assertEquals(origClive[0], clive[0]);
     }
     
     @Test
-    public void testWithNumbers() throws InputProcessorException {
-        st.getQuestion().getCollection().setMetaComponents(new String[] {"component1", "component2", "component3"});
-        st.getQuestion().setClive(new String[] {"component1", "component2", "1", "42"});
+    public void testCliveParameterMultipleValues() throws InputProcessorException {
+        String[] origClive = new String[] {"clive1", "clive2"};
         
+        st.getQuestion().setClive(origClive);
         processor.processInput(st);
-        Assert.assertArrayEquals(new String[]  {"0", "1", "42"}, st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE));
+        
+        String[] clive = st.getQuestion().getAdditionalParameters().get(RequestParameters.CLIVE);
+        
+        Assert.assertFalse("We should have copied the array, lets avoid shared arrays", 
+            origClive == clive);
+        
+        Assert.assertEquals(origClive[0], clive[0]);
+        Assert.assertEquals(origClive[1], clive[1]);
+       
     }
     
 }

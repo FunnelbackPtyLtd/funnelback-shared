@@ -1,11 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import lombok.extern.log4j.Log4j2;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
@@ -30,31 +26,13 @@ public class CliveMapping extends AbstractInputProcessor {
                 && searchTransaction.getQuestion().getClive() != null
                 && searchTransaction.getQuestion().getClive().length > 0) {
             
-            SortedSet<String> clives = new TreeSet<String>();
-            for (String clive: searchTransaction.getQuestion().getClive()) {
-                if (clive.matches("\\d+")) {
-                    // Already a number, pass it through
-                    // That can happen with links built by PADRE (Contextual Nav. links)
-                    clives.add(clive);
-                } else {
-                    for (int i=0; i<searchTransaction.getQuestion().getCollection().getMetaComponents().length; i++) {
-                        if (clive.equals(searchTransaction.getQuestion().getCollection().getMetaComponents()[i])) {
-                            clives.add(Integer.toString(i));
-                            break;
-                        }
-                    }
-                }
-            }
-    
-            if (clives.size() > 0) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Transformed clive parameter from '"
-                            + StringUtils.join(searchTransaction.getQuestion().getClive(), ",")
-                            + "' to '" + StringUtils.join(clives, ",") + "'");
-                }
-    
-                searchTransaction.getQuestion().getAdditionalParameters().put(RequestParameters.CLIVE, clives.toArray(new String[0]));
-            }
+            String[] clive = searchTransaction.getQuestion().getClive();
+            String[] copy = new String[clive.length]; 
+            System.arraycopy(clive, 0, copy, 0, clive.length);
+            searchTransaction
+                .getQuestion()
+                .getAdditionalParameters()
+                .put(RequestParameters.CLIVE, copy);
         }
 
     }
