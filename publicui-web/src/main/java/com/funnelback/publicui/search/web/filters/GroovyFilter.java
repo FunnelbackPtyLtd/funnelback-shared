@@ -66,32 +66,14 @@ public class GroovyFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            Optional<File> groovyOutputFilterClassFile = Optional.empty();
-
-            // We could presumably support reading a profile level script here.
-            //
-            // Would need to consider whether to have per profile classloaders
-            // with their own @groovy directories or not.
-
             String collectionId = filterParameterHandling.getCollectionId((HttpServletRequest) request);
-            if (collectionId != null) {
-                // Look for a collection level groovy script
-                File configDirectory = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF);
-                File collectionConfigDirectory = new File(configDirectory, collectionId);
-                if (new File(collectionConfigDirectory, OUTPUT_FILTER_CLASS_FILE_NAME).exists()) {
-                    groovyOutputFilterClassFile = Optional.of(new File(collectionConfigDirectory, OUTPUT_FILTER_CLASS_FILE_NAME));
-                }
-            }
-
-            // We could presumably support reading a server wide script here.
-            //
-            // Would need to consider what classpaths the class loader would use
-            // in this case.
 
             Class<GroovyServletFilterHook> groovyServletFilterHookClass = null;
-            if (groovyOutputFilterClassFile.isPresent()) {
+            if (collectionId != null) {
+                File configDirectory = new File(searchHome + File.separator + DefaultValues.FOLDER_CONF);
+                File collectionConfigDirectory = new File(configDirectory, collectionId);
                 groovyServletFilterHookClass = resourceManager
-                    .load(new GroovyClassResource<GroovyServletFilterHook>(groovyOutputFilterClassFile.get(), collectionId, searchHome));
+                    .load(new GroovyClassResource<GroovyServletFilterHook>(new File(collectionConfigDirectory, OUTPUT_FILTER_CLASS_FILE_NAME), collectionId, searchHome));
             }
             
             if (groovyServletFilterHookClass != null) {
