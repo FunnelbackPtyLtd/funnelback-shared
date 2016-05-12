@@ -88,17 +88,22 @@ public class GroovyFilter implements Filter {
             // Would need to consider what classpaths the class loader would use
             // in this case.
 
+            Class<GroovyServletFilterHook> groovyServletFilterHookClass = null;
             if (groovyOutputFilterClassFile.isPresent()) {
-                Class<GroovyServletFilterHook> clazz = resourceManager
+                groovyServletFilterHookClass = resourceManager
                     .load(new GroovyClassResource<GroovyServletFilterHook>(groovyOutputFilterClassFile.get(), collectionId, searchHome));
+            }
+            
+            if (groovyServletFilterHookClass != null) {
+                GroovyServletFilterHook groovyServletFilterHook = groovyServletFilterHookClass.newInstance();
 
-                GroovyServletFilterHook gsfh = clazz.newInstance();
+                ServletResponse possiblyWrappedResponse = groovyServletFilterHook.preFilterResponse(request, response);
 
-                ServletResponse possiblyWrappedResponse = gsfh.preFilterResponse(request, response);
-
-                chain.doFilter(request, possiblyWrappedResponse);
-
-                gsfh.postFilterResponse(request, possiblyWrappedResponse);
+                try {
+                    chain.doFilter(request, possiblyWrappedResponse);
+                } finally {
+                    groovyServletFilterHook.postFilterResponse(request, possiblyWrappedResponse);
+                }
             } else {
                 chain.doFilter(request, response);
             }
@@ -106,7 +111,6 @@ public class GroovyFilter implements Filter {
             // We sit outside UnhandledExceptionFilter (so we can capture its
             // output for auditing, but we reuse its response if something fails
             // here).
-            e.printStackTrace();
             unhandledExceptionFilter.sendUnhandledExceptionErrorResponse(request, response, e);
         }
 

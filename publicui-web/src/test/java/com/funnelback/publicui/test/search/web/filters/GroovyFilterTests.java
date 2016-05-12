@@ -30,7 +30,7 @@ public class GroovyFilterTests {
     public void testFilter() throws IOException, ServletException {
         try {
             File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(GroovyFilterTests.class,
-                SearchHomeConfigs.getWithDefaults(), "testFilterAbsent");
+                SearchHomeConfigs.getWithDefaults(), "testFilter");
             
             File collectionConfigDir = new File(searchHome, "conf" + File.separator + "test-collection");
             collectionConfigDir.mkdirs();
@@ -83,6 +83,39 @@ public class GroovyFilterTests {
             postFilterCount++;
         }
 
+    }
+
+    @Test
+    public void testFilterDissapears() throws IOException, ServletException {
+        File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(GroovyFilterTests.class,
+            SearchHomeConfigs.getWithDefaults(), "testFilterDissapears");
+        
+        File collectionConfigDir = new File(searchHome, "conf" + File.separator + "test-collection");
+        collectionConfigDir.mkdirs();
+        File groovyClass = new File(collectionConfigDir, GroovyFilter.OUTPUT_FILTER_CLASS_FILE_NAME);
+        Files.write(
+            "public class GroovyServletFilterHookPublicUIImpl extends com.funnelback.publicui.search.web.filters.GroovyServletFilterHook {}",
+            groovyClass, StandardCharsets.UTF_8);
+        
+        GroovyFilter gf = new GroovyFilter();
+        gf.setSearchHome(searchHome);
+        
+        FilterParameterHandling mockFilterParameterHandling = mock(FilterParameterHandling.class);
+        when(mockFilterParameterHandling.getCollectionId(any())).thenReturn("test-collection");
+        gf.setFilterParameterHandling(mockFilterParameterHandling);
+        
+        ResourceManager mockResourceManager = mock(ResourceManager.class);
+        gf.setResourceManager(mockResourceManager);
+        // File seemed to exist, but we return null, because it was gone when we tried to load it.
+        when(mockResourceManager.load(any())).thenReturn(null);
+        
+        ServletRequest mockRequest = mock(HttpServletRequest.class);
+        ServletResponse mockResponse = mock(ServletResponse.class);
+        FilterChain mockFilterChain = mock(FilterChain.class);
+        
+        gf.doFilter(mockRequest, mockResponse, mockFilterChain);
+        
+        verify(mockFilterChain, times(1)).doFilter(any(), any());
     }
 
 

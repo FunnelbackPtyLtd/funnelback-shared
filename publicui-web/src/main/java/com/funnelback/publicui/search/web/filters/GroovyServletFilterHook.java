@@ -12,6 +12,8 @@ import com.funnelback.publicui.search.web.filters.utils.InterceptableHttpServlet
  * allowing code to audit log or manipulate the request/response before it is
  * processed/returned to the user.
  * 
+ * One instance of this class will be created per request processed.
+ * 
  * @see com.funnelback.publicui.search.web.filters.GroovyFilter GroovyFilter -
  *      Where implementations are invoked
  */
