@@ -16,7 +16,6 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -37,7 +36,6 @@ import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.io.store.StoreType;
 import com.funnelback.common.io.store.XmlRecord;
-import com.funnelback.common.io.warc.WarcConstants;
 import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.common.utils.XMLUtils;
 import com.funnelback.common.views.StoreView;
@@ -51,6 +49,8 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
+
+import static com.funnelback.common.io.file.FileUtils.getFileExtensionLowerCase;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -90,6 +90,8 @@ public class LocalDataRepository implements DataRepository {
     /** Environment used when calling the binary to get a document */
     private final Map<String, String> getDocumentEnvironment;
     
+    private final String WARC_FILE_EXTENSION = "warc";
+
     @Autowired
     private I18n i18n;
 
@@ -111,7 +113,10 @@ public class LocalDataRepository implements DataRepository {
     public RecordAndMetadata<? extends Record<?>> getDocument(Collection collection, StoreView view,
         String url, File relativePath, long offset, int length) {
         
-        if (WarcConstants.WARC.equals(FilenameUtils.getExtension(relativePath.getName()))) {
+        String fileExtension =
+            getFileExtensionLowerCase(relativePath);
+
+        if (fileExtension.equals(WARC_FILE_EXTENSION)) {
             // FUN-5956 WARC files not supported yet
             return null;
         }
@@ -145,7 +150,7 @@ public class LocalDataRepository implements DataRepository {
         }
         
         if (content != null) {
-            if (XMLUtils.XML.equals(FilenameUtils.getExtension(relativePath.getName()))) {
+            if (fileExtension.equals(XMLUtils.XML)) {
                 return new RecordAndMetadata<XmlRecord>(new XmlRecord(
                     XMLUtils.fromString(new String(content)), url),
                     new HashMap<String, String>());
