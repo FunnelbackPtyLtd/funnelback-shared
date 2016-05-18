@@ -1,7 +1,11 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -19,6 +23,7 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Transforms result metadata/url/gscope counts into proper facet hierarchy
@@ -36,7 +41,10 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
             
             if (config != null) {
-                for(FacetDefinition f: config.getFacetDefinitions()) {
+                List<String> sortOrder = Arrays.asList(new String[]{}); // TODO - Decide how to populate this order of names
+                List<FacetDefinition> sortedFacets = sortFacetDefinitions(config.getFacetDefinitions(), sortOrder);
+                
+                for(FacetDefinition f : sortedFacets) {
                     final Facet facet = new Facet(f.getName());
                     
                     for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
@@ -59,6 +67,27 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                 }
             }
         }
+    }
+
+    /**
+     * @return A new list with the provided FacetDefinitions sorted based on the facetNameOrder (and the names of the facets)
+     */
+    @VisibleForTesting
+    public List<FacetDefinition> sortFacetDefinitions(List<FacetDefinition> facetDefinitions, List<String> facetNameOrder) {
+        List<FacetDefinition> sortedFacets = new ArrayList<FacetDefinition>(facetDefinitions);
+
+        Map<String, Integer> nameToFacetRank = new HashMap<>();
+        for (int i = 0; i < facetNameOrder.size(); i++) {
+            nameToFacetRank.put(facetNameOrder.get(i), i);
+        }
+
+        sortedFacets.sort((a, b) -> {
+            return Integer.compare(
+                (nameToFacetRank.containsKey(a.getName()) ? nameToFacetRank.get(a.getName()) : Integer.MAX_VALUE),
+                (nameToFacetRank.containsKey(b.getName()) ? nameToFacetRank.get(b.getName()) : Integer.MAX_VALUE));
+        });
+        
+        return sortedFacets;
     }
 
     /**
