@@ -113,7 +113,7 @@
             
           </div>
           <div class="col-sm-4 text-center"><a target="_blank" href="http://funnelback.com" title="Funnelback"><div class="footer-brand inline-block"></div></a></div>
-          <div class="col-sm-4 text-right"><p id="copyright">&copy; 2006 - 2015 <a target="_blank" href="http://funnelback.com" title="Funnelback">Funnelback</a> - All rights reserved.</p></div>
+          <div class="col-sm-4 text-right"><p id="copyright">&copy; <a target="_blank" href="http://funnelback.com" title="Funnelback">Funnelback</a> - All rights reserved.</p></div>
         </div>
         <div id="load" class="overlay">
           <div class="loader pull-left"><img src="${pathToAssets}img/loader.gif"></div> <div class="loader-text pull-left">Loading...</div>
