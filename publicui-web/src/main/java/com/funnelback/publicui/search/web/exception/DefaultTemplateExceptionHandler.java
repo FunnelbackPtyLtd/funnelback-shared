@@ -56,7 +56,7 @@ public class DefaultTemplateExceptionHandler implements TemplateExceptionHandler
                     ErrorFormat fmt = ErrorFormat.valueOf(errorFormat);
                     switch (fmt) {
                     case exception:
-                        out.write(te.getFTLInstructionStack());
+                        out.write(te.getMessage());
                         throw te;
                     case html:
                         out.write("<!-- " + i18n.tr("freemarker.template.error") + ": " + te.getMessage() + " -->\n");
