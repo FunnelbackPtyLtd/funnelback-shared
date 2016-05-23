@@ -43,6 +43,13 @@ public class ResultFactory {
         String summary = data.get(Result.Schema.SUMMARY);
         String cacheUrl = data.get(Result.Schema.CACHE_URL);
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
+        
+        //TODO test
+        boolean documentVisableTouser = true;
+        if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
+                && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
+            documentVisableTouser = false;
+        }
 
         String dateString = data.get(Result.Schema.DATE);
         Date date = null;
@@ -95,7 +102,8 @@ public class ResultFactory {
                 liveUrl,
                 explain,
                 liveUrl,
-                gscopesSet);
+                gscopesSet,
+                documentVisableTouser);
 
         r.getMetaData().putAll(metadataMap);
         if (data.get(Result.Schema.TAGS) != null) {
