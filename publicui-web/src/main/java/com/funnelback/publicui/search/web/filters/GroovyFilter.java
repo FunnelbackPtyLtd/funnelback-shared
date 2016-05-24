@@ -93,7 +93,6 @@ public class GroovyFilter implements Filter {
             // We sit outside UnhandledExceptionFilter (so we can capture its
             // output for auditing, but we reuse its response if something fails
             // here).
-            log.error(e);
             unhandledExceptionFilter.sendUnhandledExceptionErrorResponse(request, response, e);
         }
 
