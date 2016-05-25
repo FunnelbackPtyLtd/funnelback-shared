@@ -95,6 +95,7 @@ public class GenericHookScriptRunner implements DataFetcher, InputProcessor, Out
             if (hookScriptClass != null) {
                 try {
                     Map<String, Object> data = new HashMap<>();
+                    data.put(Hook.HOOK_NAME, hookScriptToRun);
                     data.put(Hook.SEARCH_TRANSACTION_KEY, searchTransaction);
                     runScript(hookScriptClass, data);
                     
