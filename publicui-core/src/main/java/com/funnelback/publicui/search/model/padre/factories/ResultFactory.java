@@ -44,11 +44,7 @@ public class ResultFactory {
         String cacheUrl = data.get(Result.Schema.CACHE_URL);
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
         
-        boolean documentVisableTouser = true;
-        if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
-                && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
-            documentVisableTouser = false;
-        }
+        boolean documentVisableTouser = isDocumentVisableToUser(data);
 
         String dateString = data.get(Result.Schema.DATE);
         Date date = null;
@@ -110,6 +106,15 @@ public class ResultFactory {
         }
 
         return r;
+    }
+    
+    static boolean isDocumentVisableToUser(Map<String, String> data) {
+        boolean documentVisableTouser = true;
+        if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
+                && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
+            documentVisableTouser = false;
+        }
+        return documentVisableTouser;
     }
 
     /** Parses the <gscopes_set> field into a Set of Integers
