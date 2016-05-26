@@ -66,6 +66,12 @@ public class Collection {
          * @since v12.4
          */
         public static final String DOCUMENT_KEY = "document";
+        
+        /**
+         * Name of the Groovy variable that will contain the name of the "current"
+         * hook script being run
+         */
+        public static final String HOOK_NAME = "hook";
     }
     
     /**

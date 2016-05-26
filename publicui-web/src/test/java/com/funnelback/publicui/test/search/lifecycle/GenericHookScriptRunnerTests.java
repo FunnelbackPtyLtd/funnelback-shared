@@ -140,5 +140,18 @@ public class GenericHookScriptRunnerTests {
         processor.processOutput(st);        
         Assert.assertNull(st.getQuestion());
     }
-
+    
+    @Test
+    public void testHookNameIsBound() throws Exception {
+        st.getQuestion().getCollection()
+            .getHookScriptsClasses().put(Hook.pre_datafetch, new GroovyClassLoader().parseClass("transaction.customData[\"hookName\"] = hook.name()"));
+    
+        GenericHookScriptRunner processor = new GenericHookScriptRunner(Hook.pre_datafetch, Phase.Input);
+        
+        processor.processInput(st);;
+        processor.fetchData(st);
+        processor.processOutput(st);
+        
+        Assert.assertEquals("pre_datafetch", st.getCustomData().get("hookName"));
+    }
 }
