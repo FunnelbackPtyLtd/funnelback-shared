@@ -44,7 +44,6 @@ public class ResultFactory {
         String cacheUrl = data.get(Result.Schema.CACHE_URL);
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
         
-        //TODO test
         boolean documentVisableTouser = true;
         if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
                 && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
