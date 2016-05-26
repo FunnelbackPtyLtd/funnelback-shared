@@ -62,6 +62,7 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                        // No need to be fancy about the format of the error. If we were unable
                        // to parse the template, nothing will be rendered anyway. Just output
                        // the error as-is
+                       response.setContentType("text/plain");
                        response.getWriter().write(pe.getMessage());                       
                    }
                 }
