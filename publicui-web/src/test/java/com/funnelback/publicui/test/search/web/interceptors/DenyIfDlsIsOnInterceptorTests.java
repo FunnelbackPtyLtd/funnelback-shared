@@ -21,6 +21,9 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class DenyIfDlsIsOnInterceptorTests {
@@ -42,6 +45,8 @@ public class DenyIfDlsIsOnInterceptorTests {
     public void before() throws FileNotFoundException {
         configRepository.removeAllCollections();
         testCollectionConfig = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), COLLECTION_ID);
+        testCollectionConfig.setValue(Keys.COLLECTION_TYPE, "meta");
+        
         configRepository.addCollection(new Collection(COLLECTION_ID, testCollectionConfig));
         
         request = new MockHttpServletRequest();
@@ -52,6 +57,57 @@ public class DenyIfDlsIsOnInterceptorTests {
         
         response = new MockHttpServletResponse();
         response.setStatus(-1);
+    }
+    
+    
+    @Test
+    public void testMetaCollectionNoRestrection() throws Exception {
+        testCollectionConfig.setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER,"");
+        testCollectionConfig.setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE ,"disabled");
+        testCollectionConfig.setValue(Keys.COLLECTION_TYPE, "meta");
+        
+        Collection metaColl = new Collection(COLLECTION_ID, testCollectionConfig);
+        metaColl.setMetaComponents(new String[]{"sub","doesnotexist"});
+        
+        configRepository.addCollection(metaColl);
+
+        Config config = mock(Config.class);
+        when(config.value(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "")).thenReturn("");
+        when(config.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "")).thenReturn("");
+        when(config.getCollectionName()).thenReturn("sub");
+        
+        Collection sub = new Collection("sub", config);
+        
+        
+        
+        configRepository.addCollection(sub);
+        
+        Assert.assertTrue("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
+    }
+    
+    @Test
+    public void testMetaCollectionWithRestriction() throws Exception {
+        testCollectionConfig.setValue(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER,"bar");
+        testCollectionConfig.setValue(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE ,"true");
+        testCollectionConfig.setValue(Keys.COLLECTION_TYPE, "meta");
+        
+        Collection metaColl = new Collection(COLLECTION_ID, testCollectionConfig);
+        metaColl.setMetaComponents(new String[]{"sub","doesnotexist"});
+        
+        configRepository.addCollection(metaColl);
+
+        Config config = mock(Config.class);
+        when(config.value(Keys.SecurityEarlyBinding.USER_TO_KEY_MAPPER, "")).thenReturn("");
+        when(config.value(Keys.DocumentLevelSecurity.DOCUMENT_LEVEL_SECURITY_MODE, "")).thenReturn("");
+        when(config.getCollectionName()).thenReturn("sub");
+        
+        Collection sub = new Collection("sub", config);
+        
+        
+        
+        configRepository.addCollection(sub);
+        
+        Assert.assertFalse("Interceptor shouldn't block processing", interceptor.preHandle(request, response, null));
     }
     
     @Test

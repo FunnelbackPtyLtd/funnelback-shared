@@ -54,6 +54,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.security.DLSEnabledCheck;
 import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
@@ -100,6 +101,9 @@ public class CacheController {
 
     @Autowired
     @Setter private MetricRegistry metrics;
+    
+    @Autowired
+    @Setter private DLSEnabledCheck dLSEnabledCheck;
 
     @InitBinder
     public void initBinder(DataBinder binder) {
@@ -140,6 +144,9 @@ public class CacheController {
         if (question.getUrl() == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (question.getCollection().getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } else if(this.dLSEnabledCheck.isDLSEnabled(question.getCollection())) {
+            log.trace("Cache copies not available as DLS is enabled for the collection");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else { 
             RecordAndMetadata<? extends Record<?>> rmd
