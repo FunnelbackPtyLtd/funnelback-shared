@@ -195,6 +195,8 @@ public class Result implements ResultType {
      */
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
     
+    @Getter @Setter private boolean documentVisableToUser = true;
+    
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
         
@@ -227,6 +229,8 @@ public class Result implements ResultType {
         public static final String COLLAPSED_SIG = "sig";
         public static final String COLLAPSED_COL = "col";
         public static final String COLLAPSED_COUNT = "count";
+        
+        public static final String DOCUMENT_VISIBLE_TO_USER = "documentVisableToUser";
         // CHECKSTYLE:ON
     }
 }
