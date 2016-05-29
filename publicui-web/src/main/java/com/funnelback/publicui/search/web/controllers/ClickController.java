@@ -13,19 +13,14 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionException;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.LocaleResolver;
 
 import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
@@ -50,6 +45,9 @@ import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Click tracking controller
  */
@@ -67,7 +65,7 @@ public class ClickController extends SessionController {
     private LogService logService;
    
     @Autowired
-    private AuthTokenManager authTokenManager;
+    @Setter private AuthTokenManager authTokenManager;
 
     @Autowired
     private ConfigRepository configRepository;
@@ -75,9 +73,6 @@ public class ClickController extends SessionController {
     @Autowired
     private IndexRepository indexRepository;
     
-    @Autowired
-    private LocaleResolver localeResolver;
-
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
 
@@ -190,56 +185,57 @@ public class ClickController extends SessionController {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
-
-            // Get the user id
-            String requestId = LogUtils.getRequestIdentifier(request,
-                    DefaultValues.RequestId.valueOf(collection.getConfiguration()
-                            .value(Keys.REQUEST_ID_TO_LOG, 
-                                    DefaultValues.REQUEST_ID_TO_LOG.toString())),
-                    collection.getConfiguration()
-                            .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
-                                    DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
             
-            URL referer = LogUtils.getReferrer(request);
-            
-            if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
-                && user != null) {
-                // Save the click in the user history
-                Result r = indexRepository.getResult(collection, indexUrl);
-                if (r != null) {
+            try {    
+                // Get the user id
+                String requestId = LogUtils.getRequestIdentifier(request,
+                        DefaultValues.RequestId.valueOf(collection.getConfiguration()
+                                .value(Keys.REQUEST_ID_TO_LOG, 
+                                        DefaultValues.REQUEST_ID_TO_LOG.toString())),
+                        collection.getConfiguration()
+                                .value(Keys.Logging.IGNORED_X_FORWARDED_FOR_RANGES,
+                                        DefaultValues.Logging.IGNORED_X_FORWARDED_FOR_RANGES));
                 
-                    ClickHistory h = ClickHistory.fromResult(r);
-                    h.setCollection(collection.getId());
-                    h.setClickDate(new Date());
-                    h.setUserId(user.getId());
-                    if (referer != null) {
-                        Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
-                        if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
-                            h.setQuery(qs.get(RequestParameters.QUERY));
-                        }
-                    }
+                URL referer = LogUtils.getReferrer(request);
+                
+                if (collection.getConfiguration().valueAsBoolean(Keys.ModernUI.SESSION, DefaultValues.ModernUI.SESSION)
+                    && user != null) {
+                    // Save the click in the user history
+                    Result r = indexRepository.getResult(collection, indexUrl);
+                    if (r != null) {
                     
-                    try {
+                        ClickHistory h = ClickHistory.fromResult(r);
+                        h.setCollection(collection.getId());
+                        h.setClickDate(new Date());
+                        h.setUserId(user.getId());
+                        if (referer != null) {
+                            Map<String, String> qs = QueryStringUtils.toSingleMap(referer.getQuery());
+                            if (qs != null && qs.containsKey(RequestParameters.QUERY)) {
+                                h.setQuery(qs.get(RequestParameters.QUERY));
+                            }
+                        }
+                        
                         searchHistoryRepository.saveClick(h);
-                    } catch (DataAccessException | TransactionException e) {
-                        log.error("Error while saving click history", e);
+                    } else {
+                        log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
                     }
-                } else {
-                    log.warn("Result with URL '"+indexUrl+"' not found in collection '"+collection.getId()+"'");
                 }
+                
+                logService.logClick(new ClickLog(new Date(), collection, collection
+                        .getProfiles().get(profile), requestId, referer, rank,
+                        indexUrl, type, LogUtils.getUserId(user)));
+                
+                metrics.counter(MetricRegistry.name(
+                    MetricsConfiguration.ALL_NS, MetricsConfiguration.CLICK)).inc();
+    
+                metrics.counter(MetricRegistry.name(
+                    MetricsConfiguration.COLLECTION_NS, collection.getId(),
+                    profile.getId(), MetricsConfiguration.CLICK)).inc();
+            } catch (Exception e) {
+                log.error("Error while processing click", e);
             }
             
-            logService.logClick(new ClickLog(new Date(), collection, collection
-                    .getProfiles().get(profile), requestId, referer, rank,
-                    indexUrl, type, LogUtils.getUserId(user)));
-            
-            metrics.counter(MetricRegistry.name(
-                MetricsConfiguration.ALL_NS, MetricsConfiguration.CLICK)).inc();
-
-            metrics.counter(MetricRegistry.name(
-                MetricsConfiguration.COLLECTION_NS, collection.getId(),
-                profile.getId(), MetricsConfiguration.CLICK)).inc();
-            
+            // Always try to redirect, even if there was an Exception before (SUPPORT-1982)
             response.sendRedirect(
                 redirectUrl.toString()
                 + ( noAttachment
