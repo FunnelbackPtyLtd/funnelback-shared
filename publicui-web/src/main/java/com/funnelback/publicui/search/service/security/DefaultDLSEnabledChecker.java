@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 
 @Component
 @NoArgsConstructor
-public class DefaultDLSEnabledCheck implements DLSEnabledCheck {
+public class DefaultDLSEnabledChecker implements DLSEnabledChecker {
 
     
     private MetaMapCfgMarshaller metaMapCfgMarshaller = new MetaMapCfgMarshaller();

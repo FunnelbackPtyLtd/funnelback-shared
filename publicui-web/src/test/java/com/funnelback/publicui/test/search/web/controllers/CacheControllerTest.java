@@ -26,7 +26,7 @@ import com.funnelback.common.views.StoreView;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledCheck;
+import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 
 public class CacheControllerTest {
@@ -35,13 +35,13 @@ public class CacheControllerTest {
     public static final String SIMPLE_NON_ASCII_STRING = "Can you deal with the real stuff: é à ê ö";
     
     private CacheController cacheController;
-    private DLSEnabledCheck dLSEnabledCheck; 
+    private DLSEnabledChecker dLSEnabledCheck; 
     
     @Before
     public void getCacheController() {
         cacheController = new CacheController();
-        dLSEnabledCheck = mock(DLSEnabledCheck.class);
-        cacheController.setDLSEnabledCheck(dLSEnabledCheck);
+        dLSEnabledCheck = mock(DLSEnabledChecker.class);
+        cacheController.setDLSEnabledChecker(dLSEnabledCheck);
     }
     
     @Test

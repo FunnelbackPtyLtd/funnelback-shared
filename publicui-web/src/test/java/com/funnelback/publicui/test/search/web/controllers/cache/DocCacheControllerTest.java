@@ -28,7 +28,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
-import com.funnelback.publicui.search.service.security.DLSEnabledCheck;
+import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
@@ -58,7 +58,7 @@ public class DocCacheControllerTest {
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
         cacheController.setMetrics(metrics);
-        cacheController.setDLSEnabledCheck(Mockito.mock(DLSEnabledCheck.class));
+        cacheController.setDLSEnabledChecker(Mockito.mock(DLSEnabledChecker.class));
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
