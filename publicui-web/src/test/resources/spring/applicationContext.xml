@@ -36,6 +36,7 @@
 	</bean>
 
 	<bean class="com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor" />
+        <bean class="com.funnelback.publicui.search.service.security.DefaultDLSEnabledChecker" />
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="useCodeAsDefaultMessage"><value>true</value></property>

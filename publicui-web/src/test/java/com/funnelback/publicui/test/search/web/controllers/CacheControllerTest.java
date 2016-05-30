@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -8,36 +9,46 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jsoup.nodes.Document;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
-import org.jsoup.nodes.Document;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.io.store.RawBytesRecord;
-import com.funnelback.common.io.store.Record;
 import com.funnelback.common.io.store.Store;
 import com.funnelback.common.io.store.Store.RecordAndMetadata;
 import com.funnelback.common.views.StoreView;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
-
-import static org.mockito.Matchers.any;
 
 public class CacheControllerTest {
 
     public static final String NON_ASCII_STRING = "Can you deal with the real stuff: 日本 é à ê ö";
     public static final String SIMPLE_NON_ASCII_STRING = "Can you deal with the real stuff: é à ê ö";
     
+    private CacheController cacheController;
+    private DLSEnabledChecker dLSEnabledCheck; 
+    
+    @Before
+    public void getCacheController() {
+        cacheController = new CacheController();
+        dLSEnabledCheck = mock(DLSEnabledChecker.class);
+        cacheController.setDLSEnabledChecker(dLSEnabledCheck);
+    }
+    
     @Test
     public void getCharsetTestXFunHeader() {
         Map<String, String> m = new HashMap<>();
         m.put(Store.Header.Charset.toString(), "foobar");
-        Assert.assertEquals("foobar", new CacheController().getCharset(m));
+        Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     
@@ -45,28 +56,28 @@ public class CacheControllerTest {
     public void getCharsetTestContentTypeHeader() {
         Map<String, String> m = new HashMap<>();
         m.put("Content-Type", "derp a charset=foobar");
-        Assert.assertEquals("foobar", new CacheController().getCharset(m));
+        Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderLC() {
         Map<String, String> m = new HashMap<>();
         m.put("content-type", "derp a charset=\"foobar\"");
-        Assert.assertEquals("foobar", new CacheController().getCharset(m));
+        Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderMixed() {
         Map<String, String> m = new HashMap<>();
         m.put("content-tYPe", "derp a charset=  \"foobar\" some stuff after");
-        Assert.assertEquals("foobar", new CacheController().getCharset(m));
+        Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderNoCharset() {
         Map<String, String> m = new HashMap<>();
         m.put("Content-Type", "derp a ");
-        Assert.assertEquals(CacheController.DEFAULT_CHARSET, new CacheController().getCharset(m));
+        Assert.assertEquals(CacheController.DEFAULT_CHARSET, cacheController.getCharset(m));
     }
     
     
@@ -74,7 +85,7 @@ public class CacheControllerTest {
     public void getContentTest() throws Exception {
         RawBytesRecord r = new RawBytesRecord(SIMPLE_NON_ASCII_STRING.getBytes("iso-8859-15"), "key");
         
-        String res = new CacheController().getContent(r, "iso-8859-15");
+        String res = cacheController.getContent(r, "iso-8859-15");
         
         Assert.assertEquals(SIMPLE_NON_ASCII_STRING, res);
     }
@@ -83,7 +94,7 @@ public class CacheControllerTest {
     public void getContentTestBadCharset() throws Exception {
         RawBytesRecord r = new RawBytesRecord(NON_ASCII_STRING.getBytes(), "key"); //Intentional use of default charset
         
-        String res = new CacheController().getContent(r, "badcharset");
+        String res = cacheController.getContent(r, "badcharset");
         
         Assert.assertEquals("When a bad charset is detected we should use the default charset", NON_ASCII_STRING, res);
     }
@@ -122,7 +133,7 @@ public class CacheControllerTest {
         MetricRegistry metricRegistry = mock(MetricRegistry.class);
         when(metricRegistry.counter(any())).thenReturn(mock(Counter.class));
         
-        CacheController cacheController = new CacheController();
+        CacheController cacheController = this.cacheController;
         cacheController.setDataRepository(dataRepository);
         cacheController.setMetrics(metricRegistry);
         

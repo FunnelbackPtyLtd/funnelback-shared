@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +20,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.DataRepository;
+import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 
@@ -47,6 +49,7 @@ public class MetaCollectionCacheControllerTest {
         cacheController.setConfigRepository(configRepository);
         cacheController.setDataRepository(dataRepository);
         cacheController.setMetrics(metrics);
+        cacheController.setDLSEnabledChecker(Mockito.mock(DLSEnabledChecker.class));
         
         request = new MockHttpServletRequest();
         request.setRequestURI("/s/cache.html");
