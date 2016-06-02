@@ -44,7 +44,7 @@ public class ResultFactory {
         String cacheUrl = data.get(Result.Schema.CACHE_URL);
         String exploreLink = data.get(Result.Schema.EXPLORE_LINK);
         
-        boolean documentVisableTouser = isDocumentVisableToUser(data);
+        boolean documentVisibleTouser = isDocumentVisibleToUser(data);
 
         String dateString = data.get(Result.Schema.DATE);
         Date date = null;
@@ -98,7 +98,7 @@ public class ResultFactory {
                 explain,
                 liveUrl,
                 gscopesSet,
-                documentVisableTouser);
+                documentVisibleTouser);
 
         r.getMetaData().putAll(metadataMap);
         if (data.get(Result.Schema.TAGS) != null) {
@@ -108,13 +108,13 @@ public class ResultFactory {
         return r;
     }
     
-    static boolean isDocumentVisableToUser(Map<String, String> data) {
-        boolean documentVisableTouser = true;
+    static boolean isDocumentVisibleToUser(Map<String, String> data) {
+        boolean documentVisibleTouser = true;
         if(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER) != null
                 && !Boolean.parseBoolean(data.get(Result.Schema.DOCUMENT_VISIBLE_TO_USER))) {
-            documentVisableTouser = false;
+            documentVisibleTouser = false;
         }
-        return documentVisableTouser;
+        return documentVisibleTouser;
     }
 
     /** Parses the <gscopes_set> field into a Set of Integers
