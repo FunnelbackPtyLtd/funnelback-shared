@@ -127,7 +127,7 @@ public class DefaultContentOptimiserFillerTest {
         SearchResponse response = new SearchResponse();
         response.setResultPacket(rp);
         SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl + "/anything.html"});        
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
         SearchTransaction allTransaction = new SearchTransaction(question,response);
 
         f.setImportantUrl(comparison, allTransaction);
@@ -148,7 +148,7 @@ public class DefaultContentOptimiserFillerTest {
         
         // Test compare indexUrl field
         rp.getResults().get(testStartResultIndex + 4).setIndexUrl(testUrl);
-        expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 3).getRank();
+        expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 4).getRank();
 
         rp.getResults().get(testStartResultIndex + 5).setIndexUrl(testUrl);
 
