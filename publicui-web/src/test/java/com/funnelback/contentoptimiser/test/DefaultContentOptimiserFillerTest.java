@@ -102,6 +102,63 @@ public class DefaultContentOptimiserFillerTest {
     }
     
     @Test
+    public void testSetImportantURLalreadyThereInVariousUrlFields() throws XmlParsingException, IOException {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
+        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+
+        f.consumeResultPacket(comparison, rp,hf);
+        assertNull(comparison.getSelectedDocument());
+        
+        final String testUrl = "http://test.url";
+        final int testStartResultIndex = rp.getResults().size() / 2;
+        
+        // Test compare displayUrl field
+        Integer expectedSelectedDocumentRank;
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex).getRank();
+
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(rp);
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl + "/anything.html"});        
+        SearchTransaction allTransaction = new SearchTransaction(question,response);
+
+        f.setImportantUrl(comparison, allTransaction);
+        
+        assertEquals("When there are more than one documents whose displayUrl are matched with the submitted URL, "
+            + "it should return the first one", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+        
+        // Test compare liveUrl field
+        rp.getResults().get(testStartResultIndex + 2).setLiveUrl(testUrl);
+        expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 2).getRank();
+
+        rp.getResults().get(testStartResultIndex + 3).setLiveUrl(testUrl);
+
+        allTransaction.getResponse().setResultPacket(rp);
+        f.setImportantUrl(comparison, allTransaction);
+        assertEquals("When there are more than one documents whose displayUrl and liveUrl are matched with the submitted URL, "
+            + "it should return the first one with correct live URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+        
+        // Test compare indexUrl field
+        rp.getResults().get(testStartResultIndex + 4).setIndexUrl(testUrl);
+        expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 3).getRank();
+
+        rp.getResults().get(testStartResultIndex + 5).setIndexUrl(testUrl);
+
+        allTransaction.getResponse().setResultPacket(rp);
+        f.setImportantUrl(comparison, allTransaction);
+        assertEquals("When there are more than one documents whose displayUrl, liveUrl and indexUrl are matched with the submitted URL, "
+            + "it should return the first one with correct index URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+    }
+    
+    @Test
     public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
