@@ -132,7 +132,7 @@ public class DefaultContentOptimiserFillerTest {
 
         f.setImportantUrl(comparison, allTransaction);
         
-        assertEquals("When there are more than one documents whose displayUrl are matched with the submitted URL, "
+        assertEquals("When there are more than one document whose displayUrl are matched with the submitted URL, "
             + "it should return the first one", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
         
         // Test compare liveUrl field
@@ -143,7 +143,7 @@ public class DefaultContentOptimiserFillerTest {
 
         allTransaction.getResponse().setResultPacket(rp);
         f.setImportantUrl(comparison, allTransaction);
-        assertEquals("When there are more than one documents whose displayUrl and liveUrl are matched with the submitted URL, "
+        assertEquals("When there are more than one document whose displayUrl and liveUrl are matched with the submitted URL, "
             + "it should return the first one with correct live URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
         
         // Test compare indexUrl field
@@ -154,7 +154,7 @@ public class DefaultContentOptimiserFillerTest {
 
         allTransaction.getResponse().setResultPacket(rp);
         f.setImportantUrl(comparison, allTransaction);
-        assertEquals("When there are more than one documents whose displayUrl, liveUrl and indexUrl are matched with the submitted URL, "
+        assertEquals("When there are more than one document whose displayUrl, liveUrl and indexUrl are matched with the submitted URL, "
             + "it should return the first one with correct index URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
     }
     

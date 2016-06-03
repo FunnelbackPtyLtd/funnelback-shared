@@ -510,7 +510,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
      * then given {@link Predicate} function
      * 
      * @param results A list of results
-     * @param filterPredicate Predicate to filter the list of results in result package
+     * @param filterPredicate Predicate to filter the given list of results
      * @return The first found result or null
      */
     private Optional<Result> findFirtResultFor(List<Result> results, Predicate<? super Result> filterPredicate) {
