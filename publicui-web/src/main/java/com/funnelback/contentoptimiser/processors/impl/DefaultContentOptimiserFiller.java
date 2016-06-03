@@ -296,17 +296,17 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         
         // See if the selected document appears for the long query
         // starts by comparing index URL
-        Optional<Result> tempImportantResult = findFirtFoundResult(allRp.getResults(), 
+        Optional<Result> tempImportantResult = findFirtResultFor(allRp.getResults(), 
             result -> possibleUrls.contains(result.getIndexUrl()) || urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*","")));
         
         if (!tempImportantResult.isPresent()) {
             // compare live URL 
-            tempImportantResult = findFirtFoundResult(allRp.getResults(), 
+            tempImportantResult = findFirtResultFor(allRp.getResults(), 
                 result -> possibleUrls.contains(result.getLiveUrl()));
             
             if (!tempImportantResult.isPresent()) {
                 // compare display URL
-                tempImportantResult = findFirtFoundResult(allRp.getResults(), 
+                tempImportantResult = findFirtResultFor(allRp.getResults(), 
                     result -> possibleUrls.contains(result.getDisplayUrl()));
             }
         }
@@ -321,7 +321,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         }
         
         // First see if the model already contains the selected document (it will if it's in the top 10)
-        Optional<Result> foundTopResultUrl = findFirtFoundResult(comparison.getTopResults(), 
+        Optional<Result> foundTopResultUrl = findFirtResultFor(comparison.getTopResults(), 
             url -> url.getIndexUrl().equals(importantResult.getIndexUrl()));
         
         if(foundTopResultUrl.isPresent()) {
@@ -513,7 +513,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
      * @param filterPredicate Predicate to filter the list of results in result package
      * @return The first found result or null
      */
-    private Optional<Result> findFirtFoundResult(List<Result> results, Predicate<? super Result> filterPredicate) {
+    private Optional<Result> findFirtResultFor(List<Result> results, Predicate<? super Result> filterPredicate) {
         return results
             .stream()
             .filter(filterPredicate)
