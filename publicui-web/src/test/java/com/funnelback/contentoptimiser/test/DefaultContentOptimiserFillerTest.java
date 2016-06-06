@@ -26,26 +26,16 @@ import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class DefaultContentOptimiserFillerTest {
-
-    @Test
-    public void testFillHints () throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
     
+    @Test
+    public void testFillHints() throws XmlParsingException, IOException {
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
 
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {"http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html"});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-        
-        f.consumeResultPacket(comparison, rp,hf);
-        f.setImportantUrl(comparison, allTransaction);
+        ContentOptimiserModel comparison = 
+            callSetImportantUrlWith(
+                getDefaultTestResultPacket(), 
+                "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html",
+                f);
         
         assertNotNull(comparison.getHintsByName().get("offlink"));
         assertNotNull(comparison.getHintsByName().get("urllen"));
@@ -75,25 +65,11 @@ public class DefaultContentOptimiserFillerTest {
     
     @Test
     public void testSetImportantURLalreadyThere() throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+        ContentOptimiserModel comparison = 
+            callSetImportantUrlWith(
+                getDefaultTestResultPacket(), 
+                "http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html");
 
-        f.consumeResultPacket(comparison, rp,hf);
-        assertNull(comparison.getSelectedDocument());
-        
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {"http://test-data.funnelback.com/Shakespeare/lear/lear.4.7.html"});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-
-        f.setImportantUrl(comparison, allTransaction);
-        
         assertNotNull(comparison.getSelectedDocument());
         assertEquals(new Integer(3),comparison.getSelectedDocument().getRank());
         assertEquals(10.004,comparison.getHintsByName().get("content").getWin(),0.0001);
@@ -103,17 +79,7 @@ public class DefaultContentOptimiserFillerTest {
     
     @Test
     public void testSetImportantURLalreadyThereInDisplayUrlField() throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
-
-        f.consumeResultPacket(comparison, rp,hf);
-        assertNull(comparison.getSelectedDocument());
-        
+        ResultPacket rp = getDefaultTestResultPacket();
         final String testUrl = "http://test.url";
         final int testStartResultIndex = rp.getResults().size() / 2;
         
@@ -123,31 +89,17 @@ public class DefaultContentOptimiserFillerTest {
 
         rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
         
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-
-        f.setImportantUrl(comparison, allTransaction);
-        
         assertEquals("When there is more than one document whose displayUrl is matched with the submitted URL, "
-            + "it should return the first one", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+            + "it should return the first one", 
+            expectedSelectedDocumentRank, 
+            callSetImportantUrlWith(rp, testUrl)
+                .getSelectedDocument()
+                .getRank());
     }
     
     @Test
     public void testSetImportantURLalreadyThereInDisplayUrlAndLiveUrlFields() throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
-
-        f.consumeResultPacket(comparison, rp,hf);
-        assertNull(comparison.getSelectedDocument());
-        
+        ResultPacket rp = getDefaultTestResultPacket();
         final String testUrl = "http://test.url";
         final int testStartResultIndex = rp.getResults().size() / 2;
         
@@ -161,31 +113,17 @@ public class DefaultContentOptimiserFillerTest {
 
         rp.getResults().get(testStartResultIndex + 3).setLiveUrl(testUrl);
         
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-        
-        f.setImportantUrl(comparison, allTransaction);
-        
         assertEquals("When there is more than one document whose displayUrl and liveUrl is matched with the submitted URL, "
-            + "it should return the first one with correct live URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+            + "it should return the first one with correct live URL", 
+            expectedSelectedDocumentRank, 
+            callSetImportantUrlWith(rp, testUrl)
+                .getSelectedDocument()
+                .getRank());
     }
     
     @Test
     public void testSetImportantURLalreadyThereInAllUrlFields() throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
-
-        f.consumeResultPacket(comparison, rp,hf);
-        assertNull(comparison.getSelectedDocument());
-        
+        ResultPacket rp = getDefaultTestResultPacket();
         final String testUrl = "http://test.url";
         final int testStartResultIndex = rp.getResults().size() / 2;
         
@@ -202,39 +140,21 @@ public class DefaultContentOptimiserFillerTest {
         final Integer expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 4).getRank();
 
         rp.getResults().get(testStartResultIndex + 5).setIndexUrl(testUrl);
-
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-        
-        f.setImportantUrl(comparison, allTransaction);
         
         assertEquals("When there is more than one document whose displayUrl, liveUrl and indexUrl is matched with the submitted URL, "
-            + "it should return the first one with correct index URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+            + "it should return the first one with correct index URL", 
+            expectedSelectedDocumentRank, 
+            callSetImportantUrlWith(rp, testUrl)
+                .getSelectedDocument()
+                .getRank());
     }
     
     @Test
     public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
-        ContentOptimiserModel comparison = new ContentOptimiserModel();
-        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
-
-        f.consumeResultPacket(comparison, rp,hf);
-        assertNull(comparison.getSelectedDocument());
-        
-        SearchResponse response = new SearchResponse();
-        response.setResultPacket(rp);
-        SearchQuestion question = new SearchQuestion();
-        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {"http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html"});        
-        SearchTransaction allTransaction = new SearchTransaction(question,response);
-
-        f.setImportantUrl(comparison, allTransaction);
+        ContentOptimiserModel comparison = 
+            callSetImportantUrlWith(
+                getDefaultTestResultPacket(), 
+                "http://test-data.funnelback.com/Shakespeare/lear/lear.5.1.html");
         
         assertNotNull(comparison.getSelectedDocument());
 
@@ -246,12 +166,8 @@ public class DefaultContentOptimiserFillerTest {
 
     @Test
     public void testConsumeResultPacket() throws XmlParsingException, IOException {
+        ResultPacket rp = getDefaultTestResultPacket();
         
-        StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(  new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
-            false);
-
         ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
         ContentOptimiserModel comparison = new ContentOptimiserModel();
         RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
@@ -275,4 +191,40 @@ public class DefaultContentOptimiserFillerTest {
         assertEquals(14,comparison.getWeights().get("offlink"),0.0001);
         assertEquals(45,comparison.getWeights().get("urllen"),0.0001);
     }
+    
+    private ResultPacket getDefaultTestResultPacket() throws IOException, XmlParsingException {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
+        
+        return rp;
+    }
+    
+    private ContentOptimiserModel callSetImportantUrlWith(ResultPacket resultPacket, String testUrl) {
+        return callSetImportantUrlWith(resultPacket, testUrl, null);
+    }
+    
+    private ContentOptimiserModel callSetImportantUrlWith(ResultPacket resultPacket, String testUrl, ContentOptimiserFiller f) {
+        if (f == null) {
+            f = new DefaultContentOptimiserFiller();
+        }
+        
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+
+        f.consumeResultPacket(comparison, resultPacket, hf);
+        assertNull(comparison.getSelectedDocument());
+        
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(resultPacket);
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});
+        SearchTransaction allTransaction = new SearchTransaction(question,response);
+        
+        f.setImportantUrl(comparison, allTransaction);
+
+        return comparison;
+    }
+
 }
