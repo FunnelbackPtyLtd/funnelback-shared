@@ -10,11 +10,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +33,17 @@ import com.funnelback.publicui.search.model.anchors.AnchorModel;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.DocumentContentModel;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeature;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.RankingFeatureCategory;
 import com.funnelback.publicui.utils.MapUtils;
 import com.google.common.collect.SetMultimap;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
@@ -280,7 +282,6 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         Collections.sort(comparison.getHintCollections());
     }
     
-    
     @Override
     public void setImportantUrl(ContentOptimiserModel comparison,SearchTransaction searchTransaction) {
         
@@ -294,32 +295,43 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         possibleUrls.add("http://"+ urlString + "/");
         
         // See if the selected document appears for the long query
-        Result importantResult = null;
-        for (Result result : allRp.getResults()) {
-            if(possibleUrls.contains(result.getDisplayUrl())
-                    || possibleUrls.contains(result.getLiveUrl())
-                    || possibleUrls.contains(result.getIndexUrl())
-                    || urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*",""))) {
-                importantResult = result;
-                break;
-            }
-        }    
         
-        // If the selected document didn't appear in the long query, then terminate early
-        if(importantResult == null) {
+        // First compare "indexUrl" - the original URL from the index,
+        // with the submitted URL
+        Optional<Result> tempImportantResult = findFirstResultWhere(allRp.getResults(), 
+            result -> possibleUrls.contains(result.getIndexUrl()) || urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*","")));
+        
+        if (!tempImportantResult.isPresent()) {
+            // If there are no matching results using "indexUrl", try "liveUrl", 
+            // which is identical to indexUrl initially, but might have been changed by a hook script
+            tempImportantResult = findFirstResultWhere(allRp.getResults(), 
+                result -> possibleUrls.contains(result.getLiveUrl()));
+            
+            if (!tempImportantResult.isPresent()) {
+             // If there are no matching results using "indexUrl" and "liveUrl", try "displayUrl", 
+                // which is identical to "indexUrl" and "liveUrl" initially, but might have been changed by a hook script
+                tempImportantResult = findFirstResultWhere(allRp.getResults(), 
+                    result -> possibleUrls.contains(result.getDisplayUrl()));
+            }
+        }
+        
+        final Result importantResult;
+        if (tempImportantResult.isPresent()) {
+            importantResult = tempImportantResult.get();
+        } else {
+            // If the selected document didn't appear in the long query, then terminate early
             comparison.getMessages().add(i18n.tr("info.selectedDocumentTooFarDown"));
             return;
         }
         
         // First see if the model already contains the selected document (it will if it's in the top 10)
-        for (Result url : comparison.getTopResults()) {
-            if(url.getDisplayUrl().equals(importantResult.getDisplayUrl())) {
-                comparison.setSelectedDocument(url);
-            }
-        }
+        Optional<Result> foundTopResultUrl = findFirstResultWhere(comparison.getTopResults(), 
+            url -> url.getIndexUrl().equals(importantResult.getIndexUrl()));
         
-        // Otherwise we must create it ourselves
-        if(comparison.getSelectedDocument() == null) {
+        if(foundTopResultUrl.isPresent()) {
+            comparison.setSelectedDocument(foundTopResultUrl.get());
+        } else {
+            // Otherwise we must create it ourselves
             comparison.setSelectedDocument(importantResult);
             for (Map.Entry<CoolerWeighting,Float> feature : importantResult.getExplain().getFeatureScores().entrySet()) {
                 float percentage = feature.getValue()*allRp.getCoolerWeights().get(feature.getKey())  *100;
@@ -497,6 +509,20 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
             inDocFreq.doubleValue()/totalDocuments);
     }
 
+    /**
+     * Return the first found result in the given list that satisfies
+     * the given {@link Predicate} function
+     * 
+     * @param results A list of {@link Result}
+     * @param filterPredicate {@link Predicate} to filter the given list of {@link Result}
+     * @return The first found {@link Result} or null
+     */
+    private Optional<Result> findFirstResultWhere(List<Result> results, Predicate<? super Result> filterPredicate) {
+        return results
+            .stream()
+            .filter(filterPredicate)
+            .findFirst();
+    }
 }
 
 

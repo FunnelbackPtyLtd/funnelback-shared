@@ -102,6 +102,120 @@ public class DefaultContentOptimiserFillerTest {
     }
     
     @Test
+    public void testSetImportantURLalreadyThereInDisplayUrlField() throws XmlParsingException, IOException {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
+        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+
+        f.consumeResultPacket(comparison, rp,hf);
+        assertNull(comparison.getSelectedDocument());
+        
+        final String testUrl = "http://test.url";
+        final int testStartResultIndex = rp.getResults().size() / 2;
+        
+        // Set few display URLs to be the same as the test URL
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        final Integer expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex).getRank();
+
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(rp);
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
+        SearchTransaction allTransaction = new SearchTransaction(question,response);
+
+        f.setImportantUrl(comparison, allTransaction);
+        
+        assertEquals("When there is more than one document whose displayUrl is matched with the submitted URL, "
+            + "it should return the first one", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+    }
+    
+    @Test
+    public void testSetImportantURLalreadyThereInDisplayUrlAndLiveUrlFields() throws XmlParsingException, IOException {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
+        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+
+        f.consumeResultPacket(comparison, rp,hf);
+        assertNull(comparison.getSelectedDocument());
+        
+        final String testUrl = "http://test.url";
+        final int testStartResultIndex = rp.getResults().size() / 2;
+        
+        // Set few display URLs to be the same as the test URL
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        
+        // Set few live URLs to be the same as the test URL
+        rp.getResults().get(testStartResultIndex + 2).setLiveUrl(testUrl);
+        final Integer expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 2).getRank();
+
+        rp.getResults().get(testStartResultIndex + 3).setLiveUrl(testUrl);
+        
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(rp);
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
+        SearchTransaction allTransaction = new SearchTransaction(question,response);
+        
+        f.setImportantUrl(comparison, allTransaction);
+        
+        assertEquals("When there is more than one document whose displayUrl and liveUrl is matched with the submitted URL, "
+            + "it should return the first one with correct live URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+    }
+    
+    @Test
+    public void testSetImportantURLalreadyThereInAllUrlFields() throws XmlParsingException, IOException {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            false);
+        ContentOptimiserFiller f = new DefaultContentOptimiserFiller();
+        ContentOptimiserModel comparison = new ContentOptimiserModel();
+        RankingFeatureFactory hf = new DefaultRankingFeatureFactory();
+
+        f.consumeResultPacket(comparison, rp,hf);
+        assertNull(comparison.getSelectedDocument());
+        
+        final String testUrl = "http://test.url";
+        final int testStartResultIndex = rp.getResults().size() / 2;
+        
+        // Set few display URLs to be the same as the test URL
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        rp.getResults().get(testStartResultIndex).setDisplayUrl(testUrl);
+        
+        // Set few live URLs to be the same as the test URL
+        rp.getResults().get(testStartResultIndex + 2).setLiveUrl(testUrl);
+        rp.getResults().get(testStartResultIndex + 3).setLiveUrl(testUrl);
+        
+        // Test compare indexUrl field
+        rp.getResults().get(testStartResultIndex + 4).setIndexUrl(testUrl);
+        final Integer expectedSelectedDocumentRank = rp.getResults().get(testStartResultIndex + 4).getRank();
+
+        rp.getResults().get(testStartResultIndex + 5).setIndexUrl(testUrl);
+
+        SearchResponse response = new SearchResponse();
+        response.setResultPacket(rp);
+        SearchQuestion question = new SearchQuestion();
+        question.getRawInputParameters().put(RequestParameters.CONTENT_OPTIMISER_URL, new String[] {testUrl});        
+        SearchTransaction allTransaction = new SearchTransaction(question,response);
+        
+        f.setImportantUrl(comparison, allTransaction);
+        
+        assertEquals("When there is more than one document whose displayUrl, liveUrl and indexUrl is matched with the submitted URL, "
+            + "it should return the first one with correct index URL", expectedSelectedDocumentRank, comparison.getSelectedDocument().getRank());
+    }
+    
+    @Test
     public void testSetImportantURLnotThereYet() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
