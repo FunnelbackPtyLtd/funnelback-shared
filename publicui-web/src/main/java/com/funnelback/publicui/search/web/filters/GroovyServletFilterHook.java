@@ -8,7 +8,7 @@ import javax.servlet.ServletResponse;
 import com.funnelback.publicui.search.web.filters.utils.InterceptableHttpServletResponseWrapper;
 
 /**
- * Interface for groovy servlet filter hooks within Funnelback's Public UI,
+ * Base class for groovy servlet filter hooks within Funnelback's Public UI,
  * allowing code to audit log or manipulate the request/response before it is
  * processed/returned to the user.
  * 
