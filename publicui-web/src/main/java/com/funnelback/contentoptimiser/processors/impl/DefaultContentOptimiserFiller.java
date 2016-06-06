@@ -295,18 +295,22 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         possibleUrls.add("http://"+ urlString + "/");
         
         // See if the selected document appears for the long query
-        // starts by comparing index URL
-        Optional<Result> tempImportantResult = findFirtResultFor(allRp.getResults(), 
+        
+        // First compare "indexUrl" - the original URL from the index,
+        // with the submitted URL
+        Optional<Result> tempImportantResult = findFirstResultWhere(allRp.getResults(), 
             result -> possibleUrls.contains(result.getIndexUrl()) || urlString.endsWith(result.getClickTrackingUrl().replaceFirst("&search_referer=.*","")));
         
         if (!tempImportantResult.isPresent()) {
-            // compare live URL 
-            tempImportantResult = findFirtResultFor(allRp.getResults(), 
+            // If there are no matching results using "indexUrl", try "liveUrl", 
+            // which is identical to indexUrl initially, but might have been changed by a hook script
+            tempImportantResult = findFirstResultWhere(allRp.getResults(), 
                 result -> possibleUrls.contains(result.getLiveUrl()));
             
             if (!tempImportantResult.isPresent()) {
-                // compare display URL
-                tempImportantResult = findFirtResultFor(allRp.getResults(), 
+             // If there are no matching results using "indexUrl" and "liveUrl", try "displayUrl", 
+                // which is identical to "indexUrl" and "liveUrl" initially, but might have been changed by a hook script
+                tempImportantResult = findFirstResultWhere(allRp.getResults(), 
                     result -> possibleUrls.contains(result.getDisplayUrl()));
             }
         }
@@ -321,7 +325,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         }
         
         // First see if the model already contains the selected document (it will if it's in the top 10)
-        Optional<Result> foundTopResultUrl = findFirtResultFor(comparison.getTopResults(), 
+        Optional<Result> foundTopResultUrl = findFirstResultWhere(comparison.getTopResults(), 
             url -> url.getIndexUrl().equals(importantResult.getIndexUrl()));
         
         if(foundTopResultUrl.isPresent()) {
@@ -507,13 +511,13 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
 
     /**
      * Return the first found result in the given list that satisfies
-     * then given {@link Predicate} function
+     * the given {@link Predicate} function
      * 
-     * @param results A list of results
-     * @param filterPredicate Predicate to filter the given list of results
-     * @return The first found result or null
+     * @param results A list of {@link Result}
+     * @param filterPredicate {@link Predicate} to filter the given list of {@link Result}
+     * @return The first found {@link Result} or null
      */
-    private Optional<Result> findFirtResultFor(List<Result> results, Predicate<? super Result> filterPredicate) {
+    private Optional<Result> findFirstResultWhere(List<Result> results, Predicate<? super Result> filterPredicate) {
         return results
             .stream()
             .filter(filterPredicate)
