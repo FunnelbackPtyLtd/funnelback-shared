@@ -9,7 +9,7 @@
     <title>File list</title>
 </head>
 
-<body class="ftldoc">
+<body class="ftldoc side">
 <div id="content">
 
 <h3>Macro Libraries</h3>

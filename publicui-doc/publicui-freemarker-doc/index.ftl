@@ -6,7 +6,7 @@
     <title>FreeMarker libraries documentation</title>
 </head>
 
-<frameset cols="180,*">
+<frameset cols="300,*">
     <frame name="list" src="files.html">
     <frame name="main" src="overview.html">
 </frameset>
