@@ -49,7 +49,7 @@ public class DenyIfDlsIsOnInterceptor implements HandlerInterceptor {
             }
             
             if(dLSEnabledChecker.isDLSEnabled(collection)) {
-                log.debug("DLS is enabled on " + collection.getConfiguration().getCollectionName());
+                log.warn("Blocked access - DLS is enabled on " + collection.getConfiguration().getCollectionName());
                 return false;
             }
             
@@ -58,7 +58,7 @@ public class DenyIfDlsIsOnInterceptor implements HandlerInterceptor {
                 for(String component : collection.getMetaComponents()) {
                     collection = configRepository.getCollection(component);
                     if(collection != null && dLSEnabledChecker.isDLSEnabled(collection)) {
-                        log.debug("DLS is enabled on " + collection.getConfiguration().getCollectionName());
+                        log.warn("Blocked access - DLS is enabled on " + collection.getConfiguration().getCollectionName());
                         return false;
                     }
                 }
