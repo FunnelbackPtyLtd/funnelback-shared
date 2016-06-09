@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,7 @@ import com.funnelback.publicui.utils.MapUtils;
  * adding click tracking URLs.
  */
 @Component("fixCacheAndClickLinks")
+@Log4j2
 public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
     @Autowired @Setter
@@ -47,16 +49,8 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             // FUN-5038: We must use the full query expression here, not just
             // the user-entered one
             String q = new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery();
-            if (q.length() > 0) {
+            setClickTrackingUrl(searchTransaction, q);
             
-                for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
-                    if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
-                        r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
-                    } else {
-                        r.setClickTrackingUrl(r.getLiveUrl());
-                    }
-                }
-            }
         }
 
         // Apply click tracking to best bets links, even if there are no results
@@ -95,6 +89,28 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         }
     }
     
+    /**
+     * 
+     * @param searchTransaction
+     * @param q The fully build query.
+     */
+    //This is public because tests are not in the same package.
+    public void setClickTrackingUrl(SearchTransaction searchTransaction, String q) {
+        for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
+            if(r.isDocumentVisibleToUser()) {
+                if (q.length() > 0) {
+                    if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                        r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
+                    } else {
+                        r.setClickTrackingUrl(r.getLiveUrl());
+                    }
+                }
+            } else {
+                r.setClickTrackingUrl(null);
+            }
+        }
+    }
+    
     
     
     
@@ -105,7 +121,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      * @return
      */
     @SneakyThrows(UnsupportedEncodingException.class)
-    private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
+    String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
         final StringBuffer out = buildGenericClickTrackingUrl(question, r.getLiveUrl(), r.getIndexUrl());
 
         out.append("&rank=").append(r.getRank().toString())
