@@ -98,6 +98,13 @@ public class ResultsSummary {
       * <p>See: <code>start_rank</code> parameter, <code>num_ranks</code> parameter.</p>
      */
     @Getter @Setter private Integer nextStart;
+    
+    /** 
+     * <p>The number of results which are not viewable to the user</p>
+     * 
+     * <p>Only set when Translucent DLS is enabled.</p>
+     */
+    @Getter @Setter private Integer totalSecurityObscuredUrls;
 
     /** Constants for the PADRE XML result packet tags. */
     public static final class Schema {
@@ -116,6 +123,7 @@ public class ResultsSummary {
         public static final String CURREND = "currend";
         public static final String PREVSTART = "prevstart";
         public static final String NEXTSTART = "nextstart";
+        public static final String TOTAL_SECURITY_OBSCURED_URLS = "total_security_obscured_urls";
     }
     
 }
