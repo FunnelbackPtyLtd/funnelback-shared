@@ -48,14 +48,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             // the user-entered one
             String q = new PadreQueryStringBuilder(searchTransaction.getQuestion(), true).buildCompleteQuery();
             if (q.length() > 0) {
-            
-                for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
-                    if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
-                        r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
-                    } else {
-                        r.setClickTrackingUrl(r.getLiveUrl());
-                    }
-                }
+                setClickTrackingUrl(searchTransaction, q);
             }
         }
 
@@ -95,6 +88,19 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         }
     }
     
+    //This is public because tests are not in the same package.
+    public void setClickTrackingUrl(SearchTransaction searchTransaction, String q) {
+        for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
+            if(r.isDocumentVisibleToUser()) {
+                if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                    r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
+                } else {
+                    r.setClickTrackingUrl(r.getLiveUrl());
+                }
+            }
+        }
+    }
+    
     
     
     
@@ -105,7 +111,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      * @return
      */
     @SneakyThrows(UnsupportedEncodingException.class)
-    private String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
+    String buildClickTrackingUrl(SearchQuestion question, String queryExpr, final Result r) {
         final StringBuffer out = buildGenericClickTrackingUrl(question, r.getLiveUrl(), r.getIndexUrl());
 
         out.append("&rank=").append(r.getRank().toString())

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.SneakyThrows;
@@ -12,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
@@ -29,9 +31,14 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import com.google.common.collect.ImmutableList;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
 public class FixCacheAndClickLinksTests {
 
@@ -176,4 +183,29 @@ public class FixCacheAndClickLinksTests {
         Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
     }
     
+    @Test
+    public void setClickTrackingUrlTestNotVisable() {
+        SearchTransaction st = mock(SearchTransaction.class, RETURNS_DEEP_STUBS);
+        
+        when(st.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)).thenReturn(false);
+        
+        Result r1 = mock(Result.class);
+        when(r1.isDocumentVisibleToUser()).thenReturn(false);
+        
+        Result r2 = mock(Result.class);
+        when(r2.isDocumentVisibleToUser()).thenReturn(true);
+        when(r2.getLiveUrl()).thenReturn("hey hey hey");
+        
+        List<Result> results = ImmutableList.<Result>builder().add(r1).add(r2).build();
+        when(st.getResponse().getResultPacket().getResults()).thenReturn(results);
+        
+        FixCacheAndClickLinks fixCacheAndClickLinks = new FixCacheAndClickLinks();
+        fixCacheAndClickLinks.setClickTrackingUrl(st, null);
+        
+        verify(r2, times(1)).setClickTrackingUrl("hey hey hey");
+        
+        verify(r1, times(0)).setClickTrackingUrl(Matchers.anyString());
+    }
+    
 }
+
