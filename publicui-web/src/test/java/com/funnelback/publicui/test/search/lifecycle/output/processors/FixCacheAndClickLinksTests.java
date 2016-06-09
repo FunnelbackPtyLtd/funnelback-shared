@@ -200,11 +200,11 @@ public class FixCacheAndClickLinksTests {
         when(st.getResponse().getResultPacket().getResults()).thenReturn(results);
         
         FixCacheAndClickLinks fixCacheAndClickLinks = new FixCacheAndClickLinks();
-        fixCacheAndClickLinks.setClickTrackingUrl(st, null);
+        fixCacheAndClickLinks.setClickTrackingUrl(st, "bar");
         
         verify(r2, times(1)).setClickTrackingUrl("hey hey hey");
         
-        verify(r1, times(0)).setClickTrackingUrl(Matchers.anyString());
+        verify(r1, times(1)).setClickTrackingUrl(null);
     }
     
 }
