@@ -25,7 +25,8 @@ public class ResultsSummaryFactory {
                 data.get(ResultsSummary.Schema.CURRSTART),
                 data.get(ResultsSummary.Schema.CURREND),
                 data.get(ResultsSummary.Schema.PREVSTART),
-                data.get(ResultsSummary.Schema.NEXTSTART));
+                data.get(ResultsSummary.Schema.NEXTSTART),
+                data.get(ResultsSummary.Schema.TOTAL_SECURITY_OBSCURED_URLS));
     }
     
     /**
