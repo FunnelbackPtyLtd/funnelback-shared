@@ -1,24 +1,21 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.contentoptimiser.RankingFeatureFactory;
-import com.funnelback.contentoptimiser.UrlStatus;
-import com.funnelback.contentoptimiser.fetchers.UrlStatusFetcher;
 import com.funnelback.contentoptimiser.processors.ContentOptimiserFiller;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.anchors.AnchorModel;
-import com.funnelback.publicui.search.model.collection.Collection;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.contentoptimiser.ContentOptimiserModel;
 import com.funnelback.publicui.search.service.anchors.AnchorsFetcher;
 import com.funnelback.publicui.utils.MapUtils;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Process explain output from PADRE and generates relevant data model for the
@@ -33,9 +30,6 @@ public class ContentOptimiser extends AbstractOutputProcessor {
     
     @Autowired
     AnchorsFetcher anchorsFetcher;
-    
-    @Autowired
-    UrlStatusFetcher urlStatusFetcher;
     
     @Autowired
     private RankingFeatureFactory hintFactory;
@@ -74,11 +68,6 @@ public class ContentOptimiser extends AbstractOutputProcessor {
                     filler.obtainContentBreakdown(comparison, searchTransaction, comparison.getSelectedDocument(),anchors,searchTransaction.getResponse().getResultPacket().getStemmedEquivs());
                     optimiserUrl = comparison.getSelectedDocument().getDisplayUrl(); 
                 }
-                // if there is an optimiser URL, look it up with the URL status too 
-                UrlStatus status = urlStatusFetcher.fetch(optimiserUrl,searchTransaction.getQuestion().getCollection().getId());
-                if(status != null && ! status.isAvailable() && status.getError() != null && !status.getError().startsWith("Unsupported collection type")) {
-                    comparison.getMessages().add("Information about the selected URL was unavailable due to the following message from the crawler: \"" + status.getError() + "\". Ask your administrator for more information.");
-                }                
             } else {
                 // if there isn't an optimiser URL, note that we didn't find anything
                 comparison.getMessages().add("No document URL selected.");
