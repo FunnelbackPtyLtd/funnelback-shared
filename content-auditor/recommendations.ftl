@@ -108,7 +108,8 @@
                                 },
                               "categoryField": "label",
                               "height": 300,
-                               "colors": 	['#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74', '#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333', '#990000']
+                              "colors": ['#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74', '#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333', '#990000'],
+                              "addClassNames" : true
                             } );
                          
                            content_auditor.readingGradeChart.addListener("clickGraphItem", navigateToDataContextUrl);
@@ -243,18 +244,19 @@
                               } ],
                               "categoryField": "label",
                               "height": 300,
-                               "valueAxes": [{
+                              "valueAxes": [{
                                         "axisAlpha": 1,
                                         "position": "left",
                                         "title": "Pages"
                                     }],
-                                    "categoryAxis": {
-                                        "gridPosition": "start",
-                                        "fillAlpha": 0.05,
-                                        "position": "left",
-                                        "title": "Year"
-                                    },
-                            } );
+                              "categoryAxis": {
+                                  "gridPosition": "start",
+                                  "fillAlpha": 0.05,
+                                  "position": "left",
+                                  "title": "Year"
+                              },
+                              "addClassNames" : true 
+                            });
 
                             content_auditor.dateModifiedChart.addListener("clickGraphItem", navigateToDataContextUrl);
 
@@ -392,8 +394,8 @@
                                         "title": "Response Time (seconds)"
                                     },
                               "categoryField": "label",
-                              "height": 300
-                             
+                              "height": 300,
+                              "addClassNames" : true
                             });
                             
                             content_auditor.responseTimeChart.addListener("clickGraphItem", navigateToDataContextUrl);
