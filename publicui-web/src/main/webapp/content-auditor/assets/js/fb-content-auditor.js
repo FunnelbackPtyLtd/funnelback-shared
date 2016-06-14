@@ -599,13 +599,12 @@ jQuery(function()
             $('html').addClass('chrome');
         }
 
-		var x, y, timer;
-		var currentPos = { x: -1, y: -1 };
-		
-		
-        $(window).load(function(){
-       
-            $('.chart-container').mousemove(function(event) {
+        /*
+        var x, y, timer;
+        var currentPos = { x: -1, y: -1 };
+        $(window).on('load', function(){
+          
+            $('.chart-container').on('mousemove', function(event) {
                 var that = $('.amcharts-balloon-bg');
                 currentPos.x = that.position().left;
                 currentPos.y = that.position().top + 5;
@@ -630,6 +629,7 @@ jQuery(function()
                     });
             });
         });
+        */
 	}
 
 });
