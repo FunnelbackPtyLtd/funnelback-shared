@@ -485,7 +485,7 @@ jQuery(function()
                         what[i] = null;
                     }
                 });
-                console.log(what);
+               
                 var html = '';
                 var count = -1;
                 $.each(what, function(i, val)
