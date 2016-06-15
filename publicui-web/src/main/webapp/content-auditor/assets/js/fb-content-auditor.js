@@ -598,39 +598,7 @@ jQuery(function()
         if(isChrome){
             $('html').addClass('chrome');
         }
-
-        /*
-        var x, y, timer;
-        var currentPos = { x: -1, y: -1 };
-        $(window).on('load', function(){
-          
-            $('.chart-container').on('mousemove', function(event) {
-                var that = $('.amcharts-balloon-bg');
-                currentPos.x = that.position().left;
-                currentPos.y = that.position().top + 5;
-                var target = $(this).find('svg + div');
-                that.append(Math.random());
-                target.stop().css({
-                    left: currentPos.x,
-                    top : currentPos.y
-                    });
-                    
-                    clearTimeout(timer);
-                    
-                    timer = setTimeout(function(){ 
-                        target.css({
-                            visibility : 'visible', 
-                            display : 'block'
-                            //opacity: 0
-                            })
-                            .animate({ 
-                                opacity: 1 
-                                }, 300);
-                    });
-            });
-        });
-        */
-	}
+  }
 
 });
 
