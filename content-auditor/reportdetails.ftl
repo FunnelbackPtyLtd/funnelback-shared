@@ -14,7 +14,10 @@
 
     <div class="dropdown">
               <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                 ${question.inputParameterMap["f.URI|url"]!?html}
+                 <#if question.inputParameterMap["f.URI|url"]!?html != ''>${question.inputParameterMap["f.URI|url"]!?html}
+                 <#else>
+                 All URIs
+                 </#if>
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
