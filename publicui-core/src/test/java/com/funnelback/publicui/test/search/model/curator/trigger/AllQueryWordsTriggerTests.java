@@ -56,4 +56,27 @@ public class AllQueryWordsTriggerTests {
         question.setQuery("b a");
         Assert.assertTrue("Expected to succeed because a and b are present (order doesn't matter)", aqwt.activatesOn(st));
     }
+
+    /**
+     * The UI allows/encourages the entry of 'empty' terms. That's not ideal, but
+     * since the user's intent would not be to create a trigger which can never
+     * fire, we skip those for matching purposes.
+     */
+    @Test
+    public void testEmptyInputTerms() {
+        AllQueryWordsTrigger aqwt = new AllQueryWordsTrigger(Arrays.asList(new String[]{"a", "", " ", "\t"}));
+        
+        SearchQuestion question = new SearchQuestion();
+        
+        Config config = mock(Config.class);
+        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
+            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
+            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
+        question.setCollection(new Collection("test-collection", config));
+        
+        SearchTransaction st = new SearchTransaction(question, null);
+        
+        question.setQuery("a");
+        Assert.assertTrue("Expected to pass because a is present, and the empty string should be ignored.", aqwt.activatesOn(st));
+    }
 }
