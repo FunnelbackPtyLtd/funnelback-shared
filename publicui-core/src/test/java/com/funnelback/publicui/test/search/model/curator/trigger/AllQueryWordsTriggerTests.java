@@ -60,11 +60,11 @@ public class AllQueryWordsTriggerTests {
     /**
      * The UI allows/encourages the entry of 'empty' terms. That's not ideal, but
      * since the user's intent would not be to create a trigger which can never
-     * fire, we should skip those for matching purposes.
+     * fire, we skip those for matching purposes.
      */
     @Test
-    public void testEmptyInputTerm() {
-        AllQueryWordsTrigger aqwt = new AllQueryWordsTrigger(Arrays.asList(new String[]{"a", ""}));
+    public void testEmptyInputTerms() {
+        AllQueryWordsTrigger aqwt = new AllQueryWordsTrigger(Arrays.asList(new String[]{"a", "", " ", "\t"}));
         
         SearchQuestion question = new SearchQuestion();
         

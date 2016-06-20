@@ -58,8 +58,9 @@ public class AllQueryWordsTrigger implements Trigger {
         List<String> lowercasedTriggerWords = new ArrayList<String>();
         for (String triggerWord : triggerWords) {
             // Skip any 'empty' words - FUN-8734
-            if (triggerWord.length() > 0) {
-                lowercasedTriggerWords.add(triggerWord.toLowerCase());
+            String triggerWordTrimmed = triggerWord.trim();
+            if (triggerWordTrimmed.length() > 0) {
+                lowercasedTriggerWords.add(triggerWordTrimmed.toLowerCase());
             }
         }
         
