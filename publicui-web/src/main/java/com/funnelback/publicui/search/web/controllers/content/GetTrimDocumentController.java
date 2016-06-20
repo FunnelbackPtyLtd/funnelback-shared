@@ -176,7 +176,7 @@ public class GetTrimDocumentController {
                 // We can't just redirect to the cache URL here since there's an interceptor
                 // that will prevent the request to complete if the collection has DLS enabled.
                 log.debug("No attachment for record " + trimUri + ", returning cached copy");
-                return cacheController.cache(request, response,
+                return cacheController.cacheNoSecurityCheck(request, response,
                         new CacheQuestion(collection, DefaultValues.DEFAULT_PROFILE, DefaultValues.DEFAULT_FORM, url, null, 0, -1));
                 
             } finally {

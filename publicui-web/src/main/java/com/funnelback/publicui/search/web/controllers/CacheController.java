@@ -141,14 +141,32 @@ public class CacheController {
     public ModelAndView cache(HttpServletRequest request,
             HttpServletResponse response,
             @Valid CacheQuestion question) throws Exception {
+        if(this.dLSEnabledChecker.isDLSEnabled(question.getCollection())) {
+            log.trace("Cache copies not available as DLS is enabled for the collection");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } else {
+            return cacheNoSecurityCheck(request, response, question);
+        }
+        return new ModelAndView(CACHED_COPY_UNAVAILABLE_VIEW, new HashMap<String, Object>());
+    }
+    
+    /**
+     * Process cache request without doing security checks.
+     * 
+     * @param request
+     * @param response
+     * @param question
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView cacheNoSecurityCheck(HttpServletRequest request,
+            HttpServletResponse response,
+            @Valid CacheQuestion question) throws Exception {
         if (question.getUrl() == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (question.getCollection().getConfiguration().valueAsBoolean(Keys.UI_CACHE_DISABLED)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else if(this.dLSEnabledChecker.isDLSEnabled(question.getCollection())) {
-            log.trace("Cache copies not available as DLS is enabled for the collection");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else { 
+        }  else { 
             RecordAndMetadata<? extends Record<?>> rmd
                     = dataRepository.getCachedDocument(question.getCollection(), StoreView.live, question.getUrl());
             if ((rmd == null || rmd.record == null) && question.getDoc() != null) {
