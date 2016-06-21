@@ -1979,7 +1979,7 @@ header {
 }
 
 #fb-facets-navigation {
-    width: 12.667%;
+    width: 20%;
     margin-top: 92px;
 }
 
@@ -1988,7 +1988,7 @@ header {
 }
 
 #fb-facet-details {
-    width: 87.333%;
+    width: 80%;
 }
 
 #fb-facets-navigation,#fb-facet-details {
@@ -2104,6 +2104,7 @@ header {
 }
 
 @media (min-width: 1200px) {
+
 .tablescroll_body,.tablescroll_head {
     width: 100% !important;
 }
@@ -2155,6 +2156,13 @@ header {
 
 .modal-dialog {
     width: 1200px;
+}
+#fb-facets-navigation {
+    width: 12.667%;
+}
+
+#fb-facet-details {
+    width: 87.333%;
 }
 }
 
