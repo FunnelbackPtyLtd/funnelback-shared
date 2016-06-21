@@ -238,13 +238,18 @@
 		<#assign FacetLabel><@s.FacetLabel summary=false /></#assign>
 		<#assign FacetLabel = FacetLabel?replace("<[^>]*>", "", "r")?trim >
 		<#if 	 FacetLabel == 'URI'>				<#assign facetNavIcon ='link'>
-		<#elseif FacetLabel == 'Date modified'>		<#assign facetNavIcon ='calendar'>
+		<#elseif FacetLabel == 'Date Modified'>		<#assign facetNavIcon ='calendar-o'>
+		<#elseif FacetLabel == 'Response Time'>		<#assign facetNavIcon ='clock-o'>
+		<#elseif FacetLabel == 'Missing Metadata'>	<#assign facetNavIcon ='question'>
 		<#elseif FacetLabel == 'Author'>			<#assign facetNavIcon ='user'>
 		<#elseif FacetLabel == 'Format'>			<#assign facetNavIcon ='file-text-o'>
 		<#elseif FacetLabel == 'Language'>			<#assign facetNavIcon ='globe'>
 		<#elseif FacetLabel == 'Subject'>			<#assign facetNavIcon ='book'>
 		<#elseif FacetLabel == 'Publisher'>			<#assign facetNavIcon ='newspaper-o'>
 		<#elseif FacetLabel == 'Title'>				<#assign facetNavIcon ='font'>
+		<#elseif FacetLabel == 'Duplicated Titles'>	<#assign facetNavIcon ='clone'>
+		<#elseif FacetLabel == 'Reading Grade'>		<#assign facetNavIcon ='book'>
+		<#elseif FacetLabel == 'Undesirable Text'>	<#assign facetNavIcon ='ban'>
 		
 		<#-- These icons need checking as I cannot see this on my local copy ~ Steve  -->
 		
@@ -254,7 +259,7 @@
 		<#elseif FacetLabel == 'Missing Content'>	<#assign facetNavIcon ='question'>
 		<#elseif FacetLabel == 'Missing Content Attributes'><#assign facetNavIcon ='question'>
 		<#elseif FacetLabel == 'Creator'>		    <#assign facetNavIcon ='user'>
-		<#elseif FacetLabel == 'page Type'>		    <#assign facetNavIcon ='file'>
+		<#elseif FacetLabel == 'Page Type'>		    <#assign facetNavIcon ='file'>
 		<#elseif FacetLabel == 'Red Tape Reduction'><#assign facetNavIcon ='umbrella'>
 		<#elseif FacetLabel == 'Four Pillars'>		<#assign facetNavIcon ='certificate'> 
 		
