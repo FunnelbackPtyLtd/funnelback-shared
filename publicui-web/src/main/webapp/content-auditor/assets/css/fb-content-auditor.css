@@ -2002,7 +2002,9 @@ header {
 .closed #fb-facets-navigation {
     width: .667% !important;
 }
-
+.closed #fb-facet-details {
+    width: 96.97%;
+}
 #fb-facets-navigation .nav-stacked > li > a {
     transition: padding 333ms ease 222ms,color 333ms ease 222ms,opacity 222ms ease;
 }
@@ -2101,23 +2103,23 @@ header {
 .tablescroll_head th {
     width: auto !important;
 }
+
 }
 
 @media (min-width: 1200px) {
-
-.tablescroll_body,.tablescroll_head {
-    width: 100% !important;
-}
-
-.tablescroll_wrapper {
-    width: 98.3% !important;
-}
-
-.closed #fb-facet-details {
-    width: 95.7% !important;
-}
-
-.facet-search-chart,.facet-search-details {
+  .tablescroll_body,.tablescroll_head {
+      width: 100% !important;
+  }
+  
+  .tablescroll_wrapper {
+      width: 97.5% !important;
+  }
+  
+  .closed #fb-facet-details {
+      width: 95.7% !important;
+  }
+  
+  .facet-search-chart,.facet-search-details {
     width: 49.5%;
     margin: 0 !important;
     padding-left: 0;
@@ -2129,20 +2131,29 @@ header {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: 0;
-}
-
-.facet-search-chart {
+  }
+  .facet-search-details {
+    width:56.5%;
+  }
+  .facet-search-chart {
+    width:42.5%;
     float: left;
     padding-right: 0;
-}
-
-.facet-search-details {
+  }
+  
+  .facet-search-details {
     float: right;
-}
-
-.modal-dialog {
+  }
+  
+  .modal-dialog {
     width: 1140px;
-}
+  }
+  .closed #fb-facet-details {
+    width: 97.5% !important;
+  }
+  #tabbable-content{
+    padding: 0 25px 8px;
+  }
 }
 
 @media (min-width: 1600px) {
@@ -2164,12 +2175,17 @@ header {
 #fb-facet-details {
     width: 87.333%;
 }
+.closed #fb-facet-details {
+    width: 98.1% !important;
+}
+
 }
 
 /* TWBS BOOTSTRAP 3.2: SUPPORT FOR EXTRA LARGE SCREENS */
 .visible-xl-block,.visible-xl-inline,.visible-xl-inline-block,.visible-xl {
     display: none !important;
 }
+
 
 @media (min-width: 1600px) {
 .container {
@@ -2508,3 +2524,7 @@ html.chrome .facets {
 html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand{ 
     background-position: 0 0; 
 }
+
+
+
+
