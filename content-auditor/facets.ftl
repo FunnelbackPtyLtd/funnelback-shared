@@ -253,23 +253,24 @@
 		
 		<#-- These icons need checking as I cannot see this on my local copy ~ Steve  -->
 		
-		<#elseif FacetLabel == 'Busiess Stage'>	    <#assign facetNavIcon ='line-chart'>
-		<#elseif FacetLabel == 'Busiess Structure'>	<#assign facetNavIcon ='pie-chart'>
-		<#elseif FacetLabel == 'Generator'>			<#assign facetNavIcon ='cogs'>
-		<#elseif FacetLabel == 'Missing Content'>	<#assign facetNavIcon ='question'>
+		<#elseif FacetLabel == 'Business Stage'>	    <#assign facetNavIcon ='line-chart'>
+		<#elseif FacetLabel == 'Business Structure'>	<#assign facetNavIcon ='pie-chart'>
+		<#elseif FacetLabel == 'Generator'>				<#assign facetNavIcon ='cogs'>
+		<#elseif FacetLabel == 'Missing Content'>		<#assign facetNavIcon ='question'>
 		<#elseif FacetLabel == 'Missing Content Attributes'><#assign facetNavIcon ='question'>
-		<#elseif FacetLabel == 'Creator'>		    <#assign facetNavIcon ='user'>
-		<#elseif FacetLabel == 'Page Type'>		    <#assign facetNavIcon ='file'>
-		<#elseif FacetLabel == 'Red Tape Reduction'><#assign facetNavIcon ='umbrella'>
-		<#elseif FacetLabel == 'Four Pillars'>		<#assign facetNavIcon ='certificate'> 
+		<#elseif FacetLabel == 'Creator'>		    	<#assign facetNavIcon ='user'>
+		<#elseif FacetLabel == 'Page Type'>		    	<#assign facetNavIcon ='file'>
+		<#elseif FacetLabel == 'Red Tape Reduction'>	<#assign facetNavIcon ='umbrella'>
+		<#elseif FacetLabel == 'Four Pillars'>			<#assign facetNavIcon ='certificate'>
+		<#elseif FacetLabel == 'Robots'>				<#assign facetNavIcon ='android'> 
 		
 		<#else>
 		<!-- Default Icon -->
-													<#assign facetNavIcon ='circle-o'>
+														<#assign facetNavIcon ='circle-o'>
 		</#if>
 
 		<li ${facetNavigationClass} role="presentation">
-			<a href="#facet-${s.facet_index}.tab-pane" class="" title="View ${FacetLabel} Attributes" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}"><span class="fa fa-${facetNavIcon}"></span> &nbsp;${FacetLabel}</a>
+			<a href="#facet-${s.facet_index}.tab-pane" class="" title="View ${FacetLabel} Attributes" data-toggle="tab" role="tab" aria-controls="profile" data-chart_ref="chart_${s.facet_index}"><span class="fa fa-fw fa-${facetNavIcon}"></span> &nbsp;${FacetLabel}</a>
 		</li>
 		</#assign>
 		<#assign facetNavigation = facetNavigation + facetNavigationItem >
@@ -278,9 +279,6 @@
 		${facetNavigation}
 		</#macro>
 		
-
-	
-
 		<@s.FacetedSearch>
 		<#-- <div id="fb-facets-navigation" class="fb-facets col-sm-12 col-md-2">
 		<ul class="nav nav-pills nav-stacked"><@FacetAttributesNavigation /></ul>
