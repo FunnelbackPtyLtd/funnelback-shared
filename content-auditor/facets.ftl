@@ -169,8 +169,8 @@
 				
 				targetChart.addListener('rendered', function (event) {
 				   
-				    var target = document.getElementById('chart-attr-${s.facet_index}');
-				    var targetID = '#facet-tab-chart-${s.facet_index}';
+				    var target = document.getElementById('chart-attr-${facet_counter}');
+				    var targetID = '#facet-tab-chart-${facet_counter}';
 				    var targetTableHead = $(targetID + ' table thead tr');
 
 				    if(!targetTableHead.attr('data-chart-legend')){
