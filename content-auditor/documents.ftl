@@ -103,7 +103,7 @@
 					</a>
 					
                     <#if displayOption("ui.modern.content-auditor.search_results.show_seo_link") >
-    					<a class="open-content-optimiser pass" target="_blank" href="/a/#/${question.inputParameterMap["collection"]}:${question.inputParameterMap["profile"]}/analyse/seo-auditor/result-page/${response.resultPacket.queryAsProcessed?url}/${urlEncodeFragment(s.result.liveUrl)?replace("/", "%252F")}" data-toggle="tooltip" data-placement="bottom" title="View in SEO Auditor">
+    					<a class="open-content-optimiser pass" target="_blank" href="/a/#/manage/${question.inputParameterMap["collection"]}:${question.inputParameterMap["profile"]}/analyse/seo-auditor/result-page/${response.resultPacket.queryAsProcessed?url}/${urlEncodeFragment(s.result.liveUrl)?replace("/", "%252F")}" data-toggle="tooltip" data-placement="bottom" title="View in SEO Auditor">
     					<span class="fa-stack fa-xs">
         					<i class="fa fa-square fa-stack-2x"></i>
         					<i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
