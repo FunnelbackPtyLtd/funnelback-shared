@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -71,12 +72,19 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
                     if (exhibit instanceof UrlAdvert) {
                         UrlAdvert advert = (UrlAdvert) exhibit;
                         String newLink = buildClickTrackingUrl(searchTransaction.getQuestion(), advert);
+
                         //Create a new UrlAdvert as they are shared.
+                        
+                        Map<String, Object> additionalProperties = new HashMap<String, Object>();
+                        if (advert.getAdditionalProperties() != null) {
+                            additionalProperties.putAll(advert.getAdditionalProperties());
+                        }
+
                         exhibits.add(new UrlAdvert(advert.getTitleHtml(), 
                                                         advert.getDisplayUrl(), 
                                                         newLink, 
                                                         advert.getDescriptionHtml(), 
-                                                        new HashMap<>(advert.getAdditionalProperties()), 
+                                                        additionalProperties, 
                                                         advert.getCategory()));
                     } else {
                         exhibits.add(exhibit);
