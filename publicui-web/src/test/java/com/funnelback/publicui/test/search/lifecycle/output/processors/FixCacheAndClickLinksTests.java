@@ -122,6 +122,14 @@ public class FixCacheAndClickLinksTests {
         processAndAssertClickTracking(st);
     }
 
+    @Test
+    public void testCuratorNullAdditionalProperties() throws OutputProcessorException, UnsupportedEncodingException {
+        SearchTransaction st = getTestSearchTransaction();
+        st.getResponse().getCurator().getExhibits().set(0,
+            new UrlAdvert("titleHtml", "http://www.display.com", CURATOR_ADVERT_LINK, "descriptionHtml", null, "category"));
+        processAndAssertClickTracking(st);
+    }
+
     public void processAndAssertClickTracking(SearchTransaction st) throws OutputProcessorException, UnsupportedEncodingException {
         Curator curatorOrig = st.getResponse().getCurator();
         UrlAdvert urlAdvertOrig = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
