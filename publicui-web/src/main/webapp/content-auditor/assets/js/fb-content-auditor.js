@@ -461,6 +461,14 @@ jQuery(function()
         // DOM ready...
         .ready(function()
         {
+          
+            $('.uri-selector .dropdown .facet li span > a').unwrap();
+            $('.uri-selector .dropdown .facet li').each(function(){
+            
+            var categoryCount = $(this).children('small');
+            $(this).find('a').append(categoryCount);
+            
+            });
             // Make the attribute charts sortable
             var attributesCharts = $('.page-attr.table');
             attributesCharts.find('thead tr th').one().append(' <span class="fa fa-caret-down"></span>').addClass(
