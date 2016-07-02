@@ -73,5 +73,10 @@ public class MockSearchHistoryRepository implements SearchHistoryRepository {
     public void clearClickHistory(SearchUser u, Collection c) {
         throw new RuntimeException("NOT YET IMPLEMENTED");
     }
+    
+    @Override
+    public int purgeHistory(int daysToKeep) {
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+    };
 
 }

@@ -153,4 +153,24 @@ public class ResultsCartDaoTest extends SessionDaoTest {
         assertEquals(SessionResult.MAX_LEN_METADATA-1, cart.get(0).getMetaData().get("abc").length());
     }
     
+    @Test
+    public void testPurgeResultsCart() {
+        Calendar c = Calendar.getInstance();
+        
+        CartResult recent = generateRandomCartResult(collection.getId(), user.getId());
+        recent.setAddedDate(c.getTime());
+        repository.addToCart(recent);
+        
+        c.add(Calendar.DAY_OF_MONTH, -5);
+        CartResult older = generateRandomCartResult();
+        older.setAddedDate(c.getTime());
+        repository.addToCart(older);
+        
+        repository.purgeCartResults(2);
+        
+        List<CartResult> cart = repository.getCart(user, collection);
+        assertEquals("Only 1 entry (older) should have been removed", 1, cart.size());
+        assertEquals("The recent cart result should be the one remaining", recent.getIndexUrl(), cart.get(0).getIndexUrl());
+    }
+    
 }

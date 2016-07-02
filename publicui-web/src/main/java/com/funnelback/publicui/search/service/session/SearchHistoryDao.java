@@ -1,10 +1,15 @@
 package com.funnelback.publicui.search.service.session;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,7 @@ import com.funnelback.publicui.search.service.SearchHistoryRepository;
  * 
  * @since 12.5
  */
+@Log4j2
 @Repository
 @Transactional
 public class SearchHistoryDao implements SearchHistoryRepository {
@@ -115,5 +121,37 @@ public class SearchHistoryDao implements SearchHistoryRepository {
             em.remove(ch);
         }
     }
+    
+    @Override
+    public int purgeHistory(int daysToKeep) {
+        Calendar expiredDate = Calendar.getInstance();
+        expiredDate.add(Calendar.DAY_OF_MONTH, -daysToKeep);
+
+        AtomicInteger removed = new AtomicInteger(0);
+
+        em.createQuery("from " + ClickHistory.class.getSimpleName()
+            + " where clickDate < :date", ClickHistory.class)
+            .setParameter("date", expiredDate.getTime())
+            .getResultList()
+            .stream()
+            .forEach(click -> {
+                em.remove(click);
+                removed.incrementAndGet();
+            });
+        
+        em.createQuery("from " + SearchHistory.class.getSimpleName()
+            + " where searchDate < :date", SearchHistory.class)
+            .setParameter("date", expiredDate.getTime())
+            .getResultList()
+            .stream()
+            .forEach(search -> {
+                em.remove(search);
+                removed.incrementAndGet();
+            });
+        
+        log.debug("Purged {} click & search history events older than {}", removed.get(), new SimpleDateFormat().format(expiredDate.getTime()));
+        
+        return removed.get();
+    };
     
 }

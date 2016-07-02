@@ -57,5 +57,12 @@ public interface SearchHistoryRepository {
      */
     public void clearClickHistory(SearchUser u, Collection c);
     
+    /**
+     * Purge search and click history
+     * @param daysToKeep How many days of history to keep
+     * @return Number of search and click history event purged
+     */
+    public int purgeHistory(int daysToKeep);
+    
     
 }
