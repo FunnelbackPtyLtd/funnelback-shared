@@ -14,6 +14,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class YearOnlyDateFieldFill extends DateFieldFill {
 
+    public YearOnlyDateFieldFill(String metaDataClass) {
+        super(metaDataClass);
+    }
+
     @Override
     public List<CategoryValue> computeValues(final SearchTransaction st) {
         List<CategoryValue> result = new ArrayList<>();

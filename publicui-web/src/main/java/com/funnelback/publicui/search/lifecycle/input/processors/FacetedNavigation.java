@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Matcher;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -24,11 +23,9 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
-import com.funnelback.publicui.utils.MapKeyFilter;
 
 /**
  * <p>Sets the <em>-rmcf</em> query processor option on the fly if faceted navigation

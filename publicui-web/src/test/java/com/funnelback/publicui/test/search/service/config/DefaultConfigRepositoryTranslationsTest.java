@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
+import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,7 +54,7 @@ public class DefaultConfigRepositoryTranslationsTest {
         configRepository = new DefaultConfigRepository();
         configRepository.setAppCacheManager(appCacheManager);
         configRepository.setResourceManager(resourceManager);
-        configRepository.setFnConfigParser(new StaxStreamFacetedNavigationConfigParser());
+        configRepository.setFnConfigParser(new DefaultFacetedNavigationConfigParser());
         configRepository.setSearchHome(SEARCH_HOME);
         configRepository.setCacheTtlSeconds(0);
         

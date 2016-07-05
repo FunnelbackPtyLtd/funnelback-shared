@@ -13,7 +13,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.xml.StaxStreamFacetedNavigationConfigParser;
+import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
 
 public abstract class DefaultConfigRepositoryTestBase {
@@ -60,7 +60,7 @@ public abstract class DefaultConfigRepositoryTestBase {
         configRepository = new WaitConfigRepository();
         configRepository.setAppCacheManager(appCacheManager);
         configRepository.setResourceManager(resourceManager);
-        configRepository.setFnConfigParser(new StaxStreamFacetedNavigationConfigParser());
+        configRepository.setFnConfigParser(new DefaultFacetedNavigationConfigParser());
         configRepository.setSearchHome(SEARCH_HOME);
         configRepository.setCacheTtlSeconds(0);
         configRepository.setAutowireCapableBeanFactory(autowireCapableBeanFactory);

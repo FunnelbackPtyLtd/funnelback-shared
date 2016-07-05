@@ -33,7 +33,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
-import com.funnelback.publicui.search.model.collection.facetednavigation.impl.QueryItem;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
@@ -218,7 +217,7 @@ public class ContentAuditor extends AbstractInputProcessor {
             if (base != null) {
                 for (FacetDefinition fd : base.getFacetDefinitions()) {
                     for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
-                        if (cd instanceof GScopeItem || cd instanceof QueryItem) {
+                        if (cd instanceof GScopeItem /*|| cd instanceof QueryItem */) { //TODO Matt what are we doing here with QueryItem?
                             facetDefinitions.add(fd);
                         }
                         break;
@@ -263,8 +262,7 @@ public class ContentAuditor extends AbstractInputProcessor {
      */
     private FacetDefinition createDateFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        YearOnlyDateFieldFill fill = new YearOnlyDateFieldFill();
-        fill.setData(ContentAuditor.DATE_METADATA_FIELD);
+        YearOnlyDateFieldFill fill = new YearOnlyDateFieldFill(ContentAuditor.DATE_METADATA_FIELD);
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
@@ -289,7 +287,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     private FacetDefinition createUrlFacetDefinition(String label) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         
-        UrlScopeFill fill = new UrlScopeFill();
+        UrlScopeFill fill = new UrlScopeFill("");
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
@@ -303,8 +301,7 @@ public class ContentAuditor extends AbstractInputProcessor {
      */
     private FacetDefinition createMetadataFacetDefinition(String label, String metadataClass) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        MetadataFieldFill fill = new MetadataFieldFill();
-        fill.setData(metadataClass);
+        MetadataFieldFill fill = new MetadataFieldFill(metadataClass);
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
@@ -314,8 +311,7 @@ public class ContentAuditor extends AbstractInputProcessor {
     
     private FacetDefinition createDuplicateTitlesFacetDefinition(String label, String metadataClass) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
-        MetadataFieldFill fill = new CountThresholdMetadataFieldFill(1);
-        fill.setData(metadataClass);
+        MetadataFieldFill fill = new CountThresholdMetadataFieldFill(metadataClass, 1);
         fill.setLabel(label);
         fill.setFacetName(label);
         categoryDefinitions.add(fill);

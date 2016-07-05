@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
@@ -13,8 +14,9 @@ import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
+public abstract class FacetedNavigationAbstractMetadataFieldFillTestMethods {
 
+    private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
     protected FacetedNavigation processor;
     protected SearchTransaction st;
 
@@ -41,13 +43,13 @@ public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
         Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No faceted navigation config
-        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        question.setCollection(new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy")));
         st = new SearchTransaction(question, null);
         processor.processInput(st);
         Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No QP Options
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy"));
         c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null));
         question.setCollection(c);
         st = new SearchTransaction(question, null);

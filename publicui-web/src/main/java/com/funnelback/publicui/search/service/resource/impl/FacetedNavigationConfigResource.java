@@ -31,9 +31,9 @@ public class FacetedNavigationConfigResource extends AbstractSingleFileResource<
         try {
             Facets f = fnConfigParser
                     .parseFacetedNavigationConfiguration(FileUtils
-                            .readFileToString(file));
+                            .readFileToByteArray(file));
             return new FacetedNavigationConfig(f.qpOptions, f.facetDefinitions);
-        } catch (XmlParsingException xpe) {
+        } catch (RuntimeException xpe) { //TODO better checked exception
             log.error(
                     "Error while parsing faceted navigation configuration from '"
                             + file.getAbsolutePath() + "'", xpe);

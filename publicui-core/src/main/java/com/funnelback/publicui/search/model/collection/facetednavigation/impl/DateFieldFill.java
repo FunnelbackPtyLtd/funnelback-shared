@@ -23,7 +23,12 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * 
  * @since 12.0
  */
+
 public class DateFieldFill extends CategoryDefinition implements MetadataBasedCategory {
+
+    public DateFieldFill(String metaDataClass) {
+        super(metaDataClass);
+    }
 
     /** {@inheritDoc} */
     @Override

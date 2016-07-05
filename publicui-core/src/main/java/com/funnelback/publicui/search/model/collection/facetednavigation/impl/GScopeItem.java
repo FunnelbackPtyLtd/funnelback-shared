@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.ToString;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
@@ -21,11 +22,17 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
  * 
  * @since 11.0
  */
+@ToString(callSuper=true)
 public class GScopeItem extends CategoryDefinition implements GScopeBasedCategory {
 
     /** GScope number */
     @Getter @Setter private int userSetGScope;
     
+    public GScopeItem(String categoryName, long userSetGscope) {
+        super(categoryName);
+        this.userSetGScope = (int) userSetGscope;
+    }
+
     /** {@inheritDoc} */
     @Override
     @SneakyThrows(UnsupportedEncodingException.class)

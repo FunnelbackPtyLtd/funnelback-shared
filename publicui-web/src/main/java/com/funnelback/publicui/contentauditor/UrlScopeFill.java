@@ -42,6 +42,11 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @Log4j2
 public class UrlScopeFill extends CategoryDefinition {
         
+        public UrlScopeFill(String URL) {
+        super(URL);
+        this.setData(URL);
+    }
+
         /** Identifier used in query string parameter. */
         // Note - this tag matches a special case in the funnelback_classic.ftl Category macro
         // so you need to make changes there if you change it.

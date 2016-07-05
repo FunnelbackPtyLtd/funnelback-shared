@@ -1,5 +1,5 @@
-<Facets qpoptions="-rmcfabcd">
-	<Data></Data>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Facets qpoptions="-countgbits=all -count_dates=d -count_urls=1000 -rmcf=[a,U,V,W,X,Y,Z]">
+	<Data/>
 	<Facet>
 		<Data>Industry</Data>
 		<XPathFill>
@@ -37,11 +37,11 @@
 		<QueryItem>
 			<Data>Writing Jobs</Data>
 			<Query>author writer journalist</Query>
-		</QueryItem>
+		<Gscopefield>66</Gscopefield></QueryItem>
 		<QueryItem>
 			<Data>Seaside Jobs</Data>
 			<Query>coast sea water</Query>
-		</QueryItem>
+		<Gscopefield>2</Gscopefield></QueryItem>
 		<GScopeItem>
 			<Data>Fruit picking jobs</Data>
 			<UserSetGScope>3</UserSetGScope>

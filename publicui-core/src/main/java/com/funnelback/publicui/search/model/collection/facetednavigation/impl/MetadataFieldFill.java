@@ -23,6 +23,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  */
 public class MetadataFieldFill extends CategoryDefinition implements MetadataBasedCategory {
 
+    public MetadataFieldFill(String metaDataClass) {
+        super(metaDataClass);
+    }
+
     /** {@inheritDoc} */
     @Override
     @SneakyThrows(UnsupportedEncodingException.class)

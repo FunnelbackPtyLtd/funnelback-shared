@@ -92,8 +92,7 @@ public class FacetedNavigationOutputCountThresholdMetadataFieldFillTests extends
     
     /** Convenience method to build a CountThresholdMetadataFieldFill with the given settings. */
     private List<CategoryDefinition> metadataFillWithThresholdDefition(String metadataClass, String facetName, int threshold, List<CategoryDefinition> subCategory) {
-        CountThresholdMetadataFieldFill result = new CountThresholdMetadataFieldFill(1);
-        result.setData(metadataClass);
+        CountThresholdMetadataFieldFill result = new CountThresholdMetadataFieldFill(metadataClass, 1);
         result.setThreshold(threshold);
         result.setFacetName(facetName);
         result.getSubCategories().clear();
