@@ -172,7 +172,6 @@ public class ContentAuditor extends AbstractInputProcessor {
             question.setQuery(ContentAuditor.NULL_QUERY);
         }
 
-        question.getCollection().getConfiguration().setValue(Keys.FacetedNavigation.CONFIG_LOCATION, View.live.name());
         question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
     }
 
