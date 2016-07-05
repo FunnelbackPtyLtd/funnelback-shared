@@ -37,12 +37,6 @@ public class Profile {
      * <code>conf/[collection]/[profile]/faceted_navigation.cfg</code>
      */
     @Getter @Setter private FacetedNavigationConfig facetedNavConfConfig;
-    
-    /**
-     * Faceted navigation configuration in
-     * <code>data/[collection]/live/idx/[profile]/faceted_navigation.cfg</code>
-     */
-    @Getter @Setter private FacetedNavigationConfig facetedNavLiveConfig;
 
     /** Curator configuration in <code>conf/[collection]/[profile]/curator.json</code>
      * or <code>conf/[collection]/[profile]/curator.yaml</code>. JSON takes precedence. */

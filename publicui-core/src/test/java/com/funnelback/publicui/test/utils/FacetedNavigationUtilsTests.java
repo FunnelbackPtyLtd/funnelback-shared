@@ -1,93 +1,63 @@
 package com.funnelback.publicui.test.utils;
 
-import com.funnelback.common.views.View;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.config.NoOptionsConfig;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
 
 public class FacetedNavigationUtilsTests {
-    
-    private static final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
 
-    private Collection c;
     
-    @Before
-    public void before() throws IOException {
-        Profile p1 = new Profile("p1");
-        p1.setFacetedNavConfConfig(new FacetedNavigationConfig("p1-conf", null));
-        p1.setFacetedNavLiveConfig(new FacetedNavigationConfig("p1-live", null));
-        Profile p2 = new Profile("p1");
-        p2.setFacetedNavConfConfig(new FacetedNavigationConfig("p2-conf", null));
-        p2.setFacetedNavLiveConfig(new FacetedNavigationConfig("p2-live", null));
+    @Test
+    public void testFromProfile() {
+        Collection c = mock(Collection.class);
+        String prof = "prof";
+        Map<String, Profile> profiles = new HashMap<>();
+        profiles.put(prof, mock(Profile.class));
+        when(c.getProfiles()).thenReturn(profiles);
         
-        c = new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy"));
-        c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(View.live.name(), null));
-        c.setFacetedNavigationConfConfig(new FacetedNavigationConfig("conf", null));
-        c.getProfiles().put("p1", p1);
-        c.getProfiles().put("p2", p2);
-    }
-    
-    @Test
-    public void testNoCollectionConfig() {
-        Assert.assertNull(FacetedNavigationUtils.selectConfiguration(new Collection("dummy", null), null));
-    }
-    
-    @Test
-    public void testNoFnConfig() {
-        c.setFacetedNavigationConfConfig(null);
-        c.setFacetedNavigationLiveConfig(null);
-        Assert.assertNull(FacetedNavigationUtils.selectConfiguration(c, null));
-    }
-    
-    @Test
-    public void testNoOverride() throws Exception {
-        Assert.assertEquals(View.live.name(),
-            FacetedNavigationUtils.selectConfiguration(c, null).getQpOptions());
-    }
-
-    @Test
-    public void testOverride() throws Exception {
-        c.getConfiguration().setValue(
-            Keys.FacetedNavigation.CONFIG_LOCATION,
-            "conf");
-
-        Assert.assertEquals("conf",
-            FacetedNavigationUtils.selectConfiguration(c, null).getQpOptions());
-    }
-    
-    @Test
-    public void testProfileNoOverride() {
-        c.setFacetedNavigationConfConfig(null);
-        c.setFacetedNavigationLiveConfig(null);
+        FacetedNavigationConfig facetedCfg = mock(FacetedNavigationConfig.class);
         
-        Assert.assertEquals("p1-live",
-            FacetedNavigationUtils.selectConfiguration(c, "p1").getQpOptions());
-        Assert.assertEquals("p2-live",
-            FacetedNavigationUtils.selectConfiguration(c, "p2").getQpOptions());
-        Assert.assertNull(FacetedNavigationUtils.selectConfiguration(c, "invalid"));
-    }
-
-    @Test
-    public void testProfileOverride() {
-        c.getConfiguration().setValue(
-            Keys.FacetedNavigation.CONFIG_LOCATION,
-            "conf");
-        c.setFacetedNavigationConfConfig(null);
-        c.setFacetedNavigationLiveConfig(null);
+        when(profiles.get(prof).getFacetedNavConfConfig()).thenReturn(facetedCfg);
         
-        Assert.assertEquals("p1-conf",
-            FacetedNavigationUtils.selectConfiguration(c, "p1").getQpOptions());
-        Assert.assertEquals("p2-conf",
-            FacetedNavigationUtils.selectConfiguration(c, "p2").getQpOptions());
+        Assert.assertEquals(facetedCfg, FacetedNavigationUtils.selectConfiguration(c, prof));        
     }
+    
+    @Test
+    public void testFromLiveIdx() {
+        Collection c = mock(Collection.class);
+        
+        when(c.getProfiles()).thenReturn(new HashMap<>());
+        
+        FacetedNavigationConfig facetedCfg = mock(FacetedNavigationConfig.class);
+        
+        when(c.getFacetedNavigationLiveConfig()).thenReturn(facetedCfg);
+        
+        Assert.assertEquals(facetedCfg, FacetedNavigationUtils.selectConfiguration(c, "p"));
+    }
+    
+    
+    @Test
+    public void testFromCollectionConfig() {
+        Collection c = mock(Collection.class);
+        
+        when(c.getProfiles()).thenReturn(new HashMap<>());
+        
+        FacetedNavigationConfig facetedCfg = mock(FacetedNavigationConfig.class);
+        
+        when(c.getFacetedNavigationConfConfig()).thenReturn(facetedCfg);
+        
+        Assert.assertEquals(facetedCfg, FacetedNavigationUtils.selectConfiguration(c, null));
+    }
+    
 
 }

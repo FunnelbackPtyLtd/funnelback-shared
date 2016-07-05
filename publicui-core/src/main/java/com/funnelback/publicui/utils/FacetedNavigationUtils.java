@@ -6,9 +6,6 @@ import java.util.regex.Matcher;
 
 import lombok.extern.log4j.Log4j2;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.views.View;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -28,31 +25,24 @@ public class FacetedNavigationUtils {
      * @return
      */
     public static FacetedNavigationConfig selectConfiguration(Collection c, String profileId) {
-        // Default config from the live directory
-        FacetedNavigationConfig config = c.getFacetedNavigationLiveConfig();
-
-        String configLocationOverride = null;
-        
-        if (c.getConfiguration() != null) {
-            // ...possibly overriden in collection config
-            configLocationOverride = c.getConfiguration().value(Keys.FacetedNavigation.CONFIG_LOCATION,
-                    View.live.name());
-            if (DefaultValues.FOLDER_CONF.equals(configLocationOverride)) {
-                config = c.getFacetedNavigationConfConfig();
+        FacetedNavigationConfig config = null;
+        if (profileId != null) {
+            Profile p = c.getProfiles().get(profileId);
+            if (p != null) {
+                config = p.getFacetedNavConfConfig();
             }
         }
         
-        // If we have no config at this point, we can look at profiles
-        if (config == null && profileId != null) {
-            Profile p = c.getProfiles().get(profileId);
-            if (p != null) {
-                // ...and at conf or live config depending of the override setting
-                if (DefaultValues.FOLDER_CONF.equals(configLocationOverride)) {
-                    config = p.getFacetedNavConfConfig();
-                } else {
-                    config = p.getFacetedNavLiveConfig();
-                }
-            }
+        //If the profile does not have faceted nav look in live.
+        if(config == null) {
+            config = c.getFacetedNavigationLiveConfig();
+        }
+        
+        
+        //It may not be copied to live if the step is skipped or maybe the file is deleted, 
+        //use the collection level conf config
+        if(config == null) {
+            return c.getFacetedNavigationConfConfig();
         }
         
         return config;
