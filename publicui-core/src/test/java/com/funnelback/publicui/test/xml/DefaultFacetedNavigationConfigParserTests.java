@@ -19,7 +19,7 @@ import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
 import com.funnelback.publicui.xml.XmlParsingException;
 
-public class StaxStreamFacetedNavigationConfigParserTests {
+public class DefaultFacetedNavigationConfigParserTests {
 
     private Facets facets;
     
@@ -66,6 +66,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
         c = (MetadataFieldFill) c.getSubCategories().get(0);
         
         assertEquals("Y", c.getMetadataClass());
+        Assert.assertEquals(facet.getName(), c.getFacetName());
     }
     
     @Test
@@ -77,6 +78,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
         MetadataFieldFill c = (MetadataFieldFill) facet.getCategoryDefinitions().get(0);
         assertEquals("X", c.getMetadataClass());
         assertEquals(0, c.getSubCategories().size());
+        Assert.assertEquals(facet.getName(), c.getFacetName());
         
         facet = facets.facetDefinitions.get(2);
         assertEquals("Source", facet.getName());
@@ -85,6 +87,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
         c = (MetadataFieldFill) facet.getCategoryDefinitions().get(0);
         assertEquals("W", c.getMetadataClass());
         assertEquals(0, c.getSubCategories().size());
+        Assert.assertEquals(facet.getName(), c.getFacetName());
 
         facet = facets.facetDefinitions.get(3);
         assertEquals("Date Posted", facet.getName());
@@ -93,6 +96,7 @@ public class StaxStreamFacetedNavigationConfigParserTests {
         c = (MetadataFieldFill) facet.getCategoryDefinitions().get(0);
         assertEquals("V", c.getMetadataClass());
         assertEquals(0, c.getSubCategories().size());
+        Assert.assertEquals(facet.getName(), c.getFacetName());
     }
     
     @Test

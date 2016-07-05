@@ -38,7 +38,6 @@ public class FacetedNavigationDateTests {
         processor.processInput(st);
         
         Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        Assert.assertEquals("-count_dates=dZXO", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
     }
     
     @Test

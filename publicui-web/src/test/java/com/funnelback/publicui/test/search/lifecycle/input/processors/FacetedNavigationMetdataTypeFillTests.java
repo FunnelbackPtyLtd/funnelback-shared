@@ -78,7 +78,7 @@ public class FacetedNavigationMetdataTypeFillTests {
         processor.processInput(st);
         
         Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        Assert.assertEquals("-rmcf=ZWXYUV", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+        Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().get(0).startsWith("-rmcf="));
     }
     
     @Test
@@ -95,10 +95,20 @@ public class FacetedNavigationMetdataTypeFillTests {
     
     @Test
     public void testFacetSelected() {
+        
+        /**
+         * The mapping looked like this:
+         * <MetadataTypeFill>
+          <Data>COUNTRY</Data>
+          <Metafield>Z</Metafield>
+         * 
+         * In the new editor we don't care for <Data>COUNTRY</Data> which is the metadata mapping, Peter tells
+         * me it is ok to no longer support f.Location|COUNTRY and it now generating f.Location|C is ok
+         */
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         
-        st.getQuestion().getRawInputParameters().put("f.Location|COUNTRY", new String[] {"australia"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Z", new String[] {"australia"});
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
@@ -107,7 +117,7 @@ public class FacetedNavigationMetdataTypeFillTests {
         
         // Multiple values
         st.getQuestion().getRawInputParameters().clear();
-        st.getQuestion().getRawInputParameters().put("f.Location|COUNTRY", new String[] {"australia", "new zealand"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Z", new String[] {"australia", "new zealand"});
         st.getQuestion().getFacetsQueryConstraints().clear();
         processor.processInput(st);
         
@@ -119,8 +129,8 @@ public class FacetedNavigationMetdataTypeFillTests {
         
         // Multiple facets
         st.getQuestion().getRawInputParameters().clear();
-        st.getQuestion().getRawInputParameters().put("f.Location|COUNTRY", new String[] {"australia"});
-        st.getQuestion().getRawInputParameters().put("f.Location|STATE", new String[] {"nsw"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Z", new String[] {"australia"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Y", new String[] {"nsw"});
         st.getQuestion().getFacetsQueryConstraints().clear();
         processor.processInput(st);
         
@@ -132,8 +142,8 @@ public class FacetedNavigationMetdataTypeFillTests {
         
         // Multiple values + multiple facets
         st.getQuestion().getRawInputParameters().clear();
-        st.getQuestion().getRawInputParameters().put("f.Location|COUNTRY", new String[] {"australia", "new zealand"});
-        st.getQuestion().getRawInputParameters().put("f.Location|STATE", new String[] {"nsw", "tas"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Z", new String[] {"australia", "new zealand"});
+        st.getQuestion().getRawInputParameters().put("f.Location|Y", new String[] {"nsw", "tas"});
         st.getQuestion().getFacetsQueryConstraints().clear();
         processor.processInput(st);
         

@@ -95,7 +95,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             
             List<CategoryDefinition> categoryDefinitions = facet.getCategories()
                 .stream()
-                .map(c -> convert(c, facetedNavigationQPOptions))
+                .map(c -> convert(facet.getName(), c, facetedNavigationQPOptions))
                 .collect(Collectors.toList());
             
             FacetDefinition facetDefinition = new FacetDefinition(facet.getName(), categoryDefinitions);
@@ -107,10 +107,12 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         
     }
     
-    protected CategoryDefinition convert(Category categories, FacetedNavigationQPOptions facetedNavigationQPOptions) {
+    protected CategoryDefinition convert(String facetName,
+                                            Category categories, 
+                                            FacetedNavigationQPOptions facetedNavigationQPOptions) {
         List<CategoryDefinition> subCategories = new ArrayList<>();
         for(Category subCat : categories.getSubCategories()) {
-            subCategories.add(convert(subCat, facetedNavigationQPOptions));
+            subCategories.add(convert(facetName, subCat, facetedNavigationQPOptions));
         }
         
         CategoryDefinition categoryDefinition;
@@ -127,7 +129,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             facetedNavigationQPOptions.add(metadataFieldFill);
             categoryDefinition = metadataFieldFill;
         } else if(categories instanceof URLCategory) {
-            URLFill urlFill = new URLFill(((URLCategory) categories).getURIPrefix().toASCIIString());
+            URLFill urlFill = new URLFill(((URLCategory) categories).getURIPrefix());
             facetedNavigationQPOptions.add(urlFill);
             categoryDefinition = urlFill;
         } else {
@@ -138,6 +140,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         }
         
         categoryDefinition.getSubCategories().addAll(subCategories);
+        categoryDefinition.setFacetName(facetName);
         return categoryDefinition;
     }
     

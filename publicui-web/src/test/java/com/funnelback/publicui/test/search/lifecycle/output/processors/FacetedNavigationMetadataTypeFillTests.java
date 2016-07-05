@@ -96,7 +96,9 @@ public class FacetedNavigationMetadataTypeFillTests {
         // First category: Location=australia
         Facet.Category c = f.getCategories().get(0);
         Assert.assertNull(c.getLabel());
-        Assert.assertEquals("f.Location|COUNTRY", c.getQueryStringParamName());
+        //Note that metadata mapping in the facet definition was COUNTRY (it could have been dc.country)
+        //However we only support metadata class names now.
+        Assert.assertEquals("f.Location|Z", c.getQueryStringParamName());
         Assert.assertEquals(1, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
@@ -104,7 +106,7 @@ public class FacetedNavigationMetadataTypeFillTests {
         Assert.assertEquals(27, cv.getCount());
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
-        Assert.assertEquals("f.Location%7CCOUNTRY=australia", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -116,7 +118,7 @@ public class FacetedNavigationMetadataTypeFillTests {
         
         c = f.getCategories().get(0);
         Assert.assertNull(c.getLabel());
-        Assert.assertEquals("f.Job Category|CATEGORY", c.getQueryStringParamName());
+        Assert.assertEquals("f.Job Category|W", c.getQueryStringParamName());
         Assert.assertEquals(2, c.getValues().size());
         
         cv = c.getValues().get(0);
@@ -124,7 +126,7 @@ public class FacetedNavigationMetadataTypeFillTests {
         Assert.assertEquals(26, cv.getCount());
         Assert.assertEquals("divtrades & servicesdiv", cv.getData());
         Assert.assertEquals("divtrades & servicesdiv", cv.getLabel());
-        Assert.assertEquals("f.Job+Category%7CCATEGORY=divtrades+%26+servicesdiv", cv.getQueryStringParam());
+        Assert.assertEquals("f.Job+Category%7CW=divtrades+%26+servicesdiv", cv.getQueryStringParam());
         
     }
     
@@ -134,7 +136,7 @@ public class FacetedNavigationMetadataTypeFillTests {
         
         List<String> selected = new ArrayList<String>();
         selected.add("australia");
-        st.getQuestion().getSelectedCategoryValues().put("f.Location|COUNTRY", selected);
+        st.getQuestion().getSelectedCategoryValues().put("f.Location|Z", selected);
         processor.processOutput(st);
         
         Assert.assertEquals(3, st.getResponse().getFacets().size());
@@ -146,7 +148,9 @@ public class FacetedNavigationMetadataTypeFillTests {
         // First category: Location=australia
         Facet.Category c = f.getCategories().get(0);
         Assert.assertNull(c.getLabel());
-        Assert.assertEquals("f.Location|COUNTRY", c.getQueryStringParamName());
+        //Note that metadata mapping in the facet definition was COUNTRY (it could have been dc.country)
+        //However we only support metadata class names now.
+        Assert.assertEquals("f.Location|Z", c.getQueryStringParamName());
         Assert.assertEquals(1, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
@@ -154,13 +158,13 @@ public class FacetedNavigationMetadataTypeFillTests {
         Assert.assertEquals(27, cv.getCount());
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
-        Assert.assertEquals("f.Location%7CCOUNTRY=australia", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
         
         // Nested category: Location= australia + state
         Assert.assertEquals(1, c.getCategories().size());
         Facet.Category subCategory = c.getCategories().get(0);
         Assert.assertNull(subCategory.getLabel());
-        Assert.assertEquals("f.Location|STATE", subCategory.getQueryStringParamName());
+        Assert.assertEquals("f.Location|Y", subCategory.getQueryStringParamName());
         Assert.assertEquals(5, subCategory.getValues().size());
 
         cv = subCategory.getValues().get(2);
@@ -168,7 +172,7 @@ public class FacetedNavigationMetadataTypeFillTests {
         Assert.assertEquals(5, cv.getCount());
         Assert.assertEquals("nsw", cv.getData());
         Assert.assertEquals("nsw", cv.getLabel());
-        Assert.assertEquals("f.Location%7CSTATE=nsw", cv.getQueryStringParam());
+        Assert.assertEquals("f.Location%7CY=nsw", cv.getQueryStringParam());
         
         // Nested-nested category: Location = australia + state + city
         // shouldn't be selected

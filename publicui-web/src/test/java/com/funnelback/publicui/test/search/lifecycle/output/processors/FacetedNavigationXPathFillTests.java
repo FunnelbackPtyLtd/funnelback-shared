@@ -31,6 +31,8 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationXPathFillTests {
 
+    private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
+    
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
 
@@ -77,7 +79,7 @@ public class FacetedNavigationXPathFillTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
     
