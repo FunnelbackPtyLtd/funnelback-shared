@@ -215,7 +215,8 @@ public class ContentAuditor extends AbstractInputProcessor {
             if (base != null) {
                 for (FacetDefinition fd : base.getFacetDefinitions()) {
                     for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
-                        if (cd instanceof GScopeItem /*|| cd instanceof QueryItem */) { //TODO Matt what are we doing here with QueryItem?
+                        //We want to get all Gscope items
+                        if (cd instanceof GScopeItem) {
                             facetDefinitions.add(fd);
                         }
                         break;
