@@ -37,7 +37,7 @@ public class FacetedNavigationQueryTests {
     public void test() {        
         processor.processInput(st);
         
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
+        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
     }
     
     @Test

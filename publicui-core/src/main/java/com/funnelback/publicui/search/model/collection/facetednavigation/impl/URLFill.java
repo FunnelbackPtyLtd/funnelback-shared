@@ -29,6 +29,13 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 @Log4j2
 public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
 
+    
+    
+    public URLFill(String url) {
+        super(url);
+        this.setData(url); //We reset data as we need to ensure the data is set correctly
+    }
+
     /** Identifier used in query string parameter. */
     private static final String TAG = "url";
     

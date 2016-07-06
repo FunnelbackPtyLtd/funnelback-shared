@@ -19,8 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  *  
  *  @since 15.0
  */
-@AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor //Why do we have this
 public class CountThresholdMetadataFieldFill extends MetadataFieldFill {
 
     /** Only categories with a count greater than this threshold will be included. Default is 1. */
@@ -30,5 +29,10 @@ public class CountThresholdMetadataFieldFill extends MetadataFieldFill {
     public List<CategoryValue> computeValues(final SearchTransaction st) {
         List<CategoryValue> result = super.computeValues(st);
         return result.stream().filter((cv) -> cv.getCount() > threshold).collect(Collectors.toList());
+    }
+
+    public CountThresholdMetadataFieldFill(String metaDataClass, Integer threshold) {
+        super(metaDataClass);
+        this.threshold = threshold;
     }
 }

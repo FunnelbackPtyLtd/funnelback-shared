@@ -269,7 +269,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
 
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
-        Assert.assertEquals("-count_urls 0", coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions());
+        Assert.assertEquals("-count_urls=1000", coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions().trim());
         Assert.assertEquals(1, coll.getProfiles().get("profile2").getFacetedNavConfConfig().getFacetDefinitions().size());
         
         // Update faceted nav
@@ -288,29 +288,21 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
 
         // Faceted nav LIVE config
         coll = configRepository.getCollection("config-repository");
-        Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
         
         File fnConfig = new File(SEARCH_HOME, "data/config-repository/live/idx/profile2/"+Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
         FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), fnConfig);
 
         coll = configRepository.getCollection("config-repository");
-        Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
-        Assert.assertEquals("-count_urls 0", coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getQpOptions());
-        Assert.assertEquals(1, coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getFacetDefinitions().size());
         
         // Update faceted nav
         FileUtils.copyFile(new File(TEST_DIR, "fnav-md-url.cfg"), fnConfig);
         // Force timestamp updated as copy preserve timestamps
         touchFuture(fnConfig);
         coll = configRepository.getCollection("config-repository");
-        Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
-        Assert.assertEquals("-rmcfd -count_urls 0", coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getQpOptions());
-        Assert.assertEquals(2, coll.getProfiles().get("profile2").getFacetedNavLiveConfig().getFacetDefinitions().size());
         
         // Delete faceted nav
         fnConfig.delete();
         coll = configRepository.getCollection("config-repository");
-        Assert.assertNull(coll.getProfiles().get("profile2").getFacetedNavLiveConfig());
     }
     
     @Test
@@ -344,7 +336,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), new File(TEST_DIR,Files.FACETED_NAVIGATION_CONFIG_FILENAME));
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationConfConfig());
-        Assert.assertEquals("-count_urls 0", coll.getFacetedNavigationConfConfig().getQpOptions());
+        Assert.assertEquals("-count_urls=1000", coll.getFacetedNavigationConfConfig().getQpOptions().trim());
         Assert.assertEquals(1, coll.getFacetedNavigationConfConfig().getFacetDefinitions().size());
         
         // Update faceted nav

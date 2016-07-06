@@ -7,6 +7,8 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -24,6 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * @since 11.0
  */
 @ToString
+@RequiredArgsConstructor
 public abstract class CategoryDefinition {
 
     /**
@@ -49,7 +52,7 @@ public abstract class CategoryDefinition {
      * <p>Depending of the actual type, can be a metadata class,
      * a query expression, etc.</p>
      */
-    @Getter @Setter protected String data;
+    @NonNull @Getter @Setter protected String data;
     
     /** Label of this category. */
     @Getter @Setter protected String label;

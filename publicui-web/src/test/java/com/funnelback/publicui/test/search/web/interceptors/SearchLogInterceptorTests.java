@@ -58,14 +58,12 @@ public class SearchLogInterceptorTests {
         st.getQuestion().getSelectedFacets().add("Type");
         st.getQuestion().getSelectedFacets().add("Location");
         
-        CategoryDefinition cDef = new MetadataFieldFill();
-        cDef.setData("X");
+        CategoryDefinition cDef = new MetadataFieldFill("X");
         cDef.setFacetName("Location");
         cDef.setLabel("X");
         FacetDefinition fDef = new FacetDefinition("Location", Arrays.asList(new CategoryDefinition[] {cDef}));
 
-        CategoryDefinition cDef2 = new MetadataFieldFill();
-        cDef2.setData("Y");
+        CategoryDefinition cDef2 = new MetadataFieldFill("Y");
         cDef2.setFacetName("Type");
         cDef2.setLabel("Y");
         FacetDefinition fDef2 = new FacetDefinition("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.annotation.Resource;
@@ -11,8 +12,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
@@ -24,6 +25,8 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationXPathFillTests {
 
+    private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
+    
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
@@ -58,13 +61,13 @@ public class FacetedNavigationXPathFillTests {
         Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No faceted navigation config
-        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        question.setCollection(new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy")));
         st = new SearchTransaction(question, null);
         processor.processInput(st);
         Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No QP Options
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy"));
         c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null));
         question.setCollection(c);
         st = new SearchTransaction(question, null);
@@ -78,7 +81,7 @@ public class FacetedNavigationXPathFillTests {
         processor.processInput(st);
         
         Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        Assert.assertEquals("-rmcf=ZWXYUV", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+        Assert.assertEquals("-rmcf=[U,V,W,X,Y,Z,O]", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
     }
     
     @Test

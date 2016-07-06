@@ -28,8 +28,7 @@ public class MissingMetadataFill extends MetadataFieldFill {
     private static final String MISSING_DATA_VALUE = "missing";
 
     public MissingMetadataFill() {
-        super();
-        this.data = MissingMetadataFill.MISSING_DATA_VALUE;
+        super(MissingMetadataFill.MISSING_DATA_VALUE);
     }
     
     /** 

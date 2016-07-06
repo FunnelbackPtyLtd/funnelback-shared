@@ -7,11 +7,13 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 
 /**
  * Parses an XML <tt>faceted_navigation.cfg</tt> config file.
+ * 
+ * <p>Actually this can parse faceted nav files which exist in live</p>
 
  */
 public interface FacetedNavigationConfigParser {
 
-    public Facets parseFacetedNavigationConfiguration(String configuration) throws XmlParsingException;
+    public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException;
     
     /**
      * Represent a parsed faceted navigation config.
@@ -20,7 +22,20 @@ public interface FacetedNavigationConfigParser {
         public static final String FACETS = "Facets";
         
         public List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
+        
         public String qpOptions;
+    }
+    
+    
+    public static class FacetedNavigationConfigParseException extends Exception {
+        
+        public FacetedNavigationConfigParseException(String message) {
+            super(message);
+        }
+        
+        public FacetedNavigationConfigParseException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
     
 }

@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser.FacetedNavigationConfigParseException;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
@@ -31,9 +32,9 @@ public class FacetedNavigationConfigResource extends AbstractSingleFileResource<
         try {
             Facets f = fnConfigParser
                     .parseFacetedNavigationConfiguration(FileUtils
-                            .readFileToString(file));
+                            .readFileToByteArray(file));
             return new FacetedNavigationConfig(f.qpOptions, f.facetDefinitions);
-        } catch (XmlParsingException xpe) {
+        } catch (FacetedNavigationConfigParseException xpe) { //TODO better checked exception
             log.error(
                     "Error while parsing faceted navigation configuration from '"
                             + file.getAbsolutePath() + "'", xpe);

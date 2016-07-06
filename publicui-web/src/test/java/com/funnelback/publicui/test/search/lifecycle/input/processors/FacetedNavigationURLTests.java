@@ -38,7 +38,7 @@ public class FacetedNavigationURLTests {
         processor.processInput(st);
         
         Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        Assert.assertEquals("-count_urls=0", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
+        Assert.assertEquals("-count_urls=1000", st.getQuestion().getDynamicQueryProcessorOptions().get(0));
     }
     
     @Test
