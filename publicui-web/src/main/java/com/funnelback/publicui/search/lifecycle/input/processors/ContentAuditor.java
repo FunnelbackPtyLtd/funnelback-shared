@@ -18,7 +18,6 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
-import com.funnelback.common.views.View;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
@@ -216,7 +215,8 @@ public class ContentAuditor extends AbstractInputProcessor {
             if (base != null) {
                 for (FacetDefinition fd : base.getFacetDefinitions()) {
                     for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
-                        if (cd instanceof GScopeItem /*|| cd instanceof QueryItem */) { //TODO Matt what are we doing here with QueryItem?
+                        //We want to get all Gscope items
+                        if (cd instanceof GScopeItem) {
                             facetDefinitions.add(fd);
                         }
                         break;

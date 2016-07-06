@@ -278,7 +278,8 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         touchFuture(new File(TEST_DIR, "profile2/"+Files.FACETED_NAVIGATION_CONFIG_FILENAME));
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getProfiles().get("profile2").getFacetedNavConfConfig());
-        Assert.assertEquals("-rmcfd -count_urls 0", coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions());
+        Assert.assertTrue(coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions().contains("-rmcf="));
+        Assert.assertTrue(coll.getProfiles().get("profile2").getFacetedNavConfConfig().getQpOptions().contains("-count_urls="));
         Assert.assertEquals(2, coll.getProfiles().get("profile2").getFacetedNavConfConfig().getFacetDefinitions().size());
         
         // Delete faceted nav
@@ -345,7 +346,8 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         touchFuture(new File(TEST_DIR, Files.FACETED_NAVIGATION_CONFIG_FILENAME));
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationConfConfig());
-        Assert.assertEquals("-rmcfd -count_urls 0", coll.getFacetedNavigationConfConfig().getQpOptions());
+        Assert.assertTrue(coll.getFacetedNavigationConfConfig().getQpOptions().contains("-rmcf="));
+        Assert.assertTrue(coll.getFacetedNavigationConfConfig().getQpOptions().contains("-count_urls="));
         Assert.assertEquals(2, coll.getFacetedNavigationConfConfig().getFacetDefinitions().size());
         
         // Delete faceted nav
@@ -361,7 +363,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), fnConfig);
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
-        Assert.assertEquals("-count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("-count_urls"));
         Assert.assertEquals(1, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
         
         // Update faceted nav
@@ -370,7 +372,8 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         touchFuture(fnConfig);
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
-        Assert.assertEquals("-rmcfd -count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("-rmcf"));
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("count_urls"));
         Assert.assertEquals(2, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
         
         // Delete faceted nav
