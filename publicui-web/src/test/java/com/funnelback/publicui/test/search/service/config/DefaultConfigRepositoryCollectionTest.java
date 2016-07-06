@@ -363,7 +363,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         FileUtils.copyFile(new File(TEST_DIR, "fnav-url.cfg"), fnConfig);
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
-        Assert.assertEquals("-count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("-count_urls"));
         Assert.assertEquals(1, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
         
         // Update faceted nav
@@ -372,7 +372,8 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         touchFuture(fnConfig);
         coll = configRepository.getCollection("config-repository");
         Assert.assertNotNull(coll.getFacetedNavigationLiveConfig());
-        Assert.assertEquals("-rmcfd -count_urls 0", coll.getFacetedNavigationLiveConfig().getQpOptions());
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("-rmcf"));
+        Assert.assertTrue(coll.getFacetedNavigationLiveConfig().getQpOptions().contains("count_urls"));
         Assert.assertEquals(2, coll.getFacetedNavigationLiveConfig().getFacetDefinitions().size());
         
         // Delete faceted nav
