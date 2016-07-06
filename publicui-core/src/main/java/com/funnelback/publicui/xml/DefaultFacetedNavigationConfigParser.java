@@ -50,7 +50,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
     private final ConfigFacetMarshallerXml configFacetMarshallerXml = new ConfigFacetMarshallerXml();
     
     @Override
-    public Facets parseFacetedNavigationConfiguration(byte[] configuration) {
+    public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException {
         //We have no Idea what the incoming data is lets work it out.
         
         Optional<List<Facet>> optionalFacets = facetMarshallerJson.unMarshal(configuration);
@@ -70,7 +70,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         }
         
         if(!optionalFacets.isPresent()) {
-            throw new RuntimeException("Could not parse faceted navigation configuration");
+            throw new FacetedNavigationConfigParseException("Could not parse faceted navigation configuration");
         }
         
         FacetedNavigationQPOptions facetedNavigationQPOptions = new FacetedNavigationQPOptions();
@@ -147,15 +147,13 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
     /**
      * Validates a faceted navigation configuration
      * @param facets
-     * @throws XmlParsingException 
+     * @throws FacetedNabigationParseException 
      */
-    private void validate(Facets facets) {
+    private void validate(Facets facets) throws FacetedNavigationConfigParseException {
         Set<String> uniqueNames = new HashSet<String>();
         for(FacetDefinition fd: facets.facetDefinitions) {
             if (uniqueNames.contains(fd.getName())) {
-                
-                //TODO this was a XmlParsingException which does not make sense as it is assumes it was XML
-                throw new RuntimeException("More than one facet with name '"+fd.getName()+"'. Each name must be unique.");
+                throw new FacetedNavigationConfigParseException("More than one facet with name '"+fd.getName()+"'. Each name must be unique.");
             } else {
                 uniqueNames.add(fd.getName());
             }

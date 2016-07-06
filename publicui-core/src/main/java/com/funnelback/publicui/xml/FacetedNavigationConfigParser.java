@@ -13,7 +13,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
  */
 public interface FacetedNavigationConfigParser {
 
-    public Facets parseFacetedNavigationConfiguration(byte[] configuration); //TODO we need a checked exception here
+    public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException;
     
     /**
      * Represent a parsed faceted navigation config.
@@ -23,8 +23,19 @@ public interface FacetedNavigationConfigParser {
         
         public List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
-        //TODO fill these out.
         public String qpOptions;
+    }
+    
+    
+    public static class FacetedNavigationConfigParseException extends Exception {
+        
+        public FacetedNavigationConfigParseException(String message) {
+            super(message);
+        }
+        
+        public FacetedNavigationConfigParseException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
     
 }

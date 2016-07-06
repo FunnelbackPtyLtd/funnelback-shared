@@ -16,28 +16,28 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GS
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.xml.DefaultFacetedNavigationConfigParser;
+import com.funnelback.publicui.xml.FacetedNavigationConfigParser.FacetedNavigationConfigParseException;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
-import com.funnelback.publicui.xml.XmlParsingException;
 
 public class DefaultFacetedNavigationConfigParserTests {
 
     private Facets facets;
     
     @Before
-    public void before() throws IOException, XmlParsingException {
+    public void before() throws IOException, FacetedNavigationConfigParseException {
         DefaultFacetedNavigationConfigParser parser = new DefaultFacetedNavigationConfigParser();
         facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/sample-config.xml")));
         Assert.assertNotNull(facets);
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testSameName() throws IOException, XmlParsingException {
+    public void testSameName() throws IOException, FacetedNavigationConfigParseException {
         DefaultFacetedNavigationConfigParser parser = new DefaultFacetedNavigationConfigParser();
         parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/same-name-facets.xml")));
     }
     
     @Test(expected=IllegalArgumentException.class)
-    public void testInvalidXml() throws XmlParsingException {
+    public void testInvalidXml() throws FacetedNavigationConfigParseException {
         new DefaultFacetedNavigationConfigParser().parseFacetedNavigationConfiguration("<Facets><Facet><Data></Data><MetadataFieldFill></Facet></Facets>".getBytes());
     }
     
