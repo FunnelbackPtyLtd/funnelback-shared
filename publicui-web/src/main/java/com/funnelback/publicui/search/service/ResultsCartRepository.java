@@ -42,4 +42,12 @@ public interface ResultsCartRepository {
      */
     public List<CartResult> getCart(SearchUser user, Collection collection);
     
+    /**
+     * Purge old carts
+     * @param daysToKeep How many days of carts to keep
+     * purged, in days
+     * @return Number of session purged
+     */
+    public int purgeCartResults(int daysToKeep);
+    
 }

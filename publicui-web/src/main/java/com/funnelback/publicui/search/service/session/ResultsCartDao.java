@@ -1,7 +1,10 @@
 package com.funnelback.publicui.search.service.session;
 
 import java.net.URI;
+import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -80,5 +83,26 @@ public class ResultsCartDao implements ResultsCartRepository {
             .getResultList();
         // CHECKSTYLE:ON
     }
+    
+    @Override
+    public int purgeCartResults(int daysToKeep) {
+        Calendar expiredDate = Calendar.getInstance();
+        expiredDate.add(Calendar.DAY_OF_MONTH, -daysToKeep);
 
+        AtomicInteger removed = new AtomicInteger(0);
+        
+        em.createQuery("from " + CartResult.class.getSimpleName()
+            + " where addedDate < :date", CartResult.class)
+            .setParameter("date", expiredDate.getTime())
+            .getResultList()
+            .stream()
+            .forEach(result -> { 
+                em.remove(result);
+                removed.incrementAndGet();
+            });
+        
+        log.debug("Purged {} carts results older than {}", removed.get(), new SimpleDateFormat().format(expiredDate.getTime()));
+        
+        return removed.get();
+    };
 }

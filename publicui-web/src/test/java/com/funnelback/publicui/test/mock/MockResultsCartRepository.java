@@ -45,4 +45,9 @@ public class MockResultsCartRepository implements ResultsCartRepository {
         }
     }
 
+    @Override
+    public int purgeCartResults(int daysToKeep) {
+        throw new RuntimeException("NOT YET IMPLEMENTED");
+    };
+
 }
