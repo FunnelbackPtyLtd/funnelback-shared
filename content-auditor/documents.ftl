@@ -23,9 +23,10 @@
 		search results
 	</#if>
 	</p>
-<#if response.resultPacket.resultsSummary.totalMatching != 0>       
+<#if response.resultPacket.resultsSummary.totalMatching != 0>
 <!-- CSV DOWNLOAD -->
-<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first 10,000 only." class="btn btn-sm btn-primary pull-left btn-upload" href="${main.contentAuditorLink}?${QueryString}&amp;form=csv_export&amp;num_ranks=10000"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>          
+	<#assign csv_num_ranks = question.collection.configuration.valueAsInt("ui.modern.content-auditor.csv.num_ranks",10000) />
+	<a data-toggle="tooltip" data-placement="left" title="Download a CSV File of these results. Results limited to the first ${csv_num_ranks?string[",###"]} only." class="btn btn-sm btn-primary pull-left btn-upload" href="${main.contentAuditorLink}?${QueryString}&amp;form=csv_export&amp;num_ranks=${csv_num_ranks?c}"><span class="fa fa-lg fa-angle-double-down"></span> Export CSV Data</a>
 </#if>
 
 <div class="form-field select field-sort pull-right" data-url="?${QueryString}">   

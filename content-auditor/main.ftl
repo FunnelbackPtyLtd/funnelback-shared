@@ -53,7 +53,7 @@ ${queryToReport}
         <div class="tab-content clearfix">
             <div class="tab-pane active" id="collection-${currentCollection}">
                 <div class="fb-report-details"></div>
-                <#include "/web/templates/modernui/content-auditor/reportdetails.ftl" />
+                <#include "reportdetails.ftl" />
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#collection-${currentCollection}-tab-recommendations" data-toggle="tab" id="tab-nav-recommendations" title="View Recommendations">Recommendations</a></li>
@@ -65,16 +65,16 @@ ${queryToReport}
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
                         <div class="tab-content">
                             <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-recommendations">
-                                <#include "/web/templates/modernui/content-auditor/recommendations.ftl" />
+                                <#include "recommendations.ftl" />
                             </div>
                             <div class="tab-pane active clearfix" id="collection-${currentCollection}-tab-0">
-                                <#include "/web/templates/modernui/content-auditor/overview.ftl" />
+                                <#include "overview.ftl" />
                             </div>
                             <div class="tab-pane clearfix switch-2" id="collection-${currentCollection}-tab-1">
-                                <#include "/web/templates/modernui/content-auditor/facets.ftl" />
+                                <#include "facets.ftl" />
                             </div>
                             <div class="tab-pane" id="collection-${currentCollection}-tab-2">
-                                <#include "/web/templates/modernui/content-auditor/documents.ftl" />
+                                <#include "documents.ftl" />
                             </div>
                         </div>
                     <#else>

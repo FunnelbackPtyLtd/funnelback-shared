@@ -1,8 +1,8 @@
 <#ftl encoding="utf-8" />
 <#import "/web/templates/modernui/funnelback_classic.ftl" as s/>
 <#import "/web/templates/modernui/funnelback.ftl" as fb/>
-<#import "/web/templates/modernui/content-auditor/main.ftl" as main />
-<#import "/web/templates/modernui/content-auditor/design.ftl" as design />
+<#import "main.ftl" as main />
+<#import "design.ftl" as design />
 <!DOCTYPE html>
 <html lang="en-us">
 	<#-- Start:Macro: main.ftl - Head -->
