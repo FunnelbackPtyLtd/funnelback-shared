@@ -23,7 +23,6 @@ abstract class GroovyFileResource<T> extends AbstractSingleFileResource<T> {
     
     @Override
     public boolean isStale(long timestamp, T t) {
-        log.fatal("Is it stale?");
         if(isScriptTooOld(timestamp)) {
             return true;
         }
@@ -37,12 +36,11 @@ abstract class GroovyFileResource<T> extends AbstractSingleFileResource<T> {
     
     
     boolean isScriptTooOld(long time) {
-        log.fatal(getTime() +  " - "  + time + " >"  + MAX_SCRIPT_AGE);
+        log.trace(getTime() +  " - "  + time + " >"  + MAX_SCRIPT_AGE);
         if(getTime() - time > MAX_SCRIPT_AGE) {
-            log.fatal("TOO old!");
+            log.trace("Script is older than: " +  MAX_SCRIPT_AGE);
             return true;
         }
-        log.fatal("its ok!");
         return false;
     }
 
