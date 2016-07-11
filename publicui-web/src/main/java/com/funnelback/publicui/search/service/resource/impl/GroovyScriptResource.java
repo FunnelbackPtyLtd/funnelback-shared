@@ -10,16 +10,16 @@ import java.io.IOException;
 import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.filter.GroovyClassLoaderCache;
-import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 /**
  * Loads and compiles a Groovy script
  */
 @Log4j2
-public class GroovyScriptResource extends AbstractSingleFileResource<Class<Script>> {
+public class GroovyScriptResource extends GroovyFileResource<Class<Script>> {
     
     private final String collection;
     private final File searchHome;
+    
     public GroovyScriptResource(File file, String collection, File searchHome) {
         super(file);
         this.collection = collection;

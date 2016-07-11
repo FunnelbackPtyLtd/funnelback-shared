@@ -1,10 +1,11 @@
 package com.funnelback.publicui.search.service.resource.impl;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -12,7 +13,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.funnelback.common.testutils.TmpFolderProvider;
-public class GroovyClassResourceTest {
+public class GroovyFileResourceTest {
 
     @Rule public TestName testName = new TestName();
     
@@ -22,7 +23,9 @@ public class GroovyClassResourceTest {
         File myFile = new File(tmpDir, "bar");
         myFile.createNewFile();
         
-        GroovyClassResource<Object> resource = spy(new GroovyClassResource<>(myFile, "", myFile));
+        GroovyFileResource<Object> resource = spy(new GroovyFileResource<Object>(myFile){
+            @Override public Object parse() throws IOException {return null;}
+        });
         
         //Here we mock out isScriptTooOld to confirm it is called correctly and the result
         //is respected.
@@ -39,7 +42,9 @@ public class GroovyClassResourceTest {
  
     @Test
     public void testIsScriptTooOld() {
-        GroovyClassResource<Object> resource = spy(new GroovyClassResource<>(mock(File.class), "", mock(File.class)));
+        GroovyFileResource<Object> resource = spy(new GroovyFileResource<Object>(mock(File.class)){
+            @Override public Object parse() throws IOException {return null;}
+        });
         long currentTime =GroovyClassResource.MAX_SCRIPT_AGE * 2; 
         doReturn(currentTime).when(resource).getTime();
         
