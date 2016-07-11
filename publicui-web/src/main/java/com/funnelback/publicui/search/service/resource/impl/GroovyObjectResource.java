@@ -31,7 +31,7 @@ public class GroovyObjectResource<T> extends GroovyFileResource<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T parse() throws IOException {
-        log.fatal("Creating object form Groovy class defined at '"+file.getAbsolutePath()+"'");
+        log.debug("Creating object form Groovy class defined at '"+file.getAbsolutePath()+"'");
         try (GroovyClassLoader cl = new GroovyClassLoader()) {
             Class<T> clazz = cl.parseClass(file);
             try {
