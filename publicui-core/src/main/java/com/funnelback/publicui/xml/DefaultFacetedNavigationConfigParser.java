@@ -12,15 +12,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
-import com.funnelback.common.facetednavigation.marshaller.xml.ConfigFacetMarshallerXml;
-import com.funnelback.common.facetednavigation.marshaller.xml.LiveIndexFacetMarshaller;
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
 import com.funnelback.common.facetednavigation.models.Category;
 import com.funnelback.common.facetednavigation.models.Facet;
 import com.funnelback.common.facetednavigation.models.categories.DateFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLCategory;
-import com.funnelback.common.gscope.querygscope.models.QueryGscopeDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
@@ -34,20 +32,10 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.impl.UR
 @Log4j2
 @Component
 public class DefaultFacetedNavigationConfigParser implements FacetedNavigationConfigParser {
-
-    /** Attribute of root tag containing query processor options */
-    private static final String ATTR_QPOPTIONS = "qpoptions";
-    
-    /**
-     * Extra properties (In addition to "<Data>" for some
-     * category types
-     **/
-    private static final String[] CATEGORY_EXTRA_PROPERTIES = { "Metafield", "UserSetGScope", "Query", "Gscopefield", "Label" };
     
     
     private final FacetMarshallerJson facetMarshallerJson = new FacetMarshallerJson();
-    private final LiveIndexFacetMarshaller liveIndexFacetMarshaller = new LiveIndexFacetMarshaller();
-    private final ConfigFacetMarshallerXml configFacetMarshallerXml = new ConfigFacetMarshallerXml();
+    private final FacetMarshallerXml facetMarshallerXml = new FacetMarshallerXml();
     
     @Override
     public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException {
@@ -56,18 +44,9 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         Optional<List<Facet>> optionalFacets = facetMarshallerJson.unMarshal(configuration);
         
         if(!optionalFacets.isPresent()) {
-            optionalFacets = liveIndexFacetMarshaller.unMarshal(configuration);
+            optionalFacets = facetMarshallerXml.unmarshallFromUnknownLocation(configuration);
         }
         
-        if(!optionalFacets.isPresent()) {
-            List<QueryGscopeDefinition> queryGscopes = new ArrayList<>();
-            optionalFacets = configFacetMarshallerXml.unmarshall(configuration, queryGscopes, new ArrayList<>());
-            
-            if(queryGscopes.size() > 0) {
-                log.warn("Query based facets are not allowed in faceted nav files under profiles, this will "
-                    + "likely lead to problems. Please upgrade configuration");
-            }
-        }
         
         if(!optionalFacets.isPresent()) {
             throw new FacetedNavigationConfigParseException("Could not parse faceted navigation configuration");
