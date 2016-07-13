@@ -100,7 +100,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             facetedNavigationQPOptions.add(dateFieldFill);
             categoryDefinition = dateFieldFill;
         } else if(categories instanceof GscopeCategory) {
-            GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) categories).getCetegoryName(), ((GscopeCategory) categories).getGscope());
+            GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) categories).getCategoryName(), ((GscopeCategory) categories).getGscope());
             facetedNavigationQPOptions.add(gScopeItem);
             categoryDefinition = gScopeItem;
         } else if(categories instanceof MetaDataFieldCategory) {
@@ -108,7 +108,7 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             facetedNavigationQPOptions.add(metadataFieldFill);
             categoryDefinition = metadataFieldFill;
         } else if(categories instanceof URLCategory) {
-            URLFill urlFill = new URLFill(((URLCategory) categories).getURIPrefix());
+            URLFill urlFill = new URLFill(((URLCategory) categories).getUriPrefix());
             facetedNavigationQPOptions.add(urlFill);
             categoryDefinition = urlFill;
         } else {
