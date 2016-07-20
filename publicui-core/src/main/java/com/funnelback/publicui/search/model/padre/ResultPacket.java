@@ -304,9 +304,28 @@ public class ResultPacket {
      */
     @Getter private Map<String, String> svgs = new HashMap<String, String>();
     
+    /**
+     * <p>A list containing the count of unique values for a metadata class grouped by
+     * a metadata class.</p>
+     * 
+     * <p>Each element of the list is the result of:
+     * <code>The count of unique values of metadata 'X' grouped by metadata 'Y'</code>
+     * </p>
+     * 
+     * @since 15.8
+     */
     @Getter private List<UniqueByGroup> uniqueCountsByGroups = new ArrayList<>();
     
+    /**
+     * <p>A list containing the sum of a numeric metadata class grouped by a 
+     * metadatc class</p> 
+     * </p>Each element of the list is the result of:
+     * <code>The sum of metadata 'X' grouped by metadata 'Y'</code>
+     * </p>
+     * @since 15.8
+     */
     @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
+    
     /**
      * Test if the packet contains results.
      * @return true if the packet contains at least one {@link Result}.
