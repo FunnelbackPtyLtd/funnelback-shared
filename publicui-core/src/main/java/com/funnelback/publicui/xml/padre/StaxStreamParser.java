@@ -28,7 +28,11 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
+import com.funnelback.publicui.search.model.padre.SumByGroup;
+import com.funnelback.publicui.search.model.padre.SumByGroup.GroupAndSum;
 import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.UniqueByGroup;
+import com.funnelback.publicui.search.model.padre.UniqueByGroup.GroupAndCount;
 import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
@@ -178,6 +182,10 @@ public class StaxStreamParser implements PadreXmlParser {
                         }
                     } else if (ResultPacket.Schema.SVGS.equals(xmlStreamReader.getLocalName())) {
                         packet.getSvgs().putAll(XmlStreamUtils.tagsToMap(ResultPacket.Schema.SVGS, xmlStreamReader));
+                    } else if (ResultPacket.Schema.UNIQUE_COUNTS_BY_GROUPS.equals(xmlStreamReader.getLocalName())) {
+                        parseUniqueCountsByGroups(xmlStreamReader, packet);
+                    } else if (ResultPacket.Schema.SUMS_BY_GROUPS.equals(xmlStreamReader.getLocalName())) {
+                        parseSumsByGroups(xmlStreamReader, packet);
                     } else {
                         log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
                     }
@@ -194,6 +202,64 @@ public class StaxStreamParser implements PadreXmlParser {
         
     }
 
+    private void parseUniqueCountsByGroups(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+        int type = xmlStreamReader.getEventType();
+        do {
+            type = xmlStreamReader.next();
+            if(XMLStreamReader.CHARACTERS == type) {
+                type = xmlStreamReader.next();
+            }
+            if(ResultPacket.Schema.UniqueCount.TAG.equals(xmlStreamReader.getLocalName())) {
+                String by = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.UniqueCount.BY);
+                String of = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.UniqueCount.OF);
+                
+                UniqueByGroup uniqueByGroup = new UniqueByGroup(by, of);
+                packet.getUniqueCountsByGroups().add(uniqueByGroup);
+                
+                xmlStreamReader.next(); //moves onto to CHARACTERS
+                while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
+                    if (xmlStreamReader.isStartElement()) {
+                        String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.UniqueCount.Count.GROUP);
+                        long count = Long.parseLong(xmlStreamReader.getElementText());
+                        uniqueByGroup.getGroupAndCounts().add(new GroupAndCount(group, count));
+                        xmlStreamReader.next(); //should get to end element.
+                    }
+                } 
+            }
+            type = xmlStreamReader.getEventType();
+        } while(type != XMLStreamReader.END_ELEMENT 
+            || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.UNIQUE_COUNTS_BY_GROUPS.equals(xmlStreamReader.getLocalName())));
+    }
+    
+    private void parseSumsByGroups(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+      int type = xmlStreamReader.getEventType();
+      do {
+          type = xmlStreamReader.next();
+          if(XMLStreamReader.CHARACTERS == type) {
+              type = xmlStreamReader.next();
+          }
+          if(ResultPacket.Schema.SumByCount.TAG.equals(xmlStreamReader.getLocalName())) {
+              String by = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.SumByCount.BY);
+              String of = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.SumByCount.ON);
+              SumByGroup sumByGroup = new SumByGroup(by, of);
+              packet.getSumByGroups().add(sumByGroup);
+              
+              xmlStreamReader.next(); //moves onto to CHARACTERS
+              while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
+                  if (xmlStreamReader.isStartElement()) {
+                      String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.SumByCount.Sum.GROUP);
+                      long sum = Long.parseLong(xmlStreamReader.getElementText());
+                      sumByGroup.getGroupAndSums().add(new GroupAndSum(group, sum));
+                      xmlStreamReader.next(); //should get to end element.
+                  }
+                  
+              } 
+          }
+          type = xmlStreamReader.getEventType();
+      } while(type != XMLStreamReader.END_ELEMENT 
+          || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.SUMS_BY_GROUPS.equals(xmlStreamReader.getLocalName())));
+  }
+    
     private void parseResults(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
         
         
