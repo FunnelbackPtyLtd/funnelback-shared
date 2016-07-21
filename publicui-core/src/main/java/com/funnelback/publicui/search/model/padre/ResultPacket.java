@@ -306,22 +306,21 @@ public class ResultPacket {
     
     /**
      * <p>A list containing the count of unique values for a metadata class grouped by
-     * a metadata class.</p>
+     * another metadata class.</p>
      * 
-     * <p>Each element of the list is the result of:
-     * <code>The count of unique values of metadata 'X' grouped by metadata 'Y'</code>
-     * </p>
+     * <p>Each element of the list is the result of the count of unique values
+     * of metadata 'X' grouped by metadata 'Y'.</p>
      * 
      * @since 15.8
      */
     @Getter private List<UniqueByGroup> uniqueCountsByGroups = new ArrayList<>();
     
     /**
-     * <p>A list containing the sum of a numeric metadata class grouped by a 
-     * metadatc class</p> 
-     * <p>Each element of the list is the result of:
-     * <code>The sum of metadata 'X' grouped by metadata 'Y'</code>
-     * </p>
+     * <p>A list containing the sum of a numeric metadata class grouped by
+     * another metadata class</p>
+     *  
+     * <p>Each element of the list is the result of the sum of metadata 'X'
+     * grouped by metadata 'Y'</p>
      * 
      */
     @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
