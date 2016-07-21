@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_15.7.1628.0 MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>/tmp/anico/data/test-web/live/idx/index: 2.2 MB, 97 docs</collection_size>
+    <collection_updated>
+      Tue Jul 19 16:02:02 2016    </collection_updated>
+  </details>
+
+  <!-- SECDs represented in this index = 1 -->
+  <query>!sdsd</query>
+  <query_as_processed>!sdsd</query_as_processed>
+  <query_raw>\!sdsd</query_raw>
+  <collection>test-web</collection>
+
+<results_summary>
+  <fully_matching>97</fully_matching>
+  <collapsed>0</collapsed>
+  <partially_matching>0</partially_matching>
+  <total_matching>97</total_matching>
+  <estimated_counts>false</estimated_counts>
+  <num_ranks>10</num_ranks>
+  <currstart>1</currstart>
+  <currend>10</currend>
+  <nextstart>11</nextstart>
+</results_summary>
+
+  <qhlre>(?i)\bsdsd\b</qhlre>
+<unique_counts_by_groups>
+</unique_counts_by_groups>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title>Index of /accessibility</title>
+  <collection>test-web</collection>
+  <component>0</component>
+  <live_url>http://test-data.cbr.au.funnelback.com/accessibility/</live_url>
+<summary><![CDATA[20-May-2016 12:25 -.  HTMLCS_test_cases/ 18-Sep-2012 11:45 -.  badHTML.html 11-Dec-2012 16:35 19K.  badHTMLFrameset.html 11-Dec-2012 16:36 211.  badPDF.pdf 18-Sep-2012 11:45 116K.  badTitle.html 16-Oct-2012 13:21 125.  brochure_oct2004.doc]]></summary>
+  <cache_url>/search/cache.cgi?collection=test-web&amp;doc=funnelback-web-crawl.warc&amp;off=279&amp;len=1607&amp;url=http%3A%2F%2Ftest-data.cbr.au.funnelback.com%2Faccessibility%2F</cache_url>
+  <date>No Date</date>
+  <filesize>2388</filesize>
+  <filetype>html</filetype>
+  <gscopes_set></gscopes_set>
+  <tier>1</tier>
+  <docnum>0</docnum>
+  </result>
+
+</results>
+
+  <!-- Vbyte integers decoded:  this query: 0, this run: 0 -->
+  <!-- Vbyte bytes decoded: this query: 0, this run: 0 -->
+</PADRE_result_packet>

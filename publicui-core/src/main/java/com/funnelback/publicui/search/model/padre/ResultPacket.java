@@ -305,6 +305,27 @@ public class ResultPacket {
     @Getter private Map<String, String> svgs = new HashMap<String, String>();
     
     /**
+     * <p>A list containing the count of unique values for a metadata class grouped by
+     * another metadata class.</p>
+     * 
+     * <p>Each element of the list is the result of the count of unique values
+     * of metadata 'X' grouped by metadata 'Y'.</p>
+     * 
+     * @since 15.8
+     */
+    @Getter private List<UniqueByGroup> uniqueCountsByGroups = new ArrayList<>();
+    
+    /**
+     * <p>A list containing the sum of a numeric metadata class grouped by
+     * another metadata class</p>
+     *  
+     * <p>Each element of the list is the result of the sum of metadata 'X'
+     * grouped by metadata 'Y'</p>
+     * 
+     */
+    @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
+    
+    /**
      * Test if the packet contains results.
      * @return true if the packet contains at least one {@link Result}.
      */
@@ -417,5 +438,31 @@ public class ResultPacket {
         
         public static final String SVGS = "svgs";
         
+        public static final String UNIQUE_COUNTS_BY_GROUPS = "unique_counts_by_groups";
+        
+        public static class UniqueCount {
+            public static final String TAG = "uc";
+            public static final String BY = "by";
+            public static final String OF = "of";
+            
+            public static class Count {
+                public static final String TAG = "c";
+                public static final String GROUP = "g";
+            }
+        }
+        
+        
+        public static final String SUMS_BY_GROUPS = "sums_by_groups";
+        public static class SumByCount {
+            public static final String TAG = "sum";
+            public static final String BY = "by";
+            public static final String ON = "on";
+            
+            public static class Sum {
+                public static final String TAG = "s";
+                public static final String GROUP = "g";
+            }
+            
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.funnelback.publicui.search.model.padre.*;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+
 import org.junit.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -27,6 +28,60 @@ public class StaxStreamParserTests {
             FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"),
             false);
         assertNotNull(rp);
+    }
+    
+    @Test
+    public void testUniqueCountsByGroups() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/unique_counts_by_groups.xml"), "UTF-8"),
+            false);
+        Assert.assertEquals(4, rp.getUniqueCountsByGroups().size());
+        
+        Assert.assertEquals(new UniqueByGroup("FunAAPortfolio", "FunAAOccurrences244"), 
+                                rp.getUniqueCountsByGroups().get(0));
+        
+        Assert.assertEquals("FunAAPortfolio", rp.getUniqueCountsByGroups().get(2).getBy());
+        Assert.assertEquals("FunAAOccurrences143", rp.getUniqueCountsByGroups().get(2).getOn());
+        
+        Assert.assertEquals(new Long(3L), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("portfolio3"));
+        
+    }
+    
+    @Test
+    public void testUniqueCountsByGroupsEmpty() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/unique_counts_by_groups-EMPTY.xml"), "UTF-8"),
+            false);
+        Assert.assertEquals(0, rp.getUniqueCountsByGroups().size());
+    }
+    
+    @Test
+    public void testSumByGroup() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/sum_by_groups.xml"), "UTF-8"),
+            false);
+        Assert.assertEquals(3, rp.getSumByGroups().size());
+        
+        Assert.assertEquals(new SumByGroup("profile", "failures3"), rp.getSumByGroups().get(2));
+        
+        Assert.assertEquals("profile", rp.getSumByGroups().get(0).getBy());
+        Assert.assertEquals("failures1", rp.getSumByGroups().get(0).getOn());
+        
+        Assert.assertEquals(new Long(4010L), rp.getSumByGroups().get(0).getGroupAndSums().get("health"));
+        
+        Assert.assertEquals(new Long(3002L), rp.getSumByGroups().get(1).getGroupAndSums().get("health foobar"));
+    }
+    
+    @Test
+    public void testSumByGroupEmpty() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/sum_by_groups-EMPTY.xml"), "UTF-8"),
+            false);
+        Assert.assertEquals(rp.getSumByGroups().size(), 0);
     }
     
     @Test
