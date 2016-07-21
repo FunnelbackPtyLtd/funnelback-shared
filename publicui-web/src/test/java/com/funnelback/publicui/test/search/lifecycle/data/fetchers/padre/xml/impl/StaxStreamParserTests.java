@@ -44,8 +44,7 @@ public class StaxStreamParserTests {
         Assert.assertEquals("FunAAPortfolio", rp.getUniqueCountsByGroups().get(2).getBy());
         Assert.assertEquals("FunAAOccurrences143", rp.getUniqueCountsByGroups().get(2).getOn());
         
-        Assert.assertEquals("portfolio3", rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get(0).getGroup());
-        Assert.assertEquals(3L, rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get(0).getCount());
+        Assert.assertEquals(new Long(3L), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("portfolio3"));
         
     }
     
@@ -57,7 +56,6 @@ public class StaxStreamParserTests {
             false);
         Assert.assertEquals(0, rp.getUniqueCountsByGroups().size());
     }
-    
     
     @Test
     public void testSumByGroup() throws Exception {
@@ -71,11 +69,10 @@ public class StaxStreamParserTests {
         
         Assert.assertEquals("profile", rp.getSumByGroups().get(0).getBy());
         Assert.assertEquals("failures1", rp.getSumByGroups().get(0).getOn());
-        Assert.assertEquals("health", rp.getSumByGroups().get(0).getGroupAndSums().get(0).getGroup());
-        Assert.assertEquals(4010L, rp.getSumByGroups().get(0).getGroupAndSums().get(0).getSum());
         
-        Assert.assertEquals("health foobar", rp.getSumByGroups().get(1).getGroupAndSums().get(1).getGroup());
-        Assert.assertEquals(3002L, rp.getSumByGroups().get(1).getGroupAndSums().get(1).getSum());
+        Assert.assertEquals(new Long(4010L), rp.getSumByGroups().get(0).getGroupAndSums().get("health"));
+        
+        Assert.assertEquals(new Long(3002L), rp.getSumByGroups().get(1).getGroupAndSums().get("health foobar"));
     }
     
     @Test

@@ -29,10 +29,8 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
 import com.funnelback.publicui.search.model.padre.Spell;
 import com.funnelback.publicui.search.model.padre.SumByGroup;
-import com.funnelback.publicui.search.model.padre.SumByGroup.GroupAndSum;
 import com.funnelback.publicui.search.model.padre.TierBar;
 import com.funnelback.publicui.search.model.padre.UniqueByGroup;
-import com.funnelback.publicui.search.model.padre.UniqueByGroup.GroupAndCount;
 import com.funnelback.publicui.search.model.padre.factories.BestBetFactory;
 import com.funnelback.publicui.search.model.padre.factories.ContextualNavigationFactory;
 import com.funnelback.publicui.search.model.padre.factories.DetailsFactory;
@@ -221,7 +219,7 @@ public class StaxStreamParser implements PadreXmlParser {
                     if (xmlStreamReader.isStartElement()) {
                         String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.UniqueCount.Count.GROUP);
                         long count = Long.parseLong(xmlStreamReader.getElementText());
-                        uniqueByGroup.getGroupAndCounts().add(new GroupAndCount(group, count));
+                        uniqueByGroup.getGroupAndCounts().put(group, count);
                         xmlStreamReader.next(); //should get to end element.
                     }
                 } 
@@ -249,7 +247,7 @@ public class StaxStreamParser implements PadreXmlParser {
                   if (xmlStreamReader.isStartElement()) {
                       String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.SumByCount.Sum.GROUP);
                       long sum = Long.parseLong(xmlStreamReader.getElementText());
-                      sumByGroup.getGroupAndSums().add(new GroupAndSum(group, sum));
+                      sumByGroup.getGroupAndSums().put(group, sum);
                       xmlStreamReader.next(); //should get to end element.
                   }
                   

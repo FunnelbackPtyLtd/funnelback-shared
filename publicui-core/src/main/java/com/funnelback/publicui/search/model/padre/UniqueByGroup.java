@@ -1,7 +1,7 @@
 package com.funnelback.publicui.search.model.padre;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -30,13 +30,17 @@ public class UniqueByGroup {
      */
     @Getter private final String on;
     
-    @Getter private final List<GroupAndCount> groupAndCounts = new ArrayList<>();
- 
     /**
      * <p>Holds the count of distinct values in a group.</p> 
      * 
+     * <p>The key is the group, which a single value from the metadata class
+     * <code>by</code>. The value is the count of unique values in the group
+     * for the metadata class <code>on</code>.
      * @since 15.8
      */
+    @Getter private final Map<String, Long> groupAndCounts = new HashMap<>();
+ 
+    
     @AllArgsConstructor
     @EqualsAndHashCode
     @ToString
