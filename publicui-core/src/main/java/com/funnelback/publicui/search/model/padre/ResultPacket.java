@@ -319,10 +319,10 @@ public class ResultPacket {
     /**
      * <p>A list containing the sum of a numeric metadata class grouped by a 
      * metadatc class</p> 
-     * </p>Each element of the list is the result of:
+     * <p>Each element of the list is the result of:
      * <code>The sum of metadata 'X' grouped by metadata 'Y'</code>
      * </p>
-     * @since 15.8
+     * 
      */
     @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
     
