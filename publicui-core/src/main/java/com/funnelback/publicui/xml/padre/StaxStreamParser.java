@@ -184,7 +184,9 @@ public class StaxStreamParser implements PadreXmlParser {
                         parseUniqueCountsByGroups(xmlStreamReader, packet);
                     } else if (ResultPacket.Schema.SUMS_BY_GROUPS.equals(xmlStreamReader.getLocalName())) {
                         parseSumsByGroups(xmlStreamReader, packet);
-                    } else {
+                    } else if (ResultPacket.Schema.RM_SUMS.equals(xmlStreamReader.getLocalName())) {
+                        parseRMSums(xmlStreamReader, packet);
+                    }else {
                         log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
                     }
                     
@@ -198,6 +200,19 @@ public class StaxStreamParser implements PadreXmlParser {
             throw new XmlParsingException(ioe);
         }
         
+    }
+    
+    
+    private void parseRMSums(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+        int type = xmlStreamReader.getEventType();
+        while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
+            if (xmlStreamReader.isStartElement()) {
+                String md = xmlStreamReader.getAttributeValue(null, "md");
+                double count = Double.parseDouble(xmlStreamReader.getElementText());
+                packet.getMetadataSums().put(md, count);
+                xmlStreamReader.next(); //should get to end element.
+            }
+        }
     }
 
     private void parseUniqueCountsByGroups(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {

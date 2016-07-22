@@ -326,6 +326,13 @@ public class ResultPacket {
     @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
     
     /**
+     * <p>A map of the numeric metadata to total of that numeric metadata in the result set</p>
+     * 
+     * <p>The key is the metadata class. The value is the sum.</p>
+     */
+    @Getter private Map<String, Double> metadataSums = new HashMap<>();
+    
+    /**
      * Test if the packet contains results.
      * @return true if the packet contains at least one {@link Result}.
      */
@@ -462,6 +469,13 @@ public class ResultPacket {
                 public static final String TAG = "s";
                 public static final String GROUP = "g";
             }
+            
+        }
+        
+        public static final String RM_SUMS = "rm_sums";
+        
+        public static class RMSums {
+            public static final String TOTAL = "s";
             
         }
     }
