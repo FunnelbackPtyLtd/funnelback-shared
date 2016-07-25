@@ -8,7 +8,7 @@
     </formats>
     <fileSets>
         <fileSet>
-            <outputDirectory>modernui</outputDirectory>
+            <outputDirectory>funnelback/web/templates/modernui</outputDirectory>
             <directory>src/main/resources/</directory>
             <includes>
                 <include>**</include>
