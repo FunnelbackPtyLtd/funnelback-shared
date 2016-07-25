@@ -34,8 +34,8 @@ public class StaxStreamParserTests {
     public void testMetadataSums() throws Exception {
 //       Format is:
 //       <rm_sums>
-//           <s md="failures2">7218.000000</s>
-//           <s md="failures1">7210.100000</s>
+//           <s on="failures2">7218.000000</s>
+//           <s on="failures1">7210.100000</s>
 //       </rm_sums>
         
         StaxStreamParser parser = new StaxStreamParser();

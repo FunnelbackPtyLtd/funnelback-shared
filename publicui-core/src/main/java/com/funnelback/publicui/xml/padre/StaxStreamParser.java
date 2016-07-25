@@ -207,7 +207,7 @@ public class StaxStreamParser implements PadreXmlParser {
         int type = xmlStreamReader.getEventType();
         while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
             if (xmlStreamReader.isStartElement()) {
-                String md = xmlStreamReader.getAttributeValue(null, "md");
+                String md = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.RMSums.METADATA_CLASS);
                 double count = Double.parseDouble(xmlStreamReader.getElementText());
                 packet.getMetadataSums().put(md, count);
                 xmlStreamReader.next(); //should get to end element.

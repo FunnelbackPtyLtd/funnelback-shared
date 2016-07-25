@@ -476,6 +476,7 @@ public class ResultPacket {
         
         public static class RMSums {
             public static final String TOTAL = "s";
+            public static final String METADATA_CLASS = "on";
             
         }
     }
