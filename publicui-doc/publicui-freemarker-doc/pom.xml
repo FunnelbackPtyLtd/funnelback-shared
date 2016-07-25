@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.funnelback.publicui.doc</groupId>
+    <artifactId>publicui-doc-freemarker</artifactId>
+    <packaging>pom</packaging>
+    <parent>
+        <groupId>com.funnelback.publicui.doc</groupId>
+        <artifactId>publicui-doc-parent</artifactId>
+        <version>15.7.1629-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <executions>
+              <execution>
+                <id>unpack-templates</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.funnelback.publicui</groupId>
+                      <artifactId>ftl-templates</artifactId>
+                      <version>${project.version}</version>
+                      <type>zip</type>
+                      <classifier>templates</classifier>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/freemarker-templates</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-ftl-doc</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- download file -->
+                                <get src="http://jenkins.cbr.au.funnelback.com:8080/job/ftldoc/lastSuccessfulBuild/artifact/target/ftldoc-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+                                     dest="${project.build.directory}/ftldoc.jar"
+                                     verbose="false"
+                                     usetimestamp="true"/>
+                                <java fork="false" failonerror="yes" classpath="${project.build.directory}/ftldoc.jar" classname="freemarker.tools.ftldoc.FtlDoc">
+                                    <arg line="-tpl ${project.basedir}/src/main/resources/templates -d ${project.build.directory}/help-ftl ${project.build.directory}/freemarker-templates/modernui/funnelback.ftl ${project.build.directory}/freemarker-templates/modernui/funnelback_classic.ftl"/>
+                                </java>
+                                <copy file="${project.basedir}/src/main/resources/templates/stylesheet.css" todir="${project.build.directory}/help-ftl" />
+                             </target>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/ftldoc.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
