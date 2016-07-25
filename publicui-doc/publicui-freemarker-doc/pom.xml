@@ -41,27 +41,23 @@
             </executions>
           </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>freemarker</groupId>
+                <artifactId>ftldoc-maven-plugin</artifactId>
+                <version>0.0.2-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>run-ftl-doc</id>
+                        <id>generate-documentation</id>
                         <phase>compile</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>generate-documentation</goal>
                         </goals>
                         <configuration>
-                            <target>
-                                <!-- download file -->
-                                <get src="http://jenkins.cbr.au.funnelback.com:8080/job/ftldoc/lastSuccessfulBuild/artifact/target/ftldoc-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
-                                     dest="${project.build.directory}/ftldoc.jar"
-                                     verbose="false"
-                                     usetimestamp="true"/>
-                                <java fork="false" failonerror="yes" classpath="${project.build.directory}/ftldoc.jar" classname="freemarker.tools.ftldoc.FtlDoc">
-                                    <arg line="-tpl ${project.basedir}/src/main/resources/templates -d ${project.build.directory}/help-ftl ${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback.ftl ${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback_classic.ftl"/>
-                                </java>
-                                <copy file="${project.basedir}/src/main/resources/templates/stylesheet.css" todir="${project.build.directory}/help-ftl" />
-                             </target>
+                            <outputDirectory>${project.build.directory}/help-ftl</outputDirectory>
+                            <templateDirectory>${project.basedir}/src/main/resources/templates</templateDirectory>
+                            <freemarkerFiles>
+                              <freemarkerFile>${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback.ftl</freemarkerFile>
+                              <freemarkerFile>${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback_classic.ftl</freemarkerFile>
+                            </freemarkerFiles>
                          </configuration>
                      </execution>
                  </executions>
