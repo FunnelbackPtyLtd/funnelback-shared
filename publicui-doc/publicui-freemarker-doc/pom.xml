@@ -58,7 +58,7 @@
                                      verbose="false"
                                      usetimestamp="true"/>
                                 <java fork="false" failonerror="yes" classpath="${project.build.directory}/ftldoc.jar" classname="freemarker.tools.ftldoc.FtlDoc">
-                                    <arg line="-tpl ${project.basedir}/src/main/resources/templates -d ${project.build.directory}/help-ftl ${project.build.directory}/freemarker-templates/modernui/funnelback.ftl ${project.build.directory}/freemarker-templates/modernui/funnelback_classic.ftl"/>
+                                    <arg line="-tpl ${project.basedir}/src/main/resources/templates -d ${project.build.directory}/help-ftl ${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback.ftl ${project.build.directory}/freemarker-templates/funnelback/web/templates/modernui/funnelback_classic.ftl"/>
                                 </java>
                                 <copy file="${project.basedir}/src/main/resources/templates/stylesheet.css" todir="${project.build.directory}/help-ftl" />
                              </target>
