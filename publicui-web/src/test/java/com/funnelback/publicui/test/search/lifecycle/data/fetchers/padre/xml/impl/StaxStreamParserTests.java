@@ -31,6 +31,34 @@ public class StaxStreamParserTests {
     }
     
     @Test
+    public void testMetadataSums() throws Exception {
+//       Format is:
+//       <rm_sums>
+//           <s on="failures2">7218.000000</s>
+//           <s on="failures1">7210.100000</s>
+//       </rm_sums>
+        
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/metadata-sums.xml"), "UTF-8"),
+            false);
+        
+        Assert.assertEquals(new Double(7218.000000), rp.getMetadataSums().get("failures2"));
+        Assert.assertEquals(new Double(7210.100000), rp.getMetadataSums().get("failures1"));
+        Assert.assertEquals(2, rp.getMetadataSums().size());
+    }
+    
+    @Test
+    public void testMetadataSumsEmpty() throws Exception {   
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToString(new File("src/test/resources/padre-xml/metadata-sums-EMPTY.xml"), "UTF-8"),
+            false);
+        
+        Assert.assertEquals(0, rp.getMetadataSums().size());
+    }
+    
+    @Test
     public void testUniqueCountsByGroups() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<PADRE_result_packet>
+  <details>
+    <padre_version>FUNNELBACK_PADRE_15.7.1628.0 MDPLFS (Web/Ent) [64 bit]</padre_version>
+    <collection_size>junk_sum_by_group__coll01_idx: 0.0 MB, 4 docs</collection_size>
+    <collection_updated>
+          </collection_updated>
+  </details>
+
+  <!-- SECDs represented in this index = 0 -->
+  <query>!asasas</query>
+  <query_as_processed>!asasas</query_as_processed>
+  <query_raw>!asasas</query_raw>
+  <collection>junk_sum_by_group__coll01_idx</collection>
+
+<results_summary>
+  <fully_matching>4</fully_matching>
+  <collapsed>0</collapsed>
+  <partially_matching>0</partially_matching>
+  <total_matching>4</total_matching>
+  <estimated_counts>false</estimated_counts>
+  <num_ranks>1</num_ranks>
+  <currstart>1</currstart>
+  <currend>1</currend>
+  <nextstart>2</nextstart>
+</results_summary>
+
+  <qhlre>(?i)\basasas\b</qhlre>
+<rm_sums>
+</rm_sums>
+
+<results>
+
+  <tier_bar>
+  <matched>1</matched>
+  <outof>1</outof>
+  </tier_bar>
+
+  <result>
+  <rank>1</rank>
+  <score>1000</score>
+  <title>a launch code: loic</title>
+  <collection>junk_sum_by_group__coll01_idx</collection>
+  <component>0</component>
+  <live_url>http://doc/01</live_url>
+<summary><![CDATA[launch code loic.]]></summary>
+  <cache_url>/search/cache.cgi?collection=junk_sum_by_group__coll01_idx&amp;doc=sum_by_group.bundle&amp;off=0&amp;len=540&amp;url=http%3A%2F%2Fdoc%2F01</cache_url>
+  <date>No Date</date>
+  <filesize>485</filesize>
+  <filetype>html</filetype>
+  <gscopes_set></gscopes_set>
+  <tier>1</tier>
+  <docnum>0</docnum>
+  </result>
+
+</results>
+
+  <!-- Vbyte integers decoded:  this query: 0, this run: 0 -->
+  <!-- Vbyte bytes decoded: this query: 0, this run: 0 -->
+</PADRE_result_packet>
