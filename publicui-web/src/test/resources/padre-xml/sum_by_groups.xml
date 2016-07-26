@@ -28,14 +28,14 @@
   <qhlre>(?i)\basasas\b</qhlre>
 <sums_by_groups>
         <sum by="profile" on="failures1">
-                <s g="health">4010</s>
-                <s g="health foobar">3000</s>
-                <s g="The cool profile">200</s>
+                <s g="health">4010.0</s>
+                <s g="health foobar">3000.0</s>
+                <s g="The cool profile">200.0</s>
         </sum>
         <sum by="profile" on="failures2">
-                <s g="health">4014</s>
-                <s g="health foobar">3002</s>
-                <s g="The cool profile">202</s>
+                <s g="health">4014.0</s>
+                <s g="health foobar">3002.0</s>
+                <s g="The cool profile">202.0</s>
         </sum>
         <sum by="profile" on="failures3">
 	</sum>

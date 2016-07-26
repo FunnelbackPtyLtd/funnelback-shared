@@ -38,6 +38,6 @@ public class UniqueByGroup {
      * for the metadata class <code>on</code>.
      * @since 15.8
      */
-    @Getter private final Map<String, Long> groupAndCounts = new HashMap<>();
+    @Getter private final Map<String, Double> groupAndCounts = new HashMap<>();
  
 }

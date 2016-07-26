@@ -72,7 +72,7 @@ public class StaxStreamParserTests {
         Assert.assertEquals("FunAAPortfolio", rp.getUniqueCountsByGroups().get(2).getBy());
         Assert.assertEquals("FunAAOccurrences143", rp.getUniqueCountsByGroups().get(2).getOn());
         
-        Assert.assertEquals(new Long(3L), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("portfolio3"));
+        Assert.assertEquals(new Double(3D), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("portfolio3"));
         
     }
     
@@ -98,9 +98,9 @@ public class StaxStreamParserTests {
         Assert.assertEquals("profile", rp.getSumByGroups().get(0).getBy());
         Assert.assertEquals("failures1", rp.getSumByGroups().get(0).getOn());
         
-        Assert.assertEquals(new Long(4010L), rp.getSumByGroups().get(0).getGroupAndSums().get("health"));
+        Assert.assertEquals(new Double(4010D), rp.getSumByGroups().get(0).getGroupAndSums().get("health"));
         
-        Assert.assertEquals(new Long(3002L), rp.getSumByGroups().get(1).getGroupAndSums().get("health foobar"));
+        Assert.assertEquals(new Double(3002D), rp.getSumByGroups().get(1).getGroupAndSums().get("health foobar"));
     }
     
     @Test
