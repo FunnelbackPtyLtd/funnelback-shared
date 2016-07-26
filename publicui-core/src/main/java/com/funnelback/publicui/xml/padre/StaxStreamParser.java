@@ -233,7 +233,7 @@ public class StaxStreamParser implements PadreXmlParser {
                 while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
                     if (xmlStreamReader.isStartElement()) {
                         String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.UniqueCount.Count.GROUP);
-                        long count = Long.parseLong(xmlStreamReader.getElementText());
+                        double count = Double.parseDouble(xmlStreamReader.getElementText());
                         uniqueByGroup.getGroupAndCounts().put(group, count);
                         xmlStreamReader.next(); //should get to end element.
                     }
@@ -261,7 +261,7 @@ public class StaxStreamParser implements PadreXmlParser {
               while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
                   if (xmlStreamReader.isStartElement()) {
                       String group = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.SumByCount.Sum.GROUP);
-                      long sum = Long.parseLong(xmlStreamReader.getElementText());
+                      double sum = Double.parseDouble(xmlStreamReader.getElementText());
                       sumByGroup.getGroupAndSums().put(group, sum);
                       xmlStreamReader.next(); //should get to end element.
                   }

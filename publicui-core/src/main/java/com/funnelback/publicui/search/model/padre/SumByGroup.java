@@ -41,6 +41,6 @@ public class SumByGroup {
      * 
      * @since 15.8
      */
-    @Getter private final Map<String, Long> groupAndSums = new HashMap<>();
+    @Getter private final Map<String, Double> groupAndSums = new HashMap<>();
  
 }
