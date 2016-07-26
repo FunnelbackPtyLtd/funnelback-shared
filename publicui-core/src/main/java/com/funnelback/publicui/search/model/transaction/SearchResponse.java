@@ -33,8 +33,11 @@ public class SearchResponse {
     @Getter @Setter private ResultPacket resultPacket;
     
     /**
-     * Raw XML packet as return by PADRE, for
-     * debugging purposes
+     * <p>Raw XML packet as return by PADRE, for
+     * debugging purposes.</p>
+     * 
+     * <p><b>Note:</b> This is not included in the JSON / XML output
+     * for performance reasons</p>
      */
     @XStreamOmitField
     @Getter @Setter private String rawPacket;
@@ -74,9 +77,12 @@ public class SearchResponse {
     @Getter @Setter private Curator curator = new Curator();
     
     /**
-     * Contains translation messages for the UI, for the locale
-     * given in the {@link SearchQuestion}.
+     * <p>Contains translation messages for the UI, for the locale
+     * given in the {@link SearchQuestion}.</p>
      * 
+     * <p><b>Note:</b> This is not included in the JSON / XML output
+     * for performance reasons</p>
+
      * @since 12.0
      */
     @XStreamOmitField

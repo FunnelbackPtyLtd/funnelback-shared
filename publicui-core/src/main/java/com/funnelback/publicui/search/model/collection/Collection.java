@@ -89,6 +89,10 @@ public class Collection {
      * <p>Contains <code>collection.cfg</code> values. Can be accessed
      * using <code>configuration.value(KEY)</code> such as
      * <code>configuration.value("query_processor_options")</code>.</p>
+     * 
+     * <p><b>Note:</b> This is not included in the JSON / XML output
+     * for security reasons</p>
+     * 
      **/
     @XStreamOmitField
     @Getter private Config configuration;

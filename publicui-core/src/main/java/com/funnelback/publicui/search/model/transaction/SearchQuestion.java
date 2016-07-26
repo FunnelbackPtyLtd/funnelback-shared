@@ -285,7 +285,10 @@ public class SearchQuestion {
      * <p>Principal representing the remote user for the current request.</p>
      * 
      * <p>Will be NULL if the user isn't authenticated.</p>
-     * 
+     *
+     * <p><b>Note:</b> This is not included in the JSON / XML output
+     * for security reasons</p>
+     *
      * @since 12.2
      */
     @XStreamOmitField
