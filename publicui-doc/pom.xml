@@ -14,6 +14,7 @@
 	<modules>
 		<module>publicui-doc-templates</module>
 		<module>publicui-doc-reference</module>
+		<module>publicui-freemarker-doc</module>
 	</modules>
 
 	<build>
