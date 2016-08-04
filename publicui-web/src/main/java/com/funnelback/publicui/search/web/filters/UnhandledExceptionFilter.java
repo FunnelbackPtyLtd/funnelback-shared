@@ -43,7 +43,7 @@ public class UnhandledExceptionFilter implements Filter {
         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
         HttpServletRequest req = (HttpServletRequest) request;
-        log.error("Unhandled exception for URL '{}?{}'", req.getRequestURL(), req.getQueryString(), e);
+        log.error("Unhandled exception for URL '{}{}'", req.getRequestURL(), req.getQueryString() != null ? "?" + req.getQueryString() : "", e);
     }
 
     @Override
