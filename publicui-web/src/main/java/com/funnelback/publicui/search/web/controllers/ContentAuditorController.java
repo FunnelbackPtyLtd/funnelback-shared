@@ -74,19 +74,25 @@ public class ContentAuditorController {
         // Pass off to the searchController
         ModelAndView mav = searchController.search(request, response, question, user);
 
-        // Arrange to use the special content-auditor template for rendering
-        String templateDirectory = question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.TEMPLATE_DIRECTORY);
-        String viewName = templateDirectory + "/" + ContentAuditorController.DEFAULT_TEMPLATE_NAME;
-        if (ContentAuditorController.CSV_TEMPLATE_NAME.equals(question.getForm())) {
-            viewName = templateDirectory + "/" + ContentAuditorController.CSV_TEMPLATE_NAME;
-            response.setContentType("text/csv");
-            response.setHeader("content-disposition", "attachment; filename=content-auditor-export.csv");            
-        } else if (SUMMARY_TEMPLATE_NAME.equals(question.getForm())) {
-            viewName = templateDirectory + "/" + SUMMARY_TEMPLATE_NAME;
-            response.setContentType("application/json");
+        if (mav != null) {
+            // Arrange to use the special content-auditor template for rendering
+            String templateDirectory = question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.TEMPLATE_DIRECTORY);
+            String viewName = templateDirectory + "/" + ContentAuditorController.DEFAULT_TEMPLATE_NAME;
+            if (ContentAuditorController.CSV_TEMPLATE_NAME.equals(question.getForm())) {
+                viewName = templateDirectory + "/" + ContentAuditorController.CSV_TEMPLATE_NAME;
+                response.setContentType("text/csv");
+                response.setHeader("content-disposition", "attachment; filename=content-auditor-export.csv");            
+            } else if (SUMMARY_TEMPLATE_NAME.equals(question.getForm())) {
+                viewName = templateDirectory + "/" + SUMMARY_TEMPLATE_NAME;
+                response.setContentType("application/json");
+            }
+            
+            return new ModelAndView(viewName, mav.getModel());
+        } else {
+            // May happen if parameters were missing (e.g. collection),
+            // assume the response has been dealt with by the search controller
+            return null;
         }
-        
-        return new ModelAndView(viewName, mav.getModel());
     }
 
 }
