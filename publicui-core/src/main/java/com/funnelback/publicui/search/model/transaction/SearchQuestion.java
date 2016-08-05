@@ -579,7 +579,7 @@ public class SearchQuestion {
     
     /** Enum for identifying special types of search requests requiring special processing */
     public enum SearchQuestionType {
-        SEARCH, EXTRA_SEARCH, CONTENT_AUDITOR, CONTENT_AUDITOR_DUPLICATES;
+        SEARCH, EXTRA_SEARCH, CONTENT_AUDITOR, CONTENT_AUDITOR_DUPLICATES, ACCESSIBILITY_AUDITOR;
     }
     
 }

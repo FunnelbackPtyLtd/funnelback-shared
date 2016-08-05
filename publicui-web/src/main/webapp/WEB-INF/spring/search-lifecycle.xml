@@ -14,6 +14,8 @@
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
 			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
 		</bean>
+		<ref bean="accessibilityAuditorSetQueryProcessorOptions" />
+		<ref bean="accessibilityAuditorConfigureFacets" />
 		<ref bean="session" />
 		<ref bean="userKeysInputProcessor" />
 		<ref bean="facetScopeInputProcessor" />
