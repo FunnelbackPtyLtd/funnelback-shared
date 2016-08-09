@@ -41,26 +41,29 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         Stream<String> failureTypesAffected = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.failureTypeAffected(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         // Facet on success criteria (e.g. 1.2.3)
         Stream<String> successCriteria = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.successCriterion(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         // Facet on issue type
         Stream<String> issueTypes = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.issueTypes(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         // Facet on other metadata
         Stream<String> other = Stream.of(
-            Names.portfolio(),
-            Names.domain(),
-            Names.affected(),
-            Names.unaffected(),
+            Names.portfolio().getName(),
+            Names.domain().getName(),
+            Names.affected().getName(),
+            Names.unaffected().getName(),
             "f");
         
         // Build our facet definitions and QPOs

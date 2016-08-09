@@ -87,24 +87,28 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         Stream<String> failureTypesAffected = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.failureTypeAffected(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         Stream<String> failureTypes = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.failureTypesOccurrences(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         Stream<String> successCriteria = Arrays.asList(FailureType.values())
             .stream()
             .map(type -> Stream.of(Names.successCriterion(type)))
-            .flatMap(Function.identity());
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
             Names.portfolio(),
             Names.domain(),
             Names.affected(),
             Names.unaffected(),
-            Names.occurrences());
+            Names.occurrences())
+            .map(Metadata::getName);
         
         String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, successCriteria, other)
             .flatMap(Function.identity())
@@ -165,7 +169,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         
         // Group by domains & portfolios
         for (String grouping: new String[] {
-                        Names.domain(), Names.portfolio()
+                        Names.domain().getName(), Names.portfolio().getName()
         }) {
             // FIXME: Not sure how to avoid hardcoding things here...
             sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
@@ -189,14 +193,14 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         
         // Group by domains & portfolios
         for (String grouping: new String[] {
-                        Names.domain(), Names.portfolio()
+                        Names.domain().getName(), Names.portfolio().getName()
         }) {
             // Type of checkers
             counts.add(String.format("[%s.+Types]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             
             // Success criterion value (e.g. 1.2.3), for each failure type
             for (FailureType type: FailureType.values()) {
-                counts.add(String.format("[%s]:[%s]", Metadata.getMetadataClass(grouping), Metadata.getMetadataClass(Names.successCriterion(type))));
+                counts.add(String.format("[%s]:[%s]", Metadata.getMetadataClass(grouping), Metadata.getMetadataClass(Names.successCriterion(type).getName())));
             }
         }
         
