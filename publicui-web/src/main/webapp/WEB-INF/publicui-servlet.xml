@@ -10,7 +10,7 @@
 	<import resource="/spring/freemarker.xml"/>
 	<import resource="/spring/search-lifecycle.xml"/>
 	
-	<context:component-scan base-package="com.funnelback.springmvc.service.resource,com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender" />
+	<context:component-scan base-package="com.funnelback.springmvc.service.resource,com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender,com.funnelback.publicui.accessibilityauditor" />
 	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
 	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />

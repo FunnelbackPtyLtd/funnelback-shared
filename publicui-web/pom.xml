@@ -150,6 +150,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.funnelback.accessibility</groupId>
+			<artifactId>funnelback-wca-checker</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
