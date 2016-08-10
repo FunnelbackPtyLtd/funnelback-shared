@@ -1,9 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.net.URI;
-import java.nio.file.Paths;
-
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +13,8 @@ import com.funnelback.publicui.search.model.padre.Result;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Fixes display URLs for results. By default the display URL is identical
@@ -47,23 +46,26 @@ public class FixDisplayUrls extends AbstractOutputProcessor {
                     continue;
                 }
                 
-                switch (resultCollection.getType()) {
-                
-                case local:
-                case filecopy:
-                    displayUrl = VFSURLUtils.vfsUrlToSystemUrl(URI.create(displayUrl));
-                    break;
-                default:
-                    // Do nothing
+                try {
+                    switch (resultCollection.getType()) {
+                    
+                    case local:
+                    case filecopy:
+                        displayUrl = VFSURLUtils.vfsUrlToSystemUrl(URI.create(displayUrl));
+                        break;
+                    default:
+                        // Do nothing
+                    }
+                    
+                    log.debug("Display URL transformed from '"+result.getDisplayUrl()+"' to '"+displayUrl+"'");
+                    result.setDisplayUrl(displayUrl);
+                } catch (IllegalArgumentException iae) {
+                    log.warn("Error converting URL {}. This may cause further issues"
+                        + " as the URL will not have been converted properly for search results display",
+                        displayUrl, iae);
                 }
-                
-                log.debug("Display URL transformed from '"+result.getDisplayUrl()+"' to '"+displayUrl+"'");
-                result.setDisplayUrl(displayUrl);
             }
-        
         }
-
-
     }
 
 }

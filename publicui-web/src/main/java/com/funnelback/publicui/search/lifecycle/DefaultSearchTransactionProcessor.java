@@ -103,6 +103,9 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
         } catch (OutputProcessorException ope) {
             log.error(ope);
             transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
+        } catch (Exception e) {
+            log.error(e);
+            transaction.setError(new SearchError(SearchError.Reason.Unknown, e));
         }
         
         return transaction;
