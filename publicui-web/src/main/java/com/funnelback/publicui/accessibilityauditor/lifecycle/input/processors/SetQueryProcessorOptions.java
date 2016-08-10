@@ -146,7 +146,8 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .max(Integer::max)
             .orElse(DEFAULT_MBL);   // Not supposed to happen, but default to something just in case
         
-        return String.format("-MBL=%d", mblOptionValue);
+        // +1 to account for possible null terminator in PADRE
+        return String.format("-MBL=%d", mblOptionValue + 1);
     }
     
     /**

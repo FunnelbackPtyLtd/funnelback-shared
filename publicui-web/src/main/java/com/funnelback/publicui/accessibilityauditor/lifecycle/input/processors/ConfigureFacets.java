@@ -13,6 +13,7 @@ import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
@@ -92,13 +93,14 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     
     @Override
     public void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
-        // Always override any faceted nav. config (profile or collection level)
-        transaction.getQuestion()
+        // Always override any faceted nav. config (active profile or collection level)
+        Profile profile = transaction.getQuestion()
             .getCollection()
             .getProfiles()
-            .values()
-            .stream()
-            .forEach(profile -> profile.setFacetedNavConfConfig(null));
+            .get(transaction.getQuestion().getProfile());
+        if (profile != null) {
+            profile.setFacetedNavConfConfig(null);
+        }
         
         transaction.getQuestion()
             .getCollection()

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,7 @@ public class AccessibilityAuditorController {
     }
 
     @RequestMapping("/accessibility-auditor.json")
+    @PreAuthorize("T(java.net.InetAddress).getByName(#request.getRemoteAddr()).isLoopbackAddress()")
     // FIXME: @PreAuthorize("hasRole('sec.wcag')")
     public ModelAndView audit(
             HttpServletRequest request,
