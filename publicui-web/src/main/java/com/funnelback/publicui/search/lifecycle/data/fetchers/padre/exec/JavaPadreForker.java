@@ -74,6 +74,13 @@ public class JavaPadreForker implements PadreForker {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
         } catch (IOException ioe) {
             throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
+        } catch (OutOfMemoryError oome) {
+            // Not sure if these are actually a good thing to do
+            padreOutput = null;
+            padreError = null;
+            System.gc();
+            
+            throw new PadreForkingException(i18n.tr("padre.forking.java.oom", padreCmdLine.toString()), oome);
         } finally {
             if (watchdog.killedProcess()) {
                 log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
