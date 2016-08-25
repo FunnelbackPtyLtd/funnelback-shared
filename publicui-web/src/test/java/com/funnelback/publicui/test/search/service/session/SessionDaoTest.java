@@ -45,7 +45,7 @@ public abstract class SessionDaoTest {
                 new ClassLoaderResourceAccessor(),
                 new JdbcConnection(c));
             lb.dropAll();
-            lb.update(null);
+            lb.update((String) null);
         }
         
         user = new SearchUser(UUID.randomUUID().toString());
