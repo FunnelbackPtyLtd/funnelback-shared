@@ -82,11 +82,11 @@ public class RecommenderControllerTest {
         // If default constant is specified use this as an opportunity to see if controller
         // converts null to the expected default
         if (maxRecommendations == MAX_RECOMMENDATIONS) {
-            mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+            mav = recommenderController.similarItems(request, response, sq, DEFAULT_SEED_ITEM,
                     expectedScope, null, expectedSourceType);
         }
         else {
-            mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+            mav = recommenderController.similarItems(request, response, sq, DEFAULT_SEED_ITEM,
                     expectedScope, maxRecommendations, expectedSourceType);
         }
 
@@ -239,7 +239,7 @@ public class RecommenderControllerTest {
     public void testInvalidCollection() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(INVALID_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+        recommenderController.similarItems(request, response, sq, DEFAULT_SEED_ITEM,
                 "", MAX_RECOMMENDATIONS, null);
     }
 
@@ -248,7 +248,7 @@ public class RecommenderControllerTest {
         SearchQuestion sq = new SearchQuestion();
         sq.setCollection(null);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM, "",
+        recommenderController.similarItems(request, response, sq, DEFAULT_SEED_ITEM, "",
                 MAX_RECOMMENDATIONS, null);
     }
 
@@ -256,7 +256,7 @@ public class RecommenderControllerTest {
     public void testInvalidSourceParameter() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null,
+        recommenderController.similarItems(request, response, sq,
                 DEFAULT_SEED_ITEM, "", MAX_RECOMMENDATIONS, ItemTuple.Source.NONE.toString());
     }
 
@@ -264,7 +264,7 @@ public class RecommenderControllerTest {
     public void testInvalidSeedItem() throws Exception {
         SearchQuestion sq = getMockSearchQuestion(DEFAULT_COLLECTION_NAME);
         MockHttpServletResponse response = new MockHttpServletResponse();
-        recommenderController.similarItems(request, response, sq, null, "", "", MAX_RECOMMENDATIONS, null);
+        recommenderController.similarItems(request, response, sq, "", "", MAX_RECOMMENDATIONS, null);
     }
 
     @Test
@@ -287,7 +287,7 @@ public class RecommenderControllerTest {
         recommenderController.setDataAPI(dataAPI);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        ModelAndView mav = recommenderController.similarItems(request, response, sq, null, DEFAULT_SEED_ITEM,
+        ModelAndView mav = recommenderController.similarItems(request, response, sq, DEFAULT_SEED_ITEM,
                 "", MAX_RECOMMENDATIONS, null);
         RecommendationResponse recommendationResponse =
                 (RecommendationResponse) mav.getModel().get("RecommendationResponse");

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -38,6 +39,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private final List<String> options = new ArrayList<>();
 
     public SetQueryProcessorOptions() {
+        options.add(getLogOption());
         options.add(getSMOption());
         options.add(getSFOption());
         options.add(getMBLOption());
@@ -56,6 +58,16 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
         }
+    }
+    
+    /**
+     * Disable logging to avoid
+     * polluting analytics with AA requests
+     * 
+     * @return PADRE <code>log</code> option
+     */
+    private String getLogOption() {
+        return "-" + QueryProcessorOptionKeys.LOG + "=off";
     }
     
     /**

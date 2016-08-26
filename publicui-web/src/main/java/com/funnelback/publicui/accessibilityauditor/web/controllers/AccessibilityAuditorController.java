@@ -43,12 +43,11 @@ public class AccessibilityAuditorController {
     public ModelAndView audit(
             HttpServletRequest request,
             HttpServletResponse response,
-            SearchQuestion question,
-            @ModelAttribute SearchUser user) {
+            SearchQuestion question) {
         
         question.setQuestionType(SearchQuestionType.ACCESSIBILITY_AUDITOR);
         
-        ModelAndView mav = searchController.search(request, response, question, user);
+        ModelAndView mav = searchController.search(request, response, question, null);
         
         if (mav != null) {
             return new ModelAndView((String) null, mav.getModel());

@@ -65,14 +65,13 @@ public class ContentAuditorController {
     public ModelAndView generateContentAuditorReport(
             HttpServletRequest request,
             HttpServletResponse response,
-            SearchQuestion question,
-            @ModelAttribute SearchUser user) {
+            SearchQuestion question) {
         // Mark this question as a content auditor one.
         // See the ContentAuditor input processor for what this triggers
         question.setQuestionType(SearchQuestionType.CONTENT_AUDITOR);
 
         // Pass off to the searchController
-        ModelAndView mav = searchController.search(request, response, question, user);
+        ModelAndView mav = searchController.search(request, response, question, null);
 
         if (mav != null) {
             // Arrange to use the special content-auditor template for rendering

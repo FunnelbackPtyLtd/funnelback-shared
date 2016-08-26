@@ -79,7 +79,6 @@ public class RecommenderController extends SessionController {
      * @param request HTTP request from the client
      * @param response HTTP response to be sent back to the client
      * @param question a search question containing a reference to the collection etc.
-     * @param user a search user
      * @param seedItem name of seed item to get recommended items for
      * @param scope    comma separated list of scopes e.g. cmis.csiro.au,-vic.cmis.csiro.au
      * @param maxRecommendations maximum number of recommendations to return (less than this may be available).
@@ -90,7 +89,7 @@ public class RecommenderController extends SessionController {
      */
     @RequestMapping(value = {"/" + SIMILAR_ITEMS_JSON}, method = RequestMethod.GET, params = {RequestParameters.COLLECTION})
     public ModelAndView similarItems(HttpServletRequest request, HttpServletResponse response,
-                                     @Valid SearchQuestion question, @ModelAttribute SearchUser user,
+                                     @Valid SearchQuestion question,
                                      @RequestParam("seedItem") String seedItem,
                                      @RequestParam(value = "scope", required = false) String scope,
                                      @RequestParam(value = "maxRecommendations", required = false)
