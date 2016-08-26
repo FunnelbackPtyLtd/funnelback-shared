@@ -165,11 +165,15 @@
 	<!-- *** MUST BE AFTER ANYTHING WHICH SHOULD BE INCLUDED IN AUDIT OUTPUT -->
 	<!-- (and does its own unhandled exception logging) *** -->
 	<filter>
-	   <filter-name>GroovyFilter</filter-name>
+	   <filter-name>GroovyServletFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+       <init-param>
+          <param-name>contextName</param-name>
+          <param-value>PublicUI</param-value>
+       </init-param>
 	</filter>
 	<filter-mapping>
-	   <filter-name>GroovyFilter</filter-name>
+	   <filter-name>GroovyServletFilter</filter-name>
 	   <servlet-name>publicui</servlet-name>
 	</filter-mapping>
 	
