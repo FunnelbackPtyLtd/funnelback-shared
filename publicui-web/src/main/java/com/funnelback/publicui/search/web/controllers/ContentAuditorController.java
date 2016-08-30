@@ -73,7 +73,7 @@ public class ContentAuditorController {
         // Pass off to the searchController
         ModelAndView mav = searchController.search(request, response, question, null);
 
-        if (mav != null) {
+        if (question.getCollection() != null && mav != null) {
             // Arrange to use the special content-auditor template for rendering
             String templateDirectory = question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.TEMPLATE_DIRECTORY);
             String viewName = templateDirectory + "/" + ContentAuditorController.DEFAULT_TEMPLATE_NAME;
