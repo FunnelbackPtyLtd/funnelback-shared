@@ -167,10 +167,6 @@
 	<filter>
 	   <filter-name>GroovyServletFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-       <init-param>
-          <param-name>contextName</param-name>
-          <param-value>PublicUI</param-value>
-       </init-param>
 	</filter>
 	<filter-mapping>
 	   <filter-name>GroovyServletFilter</filter-name>

@@ -45,7 +45,9 @@
 	<bean id="ConfigurableSecurityFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableSecurityFilter" />
 	<bean id="ConfigurableCorsFilter" class="com.funnelback.publicui.search.web.filters.ConfigurableCorsFilter" />
 	<bean id="UnhandledExceptionFilter" class="com.funnelback.publicui.search.web.filters.UnhandledExceptionFilter" />
-	<bean id="GroovyServletFilter" class="com.funnelback.springmvc.web.filter.GroovyFilter" />
+	<bean id="GroovyServletFilter" class="com.funnelback.springmvc.web.filter.GroovyServletFilter" >
+		<constructor-arg value="PublicUI" />
+	</bean>
 	
 	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool" destroy-method="close">
 		<constructor-arg index="0">
