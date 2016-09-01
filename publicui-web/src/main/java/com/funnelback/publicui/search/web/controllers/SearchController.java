@@ -164,8 +164,11 @@ public class SearchController extends SessionController {
             
     /**
      * Default handler when we have a query and a collection.
-     * @param request
-     * @param question
+     * @param request HTTP request
+     * @param response HTTP response
+     * @param question Search input parameters
+     * @param user User to record search history for. Can be null if no
+     *  search history should be recorded
      * @return
      */
     @RequestMapping(value="/search.*",params={RequestParameters.COLLECTION})
