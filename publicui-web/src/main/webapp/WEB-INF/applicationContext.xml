@@ -48,6 +48,7 @@
 	<bean id="GroovyServletFilter" class="com.funnelback.springmvc.web.filter.GroovyServletFilter" >
 		<constructor-arg value="PublicUI" />
 	</bean>
+	<bean id="PublicUiServletFilterRequestParameterValueExtractor" class="com.funnelback.publicui.search.web.filters.utils.PublicUiServletFilterRequestParameterValueExtractor" />
 	
 	<bean class="org.apache.commons.pool.impl.GenericKeyedObjectPool" destroy-method="close">
 		<constructor-arg index="0">
