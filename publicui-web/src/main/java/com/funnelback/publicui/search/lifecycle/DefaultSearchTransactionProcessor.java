@@ -19,6 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+import com.funnelback.springmvc.utils.web.RequestParameterValueUtils;
 import com.funnelback.springmvc.web.interceptor.Log4j2ThreadContextInterceptor;
 
 import lombok.Setter;
@@ -60,8 +61,8 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
         try {
             // This may be run in a separate thread if it's an extra search. Make sure the logging
             // context contain the right information
-            ThreadContext.put(Log4j2ThreadContextInterceptor.COLLECTION, question.getCollection().getId());
-            ThreadContext.put(Log4j2ThreadContextInterceptor.PROFILE, question.getProfile());
+            ThreadContext.put(RequestParameterValueUtils.COLLECTION, question.getCollection().getId());
+            ThreadContext.put(RequestParameterValueUtils.PROFILE, question.getProfile());
             
             // Record the time taken by each processor
             StopWatch sw = new StopWatch();
