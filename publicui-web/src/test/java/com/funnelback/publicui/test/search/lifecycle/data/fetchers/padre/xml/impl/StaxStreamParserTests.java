@@ -66,13 +66,13 @@ public class StaxStreamParserTests {
             false);
         Assert.assertEquals(4, rp.getUniqueCountsByGroups().size());
         
-        Assert.assertEquals(new UniqueByGroup("FunAAPortfolio", "FunAAOccurrences244"), 
+        Assert.assertEquals(new UniqueByGroup("FunAAProfile", "FunAAOccurrences244"), 
                                 rp.getUniqueCountsByGroups().get(0));
         
-        Assert.assertEquals("FunAAPortfolio", rp.getUniqueCountsByGroups().get(2).getBy());
+        Assert.assertEquals("FunAAProfile", rp.getUniqueCountsByGroups().get(2).getBy());
         Assert.assertEquals("FunAAOccurrences143", rp.getUniqueCountsByGroups().get(2).getOn());
         
-        Assert.assertEquals(new Double(3D), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("portfolio3"));
+        Assert.assertEquals(new Double(3D), rp.getUniqueCountsByGroups().get(2).getGroupAndCounts().get("profile3"));
         
     }
     

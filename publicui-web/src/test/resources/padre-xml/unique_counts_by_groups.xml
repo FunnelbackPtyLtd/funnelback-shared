@@ -27,28 +27,28 @@
 
   <qhlre>(?i)\bsdsd\b</qhlre>
 <unique_counts_by_groups>
-	<uc by="FunAAPortfolio" of="FunAAOccurrences244">
+	<uc by="FunAAProfile" of="FunAAOccurrences244">
 	</uc>
-	<uc by="FunAAPortfolio" of="FunAAOccurrences111">
-		<c g="portfolio3">3000.0</c>
-		<c g="portfolio2">2000.0</c>
-		<c g="portfolio1">1000.0</c>
-		<c g="portfolio5">5000.0</c>
-		<c g="portfolio4">4000.0</c>
+	<uc by="FunAAProfile" of="FunAAOccurrences111">
+		<c g="profile3">3000.0</c>
+		<c g="profile2">2000.0</c>
+		<c g="profile1">1000.0</c>
+		<c g="profile5">5000.0</c>
+		<c g="profile4">4000.0</c>
 	</uc>
-	<uc by="FunAAPortfolio" of="FunAAOccurrences143">
-		<c g="portfolio3">3.0</c>
-		<c g="portfolio2">2.0</c>
-		<c g="portfolio1">1.0</c>
-		<c g="portfolio5">5.0</c>
-		<c g="portfolio4">4.0</c>
+	<uc by="FunAAProfile" of="FunAAOccurrences143">
+		<c g="profile3">3.0</c>
+		<c g="profile2">2.0</c>
+		<c g="profile1">1.0</c>
+		<c g="profile5">5.0</c>
+		<c g="profile4">4.0</c>
 	</uc>
-	<uc by="FunAAPortfolio" of="FunAAOccurrences242">
-		<c g="portfolio3">30.0</c>
-		<c g="portfolio2">20.0</c>
-		<c g="portfolio1">10.0</c>
-		<c g="portfolio5">50.0</c>
-		<c g="portfolio4">40.0</c>
+	<uc by="FunAAProfile" of="FunAAOccurrences242">
+		<c g="profile3">30.0</c>
+		<c g="profile2">20.0</c>
+		<c g="profile1">10.0</c>
+		<c g="profile5">50.0</c>
+		<c g="profile4">40.0</c>
 	</uc>
 </unique_counts_by_groups>
 

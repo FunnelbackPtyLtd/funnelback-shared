@@ -61,7 +61,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
 
         // Facet on other metadata
         Stream<String> other = Stream.of(
-            Names.portfolio().getName(),
+            Names.profile().getName(),
             Names.domain().getName(),
             Names.affected().getName(),
             Names.unaffected().getName(),
