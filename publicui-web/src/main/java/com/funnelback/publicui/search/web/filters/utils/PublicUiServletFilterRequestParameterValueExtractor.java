@@ -30,7 +30,7 @@ public class PublicUiServletFilterRequestParameterValueExtractor implements Serv
                     request.getPathInfo().indexOf('/', ResourcesController.MAPPING_PATH.length()));
         }
         
-        return Optional.of(collectionId);
+        return Optional.ofNullable(collectionId);
     }
 
 }

@@ -38,4 +38,15 @@ public class PublicUiServletFilterRequestParameterValueExtractorTest {
         Assert.assertTrue(ret.isPresent());
         Assert.assertEquals("c", ret.get());        
     }
+
+    @Test
+    public void testAbsent() throws Exception {
+        PublicUiServletFilterRequestParameterValueExtractor publicUiServletFilterRequestParameterValueExtractor = new PublicUiServletFilterRequestParameterValueExtractor();
+        
+        HttpServletRequest servletRequest = mock(HttpServletRequest.class);
+                
+        Optional<String> ret = publicUiServletFilterRequestParameterValueExtractor.getCollectionValue(servletRequest);
+        Assert.assertFalse(ret.isPresent());
+    }
+
 }
