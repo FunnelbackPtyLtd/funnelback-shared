@@ -81,7 +81,6 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     
     /**
      * Get the rmc_sensitive option to preserve case in metadata
-     * (especially important for portfolio names)
      * 
      * @return PADRE <code>-rmc_sensitve</code> option
      */
@@ -115,7 +114,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
-            Names.portfolio(),
+            Names.profile(),
             Names.domain(),
             Names.affected(),
             Names.unaffected(),
@@ -180,9 +179,9 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getSumByGroupOption() {
         List<String> sums = new ArrayList<>();
         
-        // Group by domains & portfolios
+        // Group by domains & profiles
         for (String grouping: new String[] {
-                        Names.domain().getName(), Names.portfolio().getName()
+                        Names.domain().getName(), Names.profile().getName()
         }) {
             // FIXME: Not sure how to avoid hardcoding things here...
             sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
@@ -204,9 +203,9 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getCountByGroupOption() {
         List<String> counts = new ArrayList<>();
         
-        // Group by domains & portfolios
+        // Group by domains & profiles
         for (String grouping: new String[] {
-                        Names.domain().getName(), Names.portfolio().getName()
+                        Names.domain().getName(), Names.profile().getName()
         }) {
             // Type of checkers
             counts.add(String.format("[%s.+Types]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
