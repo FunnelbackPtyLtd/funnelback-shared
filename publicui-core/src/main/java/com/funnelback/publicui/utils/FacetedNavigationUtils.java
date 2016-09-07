@@ -2,16 +2,18 @@ package com.funnelback.publicui.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
-
-import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class FacetedNavigationUtils {
@@ -77,6 +79,21 @@ public class FacetedNavigationUtils {
         }
         
         return result;
+    }
+    
+    /**
+     * Check if a category value is currently selected
+     * @param cDef Category definition to check
+     * @param selectedCategories List of selected categories from the transaction
+     * @param categoryValue Value to check for selection
+     * @return
+     */
+    public static boolean isCategorySelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories, String categoryValue) {
+        return selectedCategories
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().equals(cDef.getQueryStringParamName()))
+            .anyMatch(entry -> entry.getValue().contains(categoryValue));
     }
     
 }

@@ -104,6 +104,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C40=Full", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -121,6 +122,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals("1", cv.getData());
         Assert.assertEquals("Henry IV", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C1=Henry+IV", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         Assert.assertEquals(0, c.getCategories().size());
         
@@ -157,6 +159,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals("8", cv.getData());
         Assert.assertEquals("Cleopatra", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C8=Cleopatra", cv.getQueryStringParam());
+        Assert.assertTrue(cv.isSelected());
         
         Assert.assertEquals(0, c.getCategories().size());        
     }
@@ -192,6 +195,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals("10", cv.getData());
         Assert.assertEquals("Coriolanus", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C10=Coriolanus", cv.getQueryStringParam());
+        Assert.assertTrue(cv.isSelected());
         
         Assert.assertEquals(1, c.getCategories().size());
         
@@ -207,6 +211,7 @@ public class FacetedNavigationGScopesTests {
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full (nested)", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C40=Full+%28nested%29", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         Assert.assertEquals(0, c.getCategories().size());
 

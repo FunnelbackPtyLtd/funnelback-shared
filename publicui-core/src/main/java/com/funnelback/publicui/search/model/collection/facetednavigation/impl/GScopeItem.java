@@ -5,17 +5,18 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 
 /**
  * {@link CategoryDefinition} based on a GScope number.
@@ -45,7 +46,8 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
                     data,
                     rp.getGScopeCounts().get(userSetGScope),
                     URLEncoder.encode(getQueryStringParamName(), "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8"),
-                    Integer.toString(getGScopeNumber())));
+                    Integer.toString(getGScopeNumber()),
+                    FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data)));
         }
         return categories;
     }

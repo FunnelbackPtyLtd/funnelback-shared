@@ -70,6 +70,7 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
         Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
 
         // Check a category with encoded strings
         cv = c.getValues().get(1);

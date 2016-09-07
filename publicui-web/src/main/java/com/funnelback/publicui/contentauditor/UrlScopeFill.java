@@ -1,11 +1,6 @@
 package com.funnelback.publicui.contentauditor;
 
-import io.mola.galimatias.GalimatiasParseException;
-import io.mola.galimatias.URL;
-
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,22 +11,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.ToString;
 
 /**
  * TODO - Put this in a sensible package
@@ -39,7 +32,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * TODO - Document
  */
 @Controller
-@Log4j2
 public class UrlScopeFill extends CategoryDefinition {
         
         public UrlScopeFill(String URL) {
@@ -90,7 +82,8 @@ public class UrlScopeFill extends CategoryDefinition {
                         entry.getValue(),
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
-                        entry.getKey()));
+                        entry.getKey(),
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), entry.getKey())));
                 }
             }
 

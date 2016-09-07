@@ -202,6 +202,13 @@ public class Facet {
          * @since 11.2
          */
         @Getter @Setter private String constraint;
+        
+        /**
+         * Indicates if this value is currently selected
+         * 
+         * @since 15.8
+         */
+        @Getter @Setter private boolean selected;
 
         @Override
         public String toString() {

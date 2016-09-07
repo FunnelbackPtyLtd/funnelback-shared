@@ -102,6 +102,7 @@ public class FacetedNavigationQueryTests {
         Assert.assertEquals("2", cv.getData());
         Assert.assertEquals("Managers", cv.getLabel());
         Assert.assertEquals("f.By+Query%7C2=Managers", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -119,6 +120,7 @@ public class FacetedNavigationQueryTests {
         Assert.assertEquals("1", cv.getData());
         Assert.assertEquals("Plumbers", cv.getLabel());
         Assert.assertEquals("f.By+Query%7C1=Plumbers", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         Assert.assertEquals(0, c.getCategories().size());
         
