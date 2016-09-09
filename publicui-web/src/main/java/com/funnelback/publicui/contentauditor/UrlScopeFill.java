@@ -34,9 +34,16 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestPa
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
- * TODO - Put this in a sensible package
+ * A custom facet type for content auditor which allows for a URL based
+ * drill-down through the domain segments and then the directory structure.
  * 
- * TODO - Document
+ * We avoid ever showing a single 'next-level' option by automatically drilling
+ * the category options down to the next level at which there will be more than
+ * one category available.
+ * 
+ * Facet selections are done using padre's scope query processor option (see {@link
+ * com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation})
+ * which I suspect may not be as efficient as we might ideally like here.
  */
 @Controller
 @Log4j2
