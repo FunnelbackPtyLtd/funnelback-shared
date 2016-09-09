@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.common.url.VFSURLUtils;
@@ -18,6 +15,9 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>{@link CategoryDefinition} based on an URL prefix.<p>
@@ -105,7 +105,13 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                         count,
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(vValue, "UTF-8"),
-                        getMetadataClass()));
+                        getMetadataClass(),
+                        // URL fill values are never selected because they're a hierarchy
+                        // with only one value at each level. As a result the currently
+                        // "selected" path segment is never present in the list of categories,
+                        // only the child segments are. As soon as a child is selected, it
+                        // becomes the "current", and the new list contains only its childs, etc.
+                        false));
             }
         }
         return categories;

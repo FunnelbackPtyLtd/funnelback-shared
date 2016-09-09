@@ -105,6 +105,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
         Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
         
         // No sub-categories should be returned since nothing
         // has been selected in the first level category
@@ -126,6 +127,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("Past 6 months", cv.getLabel());
         Assert.assertEquals("f.By+date+on+X%7CX=d%3C25Jun2003%3E26Dec2002", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
 
     }
     
@@ -158,6 +160,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
         Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003", cv.getQueryStringParam());
+        Assert.assertTrue(cv.isSelected());
         
         // Nested category: Date on d + O
         Assert.assertEquals(1, c.getCategories().size());
@@ -171,6 +174,7 @@ public class FacetedNavigationDateFieldFillTests {
         Assert.assertEquals(12, cv.getCount());
         Assert.assertEquals("O", cv.getData());
         Assert.assertEquals("2005", cv.getLabel());
-        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7CO=O%3D2005", cv.getQueryStringParam());    
+        Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7CO=O%3D2005", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
     }
 }

@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lombok.SneakyThrows;
-
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
+
+import lombok.SneakyThrows;
 
 /**
  * <p>{@link CategoryDefinition} based on a metadata class.</p>
@@ -48,7 +49,8 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
                         count,
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(mdv.value, "UTF-8"),
-                        getMetadataClass()));
+                        getMetadataClass(),
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), mdv.value)));
             }
         }
         return categories;

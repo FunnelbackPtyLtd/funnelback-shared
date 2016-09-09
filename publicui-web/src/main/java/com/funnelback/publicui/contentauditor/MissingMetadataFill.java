@@ -12,6 +12,7 @@ import com.funnelback.common.padre.MetadataClass;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -64,7 +65,8 @@ public class MissingMetadataFill extends MetadataFieldFill {
                         count,
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                         + "=" + URLEncoder.encode(metadataClass, "UTF-8"),
-                        getMetadataClass()));
+                        getMetadataClass(),
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), metadataClass)));
                 }
             }
         }

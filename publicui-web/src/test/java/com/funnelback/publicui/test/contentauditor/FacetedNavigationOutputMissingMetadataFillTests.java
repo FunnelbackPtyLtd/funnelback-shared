@@ -120,6 +120,36 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("X", cv.getLabel());
         Assert.assertEquals("f.Missing+Metadata%7Cmissing=X", cv.getQueryStringParam());
+        Assert.assertFalse(cv.isSelected());
     }
+
+    @Test
+    public void testSelected() throws OutputProcessorException {
+        List<String> selected = new ArrayList<String>();
+        selected.add("X");
+        st.getQuestion().getSelectedCategoryValues().put("f.Missing Metadata|missing", selected);
         
+        Assert.assertEquals(0, st.getResponse().getFacets().size());
+        processor.processOutput(st);
+        
+        Assert.assertEquals(1, st.getResponse().getFacets().size());
+        
+        Facet f = st.getResponse().getFacets().get(0);
+        Assert.assertEquals("Missing Metadata", f.getName());
+        Assert.assertEquals(1, f.getCategories().size());
+
+        Facet.Category c = f.getCategories().get(0);
+        Assert.assertNull(c.getLabel());
+        Assert.assertEquals("f.Missing Metadata|missing", c.getQueryStringParamName());
+        Assert.assertEquals(4, c.getValues().size());
+        
+        Facet.CategoryValue cv = c.getValues().get(0);
+        Assert.assertEquals("missing", cv.getConstraint());
+        Assert.assertEquals(7, cv.getCount());
+        Assert.assertEquals("X", cv.getData());
+        Assert.assertEquals("X", cv.getLabel());
+        Assert.assertEquals("f.Missing+Metadata%7Cmissing=X", cv.getQueryStringParam());
+        Assert.assertTrue(cv.isSelected());
+    }
+
 }
