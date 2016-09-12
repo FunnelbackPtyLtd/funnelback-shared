@@ -90,7 +90,12 @@ public class UrlScopeFill extends CategoryDefinition {
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
                         entry.getKey(),
-                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), entry.getKey())));
+                        // URLScope fill values are never selected because they're a hierarchy
+                        // with only one value at each level. As a result the currently
+                        // "selected" path segment is never present in the list of categories,
+                        // only the children segments are. As soon as a child is selected, it
+                        // becomes the "current", and the new list contains only its childs, etc.
+                        false));
                 }
             }
 
