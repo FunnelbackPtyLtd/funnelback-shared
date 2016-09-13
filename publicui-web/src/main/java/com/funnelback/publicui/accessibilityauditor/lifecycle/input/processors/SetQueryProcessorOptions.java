@@ -118,6 +118,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             Names.domain(),
             Names.affected(),
             Names.unaffected(),
+            Names.checked(),
             Names.occurrences())
             .map(Metadata::getName);
         

@@ -38,13 +38,6 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     private final FacetedNavigationConfig facetedNavigationConfig;  
     
     public ConfigureFacets() {
-        // Facet on every checker, for each failure type
-        Stream<String> failureTypesAffected = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.failureTypeAffected(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
-
         // Facet on success criteria (e.g. 1.2.3)
         Stream<String> successCriteria = Arrays.asList(FailureType.values())
             .stream()
@@ -63,14 +56,13 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         Stream<String> other = Stream.of(
             Names.profile().getName(),
             Names.domain().getName(),
-            Names.affected().getName(),
-            Names.unaffected().getName(),
+            Names.affectedBy().getName(),
             "f");
         
         // Build our facet definitions and QPOs
         List<String> rmcf = new ArrayList<>();
         List<FacetDefinition> facetDefinitions = Stream
-            .of(failureTypesAffected, issueTypes, successCriteria, other)
+            .of(issueTypes, successCriteria, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .map(metadataClass -> { rmcf.add(metadataClass); return metadataClass; })
