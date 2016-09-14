@@ -109,7 +109,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                         // URL fill values are never selected because they're a hierarchy
                         // with only one value at each level. As a result the currently
                         // "selected" path segment is never present in the list of categories,
-                        // only the child segments are. As soon as a child is selected, it
+                        // only the children segments are. As soon as a child is selected, it
                         // becomes the "current", and the new list contains only its childs, etc.
                         false));
             }

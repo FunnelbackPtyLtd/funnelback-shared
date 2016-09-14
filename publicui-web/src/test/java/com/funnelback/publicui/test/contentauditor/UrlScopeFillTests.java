@@ -45,6 +45,8 @@ public class UrlScopeFillTests {
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
         List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st);
+        categoryValues.stream()
+            .forEach(cv -> Assert.assertFalse(cv.isSelected()));
 
         Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
 
@@ -63,6 +65,8 @@ public class UrlScopeFillTests {
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
         List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st);
+        categoryValues.stream()
+            .forEach(cv -> Assert.assertFalse(cv.isSelected()));
 
         Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
 
