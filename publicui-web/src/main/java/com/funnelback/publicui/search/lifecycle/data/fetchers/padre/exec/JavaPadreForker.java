@@ -63,7 +63,7 @@ public class JavaPadreForker implements PadreForker {
         try {
             int rc = executor.execute(padreCmdLine, environment);
             if (rc != 0) {
-                log.debug("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
+                log.warn("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
             }
             ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toString(), padreError.toString());
             if(!er.getErr().trim().isEmpty()) {
