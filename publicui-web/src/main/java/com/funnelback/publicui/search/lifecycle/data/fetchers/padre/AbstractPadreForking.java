@@ -13,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.exec.OS;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.DefaultValues;
@@ -145,10 +144,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
-                log.error("PADRE forking failed", pfe);
+                log.error("PADRE forking failed with command line {}", commandLine, pfe);
                 throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);    
             } catch (XmlParsingException pxpe) {
-                log.error("Unable to parse PADRE response", pxpe);
+                log.error("Unable to parse PADRE response with command line {}", commandLine, pxpe);
                 if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
                     log.error("PADRE response was: \n" + padreOutput.getOutput());
                 }
