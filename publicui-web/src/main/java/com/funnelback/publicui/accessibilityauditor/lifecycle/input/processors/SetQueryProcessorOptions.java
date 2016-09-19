@@ -185,9 +185,13 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
                         Names.domain().getName(), Names.profile().getName()
         }) {
             // FIXME: Not sure how to avoid hardcoding things here...
-            sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            
+            // FIXME FUN-9296
+            // sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            
             sums.add(String.format("[%s.+Occurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%s(A|Una)ffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%sChecked]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
         }
         
         String sumByGroupOptionValue = sums.stream().collect(Collectors.joining(","));
