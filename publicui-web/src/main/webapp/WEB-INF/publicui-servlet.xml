@@ -69,7 +69,15 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/content-auditor.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.ContentAuditorRestrictionInterceptor" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor">
+				<constructor-arg value="#{T(com.funnelback.common.config.Keys$ModernUI$ContentAuditor).ADDITIONAL_PORT}" />
+			</bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/accessibility-auditor.*" />
+			<bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor">
+				<constructor-arg value="#{T(com.funnelback.common.config.Keys$ModernUI$AccessibilityAuditor).ADDITIONAL_PORT}" />
+			</bean>
 		</mvc:interceptor>
         <mvc:interceptor>
       			<mvc:mapping path="/recommender/*.html" />

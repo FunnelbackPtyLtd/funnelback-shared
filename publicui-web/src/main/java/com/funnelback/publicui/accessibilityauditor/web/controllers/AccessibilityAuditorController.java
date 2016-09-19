@@ -4,19 +4,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
-import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 
 /**
@@ -29,6 +25,16 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 @Controller
 public class AccessibilityAuditorController {
 
+    /**
+     * Users need the sec.wcag role to access the reports. When developing
+     * with the additional port set, there is usually no authentication when
+     * running the app. from Eclipse, so ROLE_ANONYMOUS needs to be permitted.
+     * 
+     * In practice users cannot access AA on the non admin port (due to an interceptor)
+     * so they will always use the admin port which requires authentication.
+     */
+    private static final String PRE_AUTH = "hasAnyRole('sec.wcag','ROLE_ANONYMOUS')"; 
+    
     @Autowired
     private SearchController searchController;
 
@@ -38,8 +44,7 @@ public class AccessibilityAuditorController {
     }
 
     @RequestMapping("/accessibility-auditor.json")
-    @PreAuthorize("T(java.net.InetAddress).getByName(#request.getRemoteAddr()).isLoopbackAddress()")
-    // FIXME: @PreAuthorize("hasRole('sec.wcag')")
+    @PreAuthorize(PRE_AUTH)
     public ModelAndView audit(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -54,10 +59,5 @@ public class AccessibilityAuditorController {
         } else {
             return null;
         }
-    }
-    
-    @ExceptionHandler(AccessDeniedException.class)
-    public void accessDenied(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
 }
