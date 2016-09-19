@@ -29,11 +29,11 @@ public class AdminPortOnlyRestrictionInterceptorTest {
         config = Mockito.mock(Config.class);
         Mockito.when(config.value(Keys.Urls.ADMIN_PORT)).thenReturn("443");
         Mockito.when(config.value(Keys.Jetty.ADMIN_PORT)).thenReturn("8443");
-        Mockito.when(config.value("additional.port")).thenReturn("8080");
+        Mockito.when(config.value(Keys.Urls.DEVELOPMENT_PORT)).thenReturn("8080");
         
         ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
         Mockito.when(configRepository.getGlobalConfiguration()).thenReturn(config);
-        interceptor = new AdminPortOnlyRestrictionInterceptor("additional.port");
+        interceptor = new AdminPortOnlyRestrictionInterceptor();
         interceptor.setConfigRepository(configRepository);
     }
     
