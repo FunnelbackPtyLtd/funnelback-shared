@@ -14,7 +14,6 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -22,7 +21,6 @@ import lombok.Setter;
  * port. If access is attempted on a non-permitted port, users are redirected
  * to the admin port.
  */
-@RequiredArgsConstructor
 public class AdminPortOnlyRestrictionInterceptor implements
         HandlerInterceptor {
 
@@ -41,12 +39,6 @@ public class AdminPortOnlyRestrictionInterceptor implements
     @Setter(AccessLevel.PROTECTED)
     private ConfigRepository configRepository;
     
-    /**
-     * Name of the Config setting containing the additional
-     * port to permit
-     */
-    private final String additionalPortSettingName;
-
     @Override
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) throws Exception {
@@ -57,7 +49,7 @@ public class AdminPortOnlyRestrictionInterceptor implements
         String adminJettyPort = globalCfg.value(Keys.Jetty.ADMIN_PORT);
         
         // Also permit an additional development port (handy if you're running it in eclipse or from maven etc)
-        String additionalAdminPort = globalCfg.value(additionalPortSettingName);
+        String additionalAdminPort = globalCfg.value(Keys.Urls.DEVELOPMENT_PORT);
         
         String actualPort = Integer.toString(request.getLocalPort());
         if (actualPort.equals(adminJettyPort) || actualPort.equals(additionalAdminPort)) {
