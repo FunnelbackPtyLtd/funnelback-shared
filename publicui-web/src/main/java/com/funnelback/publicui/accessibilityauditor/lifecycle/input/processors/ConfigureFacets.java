@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
+import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -35,7 +36,10 @@ import lombok.extern.log4j.Log4j2;
 @Component("accessibilityAuditorConfigureFacets")
 public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor {
 
-    private final FacetedNavigationConfig facetedNavigationConfig;  
+    /** ID of the URL drill down facet. Will be localized client side */
+    private static final String URL_FACET_ID = "URL";
+    
+    private final FacetedNavigationConfig facetedNavigationConfig;
     
     public ConfigureFacets() {
         // Facet on success criteria (e.g. 1.2.3)
@@ -69,12 +73,17 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
             .map(this::createMetadataFieldFillFacetDefinition)
             .collect(Collectors.toList());
         
+        // URL drill down facet
+        facetDefinitions.add(createURLScopeFillFacetDefinition());
+        
         // Build the -rmcf QPO for the facets
         String rmcfOptionValue = rmcf.stream()
             .collect(Collectors.joining(","));
-        
+
+        // -rmcf for metadata based facets, -count_urls for URLScopeFill facet
+        // FIXME: -count_urls needs to be dynamic FUN-9043
         facetedNavigationConfig = new FacetedNavigationConfig(
-            String.format("-rmcf=[%s]",  rmcfOptionValue), facetDefinitions);
+            String.format("-rmcf=[%s] -count_urls=10",  rmcfOptionValue), facetDefinitions);
         
         log.debug("Initialised with QPO {} and facets: {}", facetedNavigationConfig.getQpOptions(),
             facetedNavigationConfig.getFacetDefinitions()
@@ -117,6 +126,21 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         categoryDefinitions.add(fill);
         
         return new FacetDefinition(field, categoryDefinitions);
+    }
+    
+    /**
+     * Create a URL drill down facet definition
+     * 
+     * @return Facet definition
+     */
+    private FacetDefinition createURLScopeFillFacetDefinition() {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        UrlScopeFill fill = new UrlScopeFill("");
+        fill.setLabel(URL_FACET_ID);
+        fill.setFacetName(URL_FACET_ID);
+        categoryDefinitions.add(fill);
+        
+        return new FacetDefinition(URL_FACET_ID, categoryDefinitions);
     }
 
 }

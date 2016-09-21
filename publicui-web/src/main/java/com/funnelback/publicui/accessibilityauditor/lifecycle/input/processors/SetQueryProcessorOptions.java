@@ -45,7 +45,9 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         options.add(getMBLOption());
         options.add(getSumOption());
         options.add(getSumByGroupOption());
+        options.add(getSumByGroupSensitiveOption());
         options.add(getCountByGroupOption());
+        options.add(getCountUniqueByGroupSensitiveOption());
         options.add(getRmcSensitiveOption());
         
         log.debug("Initialised with options: {}", options.stream().collect(Collectors.joining(System.getProperty("line.separator"))));
@@ -188,15 +190,29 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             
             // FIXME FUN-9296
             // sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            // Above covers the one below, to remove once FUN-9296 is fixed
+            sums.add(String.format("[%sOccurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             
             sums.add(String.format("[%s.+Occurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%s(A|Una)ffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%sAffected.+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%sAffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%sUnaffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sChecked]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
         }
         
         String sumByGroupOptionValue = sums.stream().collect(Collectors.joining(","));
         
         return String.format("-sumByGroup=%s", sumByGroupOptionValue);
+    }
+    
+    /**
+     * Get the sum case sensitivity option to preserve
+     * case in sums
+     * 
+     * @return PADRE <code>-countUniqueByGroupSensitive</code> option
+     */
+    private String getSumByGroupSensitiveOption() {
+        return "-sumByGroupSensitive=on";
     }
     
     /**
@@ -221,9 +237,24 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             }
         }
         
+        // Count of unique domains per profile
+        counts.add(String.format("[%s]:[%s]",
+            Metadata.getMetadataClass(Metadata.Names.domain().getName()),
+            Metadata.getMetadataClass(Metadata.Names.profile().getName())));
+        
         String countByGroupOptionValue = counts.stream().collect(Collectors.joining(","));
         
         return String.format("-countUniqueByGroup=%s", countByGroupOptionValue);
+    }
+    
+    /**
+     * Get the group count case sensitivity option to preserve
+     * case in unique groups
+     * 
+     * @return PADRE <code>-countUniqueByGroupSensitive</code> option
+     */
+    private String getCountUniqueByGroupSensitiveOption() {
+        return "-countUniqueByGroupSensitive=on";
     }
 
 }
