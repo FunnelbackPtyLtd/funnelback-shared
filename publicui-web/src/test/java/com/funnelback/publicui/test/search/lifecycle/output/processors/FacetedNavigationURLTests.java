@@ -1,13 +1,13 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +80,8 @@ public class FacetedNavigationURLTests {
     public void test() throws Exception {
         
         st.getResponse().setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            StandardCharsets.UTF_8,
             false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());
@@ -114,7 +115,8 @@ public class FacetedNavigationURLTests {
     @Test
     public void testCategorySelection() throws Exception {
         st.getResponse().setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            StandardCharsets.UTF_8,
             false));
         
         Assert.assertEquals(0, st.getResponse().getFacets().size());

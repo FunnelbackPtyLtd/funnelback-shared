@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -25,7 +26,8 @@ public class RankingFeatureTest {
     public void testHintMaxOther() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+                StandardCharsets.UTF_8,
             false);
         
 
@@ -78,7 +80,8 @@ public class RankingFeatureTest {
     @Test public void testHintMaxPossibleMultiwordOnly() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            StandardCharsets.UTF_8,
             false);
         
         RankingFeature h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",rp);
@@ -135,7 +138,8 @@ public class RankingFeatureTest {
         assertFalse(h.isInteresting());
         
         ResultPacket oneWordQuery = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"), "UTF-8"),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),
+            StandardCharsets.UTF_8,
             false);
         h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",oneWordQuery);
         h.rememberScore(0.6f,""+1);
@@ -151,7 +155,8 @@ public class RankingFeatureTest {
     public void testHintMaxPossible() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/explain-mockup.xml"), "UTF-8"),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            StandardCharsets.UTF_8,
             false);
         
         

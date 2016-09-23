@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Resource;
 
@@ -32,7 +33,8 @@ public class FacetedNavigationMetadataFieldFillTests extends FacetedNavigationAb
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            StandardCharsets.UTF_8,
             false));
         st = new SearchTransaction(question, response);
         

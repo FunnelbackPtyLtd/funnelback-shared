@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+
 import org.junit.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -58,7 +60,8 @@ public class FixPseudoLiveLinksTests {
         
         SearchResponse response = new SearchResponse();
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            StandardCharsets.UTF_8,
             false));
         
         st = new SearchTransaction(question, response);

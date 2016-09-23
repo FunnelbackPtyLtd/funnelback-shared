@@ -11,12 +11,10 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.exec.OS;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.i18n.I18n;
@@ -76,8 +74,9 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         try {
             ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env);
 
+            String output = new String(out.getOutBytes(), out.getCharset());
             if (detectHeaders) {
-                Matcher m = HEADER_CONTENT_PATTERN.matcher(out.getOutput());
+                Matcher m = HEADER_CONTENT_PATTERN.matcher(output);
                 if (m.matches()) {
     
                     // Output headers
@@ -91,7 +90,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
                     response.getWriter().write(m.group(2));
                 }
             } else {
-                response.getWriter().write(out.getOutput());                
+                response.getWriter().write(output);                
             }
         } catch (PadreForkingException pfe) {
             log.error("Unable to run PADRE binary '" + padreBinary + "'", pfe);

@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +14,6 @@ import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.ExecutionReturn;
-import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;
@@ -75,7 +76,7 @@ public class WindowsNativeExecutor {
                     + "Current Thread ID is: " + Kernel32.INSTANCE.GetCurrentThreadId());
         }
         
-        String result = null;
+        byte[] result = null;
         int returnCode = -1;
 
         final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
@@ -228,9 +229,9 @@ public class WindowsNativeExecutor {
         }
         
         if (log.isTraceEnabled()) {
-            log.trace("Process result is: '" + result + "'");
+            log.trace("Process result is: '" + new String(result, getCharset()) + "'");
         }
-        return new ExecutionReturn(returnCode, result, null);
+        return new ExecutionReturn(returnCode, result, null, getCharset());
     }
 
     /**
@@ -240,7 +241,7 @@ public class WindowsNativeExecutor {
      * @return Content of STDOUT
      * @throws IOException 
      */
-    private String readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) throws IOException {
+    private byte[] readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
             log.warn("Unable to close the stdout write pipe of child process",
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
@@ -282,7 +283,24 @@ public class WindowsNativeExecutor {
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
         
-        return Native.toString(bos.toByteArray());
+        
+        return bos.toByteArray();
+    }
+    
+    /**
+     * Returns the charset used for executing 
+     * @return
+     */
+    private Charset getCharset() {
+        String jnaCharset = System.getProperty("jna.encoding");
+        try {
+            if(jnaCharset != null) {
+                return Charset.forName(jnaCharset);
+            }
+        } catch (UnsupportedCharsetException e) {
+            log.debug("JNA configured charset is unknown", e);
+        }
+        return Charset.defaultCharset();
     }
 
     /**

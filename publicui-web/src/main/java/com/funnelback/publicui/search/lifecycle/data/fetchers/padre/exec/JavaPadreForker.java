@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,50 +43,56 @@ public class JavaPadreForker implements PadreForker {
         }
         
         CommandLine padreCmdLine = new CommandLine(commandLine.get(0));
-        if (commandLine.size() > 1) {
-            padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}), false);
-        }
-        
-        ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
-        ByteArrayOutputStream padreError = new ByteArrayOutputStream(AVG_PADRE_ERR_SIZE);
-        
-        log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
-        
-        PadreExecutor executor = new PadreExecutor();
-
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
-        executor.setWatchdog(watchdog);
-
-        PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput, padreError, null);
-        
-        executor.setStreamHandler(streamHandler);
-        
         try {
-            int rc = executor.execute(padreCmdLine, environment);
-            if (rc != 0) {
-                log.warn("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
+            //Try to place anything that will reference padre output in this try, so that when a OOM is caught
+            //no references to the output are held allowing the gc to ckean up objects.
+            if (commandLine.size() > 1) {
+                padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}), false);
             }
-            ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toString(), padreError.toString());
-            if(!er.getErr().trim().isEmpty()) {
-                log.debug("PADRE printed the following to STDERR: " + er.getErr() + getExecutionDetails(padreCmdLine, environment));
+            
+            ByteArrayOutputStream padreOutput = new ByteArrayOutputStream(AVG_PADRE_PACKET_SIZE);
+            ByteArrayOutputStream padreError = new ByteArrayOutputStream(AVG_PADRE_ERR_SIZE);
+            
+            log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
+            
+            PadreExecutor executor = new PadreExecutor();
+    
+            ExecuteWatchdog watchdog = new ExecuteWatchdog(padreWaitTimeout);
+            executor.setWatchdog(watchdog);
+    
+            PumpStreamHandler streamHandler = new PumpStreamHandler(padreOutput, padreError, null);
+            
+            executor.setStreamHandler(streamHandler);
+            
+            try {
+                int rc = executor.execute(padreCmdLine, environment);
+                if (rc != 0) {
+                    log.debug("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
+                }
+                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), StandardCharsets.UTF_8);
+                
+                if(er.getErrBytes().length > 0) {
+                    String error = new String(er.getErrBytes()).trim();
+                    if(error.length() > 0) {
+                        log.debug("PADRE printed the following to STDERR: '" + 
+                            error + "' " + getExecutionDetails(padreCmdLine, environment));
+                    }
+                }
+                return er;
+            } catch (ExecuteException ee) {
+                throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
+            } catch (IOException ioe) {
+                throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
+            } finally {
+                if (watchdog.killedProcess()) {
+                    log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
+                        + getExecutionDetails(padreCmdLine, environment));
+                }
             }
-            return er;
-        } catch (ExecuteException ee) {
-            throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
-        } catch (IOException ioe) {
-            throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
         } catch (OutOfMemoryError oome) {
             // Not sure if these are actually a good thing to do
-            padreOutput = null;
-            padreError = null;
             System.gc();
-            
             throw new PadreForkingException(i18n.tr("padre.forking.java.oom", padreCmdLine.toString()), oome);
-        } finally {
-            if (watchdog.killedProcess()) {
-                log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
-                    + getExecutionDetails(padreCmdLine, environment));
-            }
         }
     }
     

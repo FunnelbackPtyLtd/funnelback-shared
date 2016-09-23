@@ -8,6 +8,7 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.views.XSLTXStreamView;
 import com.funnelback.publicui.xml.SearchXStreamMarshaller;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -18,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +44,9 @@ public class XSLTXStreamViewTests {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         
-        String oldXml = FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml"));
-        ResultPacket rp = new StaxStreamParser().parse(oldXml, false);
+        byte[] rawBytes = FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml"));
+        String oldXml = new String(rawBytes, StandardCharsets.UTF_8);
+        ResultPacket rp = new StaxStreamParser().parse(rawBytes, StandardCharsets.UTF_8, false);
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQuery("dummy");

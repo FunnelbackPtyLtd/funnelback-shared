@@ -89,13 +89,16 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                     ExecutionReturn er = new WindowsNativeExecutor(i18n, WAIT_TIMEOUT)
                         .execute(cmdLine, env, getUserKeysBinary.getParentFile());
                     
-                    String outStr = er.getOutput().trim();
+                    String outStr = new String(er.getOutBytes(), er.getCharset());
                     
                     if (er.getReturnCode() != GET_USER_KEYS_SUCCESS) {
+                        //outStr is the exact string representation of the output.
                         log.error("User keys collector returned a non-zero status ("
                             + er.getReturnCode()+") with command line '"
-                            + cmdLine + "'. Output was '"+er.getOutput() + "'");
+                            + cmdLine + "'. Output was '"+outStr + "'");
                     } else {
+                        //Trim the keys before we scan for keys.
+                        outStr = outStr.trim();
                         // This splits the strings on commas, but only those followed by
                         // the collection's id (to reduce the risk of commas in the trim group names
                         // being caught - I'm not sure if they'd be permitted by Trim)

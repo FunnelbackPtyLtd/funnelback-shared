@@ -14,9 +14,9 @@ import org.apache.commons.exec.OS;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
 import com.funnelback.publicui.search.lifecycle.data.DataFetchException;
@@ -120,42 +120,56 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            ExecutionReturn padreOutput = null;
             
-            try {
-                queryReadLock.lock(searchTransaction.getQuestion().getCollection());
-            } catch (FileLockException e) {
-                throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
-            }    
+            
+            
             
             long padreWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
                 .valueAsLong(Keys.ModernUI.PADRE_FORK_TIMEOUT, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS);
             
+            ExecutionReturn padreOutput = null;
+            
             try {
-                if (searchTransaction.getQuestion().isImpersonated()) {
-                    padreOutput = new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env);
-                } else {
-                    padreOutput = new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
-                }
+                padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env);
+                
                 if (log.isTraceEnabled()) {
                     log.trace("\n---- RAW result packet BEGIN ----:\n\n"
-                            +padreOutput.getOutput()+"\n---- RAW result packet END ----");
+                            +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
+                            +"\n---- RAW result packet END ----");
                 }
 
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
                 log.error("PADRE forking failed with command line {}", commandLine, pfe);
-                throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);    
+                throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
             } catch (XmlParsingException pxpe) {
                 log.error("Unable to parse PADRE response with command line {}", commandLine, pxpe);
-                if (padreOutput != null && padreOutput.getOutput() != null && padreOutput.getOutput().length() > 0) {
-                    log.error("PADRE response was: \n" + padreOutput.getOutput());
+                if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
+                    log.error("PADRE response was: \n" + new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
                 }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
-            } finally {
-                queryReadLock.release(searchTransaction.getQuestion().getCollection());
             }
         }
+    }
+    
+    ExecutionReturn runPadre(SearchTransaction searchTransaction, long padreWaitTimeout, 
+                                List<String> commandLine,
+                                Map<String, String> env) throws DataFetchException, PadreForkingException {
+        try {
+            queryReadLock.lock(searchTransaction.getQuestion().getCollection());
+        } catch (FileLockException e) {
+            throw new DataFetchException(i18n.tr("padre.forking.lock.error"), e);
+        }
+        try {
+            if (searchTransaction.getQuestion().isImpersonated()) {
+                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env);
+            } else {
+                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+            }
+        } finally {
+            queryReadLock.release(searchTransaction.getQuestion().getCollection());
+        }
+        
     }
     
     protected abstract String getQueryString(SearchTransaction transaction);

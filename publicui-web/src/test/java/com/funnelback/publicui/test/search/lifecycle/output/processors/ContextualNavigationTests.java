@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -29,7 +30,7 @@ public class ContextualNavigationTests {
     public void before() throws XmlParsingException, IOException {
         SearchResponse response = new SearchResponse();
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")), StandardCharsets.UTF_8,
             false));
 
         st = new SearchTransaction(new SearchQuestion(), response);

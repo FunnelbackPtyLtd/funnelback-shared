@@ -240,11 +240,7 @@ public class DefaultPadreForkingLockTests {
 
     private void assertResults(SearchTransaction st) throws IOException {
         Assert.assertNotNull(st.getResponse());
-        if (! OS.isFamilyWindows()) {
-            // Can't compare results on Windows as the Mock VBS padre
-            // doesn't support reading UTF-8
-            Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
-        }
+        
         Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
         Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());    
     }
