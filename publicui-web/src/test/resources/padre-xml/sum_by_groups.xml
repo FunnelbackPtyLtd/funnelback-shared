@@ -38,7 +38,7 @@
                 <s g="The cool profile">202.0</s>
         </sum>
         <sum by="profile" on="failures3">
-	</sum>
+    </sum>
 </sums_by_groups>
 
 <results>

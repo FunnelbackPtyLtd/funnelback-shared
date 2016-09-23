@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xml:id="engine-embedded-js" xmlns:xi="http://www.w3.org/2001/XInclude" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xlink="http://www.w3.org/TR/xlink"
-	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
-	<title>Embedded JS (EJS)</title>
+    xml:id="engine-embedded-js" xmlns:xi="http://www.w3.org/2001/XInclude" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/TR/xlink"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+    <title>Embedded JS (EJS)</title>
 
-	<section>
-		<title>Description</title>
+    <section>
+        <title>Description</title>
 
-		<para>
-			This Javascript based template engine uses purely JS code snippets instead of relying on specific directives.
-			It's initially developed by <ulink url="http://jupiterit.com/">Jupiter IT</ulink>, a consulting company focused on Javascript.
-			The latest release is from November 2009, and the Google Group seems to have a bit of activity.
-		</para>
-		
-		<para>
-			That results in sometimes hard to read form files, but with the advantages of being understandable by any JS developer:
-			
-			<programlisting language="html"><![CDATA[
+        <para>
+            This Javascript based template engine uses purely JS code snippets instead of relying on specific directives.
+            It's initially developed by <ulink url="http://jupiterit.com/">Jupiter IT</ulink>, a consulting company focused on Javascript.
+            The latest release is from November 2009, and the Google Group seems to have a bit of activity.
+        </para>
+        
+        <para>
+            That results in sometimes hard to read form files, but with the advantages of being understandable by any JS developer:
+            
+            <programlisting language="html"><![CDATA[
 <% if (response.resultPacket.resultsSummary.prevStart > 0) { %>
   <% if (question.queryString.search(/start_rank=/) > -1) { %>
     [ <a
         href="?<%= question.queryString.replace(/start_rank=[^&]*/, 'start_rank=' + response.resultPacket.resultsSummary.prevStart) %>"
-    	class="fb-previous-result-page fb-page-nav">Prev <%= response.resultPacket.resultsSummary.numRanks %></a> ]
+        class="fb-previous-result-page fb-page-nav">Prev <%= response.resultPacket.resultsSummary.numRanks %></a> ]
   <% } else { %>
     [ <a
         href="?<%= question.queryString %>&amp;start_rank=<%= response.resultPacket.resultsSummary.prevStart %>"
         class="fb-previous-result-page fb-page-nav">Prev <%= response.resultPacket.resultsSummary.numRanks %></a> ]
   <% } %>
-<% } %>	
-			]]></programlisting>
-		
-		</para>
-	
-		<para>As said in the <link linkend="directive-less-engines">Directive-less engines</link> section:</para>
-		
-		<para>
-			Pros:
-			<simplelist>
-				<member>There is nothing to learn (Assuming you already know the underlying language, Javascript in the previous example),</member>
-				<member>It's flexible: You have access to every capability of the underlying language, instead of being constrained to a set of directives,</member>
-				<member>Seems used and supported by its original initiator company.</member>
-			</simplelist>
-			
-			Cons:
-			<simplelist>
-				<member>Templates clearly mix presentation and logic, which is generally not a good idea,</member>
-				<member>Having these opening/closing tags <code>&lt;% ... %&gt;</code> make things difficult to read,</member>
-				<member>Changing the underlying technology breaks all the existing forms.</member>
-			</simplelist>
-		</para>
-	
-	</section>
-		
-	<section>
-		<title>Sample template</title>
-		<para>
-			<programlisting language="html"><xi:include href="template.html" parse="text" /></programlisting>
-		</para>
-	</section>
+<% } %>    
+            ]]></programlisting>
+        
+        </para>
+    
+        <para>As said in the <link linkend="directive-less-engines">Directive-less engines</link> section:</para>
+        
+        <para>
+            Pros:
+            <simplelist>
+                <member>There is nothing to learn (Assuming you already know the underlying language, Javascript in the previous example),</member>
+                <member>It's flexible: You have access to every capability of the underlying language, instead of being constrained to a set of directives,</member>
+                <member>Seems used and supported by its original initiator company.</member>
+            </simplelist>
+            
+            Cons:
+            <simplelist>
+                <member>Templates clearly mix presentation and logic, which is generally not a good idea,</member>
+                <member>Having these opening/closing tags <code>&lt;% ... %&gt;</code> make things difficult to read,</member>
+                <member>Changing the underlying technology breaks all the existing forms.</member>
+            </simplelist>
+        </para>
+    
+    </section>
+        
+    <section>
+        <title>Sample template</title>
+        <para>
+            <programlisting language="html"><xi:include href="template.html" parse="text" /></programlisting>
+        </para>
+    </section>
 
 </chapter>

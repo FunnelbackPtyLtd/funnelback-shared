@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="com.funnelback.publicui.form.converter" />
+    <context:component-scan base-package="com.funnelback.publicui.form.converter" />
 
-	<util:list id="steps">
-		<bean class="com.funnelback.publicui.form.converter.operations.InsertHeader" />
-		<bean class="com.funnelback.publicui.form.converter.operations.LegacyTagsConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.BasicTagConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ResultsTierBarsConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.IfDefCGIConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.AddUrlPrefix" />
-		<bean class="com.funnelback.publicui.form.converter.operations.SwitchToGlobalResources" />
-		<bean class="com.funnelback.publicui.form.converter.operations.BestBetsConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CGIConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ResConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ResIfConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.TruncateConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.QuickLinksConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ResultDataConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.EnvConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CommifyConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.BoldicizeConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ItalicizeConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.ContextualNavigationConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.MoreOrLessCategoriesConversion" />
-		
-		<!-- Run Compare 4x to deal with nested Compare tags. Crude, but simpler -->
-		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
-		
-		<bean class="com.funnelback.publicui.form.converter.operations.SelectConversion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />
-		<bean class="com.funnelback.publicui.form.converter.operations.FixTagsAsArguments" />		
-		<bean class="com.funnelback.publicui.form.converter.operations.RemoveTagPlugin" />
-		<bean class="com.funnelback.publicui.form.converter.operations.FixQueryCompletion" />
-		<bean class="com.funnelback.publicui.form.converter.operations.FixQuickLinksConfigAccess" />
-		<bean class="com.funnelback.publicui.form.converter.operations.AddPreviewBannerTag" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CategoryWhiteBlackListRemove" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CategoryRenameRemove" />
-		<bean class="com.funnelback.publicui.form.converter.operations.CategorySortOrderRemove" />
-	</util:list>
+    <util:list id="steps">
+        <bean class="com.funnelback.publicui.form.converter.operations.InsertHeader" />
+        <bean class="com.funnelback.publicui.form.converter.operations.LegacyTagsConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.BasicTagConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ResultsTierBarsConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.IfDefCGIConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.AddUrlPrefix" />
+        <bean class="com.funnelback.publicui.form.converter.operations.SwitchToGlobalResources" />
+        <bean class="com.funnelback.publicui.form.converter.operations.BestBetsConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CGIConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ResConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ResIfConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.TruncateConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.QuickLinksConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ResultDataConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.EnvConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CommifyConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.BoldicizeConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ItalicizeConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.ContextualNavigationConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.MoreOrLessCategoriesConversion" />
+        
+        <!-- Run Compare 4x to deal with nested Compare tags. Crude, but simpler -->
+        <bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CompareConversion" />
+        
+        <bean class="com.funnelback.publicui.form.converter.operations.SelectConversion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.FixIfStatements" />
+        <bean class="com.funnelback.publicui.form.converter.operations.FixTagsAsArguments" />        
+        <bean class="com.funnelback.publicui.form.converter.operations.RemoveTagPlugin" />
+        <bean class="com.funnelback.publicui.form.converter.operations.FixQueryCompletion" />
+        <bean class="com.funnelback.publicui.form.converter.operations.FixQuickLinksConfigAccess" />
+        <bean class="com.funnelback.publicui.form.converter.operations.AddPreviewBannerTag" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CategoryWhiteBlackListRemove" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CategoryRenameRemove" />
+        <bean class="com.funnelback.publicui.form.converter.operations.CategorySortOrderRemove" />
+    </util:list>
 
 </beans>

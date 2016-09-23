@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xml:id="engine-freemarker" xmlns:xi="http://www.w3.org/2001/XInclude" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xlink="http://www.w3.org/TR/xlink"
-	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
-	<title>FreeMarker</title>
+    xml:id="engine-freemarker" xmlns:xi="http://www.w3.org/2001/XInclude" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/TR/xlink"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+    <title>FreeMarker</title>
 
-	<section>
-		<title>Description</title>
+    <section>
+        <title>Description</title>
 
-		<para>
-			FreeMarker is probably the most popular Java template engine. Its development has started in 2002 and is still active.
-			It's used in <ulink url="http://freemarker.org/poweredBy.html">several project</ulink> including major ones such as
-			Alfresco or NetBeans (For code templates).
-		</para>
-		
-		<para>
-			It's using its own directive syntax such as <code>&lt;#if&gt;...&lt;/#if&gt;</code> or <code>&lt;#list items as item&gt;...&lt;/#list&gt;</code>.
-			It can be extended either by defining <emphasis>macros</emphasis> directly in FreeMarker language, or by developing custom directives in Java.
-			Macros and custom directives can be organized into namespaces and libraries for re-usability.
-		</para>
-	
-		<para>
-			Pros:
-			<simplelist>
-				<member>Great popularity and support,</member>
-				<member>Simple yet extensive language, and very well documented,</member>
-				<member>Out of the box support for many features like date / number formatting, escaping, etc.</member>
-				<member>Easy to extend.</member>
-			</simplelist>
+        <para>
+            FreeMarker is probably the most popular Java template engine. Its development has started in 2002 and is still active.
+            It's used in <ulink url="http://freemarker.org/poweredBy.html">several project</ulink> including major ones such as
+            Alfresco or NetBeans (For code templates).
+        </para>
+        
+        <para>
+            It's using its own directive syntax such as <code>&lt;#if&gt;...&lt;/#if&gt;</code> or <code>&lt;#list items as item&gt;...&lt;/#list&gt;</code>.
+            It can be extended either by defining <emphasis>macros</emphasis> directly in FreeMarker language, or by developing custom directives in Java.
+            Macros and custom directives can be organized into namespaces and libraries for re-usability.
+        </para>
+    
+        <para>
+            Pros:
+            <simplelist>
+                <member>Great popularity and support,</member>
+                <member>Simple yet extensive language, and very well documented,</member>
+                <member>Out of the box support for many features like date / number formatting, escaping, etc.</member>
+                <member>Easy to extend.</member>
+            </simplelist>
 
-			Cons: I don't see any disadvantages about Freemarker itself. It has more to do with using a Java based template engine:
-			<simplelist>
-				<member>Tied to the Java world</member>
-				<member>New language to learn (As NickScript was)</member>
-				<member>No possibility of client-side rendering</member>
-			</simplelist>
-		</para>
-	
-	</section>
-		
-	<section>
-		<title>Sample template</title>
-		<para>
-			<programlisting language="html"><xi:include href="template.ftl" parse="text" /></programlisting>
-		</para>
-	</section>
+            Cons: I don't see any disadvantages about Freemarker itself. It has more to do with using a Java based template engine:
+            <simplelist>
+                <member>Tied to the Java world</member>
+                <member>New language to learn (As NickScript was)</member>
+                <member>No possibility of client-side rendering</member>
+            </simplelist>
+        </para>
+    
+    </section>
+        
+    <section>
+        <title>Sample template</title>
+        <para>
+            <programlisting language="html"><xi:include href="template.ftl" parse="text" /></programlisting>
+        </para>
+    </section>
 
 </chapter>

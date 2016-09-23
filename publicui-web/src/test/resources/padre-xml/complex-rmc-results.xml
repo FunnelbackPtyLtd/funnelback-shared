@@ -660,14 +660,14 @@ you
   <docnum>2681</docnum>
   <explore_link>/search/padre-rf.cgi?&amp;profile=_default&amp;xml=&amp;fluent=5&amp;collection=info-aus&amp;query=visa&amp;comp=0&amp;dox=29&amp;aoi=7&amp;vsimple=on&amp;daat=0&amp;script=/search/search.cgi</explore_link>
   <explain>
-  		<consat>2</consat>
-    	<final_score>0.639</final_score>
-    	<lenratio>0.662</lenratio>
-    	<cooler_scores>
-    		<content cool="0">0.997</content>
- 			<offlink cool="2">0</offlink>
- 			<urllen cool="3">0.512</urllen>
-    	</cooler_scores>
+          <consat>2</consat>
+        <final_score>0.639</final_score>
+        <lenratio>0.662</lenratio>
+        <cooler_scores>
+            <content cool="0">0.997</content>
+             <offlink cool="2">0</offlink>
+             <urllen cool="3">0.512</urllen>
+        </cooler_scores>
   </explain>
 <quicklinks domain="www.immi.gov.au/e_visa/"><quicklink><qltext>Request a Visa</qltext><qlurl>www.immi.gov.au/e_visa/request.html</qlurl></quicklink><quicklink><qltext>Check your application status</qltext><qlurl>www.immi.gov.au/e_visa/application-status/</qlurl></quicklink></quicklinks>
   </result>
