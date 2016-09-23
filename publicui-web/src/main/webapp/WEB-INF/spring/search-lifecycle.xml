@@ -1,81 +1,81 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:lang="http://www.springframework.org/schema/lang"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:lang="http://www.springframework.org/schema/lang"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
 
-	<util:list id="inputFlow">
-		<!-- passThroughParametersInputProcessor should be first as it populates required values for following processors -->
-		<ref bean="passThroughParametersInputProcessor" />
-		<ref bean="passThroughEnvironmentVariabesInputProcessor" />
-		<ref bean="localeOverrideInputProcessor" />
-		<ref bean="contentAuditorInputProcessor" />
-		<ref bean="geolocationInputProcessor" />
-		<bean id="preProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
-		</bean>
-		<ref bean="accessibilityAuditorSetQuery" />
-		<ref bean="accessibilityAuditorSetQueryProcessorOptions" />
-		<ref bean="accessibilityAuditorConfigureFacets" />
-		<ref bean="session" />
-		<ref bean="userKeysInputProcessor" />
-		<ref bean="facetScopeInputProcessor" />
-		<ref bean="facetedNavigationInputProcessor" />
-		<ref bean="multiFacetedNavigationInputProcessor" />
-		<ref bean="metaParametersInputProcessor" />
-		<ref bean="metadataAliasesInputProcessor" />
-		<ref bean="metaDatesInputProcessor" />
-		<ref bean="curatorInputProcessor" />
-		<ref bean="cliveMappingInputProcessor" />
-		<ref bean="quickLinksInputProcessor" />
-		<ref bean="exploreQueryInputProcessor" />
-		<ref bean="hostname" />
-		<ref bean="userIdInQueryLogs" />
-		<ref bean="extraSearchesInputProcessor" />
-			<bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-				<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).extra_searches }" />
-				<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
-			</bean>		
-		<ref bean="extraSearchesExecutor" />
-	</util:list>
+    <util:list id="inputFlow">
+        <!-- passThroughParametersInputProcessor should be first as it populates required values for following processors -->
+        <ref bean="passThroughParametersInputProcessor" />
+        <ref bean="passThroughEnvironmentVariabesInputProcessor" />
+        <ref bean="localeOverrideInputProcessor" />
+        <ref bean="contentAuditorInputProcessor" />
+        <ref bean="geolocationInputProcessor" />
+        <bean id="preProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
+        </bean>
+        <ref bean="accessibilityAuditorSetQuery" />
+        <ref bean="accessibilityAuditorSetQueryProcessorOptions" />
+        <ref bean="accessibilityAuditorConfigureFacets" />
+        <ref bean="session" />
+        <ref bean="userKeysInputProcessor" />
+        <ref bean="facetScopeInputProcessor" />
+        <ref bean="facetedNavigationInputProcessor" />
+        <ref bean="multiFacetedNavigationInputProcessor" />
+        <ref bean="metaParametersInputProcessor" />
+        <ref bean="metadataAliasesInputProcessor" />
+        <ref bean="metaDatesInputProcessor" />
+        <ref bean="curatorInputProcessor" />
+        <ref bean="cliveMappingInputProcessor" />
+        <ref bean="quickLinksInputProcessor" />
+        <ref bean="exploreQueryInputProcessor" />
+        <ref bean="hostname" />
+        <ref bean="userIdInQueryLogs" />
+        <ref bean="extraSearchesInputProcessor" />
+            <bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+                <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).extra_searches }" />
+                <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
+            </bean>        
+        <ref bean="extraSearchesExecutor" />
+    </util:list>
 
-	<util:list id="dataFetchers">
-		<bean id="PreDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
-		</bean>
-		<ref bean="defaultPadreForking" />
-		<!-- ref bean="padreForkingPooled" / -->
-		<bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
-		</bean>
-	</util:list>
+    <util:list id="dataFetchers">
+        <bean id="PreDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
+        </bean>
+        <ref bean="defaultPadreForking" />
+        <!-- ref bean="padreForkingPooled" / -->
+        <bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_datafetch }" />
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
+        </bean>
+    </util:list>
 
-	<util:list id="outputFlow">
-		<ref bean="padreReturnCodeOutputProcessor" />
-		<ref bean="fixPseudoLiveLinksOutputProcessor" />
-		<ref bean="curatorOutputProcessor" />
-		<ref bean="fixCacheAndClickLinks" />
-		<ref bean="fixDisplayUrlsOutputProcessor" />
-		<ref bean="htmlEncodeSummaries" />
-		<ref bean="facetedNavigationOutputProcessor" />
-		<ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
-		<ref bean="dateFacetSortOutputProcessor" />
-		<ref bean="contextualNavigationOutputProcessor" />
-		<ref bean="quickLinksOutputProcessor" />
-		<ref bean="queryCleanOutputProcessor" />
-		<ref bean="extraSearchesExecutor" />
-		<ref bean="contentOptimiserOutputProcessor" />
-		<ref bean="textMinerOutputProcessor" />
-		<ref bean="getTranslationsOutputProcessor" />
-		<ref bean="searchHistoryOutputProcessor" />
-		<ref bean="metricsOutputProcessor" />
-		<bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
-			<constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Output }" />
-		</bean>
-	</util:list>
-	
-	<bean class="com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor" />
+    <util:list id="outputFlow">
+        <ref bean="padreReturnCodeOutputProcessor" />
+        <ref bean="fixPseudoLiveLinksOutputProcessor" />
+        <ref bean="curatorOutputProcessor" />
+        <ref bean="fixCacheAndClickLinks" />
+        <ref bean="fixDisplayUrlsOutputProcessor" />
+        <ref bean="htmlEncodeSummaries" />
+        <ref bean="facetedNavigationOutputProcessor" />
+        <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
+        <ref bean="dateFacetSortOutputProcessor" />
+        <ref bean="contextualNavigationOutputProcessor" />
+        <ref bean="quickLinksOutputProcessor" />
+        <ref bean="queryCleanOutputProcessor" />
+        <ref bean="extraSearchesExecutor" />
+        <ref bean="contentOptimiserOutputProcessor" />
+        <ref bean="textMinerOutputProcessor" />
+        <ref bean="getTranslationsOutputProcessor" />
+        <ref bean="searchHistoryOutputProcessor" />
+        <ref bean="metricsOutputProcessor" />
+        <bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
+            <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Output }" />
+        </bean>
+    </util:list>
+    
+    <bean class="com.funnelback.publicui.search.lifecycle.DefaultSearchTransactionProcessor" />
 </beans>

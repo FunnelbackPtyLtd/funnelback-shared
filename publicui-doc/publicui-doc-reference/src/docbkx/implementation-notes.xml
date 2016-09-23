@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xml:id="implementation-notes" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
-	<title>Implementation notes</title>
-	
-	<chapter xml:id="meta-dates">
-		<title>Date parameters (<literal>meta_(d|d1|d2|d3|d4|w1|w2|x|y|z)</literal>)</title>
+    xml:id="implementation-notes" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+    <title>Implementation notes</title>
+    
+    <chapter xml:id="meta-dates">
+        <title>Date parameters (<literal>meta_(d|d1|d2|d3|d4|w1|w2|x|y|z)</literal>)</title>
 
-		<para>The Public UI allows passing date contraints to the query, expressed as <literal>meta_*</literal> parameters.</para>
-		<para><literal>d, d1, d2, d3, d4</literal> are documented in the product doco, but <literal>w1, w2, x, y, z</literal> aren't.</para>
-		
-		<section xml:id="meta-dates-date-constraints">
-			<title>Date constraints (<literal>d, d1, d2, d3, d4</literal>)</title>
-			<para>(Check the product doco for details about these parameters).</para>
-			
-			<para>
-			Each date constraint can be passed either as a specific date, such as <literal>meta_d3=01Jan2010</literal>, or as three separate
-			components: <literal>meta_d3day=1, meta_d3month=1, meta_d3year=2010</literal>. Each component is optional, meaning that it's possible
-			to have a date like &quot;201001&quot; for January 2010.
-			</para>
-			
-			<para>
-				Dates are passed as-is to PADRE, except for <literal>d3</literal> and <literal>d4</literal> parameters: Those one means
-				&quot;greater than or equal&quot; and &quot;lesser than or equal&quot;. PADRE doesn't interpret them directly so the Public UI
-				has to remove or add a day to the provided date to simulate this.
-				
-				<note>
-					<para>
-						There is no specific constraint on date formats, so we try to parse using various patterns. If the parsing fails the
-						constraint is simply ignored.
-					</para>
-				</note>
-			</para>
-		</section>
-		
-		<section xml:id="meta-dates-text-based-date-constraints">
-			<title>Text-based date constraints (<literal>x, y, z</literal>)</title>
-			<para>
-				As seen on the Perl code there is some processing related to text-based date constraint and <literal>x, y, z</literal> metadata classes:
-				<programlisting language="perl">
+        <para>The Public UI allows passing date contraints to the query, expressed as <literal>meta_*</literal> parameters.</para>
+        <para><literal>d, d1, d2, d3, d4</literal> are documented in the product doco, but <literal>w1, w2, x, y, z</literal> aren't.</para>
+        
+        <section xml:id="meta-dates-date-constraints">
+            <title>Date constraints (<literal>d, d1, d2, d3, d4</literal>)</title>
+            <para>(Check the product doco for details about these parameters).</para>
+            
+            <para>
+            Each date constraint can be passed either as a specific date, such as <literal>meta_d3=01Jan2010</literal>, or as three separate
+            components: <literal>meta_d3day=1, meta_d3month=1, meta_d3year=2010</literal>. Each component is optional, meaning that it's possible
+            to have a date like &quot;201001&quot; for January 2010.
+            </para>
+            
+            <para>
+                Dates are passed as-is to PADRE, except for <literal>d3</literal> and <literal>d4</literal> parameters: Those one means
+                &quot;greater than or equal&quot; and &quot;lesser than or equal&quot;. PADRE doesn't interpret them directly so the Public UI
+                has to remove or add a day to the provided date to simulate this.
+                
+                <note>
+                    <para>
+                        There is no specific constraint on date formats, so we try to parse using various patterns. If the parsing fails the
+                        constraint is simply ignored.
+                    </para>
+                </note>
+            </para>
+        </section>
+        
+        <section xml:id="meta-dates-text-based-date-constraints">
+            <title>Text-based date constraints (<literal>x, y, z</literal>)</title>
+            <para>
+                As seen on the Perl code there is some processing related to text-based date constraint and <literal>x, y, z</literal> metadata classes:
+                <programlisting language="perl">
 <![CDATA[for ( "d", "d1", "d2", "d3", "d4", "w1", "w2", "x", "y", "z" ) {
     my $year_param  = "meta_" . $_ . "year";
     my $month_param = "meta_" . $_ . "month";
@@ -49,13 +49,13 @@
     my $month       = Funnelback::CGIExtras::get_cgi_param_from_hash( $month_param, Funnelback::CGIExtras::TYPE_ALPHA, $params_hash );
     my $day         = Funnelback::CGIExtras::get_cgi_param_from_hash( $day_param, Funnelback::CGIExtras::TYPE_NUMERIC, $params_hash );
     if ( $year and $month and $day ) {
-    	$params_hash->{"meta_$_"} = "$day$month$year";
+        $params_hash->{"meta_$_"} = "$day$month$year";
     }
     elsif ( $year and $month ) {
-    	$params_hash->{"meta_$_"} = "$month$year";
+        $params_hash->{"meta_$_"} = "$month$year";
     }
     elsif ($year) {
-    	$params_hash->{"meta_$_"} = "$year";
+        $params_hash->{"meta_$_"} = "$year";
     }
 
     # Process the text date fields
@@ -69,619 +69,619 @@
         }
     }
 }]]>
-				</programlisting>
-			</para>
-			
-			<para>
-				Unfortunately nobody was able to figure out what that was supposed to do (Check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-65">FUN-65</link>)
-				so it has NOT been re-implemented.
-			</para>
-		</section>
-		
-		<section xml:id="event-search">
-			<title>Event search (<literal>w1, w2</literal>)</title>
-			<para>(Check the PADRE doco for details about this feature.)</para>
-			
-			<para>The idea is to process any existing <literal>meta_w1</literal> or <literal>meta_w2</literal> parameter into an event search query.</para>
-			<para>
-				If any of those parameters exist, they must be transformed in <literal>% w&gt;[value of w1]&lt;[value of w2]</literal>.
-				The <literal>%</literal> is a flag that switch PADRE to event search mode, and the following expression gives the event search range.
-			</para>
-			
-			<para>The value of the <literal>w1, w2</literal> is supposed to be a correct date that is passed as-is to PADRE (no parsing).</para>
-		</section>
-	</chapter>
-	
-	<chapter xml:id="meta-parameters-operators">
-		<title>Meta parameters operators (<literal>or, sand, and, ...</literal>)</title>
-		
-		<para>
-			The initial implementation was a complex modelisation of the parameter name into an operator and operands, however it didn't supported all the
-			features of the Perl UI, like combining operators (<literal>meta_Z_phrase_orsand=penguin</literal>). I ended up re-implementing this by 
-			converting the Perl code which was regular expressoin based.
-		</para>
-	</chapter>
-	
-	<chapter xml:id="environment-variables">
-		<title>Environment variables</title>
-		
-		<para>
-			PADRE uses some environment variables which were previously provided by the CGI stack (<envar>REMOTE_USER</envar>, <envar>HTTP_HOST</envar>, ...).
-			An <literal>InputProcessor</literal> has been developed to fetch the correct values from the <literal>HttpServletRequest</literal> object
-			and repass them to PADRE.
-		</para>
-	</chapter>
-	
-	<chapter xml:id="passthrough-parameters">
-		<title>Pass-through parameters</title>
-		
-		<para>
-			A lot of query string parameters are used by PADRE, but never used by the Public UI layer (Examples: <literal>num_rank, start_rank</literal>, any
-			query processor option, etc.).
-			An <literal>InputProcessor</literal> has been developed to just repass along any parameters not used directly by the Public UI (Such as 
-			<literal>collection, query</literal>, etc.).
-		</para>
-	</chapter>
-	
-	<chapter xml:id="meta-aliases">
-		<title>Meta classes aliases (<literal>site:, allinurl:, link:, filetype:</literal>)</title>
-		
-		<para>
-			This operators as just aliases for some metadata classes:
-			
-			<table>
-				<title>Mapping</title>
-				<tgroup cols="2" align="center">
-					<thead>
-						<row>
-							<entry>Operator</entry>
-							<entry>Metadata class</entry>
-						</row>
-					</thead>
-					<tbody>
-						<row>
-							<entry>link:</entry>
-							<entry>h</entry>
-						</row>
-						<row>
-							<entry>site:</entry>
-							<entry>u</entry>
-						</row>
-						<row>
-							<entry>filetype:</entry>
-							<entry>f</entry>
-						</row>
-						<row>
-							<entry>allinurl:</entry>
-							<entry>v</entry>
-						</row>
-					</tbody>
-				</tgroup>
-			</table>
-		</para>
-	</chapter>
-	
-	<chapter xml:id="clive-parameters">
-		<title><literal>clive</literal> parameters</title>
-		
-		<para>The <literal>clive</literal> parameter is used to contraint search to specific components of a meta collection.</para>
-		
-		<para>
-			The Public UI uses &quot;human readable&quot; <literal>clive</literal> parameters (collection names) but PADRE only understand the internal
-			&quot;technical&quot; version: An integer corresponding to a line index in the <literal>meta.cfg</literal> file.
-		</para>
-		
-		<para>
-			Consider the following <literal>meta.cfg</literal> file:
-			
-			<programlisting>
+                </programlisting>
+            </para>
+            
+            <para>
+                Unfortunately nobody was able to figure out what that was supposed to do (Check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-65">FUN-65</link>)
+                so it has NOT been re-implemented.
+            </para>
+        </section>
+        
+        <section xml:id="event-search">
+            <title>Event search (<literal>w1, w2</literal>)</title>
+            <para>(Check the PADRE doco for details about this feature.)</para>
+            
+            <para>The idea is to process any existing <literal>meta_w1</literal> or <literal>meta_w2</literal> parameter into an event search query.</para>
+            <para>
+                If any of those parameters exist, they must be transformed in <literal>% w&gt;[value of w1]&lt;[value of w2]</literal>.
+                The <literal>%</literal> is a flag that switch PADRE to event search mode, and the following expression gives the event search range.
+            </para>
+            
+            <para>The value of the <literal>w1, w2</literal> is supposed to be a correct date that is passed as-is to PADRE (no parsing).</para>
+        </section>
+    </chapter>
+    
+    <chapter xml:id="meta-parameters-operators">
+        <title>Meta parameters operators (<literal>or, sand, and, ...</literal>)</title>
+        
+        <para>
+            The initial implementation was a complex modelisation of the parameter name into an operator and operands, however it didn't supported all the
+            features of the Perl UI, like combining operators (<literal>meta_Z_phrase_orsand=penguin</literal>). I ended up re-implementing this by 
+            converting the Perl code which was regular expressoin based.
+        </para>
+    </chapter>
+    
+    <chapter xml:id="environment-variables">
+        <title>Environment variables</title>
+        
+        <para>
+            PADRE uses some environment variables which were previously provided by the CGI stack (<envar>REMOTE_USER</envar>, <envar>HTTP_HOST</envar>, ...).
+            An <literal>InputProcessor</literal> has been developed to fetch the correct values from the <literal>HttpServletRequest</literal> object
+            and repass them to PADRE.
+        </para>
+    </chapter>
+    
+    <chapter xml:id="passthrough-parameters">
+        <title>Pass-through parameters</title>
+        
+        <para>
+            A lot of query string parameters are used by PADRE, but never used by the Public UI layer (Examples: <literal>num_rank, start_rank</literal>, any
+            query processor option, etc.).
+            An <literal>InputProcessor</literal> has been developed to just repass along any parameters not used directly by the Public UI (Such as 
+            <literal>collection, query</literal>, etc.).
+        </para>
+    </chapter>
+    
+    <chapter xml:id="meta-aliases">
+        <title>Meta classes aliases (<literal>site:, allinurl:, link:, filetype:</literal>)</title>
+        
+        <para>
+            This operators as just aliases for some metadata classes:
+            
+            <table>
+                <title>Mapping</title>
+                <tgroup cols="2" align="center">
+                    <thead>
+                        <row>
+                            <entry>Operator</entry>
+                            <entry>Metadata class</entry>
+                        </row>
+                    </thead>
+                    <tbody>
+                        <row>
+                            <entry>link:</entry>
+                            <entry>h</entry>
+                        </row>
+                        <row>
+                            <entry>site:</entry>
+                            <entry>u</entry>
+                        </row>
+                        <row>
+                            <entry>filetype:</entry>
+                            <entry>f</entry>
+                        </row>
+                        <row>
+                            <entry>allinurl:</entry>
+                            <entry>v</entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+        </para>
+    </chapter>
+    
+    <chapter xml:id="clive-parameters">
+        <title><literal>clive</literal> parameters</title>
+        
+        <para>The <literal>clive</literal> parameter is used to contraint search to specific components of a meta collection.</para>
+        
+        <para>
+            The Public UI uses &quot;human readable&quot; <literal>clive</literal> parameters (collection names) but PADRE only understand the internal
+            &quot;technical&quot; version: An integer corresponding to a line index in the <literal>meta.cfg</literal> file.
+        </para>
+        
+        <para>
+            Consider the following <literal>meta.cfg</literal> file:
+            
+            <programlisting>
 <![CDATA[#
 # Filename: C:\funnelback\conf\test-meta\meta.cfg
 # Last Update: Wed Dec 15 16:26:17 2010
 #
 intranet
 trim
-fileshare]]>		
-			</programlisting>
-			
-			A valid <literal>clive</literal> parameter in the Public UI could be: <literal>clive=intranet,trim</literal>, however PADRE will only understand
-			<literal>clive=0,1</literal>. For this reason an <literal>InputProcessor</literal> has been developed to do the conversion.
-		</para>
-		
-		<para>
-			As opposite to the Perl UI there is no need to convert &quot;back&quot; from the integer version to the human-friendly version since both
-			versions are stored and available from the data model (<literal>SearchQuestion</literal>)
-		</para>
-	</chapter>
-	
-	<chapter xml:id="synonyms">
-		<title>Synonyms</title>
-		
-		<para>
-			It has been decided that the synonyms feature will be implemented in PADRE, instead of re-implemting it in the Java UI.
-			Please check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-3368">FUN-3368</link> for the details.
-		</para>
-	</chapter>
-	
-	<chapter xml:id="pseudo-live-links">
-		<title>Pseudo live links</title>
-		
-		<para>
-			Some collection types provides &quot;fake&quot; live URLs for their results. It's for example the case for database collection, or TRIM collections because
-			there is no URL associated to these kind of data.
-			However we must provide a &quot;display&quot; link on the Public UI for each result, to give the user access to the information. Depending of the collection
-			type this display link will for example display an HTML representation of a DB record (database collections), or open the TRIM client software (TRIM collections).
-		</para>
-		
-		<para>
-			An <literal>InputProcessor</literal> has been developed for this purpose. You'll note that fixing the live links doesn't depend of the <emphasis>type of the collection</emphasis>
-			being requested, but depends on the <emphasis>type of collection for each result</emphasis>. This is due to meta collections: A meta collection can have multiple components
-			of various types (trim, database, web, filecopy ...) so fixing the live links should be done differently for each result, depending of which collection the result belongs to.
-		</para>
-	</chapter>
-	
-	<chapter xml:id="contextual-navigation">
-		<title>Contextual Navigation</title>
-		
-		<para>
-			The Java UI doesn't have much things to do for contextual navigation as most of the work is done by PADRE.
-			The only note concerns the way PADRE output is parsed: Some things in PADRE XML output seems completely unused. For example:
-			
-			<programlisting language="xml">
+fileshare]]>        
+            </programlisting>
+            
+            A valid <literal>clive</literal> parameter in the Public UI could be: <literal>clive=intranet,trim</literal>, however PADRE will only understand
+            <literal>clive=0,1</literal>. For this reason an <literal>InputProcessor</literal> has been developed to do the conversion.
+        </para>
+        
+        <para>
+            As opposite to the Perl UI there is no need to convert &quot;back&quot; from the integer version to the human-friendly version since both
+            versions are stored and available from the data model (<literal>SearchQuestion</literal>)
+        </para>
+    </chapter>
+    
+    <chapter xml:id="synonyms">
+        <title>Synonyms</title>
+        
+        <para>
+            It has been decided that the synonyms feature will be implemented in PADRE, instead of re-implemting it in the Java UI.
+            Please check <link xlink:href="https://jira.cbr.au.funnelback.com/browse/FUN-3368">FUN-3368</link> for the details.
+        </para>
+    </chapter>
+    
+    <chapter xml:id="pseudo-live-links">
+        <title>Pseudo live links</title>
+        
+        <para>
+            Some collection types provides &quot;fake&quot; live URLs for their results. It's for example the case for database collection, or TRIM collections because
+            there is no URL associated to these kind of data.
+            However we must provide a &quot;display&quot; link on the Public UI for each result, to give the user access to the information. Depending of the collection
+            type this display link will for example display an HTML representation of a DB record (database collections), or open the TRIM client software (TRIM collections).
+        </para>
+        
+        <para>
+            An <literal>InputProcessor</literal> has been developed for this purpose. You'll note that fixing the live links doesn't depend of the <emphasis>type of the collection</emphasis>
+            being requested, but depends on the <emphasis>type of collection for each result</emphasis>. This is due to meta collections: A meta collection can have multiple components
+            of various types (trim, database, web, filecopy ...) so fixing the live links should be done differently for each result, depending of which collection the result belongs to.
+        </para>
+    </chapter>
+    
+    <chapter xml:id="contextual-navigation">
+        <title>Contextual Navigation</title>
+        
+        <para>
+            The Java UI doesn't have much things to do for contextual navigation as most of the work is done by PADRE.
+            The only note concerns the way PADRE output is parsed: Some things in PADRE XML output seems completely unused. For example:
+            
+            <programlisting language="xml">
 <![CDATA[<contextual_navigation>
-	<search_terms>king</search_terms>
-	<cluster_nav level="0" url="profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king">king</cluster_nav>
-	<category name="topic" more="0">
-		<cluster href="?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=%60King%20Henry%60" count="33">...Henry</cluster>
-		[...]
-		<more_link label="topic">/search/padre-sw.cgi?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king&amp;topic.max_clusters=40</more_link>
-	</category>
-	[...]
+    <search_terms>king</search_terms>
+    <cluster_nav level="0" url="profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king">king</cluster_nav>
+    <category name="topic" more="0">
+        <cluster href="?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=%60King%20Henry%60" count="33">...Henry</cluster>
+        [...]
+        <more_link label="topic">/search/padre-sw.cgi?profile=_default_preview&amp;xml=&amp;collection=Se2-Reporting-ContextualNav&amp;query=king&amp;topic.max_clusters=40</more_link>
+    </category>
+    [...]
 </contextual_navigation>
-]]>		
-			</programlisting>
-			
-			In this example PADRE output, I couldn't see any use for the <literal>more="0"</literal> attribute (In fact it seems to be hardcoded to zero in the PADRE source.). It's
-			still parsed by the PADRE output parser, but is not used anywhere.
-			In the same fashion the <literal>label="topic"</literal> attribute in the <literal>&lt;more_link&gt;</literal> tag seems a repetition since it's in a &lt;category&lt; tag
-			which already have a <literal>name="topic"</literal> attribute. It seemed unused in the Perl UI so it's not parsed by the Java UI (only the tag contents, the link URL, is).
-		</para>
-		
-		<para>
-			Moreover, a simple URL transformation is performed on the output for the <literal>&lt;more_link&gt;</literal> tags. The URL starts with a hardcoded path such as
-			<literal>/search/padre-sw.cgi</literal>. This is simply removed.
-		</para>
-	</chapter>
-	
-	<chapter xml:id="cgi-transforms">
-		<title>CGI Transforms</title>
-		
-		<section xml:id="cgi-transforms-overview">
-			<title>Overview</title>
-			<para>
-				CGI Transforms in the Perl UI allowed users to add/change/remove query string parameters/values depending of a configuration file (See the product doco for more details).
-				Re-implementing this behavior should be done at the top-level entry point in order to be transparent to the rest of the system. Ideally it should take place in a
-				<literal>ServletFilter</literal> or a Spring interceptor (but keeping in mind that it should be configurable per-collection).
-				Unfortunately the <literal>HttpServletRequest</literal> object from J2EE is immutable, meaning that we can't just add/change/remove Parameters by manipulating the request
-				(There is no <literal>setParameter()</literal> or <literal>removeParameter()</literal> in the <literal>HttpServletRequest</literal> class).
-			</para>
-			
-			<para>
-				Using <link xlink:href="http://code.google.com/p/urlrewritefilter">URLRewriteFilter</link> has been investigated but it doesn't deal properly with query string parameters
-				(See <link xlink:href="https://groups.google.com/d/topic/urlrewrite/oHcnjCVF_ss/discussion">here</link> and
-				<link xlink:href="https://groups.google.com/d/topic/urlrewrite/6jWgBh452P0/discussion">here</link>) probably because of the aforementioned difficulty.
-			</para>
-			
-			<para>
-				The chosen approach is to write a <literal><link xlink:href="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</link></literal>
-				that will override the methods related to getting request parameters to &quot;simulate&quot; the fact that some parameters have been altered. This seems to be the recommended way
-				of manipulating a request object.
-			</para>
-			
-			<para>This wrapper is used with a servlet Filter that wraps the original request in it if the target collection uses CGI Transforms.</para>
-		</section>
-		
-		<section xml:id="cgi-transforms-parsing">
-			<title>Parsing the <literal>cgi_transform.cfg</literal> file</title>
-			
-			<para>
-				Parsing the configuration file could be expensive and should'nt be done for each incoming request. Instead it's parsed just one time when loading the collection
-				configuration, transformed in an in-memory object representation, and never parsed again (unless the collection config is reloaded).
-			</para>
-			
-			<para>
-				The object representation is basically a <literal>TransformRule</literal> object containing a <literal>Criteria</literal> and a list of <literal>Operation</literal>s.
-				The parsing of each rule is done in a factory class, generating a list of <literal>TransformRule</literal> objects. Then, for each incoming request, the
-				<literal>Criteria</literal> is tested for a match against the request parameters, and if it matches the <literal>Operation</literal>s are applied one after each other.
-			</para>
-			
-			<para>
-				This approach makes implementing a new type of rule easy. All you'll need to do is:
-				<simplelist>
-					<member>Decide the syntax in the <literal>cgi_transform.cfg</literal></member>
-					<member>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</member>
-					<member>Code the new <literal>Operation</literal> to apply the parameter transformation</member>
-					<member>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</member>
-				</simplelist>
-			</para>
-		</section>
-	</chapter>
-	
-	<chapter xml:id="quicklinks">
-		<title>Quick Links</title>
-		
-		<para>
-			Nothing to fancy here: There is just an <literal>InputProcessor</literal> that reads the quick links configuration file and set the relevant query processor
-			options depending on the configuration. On the output side there is nothing to do (except having the quicklinks tags correctly parsed).
-		</para>
-	</chapter>
-	
-	<chapter xml:id="faceted-navigation">
-		<title>Faceted navigation</title>
-		
-		<section>
-			<title>Configuration</title>
-			
-			<section>
-				<title>Configuration file locations</title>
-				<para>
-					A collection can have multiple <literal>faceted_navigation.(cfg|xml)</literal> configuration files:
-					<simplelist>
-						<member>A global one in <literal>conf/faceted_navigation.cfg</literal></member>
-						<member>Per-profile ones in <literal>conf/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
-						<member>A global live one in <literal>data/&lt;collection&gt;live/idx/faceted_navigation.cfg</literal></member>
-						<member>Per-profile live ones in <literal>data/&lt;collection&gt;live/idx/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
-					</simplelist>
-					
-					The ones in <literal>conf/</literal> should only be used by the Admin UI. The Public UI should use the ones in <literal>live/</literal> to acquire
-					the faceted navigation settings.
-					However a specific parameter named <literal>faceted_navigation.config.location=(conf|live)</literal> can be set to override the default behavior.
-					That's why the Public UI has to load all these configuration files, and choose the right one at query time depending of the request parameters. 
-				</para>
-			</section>
-			
-			<section>
-				<title>Parsing the configuration file</title>
-				
-				<para>
-					In order to simplify the parsing code and to allow future extensions the <literal>faceted_navigation.cfg</literal> file is parsed using reflection: A Java class
-					has been created for each category type, matching the tag names (<literal>MetadataFieldFill.java, QueryItem.java, ...</literal>). An instance of the correct class
-					is instantiated each time a category time is found.
-				</para>
-				
-				<para>
-					In the same fashion, each &quot;extra&quot; property of some categories are set using reflection. Each category type as a default <literal>&lt;Data&gt;</literal>
-					property, but some category types have extra properties such as &quot;Query&quot; for <literal>QueryItem</literal> types, or &quot;Metafield&quot; for
-					<literal>XPathFill</literal>. When such a tag is encountered, the corresponding property is filled in the target category bean.
-					To avoid multiple <literal>if/else</literal> to find the correct setter to call for the target class, the property is blindly set using a Spring <literal>BeanWrapper</literal>. 
-				</para>
-				
-				<para>
-					With this model, adding a new category type should be simple: Just add the correct Category class with the relevant properties, and it will get parsed automatically.
-				</para>
-			</section>
-			
-			<section>
-				<title>Faceted navigation transform</title>
-				
-				<para>
-					This feature originally allows the user to define an arbitrary Perl script to run to transform the results of the faceted navigation. The content of the facets and
-					categories are passed to the script which is allowed to update the data model.
-				</para>
-				
-				<para>
-					This has been re-implemented as a Groovy script. To avoid the complexity of implementing an interface the script is an anonymous script to which a "facets" object is passed.
-					This object is a list of <literal>com.funnelback.publicui.search.model.transaction.Facet</literal>. The Groovy script can update the content and does not have to return anything.
-					An example of faceted navigation transform script could be:
-					<programlisting language="java">
+]]>        
+            </programlisting>
+            
+            In this example PADRE output, I couldn't see any use for the <literal>more="0"</literal> attribute (In fact it seems to be hardcoded to zero in the PADRE source.). It's
+            still parsed by the PADRE output parser, but is not used anywhere.
+            In the same fashion the <literal>label="topic"</literal> attribute in the <literal>&lt;more_link&gt;</literal> tag seems a repetition since it's in a &lt;category&lt; tag
+            which already have a <literal>name="topic"</literal> attribute. It seemed unused in the Perl UI so it's not parsed by the Java UI (only the tag contents, the link URL, is).
+        </para>
+        
+        <para>
+            Moreover, a simple URL transformation is performed on the output for the <literal>&lt;more_link&gt;</literal> tags. The URL starts with a hardcoded path such as
+            <literal>/search/padre-sw.cgi</literal>. This is simply removed.
+        </para>
+    </chapter>
+    
+    <chapter xml:id="cgi-transforms">
+        <title>CGI Transforms</title>
+        
+        <section xml:id="cgi-transforms-overview">
+            <title>Overview</title>
+            <para>
+                CGI Transforms in the Perl UI allowed users to add/change/remove query string parameters/values depending of a configuration file (See the product doco for more details).
+                Re-implementing this behavior should be done at the top-level entry point in order to be transparent to the rest of the system. Ideally it should take place in a
+                <literal>ServletFilter</literal> or a Spring interceptor (but keeping in mind that it should be configurable per-collection).
+                Unfortunately the <literal>HttpServletRequest</literal> object from J2EE is immutable, meaning that we can't just add/change/remove Parameters by manipulating the request
+                (There is no <literal>setParameter()</literal> or <literal>removeParameter()</literal> in the <literal>HttpServletRequest</literal> class).
+            </para>
+            
+            <para>
+                Using <link xlink:href="http://code.google.com/p/urlrewritefilter">URLRewriteFilter</link> has been investigated but it doesn't deal properly with query string parameters
+                (See <link xlink:href="https://groups.google.com/d/topic/urlrewrite/oHcnjCVF_ss/discussion">here</link> and
+                <link xlink:href="https://groups.google.com/d/topic/urlrewrite/6jWgBh452P0/discussion">here</link>) probably because of the aforementioned difficulty.
+            </para>
+            
+            <para>
+                The chosen approach is to write a <literal><link xlink:href="http://download.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequestWrapper.html">HttpServletRequestWrapper</link></literal>
+                that will override the methods related to getting request parameters to &quot;simulate&quot; the fact that some parameters have been altered. This seems to be the recommended way
+                of manipulating a request object.
+            </para>
+            
+            <para>This wrapper is used with a servlet Filter that wraps the original request in it if the target collection uses CGI Transforms.</para>
+        </section>
+        
+        <section xml:id="cgi-transforms-parsing">
+            <title>Parsing the <literal>cgi_transform.cfg</literal> file</title>
+            
+            <para>
+                Parsing the configuration file could be expensive and should'nt be done for each incoming request. Instead it's parsed just one time when loading the collection
+                configuration, transformed in an in-memory object representation, and never parsed again (unless the collection config is reloaded).
+            </para>
+            
+            <para>
+                The object representation is basically a <literal>TransformRule</literal> object containing a <literal>Criteria</literal> and a list of <literal>Operation</literal>s.
+                The parsing of each rule is done in a factory class, generating a list of <literal>TransformRule</literal> objects. Then, for each incoming request, the
+                <literal>Criteria</literal> is tested for a match against the request parameters, and if it matches the <literal>Operation</literal>s are applied one after each other.
+            </para>
+            
+            <para>
+                This approach makes implementing a new type of rule easy. All you'll need to do is:
+                <simplelist>
+                    <member>Decide the syntax in the <literal>cgi_transform.cfg</literal></member>
+                    <member>If needed, code the relevant <literal>Criteria</literal> to define how the rule is supposed to match</member>
+                    <member>Code the new <literal>Operation</literal> to apply the parameter transformation</member>
+                    <member>Update the parsing code to build the relevant <literal>Criteria</literal> and <literal>Operation</literal>s objects</member>
+                </simplelist>
+            </para>
+        </section>
+    </chapter>
+    
+    <chapter xml:id="quicklinks">
+        <title>Quick Links</title>
+        
+        <para>
+            Nothing to fancy here: There is just an <literal>InputProcessor</literal> that reads the quick links configuration file and set the relevant query processor
+            options depending on the configuration. On the output side there is nothing to do (except having the quicklinks tags correctly parsed).
+        </para>
+    </chapter>
+    
+    <chapter xml:id="faceted-navigation">
+        <title>Faceted navigation</title>
+        
+        <section>
+            <title>Configuration</title>
+            
+            <section>
+                <title>Configuration file locations</title>
+                <para>
+                    A collection can have multiple <literal>faceted_navigation.(cfg|xml)</literal> configuration files:
+                    <simplelist>
+                        <member>A global one in <literal>conf/faceted_navigation.cfg</literal></member>
+                        <member>Per-profile ones in <literal>conf/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
+                        <member>A global live one in <literal>data/&lt;collection&gt;live/idx/faceted_navigation.cfg</literal></member>
+                        <member>Per-profile live ones in <literal>data/&lt;collection&gt;live/idx/&lt;profile&gt;/faceted_navigation.cfg</literal></member>
+                    </simplelist>
+                    
+                    The ones in <literal>conf/</literal> should only be used by the Admin UI. The Public UI should use the ones in <literal>live/</literal> to acquire
+                    the faceted navigation settings.
+                    However a specific parameter named <literal>faceted_navigation.config.location=(conf|live)</literal> can be set to override the default behavior.
+                    That's why the Public UI has to load all these configuration files, and choose the right one at query time depending of the request parameters. 
+                </para>
+            </section>
+            
+            <section>
+                <title>Parsing the configuration file</title>
+                
+                <para>
+                    In order to simplify the parsing code and to allow future extensions the <literal>faceted_navigation.cfg</literal> file is parsed using reflection: A Java class
+                    has been created for each category type, matching the tag names (<literal>MetadataFieldFill.java, QueryItem.java, ...</literal>). An instance of the correct class
+                    is instantiated each time a category time is found.
+                </para>
+                
+                <para>
+                    In the same fashion, each &quot;extra&quot; property of some categories are set using reflection. Each category type as a default <literal>&lt;Data&gt;</literal>
+                    property, but some category types have extra properties such as &quot;Query&quot; for <literal>QueryItem</literal> types, or &quot;Metafield&quot; for
+                    <literal>XPathFill</literal>. When such a tag is encountered, the corresponding property is filled in the target category bean.
+                    To avoid multiple <literal>if/else</literal> to find the correct setter to call for the target class, the property is blindly set using a Spring <literal>BeanWrapper</literal>. 
+                </para>
+                
+                <para>
+                    With this model, adding a new category type should be simple: Just add the correct Category class with the relevant properties, and it will get parsed automatically.
+                </para>
+            </section>
+            
+            <section>
+                <title>Faceted navigation transform</title>
+                
+                <para>
+                    This feature originally allows the user to define an arbitrary Perl script to run to transform the results of the faceted navigation. The content of the facets and
+                    categories are passed to the script which is allowed to update the data model.
+                </para>
+                
+                <para>
+                    This has been re-implemented as a Groovy script. To avoid the complexity of implementing an interface the script is an anonymous script to which a "facets" object is passed.
+                    This object is a list of <literal>com.funnelback.publicui.search.model.transaction.Facet</literal>. The Groovy script can update the content and does not have to return anything.
+                    An example of faceted navigation transform script could be:
+                    <programlisting language="java">
 <![CDATA[import com.funnelback.publicui.search.model.transaction.*
 
 for (Facet f: facets) {
     f.name = f.name + " (Groovy)"
 }
-]]>					
-					</programlisting>
-				</para>
-			
-			</section>
-		</section>
-	</chapter>
-	
-	<chapter xml:id="hook-scripts">
-		<title>Query transforms / hook scripts</title>
-		
-		<para>
-			The Perl UI has the ability to use custom scripts for various purposes:
-			<simplelist>
-				<member>Query transforms: Update the query expression with an arbitrary Perl script (See the product doco for more details),</member>
-				<member>
-					Custom hook scripts: Since 10.1, a set of custom hook script can be defined per collection. This hook scripts will be called at various stages of the query lifecycle
-					(See Confluence for more information).
-				</member>
-			</simplelist>
-			
-			Since these two features are similar I chose to merge them in a single feature: Custom per-collection Groovy hook scripts.
-		</para>
-		
-		<para>
-			Each collection can define a set of hook scripts (For now only "pre data fetch" and "post data fetch"). Depending of the Public UI application configuration of the query
-			lifecycle, these hook scripts will get run.
-		</para>
-		
-		<para>
-			To add new hooks in the future, we'll have to:
-			<simplelist>
-				<member>Add a value to the <literal>com.funnelback.publicui.search.model.collection.Collection.Hook</literal> enum</member>
-				<member>Update <literal>com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner</literal> with relevant code for this hook (if needed)</member	>
-				<member>
-					Update the application configuration (<literal>applicationContext.xml</literal>) to instantiate any relevant <literal>GenericHookScriptRunner</literal>
-					on the correct phases.
-				</member>
-			</simplelist>
-			
-			<literal>GenericHookScriptRunner</literal> is a class that is able to run a given hook script, for a given phase (It implements <literal>InputProcessor</literal>, 
-			<literal>OutputProcessor</literal> and <literal>DataFetcher</literal> so it's possible to use it in any phase)
-		</para>
-		
-	</chapter>
+]]>                    
+                    </programlisting>
+                </para>
+            
+            </section>
+        </section>
+    </chapter>
+    
+    <chapter xml:id="hook-scripts">
+        <title>Query transforms / hook scripts</title>
+        
+        <para>
+            The Perl UI has the ability to use custom scripts for various purposes:
+            <simplelist>
+                <member>Query transforms: Update the query expression with an arbitrary Perl script (See the product doco for more details),</member>
+                <member>
+                    Custom hook scripts: Since 10.1, a set of custom hook script can be defined per collection. This hook scripts will be called at various stages of the query lifecycle
+                    (See Confluence for more information).
+                </member>
+            </simplelist>
+            
+            Since these two features are similar I chose to merge them in a single feature: Custom per-collection Groovy hook scripts.
+        </para>
+        
+        <para>
+            Each collection can define a set of hook scripts (For now only "pre data fetch" and "post data fetch"). Depending of the Public UI application configuration of the query
+            lifecycle, these hook scripts will get run.
+        </para>
+        
+        <para>
+            To add new hooks in the future, we'll have to:
+            <simplelist>
+                <member>Add a value to the <literal>com.funnelback.publicui.search.model.collection.Collection.Hook</literal> enum</member>
+                <member>Update <literal>com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner</literal> with relevant code for this hook (if needed)</member    >
+                <member>
+                    Update the application configuration (<literal>applicationContext.xml</literal>) to instantiate any relevant <literal>GenericHookScriptRunner</literal>
+                    on the correct phases.
+                </member>
+            </simplelist>
+            
+            <literal>GenericHookScriptRunner</literal> is a class that is able to run a given hook script, for a given phase (It implements <literal>InputProcessor</literal>, 
+            <literal>OutputProcessor</literal> and <literal>DataFetcher</literal> so it's possible to use it in any phase)
+        </para>
+        
+    </chapter>
 
-	<chapter xml:id="hostname-restriction">
-		<title>Hostname based access restriction</title>
-		
-		<para>
-			This undocumented feature allows the administrator to restrict access on collections based on the <literal>Host</literal> header of the HTTP request from
-			the client browser. If the requested collection is not authorized for the requested host, a default collection is substituted.
-		</para>
-		
-		<para>
-			This features uses the <literal>dns_aliases.cfg</literal> configuration file. This is a global configuration file residing in <envar>SEARCH_HOME</envar>/conf.
-			It has the following format:
-			<programlisting>
+    <chapter xml:id="hostname-restriction">
+        <title>Hostname based access restriction</title>
+        
+        <para>
+            This undocumented feature allows the administrator to restrict access on collections based on the <literal>Host</literal> header of the HTTP request from
+            the client browser. If the requested collection is not authorized for the requested host, a default collection is substituted.
+        </para>
+        
+        <para>
+            This features uses the <literal>dns_aliases.cfg</literal> configuration file. This is a global configuration file residing in <envar>SEARCH_HOME</envar>/conf.
+            It has the following format:
+            <programlisting>
 <![CDATA[# hostname=collection1,collection2,...
 # Ex:
 westpac.com.au=westpac,westpac-broker
 abc.com.au=abc-news,abc-shop]]>
-			</programlisting> 
-		</para>
-		
-		<para>
-			This feature has been re-implemented as a servlet filter. If the access is denied on the specified collection, the <literal>collection</literal> request parameter
-			is changed for a authorized collection (The first one in the list for this specific host name).
-		</para>
-	</chapter>
-	
-	<chapter xml:id="i18n">
-		<title>Internationalisation (Deprecated)</title>
-		
-		<section xml:id="i18n-overview">
-			<title>Overview</title>
-			<para>
-				!!! This has been deprecated in favor of standard Java resource files !!!
-			</para>
-			
-			<para>
-				The new UI supports localisation using the <link xlink:href="http://www.gnu.org/software/gettext/">GNU gettext</link> library. This solution has been chosen over a pure
-				Java (Spring) solution because:
-				<simplelist>
-					<member>It's cross language, meaning that we can re-use the same system to add i18n support to other components of Funnelback (PADRE ?)</member>
-					<member>It's using the default (en) translations as keys for the messages, preventing the use of crypting message keys in the code</member>
-				</simplelist>
-				
-				It's especially using the <link xlink:href="http://code.google.com/p/gettext-commons/">gettext-commons</link> Java implementation.			
-			</para>
-			
-			<para>
-				Translation files can be found under <literal>src/main/po</literal>. There is a <emphasis>POT</emphasis> master keys file, and a <emphasis>PO</emphasis> file per
-				language.
-			</para>
-		</section>
-		
-		<section xml:id="i18n-gettext">
-			<title>Using gettext</title>
-			
-			<para>
-				Using gettext is a three step process: Call the translation functions in your code, generate a key files from your source code, and generate translation from the
-				language files.
-			</para>
-			
-			<para>
-				The translation functions comes from the <link xlink:href="http://gettext-commons.googlecode.com/svn/apidocs/org/xnap/commons/i18n/I18n.html">I18n</link> class and are
-				pretty self-descriptive.
-			</para>
-			
-			<para>
-				Generating the key files is done automatically by an Ant task. This tasks parses all the Java source files and extract every call to the translation functions to
-				generate a files containing all the keys used in the application. This file has a <emphasis>POT</emphasis> extension and should never be edited by hand.
-				Following this process another Ant task is called to merge any new/updating key with the existing <emphasis>PO</emphasis> files (translated files). 
-			</para>
-			
-			<para>
-				At this point the translation is done by editing the <emphasis>PO</emphasis> files manually, or using a dedicated tool such as
-				<link xlink:href="http://www.poedit.net/">POEdit</link>.
-			</para>
-			
-			<para>
-				On the build step, two other Ant tasks are called:
-				<simplelist>
-					<member>The first one generate the default translations (en) using directly the keys files (As the keys are the english messages)</member>
-					<member>
-						The second one builds a set of Java classes, one for each language. This classes are copied to the application classes folder and embedded
-						in the application.
-					</member>
-				</simplelist>
-			</para>
-		</section>
-	</chapter>
-	
-	<chapter xml:id="cache-cgi">
-		<title>cache.cgi</title>
-		
-		<section xml:id="cache-cgi-overview">
-			<title>Overview</title>
-			
-			<para>
-				<literal>cache.cgi</literal> is in charge of serving the cached copy of a document from the collection.
-				It's accessed via the <emphasis>Cached copy</emphasis> or <emphasis>View as HTML</emphasis> links from the search results page.
-			</para>
-			
-			<para>
-				Features:
-				<simplelist>
-					<member>Needs <literal>collection</literal>, <literal>doc</literal>, <literal>url</literal> parameters</member>
-					<member>Is disablable via <literal>ui_cache_disabled</literal></member>
-					<member>Is disabled if DLS is used (Early or late binding), except for Novell collections</member>
-					<member>On Novell collections, mounts the fileshare first and unmount it in the end</member>
-					<member>Highlights the query terms in the cached document (if a referrer is available)), including query words within links</member>
-					<member>Can highlight PDF documents by generating an XML overlay file when <literal>filter.pdf.cache</literal> is set</member>
-					<member>For each highlighted term provide &quot;previous&quot; and &quot;next&quot; links to the navigate between highlighted terms</member>
-					<member>Can deal with different store types to find the document on disk (WARC, MirrorStore, FlatFileStore, Push, ...), and pick the filtered file for binary documents</member>
-					<member>Has a <literal>view_source</literal> parameter to see the document source</member>
-					<member>Strips <emphasis>refresh</emphasis> meta tags</member>
-					<member>Does XSL transformation for database collections, with a per-collection XSL template</member>
-					<member>Sets up a <literal>&lt;base href=&quot;...&quot; /&gt;</literal> to have all the page resources load correctly</member>
-					<member>Works with instant updates by looking up content in the secondary store</member>
-				</simplelist>
-			</para>
-			
-			<para>
-				<literal>cache.cgi</literal> needs to retrieve the document from the store using an identifier, primary key or URL. This identifier will
-				be different for each collection type:
-				
-				<simplelist>
-					<member>Web: The URL of the document.</member>
-					<member>Filecopy: The URL of the file.</member>
-					<member>Local: The URL of the file.</member>
-					<member>
-						Database: The primary key of the database record (usually a number).
-						Can be extracted from the <literal>record_id</literal> parameter of the record URL.
-					</member>
-					<member>Meta: N/A (No cached copies on meta collection, the store of the underlying component collection must be used).</member>
-					<member>
-						Trim: Pseudo-URL of the record or file, e.g. <literal>trim://45/225/225-0.html</literal>.
-						<emphasis>45</emphasis> will be the database ID, <emphasis>225</emphasis> the record ID, and <emphasis>225-0.html</emphasis>
-						the name of the attachement (if any).
-					</member>
-					<member>Trimpush: Pseudo-URL of the record or file, e.g. <literal>trim://45/1355/file.doc</literal>.</member>
-					<member>Connector: The URL of the item, as returned by the EntropySoft connector.</member>
-					<member>
-						Directory: CN to the LDAP entry.
-						Can be extracted from the <literal>record_id</literal> parameter of the record URL.
-					</member>
-					<member>Push: URL of the document.</member>
-					<member>Matrix: URL of the document.</member>
-				</simplelist>
-			</para>
-		</section>
-		
-		<section xml:id="cache-cgi-implementation">
-			<title>Implementation</title>
-		
-			<para>
-				Some features are not really used anymore and will be dropped:
-				<simplelist>
-					<member>Specific case of Novell collections: We'll just disable cached copy when DLS is enabled, regardless of the collection type</member>
-					<member>PDF highlighting seems unused and in fact doesn't seem to work at all</member>
-				</simplelist>
-				
-				Some feature might be re-implemented in a better way:
-				<simplelist>
-					<member>Query highlighting could be done in Javascript instead of server-side (<link xlink:href="https://jira.funnelback.com/browse/FUN-5058">FUN-5058</link>)</member>
-				</simplelist>
-			</para>
-			
-			<para>
-				Ideally we'd like to provide some way for users to customise the output as it has been requested multiple times. The best way to do so
-				is probably to have a controller build the data, then pass it to a FreeMarker template. We can ship a default template and let users use
-				a customised one from the collection configuration files.
-			</para>
-			
-		</section>
-		
-	</chapter>
-	
-	<chapter xml:id="serve-x-document">
-		<title>Serving documents (Filecopy, DB, ...)</title>
-		
-		<section xml:id="serve-filecopy-document">
-			<title>Filecopy</title>
-			
-			<para>
-				Filecopy documents are served by <literal>serve-filecopy-document.tcgi</literal>. It has 2 modes of operation:
-				<simplelist>
-					<member>
-						Retrieve the file using the Filecopier program, when no DLS is in use. In this mode the file is retrieved using the credentials
-						used during the crawl, as configured in <literal>collection.cfg</literal>.
-					</member>
-					<member>
-						Retrieve the file by trying to open it directly, when DLS is enabled. This assumes that the process that opens the file
-						is impersonating the search user, thus enforcing the user permissions.
-					</member>
-				</simplelist>
-				
-				In the first mode the file is retrieved by Filecopier and stored in a temporary file under <literal>SEARCH_HOME/log/filecopy-extract-&lt;pid&gt;.output"</literal>,
-				<literal>pid</literal> being the process ID of Perl when it runs this CGI. In the second mode the file is read in memory then streamed to the
-				user browser.
-			</para>
-			
-			<para>The URI of the file to serve is passed in the <literal>uri</literal> parameter.	</para>
-			
-			<para>
-				Other features:
-				<simplelist>
-					<member>
-						The script sets a <literal>Content-Disposition</literal> header with the actual file name, extracted from the
-						<literal>uri</literal> parameter (Last part of the URL). This header can be disabled using the <literal>noattachment</literal>
-						parameter. This is especially used in the Selenium tests where we want the file content to be shown on the browser. When
+            </programlisting> 
+        </para>
+        
+        <para>
+            This feature has been re-implemented as a servlet filter. If the access is denied on the specified collection, the <literal>collection</literal> request parameter
+            is changed for a authorized collection (The first one in the list for this specific host name).
+        </para>
+    </chapter>
+    
+    <chapter xml:id="i18n">
+        <title>Internationalisation (Deprecated)</title>
+        
+        <section xml:id="i18n-overview">
+            <title>Overview</title>
+            <para>
+                !!! This has been deprecated in favor of standard Java resource files !!!
+            </para>
+            
+            <para>
+                The new UI supports localisation using the <link xlink:href="http://www.gnu.org/software/gettext/">GNU gettext</link> library. This solution has been chosen over a pure
+                Java (Spring) solution because:
+                <simplelist>
+                    <member>It's cross language, meaning that we can re-use the same system to add i18n support to other components of Funnelback (PADRE ?)</member>
+                    <member>It's using the default (en) translations as keys for the messages, preventing the use of crypting message keys in the code</member>
+                </simplelist>
+                
+                It's especially using the <link xlink:href="http://code.google.com/p/gettext-commons/">gettext-commons</link> Java implementation.            
+            </para>
+            
+            <para>
+                Translation files can be found under <literal>src/main/po</literal>. There is a <emphasis>POT</emphasis> master keys file, and a <emphasis>PO</emphasis> file per
+                language.
+            </para>
+        </section>
+        
+        <section xml:id="i18n-gettext">
+            <title>Using gettext</title>
+            
+            <para>
+                Using gettext is a three step process: Call the translation functions in your code, generate a key files from your source code, and generate translation from the
+                language files.
+            </para>
+            
+            <para>
+                The translation functions comes from the <link xlink:href="http://gettext-commons.googlecode.com/svn/apidocs/org/xnap/commons/i18n/I18n.html">I18n</link> class and are
+                pretty self-descriptive.
+            </para>
+            
+            <para>
+                Generating the key files is done automatically by an Ant task. This tasks parses all the Java source files and extract every call to the translation functions to
+                generate a files containing all the keys used in the application. This file has a <emphasis>POT</emphasis> extension and should never be edited by hand.
+                Following this process another Ant task is called to merge any new/updating key with the existing <emphasis>PO</emphasis> files (translated files). 
+            </para>
+            
+            <para>
+                At this point the translation is done by editing the <emphasis>PO</emphasis> files manually, or using a dedicated tool such as
+                <link xlink:href="http://www.poedit.net/">POEdit</link>.
+            </para>
+            
+            <para>
+                On the build step, two other Ant tasks are called:
+                <simplelist>
+                    <member>The first one generate the default translations (en) using directly the keys files (As the keys are the english messages)</member>
+                    <member>
+                        The second one builds a set of Java classes, one for each language. This classes are copied to the application classes folder and embedded
+                        in the application.
+                    </member>
+                </simplelist>
+            </para>
+        </section>
+    </chapter>
+    
+    <chapter xml:id="cache-cgi">
+        <title>cache.cgi</title>
+        
+        <section xml:id="cache-cgi-overview">
+            <title>Overview</title>
+            
+            <para>
+                <literal>cache.cgi</literal> is in charge of serving the cached copy of a document from the collection.
+                It's accessed via the <emphasis>Cached copy</emphasis> or <emphasis>View as HTML</emphasis> links from the search results page.
+            </para>
+            
+            <para>
+                Features:
+                <simplelist>
+                    <member>Needs <literal>collection</literal>, <literal>doc</literal>, <literal>url</literal> parameters</member>
+                    <member>Is disablable via <literal>ui_cache_disabled</literal></member>
+                    <member>Is disabled if DLS is used (Early or late binding), except for Novell collections</member>
+                    <member>On Novell collections, mounts the fileshare first and unmount it in the end</member>
+                    <member>Highlights the query terms in the cached document (if a referrer is available)), including query words within links</member>
+                    <member>Can highlight PDF documents by generating an XML overlay file when <literal>filter.pdf.cache</literal> is set</member>
+                    <member>For each highlighted term provide &quot;previous&quot; and &quot;next&quot; links to the navigate between highlighted terms</member>
+                    <member>Can deal with different store types to find the document on disk (WARC, MirrorStore, FlatFileStore, Push, ...), and pick the filtered file for binary documents</member>
+                    <member>Has a <literal>view_source</literal> parameter to see the document source</member>
+                    <member>Strips <emphasis>refresh</emphasis> meta tags</member>
+                    <member>Does XSL transformation for database collections, with a per-collection XSL template</member>
+                    <member>Sets up a <literal>&lt;base href=&quot;...&quot; /&gt;</literal> to have all the page resources load correctly</member>
+                    <member>Works with instant updates by looking up content in the secondary store</member>
+                </simplelist>
+            </para>
+            
+            <para>
+                <literal>cache.cgi</literal> needs to retrieve the document from the store using an identifier, primary key or URL. This identifier will
+                be different for each collection type:
+                
+                <simplelist>
+                    <member>Web: The URL of the document.</member>
+                    <member>Filecopy: The URL of the file.</member>
+                    <member>Local: The URL of the file.</member>
+                    <member>
+                        Database: The primary key of the database record (usually a number).
+                        Can be extracted from the <literal>record_id</literal> parameter of the record URL.
+                    </member>
+                    <member>Meta: N/A (No cached copies on meta collection, the store of the underlying component collection must be used).</member>
+                    <member>
+                        Trim: Pseudo-URL of the record or file, e.g. <literal>trim://45/225/225-0.html</literal>.
+                        <emphasis>45</emphasis> will be the database ID, <emphasis>225</emphasis> the record ID, and <emphasis>225-0.html</emphasis>
+                        the name of the attachement (if any).
+                    </member>
+                    <member>Trimpush: Pseudo-URL of the record or file, e.g. <literal>trim://45/1355/file.doc</literal>.</member>
+                    <member>Connector: The URL of the item, as returned by the EntropySoft connector.</member>
+                    <member>
+                        Directory: CN to the LDAP entry.
+                        Can be extracted from the <literal>record_id</literal> parameter of the record URL.
+                    </member>
+                    <member>Push: URL of the document.</member>
+                    <member>Matrix: URL of the document.</member>
+                </simplelist>
+            </para>
+        </section>
+        
+        <section xml:id="cache-cgi-implementation">
+            <title>Implementation</title>
+        
+            <para>
+                Some features are not really used anymore and will be dropped:
+                <simplelist>
+                    <member>Specific case of Novell collections: We'll just disable cached copy when DLS is enabled, regardless of the collection type</member>
+                    <member>PDF highlighting seems unused and in fact doesn't seem to work at all</member>
+                </simplelist>
+                
+                Some feature might be re-implemented in a better way:
+                <simplelist>
+                    <member>Query highlighting could be done in Javascript instead of server-side (<link xlink:href="https://jira.funnelback.com/browse/FUN-5058">FUN-5058</link>)</member>
+                </simplelist>
+            </para>
+            
+            <para>
+                Ideally we'd like to provide some way for users to customise the output as it has been requested multiple times. The best way to do so
+                is probably to have a controller build the data, then pass it to a FreeMarker template. We can ship a default template and let users use
+                a customised one from the collection configuration files.
+            </para>
+            
+        </section>
+        
+    </chapter>
+    
+    <chapter xml:id="serve-x-document">
+        <title>Serving documents (Filecopy, DB, ...)</title>
+        
+        <section xml:id="serve-filecopy-document">
+            <title>Filecopy</title>
+            
+            <para>
+                Filecopy documents are served by <literal>serve-filecopy-document.tcgi</literal>. It has 2 modes of operation:
+                <simplelist>
+                    <member>
+                        Retrieve the file using the Filecopier program, when no DLS is in use. In this mode the file is retrieved using the credentials
+                        used during the crawl, as configured in <literal>collection.cfg</literal>.
+                    </member>
+                    <member>
+                        Retrieve the file by trying to open it directly, when DLS is enabled. This assumes that the process that opens the file
+                        is impersonating the search user, thus enforcing the user permissions.
+                    </member>
+                </simplelist>
+                
+                In the first mode the file is retrieved by Filecopier and stored in a temporary file under <literal>SEARCH_HOME/log/filecopy-extract-&lt;pid&gt;.output"</literal>,
+                <literal>pid</literal> being the process ID of Perl when it runs this CGI. In the second mode the file is read in memory then streamed to the
+                user browser.
+            </para>
+            
+            <para>The URI of the file to serve is passed in the <literal>uri</literal> parameter.    </para>
+            
+            <para>
+                Other features:
+                <simplelist>
+                    <member>
+                        The script sets a <literal>Content-Disposition</literal> header with the actual file name, extracted from the
+                        <literal>uri</literal> parameter (Last part of the URL). This header can be disabled using the <literal>noattachment</literal>
+                        parameter. This is especially used in the Selenium tests where we want the file content to be shown on the browser. When
                         <literal>noattachment</literal> is specified, only the first 2KB of the content are returned if the filetype is
                         <literal>doc</literal> or <literal>pdf</literal>, presumably to avoid loading too much data in the Selenium browser.
-					</member>
-					<member>
-						If the file type is <literal>html</literal> then the content is displayed directly in the browser
-						(no <literal>Content-Disposition</literal> header).
-					</member>
-					<member>
-						Takes a <literal>nounlink</literal> parameter, used for debugging purposes to prevent the script from deleting the temporary
-						<literal>filecopy-extract-&lt;pid&gt;.output</literal> file.
-					</member>
-					<member>On Novell collections, mounts the fileshare first and unmount it in the end.</member>
-				</simplelist>
-				
-				There are also some gotchas on Windows:
-				<simplelist>
-					<member>
-						Dealing with non ascii filenames is a problem and needs to be properly tested. Perl was unable to <literal>open()</literal>
-						a file with non-ascii characters, so we had to use a native Win32 function instead <literal>CreateFileW()</literal>
-					</member>
-					<member>
-						Dealing with paths longer than 255 characters is also a problem. The path must be
-						<link  xlink:href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx">prefixed with a specific expression</link> to
-						allow Windows to access the file. The prefix is different if it's a local file (<literal>\\?\C:\...</literal>) or a UNC one
-						(<literal>\\?\UNC\\server\...</literal>).
-					</member>
-					<member>
-						In the mode where the file is fetched with Filecopy having non-ascii characters in the URL might also be a problem as it's
-						passed down as a CLI argument to filecopier. For now the URL is Base64 encoded to avoid any issues.
-					</member>
-				</simplelist>
-			</para>
-		</section>
-		
-		<section xml:id="serve-filecopy-document-implementation">
-			<title>Implementation notes</title>
-			
-			<para>
-				For the impersonation to work the actual file access would have to happen on the native side, not in Java, probably using
-				<literal>CreateFileW()</literal> as in Perl. Another native function that might be useful is
-				<link xlink:href="http://msdn.microsoft.com/en-us/library/aa385482(v=vs.85).aspx"><literal>WNetUseConnection()</literal></link>
-				in case the connection needs to be established (equivalent of mounting the share) before acessing the remote resource.
-			</para>
-			
-			<para>
-				For the Filecopy fetch mode we could use directly the Filecopy classes to fetch the document, however that would drag along
-				lots of dependencies. For that reason we should consider keeping the actual way of forking a new process.
-			</para>
-			
-		</section>
-	</chapter>
+                    </member>
+                    <member>
+                        If the file type is <literal>html</literal> then the content is displayed directly in the browser
+                        (no <literal>Content-Disposition</literal> header).
+                    </member>
+                    <member>
+                        Takes a <literal>nounlink</literal> parameter, used for debugging purposes to prevent the script from deleting the temporary
+                        <literal>filecopy-extract-&lt;pid&gt;.output</literal> file.
+                    </member>
+                    <member>On Novell collections, mounts the fileshare first and unmount it in the end.</member>
+                </simplelist>
+                
+                There are also some gotchas on Windows:
+                <simplelist>
+                    <member>
+                        Dealing with non ascii filenames is a problem and needs to be properly tested. Perl was unable to <literal>open()</literal>
+                        a file with non-ascii characters, so we had to use a native Win32 function instead <literal>CreateFileW()</literal>
+                    </member>
+                    <member>
+                        Dealing with paths longer than 255 characters is also a problem. The path must be
+                        <link  xlink:href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx">prefixed with a specific expression</link> to
+                        allow Windows to access the file. The prefix is different if it's a local file (<literal>\\?\C:\...</literal>) or a UNC one
+                        (<literal>\\?\UNC\\server\...</literal>).
+                    </member>
+                    <member>
+                        In the mode where the file is fetched with Filecopy having non-ascii characters in the URL might also be a problem as it's
+                        passed down as a CLI argument to filecopier. For now the URL is Base64 encoded to avoid any issues.
+                    </member>
+                </simplelist>
+            </para>
+        </section>
+        
+        <section xml:id="serve-filecopy-document-implementation">
+            <title>Implementation notes</title>
+            
+            <para>
+                For the impersonation to work the actual file access would have to happen on the native side, not in Java, probably using
+                <literal>CreateFileW()</literal> as in Perl. Another native function that might be useful is
+                <link xlink:href="http://msdn.microsoft.com/en-us/library/aa385482(v=vs.85).aspx"><literal>WNetUseConnection()</literal></link>
+                in case the connection needs to be established (equivalent of mounting the share) before acessing the remote resource.
+            </para>
+            
+            <para>
+                For the Filecopy fetch mode we could use directly the Filecopy classes to fetch the document, however that would drag along
+                lots of dependencies. For that reason we should consider keeping the actual way of forking a new process.
+            </para>
+            
+        </section>
+    </chapter>
 
 </part>

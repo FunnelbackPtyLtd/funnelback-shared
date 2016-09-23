@@ -3,24 +3,24 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 
-				http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
-	<import resource="/spring/freemarker.xml"/>
-	<import resource="/spring/search-lifecycle.xml"/>
-	
-	<context:component-scan base-package="com.funnelback.springmvc.service.resource,com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender,com.funnelback.publicui.accessibilityauditor" />
-	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+    <import resource="/spring/freemarker.xml"/>
+    <import resource="/spring/search-lifecycle.xml"/>
+    
+    <context:component-scan base-package="com.funnelback.springmvc.service.resource,com.funnelback.publicui.security,com.funnelback.springmvc.api.config.security,com.funnelback.springmvc.service,com.funnelback.springmvc.utils,com.funnelback.publicui.search.web,com.funnelback.publicui.search.lifecycle,com.funnelback.publicui.recommender.web.controllers,com.funnelback.publicui.recommender,com.funnelback.publicui.accessibilityauditor" />
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 
-	<bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
-	
-	<bean name="recommenderJsonView"
-		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+    <bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+    
+    <bean name="recommenderJsonView"
+        class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
         <property name="renderedAttributes" value="RecommendationResponse" />
-	</bean>
+    </bean>
 
-	<mvc:interceptors>
+    <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/*" />
             <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
@@ -40,134 +40,134 @@
             <bean class="com.funnelback.publicui.search.web.interceptors.FreeMarkerParseExceptionInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
-			<mvc:mapping path="/search.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/**"/>
-			<!-- Always allow click tracking logging (provides the user no info anyway) -->
-        	<mvc:exclude-mapping path="/log"/>
-        	<mvc:exclude-mapping path="/redirect"/>
-        	<!-- Search session related ones - Only gives users their own info -->
-        	<mvc:exclude-mapping path="/cart.json"/>
-        	<mvc:exclude-mapping path="/cart-process.html"/>
-        	<mvc:exclude-mapping path="/search-history.json"/>
-        	<mvc:exclude-mapping path="/click-history.json"/>
-			<bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
- 			<mvc:mapping path="/cache" />
-			<mvc:mapping path="/cache.*" />
+            <mvc:mapping path="/search.*" />
+            <bean class="com.funnelback.publicui.search.web.interceptors.SearchLogInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <!-- Always allow click tracking logging (provides the user no info anyway) -->
+            <mvc:exclude-mapping path="/log"/>
+            <mvc:exclude-mapping path="/redirect"/>
+            <!-- Search session related ones - Only gives users their own info -->
+            <mvc:exclude-mapping path="/cart.json"/>
+            <mvc:exclude-mapping path="/cart-process.html"/>
+            <mvc:exclude-mapping path="/search-history.json"/>
+            <mvc:exclude-mapping path="/click-history.json"/>
+            <bean class="com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+             <mvc:mapping path="/cache" />
+            <mvc:mapping path="/cache.*" />
             <mvc:mapping path="/anchors.*" />
             <mvc:mapping path="/content-optimiser.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
-		</mvc:interceptor>
+            <bean class="com.funnelback.publicui.search.web.interceptors.DenyIfDlsIsOnInterceptor" />
+        </mvc:interceptor>
 
-		<mvc:interceptor>
-			<mvc:mapping path="#{T(com.funnelback.publicui.search.web.controllers.ContentOptimiserController).REQUEST_MAPPING_MATCHER}"/>
-			<bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/content-auditor.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/accessibility-auditor.*" />
-			<bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor" />
-		</mvc:interceptor>
         <mvc:interceptor>
-      			<mvc:mapping path="/recommender/*.html" />
-      			<bean class="com.funnelback.publicui.recommender.interceptors.DevRecommenderInterceptor" />
-      	</mvc:interceptor>
-	</mvc:interceptors>
+            <mvc:mapping path="#{T(com.funnelback.publicui.search.web.controllers.ContentOptimiserController).REQUEST_MAPPING_MATCHER}"/>
+            <bean class="com.funnelback.publicui.search.web.interceptors.ContentOptimiserRestrictionInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/content-auditor.*" />
+            <bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/accessibility-auditor.*" />
+            <bean class="com.funnelback.publicui.search.web.interceptors.AdminPortOnlyRestrictionInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+                  <mvc:mapping path="/recommender/*.html" />
+                  <bean class="com.funnelback.publicui.recommender.interceptors.DevRecommenderInterceptor" />
+          </mvc:interceptor>
+    </mvc:interceptors>
 
-	<bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
-		<property name="encoding" value="UTF-8" />
-		<property name="autodetectAnnotations" value="true" />
-	</bean>
+    <bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
+        <property name="encoding" value="UTF-8" />
+        <property name="autodetectAnnotations" value="true" />
+    </bean>
 
-	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-		<property name="favorPathExtension" value="true" />
-		<property name="ignoreAcceptHeader" value="true" />
-		<property name="defaultContentType" value="text/html" />
-		<property name="mediaTypes">
-			<props>
-				<prop key="xml">application/xml</prop>
-				<prop key="json">application/json</prop>
-				<prop key="classic">text/xml-classic</prop>
-			</props>
-		</property>
-	</bean>
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="true" />
+        <property name="ignoreAcceptHeader" value="true" />
+        <property name="defaultContentType" value="text/html" />
+        <property name="mediaTypes">
+            <props>
+                <prop key="xml">application/xml</prop>
+                <prop key="json">application/json</prop>
+                <prop key="classic">text/xml-classic</prop>
+            </props>
+        </property>
+    </bean>
 
-	<bean id="fallbackFreemarkerViewResolver" class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
-		<constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
-		<constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
-		
-		<property name="cache" value="true" />
-		<property name="cacheUnresolved" value="false" />
-		<property name="prefix" value="" />
-		<property name="suffix" value=".ftl" />
-		<property name="contentType" value="text/html;charset=UTF-8" />
-		<property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
-	</bean>
-	
-	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="contentNegotiationManager" ref="contentNegotiationManager" />
-		<property name="viewResolvers">
-			<list>
-				<ref bean="fallbackFreemarkerViewResolver" />
-			</list>
-		</property>
-		<property name="defaultViews">
-			<list>
-				<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-					<property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
-					<property name="objectMapper" ref="jackson2ObjectMapper" />
-				</bean>
+    <bean id="fallbackFreemarkerViewResolver" class="com.funnelback.publicui.search.web.views.freemarker.FallbackFreeMarkerViewResolver">
+        <constructor-arg name="fallbackViewUrl"><value>web/templates/modernui/form-not-found</value></constructor-arg>
+        <constructor-arg name="defaultSuffix"><value>.default</value></constructor-arg>
+        
+        <property name="cache" value="true" />
+        <property name="cacheUnresolved" value="false" />
+        <property name="prefix" value="" />
+        <property name="suffix" value=".ftl" />
+        <property name="contentType" value="text/html;charset=UTF-8" />
+        <property name="viewClass" value="com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView" />
+    </bean>
+    
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="contentNegotiationManager" />
+        <property name="viewResolvers">
+            <list>
+                <ref bean="fallbackFreemarkerViewResolver" />
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
+                    <property name="objectMapper" ref="jackson2ObjectMapper" />
+                </bean>
 
-				<bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
-					<constructor-arg ref="xmlMarshaller" />
-					<property name="contentType" value="application/xml;charset=UTF-8" />
-					<property name="modelKey"
-						value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchTransaction.toString()}" />
-				</bean>
+                <bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <constructor-arg ref="xmlMarshaller" />
+                    <property name="contentType" value="application/xml;charset=UTF-8" />
+                    <property name="modelKey"
+                        value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchTransaction.toString()}" />
+                </bean>
 
-				<bean id="classicView" class="com.funnelback.publicui.search.web.views.XSLTXStreamView">
-					<constructor-arg value="classpath:funnelback-classic.xsl" />
-					<property name="modelKey" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchTransaction.toString()}" />
-					<property name="marshaller" ref="xmlMarshaller" />
-					<property name="cacheXslt" value="true" />
-					<property name="contentType" value="text/xml-classic" />
-				</bean>
+                <bean id="classicView" class="com.funnelback.publicui.search.web.views.XSLTXStreamView">
+                    <constructor-arg value="classpath:funnelback-classic.xsl" />
+                    <property name="modelKey" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).SearchTransaction.toString()}" />
+                    <property name="marshaller" ref="xmlMarshaller" />
+                    <property name="cacheXslt" value="true" />
+                    <property name="contentType" value="text/xml-classic" />
+                </bean>
 
-			</list>
-		</property>
-	</bean>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <bean id="jackson2ObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 
-	<bean
-	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject" ref="jackson2ObjectMapper" />
-	    <property name="targetMethod" value="disable" />
-	    <property name="arguments" value="FAIL_ON_EMPTY_BEANS" />
-	</bean>	
+    <bean
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="jackson2ObjectMapper" />
+        <property name="targetMethod" value="disable" />
+        <property name="arguments" value="FAIL_ON_EMPTY_BEANS" />
+    </bean>    
 
-	<bean
-	    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject" ref="jackson2ObjectMapper" />
-	    <property name="targetMethod" value="setSerializationInclusion" />
-	    <property name="arguments">
-	        <list>
-	            <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">#{ appProperties['json.inclusion'] }</value>
-	        </list>
-	    </property>
-	</bean>	
-	
-	<bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />	
-			
-	<mvc:resources mapping="/content-optimiser/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-optimiser')}, /content-optimiser/" />
-	<mvc:resources mapping="/content-auditor/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-auditor')}, /content-auditor/" />
-	<mvc:resources mapping="#{T(com.funnelback.publicui.search.web.controllers.SearchController).GLOBAL_RESOURCES_MAPPING}" location="file:#{globalFunnelbackConfig.value('dev.resources.resourcesfb')}, /resources-global/" />
-		
+    <bean
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="jackson2ObjectMapper" />
+        <property name="targetMethod" value="setSerializationInclusion" />
+        <property name="arguments">
+            <list>
+                <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">#{ appProperties['json.inclusion'] }</value>
+            </list>
+        </property>
+    </bean>    
+    
+    <bean class="com.funnelback.publicui.xml.padre.StaxStreamParser" />    
+            
+    <mvc:resources mapping="/content-optimiser/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-optimiser')}, /content-optimiser/" />
+    <mvc:resources mapping="/content-auditor/**" location="file:#{globalFunnelbackConfig.value('dev.resources.content-auditor')}, /content-auditor/" />
+    <mvc:resources mapping="#{T(com.funnelback.publicui.search.web.controllers.SearchController).GLOBAL_RESOURCES_MAPPING}" location="file:#{globalFunnelbackConfig.value('dev.resources.resourcesfb')}, /resources-global/" />
+        
 </beans>

@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xml:id="engine-json-template" xmlns:xi="http://www.w3.org/2001/XInclude" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xlink="http://www.w3.org/TR/xlink"
-	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
-	<title>json-template</title>
+    xml:id="engine-json-template" xmlns:xi="http://www.w3.org/2001/XInclude" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/TR/xlink"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+    <title>json-template</title>
 
-	<section>
-		<title>Description</title>
+    <section>
+        <title>Description</title>
 
-		<para>
-			json-template is a Javascript logic-less template engine. It's very similar to <ulink url="http://mustache.github.com/">Mustache</ulink>
-			but with some interesting extensions:
-			<itemizedlist>
-				<listitem>
-					<para>
-						It provides <emphasis>formatters</emphasis> to format the data, using a pipe character to specify them (Ex:
-						<code>{title|boldicize}</code> or <code>{fileType|uppercase}</code>), as well as <emphasis>predicates</emphasis> to do basic
-						if/then/else statements:
-						<programlisting language="html"><![CDATA[{.section results}
+        <para>
+            json-template is a Javascript logic-less template engine. It's very similar to <ulink url="http://mustache.github.com/">Mustache</ulink>
+            but with some interesting extensions:
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        It provides <emphasis>formatters</emphasis> to format the data, using a pipe character to specify them (Ex:
+                        <code>{title|boldicize}</code> or <code>{fileType|uppercase}</code>), as well as <emphasis>predicates</emphasis> to do basic
+                        if/then/else statements:
+                        <programlisting language="html"><![CDATA[{.section results}
   {.plural?}
     Many results
   {.or}
     One result
   {.end}
 {.end}]]></programlisting>
-					</para>
-				</listitem>
-				<listitem>
-					<para>Both formatters and predicates are easy to extend using Javascript.</para>
-				</listitem>
-			</itemizedlist>
-		</para>
-		
-		<para>
-			It's developed by individuals with no company behind them. The latest release was from Nov. 2009 but there is a regain
-			in activity since March 2011. The Google group has a bit of activity and the lead developer is well present.
-		</para>
-	
-		<para>
-			Pros:
-			<simplelist>
-				<member>
-					Because it's a logic-less template engine it makes writing the template very easy. I think it's the one with which porting
-					the simple form has been the quickest (Excluding writing functions to deal with the logic). It has to do with it being
-					logic-less but also because it a bit more richer than Mustache which doesn't provide formatters or predicates.
-				</member>
-				<member>Templates are easy to read.</member>
-			</simplelist>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Both formatters and predicates are easy to extend using Javascript.</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        
+        <para>
+            It's developed by individuals with no company behind them. The latest release was from Nov. 2009 but there is a regain
+            in activity since March 2011. The Google group has a bit of activity and the lead developer is well present.
+        </para>
+    
+        <para>
+            Pros:
+            <simplelist>
+                <member>
+                    Because it's a logic-less template engine it makes writing the template very easy. I think it's the one with which porting
+                    the simple form has been the quickest (Excluding writing functions to deal with the logic). It has to do with it being
+                    logic-less but also because it a bit more richer than Mustache which doesn't provide formatters or predicates.
+                </member>
+                <member>Templates are easy to read.</member>
+            </simplelist>
 
-			Cons:
-			<simplelist>
-				<member>
-					Like very logic-less template engine we'll need to provide an extension layer to reproduce the logic currently contained in NickScript.
-					However it could be easier than with other logic-less engine as it already provide a framework for formatters and predicates.
-				</member>
-			</simplelist>
-		</para>
-	
-	</section>
-		
-	<section>
-		<title>Sample template</title>
-		<para>
-			<programlisting language="html"><xi:include href="template.html" parse="text" /></programlisting>
-		</para>
-	</section>
+            Cons:
+            <simplelist>
+                <member>
+                    Like very logic-less template engine we'll need to provide an extension layer to reproduce the logic currently contained in NickScript.
+                    However it could be easier than with other logic-less engine as it already provide a framework for formatters and predicates.
+                </member>
+            </simplelist>
+        </para>
+    
+    </section>
+        
+    <section>
+        <title>Sample template</title>
+        <para>
+            <programlisting language="html"><xi:include href="template.html" parse="text" /></programlisting>
+        </para>
+    </section>
 
 </chapter>

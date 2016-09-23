@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app metadata-complete="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
-	
-	<display-name>Funnelback Public UI</display-name>
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID" version="2.5">
+    
+    <display-name>Funnelback Public UI</display-name>
 
-	<!-- begin SPRING setup -->
-	<context-param>
-		<param-name>webAppRootKey</param-name>
-		<param-value>publicui.root</param-value>
-	</context-param>
+    <!-- begin SPRING setup -->
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>publicui.root</param-value>
+    </context-param>
 
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext.xml</param-value>
-	</context-param>
-	
-	<context-param>
-		<param-name>log4jConfiguration</param-name>
-		<param-value>file://${sys:funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
-	</context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>file://${sys:funnelback.installdir}/web/conf/modernui/log4j2.xml</param-value>
+    </context-param>
 
-	<listener>
+    <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
     
-	<servlet>
-		<servlet-name>publicui</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>publicui</servlet-name>
+    <servlet>
+        <servlet-name>publicui</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>publicui</servlet-name>
         <url-pattern>/*</url-pattern>
-	</servlet-mapping>
-	
-		<!-- Spring Security -->
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy
-		</filter-class>
-	</filter>
+    </servlet-mapping>
+    
+        <!-- Spring Security -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
  
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-	<!-- end SPRING setup -->
-	
-	 <filter>
+    <!-- end SPRING setup -->
+    
+     <filter>
         <filter-name>log4jServletFilter</filter-name>
         <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
     </filter>
@@ -68,109 +68,109 @@
        <dispatcher>ERROR</dispatcher>
    </filter-mapping>
     
-	<filter>
-		<filter-name>encodingFilter</filter-name>
-    	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    	<init-param>
-	        <param-name>encoding</param-name>
-        	<param-value>UTF-8</param-value>
-    	</init-param>
-    	<init-param>
-        	<param-name>forceEncoding</param-name>
-        	<param-value>true</param-value>
-    	</init-param>
-   	</filter>
-	<filter-mapping>
-	   <filter-name>encodingFilter</filter-name>
-	   <servlet-name>publicui</servlet-name>
-	</filter-mapping>	
-	<!-- end SPRING setup -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+       </filter>
+    <filter-mapping>
+       <filter-name>encodingFilter</filter-name>
+       <servlet-name>publicui</servlet-name>
+    </filter-mapping>    
+    <!-- end SPRING setup -->
 
-	<!-- CGI transforms filter -->
-	<filter>
-	   <filter-name>RequestParametersTransformFilter</filter-name>
-	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	   <filter-name>RequestParametersTransformFilter</filter-name>
-	   <servlet-name>publicui</servlet-name>
-	</filter-mapping>
+    <!-- CGI transforms filter -->
+    <filter>
+       <filter-name>RequestParametersTransformFilter</filter-name>
+       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>RequestParametersTransformFilter</filter-name>
+       <servlet-name>publicui</servlet-name>
+    </filter-mapping>
 
-	<!-- dns_aliases.cfg restriction filter -->
-	<filter>
-	   <filter-name>HostnameRestrictionFilter</filter-name>
-	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	   <filter-name>HostnameRestrictionFilter</filter-name>
-	   <servlet-name>publicui</servlet-name>
-	</filter-mapping>
-	
-	<!-- CORS filter -->
-	<filter>
-	 <filter-name>ConfigurableCorsFilter</filter-name>
+    <!-- dns_aliases.cfg restriction filter -->
+    <filter>
+       <filter-name>HostnameRestrictionFilter</filter-name>
+       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>HostnameRestrictionFilter</filter-name>
+       <servlet-name>publicui</servlet-name>
+    </filter-mapping>
+    
+    <!-- CORS filter -->
+    <filter>
+     <filter-name>ConfigurableCorsFilter</filter-name>
      <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
   <filter-mapping>
      <filter-name>ConfigurableCorsFilter</filter-name>
      <servlet-name>publicui</servlet-name>
   </filter-mapping>
-	
-	<!-- ==== Authentication filter for Windows ==== -->
-	<filter>
-		<filter-name>ConfigurableSecurityFilter</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-		<init-param>
-			<param-name>targetFilterLifecycle</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>impersonate</param-name>
-			<param-value>true</param-value>
-		</init-param> 
-		<init-param>
-			<param-name>allowGuestLogin</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</filter>
-	
-	<filter-mapping>
-		<filter-name>ConfigurableSecurityFilter</filter-name>
-		<url-pattern>/*</url-pattern> 
-	</filter-mapping>
-	<!--  ========================================== -->
-	
-	<!-- Yammer metrics  -->
-	<filter>
-    	<filter-name>instrumentedFilter</filter-name>
-    	<filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>instrumentedFilter</filter-name>
-	    <url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
-	<!-- Unhandled Exception logging -->
-	<!-- *** MUST BE LAST TO HANDLE ALL EXCEPTIONS FROM PREVIOUS COMPONENTS *** -->
-	<filter>
-	   <filter-name>UnhandledExceptionFilter</filter-name>
-	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	   <filter-name>UnhandledExceptionFilter</filter-name>
-	   <servlet-name>publicui</servlet-name>
-	</filter-mapping>
+    
+    <!-- ==== Authentication filter for Windows ==== -->
+    <filter>
+        <filter-name>ConfigurableSecurityFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>impersonate</param-name>
+            <param-value>true</param-value>
+        </init-param> 
+        <init-param>
+            <param-name>allowGuestLogin</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>ConfigurableSecurityFilter</filter-name>
+        <url-pattern>/*</url-pattern> 
+    </filter-mapping>
+    <!--  ========================================== -->
+    
+    <!-- Yammer metrics  -->
+    <filter>
+        <filter-name>instrumentedFilter</filter-name>
+        <filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>instrumentedFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- Unhandled Exception logging -->
+    <!-- *** MUST BE LAST TO HANDLE ALL EXCEPTIONS FROM PREVIOUS COMPONENTS *** -->
+    <filter>
+       <filter-name>UnhandledExceptionFilter</filter-name>
+       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>UnhandledExceptionFilter</filter-name>
+       <servlet-name>publicui</servlet-name>
+    </filter-mapping>
 
-	<!-- Audit logging -->
-	<!-- *** MUST BE AFTER ANYTHING WHICH SHOULD BE INCLUDED IN AUDIT OUTPUT -->
-	<!-- (and does its own unhandled exception logging) *** -->
-	<filter>
-	   <filter-name>GroovyServletFilter</filter-name>
-	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-	   <filter-name>GroovyServletFilter</filter-name>
-	   <servlet-name>publicui</servlet-name>
-	</filter-mapping>
-	
+    <!-- Audit logging -->
+    <!-- *** MUST BE AFTER ANYTHING WHICH SHOULD BE INCLUDED IN AUDIT OUTPUT -->
+    <!-- (and does its own unhandled exception logging) *** -->
+    <filter>
+       <filter-name>GroovyServletFilter</filter-name>
+       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>GroovyServletFilter</filter-name>
+       <servlet-name>publicui</servlet-name>
+    </filter-mapping>
+    
 </web-app>

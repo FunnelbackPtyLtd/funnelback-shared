@@ -1,109 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
-	xmlns:xlink="http://www.w3.org/TR/xlink"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" 
-	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+    xmlns:xlink="http://www.w3.org/TR/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" 
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
-	<info>
-		<title>Template engines investigation</title>
+    <info>
+        <title>Template engines investigation</title>
 
-		<productname>Funnelback Public UI</productname>
+        <productname>Funnelback Public UI</productname>
 
-		<releaseinfo>2011</releaseinfo>
+        <releaseinfo>2011</releaseinfo>
 
-		<mediaobject>
-			<imageobject role="xhtml">
-				<imagedata align="center" fileref="fb-logo.png" format="PNG" />
-			</imageobject>
-		</mediaobject>
+        <mediaobject>
+            <imageobject role="xhtml">
+                <imagedata align="center" fileref="fb-logo.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
 
-		<authorgroup>
-			<author>
-				<personname>
-					<firstname>Nicolas</firstname>
-					<surname>Guillaumin</surname>
-				</personname>
-				<email>nguillaumin@funnelback.com</email>
-			</author>
-		</authorgroup>
+        <authorgroup>
+            <author>
+                <personname>
+                    <firstname>Nicolas</firstname>
+                    <surname>Guillaumin</surname>
+                </personname>
+                <email>nguillaumin@funnelback.com</email>
+            </author>
+        </authorgroup>
 
-		<copyright>
-			<year>2011</year>
-			<holder>Funnelback</holder>
-		</copyright>
+        <copyright>
+            <year>2011</year>
+            <holder>Funnelback</holder>
+        </copyright>
 
-	</info>
+    </info>
 
-	<toc>
-		<title>Table of contents</title>
-	</toc>
-	
-	<preface xml:id="introduction">
-		<title>Introduction</title>
-		
-		<para>
-			The new Public UI is written in Java for various reason, the main one being performance improvment. Being written in Java means that
-			Perl code can't be run anymore, so we'll need to come up with a replacement solution for form files (NickScript).  
-		</para>
-		
-		<para>
-			The first solution that comes to mind is to re-implement NickScript in Java. But it has some shortcomings:
-			<simplelist>
-				<member>
-					The less code we have to develop and maintain, the better. There are already several generic template
-					engine on the market (Think <emphasis>Freemarker</emphasis> on the Java world, or <emphasis>Smarty</emphasis> for PHP).
-					Why not try to integrate an existing template engine instead, and benefit from existing features and support ? 
-				</member>
-				<member>
-					Because NickScript implements its own tags, it's difficult to do things that aren't supported by the core tags: You
-					either have to write your own plug-in, or use <code>EvalPerl</code>,
-				</member>
-				<member>
-					<code>EvalPerl</code> is an obvious security hole. For what I
-					<ulink url="http://wiki.funnelback.com:8080/display/RnD/Public+UI+rewrite+-+the+EvalPerl+problem">observed</ulink>
-					it's used mostly to do formatting. Our template engine should make data formatting easier, instead of relying
-					on <code>EvalPerl</code>. On the other hand form developers will always need a way to execute some arbitrary
-					code, so we must keep this feature but in a more secure way,
-				</member>
-				<member>
-					The fixed tag order is a problem: You have to be aware of the tag execution order to do complex things in NickScript.
-					(On the other hand if we have to re-implement it we'll probably remove this constraint).
-				</member>
-			</simplelist>
-			
-			With this in mind, it's worth considering alternate solutions.			
-		</para>
-		<para>
-			In the first part of this document I'll first introduce which criteria we should consider to choose a replacement template system, then describe
-			possible alternate solutions and general considerations. I'll conclude by my recommendation on which template engine we should use.
-		</para>
-		<para>
-			The second part gives a more detailed study on some template engines I've investigated, and certainly help to understand the conclusions I've reached.
-		</para>
-	</preface>
-	
-	<part>
-		<title>Criteria, general considerations and choice</title>
-		<xi:include href="criteria.xml" />
-		<xi:include href="alternate-solutions.xml" />
-		<xi:include href="data-model.xml" />		
-		<xi:include href="conclusion.xml" />
-	</part>
-	
-	<part>
-		<title>Specific engines investigation</title>
+    <toc>
+        <title>Table of contents</title>
+    </toc>
+    
+    <preface xml:id="introduction">
+        <title>Introduction</title>
+        
+        <para>
+            The new Public UI is written in Java for various reason, the main one being performance improvment. Being written in Java means that
+            Perl code can't be run anymore, so we'll need to come up with a replacement solution for form files (NickScript).  
+        </para>
+        
+        <para>
+            The first solution that comes to mind is to re-implement NickScript in Java. But it has some shortcomings:
+            <simplelist>
+                <member>
+                    The less code we have to develop and maintain, the better. There are already several generic template
+                    engine on the market (Think <emphasis>Freemarker</emphasis> on the Java world, or <emphasis>Smarty</emphasis> for PHP).
+                    Why not try to integrate an existing template engine instead, and benefit from existing features and support ? 
+                </member>
+                <member>
+                    Because NickScript implements its own tags, it's difficult to do things that aren't supported by the core tags: You
+                    either have to write your own plug-in, or use <code>EvalPerl</code>,
+                </member>
+                <member>
+                    <code>EvalPerl</code> is an obvious security hole. For what I
+                    <ulink url="http://wiki.funnelback.com:8080/display/RnD/Public+UI+rewrite+-+the+EvalPerl+problem">observed</ulink>
+                    it's used mostly to do formatting. Our template engine should make data formatting easier, instead of relying
+                    on <code>EvalPerl</code>. On the other hand form developers will always need a way to execute some arbitrary
+                    code, so we must keep this feature but in a more secure way,
+                </member>
+                <member>
+                    The fixed tag order is a problem: You have to be aware of the tag execution order to do complex things in NickScript.
+                    (On the other hand if we have to re-implement it we'll probably remove this constraint).
+                </member>
+            </simplelist>
+            
+            With this in mind, it's worth considering alternate solutions.            
+        </para>
+        <para>
+            In the first part of this document I'll first introduce which criteria we should consider to choose a replacement template system, then describe
+            possible alternate solutions and general considerations. I'll conclude by my recommendation on which template engine we should use.
+        </para>
+        <para>
+            The second part gives a more detailed study on some template engines I've investigated, and certainly help to understand the conclusions I've reached.
+        </para>
+    </preface>
+    
+    <part>
+        <title>Criteria, general considerations and choice</title>
+        <xi:include href="criteria.xml" />
+        <xi:include href="alternate-solutions.xml" />
+        <xi:include href="data-model.xml" />        
+        <xi:include href="conclusion.xml" />
+    </part>
+    
+    <part>
+        <title>Specific engines investigation</title>
 
-		<xi:include href="engines/pure-js/main.xml" />
-		<xi:include href="engines/json-template/main.xml" />
-		<xi:include href="engines/embedded-js/main.xml" />
-		
-		<xi:include href="engines/google-closure/main.xml" />
-		<xi:include href="engines/jsp/main.xml" />
-		<xi:include href="engines/freemarker/main.xml" />
-		
-		<xi:include href="engines/other.xml" />		
-	</part>
-	
-	<xi:include href="apdx-nickscript-features.xml" />
-	
+        <xi:include href="engines/pure-js/main.xml" />
+        <xi:include href="engines/json-template/main.xml" />
+        <xi:include href="engines/embedded-js/main.xml" />
+        
+        <xi:include href="engines/google-closure/main.xml" />
+        <xi:include href="engines/jsp/main.xml" />
+        <xi:include href="engines/freemarker/main.xml" />
+        
+        <xi:include href="engines/other.xml" />        
+    </part>
+    
+    <xi:include href="apdx-nickscript-features.xml" />
+    
 </book>
