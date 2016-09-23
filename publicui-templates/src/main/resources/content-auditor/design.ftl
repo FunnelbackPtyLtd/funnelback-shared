@@ -46,7 +46,7 @@
         <span class="fa fa-bars fa-lg"></span>
         </button>-->
 
-        <a id="brand" href="/s/content-auditor.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.inputParameterMap["profile"]?url}" title="Funnelback Content Auditor"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
+        <a id="brand" href="/s/content-auditor.html?collection=${question.inputParameterMap["collection"]?url}&amp;profile=${question.profile?url}" title="Funnelback Content Auditor"><span class="navbar-brand"><em>- &nbsp; 14.2.0</em></span> </a>
         <h1><a href="?collection=${question.inputParameterMap["collection"]?url}" title="Funnelback Content Auditor Home">Content <span>Auditor</span></h1>
 
         <#if layoutSideBar ==1>
@@ -87,7 +87,7 @@
               <input type="hidden" name="collection" value="${question.inputParameterMap["collection"]!?html}">
               <@s.IfDefCGI name="enc"><input type="hidden" name="enc" value="${question.inputParameterMap["enc"]!?html}"></@s.IfDefCGI>
               <@s.IfDefCGI name="form"><input type="hidden" name="form" value="${question.inputParameterMap["form"]!?html}"></@s.IfDefCGI>
-              <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.inputParameterMap["profile"]!?html}"></@s.IfDefCGI>
+              <@s.IfDefCGI name="profile"><input type="hidden" name="profile" value="${question.profile!?html}"></@s.IfDefCGI>
             </div>
             <button class="btn btn-primary pull-left" type="submit"><span class="fa fa-search"></span> Search</button>
             
