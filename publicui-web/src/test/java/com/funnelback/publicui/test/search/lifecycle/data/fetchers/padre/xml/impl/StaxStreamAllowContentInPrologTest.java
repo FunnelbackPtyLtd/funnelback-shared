@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -25,13 +26,13 @@ public class StaxStreamAllowContentInPrologTest {
     @Test(expected=XmlParsingException.class)
     public void testContentInPrologDisabled() throws XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
-        parser.parse("Content in\nprolog<br>\r\n"+ xml, false);
+        parser.parse(("Content in\nprolog<br>\r\n"+ xml).getBytes(),Charset.defaultCharset(), false);
     }
 
     @Test(expected=XmlParsingException.class)
     public void testContentInPrologEnabled() throws XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse("Content in\nprolog\n"+ xml, true);
+        ResultPacket rp = parser.parse(("Content in\nprolog\n"+ xml).getBytes(),Charset.defaultCharset(), true);
         assertNotNull(rp);
     }
 

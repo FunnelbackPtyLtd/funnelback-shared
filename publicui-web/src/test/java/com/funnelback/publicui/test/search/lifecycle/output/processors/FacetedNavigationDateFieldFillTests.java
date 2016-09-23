@@ -1,13 +1,13 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,8 @@ public class FacetedNavigationDateFieldFillTests {
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-datefieldfill.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-datefieldfill.xml")),
+            StandardCharsets.UTF_8,
             false));
         st = new SearchTransaction(question, response);
         

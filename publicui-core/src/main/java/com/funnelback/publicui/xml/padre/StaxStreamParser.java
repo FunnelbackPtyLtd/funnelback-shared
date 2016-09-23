@@ -1,6 +1,8 @@
 package com.funnelback.publicui.xml.padre;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +17,9 @@ import javax.xml.stream.XMLStreamReader;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
+import com.funnelback.common.utils.ArrayFindUtils;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
@@ -49,24 +54,34 @@ public class StaxStreamParser implements PadreXmlParser {
     /** Tag marking the start of the XML document */
     private static final String XML_HEADER_TAG = "<?xml";
     
-    /** Regexp to match everything before the XML start tag */
-    private static final Pattern XML_PROLOG_PATTERN = Pattern.compile("^(.*)"+Pattern.quote(XML_HEADER_TAG),
-        Pattern.DOTALL);
-    
     @Override
-    public ResultPacket parse(String xml, boolean allowContentInProlog) throws XmlParsingException {
+    public ResultPacket parse(byte[] padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
 
-        String xmlToParse = xml;
+        int xmlStartOffset = 0;
         if (allowContentInProlog) {
-            xmlToParse = XML_PROLOG_PATTERN.matcher(xmlToParse).replaceFirst(XML_HEADER_TAG);
+            xmlStartOffset = ArrayFindUtils.findArray(padreStdOut, XML_HEADER_TAG.getBytes(charset), 0);
         }
+        if(xmlStartOffset == -1) {
+            throw new XmlParsingException("Unable to find start of xml, could not find: '<?xml'");
+        }
+        
+        
         
         ResultPacket packet = new ResultPacket();
         
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xmlToParse));
+            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
+                                    .createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
+                                            charset.displayName());
         
+            int count = 0;
+            
             while(xmlStreamReader.hasNext()) {
+                count++;
+                if(count % 10000 == 0) {
+                    System.gc();
+                    System.currentTimeMillis();
+                }
                 int type = xmlStreamReader.next();
                 
                 switch(type){

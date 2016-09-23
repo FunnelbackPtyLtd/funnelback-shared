@@ -90,7 +90,6 @@ public class DefaultPadreForkingTests {
         st.getQuestion().getMetaParameters().add("t:test");
         forking.fetchData(st);
         Assert.assertNotNull(st.getResponse());
-        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
         Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
         Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
     }
@@ -110,7 +109,6 @@ public class DefaultPadreForkingTests {
         forking.fetchData(st);
         
         Assert.assertNotNull(st.getResponse());
-        Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), st.getResponse().getRawPacket());
         Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
         Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
     }

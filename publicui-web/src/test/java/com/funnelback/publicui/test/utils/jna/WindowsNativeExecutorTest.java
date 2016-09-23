@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.utils.jna;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class WindowsNativeExecutorTest {
         ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null);
         
         Assert.assertEquals(1, er.getReturnCode());
-        Assert.assertTrue(er.getOutput().contains("The syntax of this command is"));
+        Assert.assertTrue(new String(er.getOutBytes(), StandardCharsets.UTF_8).contains("The syntax of this command is"));
     }
 
     @Test
@@ -52,8 +53,8 @@ public class WindowsNativeExecutorTest {
         env.put("TEST_VAR", "test value");
         ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env);
         
-        Assert.assertEquals(er.getOutput(), 0, er.getReturnCode());
-        Assert.assertEquals("test value", er.getOutput().trim());
+        Assert.assertEquals(new String(er.getOutBytes(), StandardCharsets.UTF_8), 0, er.getReturnCode());
+        Assert.assertEquals("test value", new String(er.getOutBytes(), StandardCharsets.UTF_8).trim());
     }
 
     

@@ -2,14 +2,15 @@ package com.funnelback.publicui.test.contentauditor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.junit.Assert;
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,20 +19,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.system.EnvironmentVariableException;
-import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.test.search.lifecycle.output.processors.FacetedNavigationAbstractMetadataFieldFillTestMethods;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,7 +50,8 @@ public class FacetedNavigationInputMissingMetadataFillTests {
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            StandardCharsets.UTF_8,
             false));
         st = new SearchTransaction(question, response);
 

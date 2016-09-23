@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.im
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -43,7 +44,7 @@ public class StandaloneParserTest {
         for (File f: files) {
             try {
                 System.out.println("-- Parsing " + f.getAbsolutePath());
-                ResultPacket rp = parser.parse(FileUtils.readFileToString(f, "UTF-8"), false);
+                ResultPacket rp = parser.parse(FileUtils.readFileToByteArray(f), StandardCharsets.UTF_8, false);
                 if (rp == null) {
                     errors++;
                     System.out.println("Parser result for file '" + f.getAbsolutePath() + "' is null");

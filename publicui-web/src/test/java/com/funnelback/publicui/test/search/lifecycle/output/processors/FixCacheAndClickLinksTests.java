@@ -1,8 +1,15 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +20,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
@@ -33,13 +39,6 @@ import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.google.common.collect.ImmutableList;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-
 public class FixCacheAndClickLinksTests {
 
     private static final String CURATOR_ADVERT_LINK = "http://www.link.com";
@@ -57,7 +56,8 @@ public class FixCacheAndClickLinksTests {
         
         SearchResponse response = new SearchResponse();
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
+            StandardCharsets.UTF_8,
             false));
         response.getResultPacket().getBestBets().add(
                 new BestBet("trigger", "http://www.url.com", "title", "description", "http://www.url.com"));

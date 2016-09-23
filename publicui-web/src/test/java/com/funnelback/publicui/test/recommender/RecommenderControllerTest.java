@@ -1,5 +1,31 @@
 package com.funnelback.publicui.test.recommender;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
@@ -17,27 +43,6 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.funnelback.reporting.recommender.tuple.ItemTuple;
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -216,7 +221,9 @@ public class RecommenderControllerTest {
         Map<String, Object> model = new HashMap<>();
         SearchResponse searchResponse = new SearchResponse();
         searchResponse.setResultPacket(new StaxStreamParser().parse(
-                FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex.xml")), false));
+                FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),
+                StandardCharsets.UTF_8,
+                false));
 
         model.put(SearchController.ModelAttributes.response.toString(), searchResponse);
         modelAndView = new ModelAndView("json", model);

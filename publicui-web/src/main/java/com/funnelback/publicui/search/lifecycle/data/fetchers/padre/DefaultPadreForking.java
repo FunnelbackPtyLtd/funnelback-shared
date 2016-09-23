@@ -25,9 +25,10 @@ public class DefaultPadreForking extends AbstractPadreForking {
 
     @Override
     protected void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException {
-        transaction.getResponse().setRawPacket(padreOutput.getOutput().toString());
+        
         transaction.getResponse().setResultPacket(padreXmlParser.parse(
-            padreOutput.getOutput().toString(),
+            padreOutput.getOutBytes(),
+            padreOutput.getCharset(),
             transaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.DEBUG)));
         transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
     }

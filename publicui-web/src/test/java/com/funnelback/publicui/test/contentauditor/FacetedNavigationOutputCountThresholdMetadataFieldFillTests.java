@@ -1,29 +1,27 @@
 package com.funnelback.publicui.test.contentauditor;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.junit.Assert;
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigation;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -47,7 +45,8 @@ public class FacetedNavigationOutputCountThresholdMetadataFieldFillTests extends
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
+            StandardCharsets.UTF_8,
             false));
         st = new SearchTransaction(question, response);
 

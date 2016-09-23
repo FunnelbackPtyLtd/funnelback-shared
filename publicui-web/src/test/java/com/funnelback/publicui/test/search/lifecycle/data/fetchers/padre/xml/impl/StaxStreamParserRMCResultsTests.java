@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,8 @@ public class StaxStreamParserRMCResultsTests extends StaxStreamParserTests {
     public void before() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         rp = parser.parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/complex-rmc-results.xml"), "UTF-8"),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex-rmc-results.xml")),
+            StandardCharsets.UTF_8,
             false);
         assertNotNull(rp);
     }

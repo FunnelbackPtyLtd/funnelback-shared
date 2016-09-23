@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -28,7 +29,8 @@ public class HTMLEncodeSummariesTests {
         
         SearchResponse response = new SearchResponse();
         response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToString(new File("src/test/resources/padre-xml/htmlencode-summaries.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/htmlencode-summaries.xml")),
+            StandardCharsets.UTF_8,
             false));
         
         st = new SearchTransaction(null, response);
