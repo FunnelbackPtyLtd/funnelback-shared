@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>java-parent</artifactId>
-        <version>15.7.1637-SNAPSHOT</version>
+        <version>15.7.1638-SNAPSHOT</version>
         <relativePath></relativePath>
     </parent>
 
