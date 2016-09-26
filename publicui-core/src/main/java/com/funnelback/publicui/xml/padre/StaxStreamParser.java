@@ -74,14 +74,8 @@ public class StaxStreamParser implements PadreXmlParser {
                                     .createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
                                             charset.displayName());
         
-            int count = 0;
             
             while(xmlStreamReader.hasNext()) {
-                count++;
-                if(count % 10000 == 0) {
-                    System.gc();
-                    System.currentTimeMillis();
-                }
                 int type = xmlStreamReader.next();
                 
                 switch(type){
