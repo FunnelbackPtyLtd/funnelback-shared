@@ -65,7 +65,16 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         return facets;
     }
     
-    
+    /**
+     * Converts a list of simple data only Facet objects, into their more complicated Facted Navigation counterpart.
+     * 
+     *  <p>The Facet coming in are the objects returned from the facet marshaller, while the 
+     *  FacetDefinitions coming out are ones which contain logic for providing Faceted navigation
+     *  within the Public UI.</p>
+     * @param facetsToConvert The simple data Facet objects.
+     * @param facetedNavigationQPOptions A class to manage the QPO options to be passed to padre.
+     * @return
+     */
     protected List<FacetDefinition> convert(List<Facet> facetsToConvert, 
                                             FacetedNavigationQPOptions facetedNavigationQPOptions) {
         
@@ -86,36 +95,50 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         
     }
     
+    /**
+     * Convert a single simple data Category object into its Public UI counterpart which implements the logic 
+     * required for Faceted navigation.
+     * 
+     * @param facetName
+     * @param category The data only Category which comes from the Facet marshaler.
+     * @param facetedNavigationQPOptions
+     * @return The category which implements logic required for Faceted Navigation.
+     */
     protected CategoryDefinition convert(String facetName,
-                                            Category categories, 
+                                            Category category, 
                                             FacetedNavigationQPOptions facetedNavigationQPOptions) {
         List<CategoryDefinition> subCategories = new ArrayList<>();
-        for(Category subCat : categories.getSubCategories()) {
+        for(Category subCat : category.getSubCategories()) {
             subCategories.add(convert(facetName, subCat, facetedNavigationQPOptions));
         }
         
         CategoryDefinition categoryDefinition;
-        if(categories instanceof DateFieldCategory) {
-            DateFieldFill dateFieldFill = new DateFieldFill(((DateFieldCategory) categories).getMetadataField());
+        if(category instanceof DateFieldCategory) {
+            DateFieldFill dateFieldFill = new DateFieldFill(((DateFieldCategory) category).getMetadataField());
             facetedNavigationQPOptions.add(dateFieldFill);
             categoryDefinition = dateFieldFill;
-        } else if(categories instanceof GscopeCategory) {
-            GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) categories).getCategoryName(), ((GscopeCategory) categories).getGscope());
+        } else if(category instanceof GscopeCategory) {
+            GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) category).getCategoryName(), ((GscopeCategory) category).getGscope());
             facetedNavigationQPOptions.add(gScopeItem);
             categoryDefinition = gScopeItem;
-        } else if(categories instanceof MetaDataFieldCategory) {
-             MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) categories).getMetadataField());
+        } else if(category instanceof MetaDataFieldCategory) {
+             MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());
             facetedNavigationQPOptions.add(metadataFieldFill);
             categoryDefinition = metadataFieldFill;
-        } else if(categories instanceof URLCategory) {
-            URLFill urlFill = new URLFill(((URLCategory) categories).getUriPrefix());
+        } else if(category instanceof URLCategory) {
+            URLFill urlFill = new URLFill(((URLCategory) category).getUriPrefix());
             facetedNavigationQPOptions.add(urlFill);
             categoryDefinition = urlFill;
         } else {
+            //Typically means that the marshaler now produces a Category that we don't understand
+            //either thise code needs to map the unknown category to an existing CategoryDefinition. 
+            //This might happen if you redefine a Catgegory in the marshaler. Otherwise if you have 
+            //created a new Category you will need to create a CategoryDefinition which implements
+            //the logic for your new Category
             throw new IllegalStateException("Unknown category definition " 
-                                                + categories.getClass().getCanonicalName() 
+                                                + category.getClass().getCanonicalName() 
                                                 + " " 
-                                                + categories.toString());
+                                                + category.toString());
         }
         
         categoryDefinition.getSubCategories().addAll(subCategories);
