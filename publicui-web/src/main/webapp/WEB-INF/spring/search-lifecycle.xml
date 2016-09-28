@@ -21,6 +21,7 @@
         <ref bean="userKeysInputProcessor" />
         <ref bean="facetScopeInputProcessor" />
         <ref bean="facetedNavigationInputProcessor" />
+        <ref bean="facetedNavigationSetQueryProcessorOptionsInputProcessor" />
         <ref bean="multiFacetedNavigationInputProcessor" />
         <ref bean="metaParametersInputProcessor" />
         <ref bean="metadataAliasesInputProcessor" />

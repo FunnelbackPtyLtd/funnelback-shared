@@ -19,9 +19,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 @AllArgsConstructor
 public class FacetedNavigationConfig {
     
-    /** Query processor options embedded in the configuration file */
-    @Getter private final String qpOptions;
-    
     /** List of facets definitions. */
     @Getter private final List<FacetDefinition> facetDefinitions;
     

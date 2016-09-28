@@ -63,7 +63,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         categoryDefinition.setFacetName("Missing Metadata");
         facetDefinitions.add(new FacetDefinition("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
         
-        question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig("-rmcf=ZWXYUV", facetDefinitions));
+        question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig(facetDefinitions));
 
         processor = new FacetedNavigation();
     }

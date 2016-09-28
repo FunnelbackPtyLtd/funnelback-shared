@@ -76,17 +76,9 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         // URL drill down facet
         facetDefinitions.add(createURLScopeFillFacetDefinition());
         
-        // Build the -rmcf QPO for the facets
-        String rmcfOptionValue = rmcf.stream()
-            .collect(Collectors.joining(","));
-
-        // -rmcf for metadata based facets, -count_urls for URLScopeFill facet
-        // FIXME: -count_urls needs to be dynamic FUN-9043
-        facetedNavigationConfig = new FacetedNavigationConfig(
-            String.format("-rmcf=[%s] -count_urls=10",  rmcfOptionValue), facetDefinitions);
+        facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         
-        log.debug("Initialised with QPO {} and facets: {}", facetedNavigationConfig.getQpOptions(),
-            facetedNavigationConfig.getFacetDefinitions()
+        log.debug("Initialised facets: {}", facetedNavigationConfig.getFacetDefinitions()
                 .stream()
                 .map(FacetDefinition::toString)
                 .collect(Collectors.joining(System.getProperty("line.separator"))));

@@ -16,11 +16,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
+import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -39,7 +42,7 @@ import lombok.ToString;
  * which I suspect may not be as efficient as we might ideally like here.
  */
 @Controller
-public class UrlScopeFill extends CategoryDefinition {
+public class UrlScopeFill extends URLFill {
         
         public UrlScopeFill(String URL) {
         super(URL);
@@ -172,6 +175,26 @@ public class UrlScopeFill extends CategoryDefinition {
             return this.getData();
         }
         
+        @Override
+        public String getQueryConstraint(String value) {
+            // No query constraint, scoping is done
+            // Via QPOs (-scope=)
+            return "";
+        }
+        
+        @Override
+        public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
+            // Make a copy of the list as the super one is immutable
+            List<QueryProcessorOption<?>> qpOptions = new ArrayList<>(super.getQueryProcessorOptions(question));
+            if (question.getSelectedFacets().contains(facetName)) {
+                question.getSelectedCategoryValues().get(getQueryStringParamName())
+                    .stream()
+                    .forEach(value -> qpOptions.add(new QueryProcessorOption<String>(QueryProcessorOptionKeys.SCOPE , value)));
+            }
+            
+            return qpOptions;
+        }        
+
         @ToString
         public class SegmentCountTable {
             @Getter

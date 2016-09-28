@@ -3,16 +3,15 @@ package com.funnelback.publicui.search.service.resource.impl;
 import java.io.File;
 import java.io.IOException;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.io.FileUtils;
 
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.FacetedNavigationConfigParseException;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.Facets;
-import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Loads and parse a faceted navigation configuration file.
@@ -33,7 +32,7 @@ public class FacetedNavigationConfigResource extends AbstractSingleFileResource<
             Facets f = fnConfigParser
                     .parseFacetedNavigationConfiguration(FileUtils
                             .readFileToByteArray(file));
-            return new FacetedNavigationConfig(f.qpOptions, f.facetDefinitions);
+            return new FacetedNavigationConfig(f.facetDefinitions);
         } catch (FacetedNavigationConfigParseException xpe) { //TODO better checked exception
             log.error(
                     "Error while parsing faceted navigation configuration from '"

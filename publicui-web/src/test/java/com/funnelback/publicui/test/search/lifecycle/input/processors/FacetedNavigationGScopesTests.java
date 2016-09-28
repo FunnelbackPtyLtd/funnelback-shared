@@ -34,14 +34,6 @@ public class FacetedNavigationGScopesTests {
     }
     
     @Test
-    public void test() {        
-        processor.processInput(st);
-        
-        //We expect to ask padre to count gscopes.
-        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-    }
-    
-    @Test
     public void testEmpty() {
         st.getQuestion().getRawInputParameters().put("f.By Story|1", new String[0]);
         processor.processInput(st);

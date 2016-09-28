@@ -45,12 +45,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
             FacetedNavigationConfig config = FacetedNavigationUtils.selectConfiguration(searchTransaction.getQuestion().getCollection(), searchTransaction.getQuestion().getProfile());
             
             if (config != null) {
-                if (config.getQpOptions() != null && ! "".equals(config.getQpOptions())) {
-                    // Query Processor options are embedded in the faceted_navigation.cfg file
-                    searchTransaction.getQuestion().getDynamicQueryProcessorOptions()
-                        .addAll(Arrays.asList(config.getQpOptions().split("\\s")));
-                    log.debug("Setting dynamic query processor option '" + config.getQpOptions() + "'");
-                }
                 
                 // Global set of constraints. A Set per Facet
                 Set<Set<String>> gscope1Constraints = new HashSet<Set<String>>();
@@ -101,8 +95,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
                                     } else if (ct instanceof MetadataBasedCategory) {
                                         MetadataBasedCategory type = (MetadataBasedCategory) ct;
                                         queryFacetConstraints.add(type.getQueryConstraint(value));
-                                    } else if (ct instanceof UrlScopeFill) {
-                                        searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add("-scope=" + value);
                                     }
                                 }
                             }

@@ -34,13 +34,6 @@ public class FacetedNavigationDateTests {
     }
     
     @Test
-    public void test() {        
-        processor.processInput(st);
-        
-        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-    }
-    
-    @Test
     public void testEmpty() {
         st.getQuestion().getRawInputParameters().put("f.By date on d,Z,O|d", new String[0]);
         processor.processInput(st);
