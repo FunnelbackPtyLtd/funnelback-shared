@@ -7,7 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +61,8 @@ import com.funnelback.publicui.search.web.binding.CollectionEditor;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
 import com.funnelback.springmvc.web.binder.RelativeFileOnlyEditor;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Deal with cached copies
@@ -73,7 +77,11 @@ public class CacheController {
             + DefaultValues.FOLDER_MODERNUI + "/cached-copy-unavailable";
     
     /** Model attribute containing document's metadata */
-    public final static String MODEL_METADATA = "metaData";
+    @Deprecated
+    public final static String MODEL_METADATA_V1 = "metaData";
+    
+    /** Model attribute containing document's metadata as a Map<String, Collection<String>> */
+    public final static String MODEL_METADATA_V2 = "metaDataV2";
     
     /** Model attribute containing the Jsoup document tree */
     public final static String MODEL_DOCUMENT = "doc";
@@ -194,7 +202,19 @@ public class CacheController {
                         model.put(RequestParameters.PROFILE, question.getProfile());
                         model.put(RequestParameters.FORM, question.getForm());
                         model.put(MODEL_REQUEST_URL, new URL(request.getRequestURL().toString()));
-                        model.put(MODEL_METADATA, rmd.metadata);
+                        
+                        
+                        Function<Multimap<String, String>, Map<String, String>> toSingleValue = (multiMap) -> {
+                          Map<String, String> map = new HashMap<>();
+                          for(Entry<String, String> e : multiMap.entries()) {
+                              map.put(e.getKey(), e.getValue());
+                          }
+                          return map;
+                        };
+                        
+                        //Provide a regular map for backwards compatibility
+                        model.put(MODEL_METADATA_V1, toSingleValue.apply(rmd.metadata));
+                        model.put(MODEL_METADATA_V2, rmd.metadata.asMap());
                         model.put(SearchController.ModelAttributes.httpRequest.toString(), request);
                         
                         
@@ -254,9 +274,9 @@ public class CacheController {
      * @return The charset for the document, defaulting to UTF-8 is not found
      */
     private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
-    public String getCharset(Map<String, String> headers) {
+    public String getCharset(Multimap<String, String> headers) {
         if (headers.containsKey(Store.Header.Charset.toString())) {
-            return headers.get(Store.Header.Charset.toString());
+            return headers.get(Store.Header.Charset.toString()).stream().filter(v -> v != null).findFirst().get();
         }
         
         Optional<String> contentTypeValue = getContentTypeFromHeaders(headers);
@@ -276,20 +296,20 @@ public class CacheController {
      * @param headers
      * @return
      */
-    private Optional<String> getContentTypeFromHeaders(Map<String, String> headers) {
+    private Optional<String> getContentTypeFromHeaders(Multimap<String, String> headers) {
         //Try standard case Content-Type
-        String value = headers.get(HttpHeaders.CONTENT_TYPE);
-        if(value != null) return Optional.of(value);
+        Optional<String> value = headers.get(HttpHeaders.CONTENT_TYPE).stream().filter(v -> v != null).findFirst();
+        if(value.isPresent()) return value;
         
         final String contentTypeLower = HttpHeaders.CONTENT_TYPE.toLowerCase();
         
         //Try lower case content-type
-        value = headers.get(contentTypeLower);
-        if(value != null) return Optional.of(value);
+        value = headers.get(contentTypeLower).stream().filter(v -> v != null).findFirst();
+        if(value.isPresent()) return value;
         
         //Look for headers where the case is messed up for example:
         //Content-type, CONTENT-TYPE, etc
-        for(Map.Entry<String, String> h : headers.entrySet()) {
+        for(Map.Entry<String, String> h : headers.entries()) {
             if(contentTypeLower.equals(h.getKey().toLowerCase())) {
                 return Optional.of(h.getValue());
             }
@@ -364,7 +384,7 @@ public class CacheController {
     private static class HookScriptResult {
         public final boolean authorized;
         public final Record<?> record;
-        public final Map<String, String> metadata;
+        public final ListMultimap<String, String> metadata;
     }
     
     /**

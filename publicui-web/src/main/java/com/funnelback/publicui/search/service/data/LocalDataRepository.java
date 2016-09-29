@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.service.data;
 
+import static com.funnelback.common.io.file.FileUtils.getFileExtensionLowerCase;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,8 +51,7 @@ import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
-
-import static com.funnelback.common.io.file.FileUtils.getFileExtensionLowerCase;
+import com.google.common.collect.ArrayListMultimap;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -153,10 +154,10 @@ public class LocalDataRepository implements DataRepository {
             if (fileExtension.equals(XMLUtils.XML)) {
                 return new RecordAndMetadata<XmlRecord>(new XmlRecord(
                     XMLUtils.fromString(new String(content)), url),
-                    new HashMap<String, String>());
+                    ArrayListMultimap.create());
             } else {
                 return new RecordAndMetadata<RawBytesRecord>(new RawBytesRecord(content, url),
-                    new HashMap<String, String>());
+                    ArrayListMultimap.create());
             }
         }
         
