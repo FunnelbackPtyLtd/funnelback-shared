@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.wcag.checker.FailureType;
+import com.funnelback.wcag.model.WCAG20Principle;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -48,7 +49,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
             .map(type -> Stream.of(Names.successCriterion(type)))
             .flatMap(Function.identity())
             .map(Metadata::getName);
-
+        
         // Facet on issue type
         Stream<String> issueTypes = Arrays.asList(FailureType.values())
             .stream()
@@ -60,7 +61,10 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         Stream<String> other = Stream.of(
             Names.profile().getName(),
             Names.domain().getName(),
+            Names.principle().getName(),
             Names.affectedBy().getName(),
+            Names.passedLevels().getName(),
+            Names.failedLevels().getName(),
             "f");
         
         // Build our facet definitions and QPOs
