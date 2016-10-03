@@ -17,7 +17,8 @@ public interface QueryProcessorOptionReducer<T> {
      * Reduce a query processor option with multiple values into a single one
      * 
      * @param queryProcessorOptionName name of the query processor option
-     * @param values QP option values
+     * @param values QP option values. Will never be empty as a QPO must have at
+     * least one value
      * @return Pair of (option name, single value)
      */
     public Pair<String, String> reduce(String queryProcessorOptionName, List<T> values);

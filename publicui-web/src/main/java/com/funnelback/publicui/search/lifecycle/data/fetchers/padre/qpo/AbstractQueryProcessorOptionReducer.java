@@ -38,7 +38,8 @@ public abstract class AbstractQueryProcessorOptionReducer<T> implements QueryPro
      * Actual reduction method to be implemented by subclasses
      * 
      * @param queryProcessorOptionName name of the query processor option
-     * @param values QP option values
+     * @param values QP option values. Will never be empty as a QPO must have at
+     * least one value
      * @return Pair of (option name, single value)
      */
     abstract protected Pair<String, String> reduceInternal(String queryProcessorOptionName, List<T> values);
