@@ -39,7 +39,7 @@ public class FacetedNavigationCountThresholdMetadataFieldFillTestUtils {
             metadataFillWithThresholdDefition("U", "Type", 0, new ArrayList<>())
         ));
         
-        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig("-rmcf=ZWXYUV", facetDefinitions);
+        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         return facetedNavigationConfig;
     }
     

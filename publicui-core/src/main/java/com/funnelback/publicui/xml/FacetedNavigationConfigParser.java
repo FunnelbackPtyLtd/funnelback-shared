@@ -22,8 +22,6 @@ public interface FacetedNavigationConfigParser {
         public static final String FACETS = "Facets";
         
         public List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
-        
-        public String qpOptions;
     }
     
     

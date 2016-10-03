@@ -42,11 +42,6 @@ public class DefaultFacetedNavigationConfigParserTests {
     }
     
     @Test
-    public void testQpOptions() {
-        Assert.assertEquals("-countgbits=all -count_dates=d -count_urls=1000 -rmcf=[a,U,V,W,X,Y,Z]", facets.qpOptions.trim());
-    }
-    
-    @Test
     public void testFacets() {
         Assert.assertEquals(9, facets.facetDefinitions.size());
     }

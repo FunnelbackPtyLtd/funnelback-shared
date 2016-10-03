@@ -135,7 +135,7 @@
     </bean>
     
     <bean id="dataSource" class="org.h2.jdbcx.JdbcDataSource">
-        <property name="URL" value="jdbc:h2:file:target/test-output/session-db" />
+        <property name="URL" value="jdbc:h2:mem:test-db;DB_CLOSE_DELAY=-1" />
     </bean>
     
     <bean class="com.funnelback.publicui.search.service.session.ResultsCartDao" />

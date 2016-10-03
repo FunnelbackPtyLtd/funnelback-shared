@@ -12,7 +12,7 @@ public class FacetParameter {
     /** The name of the facet to which this selection applies. */
     private final String name;
     
-    /** Additional paramter information specific to the selected facet. */
+    /** Additional parameter information specific to the selected facet. */
     private final String extraParameter;
     
     /** The category values selected within the facet. */

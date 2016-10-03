@@ -5,16 +5,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -119,6 +121,20 @@ public abstract class CategoryDefinition {
      * @return true if this category definition matches, false otherwise.
      */
     public abstract boolean matches(String value, String extraParams);
+    
+    /**
+     * <p>Get additional query processor options to apply for this category definition.</p>
+     * 
+     * <p>That gives the opportunity to the category definition to add additional QPOs
+     * that it may need. QPOs may differ depending if the facet is currently selected or not,
+     * such as setting <code>-count_urls</code> dynamically depending on the current number
+     * of segments in the URL drill down facet</p>
+     * 
+     * @param question Can be used to inspect the currently selected facets and return
+     *  appropriate QPOs
+     * @return A list of query processor options
+     */
+    public abstract List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question);
     
     /**
      * <p>Parses a String containing a metadata class and a value

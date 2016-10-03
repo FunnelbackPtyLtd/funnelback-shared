@@ -20,7 +20,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.springmvc.utils.web.RequestParameterValueUtils;
-import com.funnelback.springmvc.web.interceptor.Log4j2ThreadContextInterceptor;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -96,16 +95,16 @@ public class DefaultSearchTransactionProcessor implements SearchTransactionProce
             
             
         } catch (InputProcessorException ipe) {
-            log.error(ipe);
+            log.catching(ipe);
             transaction.setError(new SearchError(SearchError.Reason.InputProcessorError, ipe));
         } catch (DataFetchException dfe) {
-            log.error(dfe);
+            log.catching(dfe);
             transaction.setError(new SearchError(SearchError.Reason.DataFetchError, dfe));
         } catch (OutputProcessorException ope) {
-            log.error(ope);
+            log.catching(ope);
             transaction.setError(new SearchError(SearchError.Reason.OutputProcessorError, ope));
         } catch (Exception e) {
-            log.error(e);
+            log.catching(e);
             transaction.setError(new SearchError(SearchError.Reason.Unknown, e));
         }
         

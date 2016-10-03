@@ -68,7 +68,7 @@ public class SearchLogInterceptorTests {
         cDef2.setLabel("Y");
         FacetDefinition fDef2 = new FacetDefinition("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));
 
-        FacetedNavigationConfig fnConf = new FacetedNavigationConfig("", Arrays.asList(new FacetDefinition[] {fDef, fDef2}));
+        FacetedNavigationConfig fnConf = new FacetedNavigationConfig(Arrays.asList(new FacetDefinition[] {fDef, fDef2}));
         st.getQuestion().getCollection().setFacetedNavigationLiveConfig(fnConf);
         
     }

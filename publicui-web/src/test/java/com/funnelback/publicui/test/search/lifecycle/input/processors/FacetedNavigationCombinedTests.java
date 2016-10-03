@@ -37,14 +37,6 @@ public class FacetedNavigationCombinedTests {
     }
     
     @Test
-    public void test() {        
-        processor.processInput(st);
-        
-        //We don't test what they are as that is done else where.
-        Assert.assertEquals(3, st.getQuestion().getDynamicQueryProcessorOptions().size());
-    }
-    
-    @Test
     public void testFacetSelected() {
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());

@@ -187,18 +187,9 @@ public class ContentAuditor extends AbstractInputProcessor {
         
         facetDefinitions.add(createMissingMetadataFacetDefinition(i18n.tr("label.missingMetadataFacet")));
 
-        StringBuilder rmcfValue = new StringBuilder();
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.FACET_METADATA).entrySet()) {
             facetDefinitions.add(createMetadataFacetDefinition(entry.getValue(), entry.getKey()));
-            rmcfValue.append("," + entry.getKey());
         }
-        rmcfValue.append("," + DUPLICATE_TITLE_META_CLASS);
-        
-        String qpOptions = 
-            " -" + QueryProcessorOptionKeys.RMCF + "=["+rmcfValue+"]"
-            + " -" + QueryProcessorOptionKeys.COUNT_DATES + "=" + ContentAuditor.DATE_METADATA_FIELD
-            + " -" + QueryProcessorOptionKeys.COUNT_URLS + "=" + question.getCollection().getConfiguration().value(Keys.ModernUI.ContentAuditor.COUNT_URLS) 
-            + " -" + QueryProcessorOptionKeys.COUNTGBITS + "=" + "all";
 
         // Pull in any query based facets from the index's faceted_navigation.xml file
         if (!question.getInputParameterMap().containsKey(QueryProcessorOptionKeys.VIEW)) {
@@ -227,7 +218,7 @@ public class ContentAuditor extends AbstractInputProcessor {
             throw new RuntimeException(e);
         }
         
-        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(qpOptions, facetDefinitions);
+        FacetedNavigationConfig facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         return facetedNavigationConfig;
     }
 
@@ -360,7 +351,7 @@ public class ContentAuditor extends AbstractInputProcessor {
 
         // We must construct a new collection object, otherwise we modify both searches here
         Collection collectionForExtraSearch = new Collection(question.getCollection().getId(), question.getCollection().getConfiguration());
-        collectionForExtraSearch.setFacetedNavigationLiveConfig(new FacetedNavigationConfig("", facetDefinitions));
+        collectionForExtraSearch.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(facetDefinitions));
         
         question.setCollection(collectionForExtraSearch);
         

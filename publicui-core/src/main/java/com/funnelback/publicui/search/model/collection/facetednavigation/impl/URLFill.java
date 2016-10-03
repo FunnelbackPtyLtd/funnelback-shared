@@ -4,15 +4,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.common.url.VFSURLUtils;
+import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -28,12 +32,16 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
-
     
+    /** Default value for -count_urls when no facet value is selected */
+    public final static int DEFAULT_COUNT_URLS = 1;
+
+    private final List<QueryProcessorOption<?>> defaultQpOptions;
     
     public URLFill(String url) {
         super(url);
-        this.setData(url); //We reset data as we need to ensure the data is set correctly
+        this.setData(url); // We reset data as we need to ensure the data is set correctly
+        defaultQpOptions = Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, DEFAULT_COUNT_URLS));
     }
 
     /** Identifier used in query string parameter. */
@@ -192,4 +200,43 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             super.setData(data+"/");
         }
     }
+
+    @Override
+    public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
+        if (question.getSelectedFacets().contains(facetName)) {
+            // Find maxmimum number of segments among all selected values
+            int maxSegments = question.getSelectedCategoryValues().get(getQueryStringParamName())
+                .stream()
+                .map(URLFill::countSegments)
+                .reduce(Integer::max)
+                .orElse(DEFAULT_COUNT_URLS);
+            
+            return Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, maxSegments+1));
+        } else {
+            return defaultQpOptions;
+        }
+    }
+
+    /**
+     * <p>Counts the number of segments in the path component of a URL substring</p>
+     */
+    public static int countSegments(String urlSubstring) {
+        if (urlSubstring.endsWith("/")) {
+            // Strip any trailing '/' for consistency
+            urlSubstring = urlSubstring.substring(0, urlSubstring.length() - 1);
+        }
+        
+        // Strip protocol
+        urlSubstring = urlSubstring.replaceAll("^.+://", "");
+        
+        // Strip host
+        urlSubstring = StringUtils.substringAfter(urlSubstring, "/");
+        
+        // Strip anchor, query
+        urlSubstring = StringUtils.substringBefore(urlSubstring, "#");
+        urlSubstring = StringUtils.substringBefore(urlSubstring, "?");
+        
+        return urlSubstring.split("/").length;
+    }
+
 }

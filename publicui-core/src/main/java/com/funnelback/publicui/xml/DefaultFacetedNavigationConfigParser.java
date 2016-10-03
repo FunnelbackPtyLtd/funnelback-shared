@@ -52,13 +52,10 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             throw new FacetedNavigationConfigParseException("Could not parse faceted navigation configuration");
         }
         
-        FacetedNavigationQPOptions facetedNavigationQPOptions = new FacetedNavigationQPOptions();
-        List<FacetDefinition> facetDefinitions = convert(optionalFacets.orElse(new ArrayList<>()), 
-                                                            facetedNavigationQPOptions);
+        List<FacetDefinition> facetDefinitions = convert(optionalFacets.orElse(new ArrayList<>()));
         
         Facets facets = new Facets();
         facets.facetDefinitions = facetDefinitions;
-        facets.qpOptions = facetedNavigationQPOptions.getQPOptions();
         
         this.validate(facets);
         
@@ -72,18 +69,16 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
      *  FacetDefinitions coming out are ones which contain logic for providing Faceted navigation
      *  within the Public UI.</p>
      * @param facetsToConvert The simple data Facet objects.
-     * @param facetedNavigationQPOptions A class to manage the QPO options to be passed to padre.
      * @return
      */
-    protected List<FacetDefinition> convert(List<Facet> facetsToConvert, 
-                                            FacetedNavigationQPOptions facetedNavigationQPOptions) {
+    protected List<FacetDefinition> convert(List<Facet> facetsToConvert) {
         
         List<FacetDefinition> facetDefinitions = new ArrayList<>();
         for(Facet facet : facetsToConvert) {
             
             List<CategoryDefinition> categoryDefinitions = facet.getCategories()
                 .stream()
-                .map(c -> convert(facet.getName(), c, facetedNavigationQPOptions))
+                .map(c -> convert(facet.getName(), c))
                 .collect(Collectors.toList());
             
             FacetDefinition facetDefinition = new FacetDefinition(facet.getName(), categoryDefinitions);
@@ -105,29 +100,24 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
      * @return The category which implements logic required for Faceted Navigation.
      */
     protected CategoryDefinition convert(String facetName,
-                                            Category category, 
-                                            FacetedNavigationQPOptions facetedNavigationQPOptions) {
+                                            Category category) {
         List<CategoryDefinition> subCategories = new ArrayList<>();
         for(Category subCat : category.getSubCategories()) {
-            subCategories.add(convert(facetName, subCat, facetedNavigationQPOptions));
+            subCategories.add(convert(facetName, subCat));
         }
         
         CategoryDefinition categoryDefinition;
         if(category instanceof DateFieldCategory) {
             DateFieldFill dateFieldFill = new DateFieldFill(((DateFieldCategory) category).getMetadataField());
-            facetedNavigationQPOptions.add(dateFieldFill);
             categoryDefinition = dateFieldFill;
         } else if(category instanceof GscopeCategory) {
             GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) category).getCategoryName(), ((GscopeCategory) category).getGscope());
-            facetedNavigationQPOptions.add(gScopeItem);
             categoryDefinition = gScopeItem;
         } else if(category instanceof MetaDataFieldCategory) {
              MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());
-            facetedNavigationQPOptions.add(metadataFieldFill);
             categoryDefinition = metadataFieldFill;
         } else if(category instanceof URLCategory) {
             URLFill urlFill = new URLFill(((URLCategory) category).getUriPrefix());
-            facetedNavigationQPOptions.add(urlFill);
             categoryDefinition = urlFill;
         } else {
             //Typically means that the marshaler now produces a Category that we don't understand

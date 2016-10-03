@@ -55,30 +55,18 @@ public class FacetedNavigationMetdataTypeFillTests {
         SearchQuestion question = new SearchQuestion();
         st = new SearchTransaction(question, null);
         processor.processInput(st);
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No faceted navigation config
         question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
         st = new SearchTransaction(question, null);
         processor.processInput(st);
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
         
         // No QP Options
         Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
-        c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null, null));
+        c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null));
         question.setCollection(c);
         st = new SearchTransaction(question, null);
         processor.processInput(st);
-        Assert.assertEquals(0, st.getQuestion().getDynamicQueryProcessorOptions().size());
-
-    }
-    
-    @Test
-    public void test() {        
-        processor.processInput(st);
-        
-        Assert.assertEquals(1, st.getQuestion().getDynamicQueryProcessorOptions().size());
-        Assert.assertTrue(st.getQuestion().getDynamicQueryProcessorOptions().get(0).startsWith("-rmcf="));
     }
     
     @Test
