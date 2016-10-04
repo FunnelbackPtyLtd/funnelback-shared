@@ -49,6 +49,15 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
     }
     
     @Test
+    public void testNoFacets() throws Exception {
+        processor.setFacetedNavigationConfigProvider((q) -> null);
+        
+        processor.processInput(transaction);
+        
+        Mockito.verifyZeroInteractions(reducers);
+    }
+    
+    @Test
     public void testFacets() throws Exception {
         // Configure faceted navigation
         CategoryDefinition cDef1 = new MetadataFieldFill("a");
