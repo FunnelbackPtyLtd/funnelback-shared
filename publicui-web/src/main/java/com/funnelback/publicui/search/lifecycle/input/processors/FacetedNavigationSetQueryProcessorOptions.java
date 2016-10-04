@@ -49,24 +49,26 @@ public class FacetedNavigationSetQueryProcessorOptions extends AbstractInputProc
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (SearchTransactionUtils.hasCollection(searchTransaction)) {
             FacetedNavigationConfig config = facetedNavigationConfigProvider.apply(searchTransaction.getQuestion());
-
-            // Fetch all QPOs set by all the category definitions
-            List<QueryProcessorOption<?>> options = config.getFacetDefinitions()
-                .stream()
-                .flatMap(facetDefinition -> getAllQueryProcessorOptions(searchTransaction.getQuestion(),
-                    facetDefinition.getCategoryDefinitions()).stream())
-                .collect(Collectors.toList());
-
-            // Merge options as they may be duplicates
-            List<String> mergedOptions = getMergedOptions(options);
-
-            // Add options to the list to pass to PADRE
-            mergedOptions
-                .stream()
-                .forEach(s -> searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(s));
-
-            if (!options.isEmpty()) {
-                log.debug("Merged query processor options from '{}' to '{}'", options, mergedOptions);
+            
+            if (config != null) {
+                // Fetch all QPOs set by all the category definitions
+                List<QueryProcessorOption<?>> options = config.getFacetDefinitions()
+                    .stream()
+                    .flatMap(facetDefinition -> getAllQueryProcessorOptions(searchTransaction.getQuestion(),
+                        facetDefinition.getCategoryDefinitions()).stream())
+                    .collect(Collectors.toList());
+    
+                // Merge options as they may be duplicates
+                List<String> mergedOptions = getMergedOptions(options);
+    
+                // Add options to the list to pass to PADRE
+                mergedOptions
+                    .stream()
+                    .forEach(s -> searchTransaction.getQuestion().getDynamicQueryProcessorOptions().add(s));
+    
+                if (!options.isEmpty()) {
+                    log.debug("Merged query processor options from '{}' to '{}'", options, mergedOptions);
+                }
             }
         }
     }
