@@ -28,6 +28,8 @@ import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 public class CacheControllerTest {
 
@@ -46,7 +48,7 @@ public class CacheControllerTest {
     
     @Test
     public void getCharsetTestXFunHeader() {
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put(Store.Header.Charset.toString(), "foobar");
         Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
@@ -54,28 +56,28 @@ public class CacheControllerTest {
     
     @Test
     public void getCharsetTestContentTypeHeader() {
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put("Content-Type", "derp a charset=foobar");
         Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderLC() {
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put("content-type", "derp a charset=\"foobar\"");
         Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderMixed() {
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put("content-tYPe", "derp a charset=  \"foobar\" some stuff after");
         Assert.assertEquals("foobar", cacheController.getCharset(m));
     }
     
     @Test
     public void getCharsetTestContentTypeHeaderNoCharset() {
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put("Content-Type", "derp a ");
         Assert.assertEquals(CacheController.DEFAULT_CHARSET, cacheController.getCharset(m));
     }
@@ -122,7 +124,7 @@ public class CacheControllerTest {
         
         DataRepository dataRepository = mock(DataRepository.class);
         
-        Map<String, String> m = new HashMap<>();
+        Multimap<String, String> m = HashMultimap.create();
         m.put("content-type", "charset=\"" + charset + "\"");
         
         RawBytesRecord r = new RawBytesRecord(SIMPLE_NON_ASCII_STRING.getBytes(charset), "key");
