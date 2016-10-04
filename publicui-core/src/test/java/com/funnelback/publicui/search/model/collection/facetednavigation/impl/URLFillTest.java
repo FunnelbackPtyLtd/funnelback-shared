@@ -45,7 +45,7 @@ public class URLFillTest {
         question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
         
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 2)), actual);
+        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 4)), actual);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class URLFillTest {
             "example.org/about/company", "example.org/produts/vacuum-cleaners/bagless/dyson"));
 
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 5)), actual);
+        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 7)), actual);
     }
     
     @Test

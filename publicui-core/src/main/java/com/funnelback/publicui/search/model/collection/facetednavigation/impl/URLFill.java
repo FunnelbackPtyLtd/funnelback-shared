@@ -33,15 +33,42 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class URLFill extends CategoryDefinition implements MetadataBasedCategory {
     
-    /** Default value for -count_urls when no facet value is selected */
-    public final static int DEFAULT_COUNT_URLS = 1;
+    /**
+     * Minimum value for <code>-count_urls</code> option. This option is 1-based,
+     * where 1 will cause PADRE to return a list of hostname only URLs (e.g.
+     * <code>http://exampe.org</code>)
+     */
+    private final static int COUNT_URLS_START_VALUE = 1;
+    
+    /**
+     * <p>How much to increment <code>-count_urls</code> to get the data we need.</p>
+     * 
+     * <p>This is "2" because given a url <code>http://example.org/folder1/folder2/folder3/pag.html</code>
+     * and the current scope <code>http://example.org/folder1/</code>:
+     * <ul>
+     *  <li>With 1 we only get <code>http://example.org/folder1/folder2</code> so <code>folder2</code.
+     *  will be considered a "page", not a possible sub-folder</li>
+     *  <li>With 2 we get <code>http://example.org/folder1/folder2/folder3</code>, allowing us to see
+     *  that <code>folder2</code> is actually a folder and include it in the facet values</li>
+     * </ul>
+     * 
+     * <p>See {@link #COUNT_URLS_START_VALUE} and the implementation details of PADRE
+     * <code>-count_urls</code> option.</p>
+     * 
+     */
+    private final static int COUNT_URLS_INCREMENT = 2;
+    
+    /**
+     * Default number of path segments to count when no facet value is selected
+     */
+    public final static int DEFAULT_SEGMENTS = 1;
 
     private final List<QueryProcessorOption<?>> defaultQpOptions;
     
     public URLFill(String url) {
         super(url);
         this.setData(url); // We reset data as we need to ensure the data is set correctly
-        defaultQpOptions = Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, DEFAULT_COUNT_URLS));
+        defaultQpOptions = Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, DEFAULT_SEGMENTS + COUNT_URLS_INCREMENT));
     }
 
     /** Identifier used in query string parameter. */
@@ -209,9 +236,11 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                 .stream()
                 .map(URLFill::countSegments)
                 .reduce(Integer::max)
-                .orElse(DEFAULT_COUNT_URLS);
+                .orElse(DEFAULT_SEGMENTS);
             
-            return Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, maxSegments+1));
+            return Collections.singletonList(new QueryProcessorOption<Integer>(
+                QueryProcessorOptionKeys.COUNT_URLS,
+                COUNT_URLS_START_VALUE + maxSegments + COUNT_URLS_INCREMENT));
         } else {
             return defaultQpOptions;
         }
