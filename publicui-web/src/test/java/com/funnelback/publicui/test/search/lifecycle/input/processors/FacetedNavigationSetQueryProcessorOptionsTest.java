@@ -1,6 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -82,7 +81,7 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
 
         Mockito.verify(reducers).reduceAllQueryProcessorOptions(Lists.newArrayList(
             new QueryProcessorOption<>("rmcf", "a"),
-            new QueryProcessorOption<>("count_urls", 1),
+            new QueryProcessorOption<>("count_urls", 3),
             new QueryProcessorOption<>("countgbits", "all")));
         
         Mockito.verify(question, Mockito.times(2)).getDynamicQueryProcessorOptions();
