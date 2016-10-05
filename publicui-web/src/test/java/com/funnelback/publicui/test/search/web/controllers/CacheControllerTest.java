@@ -4,9 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.jsoup.nodes.Document;
@@ -28,7 +25,9 @@ import com.funnelback.publicui.search.model.transaction.cache.CacheQuestion;
 import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 public class CacheControllerTest {
@@ -124,7 +123,7 @@ public class CacheControllerTest {
         
         DataRepository dataRepository = mock(DataRepository.class);
         
-        Multimap<String, String> m = HashMultimap.create();
+        ListMultimap<String, String> m = ArrayListMultimap.create();
         m.put("content-type", "charset=\"" + charset + "\"");
         
         RawBytesRecord r = new RawBytesRecord(SIMPLE_NON_ASCII_STRING.getBytes(charset), "key");

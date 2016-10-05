@@ -1,5 +1,7 @@
 <DOCHDR>
 X-Funnelback-Test: jUnit
+two-values: one
+two-values: two
 </DOCHDR>
 <html>
 <head>

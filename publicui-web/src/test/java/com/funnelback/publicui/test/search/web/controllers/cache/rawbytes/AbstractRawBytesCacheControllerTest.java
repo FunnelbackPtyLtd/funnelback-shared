@@ -3,9 +3,7 @@ package com.funnelback.publicui.test.search.web.controllers.cache.rawbytes;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +37,8 @@ import com.funnelback.publicui.search.service.DataRepository;
 import com.funnelback.publicui.search.service.security.DLSEnabledChecker;
 import com.funnelback.publicui.search.web.controllers.CacheController;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -48,7 +46,7 @@ import com.google.common.collect.Multimap;
 public abstract class AbstractRawBytesCacheControllerTest {
 
     protected static final File TEST_DOCUMENT = new File("src/test/resources/cache-controller/sample.html");
-    protected static final Multimap<String, String> METADATA = HashMultimap.create();
+    protected static final ListMultimap<String, String> METADATA = ArrayListMultimap.create();
     static {
         METADATA.put("X-Funnelback-Test", "jUnit");
         METADATA.put("two-values", "one");
@@ -149,11 +147,11 @@ public abstract class AbstractRawBytesCacheControllerTest {
             return ((Map<String, String>) modelAndView.getModel().get(CacheController.MODEL_METADATA_V1)).get(key);
         };
         
-        Assert.assertEquals(rmd.metadata.get("X-Funnelback-Test"), getValueFromMap.apply(mav, "X-Funnelback-Test"));
+        Assert.assertEquals(rmd.metadata.get("X-Funnelback-Test").get(0), getValueFromMap.apply(mav, "X-Funnelback-Test"));
         
         
         Assert.assertTrue("For multi value metadata we should pick one of the values for backwards compat",
-            "one".equals(getValueFromMap.apply(mav, "two-values")) || getValueFromMap.apply(mav, "two-values").equals("") );
+            "one".equals(getValueFromMap.apply(mav, "two-values")) || "two".equals(getValueFromMap.apply(mav, "two-values")));
         Assert.assertEquals(
                 Jsoup.parse(new String(rmd.record.getContent())).html(),
                 ((Document) mav.getModel().get(CacheController.MODEL_DOCUMENT)).html());
