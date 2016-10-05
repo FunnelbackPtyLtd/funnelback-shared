@@ -46,7 +46,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
      * <p>This is "2" because given a url <code>http://example.org/folder1/folder2/folder3/pag.html</code>
      * and the current scope <code>http://example.org/folder1/</code>:
      * <ul>
-     *  <li>With 1 we only get <code>http://example.org/folder1/folder2</code> so <code>folder2</code.
+     *  <li>With 1 we only get <code>http://example.org/folder1/folder2</code> so <code>folder2</code>.
      *  will be considered a "page", not a possible sub-folder</li>
      *  <li>With 2 we get <code>http://example.org/folder1/folder2/folder3</code>, allowing us to see
      *  that <code>folder2</code> is actually a folder and include it in the facet values</li>
