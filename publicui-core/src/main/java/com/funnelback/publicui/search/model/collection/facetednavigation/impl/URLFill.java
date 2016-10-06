@@ -231,7 +231,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         }
     }
     
-    public Stream<String> getSelectedValus(SearchQuestion question) {
+    public Stream<String> getSelectedValues(SearchQuestion question) {
         if (question.getSelectedFacets().contains(facetName)) {
             return question.getSelectedCategoryValues().get(getQueryStringParamName()).stream();
         }
@@ -243,7 +243,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         
         // Find maxmimum number of segments among all selected values as well as the URL prefix.
-        int maxSegments = Stream.concat(getSelectedValus(question), Stream.of(fixURL.apply(this.data)))
+        int maxSegments = Stream.concat(getSelectedValues(question), Stream.of(fixURL.apply(this.data)))
             .map(URLFill::countSegments)
             .reduce(Integer::max)
             .orElse(DEFAULT_SEGMENTS);
