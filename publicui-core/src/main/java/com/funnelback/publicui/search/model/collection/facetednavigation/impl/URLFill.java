@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,9 +24,6 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>{@link CategoryDefinition} based on an URL prefix.<p>
@@ -62,13 +64,23 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
      * Default number of path segments to count when no facet value is selected
      */
     public final static int DEFAULT_SEGMENTS = 1;
-
-    private final List<QueryProcessorOption<?>> defaultQpOptions;
+    
+    private final static Function<String, String> fixURL = (url) -> {
+        // Strip 'http://' prefixes as PADRE strips them.
+        url = url.replaceFirst("^http://", "");
+        
+        if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
+            // Windows style url \\server\share\folder\file.ext
+            // Convert to smb://... so that URLs returned by PADRE will match
+          return url = VFSURLUtils.SystemUrlToVFSUrl(url);
+        } else {
+            return url;
+        }
+    };
     
     public URLFill(String url) {
         super(url);
         this.setData(url); // We reset data as we need to ensure the data is set correctly
-        defaultQpOptions = Collections.singletonList(new QueryProcessorOption<Integer>(QueryProcessorOptionKeys.COUNT_URLS, DEFAULT_SEGMENTS + COUNT_URLS_INCREMENT));
     }
 
     /** Identifier used in query string parameter. */
@@ -83,8 +95,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     public List<CategoryValue> computeValues(final SearchTransaction st) {
         List<CategoryValue> categories = new ArrayList<CategoryValue>();
 
-        // Strip 'http://' prefixes as PADRE strips them.
-        String url = data.replaceFirst("^http://", "");
+        
+        String url = data;
 
         // Find out which URL is currently selected. By default
         // it's the root folder specified in the faceted nav. config.
@@ -98,19 +110,10 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             currentConstraint = currentConstraints.get(0);
         }
         
-        if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
-            // Windows style url \\server\share\folder\file.ext
-            // Convert to smb://... so that URLs returned by PADRE will match
-            url = VFSURLUtils.SystemUrlToVFSUrl(url);
-        }
         
-        if (currentConstraint.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
-            currentConstraint = VFSURLUtils.SystemUrlToVFSUrl(currentConstraint);
-        }
-        
-        // Comparisons are case-insensitive
-        url = url.toLowerCase();
-        currentConstraint = currentConstraint.toLowerCase();
+        // Fix URLs and lower case them as comparisons are case-insensitive.
+        url = fixURL.apply(url).toLowerCase();
+        currentConstraint = fixURL.apply(url).toLowerCase();
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
@@ -227,23 +230,28 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             super.setData(data+"/");
         }
     }
+    
+    public Stream<String> getSelectedValus(SearchQuestion question) {
+        if (question.getSelectedFacets().contains(facetName)) {
+            return question.getSelectedCategoryValues().get(getQueryStringParamName()).stream();
+        }
+        return Stream.empty();
+         
+    }
 
     @Override
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
-        if (question.getSelectedFacets().contains(facetName)) {
-            // Find maxmimum number of segments among all selected values
-            int maxSegments = question.getSelectedCategoryValues().get(getQueryStringParamName())
-                .stream()
-                .map(URLFill::countSegments)
-                .reduce(Integer::max)
-                .orElse(DEFAULT_SEGMENTS);
-            
-            return Collections.singletonList(new QueryProcessorOption<Integer>(
-                QueryProcessorOptionKeys.COUNT_URLS,
-                COUNT_URLS_START_VALUE + maxSegments + COUNT_URLS_INCREMENT));
-        } else {
-            return defaultQpOptions;
-        }
+        
+        // Find maxmimum number of segments among all selected values as well as the URL prefix.
+        int maxSegments = Stream.concat(getSelectedValus(question), Stream.of(fixURL.apply(this.data)))
+            .map(URLFill::countSegments)
+            .reduce(Integer::max)
+            .orElse(DEFAULT_SEGMENTS);
+        
+        return Collections.singletonList(new QueryProcessorOption<Integer>(
+            QueryProcessorOptionKeys.COUNT_URLS,
+            COUNT_URLS_START_VALUE + maxSegments + COUNT_URLS_INCREMENT));
+        
     }
 
     /**
