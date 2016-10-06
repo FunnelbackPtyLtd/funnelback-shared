@@ -59,6 +59,19 @@ public class URLFillTest {
         Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 7)), actual);
     }
     
+    
+    @Test
+    public void testLongURLPrefix() {
+        SearchQuestion question = new SearchQuestion();
+        question.getSelectedFacets().add("facetName");
+        question.getSelectedCategoryValues().put("f.facetName|url", Lists.newArrayList("https://example.org/products"));
+
+        URLFill urlFill = new URLFill("http://foo.com/1/2/3/4/5/6/7/8/9/0");
+        List<QueryProcessorOption<?>> actual = urlFill.getQueryProcessorOptions(question);
+        Assert.assertEquals("We must have a count_urls depth that is deeper than the URL prefix of the category.",
+            Collections.singletonList(new QueryProcessorOption<>("count_urls", 13)), actual);
+    }
+    
     @Test
     public void testCountSegments() {
         Assert.assertEquals(1, URLFill.countSegments("https://example.org"));
