@@ -113,7 +113,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         
         // Fix URLs and lower case them as comparisons are case-insensitive.
         url = fixURL.apply(url).toLowerCase();
-        currentConstraint = fixURL.apply(url).toLowerCase();
+        currentConstraint = fixURL.apply(currentConstraint).toLowerCase();
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
