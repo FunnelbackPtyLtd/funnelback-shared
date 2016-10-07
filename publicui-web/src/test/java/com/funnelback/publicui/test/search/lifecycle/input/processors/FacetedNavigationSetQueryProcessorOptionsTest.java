@@ -81,7 +81,7 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
 
         Mockito.verify(reducers).reduceAllQueryProcessorOptions(Lists.newArrayList(
             new QueryProcessorOption<>("rmcf", "a"),
-            new QueryProcessorOption<>("count_urls", 1+1+2),//one for the base depth + one for the / in url + 2 for 
+            new QueryProcessorOption<>("count_urls", 1+0+2),//one for the base depth + zero for the segments in url + 2 for 
                                                             //extra depth to workaround padre limitation.
             new QueryProcessorOption<>("countgbits", "all")));
         

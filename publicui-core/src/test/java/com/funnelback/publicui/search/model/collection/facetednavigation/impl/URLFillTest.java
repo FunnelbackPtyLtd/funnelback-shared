@@ -56,7 +56,7 @@ public class URLFillTest {
             "example.org/about/company", "example.org/produts/vacuum-cleaners/bagless/dyson"));
 
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(question);
-        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 7)), actual);
+        Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_urls", 1 + 4 + 2)), actual);
     }
     
     
@@ -74,12 +74,12 @@ public class URLFillTest {
     
     @Test
     public void testCountSegments() {
-        Assert.assertEquals(1, URLFill.countSegments("https://example.org"));
-        Assert.assertEquals(1, URLFill.countSegments("https://example.org/"));
-        Assert.assertEquals(1, URLFill.countSegments("http://example.org"));
-        Assert.assertEquals(1, URLFill.countSegments("http://example.org/"));
-        Assert.assertEquals(1, URLFill.countSegments("example.org"));
-        Assert.assertEquals(1, URLFill.countSegments("example.org/"));
+        Assert.assertEquals(0, URLFill.countSegments("https://example.org"));
+        Assert.assertEquals(0, URLFill.countSegments("https://example.org/"));
+        Assert.assertEquals(0, URLFill.countSegments("http://example.org"));
+        Assert.assertEquals(0, URLFill.countSegments("http://example.org/"));
+        Assert.assertEquals(0, URLFill.countSegments("example.org"));
+        Assert.assertEquals(0, URLFill.countSegments("example.org/"));
 
         Assert.assertEquals(1, URLFill.countSegments("https://example.org/about"));
         Assert.assertEquals(1, URLFill.countSegments("https://example.org/about/"));
