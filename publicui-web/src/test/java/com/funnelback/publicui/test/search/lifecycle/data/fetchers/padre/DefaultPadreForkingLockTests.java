@@ -170,7 +170,7 @@ public class DefaultPadreForkingLockTests {
         File programRunningFile = new File(tmpDir, "started");
         
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml", "2", programRunningFile.getAbsolutePath()}));
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ascii.xml", "2", programRunningFile.getAbsolutePath()}));
         
         if (OS.isFamilyWindows()) {
             // Can't sleep/wait in a batch script except when using PING or TIMEOUT,
@@ -233,9 +233,16 @@ public class DefaultPadreForkingLockTests {
             raf.close();
         }
         
-        assertResults(st);
+        assertResultsAscii(st);
         Assert.assertTrue(LOCK_FILE.exists());
         ensureLockReleased(LOCK_FILE);        
+    }
+    
+    private void assertResultsAscii(SearchTransaction st) throws IOException {
+        Assert.assertNotNull(st.getResponse());
+        
+        Assert.assertEquals(2, st.getResponse().getResultPacket().getResults().size());
+        Assert.assertEquals("Antony and Cleopatra: List of Scenes", st.getResponse().getResultPacket().getResults().get(0).getTitle());    
     }
 
     private void assertResults(SearchTransaction st) throws IOException {
