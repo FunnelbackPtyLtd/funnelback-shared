@@ -113,7 +113,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         
         // Fix URLs and lower case them as comparisons are case-insensitive.
         url = fixURL.apply(url).toLowerCase();
-        currentConstraint = fixURL.apply(url).toLowerCase();
+        currentConstraint = fixURL.apply(currentConstraint).toLowerCase();
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
@@ -258,22 +258,20 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
      * <p>Counts the number of segments in the path component of a URL substring</p>
      */
     public static int countSegments(String urlSubstring) {
+        // Strip protocol
+        urlSubstring = urlSubstring.replaceAll("^.+://", "");
+        
         if (urlSubstring.endsWith("/")) {
             // Strip any trailing '/' for consistency
             urlSubstring = urlSubstring.substring(0, urlSubstring.length() - 1);
         }
         
-        // Strip protocol
-        urlSubstring = urlSubstring.replaceAll("^.+://", "");
-        
-        // Strip host
-        urlSubstring = StringUtils.substringAfter(urlSubstring, "/");
-        
         // Strip anchor, query
         urlSubstring = StringUtils.substringBefore(urlSubstring, "#");
         urlSubstring = StringUtils.substringBefore(urlSubstring, "?");
         
-        return urlSubstring.split("/").length;
+        //minus one so we don't count the host in the segments
+        return urlSubstring.split("/").length - 1;
     }
 
 }
