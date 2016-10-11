@@ -134,7 +134,9 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             Names.affected(),
             Names.unaffected(),
             Names.checked(),
-            Names.occurrences())
+            Names.occurrences(),
+            Names.checks(),
+            Names.checksPassed())
             .map(Metadata::getName);
         
         String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, successCriteria, principles, other)
