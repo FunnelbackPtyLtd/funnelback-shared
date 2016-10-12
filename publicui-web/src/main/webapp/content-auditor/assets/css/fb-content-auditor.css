@@ -1663,9 +1663,9 @@ footer a,footer a:focus,footer a:hover {
 
 .uri-selector .dropdown {
     margin-left: 30px;
+    white-space: pre;
     line-height:0;
 }
-
 .uri-selector .dropdown .facet li,.recommendations .category {
     display: block;
     padding: 0;
@@ -1673,55 +1673,61 @@ footer a,footer a:focus,footer a:hover {
     font-weight: 700;
     line-height:0;
 }
+.uri-selector .dropdown-toggle{
+    background-color: #fff;
+    float: left;
+    margin-left: 2px;
+    margin-top: -9px;
+    padding: 4px 8px 3px 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.uri-selector .dropdown-menu{
+  border-radius: 0;
+  margin-top: 10px;
+  margin: 11px 0 0 2px;
+}
+.uri-selector .dropdown .facet a{
+  display: block;
+}
+.uri-selector .dropdown .facet a, .uri-selector .dropdown .facet a:hover, .uri-selector .dropdown .facet a:hover *{
+  cursor:pointer !important;
+}
+.uri-selector .dropdown .facet small{
+  margin-left:4px;
+  text-decoration: none !important;
+  color:#888;
+}
+
 .uri-selector .facet{
     display:block;
 }
 .uri-selector .facet li{
 }
-.dropdown-menu{ 
-    border-radius:0;
+.uri-selector .dropdown-menu{ 
+    
 }
 .uri-selector .categoryCount {
     float: none !important;
 }
-
-.uri-selector .dropdown .facet li{
-  padding:0 !important;
-}
-
-
-  
 /*
 .recommendations .category{ 
     white-space:pre;
 }
 */
-
-.uri-selector .dropdown button{
-    background:#fff;
-    border-color:#ccc;
+.uri-selector .dropdown  .category > span, .uri-selector .dropdown .category > small {
+    display:inline;
+    float: left;
 }
-.uri-selector .dropdown li a small {
-    color: #888;
-    margin-left: 4px;
+.uri-selector .dropdown  .category > span{
+    margin-left: -25px;
 }
-.uri-selector .dropdown li a small, .uri-selector .dropdown li a span{
-      text-decoration:none !important;
+.uri-selector .dropdown .facet .category{
+  padding:0 !important;
 }
-
-.uri-selector .dropdown .facet > li {
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    overflow:hidden;
-    position:relative;
-}
-
-.uri-selector .dropdown .facet li a{
-  padding: 12px 20px 12px;
-  display:block;
-  white-space: pre;
+.uri-selector .dropdown .facet li a {
+    padding: 15px 20px;
+    font-weight:500;
 }
 .uri-selector .facet{
     width:100%;
