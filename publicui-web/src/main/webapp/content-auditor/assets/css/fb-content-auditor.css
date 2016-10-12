@@ -1,7 +1,5 @@
 /*-------------------------------------- 
   - Funnelback Content Auditor Styles - 
-  Last Edited by: Steve Chan
-  on: 12 Oct 2016
 ----------------------------------------*/
 /* 
     STYLE GUIDE:
@@ -361,9 +359,13 @@ header .nav,header li a {
 */
 /*Buttons */
 .btn,.btn:active,.btn:focus {
+    border-radius: 2px;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
-    border-radius: 2px;
+}
+
+ {
+    background-color: #19cd9b;
 }
 
 .btn:hover {
@@ -436,9 +438,9 @@ header .nav,header li a {
 .search-form input[type=text],.search-form input[type=search],.search-form input[type=url],.search-form select {
     background: none repeat scroll 0 0 rgba(0,0,0,0.15);
     border-color: #801E0F;
+    border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
-    border-radius: 0;
     border-style: solid;
     border-width: 0 0 2px;
     color: #eee;
@@ -462,7 +464,9 @@ header .nav,header li a {
     background: #e42b12;
     border-bottom: 2px solid #e42b12;
     font-size: 10px;
+    font-weight: 500;
     height: 100%;
+    letter-spacing: 1.3px;
     line-height: 3.2;
     padding: 0 12px;
     position: absolute;
@@ -523,7 +527,6 @@ header .nav,header li a {
 
 .navbar-inverse .navbar-brand,.navbar-inverse .navbar-brand.in {
     -moz-user-select: none;
-    user-select: none;
     background: transparent url(../img/funnelback-logo-inverse-content-auditor.svg) no-repeat scroll 0 7px;
     color: #d6d6d6;
     cursor: pointer;
@@ -719,9 +722,9 @@ header .nav,header li a {
 .tab-summary {
     background-color: #f1f1f1;
     border-bottom: 1px solid #eee;
+    border-radius: 2px !important;
     -webkit-border-radius: 2px !important;
     -moz-border-radius: 2px !important;
-    border-radius: 2px !important;
     margin: 0 -15px;
     padding: 8px 30px 10px;
 }
@@ -751,9 +754,9 @@ header .nav,header li a {
 
 .nav-tabs > li > a {
     border: 1px solid transparent;
+    border-radius: 2px 2px 0 0;
     -webkit-border-radius: 2px 2px 0 0;
     -moz-border-radius: 2px 2px 0 0;
-    border-radius: 2px 2px 0 0;
     margin: 0 10px;
     padding: 12px 0;
     color: #666;
@@ -773,9 +776,9 @@ header .nav,header li a {
 .nav-tabs > li.active a {
     color: #333 !important;
     font-weight: 600 !important;
+    border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
-    border-radius: 0;
     background: none !important;
     border-color: transparent !important;
 }
@@ -1014,9 +1017,9 @@ h4 > .facetLabel,h3 > .facetLabel {
 }
 
 #fb-facets-navigation .nav-stacked > li > a {
+    border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
     border: solid transparent;
     border-width: 0 0 0 3px;
     margin: 0;
@@ -1037,9 +1040,10 @@ h4 > .facetLabel,h3 > .facetLabel {
 #fb-facets-navigation .nav-stacked > li.active > a,.nav-stacked > li.active > a:hover,.nav-stacked > li.active > a:hover,.nav-stacked > li.active > a:focus {
     background-color: rgba(0,0,0,0.08);
     border-bottom: 0 solid #ddd;
+    border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
+    color: #fff;
     font-weight: 600;
     border-left: 3px solid #e42b12 !important;
     color: #333;
@@ -1144,9 +1148,9 @@ h4 > .facetLabel,h3 > .facetLabel {
 .appliedFacets {
     background: none repeat scroll 0 0 #fff;
     border: 1px solid #efefef;
+    border-radius: 2px !important;
     -webkit-border-radius: 2px !important;
     -moz-border-radius: 2px !important;
-    border-radius: 2px !important;
     color: #666;
     font-size: 11px;
     font-weight: 600;
@@ -1205,9 +1209,9 @@ h4 > .facetLabel,h3 > .facetLabel {
 
 /*panels*/
 .panel-heading,.boxed,.panel-default > .panel-heading,.panel-heading {
+    border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
     border-color: #dfdfdf;
     border-width: 3px;
 }
@@ -1222,11 +1226,11 @@ h4 > .facetLabel,h3 > .facetLabel {
 
 .panel,.boxed,.boxed-inner.boxed {
     border: 1px solid #E3E3E3;
+    border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    border-radius: 0 !important;
     box-shadow: none;
 }
 
@@ -1303,6 +1307,7 @@ footer > .row {
     color: #999;
     font-size: 12px;
     border-top: 1px solid #ebebeb;
+    padding: 35px 0;
     margin: 0 -25px;
     padding: 25px 5px;
 }
@@ -1398,9 +1403,9 @@ footer a,footer a:focus,footer a:hover {
     -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.2);
     -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.2);
     box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+    border-radius: 4px !important;
     -webkit-border-radius: 4px !important;
     -moz-border-radius: 4px !important;
-    border-radius: 4px !important;
     border-color: transparent;
 }
 
@@ -1658,9 +1663,9 @@ footer a,footer a:focus,footer a:hover {
 
 .uri-selector .dropdown {
     margin-left: 30px;
-    white-space: pre;
     line-height:0;
 }
+
 .uri-selector .dropdown .facet li,.recommendations .category {
     display: block;
     padding: 0;
@@ -1668,61 +1673,55 @@ footer a,footer a:focus,footer a:hover {
     font-weight: 700;
     line-height:0;
 }
-.uri-selector .dropdown-toggle{
-    background-color: #fff;
-    float: left;
-    margin-left: 2px;
-    margin-top: -9px;
-    padding: 4px 8px 3px 10px;
-    font-size: 13px;
-    font-weight: bold;
-}
-.uri-selector .dropdown-menu{
-  border-radius: 0;
-  margin-top: 10px;
-  margin: 11px 0 0 2px;
-}
-.uri-selector .dropdown .facet a{
-  display: block;
-}
-.uri-selector .dropdown .facet a, .uri-selector .dropdown .facet a:hover, .uri-selector .dropdown .facet a:hover *{
-  cursor:pointer !important;
-}
-.uri-selector .dropdown .facet small{
-  margin-left:4px;
-  text-decoration: none !important;
-  color:#888;
-}
-
 .uri-selector .facet{
     display:block;
 }
 .uri-selector .facet li{
 }
-.uri-selector .dropdown-menu{ 
-    
+.dropdown-menu{ 
+    border-radius:0;
 }
 .uri-selector .categoryCount {
     float: none !important;
 }
+
+.uri-selector .dropdown .facet li{
+  padding:0 !important;
+}
+
+
+  
 /*
 .recommendations .category{ 
     white-space:pre;
 }
 */
-.uri-selector .dropdown  .category > span, .uri-selector .dropdown .category > small {
-    display:inline;
-    float: left;
+
+.uri-selector .dropdown button{
+    background:#fff;
+    border-color:#ccc;
 }
-.uri-selector .dropdown  .category > span{
-    margin-left: -25px;
+.uri-selector .dropdown li a small {
+    color: #888;
+    margin-left: 4px;
 }
-.uri-selector .dropdown .facet .category{
-  padding:0 !important;
+.uri-selector .dropdown li a small, .uri-selector .dropdown li a span{
+      text-decoration:none !important;
 }
-.uri-selector .dropdown .facet li a {
-    padding: 15px 20px;
-    font-weight:500;
+
+.uri-selector .dropdown .facet > li {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow:hidden;
+    position:relative;
+}
+
+.uri-selector .dropdown .facet li a{
+  padding: 12px 20px 12px;
+  display:block;
+  white-space: pre;
 }
 .uri-selector .facet{
     width:100%;
@@ -1776,6 +1775,7 @@ footer a,footer a:focus,footer a:hover {
 .no-info .inner {
     color: #888;
     width: 100% !important;
+    display: block;
     height: 155px;
     background: #f8f8f8;
     text-align: center;
@@ -2000,7 +2000,7 @@ header {
 }
 
 #fb-facets-navigation {
-    width: 12.667%;
+    width: 20%;
     margin-top: 92px;
 }
 
@@ -2009,7 +2009,7 @@ header {
 }
 
 #fb-facet-details {
-    width: 87.333%;
+    width: 80%;
 }
 
 #fb-facets-navigation,#fb-facet-details {
@@ -2023,7 +2023,9 @@ header {
 .closed #fb-facets-navigation {
     width: .667% !important;
 }
-
+.closed #fb-facet-details {
+    width: 96.97%;
+}
 #fb-facets-navigation .nav-stacked > li > a {
     transition: padding 333ms ease 222ms,color 333ms ease 222ms,opacity 222ms ease;
 }
@@ -2063,6 +2065,7 @@ header {
 }
 
 #btn-facet-container:hover {
+    background: none repeat scroll 0 0 #eee;
     color: #e42b12;
     -webkit-box-shadow: 0 0 0 1px #fff inset;
     -moz-box-shadow: 0 0 0 1px #fff inset;
@@ -2121,22 +2124,23 @@ header {
 .tablescroll_head th {
     width: auto !important;
 }
+
 }
 
 @media (min-width: 1200px) {
-.tablescroll_body,.tablescroll_head {
-    width: 100% !important;
-}
-
-.tablescroll_wrapper {
-    width: 98.3% !important;
-}
-
-.closed #fb-facet-details {
-    width: 95.7% !important;
-}
-
-.facet-search-chart,.facet-search-details {
+  .tablescroll_body,.tablescroll_head {
+      width: 100% !important;
+  }
+  
+  .tablescroll_wrapper {
+      width: 97.5% !important;
+  }
+  
+  .closed #fb-facet-details {
+      width: 95.7% !important;
+  }
+  
+  .facet-search-chart,.facet-search-details {
     width: 49.5%;
     margin: 0 !important;
     padding-left: 0;
@@ -2148,20 +2152,29 @@ header {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: 0;
-}
-
-.facet-search-chart {
+  }
+  .facet-search-details {
+    width:56.5%;
+  }
+  .facet-search-chart {
+    width:42.5%;
     float: left;
     padding-right: 0;
-}
-
-.facet-search-details {
+  }
+  
+  .facet-search-details {
     float: right;
-}
-
-.modal-dialog {
+  }
+  
+  .modal-dialog {
     width: 1140px;
-}
+  }
+  .closed #fb-facet-details {
+    width: 97.5% !important;
+  }
+  #tabbable-content{
+    padding: 0 25px 8px;
+  }
 }
 
 @media (min-width: 1600px) {
@@ -2176,12 +2189,24 @@ header {
 .modal-dialog {
     width: 1200px;
 }
+#fb-facets-navigation {
+    width: 12.667%;
+}
+
+#fb-facet-details {
+    width: 87.333%;
+}
+.closed #fb-facet-details {
+    width: 98.1% !important;
+}
+
 }
 
 /* TWBS BOOTSTRAP 3.2: SUPPORT FOR EXTRA LARGE SCREENS */
 .visible-xl-block,.visible-xl-inline,.visible-xl-inline-block,.visible-xl {
     display: none !important;
 }
+
 
 @media (min-width: 1600px) {
 .container {
@@ -2500,20 +2525,27 @@ Chart Fixes. Fixes bugs in Chrome and Safari.
     transform: translateZ(0);
 }
 html.chrome .facets {
-    -webkit-column-gap: normal !important;
-    -webkit-column-width: auto !important;
     column-gap: normal !important;
     column-width: auto !important;
+    -webkit-column-gap: normal !important;
+    -webkit-column-width: auto !important;
 }
+
 
 /* Fix for chrome. Apply to long URLs within tables to prevent non-wrapping of long text and overflow */
 
 .break-word{
     word-break:break-all;
+    
 }
+
 
 /* IE10 Fixes */
 
 html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand{ 
     background-position: 0 0; 
 }
+
+
+
+
