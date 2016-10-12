@@ -20,6 +20,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.wcag.checker.AccessibilityChecker;
 import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
+import com.funnelback.wcag.model.WCAG20Principle;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -49,6 +50,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         options.add(getCountByGroupOption());
         options.add(getCountUniqueByGroupSensitiveOption());
         options.add(getRmcSensitiveOption());
+        options.add(getSortOption());
         
         log.debug("Initialised with options: {}", options.stream().collect(Collectors.joining(System.getProperty("line.separator"))));
     }
@@ -59,6 +61,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
+            st.getQuestion().getAdditionalParameters().remove("sort");
         }
     }
     
@@ -114,17 +117,29 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(type -> Stream.of(Names.successCriterion(type)))
             .flatMap(Function.identity())
             .map(Metadata::getName);
+        
+        Stream<String> principles = Arrays.asList(WCAG20Principle.values())
+            .stream()
+            .map(principle -> Stream.of(Names.principleOccurrences(principle)))
+            .flatMap(Function.identity())
+            .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
             Names.profile(),
             Names.domain(),
+            Names.principle(),
+            Names.affectedBy(),
+            Names.passedLevels(),
+            Names.failedLevels(),
             Names.affected(),
             Names.unaffected(),
             Names.checked(),
-            Names.occurrences())
+            Names.occurrences(),
+            Names.checks(),
+            Names.checksPassed())
             .map(Metadata::getName);
         
-        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, successCriteria, other)
+        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, successCriteria, principles, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .collect(Collectors.joining(","));
@@ -187,17 +202,12 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
                         Names.domain().getName(), Names.profile().getName()
         }) {
             // FIXME: Not sure how to avoid hardcoding things here...
-            
-            // FIXME FUN-9296
-            // sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            // Above covers the one below, to remove once FUN-9296 is fixed
-            sums.add(String.format("[%sOccurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            
+            sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%s.+Occurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sAffected.+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%sAffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%sUnaffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s(A|Un)ffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sChecked]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%sPassedLevel[A]+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
         }
         
         String sumByGroupOptionValue = sums.stream().collect(Collectors.joining(","));
@@ -255,6 +265,17 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      */
     private String getCountUniqueByGroupSensitiveOption() {
         return "-countUniqueByGroupSensitive=on";
+    }
+    
+    /**
+     * Always sort by occurrences in order to display "top documents"
+     * 
+     * FIXME: Perhaps let the user control the sort?
+     * 
+     * @return PADRE <code>-sort</code> option
+     */
+    private String getSortOption() {
+        return "-sort=dmeta" + Metadata.getMetadataClass(Metadata.Names.occurrences().getName());
     }
 
 }

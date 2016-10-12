@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.index.QueryReadLock;
+import com.funnelback.publicui.utils.ExecutionReturn;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.sun.jna.platform.win32.Advapi32;
@@ -48,9 +49,17 @@ public class DefaultPadreForkingTests {
     @Autowired
     private QueryReadLock queryReadLock;
     
+    public ExecutionReturn lastExecRet;
+    
     @Before
     public void before() {
-        forking = new DefaultPadreForking();
+        forking = new DefaultPadreForking() {
+            @Override
+            protected void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException {
+                super.updateTransaction(transaction, padreOutput);
+                lastExecRet = padreOutput;
+            }
+        };
         forking.setI18n(i18n);
         forking.setPadreXmlParser(new StaxStreamParser());
         forking.setSearchHome(searchHome);
@@ -188,7 +197,8 @@ public class DefaultPadreForkingTests {
             Advapi32.INSTANCE.RevertToSelf();
             
             Assert.assertNotNull(ts.getResponse());
-            Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), ts.getResponse().getRawPacket());
+            Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), 
+                new String(this.lastExecRet.getOutBytes()));
             Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
             Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
         }
