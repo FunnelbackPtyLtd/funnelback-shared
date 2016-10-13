@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -43,7 +44,7 @@ public class LocalLogService implements LogService {
     private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final String XML_ROOT_START = "<log>";
     private static final String XML_ROOT_END = "</log>";
-
+    
     /**
      * Line separator. Always use <code>\n</code> for now
      * as we need to be able to do trickery with the XML logs
@@ -222,7 +223,7 @@ public class LocalLogService implements LogService {
             .append(xmlData).append(LINE_SEP)
             .append(XML_ROOT_END);
 
-        FileUtils.writeStringToFile(file, out.toString());
+        FileUtils.writeStringToFile(file, out.toString(), StandardCharsets.UTF_8);
     }
 
     /**
@@ -261,8 +262,9 @@ public class LocalLogService implements LogService {
                 throw new IOException("Unable to find the closing XML tag in file '" + file.getAbsolutePath() + "'");
             }
 
-            targetFile.writeBytes(xmlData + "\n");
-            targetFile.writeBytes(XML_ROOT_END);
+            targetFile.write(xmlData.getBytes(StandardCharsets.UTF_8));
+            targetFile.write(LINE_SEP);
+            targetFile.write(XML_ROOT_END.getBytes(StandardCharsets.UTF_8));
         } finally {
             try {
                 targetFile.close();
