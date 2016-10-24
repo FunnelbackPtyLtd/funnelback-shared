@@ -41,7 +41,7 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
     
-        <!-- Spring Security -->
+    <!-- Spring Security -->
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy
