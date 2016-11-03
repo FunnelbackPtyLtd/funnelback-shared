@@ -428,13 +428,14 @@
 
     @param name Name of a specific facet to display, optional.
     @param names A list of specific facets to display, optional. Won't affect facet display order (defined in <code>faceted_navigation.cfg</code>).
+    @param orderedNames A list of specific facets to display, in the order they are ot be displayed optional.
     @param class CSS class to use on the DIV containing each facet, defaults to <code>facet</code>.
 
     @provides The facet as <code>${s.facet}</code>.
 -->
-<#macro Facet name="" names=[] class="facet">
+<#macro Facet name="" names=[] orderedNames=[] class="facet">
     <#if response?exists && response.facets?exists>
-        <#if name == "" && names?size == 0>
+        <#if name == "" && names?size == 0 && orderedNames?size == 0>
             <#-- Iterate over all facets -->
             <#list response.facets as f>
                 <#if f.hasValues() || question.selectedFacets?seq_contains(f.name)>
@@ -447,16 +448,31 @@
                 </#if>
             </#list>
         <#else>
-            <#list response.facets as f>
-                <#if (f.name == name || names?seq_contains(f.name) ) && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
-                    <#assign facet = f in s>
-                    <#assign facet_index = f_index in s>
-                    <#assign facet_has_next = f_has_next in s>
-                    <div class="${class}">
-                        <#nested>
-                    </div>
-                </#if>
-            </#list>
+            <#if orderedNames?size == 0>
+                <#list response.facets as f>
+                    <#if (f.name == name || names?seq_contains(f.name) ) && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
+                        <#assign facet = f in s>
+                        <#assign facet_index = f_index in s>
+                        <#assign facet_has_next = f_has_next in s>
+                        <div class="${class}">
+                            <#nested>
+                        </div>
+                    </#if>
+                </#list>
+            <#else>
+                <#list orderedNames as orderedName>
+                    <#list response.facets as f>
+                        <#if (f.name == orderedName) && (f.hasValues() || question.selectedFacets?seq_contains(f.name))>
+                            <#assign facet = f in s>
+                            <#assign facet_index = f_index in s>
+                            <#assign facet_has_next = f_has_next in s>
+                            <div class="${class}">
+                                <#nested>
+                            </div>
+                        </#if>
+                    </#list>
+                </#list>
+            </#if>
         </#if>
     </#if>
 </#macro>
