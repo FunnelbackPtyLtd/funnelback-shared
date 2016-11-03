@@ -19,7 +19,7 @@ public interface BytesDocument extends FilterableDocument {
      * Creates a clone of the document with the given content.
      * 
      * <p>If the charset is known, it usually better to create a new StringDocument using
-     * {@link StringDocument#from(FilterableDocument, String, String)} as most filters work on 
+     * {@link StringDocument#from(FilterableDocument, DocumentType, String)} as most filters work on 
      * Strings.</p>
      * 
      * @param documentType the type of content. Typically a predefined type from {@link DocumentType}

@@ -47,7 +47,7 @@ public final class FilterResult {
     }
     
     /**
-     * Returned by a filter when it has filtered a document into one documents.
+     * Returned by a filter when it has filtered a document returning a single document.
      * 
      * <p>This is used to claim that the filter ran and the given document is
      * the result of the filter running. This may be called with the original 

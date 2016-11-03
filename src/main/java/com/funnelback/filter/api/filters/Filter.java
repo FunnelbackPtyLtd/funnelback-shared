@@ -24,9 +24,9 @@ public interface Filter extends NamedFilter {
      * Filter a document.
      * 
      * <p>Typically the interfaces {@link BytesDocumentFilter} or {@link StringDocumentFilter}
-     * are implemented instead of this to make getting access to the document content easier.
-     * This filter should be used when other filters do not make sense such as a filter which
-     * does not care about the content.</p>
+     * are implemented instead of {@link Filter} as they gives easier access to the document 
+     * content. This interface should be implemented when the filter does not need to read or 
+     * modify the documents content.</p>
      * 
      * <p>Filtering only throws unchecked exceptions. In the case a unchecked exception is
      * thrown filtering for that document is stopped and the document may or not be stored.
@@ -44,8 +44,8 @@ public interface Filter extends NamedFilter {
      * or return {@link FilterResult#skipped()}.
      * 
      * @param document The document to be filtered. 
-     * @param context the filter is running in. 
-     * @return A FilterResilt which comes from one of the static methods on FilterResult.
+     * @param context The context the filter is running under. 
+     * @return A {@link FilterResult} which comes from one of the static methods on {@link FilterResult}.
      * @throws RuntimeException when a programming error occurs and the filtering of the given
      * document should be considered a failure. Within gathering this may stop the document from
      * being stored, however other documents will continue to be filtered. 
