@@ -67,7 +67,7 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
     
     // TODO FUN-3689,FUN-3871 replace with an implementation that gets this from a config file or collection.cfg
     private String getCategory(String key) {
-        String[] content = {"content","imp_phrase","recency","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT,
+        String[] content = {"content","imp_phrase","date_proximity","an_okapi","BM25F_rank","nonbin","BM25F","no_ads","geoprox",RankingFeature.CONSAT,
                 "entropy","entropy_abs","entropy_abs_neg","entropy_neg",
                 "contentWords","contentWords_abs","contentWords_abs_neg","contentWords_neg",
                 "distinctWords","distinctWords_abs_neg","distinctWords_abs","distinctWords_neg",
@@ -114,9 +114,9 @@ public class DefaultContentOptimiserFiller implements ContentOptimiserFiller {
         List<String> qie = new ArrayList<String>();
         qie.add("The Query Independent Evidence (QIE) score for your page is low. This score is configured by the administrator of your funnelback installation. Ask your administrator how the score is currently calculated and how you can improve it.");
         m.put("qie", qie);
-        List<String> recency = new ArrayList<String>();
-        recency.add("The recency score for your page is <strong>low</strong> - this score is determined by date(s) available in your page content. Ensure that any dates in the page are accurate and that the content is up-to-date.");
-        m.put("recency", recency);
+        List<String> date_proximity = new ArrayList<String>();
+        date_proximity.add("The date_proximity score for your page is <strong>low</strong> - this score is determined by date(s) available in your page content. Ensure that any dates in the page are accurate and that the content is up-to-date.");
+        m.put("date_proximity", date_proximity);
         List<String> urltype = new ArrayList<String>();
         urltype.add("Ensure that your page URL does not contain excessive punctuation.");
         urltype.add("Try moving your page to the site's home page (if it is not already).");
