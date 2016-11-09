@@ -1,4 +1,4 @@
-<#ftl encoding="utf-8" />
+<#ftl encoding="utf-8" output_format="HTML"/>
 <#setting number_format="computer">
 <#macro pageNumbers>
  	       	<#assign totalPages = (anchors.detail.size/max_urls_per_page)?int />
