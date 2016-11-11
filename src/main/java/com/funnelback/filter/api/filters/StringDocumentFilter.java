@@ -3,6 +3,7 @@ package com.funnelback.filter.api.filters;
 import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterResult;
 import com.funnelback.filter.api.documents.FilterableDocument;
+import com.funnelback.filter.api.documents.NoContentDocument;
 import com.funnelback.filter.api.documents.StringDocument;
 
 /**
@@ -44,7 +45,7 @@ public interface StringDocumentFilter extends Filter {
      * @return {@link PreFilterCheck#ATTEMPT_FILTER} if the filter method should be called 
      * otherwise {@link PreFilterCheck#SKIP_FILTER}, to skip this Filter.
      */
-    public PreFilterCheck canFilter(FilterableDocument document, FilterContext context);
+    public PreFilterCheck canFilter(NoContentDocument document, FilterContext context);
     
     /**
      * Filters the {@link StringDocument}

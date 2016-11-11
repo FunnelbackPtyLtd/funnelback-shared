@@ -4,6 +4,7 @@ import com.funnelback.filter.api.FilterContext;
 import com.funnelback.filter.api.FilterResult;
 import com.funnelback.filter.api.documents.BytesDocument;
 import com.funnelback.filter.api.documents.FilterableDocument;
+import com.funnelback.filter.api.documents.NoContentDocument;
 
 /**
  * Filters a document where the content is converted to a byte[].
@@ -39,7 +40,7 @@ public interface BytesDocumentFilter extends Filter {
      * @return {@link PreFilterCheck#ATTEMPT_FILTER} if the filter method should be called 
      * otherwise {@link PreFilterCheck#SKIP_FILTER}, to skip this Filter.
      */
-    public PreFilterCheck canFilter(FilterableDocument document, FilterContext context);
+    public PreFilterCheck canFilter(NoContentDocument document, FilterContext context);
     
     /**
      * Filters the {@link BytesDocument}
