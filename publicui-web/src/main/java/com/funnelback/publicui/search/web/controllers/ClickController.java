@@ -222,7 +222,7 @@ public class ClickController extends SessionController {
                 }
                 
                 logService.logClick(new ClickLog(new Date(), collection, collection
-                        .getProfiles().get(profile), requestId, referer, rank,
+                        .getProfiles().get(profile.getId()), requestId, referer, rank,
                         indexUrl, type, LogUtils.getUserId(user)));
                 
                 metrics.counter(MetricRegistry.name(
