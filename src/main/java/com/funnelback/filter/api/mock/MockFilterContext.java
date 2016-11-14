@@ -27,7 +27,7 @@ public class MockFilterContext implements FilterContext {
 
     @Override
     public Optional<String> getConfigValue(String key) {
-        return Optional.of(map.get(key));
+        return Optional.ofNullable(map.get(key));
     }
     
     public void setConfigValue(String key, String value) {
