@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Delegate;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,12 +172,49 @@ public class ContentAuditor extends AbstractInputProcessor {
         if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery(ContentAuditor.NULL_QUERY);
         }
+        
+        
+        updateQuestionWithContentAuditorFacetConfig(question);
 
-        question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
+    }
+    
+    void updateQuestionWithContentAuditorFacetConfig(SearchQuestion question) {
+        FacetedNavigationConfig caFacetConfig = buildFacetConfig(question);
+
+        
+        //The Collection needs to be treated as immutable as it is shared, we instead wrap the collection with
+        //a class which extends Collection and returns everything from the collection except for
+        //the collection level faceted conf which we will override for Content Auditor.
+        question.setCollection(new OverridesFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig));
+    }
+    
+    private class OverridesFacetConfigCollection extends DelegateCollection {
+        
+        @Getter @Setter private FacetedNavigationConfig facetedNavigationConfConfig;
+        
+        @Getter @Setter private FacetedNavigationConfig facetedNavigationLiveConfig;
+        
+        public OverridesFacetConfigCollection(Collection collection,
+            FacetedNavigationConfig facetedNavigationConfConfig, 
+            FacetedNavigationConfig facetedNavigationLiveConfig) {
+            super(collection);
+            this.facetedNavigationConfConfig = facetedNavigationConfConfig;
+            this.facetedNavigationLiveConfig = facetedNavigationLiveConfig;
+        }
+    }
+    
+    private class DelegateCollection extends Collection {
+        //We must use a delegate annotation otherwise our class will go out of sync
+        @Delegate
+        public Collection collection;
+        
+        public DelegateCollection(Collection collection) {
+            this.collection = collection;
+        }
     }
 
     /** Overwrite the facet config with a custom one */
-    private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
+    FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
 
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
