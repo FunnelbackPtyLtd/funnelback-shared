@@ -428,7 +428,7 @@
 
     @param name Name of a specific facet to display, optional.
     @param names A list of specific facets to display, optional. Won't affect facet display order (defined in <code>faceted_navigation.cfg</code>).
-    @param orderedNames A list of specific facets to display, in the order they are ot be displayed optional.
+    @param orderedNames A list of specific facets to display, in the order they are to be displayed optional.
     @param class CSS class to use on the DIV containing each facet, defaults to <code>facet</code>.
 
     @provides The facet as <code>${s.facet}</code>.
