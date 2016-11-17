@@ -9,7 +9,6 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Delegate;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.DelegateCollection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -188,6 +188,10 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.setCollection(new OverridesFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig));
     }
     
+    /**
+     * Override only the faceted nav config at the collection level.
+     *
+     */
     private class OverridesFacetConfigCollection extends DelegateCollection {
         
         @Getter @Setter private FacetedNavigationConfig facetedNavigationConfConfig;
@@ -203,15 +207,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         }
     }
     
-    private class DelegateCollection extends Collection {
-        //We must use a delegate annotation otherwise our class will go out of sync
-        @Delegate
-        public Collection collection;
-        
-        public DelegateCollection(Collection collection) {
-            this.collection = collection;
-        }
-    }
+    
 
     /** Overwrite the facet config with a custom one */
     FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
