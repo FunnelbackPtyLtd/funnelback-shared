@@ -7,6 +7,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 /**
  * A class that delegates all calls to the given collection.
  * 
+ * <p>Internal use only</p>
+ * 
  * <p>As a Collection is cached and shared between all request it is best you do NOT edit it.
  * This class can instead be extended and have getter/setter methods overwritten so that the 
  * Collection will return different objects without messing with the shared Collection. 
