@@ -85,6 +85,7 @@
                         com.funnelback.publicui.utils:com.funnelback.publicui.xml:com.funnelback.publicui.search.model.log:com.funnelback.publicui.search.model.padre.factories:com.funnelback.publicui.search.model.collection.paramtransform:com.funnelback.publicui.search.model.transaction.contentoptimiser:com.funnelback.publicui.search.model.anchors
                     </excludePackageNames>
                     <docfilessubdirs>true</docfilessubdirs>
+                    <failOnError>false</failOnError>
                 </configuration>
                 <executions>
                     <execution>
