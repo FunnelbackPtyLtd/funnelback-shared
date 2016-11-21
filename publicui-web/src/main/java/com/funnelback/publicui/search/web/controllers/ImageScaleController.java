@@ -63,7 +63,7 @@ public class ImageScaleController {
             
             response.getOutputStream().close();
         } catch (Exception e) {
-            response.sendError(500, e.getMessage());
+            response.sendError(400, e.getMessage());
         }
         
         return null;
