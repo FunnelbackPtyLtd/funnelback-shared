@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import lombok.Cleanup;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -15,18 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.google.common.io.ByteStreams;
 
 @Log4j2
 @Component
 public class DefaultImageFetcher implements ImageFetcher {
     
-    protected static final String CACHE = DefaultImageFetcher.class.getSimpleName() + "Repository";
-    protected static final String PATTERN_KEY = "default_image_fetcher.permitted_url_pattern";
-
+    public static final String CACHE_NAME = DefaultImageFetcher.class.getSimpleName() + "Repository";
+    public static final String PATTERN_KEY = "default_image_fetcher.permitted_url_pattern";
+    public static final String SIZE_LIMIT_KEY = "default_image_fetcher.max_source_image_bytes";
+    
     @Autowired
+    @Setter
     protected CacheManager appCacheManager;
     
     @Autowired
+    @Setter
     private ConfigRepository configRepository;
 
     @Override
@@ -38,15 +43,22 @@ public class DefaultImageFetcher implements ImageFetcher {
                 throw new RuntimeException("URL is not permitted according to " + PATTERN_KEY);
             }
         }
-        
-        Cache cache = appCacheManager.getCache(CACHE);
+
+        Long maxSourceImageSize = Long.parseLong(configRepository.getGlobalConfiguration().value(SIZE_LIMIT_KEY));
+
+        Cache cache = appCacheManager.getCache(CACHE_NAME);
         
         if (! cache.isKeyInCache(url)) {
             log.trace("Fetching " + url + " to cache");
 
             URL imageUrl = new URL(url);
             @Cleanup InputStream imageStream = imageUrl.openStream();
-            cache.put(new Element(url, IOUtils.toByteArray(imageStream)));
+            @Cleanup InputStream boundedImageStream = ByteStreams.limit(imageStream, maxSourceImageSize + 1);
+            byte[] imageBytes = IOUtils.toByteArray(boundedImageStream);
+            if (imageBytes.length > maxSourceImageSize) {
+                throw new RuntimeException("Image too large to be scaled by this system");
+            }
+            cache.put(new Element(url, imageBytes));
         }
 
         return (byte[])cache.get(url).getValue();
