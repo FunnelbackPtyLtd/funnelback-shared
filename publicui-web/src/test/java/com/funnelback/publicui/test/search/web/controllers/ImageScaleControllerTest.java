@@ -25,7 +25,7 @@ public class ImageScaleControllerTest {
 
         controller.scale(response, new URL("http://example.com/image.jpg"), new ImageScalerSettings());
         
-        Assert.assertEquals(500, response.getStatus());
+        Assert.assertEquals(400, response.getStatus());
     }
     
 }
