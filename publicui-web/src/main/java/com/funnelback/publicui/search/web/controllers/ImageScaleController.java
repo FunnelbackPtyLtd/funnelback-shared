@@ -8,9 +8,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import lombok.Cleanup;
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +19,10 @@ import com.funnelback.publicui.search.service.image.ImageFetcher;
 import com.funnelback.publicui.search.service.image.ImageScaler;
 import com.funnelback.publicui.search.service.image.ImageScalerSettings;
 
+import lombok.Cleanup;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Scale, crop and convert images automatically so they can be presented in
  * Funnelback results.
@@ -31,9 +32,11 @@ import com.funnelback.publicui.search.service.image.ImageScalerSettings;
 public class ImageScaleController {
 
     @Autowired
+    @Setter
     ImageFetcher fetcher;
 
     @Autowired
+    @Setter
     ImageScaler scaler;
 
     /**
@@ -47,17 +50,21 @@ public class ImageScaleController {
     public ModelAndView scale(HttpServletResponse response, URL url, @Valid ImageScalerSettings ss)
         throws Exception {
         
-        byte[] unscaledImage = fetcher.fetch(url.toString());
-        byte[] scaledImage = scaler.scaleImage(url.toString(), unscaledImage, ss);
-        
-        String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];
-        response.addHeader("Content-Type", mimeType);
-
-        @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
-        
-        org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
-        
-        response.getOutputStream().close();
+        try {
+            byte[] unscaledImage = fetcher.fetch(url.toString());
+            byte[] scaledImage = scaler.scaleImage(url.toString(), unscaledImage, ss);
+            
+            String mimeType = ImageIO.getImageWritersByFormatName(ss.getFormat()).next().getOriginatingProvider().getMIMETypes()[0];
+            response.addHeader("Content-Type", mimeType);
+    
+            @Cleanup InputStream processedImageStream = new ByteArrayInputStream(scaledImage);
+            
+            org.apache.commons.io.IOUtils.copy(processedImageStream, response.getOutputStream());
+            
+            response.getOutputStream().close();
+        } catch (Exception e) {
+            response.sendError(400, e.getMessage());
+        }
         
         return null;
     }
