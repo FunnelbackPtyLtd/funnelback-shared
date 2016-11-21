@@ -8,10 +8,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import lombok.Cleanup;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.funnelback.publicui.search.service.image.ImageFetcher;
 import com.funnelback.publicui.search.service.image.ImageScaler;
 import com.funnelback.publicui.search.service.image.ImageScalerSettings;
+
+import lombok.Cleanup;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Scale, crop and convert images automatically so they can be presented in

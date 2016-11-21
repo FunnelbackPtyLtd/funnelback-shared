@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import lombok.Cleanup;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.google.common.io.ByteStreams;
+
+import lombok.Cleanup;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 @Log4j2
 @Component
@@ -66,13 +66,13 @@ public class DefaultImageFetcher implements ImageFetcher {
 
     @Override
     public void clearCache(String url) {
-        Cache cache = appCacheManager.getCache(CACHE);
+        Cache cache = appCacheManager.getCache(CACHE_NAME);
         cache.remove(url);
     }
 
     @Override
     public void clearAllCache() {
-        Cache cache = appCacheManager.getCache(CACHE);
+        Cache cache = appCacheManager.getCache(CACHE_NAME);
         cache.removeAll();
     }
 }
