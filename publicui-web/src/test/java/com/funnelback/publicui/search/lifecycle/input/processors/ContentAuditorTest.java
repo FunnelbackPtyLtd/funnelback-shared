@@ -10,12 +10,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 public class ContentAuditorTest {
 
@@ -27,7 +32,7 @@ public class ContentAuditorTest {
         FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
         when(collection.getFacetedNavigationConfConfig()).thenReturn(sharedConfig);
         when(collection.getFacetedNavigationLiveConfig()).thenReturn(sharedConfig);
-        
+        question.setCollection(collection);
         
         
         ContentAuditor contentAuditor = spy(new ContentAuditor());
@@ -47,5 +52,43 @@ public class ContentAuditorTest {
         Assert.assertEquals(caFacetConfig, question.getCollection().getFacetedNavigationLiveConfig());
         
         
+        //Integration check verify that we will actually pick the config.
+        Assert.assertEquals("After updating the Collection to have the new facet config"
+            + " the selectConfiguration method should be returning the facet config.",
+            caFacetConfig, FacetedNavigationUtils.selectConfiguration(question.getCollection(), null));
+    }
+    
+    @Test
+    public void testCAOverridesProfileConfig() {
+        SearchQuestion question = new SearchQuestion();
+        //Collection is a shared cached object ensure it is not changed.
+        Collection collection = mock(Collection.class);
+        FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
+        when(collection.getFacetedNavigationConfConfig()).thenReturn(sharedConfig);
+        when(collection.getFacetedNavigationLiveConfig()).thenReturn(sharedConfig);
+        question.setCollection(collection);
+        
+        //Make this collection have a profile
+        Map<String, Profile> profiles = new HashMap<>();
+        when(collection.getProfiles()).thenReturn(profiles);
+        Profile profile = mock(Profile.class);
+        profiles.put("_default", profile);
+        
+        //And the profile has a faceted nav config.
+        when(profile.getFacetedNavConfConfig()).thenReturn(sharedConfig);
+        
+        ContentAuditor contentAuditor = spy(new ContentAuditor());
+        
+        FacetedNavigationConfig caFacetConfig = mock(FacetedNavigationConfig.class);
+        doReturn(caFacetConfig).when(contentAuditor).buildFacetConfig(question);
+        
+        //Call CA to updated the facet
+        contentAuditor.updateQuestionWithContentAuditorFacetConfig(question);
+        
+        //Integration check verify that we will actually pick the CA facet config
+        //rather than a config the profiles actual facet config.
+        Assert.assertEquals("After updating the Collection to have the new facet config"
+            + " the selectConfiguration method should be returning the facet config.",
+            caFacetConfig, FacetedNavigationUtils.selectConfiguration(question.getCollection(), "_default"));
     }
 }
