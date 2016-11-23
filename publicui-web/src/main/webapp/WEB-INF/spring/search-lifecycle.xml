@@ -62,6 +62,7 @@
         <ref bean="htmlEncodeSummaries" />
         <ref bean="facetedNavigationOutputProcessor" />
         <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
+        <ref bean="accessibilityAuditorPopulateFacetCategoryLabels" />
         <ref bean="dateFacetSortOutputProcessor" />
         <ref bean="contextualNavigationOutputProcessor" />
         <ref bean="quickLinksOutputProcessor" />

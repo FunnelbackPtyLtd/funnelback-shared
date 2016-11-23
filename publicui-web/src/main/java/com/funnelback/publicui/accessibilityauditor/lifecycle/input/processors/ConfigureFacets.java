@@ -89,7 +89,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     }
     
     @Override
-    public void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
+    protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
         // Always override any faceted nav. config (active profile or collection level)
         Profile profile = transaction.getQuestion()
             .getCollection()
