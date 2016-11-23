@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.model.collection;
 
+import lombok.NonNull;
 import lombok.experimental.Delegate;
 
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -36,7 +37,7 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class DelegateCollection extends Collection {
     
     //We must use a delegate annotation otherwise our class will go out of sync
-    @Delegate
+    @Delegate @NonNull
     public Collection collection;
     
     public DelegateCollection(Collection collection) {

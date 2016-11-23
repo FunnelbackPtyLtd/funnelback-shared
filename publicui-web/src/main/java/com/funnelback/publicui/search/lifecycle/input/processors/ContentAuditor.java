@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,9 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.DelegateCollection;
+import com.funnelback.publicui.search.model.collection.DelegateProfile;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
@@ -185,7 +188,18 @@ public class ContentAuditor extends AbstractInputProcessor {
         //The Collection needs to be treated as immutable as it is shared, we instead wrap the collection with
         //a class which extends Collection and returns everything from the collection except for
         //the collection level faceted conf which we will override for Content Auditor.
-        question.setCollection(new OverridesFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig));
+        Collection c = new OverridesFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig);
+        
+        //Override each profile to have have the CA facet config.
+        Map<String, Profile> profiles = new HashMap<>();
+        Optional.ofNullable(c.getProfiles())
+            .ifPresent(p -> 
+                p.forEach((profileId, profile) -> {
+                profiles.put(profileId, new OverrideFacetConfigDelegateProfile(profile, caFacetConfig));
+                }));
+        
+        c = new OverrideProfilesConfigCollection(c, profiles);
+        question.setCollection(c);
     }
     
     /**
@@ -205,6 +219,28 @@ public class ContentAuditor extends AbstractInputProcessor {
             this.facetedNavigationConfConfig = facetedNavigationConfConfig;
             this.facetedNavigationLiveConfig = facetedNavigationLiveConfig;
         }
+    }
+    
+    private class OverrideProfilesConfigCollection extends DelegateCollection {
+        
+        @Getter private final Map<String, Profile> profiles;
+        
+        public OverrideProfilesConfigCollection(Collection collection,
+            Map<String, Profile> profiles) {
+            super(collection);
+            this.profiles = profiles;
+        }
+    }
+    
+    private class OverrideFacetConfigDelegateProfile extends DelegateProfile {
+
+        @Getter @Setter private FacetedNavigationConfig facetedNavConfConfig;
+        public OverrideFacetConfigDelegateProfile(Profile profile, 
+                    FacetedNavigationConfig facetedNavConfConfig) {
+            super(profile);
+            this.facetedNavConfConfig = facetedNavConfConfig;
+        }
+        
     }
     
     
