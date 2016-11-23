@@ -23,6 +23,6 @@ public abstract class AbstractAccessibilityAuditorInputProcessor extends Abstrac
         }
     }
     
-    public abstract void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException;
+    protected abstract void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException;
         
 }

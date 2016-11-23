@@ -56,7 +56,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     }
     
     @Override
-    public void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
+    protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(st)
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 

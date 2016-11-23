@@ -20,7 +20,7 @@ public class SetQuery extends AbstractAccessibilityAuditorInputProcessor {
     private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
     
     @Override
-    public void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
+    protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
         if (transaction.getQuestion().getQuery() == null || transaction.getQuestion().getQuery().isEmpty()) {
             transaction.getQuestion().setQuery(NULL_QUERY);
         }
