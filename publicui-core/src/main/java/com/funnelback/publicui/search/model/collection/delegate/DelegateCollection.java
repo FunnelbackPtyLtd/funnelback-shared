@@ -1,8 +1,9 @@
-package com.funnelback.publicui.search.model.collection;
+package com.funnelback.publicui.search.model.collection.delegate;
 
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**

@@ -1,4 +1,6 @@
-package com.funnelback.publicui.search.model.collection;
+package com.funnelback.publicui.search.model.collection.delegate;
+
+import com.funnelback.publicui.search.model.collection.Profile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
