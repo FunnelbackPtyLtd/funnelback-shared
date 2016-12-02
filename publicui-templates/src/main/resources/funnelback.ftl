@@ -472,14 +472,15 @@
     Checks if a query blending occurred and provide a link to cancel it.
 
     @param prefix : Prefix to blended query terms, defaults to &quot;Your query has been expanded to: &quot;.
-    @param linkText : Text for the link to cancel query blending, defaults to &quot;Click here to use verbatim query&quot;.
+    @param linkText : Text for the link to cancel query blending, defaults to &quot;Click here to use verbatim query&quot;. Note that HTML is not allowed here (it will be escaped), however for legacy reasons, emphasis open/close html tags are permitted (and will not be escaped).
     @param tag : Tag to use to wrap the expanded queries.
 -->
 <#macro CheckBlending prefix="Your query has been expanded to: " linkText="Click here to use verbatim query" tag="span">
     <#if response?? && response.resultPacket??
         && response.resultPacket.QSups?? && response.resultPacket.QSups?size &gt; 0>
         ${prefix} <${tag}><#list response.resultPacket.QSups as qsup> ${qsup.query}<#if qsup_has_next>, </#if></#list></${tag}>.
-        &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText}</a>
+        &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText?html?replace("&lt;em&gt;", "<em>")?replace("&lt;/em&gt;", "</em>")}</a>
+        <#-- See FUN-9496 for info about the strange replaces above -->
     </#if>
 </#macro>
 
