@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
+import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -70,7 +71,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
             Names.affectedBy().getName(),
             Names.passedLevels().getName(),
             Names.failedLevels().getName(),
-            "f");
+            Names.format().getName());
         
         // Build our facet definitions and QPOs
         List<String> rmcf = new ArrayList<>();
@@ -84,6 +85,9 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         
         // URL drill down facet
         facetDefinitions.add(createURLScopeFillFacetDefinition());
+        
+        // Missing "checked" metadata to scope documents that were not audited
+        facetDefinitions.add(createMissingMetadataFacetDefinition(Metadata.getMetadataClass(Names.checked().getName())));
         
         facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         
@@ -117,6 +121,19 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     private FacetDefinition createMetadataFieldFillFacetDefinition(String field) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         MetadataFieldFill fill = new MetadataFieldFill(field);
+        fill.setLabel(field);
+        fill.setFacetName(field);
+        categoryDefinitions.add(fill);
+        
+        return new FacetDefinition(field, categoryDefinitions);
+    }
+    
+    /**
+     * Creates a facet definition for missing metadata
+     */
+    private FacetDefinition createMissingMetadataFacetDefinition(String field) {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        MissingMetadataFill fill = new MissingMetadataFill();
         fill.setLabel(field);
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
