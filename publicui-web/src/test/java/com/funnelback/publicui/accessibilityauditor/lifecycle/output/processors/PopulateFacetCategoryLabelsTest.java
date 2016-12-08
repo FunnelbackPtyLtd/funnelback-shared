@@ -108,10 +108,10 @@ public class PopulateFacetCategoryLabelsTest {
             
             Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
             
-            Assert.assertEquals("Document does not contain a valid non-empty title element.", actual.getValues().get(0).getLabel());
+            Assert.assertEquals("Document does not contain a valid non-empty title element", actual.getValues().get(0).getLabel());
             Assert.assertEquals(DocumentTitleChecker.class.getSimpleName(), actual.getValues().get(0).getData());
     
-            Assert.assertEquals("PDF document is missing a title.", actual.getValues().get(1).getLabel());
+            Assert.assertEquals("PDF document is missing a title", actual.getValues().get(1).getLabel());
             Assert.assertEquals(PDFTitleChecker.class.getSimpleName(), actual.getValues().get(1).getData());
     
             Assert.assertEquals("unknown", actual.getValues().get(2).getLabel());
