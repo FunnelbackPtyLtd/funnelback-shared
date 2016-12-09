@@ -63,6 +63,7 @@ public class ImageScaleController {
             
             response.getOutputStream().close();
         } catch (Exception e) {
+            log.error("Error while scaling image", e);
             response.sendError(400, e.getMessage());
         }
         
