@@ -67,29 +67,27 @@ public class PopulateFacetCategoryLabelsTest {
 
     @Test
     public void testPopulateSuccessCriteria() throws OutputProcessorException {
-        for (FailureType type: FailureType.values()) {
-            Category c = new Category(null, null);
-            c.getValues().add(new CategoryValue("1.2.3", "1.2.3", 0, null, null, false));
-            c.getValues().add(new CategoryValue("2.2.1", "2.2.1", 0, null, null, false));
-            c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
-            
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.successCriterion(type).getName()));
-            f.getCategories().add(c);
-            transaction.getResponse().getFacets().add(f);
-            
-            processor.processOutput(transaction);
-            
-            Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
-            
-            Assert.assertEquals("1.2.3 - Audio Description or Media Alternative (Prerecorded)", actual.getValues().get(0).getLabel());
-            Assert.assertEquals("1.2.3", actual.getValues().get(0).getData());
-    
-            Assert.assertEquals("2.2.1 - Timing Adjustable", actual.getValues().get(1).getLabel());
-            Assert.assertEquals("2.2.1", actual.getValues().get(1).getData());
-    
-            Assert.assertEquals("unknown", actual.getValues().get(2).getLabel());
-            Assert.assertEquals("unknown", actual.getValues().get(2).getData());
-        }
+        Category c = new Category(null, null);
+        c.getValues().add(new CategoryValue("1.2.3", "1.2.3", 0, null, null, false));
+        c.getValues().add(new CategoryValue("2.2.1", "2.2.1", 0, null, null, false));
+        c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
+        
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.successCriterion().getName()));
+        f.getCategories().add(c);
+        transaction.getResponse().getFacets().add(f);
+        
+        processor.processOutput(transaction);
+        
+        Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
+        
+        Assert.assertEquals("1.2.3 - Audio Description or Media Alternative (Prerecorded)", actual.getValues().get(0).getLabel());
+        Assert.assertEquals("1.2.3", actual.getValues().get(0).getData());
+
+        Assert.assertEquals("2.2.1 - Timing Adjustable", actual.getValues().get(1).getLabel());
+        Assert.assertEquals("2.2.1", actual.getValues().get(1).getData());
+
+        Assert.assertEquals("unknown", actual.getValues().get(2).getLabel());
+        Assert.assertEquals("unknown", actual.getValues().get(2).getData());
     }
 
     @Test
