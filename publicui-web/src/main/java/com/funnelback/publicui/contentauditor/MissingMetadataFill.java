@@ -3,16 +3,19 @@ package com.funnelback.publicui.contentauditor;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import lombok.SneakyThrows;
 
 import com.funnelback.common.padre.MetadataClass;
+import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 /**
@@ -84,4 +87,14 @@ public class MissingMetadataFill extends MetadataFieldFill {
         // This produces a query like -x:$++ (i.e. all documents where x was never set to anything)
         return "-" + value + ":" + MetadataBasedCategory.INDEX_FIELD_BOUNDARY;
     }
+
+    /**
+     * Do not return an RMCF option for this type, otherwise we would be counting
+     * the number of documents that are missing a metadata named "missing"
+     */
+    @Override
+    public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
+        return Collections.emptyList();
+    }
+
 }
