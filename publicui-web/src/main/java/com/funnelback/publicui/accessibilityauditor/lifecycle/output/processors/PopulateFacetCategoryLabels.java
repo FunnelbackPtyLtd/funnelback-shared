@@ -69,19 +69,19 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
                     log.warn("Unexpected WCAG20Principle section: '{}'", value.getData());
                 }
             });
-
+        
+        // Populator for the "success criterion" facet
+        categoryValuesPopulators.put(
+            Names.successCriterion(),
+            value -> {
+                try {
+                    value.setLabel(value.getData() + " - " + WCAG20SuccessCriterion.fromSection(value.getData()).title);
+                } catch (IllegalArgumentException iae) {
+                    log.warn("Unexpected success criterion section: '{}'", value.getData());
+                }
+            });
+            
         for (FailureType type : FailureType.values()) {
-            // Populator for the "success criterion" facet
-            categoryValuesPopulators.put(
-                Names.successCriterion(type),
-                value -> {
-                    try {
-                        value.setLabel(value.getData() + " - " + WCAG20SuccessCriterion.fromSection(value.getData()).title);
-                    } catch (IllegalArgumentException iae) {
-                        log.warn("Unexpected success criterion section: '{}'", value.getData());
-                    }
-                });
-
             // Populator for the "issue types" (checker class) facet
             categoryValuesPopulators.put(
                 Names.issueTypes(type),

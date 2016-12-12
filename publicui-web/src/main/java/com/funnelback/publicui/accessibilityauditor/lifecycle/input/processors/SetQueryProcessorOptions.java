@@ -112,12 +112,6 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .flatMap(Function.identity())
             .map(Metadata::getName);
 
-        Stream<String> successCriteria = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.successCriterion(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
-        
         Stream<String> principles = Arrays.asList(WCAG20Principle.values())
             .stream()
             .map(principle -> Stream.of(Names.principleOccurrences(principle)))
@@ -128,18 +122,20 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             Names.profile(),
             Names.domain(),
             Names.principle(),
+            Names.successCriterion(),
             Names.affectedBy(),
             Names.passedLevels(),
             Names.failedLevels(),
             Names.affected(),
             Names.unaffected(),
             Names.checked(),
+            Names.format(),
             Names.occurrences(),
             Names.checks(),
             Names.checksPassed())
             .map(Metadata::getName);
         
-        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, successCriteria, principles, other)
+        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, principles, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .collect(Collectors.joining(","));
@@ -240,11 +236,6 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         }) {
             // Type of checkers
             counts.add(String.format("[%s.+Types]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            
-            // Success criterion value (e.g. 1.2.3), for each failure type
-            for (FailureType type: FailureType.values()) {
-                counts.add(String.format("[%s]:[%s]", Metadata.getMetadataClass(grouping), Metadata.getMetadataClass(Names.successCriterion(type).getName())));
-            }
         }
         
         // Count of unique domains per profile
