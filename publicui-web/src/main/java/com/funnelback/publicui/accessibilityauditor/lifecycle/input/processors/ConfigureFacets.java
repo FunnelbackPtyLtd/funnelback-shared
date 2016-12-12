@@ -46,6 +46,9 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     /** ID of the URL drill down facet. Will be localized client side */
     private static final String URL_FACET_ID = "URL";
     
+    /** ID of the facet containing missing metadata */
+    private static final String MISSING_METADATA_FACET_ID = Metadata.getMetadataClassPrefix() + "Missing";
+    
     private final FacetedNavigationConfig facetedNavigationConfig;
     
     public ConfigureFacets() {
@@ -80,8 +83,9 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         // URL drill down facet
         facetDefinitions.add(createURLScopeFillFacetDefinition());
         
-        // Missing "checked" metadata to scope documents that were not audited
-        facetDefinitions.add(createMissingMetadataFacetDefinition(Metadata.getMetadataClass(Names.checked().getName())));
+        // Used the missing metadata facet to find documents with
+        // missing "checked" metadata, to scope documents that were not audited
+        facetDefinitions.add(createMissingMetadataFacetDefinition(MISSING_METADATA_FACET_ID));
         
         facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         
