@@ -8,11 +8,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
+import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
@@ -24,6 +26,8 @@ import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
 import com.funnelback.wcag.model.WCAG20SuccessCriterion;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -41,6 +45,13 @@ import lombok.extern.log4j.Log4j2;
 @Component("accessibilityAuditorPopulateFacetCategoryLabels")
 public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOutputProcessor {
 
+    /** Prefix to use to fetch translations for the "affected by" facet */
+    private static final String AFFECTED_BY_FACET_I18N_PREFIX = "facets.label.affectedBy.";
+    
+    @Autowired
+    @Setter(AccessLevel.PACKAGE)
+    private I18n i18n;
+    
     /**
      * <p>Maps facet to process with a function to populate the value labels</p>
      * 
@@ -79,6 +90,12 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
                 } catch (IllegalArgumentException iae) {
                     log.warn("Unexpected success criterion section: '{}'", value.getData());
                 }
+            });
+        
+        categoryValuesPopulators.put(
+            Names.affectedBy(),
+            value -> {
+                value.setLabel(i18n.tr(AFFECTED_BY_FACET_I18N_PREFIX + value.getData()));
             });
             
         for (FailureType type : FailureType.values()) {
