@@ -14,7 +14,13 @@
                 <include>**</include>
             </includes>
         </fileSet>
-
+        <fileSet>
+            <outputDirectory>help-ftl</outputDirectory>
+            <directory>src/main/resources/templates/</directory>
+            <includes>
+                <include>*.css</include>
+            </includes>
+        </fileSet>
     </fileSets>
 
 </assembly>
