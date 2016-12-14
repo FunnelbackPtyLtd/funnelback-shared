@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.OS;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,10 +143,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
 
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
-                log.error("PADRE forking failed with command line {}", commandLine, pfe);
+                log.error("PADRE forking failed with command line {}", getExecutionDetails(commandLine, env), pfe);
                 throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
             } catch (XmlParsingException pxpe) {
-                log.error("Unable to parse PADRE response with command line {}", commandLine, pxpe);
+                log.error("Unable to parse PADRE response with command line {}", getExecutionDetails(commandLine, env), pxpe);
                 if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
                     log.error("PADRE response was: \n" + new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
                     //This works around this issue created by: 
@@ -185,5 +187,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     protected abstract String getQueryString(SearchTransaction transaction);
     
     protected abstract void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException;
+    
+    private String getExecutionDetails(List cmdLine, Map<String, String> environment) {
+        return " Command line was: "+cmdLine
+            + System.getProperty("line.separator") + "Environment was: "+Arrays.asList(environment.entrySet().toArray());
+    }
     
 }
