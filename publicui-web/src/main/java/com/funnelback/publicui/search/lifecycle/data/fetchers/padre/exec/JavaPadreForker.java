@@ -66,11 +66,10 @@ public class JavaPadreForker implements PadreForker {
             
             try {
                 int rc = executor.execute(padreCmdLine, environment);
-                if (rc != 0) {
-                    log.debug("PADRE returned a non-zero exit code: " + rc + getExecutionDetails(padreCmdLine, environment));
-                }
+                
                 ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), StandardCharsets.UTF_8);
                 
+                //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
                 if(er.getErrBytes().length > 0) {
                     String error = new String(er.getErrBytes()).trim();
                     if(error.length() > 0) {
@@ -78,6 +77,28 @@ public class JavaPadreForker implements PadreForker {
                             error + "' " + getExecutionDetails(padreCmdLine, environment));
                     }
                 }
+                
+                //Now that we check padre's exit code we must ensure we log the padre output as it wont
+                //be logged by anything else e.g. a XML parser that only got a partial XML.
+                if(rc != 0 ) {
+                    log.error("Output for non zero exit code when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
+                        getExecutionDetails(padreCmdLine, environment),
+                            new String(er.getOutBytes(), StandardCharsets.UTF_8),
+                            new String(er.getErrBytes(), StandardCharsets.UTF_8));    
+                }
+                
+                if(rc == 139) {
+                    //Seg faults are common to avoid support spending too long wondering what exit code 139 is
+                    //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
+                    //up immediately.
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toStrings(), rc));
+                }
+                
+                if (rc != 0) {
+                    //Some other error we wont proceed with the query as padre failed for some reason.
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.exit.code", padreCmdLine.toStrings(), rc));
+                }
+                
                 return er;
             } catch (ExecuteException ee) {
                 throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
