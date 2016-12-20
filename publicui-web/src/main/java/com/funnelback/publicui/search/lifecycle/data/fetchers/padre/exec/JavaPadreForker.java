@@ -78,10 +78,11 @@ public class JavaPadreForker implements PadreForker {
                     }
                 }
                 
-                //Now that we check padre's exit code we must ensure we log the padre output as it wont
-                //be logged by anything else e.g. a XML parser that only got a partial XML.
+                //Log non zero exit codes. Sometimes non zero exit codes will be in a valid XML
+                //Which will have some error messages displayed to the user.
                 if(rc != 0 ) {
-                    log.error("Output for non zero exit code when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
+                    log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
+                        rc,
                         getExecutionDetails(padreCmdLine, environment),
                             new String(er.getOutBytes(), StandardCharsets.UTF_8),
                             new String(er.getErrBytes(), StandardCharsets.UTF_8));    
@@ -92,11 +93,6 @@ public class JavaPadreForker implements PadreForker {
                     //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
                     //up immediately.
                     throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toStrings(), rc));
-                }
-                
-                if (rc != 0) {
-                    //Some other error we wont proceed with the query as padre failed for some reason.
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.exit.code", padreCmdLine.toStrings(), rc));
                 }
                 
                 return er;
