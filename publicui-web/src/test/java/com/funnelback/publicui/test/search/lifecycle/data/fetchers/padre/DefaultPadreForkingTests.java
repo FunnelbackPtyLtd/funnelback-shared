@@ -173,13 +173,9 @@ public class DefaultPadreForkingTests {
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
         
-        try {
-            forking.fetchData(ts);
-            Assert.fail("Should have checked the return code and thrown an exception");
-        } catch (DataFetchException e) {
-            
-        }
         
+        forking.fetchData(ts);
+        Assert.assertEquals(68, ts.getResponse().getReturnCode());
     }
     
     @Test
