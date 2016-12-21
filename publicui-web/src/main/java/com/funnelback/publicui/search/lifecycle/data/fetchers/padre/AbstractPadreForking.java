@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -134,7 +135,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env);
                 
                 if (log.isTraceEnabled()) {
-                    log.trace("\n---- RAW result packet BEGIN ----:\n\n"
+                    log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
+                        + "---- RAW result packet BEGIN ----:\n\n"
                             +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
                             +"\n---- RAW result packet END ----");
                     
@@ -145,9 +147,15 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 log.error("PADRE forking failed with command line {}", getExecutionDetails(commandLine, env), pfe);
                 throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
             } catch (XmlParsingException pxpe) {
-                log.error("Unable to parse PADRE response with command line {}", getExecutionDetails(commandLine, env), pxpe);
+                log.error("Unable to parse PADRE response with command line {} {}", getExecutionDetails(commandLine, env),
+                    Optional.ofNullable(padreOutput)
+                            .map(o -> o.getReturnCode())
+                            .map(rc -> "With exit code " + rc)
+                            .orElse(""),
+                    pxpe);
                 if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
-                    log.error("PADRE response was: \n" + new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
+                    log.error("PADRE response was: {}\n",
+                            new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
                     //This works around this issue created by: 
                     //https://issues.apache.org/jira/browse/LOG4J2-1434
                     //By writing this message after a large padre result packet,
