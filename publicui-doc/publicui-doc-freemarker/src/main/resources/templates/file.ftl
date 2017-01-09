@@ -10,24 +10,6 @@
 
     <title>Documentation for ${filename}</title>
 
-    <style>
-        div.sourcecode {
-            display: none;
-            border : 1px solid Black;
-            background-color : #DDDDDD; /* #E8E8E8; */
-            padding : 3px;
-            margin-top : 8px;
-        }
-
-
-        span {font-family:Courier; font-size:12px}
-        span.directive {color:blue}
-        span.userdirective {color:red}
-        span.interpolation {color:green}
-        span.textblock {color:black}
-        span.comment {color:brown}
-    </style>
-
     <script language="javascript">
         function toggle(id) {
             elem = document.getElementById(id);
@@ -150,20 +132,20 @@
 <#macro printParameters macro>
 <#if macro.@param?has_content>
 <dt><b>Parameters</b></dt>
-<dd>
+<dd><ul class="parameters">
 <#list macro.@param as param>
-<code>${param.name}</code> - ${param.description}<br>
+<li><code>${param.name}</code> - ${param.description}</li>
 </#list>
-</dd>
+<ul></dd>
 </#if>
 </#macro>
 
 <#macro printSourceCode macro>
 <dt><a href="javascript:toggle('sc_${macro.name}');">Source Code</a></dt>
 <dd>
-<div class="sourcecode" id="sc_${macro.name}">
+<pre class="sourcecode" id="sc_${macro.name}">
 <@ftl.print root=macro.node/>
-</div>
+</pre>
 </dd>
 </#macro>
 

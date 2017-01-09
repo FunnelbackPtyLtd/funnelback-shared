@@ -375,6 +375,10 @@ dd {
     margin-left: 0;
 }
 
+ul.parameters {
+    padding-left: 10px;
+}
+
 table .heading {
     background-color: #232b3b;
     border-color: #232b3b !important;
@@ -519,19 +523,24 @@ ul.letters ~ a[name] {
     font-weight: 600;
 }
 
-div.sourcecode {
-    border: none !important;
-    padding: 10px 20px !important;
-    background-color: #e1e3ed !important;
+.sourcecode {
+    border: none;
+    padding: 10px 20px;
+    background-color: #e1e3ed;
+    display: none;
+    padding : 3px;
+    margin-top : 8px;
 }
 
 .sourcecode br {
     display: block;
 }
 
-span.directive {
-    color: #464898;
-}
+.sourcecode span.directive { color: rgb(0, 22, 142); }
+.sourcecode span.userdirective { color: blue; }
+.sourcecode span.interpolation { color: rgb(49, 132, 149); }
+.sourcecode span.textblock { color: black; }
+.sourcecode span.comment { color: rgb(76, 136, 107); }
 
 /* Sidebar Styling */
 body.side {
