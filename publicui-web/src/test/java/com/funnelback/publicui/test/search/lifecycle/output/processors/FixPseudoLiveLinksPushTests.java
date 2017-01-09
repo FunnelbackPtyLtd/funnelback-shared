@@ -1,10 +1,30 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
-import com.funnelback.common.system.EnvironmentVariableException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixPseudoLiveLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -15,21 +35,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
-
-import org.junit.Assert;
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -50,7 +55,10 @@ public class FixPseudoLiveLinksPushTests {
     public void before() throws XmlParsingException, IOException, EnvironmentVariableException {
         
         configRepository.setGlobalConfiguration(new GlobalOnlyConfig(searchHome));
-        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "server_secret");
+        
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(serverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("server_secret");
+        configRepository.setServerConfig(serverConfig);
         
         SearchQuestion question = new SearchQuestion();
         question.setQuery("livelinks");

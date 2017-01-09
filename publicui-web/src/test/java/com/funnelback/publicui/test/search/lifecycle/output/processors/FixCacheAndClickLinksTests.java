@@ -23,6 +23,8 @@ import org.junit.Test;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -34,6 +36,7 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
@@ -136,7 +139,14 @@ public class FixCacheAndClickLinksTests {
         
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
         st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.CLICK_LINK, "CLICK_LINK");
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.SERVER_SECRET, "plop");
+        
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(serverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("plop");
+        when(configRepository.getServerConfig()).thenReturn(serverConfig);
+        
+        processor.setConfigRepository(configRepository);
+            
         processor.processOutput(st);
         
         for (Result r: st.getResponse().getResultPacket().getResults()) {
