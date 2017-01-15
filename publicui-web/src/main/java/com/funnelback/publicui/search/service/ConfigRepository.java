@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 
@@ -92,5 +93,7 @@ public interface ConfigRepository {
      * @return
      */
     public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
+    
+    public ServerConfigReadOnly getServerConfig();
 
 }

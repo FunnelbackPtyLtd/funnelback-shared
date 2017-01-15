@@ -98,7 +98,7 @@ public class MetricsConfiguration implements ServletContextAware {
         otherPrefixes[0] = MODERNUI_PREFIX;
         otherPrefixes[1] = executionContextHolder.getExecutionContext().toString();
         registryReporter = com.funnelback.common.metric.MetricConfiguration.getConfiguredRegistryReporter(registry, 
-            configRepository.getGlobalConfiguration(), 
+            configRepository.getServerConfig(), 
             hostName, 
             otherPrefixes
         );

@@ -36,6 +36,9 @@ import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.views.View;
+import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.data.server.ServerConfigData;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -59,6 +62,7 @@ import com.funnelback.springmvc.service.resource.impl.GroovyScriptResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
 
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
@@ -547,6 +551,14 @@ public class DefaultConfigRepository implements ConfigRepository {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ServerConfigReadOnly getServerConfig() {
+        ServerConfigData serverConfigData = resourceManager.loadResource(new ServerConfigDataResource(searchHome, (f, r) -> {
+            throw new RuntimeException("Writes are not permitted under the public UI.");
+        }));
+        return new DefaultServerConfigReadOnly(serverConfigData);
     }
     
 }
