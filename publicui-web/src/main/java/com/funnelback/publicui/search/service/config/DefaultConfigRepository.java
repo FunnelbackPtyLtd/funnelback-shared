@@ -35,6 +35,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
@@ -487,7 +488,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public Config getGlobalConfiguration() {
+    public GlobalOnlyConfig getGlobalConfiguration() {
         try {
             return resourceManager.load(new GlobalConfigResource(searchHome));
         } catch (IOException ioe) {
