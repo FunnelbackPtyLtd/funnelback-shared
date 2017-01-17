@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +174,12 @@ public class RecommenderControllerTest {
     private SearchQuestion getMockSearchQuestion(String collectionName,
                                                  com.funnelback.common.config.Collection.Type collectionType) {
         configRepository.removeAllCollections();
-        Config collectionConfig = new NoOptionsConfig(collectionName);
+        Config collectionConfig;
+        try {
+            collectionConfig = new NoOptionsConfig(new File("src/test/resources/dummy-search_home"), collectionName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         collectionConfig.setValue(Keys.COLLECTION_TYPE, collectionType.toString());
         collectionConfig.setValue(Keys.COLLECTION, collectionName);
         Collection collection = new Collection(collectionName, collectionConfig);

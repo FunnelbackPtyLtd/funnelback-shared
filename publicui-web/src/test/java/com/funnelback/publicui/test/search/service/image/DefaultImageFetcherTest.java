@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.image.DefaultImageFetcher;
 import com.google.common.io.Files;
@@ -54,7 +55,7 @@ public class DefaultImageFetcherTest {
         DefaultImageFetcher fetcher = new DefaultImageFetcher();
         
         // Give a small value (10) for the size limit
-        Config mockConfig = Mockito.mock(Config.class);
+        GlobalOnlyConfig mockConfig = Mockito.mock(GlobalOnlyConfig.class);
         Mockito.when(mockConfig.value(DefaultImageFetcher.SIZE_LIMIT_KEY)).thenReturn(sizeLimit.toString());
         ConfigRepository repository = Mockito.mock(ConfigRepository.class);
         Mockito.when(repository.getGlobalConfiguration()).thenReturn(mockConfig);

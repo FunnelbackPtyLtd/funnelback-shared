@@ -7,8 +7,8 @@ import java.util.Map;
 
 import lombok.Getter;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 
@@ -56,7 +56,7 @@ public interface ConfigRepository {
     /**
      * @return the global.cfg(.default) configuration data
      */
-    public Config getGlobalConfiguration();
+    public GlobalOnlyConfig getGlobalConfiguration();
     
     /**
      * @param exeName The key used to store the executable location 

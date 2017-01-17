@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository.GlobalConfiguration;
 
@@ -94,7 +94,7 @@ public class DefaultConfigRepositoryGlobalTest extends DefaultConfigRepositoryTe
     
     @Test
     public void getGlobalConfiguration() throws IOException {
-        Config c = configRepository.getGlobalConfiguration();
+        GlobalOnlyConfig c = configRepository.getGlobalConfiguration();
         
         Assert.assertEquals("Global value", c.value("global-key"));
         Assert.assertNull(c.value("new-key"));
