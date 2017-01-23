@@ -5,7 +5,6 @@
   
     <changeSet author="nguillaumin" id="3">
         <comment>FUN-9197: Allow query lengths up to padre's max length</comment>
-        <dropNotNullConstraint tableName="searchhistory" columnName="originalquery" columnDataType="varchar(255)"/>
         <modifyDataType 
             columnName="originalquery"
             newDataType="varchar(8196)"
