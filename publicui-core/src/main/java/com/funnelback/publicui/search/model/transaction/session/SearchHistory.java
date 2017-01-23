@@ -51,7 +51,7 @@ public class SearchHistory {
     @Getter private String originalQuery;
     
     public void setOriginalQuery(String q) {
-        if(q.length() > MAX_QUERY_LENGTH) {
+        if(q != null && q.length() > MAX_QUERY_LENGTH) {
             //Note that padre actually restricts to MAX_QUERY_LENGTH bytes not chars.
             log.debug("Shrinking original query to {}", MAX_QUERY_LENGTH);
             this.originalQuery = q.substring(0, MAX_QUERY_LENGTH);
@@ -66,7 +66,7 @@ public class SearchHistory {
     
     
     public void setQueryAsProcessed(String q) {
-        if(q.length() > MAX_QUERY_LENGTH) {
+        if(q != null && q.length() > MAX_QUERY_LENGTH) {
             //Note that padre actually restricts to MAX_QUERY_LENGTH bytes not chars.
             log.warn("Padre should have truncated the query to {} long it was {} long", MAX_QUERY_LENGTH, q.length());
             this.queryAsProcessed = q.substring(0, MAX_QUERY_LENGTH);
