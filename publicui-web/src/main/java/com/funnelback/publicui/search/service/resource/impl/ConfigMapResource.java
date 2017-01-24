@@ -33,7 +33,7 @@ public class ConfigMapResource extends AbstractSingleFileResource<Map<String, St
     }
     
     @Override
-    public Map<String, String> parse() throws IOException {
+    public Map<String, String> parseResourceOnly() throws IOException {
         log.debug("Reading configuration data from '"+file.getAbsolutePath()+"'");
         if (collectionId != null) {
             return ConfigReader.readConfig(file, searchHome, collectionId);

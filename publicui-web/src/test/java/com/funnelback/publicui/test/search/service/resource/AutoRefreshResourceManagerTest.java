@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.publicui.test.search.service.config.DefaultConfigRepositoryTestBase;
 import com.funnelback.springmvc.service.resource.AutoRefreshResourceManager;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,7 +54,7 @@ public class AutoRefreshResourceManagerTest {
     public void test() throws IOException {
         File testFile = new File(TEST_DIR, "test.properties");
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser);
+        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
@@ -80,7 +81,7 @@ public class AutoRefreshResourceManagerTest {
                 "value=42" + System.getProperty("line.separator") +
                 "second.value=678" + System.getProperty("line.separator"));
         
-        Properties updated = manager.load(parser);
+        Properties updated = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         Element newElt = cache.get(testFile.getAbsolutePath());
         Assert.assertNotNull(newElt);
         Assert.assertTrue(newElt.getLatestOfCreationAndUpdateTime() + " should be > " + timestamp, newElt.getLatestOfCreationAndUpdateTime() > timestamp);
@@ -96,7 +97,7 @@ public class AutoRefreshResourceManagerTest {
     public void testDeleteFile() throws IOException {
         File testFile = new File(TEST_DIR, "test.properties");
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser);
+        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
@@ -108,7 +109,7 @@ public class AutoRefreshResourceManagerTest {
         try { Thread.sleep(25); }
         catch (InterruptedException ie) { }
         
-        props = manager.load(parser);
+        props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNull(props);
         Assert.assertEquals(0, cache.getSize());
@@ -118,7 +119,7 @@ public class AutoRefreshResourceManagerTest {
                 "value=42" + System.getProperty("line.separator") +
                 "new.value=123" + System.getProperty("line.separator"));
         
-        Properties updated = manager.load(parser);
+        Properties updated = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         Assert.assertNotSame(props, updated);
         Assert.assertEquals(3, updated.size());
         Assert.assertEquals("New title", updated.get("title"));
@@ -140,7 +141,7 @@ public class AutoRefreshResourceManagerTest {
         File testFile = new File(TEST_DIR, "test-new.properties");
         
         PropertiesResource parser = new PropertiesResource(testFile);
-        Properties props = manager.load(parser);
+        Properties props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNull(props);
         Assert.assertEquals(0, cache.getSize());
@@ -148,7 +149,7 @@ public class AutoRefreshResourceManagerTest {
         // Create the file
         FileUtils.copyFile(sourceFile, testFile);
         
-        props = manager.load(parser);
+        props = manager.load(parser, AbstractSingleFileResource.wrapDefault(null)).getResource();
         
         Assert.assertNotNull(props);
         Assert.assertEquals(2, props.size());
