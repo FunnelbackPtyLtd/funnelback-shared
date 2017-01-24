@@ -27,7 +27,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
 public class ParamTransformRuleFactory {
 
     /**
-     * Tranform rule syntax is:
+     * Transform rule syntax is:
      * replaced_param=value => insert_param1=value&insert_param2=value
      * param=value => -remove_param1
      * ...
