@@ -178,7 +178,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             c.setMetaComponents(
                     resourceManager.load(
                             new SimpleFileResource(new File(collectionConfigFolder, Files.META_CONFIG_FILENAME)),
-                            new String[0]));
+                            AbstractSingleFileResource.wrapDefault(new String[0])).getResource());
         } else {
             c.setMetaComponents(new String[0]);
         }
@@ -186,16 +186,17 @@ public class DefaultConfigRepository implements ConfigRepository {
         c.getTextMinerBlacklist().addAll(
                 resourceManager.load(
                         new UniqueLinesResource(new File(collectionConfigFolder, Files.TEXT_MINER_BLACKLIST)),
-                        new HashSet<String>(0)));
+                        AbstractSingleFileResource.wrapDefault(new HashSet<String>(0))).getResource());
 
         c.getParametersTransforms().addAll(
                 resourceManager.load(
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
-                        new ArrayList<TransformRule>(0)));
+                        AbstractSingleFileResource.wrapDefault(new ArrayList<TransformRule>(0))).getResource());
         c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
                 collectionId,
                 searchHome,
-                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), new HashMap<String, String>(0)));
+                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), 
+                AbstractSingleFileResource.wrapDefault(new HashMap<String, String>(0))).getResource());
         
         c.getProfiles().putAll(loadProfiles(c));
         
@@ -203,7 +204,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
             if (hookScriptFile.exists()) {
                 try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome));
+                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome)).getResource();
                     c.getHookScriptsClasses().put(hook, hookScript);
                 } catch (CompilationFailedException cfe) {
                     log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
@@ -211,7 +212,10 @@ public class DefaultConfigRepository implements ConfigRepository {
             }
         }
         
-        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome)));
+        c.setCartProcessClass(resourceManager.load(
+                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome),
+                        AbstractSingleFileResource.wrapDefault(null)
+                    ).getResource());
         
         return c;
     }
@@ -231,10 +235,10 @@ public class DefaultConfigRepository implements ConfigRepository {
             try {
                 p.setPadreOpts(resourceManager.load(new AbstractSingleFileResource<String>(padreOptsFile) {
                         @Override
-                        public String parse() throws IOException {
+                        public String parseResourceOnly() throws IOException {
                             return FileUtils.readFileToString(file);
                         }
-                    }));
+                    }, AbstractSingleFileResource.wrapDefault(null)).getResource());
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
@@ -245,21 +249,24 @@ public class DefaultConfigRepository implements ConfigRepository {
             // Load curator config from each of the supported config files (combining them)
             try {
                 File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorConfig())).getResource().getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator json configuration.", e);
             }
             
             try {
                 File curatorAdvancedJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_ADVANCED_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorConfig())).getResource().getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator advanced json configuration.", e);
             }
 
             try {
                 File curatorYamlConfigFile = new File(profileDir, Files.CURATOR_YAML_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), new CuratorYamlConfig()).toTriggerActions());
+                config.addAll(resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorYamlConfig())).getResource().toTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator yaml configuration.", e);
             }
@@ -312,14 +319,14 @@ public class DefaultConfigRepository implements ConfigRepository {
         // Read global config in conf/
         File fnConfig = new File (c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
         try {
-            c.setFacetedNavigationConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            c.setFacetedNavigationConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
             
             // Read config in live/idx/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
                     + File.separator + View.live
                     + File.separator + DefaultValues.FOLDER_IDX,
                     Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-            c.setFacetedNavigationLiveConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            c.setFacetedNavigationLiveConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
         } catch (IOException ioe) {
             log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
         }
@@ -336,7 +343,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         // Read global config in conf/<profile>/
         File fnConfig = new File (c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
         try {
-            p.setFacetedNavConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            p.setFacetedNavConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
             
             // Read config in live/idx/<profile>/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
@@ -374,7 +381,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         try {
             return resourceManager.load(
                     new ConfigMapResource(searchHome,
-                            new File(searchHome+File.separator+DefaultValues.FOLDER_CONF, conf.getFileName())));
+                            new File(searchHome+File.separator+DefaultValues.FOLDER_CONF, conf.getFileName())), AbstractSingleFileResource.wrapDefault(null)).getResource();
         } catch (IOException ioe) {
             log.fatal("Could not load global configuration file '"+conf.getFileName()+"'", ioe);
             throw new RuntimeException(ioe);
@@ -408,7 +415,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 new AbstractSingleFileResource<Map<String, String>>(executablesCfg) {
 
                     @Override
-                    public Map<String, String> parse() throws IOException {
+                    public Map<String, String> parseResourceOnly() throws IOException {
                         Map<String, String> out = new HashMap<String, String>();
                         Map<String, String> uncleanMap = ConfigReader.readConfig(file, searchHome);
                         
@@ -427,7 +434,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                     }
 
                     
-                });
+                }, AbstractSingleFileResource.wrapDefault(null)).getResource();
             return m.get(exeName);
         } catch (Exception ioe) {
             log.error("Could not load executables config from '"+executablesCfg+"'", ioe);
@@ -474,7 +481,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
         
         try {
-            Properties p = resourceManager.load(new PropertiesResource(config));
+            Properties p = resourceManager.load(new PropertiesResource(config), AbstractSingleFileResource.wrapDefault(null)).getResource();
             if (p != null) {
                 return MapUtils.fromProperties(p);
             } else {
@@ -528,7 +535,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             for (File folder: folders) {
                 File f = new File(folder, filename);
                 try {
-                    out.putAll(resourceManager.load(new ConfigMapResource(searchHome, f), emptyMap));
+                    out.putAll(resourceManager.load(new ConfigMapResource(searchHome, f), AbstractSingleFileResource.wrapDefault(emptyMap)).getResource());
                 } catch (IOException ioe) {
                     log.error("Unable to load translation bundle from '"+f.getAbsolutePath()+"'", ioe);
                 }

@@ -40,7 +40,7 @@ public class CuratorYamlConfigResource extends AbstractSingleFileResource<Curato
      * it.
      */
     @Override
-    public CuratorYamlConfig parse() throws IOException {
+    public CuratorYamlConfig parseResourceOnly() throws IOException {
         log.debug("Reading curator configuration data from '" + file.getAbsolutePath() + "'");
 
         return loadYamlConfig(file.getAbsolutePath());

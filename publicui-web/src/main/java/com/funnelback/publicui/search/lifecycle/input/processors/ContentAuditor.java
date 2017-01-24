@@ -44,6 +44,7 @@ import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationCon
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
 
 import lombok.Setter;
 
@@ -230,7 +231,7 @@ public class ContentAuditor extends AbstractInputProcessor {
             + File.separator + DefaultValues.FOLDER_IDX + File.separator
             + Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
         try {
-            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser));
+            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource();
             if (base != null) {
                 for (FacetDefinition fd : base.getFacetDefinitions()) {
                     for (CategoryDefinition cd : fd.getCategoryDefinitions()) {
