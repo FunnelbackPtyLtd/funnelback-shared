@@ -315,7 +315,7 @@
     <#if response?exists && response.resultPacket?exists
         && response.resultPacket.error?exists>
         <p class="search-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
-        <!-- PADRE return code: [${response.returnCode!"Unkown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
+        <!-- PADRE return code: [${response.returnCode!"Unknown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
         <@ErrorMessageJS message="PADRE return code: "+response.returnCode!"Unknown" messageData=response.resultPacket.error.adminMsg! />
     </#if>
     <#-- Other errors -->
