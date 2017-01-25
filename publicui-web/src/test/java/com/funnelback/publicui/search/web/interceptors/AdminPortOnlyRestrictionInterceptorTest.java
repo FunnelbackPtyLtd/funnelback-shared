@@ -3,17 +3,19 @@ package com.funnelback.publicui.search.web.interceptors;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
 public class AdminPortOnlyRestrictionInterceptorTest {
 
-    private Config config;
     private AdminPortOnlyRestrictionInterceptor interceptor;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -26,13 +28,14 @@ public class AdminPortOnlyRestrictionInterceptorTest {
         request.setQueryString("a=b&c=d");
         response = new MockHttpServletResponse();
         
-        config = Mockito.mock(Config.class);
-        Mockito.when(config.value(Keys.Urls.ADMIN_PORT)).thenReturn("443");
-        Mockito.when(config.value(Keys.Jetty.ADMIN_PORT)).thenReturn("8443");
-        Mockito.when(config.value(Keys.Urls.DEVELOPMENT_PORT)).thenReturn("8080");
+        
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(serverConfig.get(ServerKeys.Urls.ADMIN_PORT)).thenReturn(443);
+        when(serverConfig.get(ServerKeys.Jetty.JETTY_ADMIN_PORT)).thenReturn(8443);
+        when(serverConfig.get(ServerKeys.Urls.DEVELOPMENT_PORT)).thenReturn(8080);
         
         ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
-        Mockito.when(configRepository.getGlobalConfiguration()).thenReturn(config);
+        when(configRepository.getServerConfig()).thenReturn(serverConfig);
         interceptor = new AdminPortOnlyRestrictionInterceptor();
         interceptor.setConfigRepository(configRepository);
     }

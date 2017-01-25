@@ -2,9 +2,11 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -133,19 +135,36 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env);
                 
                 if (log.isTraceEnabled()) {
-                    log.trace("\n---- RAW result packet BEGIN ----:\n\n"
+                    log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
+                        + "---- RAW result packet BEGIN ----:\n\n"
                             +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
                             +"\n---- RAW result packet END ----");
+                    
                 }
 
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
-                log.error("PADRE forking failed with command line {}", commandLine, pfe);
+                log.error("PADRE forking failed with command line {}", getExecutionDetails(commandLine, env), pfe);
                 throw new DataFetchException(i18n.tr("padre.forking.failed"), pfe);
             } catch (XmlParsingException pxpe) {
-                log.error("Unable to parse PADRE response with command line {}", commandLine, pxpe);
+                log.error("Unable to parse PADRE response with command line {} {}", getExecutionDetails(commandLine, env),
+                    Optional.ofNullable(padreOutput)
+                            .map(o -> o.getReturnCode())
+                            .map(rc -> "With exit code " + rc)
+                            .orElse(""),
+                    pxpe);
                 if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
-                    log.error("PADRE response was: \n" + new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
+                    log.error("PADRE response was: {}\n",
+                            new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
+                    //This works around this issue created by: 
+                    //https://issues.apache.org/jira/browse/LOG4J2-1434
+                    //By writing this message after a large padre result packet,
+                    //we drop the size of the cache from the thread local.
+                    //
+                    //We only bother to do this if the padre packet was big at least 1MB.
+                    if(padreOutput.getOutBytes().length > 1024 * 1024) {
+                        log.error("Ignore this message, work around for LOG4J2-1434");
+                    }
                 }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
             }
@@ -175,5 +194,10 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     protected abstract String getQueryString(SearchTransaction transaction);
     
     protected abstract void updateTransaction(SearchTransaction transaction, ExecutionReturn padreOutput) throws XmlParsingException;
+    
+    private String getExecutionDetails(List cmdLine, Map<String, String> environment) {
+        return " Command line was: "+cmdLine
+            + System.getProperty("line.separator") + "Environment was: "+Arrays.asList(environment.entrySet().toArray());
+    }
     
 }

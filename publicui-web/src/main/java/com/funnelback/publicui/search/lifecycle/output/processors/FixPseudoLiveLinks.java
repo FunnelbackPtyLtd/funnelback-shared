@@ -5,6 +5,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.padre.utils.ResultUtils;
 import com.funnelback.common.padre.utils.ResultUtils.UndeterminedCollectionTypeException;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -196,7 +197,7 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
         case filecopy:
             // FUN-5472 Add a token to prevent people fiddling with the file URI
             String securityToken = authTokenManager.getToken(result.getLiveUrl(),
-                configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET));
+                configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET));
 
             // Prefix with serve-filecopy-document.cgi
             transformedLiveUrl =  resultCollection

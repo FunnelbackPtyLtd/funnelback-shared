@@ -8,13 +8,13 @@
     <parent>
         <groupId>com.funnelback.publicui</groupId>
         <artifactId>publicui-parent</artifactId>
-        <version>15.7.1641-SNAPSHOT</version>
+        <version>15.9.1703-SNAPSHOT</version>
     </parent>
 
     <modules>
         <module>publicui-doc-templates</module>
         <module>publicui-doc-reference</module>
-        <module>publicui-freemarker-doc</module>
+        <module>publicui-doc-freemarker</module>
     </modules>
 
     <build>

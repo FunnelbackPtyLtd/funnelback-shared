@@ -196,7 +196,7 @@ public class DefaultContentOptimiserFillerTest {
     private ResultPacket getDefaultTestResultPacket() throws IOException, XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup-v2.xml")),
             StandardCharsets.UTF_8,
             false);
         

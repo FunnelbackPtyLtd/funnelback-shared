@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.Setter;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,10 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
+import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigDelegateProfile;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideProfilesConfigCollection;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigCollection;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
@@ -41,6 +44,9 @@ import com.funnelback.publicui.search.service.resource.impl.FacetedNavigationCon
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
+import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
+
+import lombok.Setter;
 
 /**
  * This input processor customises the current request to suit content auditor (if content_auditor is being used).
@@ -170,12 +176,35 @@ public class ContentAuditor extends AbstractInputProcessor {
         if (question.getQuery() == null || question.getQuery().length() < 1) {
             question.setQuery(ContentAuditor.NULL_QUERY);
         }
+        
+        
+        updateQuestionWithContentAuditorFacetConfig(question);
 
-        question.getCollection().setFacetedNavigationLiveConfig(buildFacetConfig(question));
     }
+    
+    void updateQuestionWithContentAuditorFacetConfig(SearchQuestion question) {
+        FacetedNavigationConfig caFacetConfig = buildFacetConfig(question);
 
+        
+        //The Collection needs to be treated as immutable as it is shared, we instead wrap the collection with
+        //a class which extends Collection and returns everything from the collection except for
+        //the collection level faceted conf which we will override for Content Auditor.
+        Collection c = new OverrideFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig);
+        
+        //Override each profile to have have the CA facet config.
+        Map<String, Profile> profiles = new HashMap<>();
+        Optional.ofNullable(c.getProfiles())
+            .ifPresent(p -> 
+                p.forEach((profileId, profile) -> {
+                profiles.put(profileId, new OverrideFacetConfigDelegateProfile(profile, caFacetConfig));
+                }));
+        
+        c = new OverrideProfilesConfigCollection(c, profiles);
+        question.setCollection(c);
+    }
+    
     /** Overwrite the facet config with a custom one */
-    private FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
+    FacetedNavigationConfig buildFacetConfig(SearchQuestion question) {
 
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         
@@ -202,7 +231,7 @@ public class ContentAuditor extends AbstractInputProcessor {
             + File.separator + DefaultValues.FOLDER_IDX + File.separator
             + Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
         try {
-            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser));
+            FacetedNavigationConfig base = resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource();
             if (base != null) {
                 for (FacetDefinition fd : base.getFacetDefinitions()) {
                     for (CategoryDefinition cd : fd.getCategoryDefinitions()) {

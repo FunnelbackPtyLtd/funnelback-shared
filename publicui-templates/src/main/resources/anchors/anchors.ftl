@@ -1,4 +1,4 @@
-<#ftl encoding="utf-8" />
+<#ftl encoding="utf-8" output_format="HTML"/>
 <#setting number_format="computer">
 <#if !RequestParameters.ajax??>
 <!DOCTYPE html>

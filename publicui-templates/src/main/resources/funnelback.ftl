@@ -315,7 +315,7 @@
     <#if response?exists && response.resultPacket?exists
         && response.resultPacket.error?exists>
         <p class="search-error">${response.resultPacket.error.userMsg!defaultMessage?html}</p>
-        <!-- PADRE return code: [${response.returnCode!"Unkown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
+        <!-- PADRE return code: [${response.returnCode!"Unknown"}], admin message: ${response.resultPacket.error.adminMsg!?html} -->
         <@ErrorMessageJS message="PADRE return code: "+response.returnCode!"Unknown" messageData=response.resultPacket.error.adminMsg! />
     </#if>
     <#-- Other errors -->
@@ -439,8 +439,8 @@
 
     <p>Display the values of a category with a checkbox allowing multiple selections.</p>
 
-    @param values : List of values to display.
-    @param facetSelected : Whether the parent facet of the category which this value belongs has been selected by the user or not.
+    @param values List of values to display.
+    @param facetSelected Whether the parent facet of the category which this value belongs has been selected by the user or not.
     @param max Maximum number of values to display.
 -->
 <#macro MultiValues values facetSelected max=16>
@@ -471,15 +471,16 @@
 <#---
     Checks if a query blending occurred and provide a link to cancel it.
 
-    @param prefix : Prefix to blended query terms, defaults to &quot;Your query has been expanded to: &quot;.
-    @param linkText : Text for the link to cancel query blending, defaults to &quot;Click here to use verbatim query&quot;.
-    @param tag : Tag to use to wrap the expanded queries.
+    @param prefix Prefix to blended query terms, defaults to &quot;Your query has been expanded to: &quot;.
+    @param linkText Text for the link to cancel query blending, defaults to &quot;Click here to use verbatim query&quot;. Note that HTML is not allowed here (it will be escaped), however for legacy reasons, emphasis open/close html tags are permitted (and will not be escaped).
+    @param tag Tag to use to wrap the expanded queries.
 -->
 <#macro CheckBlending prefix="Your query has been expanded to: " linkText="Click here to use verbatim query" tag="span">
     <#if response?? && response.resultPacket??
         && response.resultPacket.QSups?? && response.resultPacket.QSups?size &gt; 0>
         ${prefix} <${tag}><#list response.resultPacket.QSups as qsup> ${qsup.query}<#if qsup_has_next>, </#if></#list></${tag}>.
-        &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText}</a>
+        &nbsp;<a href="?${QueryString}&amp;qsup=off">${linkText?html?replace("&lt;em&gt;", "<em>")?replace("&lt;/em&gt;", "</em>")}</a>
+        <#-- See FUN-9496 for info about the strange replaces above -->
     </#if>
 </#macro>
 
@@ -488,14 +489,14 @@
     
     <p>Content is cached to avoid firing an HTTP request for each search results page.</p>
 
-    @param url : URL to request. This is the only mandatory parameter.
-    @param expiry : Cache time to live, in seconds (default = 3600). This is a number so you must pass the parameters without quotes: <tt>expiry=3600</tt>.
-    @param start : Regular expression pattern (Java) marking the beginning of the content to include. Double quotes must be escaped: <tt>start=&quot;start \&quot;pattern\&quot;&quot;</tt>.
-    @param end : Regular expression pattern (Java) marking the end of the content to include. Double quotes must be escaped too.
-    @param username : Username if the remote server requires authentication.
-    @param password : Password if the remote server requires authentication.
-    @param useragent : User-Agent string to use.
-    @param timeout : Time to wait, in seconds, for the remote content to be returned.
+    @param url URL to request. This is the only mandatory parameter.
+    @param expiry Cache time to live, in seconds (default = 3600). This is a number so you must pass the parameters without quotes: <tt>expiry=3600</tt>.
+    @param start Regular expression pattern (Java) marking the beginning of the content to include. Double quotes must be escaped: <tt>start=&quot;start \&quot;pattern\&quot;&quot;</tt>.
+    @param end Regular expression pattern (Java) marking the end of the content to include. Double quotes must be escaped too.
+    @param username Username if the remote server requires authentication.
+    @param password Password if the remote server requires authentication.
+    @param useragent User-Agent string to use.
+    @param timeout Time to wait, in seconds, for the remote content to be returned.
     @param convertrelative: Boolean, whether relative links in the included content should be converted to absolute ones.
 -->
 <#macro IncludeUrl url params...>
@@ -589,9 +590,9 @@
     Displays a table with the time taken by each step in the query lifecycle.
 
     @param width Width in pixels to use for the bar graphs
-    @msLabel Label to use for &quot;milliseconds&quot;
-    @totalLabel Label to use for the &quot;Total&quot; summary row
-    @jsOnly Do not display the metrics, only output the processing time in the JS console.
+    @param msLabel Label to use for &quot;milliseconds&quot;
+    @param totalLabel Label to use for the &quot;Total&quot; summary row
+    @param jsOnly Do not display the metrics, only output the processing time in the JS console.
 -->
 <#macro PerformanceMetrics width=500 msLabel="ms" totalLabel="Total" jsOnly=false class="search-metrics" tdClass="" title="<h3>Performance</h3>">
     <#if response?? && response.performanceMetrics??>

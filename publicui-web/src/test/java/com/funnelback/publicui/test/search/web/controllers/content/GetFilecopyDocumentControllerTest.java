@@ -1,5 +1,8 @@
 package com.funnelback.publicui.test.search.web.controllers.content;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -25,6 +28,8 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.web.controllers.content.GetFilecopyDocumentController;
@@ -55,7 +60,10 @@ public class GetFilecopyDocumentControllerTest {
     @Before
     public void before() throws Exception {
         configRepository.setGlobalConfiguration(new GlobalOnlyConfig(searchHome));
-        configRepository.getGlobalConfiguration().setValue(Keys.SERVER_SECRET, "autotest-server-secret");
+        
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(serverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("autotest-server-secret");
+        configRepository.setServerConfig(serverConfig);
         
         configRepository.removeAllCollections();
         

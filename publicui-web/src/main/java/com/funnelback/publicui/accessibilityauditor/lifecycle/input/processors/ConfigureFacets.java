@@ -2,7 +2,9 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,16 +13,20 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
+import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigCollection;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigDelegateProfile;
+import com.funnelback.publicui.search.model.collection.delegate.OverrideProfilesConfigCollection;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.wcag.checker.FailureType;
-import com.funnelback.wcag.model.WCAG20Principle;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -40,16 +46,12 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     /** ID of the URL drill down facet. Will be localized client side */
     private static final String URL_FACET_ID = "URL";
     
+    /** ID of the facet containing missing metadata */
+    private static final String MISSING_METADATA_FACET_ID = Metadata.getMetadataClassPrefix() + "Missing";
+    
     private final FacetedNavigationConfig facetedNavigationConfig;
     
     public ConfigureFacets() {
-        // Facet on success criteria (e.g. 1.2.3)
-        Stream<String> successCriteria = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.successCriterion(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
-        
         // Facet on issue type
         Stream<String> issueTypes = Arrays.asList(FailureType.values())
             .stream()
@@ -62,15 +64,16 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
             Names.profile().getName(),
             Names.domain().getName(),
             Names.principle().getName(),
+            Names.successCriterion().getName(),
             Names.affectedBy().getName(),
             Names.passedLevels().getName(),
             Names.failedLevels().getName(),
-            "f");
+            Names.format().getName());
         
         // Build our facet definitions and QPOs
         List<String> rmcf = new ArrayList<>();
         List<FacetDefinition> facetDefinitions = Stream
-            .of(issueTypes, successCriteria, other)
+            .of(issueTypes, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .map(metadataClass -> { rmcf.add(metadataClass); return metadataClass; })
@@ -79,6 +82,10 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         
         // URL drill down facet
         facetDefinitions.add(createURLScopeFillFacetDefinition());
+        
+        // Used the missing metadata facet to find documents with
+        // missing "checked" metadata, to scope documents that were not audited
+        facetDefinitions.add(createMissingMetadataFacetDefinition(MISSING_METADATA_FACET_ID));
         
         facetedNavigationConfig = new FacetedNavigationConfig(facetDefinitions);
         
@@ -89,23 +96,18 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     }
     
     @Override
-    public void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
-        // Always override any faceted nav. config (active profile or collection level)
-        Profile profile = transaction.getQuestion()
-            .getCollection()
-            .getProfiles()
-            .get(transaction.getQuestion().getProfile());
-        if (profile != null) {
-            profile.setFacetedNavConfConfig(null);
-        }
-        
-        transaction.getQuestion()
-            .getCollection()
-            .setFacetedNavigationConfConfig(null);
+    protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
+        // Use delegate collections & profiles to avoid modifying the collection
+        // object which is cached in EhCache
+        Collection c = new OverrideFacetConfigCollection(
+            transaction.getQuestion().getCollection(), facetedNavigationConfig, facetedNavigationConfig);
 
-        transaction.getQuestion()
-            .getCollection()
-            .setFacetedNavigationLiveConfig(facetedNavigationConfig);
+        Map<String, Profile> profiles = new HashMap<>();
+        c.getProfiles().forEach(
+            (profileId, profile) -> profiles.put(profileId, new OverrideFacetConfigDelegateProfile(profile, facetedNavigationConfig)));
+
+        c = new OverrideProfilesConfigCollection(c, profiles);
+        transaction.getQuestion().setCollection(c);
     }
     
     /**
@@ -117,6 +119,19 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     private FacetDefinition createMetadataFieldFillFacetDefinition(String field) {
         List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
         MetadataFieldFill fill = new MetadataFieldFill(field);
+        fill.setLabel(field);
+        fill.setFacetName(field);
+        categoryDefinitions.add(fill);
+        
+        return new FacetDefinition(field, categoryDefinitions);
+    }
+    
+    /**
+     * Creates a facet definition for missing metadata
+     */
+    private FacetDefinition createMissingMetadataFacetDefinition(String field) {
+        List<CategoryDefinition> categoryDefinitions = new ArrayList<CategoryDefinition>();
+        MissingMetadataFill fill = new MissingMetadataFill();
         fill.setLabel(field);
         fill.setFacetName(field);
         categoryDefinitions.add(fill);

@@ -2,6 +2,9 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.net.URI;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +17,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
-import lombok.extern.log4j.Log4j2;
-
 /**
  * Fixes display URLs for results. By default the display URL is identical
  * to the live URL, but sometimes needs some processing.
@@ -24,7 +25,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FixDisplayUrls extends AbstractOutputProcessor {
 
-    @Autowired
+    @Autowired @Setter
     private ConfigRepository configRepository;
     
     @Override

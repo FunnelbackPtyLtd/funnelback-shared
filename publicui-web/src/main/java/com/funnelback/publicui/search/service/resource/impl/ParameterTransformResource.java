@@ -22,9 +22,9 @@ public class ParameterTransformResource extends AbstractSingleFileResource<List<
     }
 
     @Override
-    public List<TransformRule> parse() throws IOException {
+    public List<TransformRule> parseResourceOnly() throws IOException {
         log.debug("Loading parameter transform rules from '"+file.getAbsolutePath()+"'");
-        String[] rules = new SimpleFileResource(file).parse();
+        String[] rules = new SimpleFileResource(file).parseResourceOnly();
         return ParamTransformRuleFactory.buildRules(rules);
     }
 

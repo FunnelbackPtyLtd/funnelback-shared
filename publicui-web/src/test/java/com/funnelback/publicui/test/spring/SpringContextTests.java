@@ -45,7 +45,7 @@ public class SpringContextTests {
         SpringContextTestHelper.ORIG_INSTALL_DIR = props.getProperty("funnelback.installdir");
         try {
             SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
-            searchHomeConfigs.getGlobalCfgDefault().put(Keys.SERVER_SECRET, "foobar");
+            searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "foobar");
             
             File searchHome = SearchHomeProvider.getWritableSearchHomeIHaveToUseStrings("SpringContextTests", 
                 "testThatContextLoadedSuccessfully", null, searchHomeConfigs, null);

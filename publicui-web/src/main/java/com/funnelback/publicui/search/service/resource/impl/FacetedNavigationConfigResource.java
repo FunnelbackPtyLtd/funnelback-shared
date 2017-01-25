@@ -26,7 +26,7 @@ public class FacetedNavigationConfigResource extends AbstractSingleFileResource<
         this.fnConfigParser = fnConfigParser;
     }
     
-    public FacetedNavigationConfig parse() throws IOException {
+    public FacetedNavigationConfig parseResourceOnly() throws IOException {
         log.debug("Loading faceted navigation config from '"+file.getAbsolutePath()+"'");
         try {
             Facets f = fnConfigParser

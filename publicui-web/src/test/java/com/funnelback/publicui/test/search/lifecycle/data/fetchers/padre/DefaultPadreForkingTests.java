@@ -173,8 +173,8 @@ public class DefaultPadreForkingTests {
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
         
-        forking.fetchData(ts);
         
+        forking.fetchData(ts);
         Assert.assertEquals(68, ts.getResponse().getReturnCode());
     }
     

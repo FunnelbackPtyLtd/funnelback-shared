@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.model.collection.Profile;
 
 public class MetaInfoFetcherTest {
 
-    private final File searchHome = new File("src/test/resources/dummy-search_home");
+    private final File searchHome = new File("src/test/resources/dummy-search_home").getAbsoluteFile();
     private MultipleConfigReader<MetaInfo> reader;
     private Collection c;
     private Set<String> mustExist;
