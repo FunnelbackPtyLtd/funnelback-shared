@@ -34,6 +34,24 @@ public class UrlScopeFillTests {
         Assert.assertEquals(new Integer(1), result.get("example.com/foo/"));
         Assert.assertEquals(new Integer(1), result.get("example.com/bar/"));
     }
+    
+    @Test
+    public void testTrailingSlashes() {
+        Map<String, Integer> countsFromPadre = new HashMap<String, Integer>();
+        countsFromPadre.put("example.com/foo/", 1);
+        countsFromPadre.put("example.com/bar/", 1);
+
+        SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
+        when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
+
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st);
+
+        Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
+
+        Assert.assertEquals(new Integer(1), result.get("example.com/foo/"));
+        Assert.assertEquals(new Integer(1), result.get("example.com/bar/"));
+    }
+
 
     @Test
     public void testLevelSkipping() {
@@ -73,6 +91,23 @@ public class UrlScopeFillTests {
         // Should drill down in the URL until unique
         Assert.assertEquals(new Integer(1), result.get("www.example.com/"));
         Assert.assertEquals(new Integer(1), result.get("www2.example.com/"));
+    }
+    
+    @Test
+    public void testSubfoldersOnly() {
+        Map<String, Integer> countsFromPadre = new HashMap<String, Integer>();
+        countsFromPadre.put("example.org", 12);
+        countsFromPadre.put("example.org/folder/", 12);
+        countsFromPadre.put("example.org/folder/sub-folder/", 12);
+
+        SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
+        when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
+        
+        List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st);
+        Assert.assertEquals(1, categoryValues.size());
+        Assert.assertEquals("example.org/folder/sub-folder/", categoryValues.get(0).getData());
+        Assert.assertEquals(12, categoryValues.get(0).getCount());
+        
     }
 
 }
