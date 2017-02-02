@@ -85,7 +85,11 @@ public class SearchHistory {
     @Getter @Setter private int numRanks;
     
     /** URL parameters used to perform the search */
-    @Getter private String searchParams;
+    private String searchParams;
+    
+    public String getSearchParams() {
+        return searchParams;
+    }
     
     /**
      * Set the search parameters
