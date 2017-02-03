@@ -43,6 +43,7 @@ public class SearchHistoryDaoSearchTest extends SessionDaoTest {
             SearchHistory sh = generateRandomSearchHistory(collection.getId(), user.getId());
             sh.setOriginalQuery(query);
             sh.setQueryAsProcessed(query);
+            sh.setSearchParams("query=" + query);
             repository.saveSearch(sh);
         }
         List<SearchHistory> history = repository.getSearchHistory(user, collection, 10);
