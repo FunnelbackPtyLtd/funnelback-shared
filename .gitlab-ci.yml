@@ -6,4 +6,7 @@ build:
     tags:
         - funnelback-rnd
         - docker
+    artifacts:
+        paths:
+            - publicui-web/target/*.war
 
