@@ -297,7 +297,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Qualifier("idp-ssocircle")
     public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
             throws MetadataProviderException {
-        String idpSSOCircleMetadataURL = "https://idp.ssocircle.com/idp-meta.xml";
+        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
                 backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
