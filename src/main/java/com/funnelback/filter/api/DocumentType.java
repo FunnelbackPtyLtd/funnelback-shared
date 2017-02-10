@@ -19,12 +19,23 @@ public interface DocumentType {
     /**
      * Simple json MIME type which should be used when a filter converts a document to json.
      */
-    public static final DocumentType APPLICATION_JSON_TEXT = fromContentType("application/json");
+    public static final DocumentType MIME_APPLICATION_JSON_TEXT = fromContentType("application/json");
+    
+    /**
+     * Simple json MIME type which should be used when a filter converts a document to json.
+     */
+    @Deprecated
+    public static final DocumentType APPLICATION_JSON_TEXT = MIME_APPLICATION_JSON_TEXT;
 
     /**
      * Simple xml MIME type which should be used when a filter converts a document to xml.
      */
     public static final DocumentType MIME_XML_TEXT = fromContentType("text/xml");
+    
+    /**
+     * Standard CSV MIME type which should be used when a filter converts a documen to CSV
+     */
+    public static final DocumentType MIME_CSV_TEXT = fromContentType("text/csv");
 
     /**
      * Simple xhtml MIME type which should be used when a filter converts a document to xhtml.

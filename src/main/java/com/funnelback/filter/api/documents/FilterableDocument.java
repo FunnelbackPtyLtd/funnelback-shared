@@ -2,6 +2,7 @@ package com.funnelback.filter.api.documents;
 
 import java.net.URI;
 
+import com.funnelback.filter.api.DocumentType;
 import com.google.common.collect.ListMultimap;
 
 
@@ -44,5 +45,13 @@ public interface FilterableDocument extends NoContentDocument {
      * @return A new document with the given headers.
      */
     public FilterableDocument cloneWithMetadata(ListMultimap<String, String> metadata);
+    
+    /**
+     * Creates a clone of the document with the given document type.
+     * 
+     * @param documentType the documen type of the returned document.
+     * @return
+     */
+    public FilterableDocument cloneWithDocumentType(DocumentType documentType);
     
 }
