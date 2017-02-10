@@ -100,6 +100,30 @@ public class UrlScopeFill extends URLFill {
                         // becomes the "current", and the new list contains only its childs, etc.
                         false));
                 }
+            } else {
+                // No levels returned. Use the deepest level we were able to get from
+                // PADRE url-count so that the user can still drill-down to it to access sub-folders
+                segmentCounts.getSegmentCounts().keySet()
+                    .stream()
+                    .mapToInt(Integer::intValue)
+                    .max()
+                    .ifPresent(maxDepth -> {
+                        try {
+                            for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(maxDepth).entrySet()) {
+                                categories.add(new CategoryValue(
+                                    entry.getKey(),
+                                    entry.getKey(),
+                                    entry.getValue(),
+                                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                                        + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
+                                    entry.getKey(),
+                                    false));
+                            }
+                        } catch (UnsupportedEncodingException uee) {
+                            throw new RuntimeException(uee);
+                        }
+                    });
+                
             }
 
             return categories;
@@ -122,7 +146,7 @@ public class UrlScopeFill extends URLFill {
             
             if (!pathPrefix.isEmpty()) {
                 // We want to always have exactly one trailing slash
-                String key = uri.getHostname() + "/" + pathPrefix + "/";
+                String key = uri.getHostname() + "/" + pathPrefix + (pathPrefix.endsWith("/") ? "" : "/");
                 
                 segmentCounts.add(key, countSegments(key), count);
             }
