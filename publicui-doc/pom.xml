@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.funnelback.publicui</groupId>
         <artifactId>publicui-parent</artifactId>
-        <version>15.9.1705-SNAPSHOT</version>
+        <version>15.9.1706-SNAPSHOT</version>
     </parent>
 
     <modules>
