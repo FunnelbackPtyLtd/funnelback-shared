@@ -326,6 +326,12 @@ public class ResultPacket {
     @Getter private List<SumByGroup> sumByGroups = new ArrayList<>();
     
     /**
+     * <p>A list containing the counts of term occurrences in a metadata class.</p>
+     * <p>See query processor option -rmcfIdxTerms.</p>
+     */
+    @Getter private List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
+    
+    /**
      * <p>A map of the numeric metadata to total of that numeric metadata in the result set</p>
      * 
      * <p>The key is the metadata class. The value is the sum.</p>
@@ -458,6 +464,16 @@ public class ResultPacket {
             }
         }
         
+        public static final String INDEXED_TERM_COUNTS = "count_metadata_terms";
+        public static class IndexTermCount {
+            public static final String TAG = "ct";
+            public static final String METADATA_NAME = "metadata_name";
+            
+            public static class Count {
+                public static final String TAG = "c";
+                public static final String TERM = "t";
+            }
+        }
         
         public static final String SUMS_BY_GROUPS = "sums_by_groups";
         public static class SumByCount {
