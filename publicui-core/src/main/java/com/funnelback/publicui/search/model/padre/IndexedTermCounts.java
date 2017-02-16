@@ -11,7 +11,7 @@ import lombok.ToString;
 /**
  * <p>Holds the count of each indexed term for a metadata class 'metadataClass'.</p>
  * 
- * @since 15.8
+ * @since 15.10
  */
 @AllArgsConstructor
 @EqualsAndHashCode
