@@ -327,7 +327,9 @@ public class ResultPacket {
     
     /**
      * <p>A list containing the counts of term occurrences in a metadata class.</p>
-     * <p>See query processor option -rmcfIdxTerms.</p>
+     * <p>See query processor option -countIndexedTerms.</p>
+     * 
+     * @since 15.10
      */
     @Getter private List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
     
