@@ -27,6 +27,7 @@ import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.GeoBoundingBox;
 import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
+import com.funnelback.publicui.search.model.padre.IndexedTermCounts;
 import com.funnelback.publicui.search.model.padre.RMCItemResult;
 import com.funnelback.publicui.search.model.padre.Range;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -195,6 +196,8 @@ public class StaxStreamParser implements PadreXmlParser {
                         parseSumsByGroups(xmlStreamReader, packet);
                     } else if (ResultPacket.Schema.RM_SUMS.equals(xmlStreamReader.getLocalName())) {
                         parseRMSums(xmlStreamReader, packet);
+                    } else if (ResultPacket.Schema.INDEXED_TERM_COUNTS.equals(xmlStreamReader.getLocalName())) {
+                        parseIndexedTermCounts(xmlStreamReader, packet);
                     }else {
                         log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
                     }
@@ -281,6 +284,34 @@ public class StaxStreamParser implements PadreXmlParser {
       } while(type != XMLStreamReader.END_ELEMENT 
           || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.SUMS_BY_GROUPS.equals(xmlStreamReader.getLocalName())));
   }
+    
+    private void parseIndexedTermCounts(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+        int type = xmlStreamReader.getEventType();
+        do {
+            type = xmlStreamReader.next();
+            if(XMLStreamReader.CHARACTERS == type) {
+                type = xmlStreamReader.next();
+            }
+            if(ResultPacket.Schema.IndexTermCount.TAG.equals(xmlStreamReader.getLocalName())) {
+                String matdataName = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.IndexTermCount.METADATA_NAME);
+                IndexedTermCounts indexedTermCounts = new IndexedTermCounts(matdataName);
+                packet.getIndexedTermCounts().add(indexedTermCounts);
+
+                xmlStreamReader.next(); //moves onto to CHARACTERS
+                while(xmlStreamReader.next() != XMLStreamReader.END_ELEMENT) {
+                    if (xmlStreamReader.isStartElement()) {
+                        String term = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.IndexTermCount.Count.TERM);
+                        long count = Long.parseLong(xmlStreamReader.getElementText());
+                        indexedTermCounts.getTermAndOccurrences().put(term, count);
+                        xmlStreamReader.next(); //should get to end element.
+                    }
+
+                } 
+            }
+            type = xmlStreamReader.getEventType();
+        } while(type != XMLStreamReader.END_ELEMENT 
+            || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.INDEXED_TERM_COUNTS.equals(xmlStreamReader.getLocalName())));
+    }
     
     private void parseResults(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
         

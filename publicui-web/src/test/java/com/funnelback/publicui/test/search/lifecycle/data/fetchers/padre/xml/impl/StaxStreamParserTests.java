@@ -114,6 +114,40 @@ public class StaxStreamParserTests {
     }
     
     @Test
+    public void testIndexedTermCounts() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/rmcfIdxTerms.xml")),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertEquals(3, rp.getIndexedTermCounts().size());
+        Assert.assertEquals("onString", rp.getIndexedTermCounts().get(0).getMetadataClass());
+        Assert.assertEquals(28, 0 + rp.getIndexedTermCounts().get(0).getTermAndOccurrences().get("twentyeight"));
+        Assert.assertEquals(8, 0 + rp.getIndexedTermCounts().get(0).getTermAndOccurrences().get("eight"));
+        Assert.assertEquals(7, 0 + rp.getIndexedTermCounts().get(0).getTermAndOccurrences().get("seven"));
+        Assert.assertEquals(1, 0 + rp.getIndexedTermCounts().get(0).getTermAndOccurrences().get("12345678901234567890"));
+        
+        
+        
+        Assert.assertEquals("foo", rp.getIndexedTermCounts().get(1).getMetadataClass());
+        Assert.assertEquals(28, 0 + rp.getIndexedTermCounts().get(1).getTermAndOccurrences().get("twentyeight"));
+        
+        Assert.assertEquals("empty", rp.getIndexedTermCounts().get(2).getMetadataClass());
+        Assert.assertEquals(0, rp.getIndexedTermCounts().get(2).getTermAndOccurrences().size());
+    }
+    
+    
+    @Test
+    public void testIndexedTermCountsEmpty() throws Exception {
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/rmcfIdxTerms-EMPTY.xml")),StandardCharsets.UTF_8,
+            false);
+        Assert.assertEquals(rp.getIndexedTermCounts().size(), 0);
+    }
+    
+    
+    @Test
     public void testDetails() {
         assertEquals("FUNNELBACK_PADRE_9.1.2.0 64MDPLFS-VEC3-DNAMS2 (Web/Enterprise)", rp.getDetails().getPadreVersion());
         assertEquals("/opt/funnelback/data/gov_combined/live/idx/index: 93.5 MB, 3404 docs", rp.getDetails().getCollectionSize());
