@@ -3,12 +3,15 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Keys;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
@@ -36,11 +39,15 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
     /** Default value for PADRE's MBL option */
     private static final int DEFAULT_MBL = 250;
-    
+
+    /** Maximum DAAT timeout value - 1 hour */
+    private static final String DAAT_TIMEOUT_MAX_VALUE = "3600.0";
+
     private final List<String> options = new ArrayList<>();
 
     public SetQueryProcessorOptions() {
         options.add(getLogOption());
+        options.add(getDaatTimeoutOption());
         options.add(getSMOption());
         options.add(getSFOption());
         options.add(getMBLOption());
@@ -62,8 +69,26 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
             st.getQuestion().getAdditionalParameters().remove("sort");
+            
+            getDaatOption(st.getQuestion().getCollection().getConfiguration())
+                .ifPresent(option -> st.getQuestion().getDynamicQueryProcessorOptions().add(option));
         }
     }
+
+    /**
+     * Set a higher DAAT value than the default if configured.
+     * 
+     * @param config Config to read the DAAT value from
+     * @return PADRE <code>daat</code> option, or nothing if not configured
+     */
+    private Optional<String> getDaatOption(Config config) {
+        if (config.hasValue(Keys.ModernUI.AccessibilityAuditor.DAAT_LIMIT)) {
+            return Optional.of("-" + QueryProcessorOptionKeys.DAAT + "=" + config.value(Keys.ModernUI.AccessibilityAuditor.DAAT_LIMIT));
+        } else {
+            return Optional.empty();
+        }
+    }
+
     
     /**
      * Disable logging to avoid
@@ -73,6 +98,14 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      */
     private String getLogOption() {
         return "-" + QueryProcessorOptionKeys.LOG + "=off";
+    }
+    
+    /**
+     * Increase DAAT timeout to 1H
+     * @return PADRE <code>daat_timeout</code> option
+     */
+    private String getDaatTimeoutOption() {
+        return "-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=" + DAAT_TIMEOUT_MAX_VALUE;
     }
     
     /**
