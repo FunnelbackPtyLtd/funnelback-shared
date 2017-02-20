@@ -33,7 +33,7 @@
         <ref bean="exploreQueryInputProcessor" />
         <ref bean="hostname" />
         <ref bean="userIdInQueryLogs" />
-        <!-- This one must be last so that we can remove any options that have been set -->
+        <!-- This one must be last so that we can override options that have been set -->
         <ref bean="accessibilityAuditorAcknowledgmentCountsSetQueryProcessorOptions" />
         <ref bean="extraSearchesInputProcessor" />
             <bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
