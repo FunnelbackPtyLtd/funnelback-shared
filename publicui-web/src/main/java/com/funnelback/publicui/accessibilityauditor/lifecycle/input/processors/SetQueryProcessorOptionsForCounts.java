@@ -29,7 +29,7 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     public SetQueryProcessorOptionsForCounts() {
         options = ImmutableList.<String>builder()
             .add(getLogOption())
-            .addAll(getOptionsForSpeed())
+            .addAll(getOptionsForSpeedThatDoNotAffectResultSet())
             .add(getIndexedTermsOptions())
             .build();
         
@@ -39,7 +39,6 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
     @Override
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
         //Clear all previous options as they risk slowing us down.
-        st.getQuestion().getDynamicQueryProcessorOptions().clear();
         st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
     }
     
@@ -57,11 +56,17 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
      * Get query processor options for running the query quickly.
      * 
      * <p>This aims to override as many setting that can slow down padre as possible.
-     * Options set in collection.cfg will be overridden by these.</p>
+     * Options set in collection.cfg will be overridden by these. This does not intend 
+     * to drastically change what is in the result set (un-ordered). This still intends 
+     * for DLS to work, for gscope restrictions to work, xscope restrictions, clive etc.
+     * It does however alter the query so that blending, synonyms, and searching over 
+     * implicit fields (e.g. looking in document titles) is turned off. </p>
+     * 
+     * </p>
      * 
      * @return
      */
-    private List<String> getOptionsForSpeed() {
+    private List<String> getOptionsForSpeedThatDoNotAffectResultSet() {
         //If this is to be used else where we should set
         // -countIndexedTerms=[FunUnusedMetaClass]
         return ImmutableList.of(
