@@ -9,11 +9,10 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * Set a default query if none is specified, so that the reports will always
  * have something to show
  * 
- * @author nguillaumin@funnelback.com
  *
  */
-@Component("accessibilityAuditorSetQuery")
-public class SetQuery extends AbstractAccessibilityAuditorInputProcessor {
+@Component("accessibilityAuditorAcknowledgmentCountsSetQuery")
+public class SetQueryForCounts extends AbstractAccessibilityAuditorAcknowledgmentCountsInputProcessor {
 
     /** Query to run if no query is specified - should return all results */
     private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
