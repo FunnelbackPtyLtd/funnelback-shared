@@ -3,7 +3,7 @@ package com.funnelback.publicui.utils;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.*;
 public class PadreOptionsForSpeed {
 
     /**
@@ -13,29 +13,29 @@ public class PadreOptionsForSpeed {
      */
     public List<String> getOptionsThatDoNotAffectResultSet() {
         //If this is to be used else where we should set
-        // -countIndexedTerms=[FunUnusedMetaClass]
+        // -countIndexedTerms + "=[FunUnusedMetaClass]
         return ImmutableList.of(
-            "-vsimple=1", // Turning on vsimple reduces ranking complexity, this should be done early so other
+            "-" + VSIMPLE + "=1", // Turning on vsimple reduces ranking complexity, this should be done early so other
                           // other options can override what this sets.
-            "-daat_timeout=0", // Turning off daat timeout speeds up query processing.
-            "-sco=1", //no ranking 
-            "-rmcf=[]",     // We don't need rmcf for this call override it if set.
-            "-cnto=0.001",  // Don't let contextual nav run for too long if it somehow get enabled
-            "-contextual_navigation=false", // Turn of contextual nav we don't need it.
-            "-geospatial_ranges=false", // We don't need to work this out for the counts.
-            "-rmrf=[FunUnusedMetaClass]",  // We don't need to know ranges
-            "-sum=[FunUnusedMetaClass]", //This does not need to be on
-            "-sumByGroup=[FunUnusedMetaClass]",
-            "-MBL=1", //We don't need to see metadata values
-            "-SBL=1", //Don't need a summary
-            "-SF=[FunUnusedMetaClass]", //Don't show summary fields.
-            "-countIndexedTerms=[FunUnusedMetaClass]", //don't count indexed terms.
-            "-SM=off", //Try to disable summaries
-            "-explain=false",
-            "-count_dates=", //Setting this to empty turns off counting dates.
-            "-countgbits=", //Setting this to empty turns it off.
-            "-count_urls=", //Emptu count_urls turns of url counting.
-            "-sort=" //Turn of sorting
+            "-" + DAAT_TIMEOUT + "=0", // Turning off daat timeout speeds up query processing.
+            "-" + SCO + "=1", //no ranking 
+            "-" + RMCF + "=[]",     // We don't need rmcf for this call override it if set.
+            "-" + CNTO + "=0.001",  // Don't let contextual nav run for too long if it somehow get enabled
+            "-" + CONTEXTUAL_NAVIGATION + "=false", // Turn of contextual nav we don't need it.
+            "-" + GEOSPATIAL_RANGES + "=false", // We don't need to work this out for the counts.
+            "-" + RMRF + "=[FunUnusedMetaClass]",  // We don't need to know ranges
+            "-" + SUM + "=[FunUnusedMetaClass]", //This does not need to be on
+            "-" + SUMBYGROUP + "=[FunUnusedMetaClass]",
+            "-" + MBL + "=1", //We don't need to see metadata values
+            "-" + SBL + "=1", //Don't need a summaryW
+            "-" + SF + "=[FunUnusedMetaClass]", //Don't show summary fields.
+            "-" + COUNTINDEXEDTERMS + "=[FunUnusedMetaClass]", //don't count indexed terms.
+            "-" + SM + "=off", //Try to disable summaries
+            "-" + EXPLAIN + "=false",
+            "-" + COUNT_DATES + "=", //Setting this to empty turns off counting dates.
+            "-" + COUNTGBITS + "=", //Setting this to empty turns it off.
+            "-" + COUNT_URLS + "=", //Emptu count_urls turns of url counting.
+            "-" + SORT + "=" //Turn of sorting
             );
     }
     
@@ -48,16 +48,16 @@ public class PadreOptionsForSpeed {
      */
     public List<String> getOptionsToTurnOfReducingResultSet() {
         //If this is to be used else where we should set
-        // -countIndexedTerms=[FunUnusedMetaClass]
+        // -countIndexedTerms + "=[FunUnusedMetaClass]
         return ImmutableList.of(
-            "-diversity_rank_limit=10", //scan less results for diversification.
-            "-SSS=0", //Turn off same site suppression
-            "-neardup=1", //Setting to 1 turns it off
-            "-repetitiousness_factor=1", //Setting to 1 turns it off
-            "-same_collection_suppression=0", //Setting to 0 turns it off
-            "-same_collection_suppression=1", //Setting to 1 turns it off
-            "-title_dup_factor=1", //Setting to 1 turns it off
-            "-collapsing=off"
+            "-" + DIVERSITY_RANK_LIMIT + "=10", //scan less results for diversification.
+            "-" + SSS + "=0", //Turn off same site suppression
+            "-" + NEARDUP + "=1", //Setting to 1 turns it off
+            "-" + REPETITIOUSNESS_FACTOR + "=1", //Setting to 1 turns it off
+            "-" + SAME_COLLECTION_SUPPRESSION + "=0", //Setting to 0 turns it off
+            "-" + SAME_META_SUPPRESSION + "=1", //Setting to 1 turns it off
+            "-" + TITLE_DUP_FACTOR + "=1", //Setting to 1 turns it off
+            "-" + COLLAPSING + "=off"
             );
     }
     
@@ -71,9 +71,9 @@ public class PadreOptionsForSpeed {
         //If this is to be used else where we should set
         // 
         return ImmutableList.of(
-            "-bb=false", // Turn of best bets
-            "-qsup=off", // We don't want blending
-            "-stem=0"    // We don't want stemming.
+            "-" + BB + "=false", // Turn of best bets
+            "-" + QSUP + "=off", // We don't want blending
+            "-" + STEM + "=0"    // We don't want stemming.
             );
     }
     
