@@ -7,7 +7,7 @@
 </head>
 
 <frameset cols="300,*">
-    <frame name="list" src="files.html">
-    <frame name="main" src="overview.html">
+    <frame name="list" title="List of files" src="files.html">
+    <frame name="main" title="Content" src="overview.html">
 </frameset>
 </html>
