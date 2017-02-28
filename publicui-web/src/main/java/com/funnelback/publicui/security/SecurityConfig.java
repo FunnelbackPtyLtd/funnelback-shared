@@ -355,7 +355,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        ssoCircleEmd.initialize();
 //        providers.add(ssoCircleEmd);
 
-        ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvided();
+        ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvider();
         oktaWoodfordEmd.initialize();
         providers.add(oktaWoodfordEmd);
 
