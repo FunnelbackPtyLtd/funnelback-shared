@@ -330,7 +330,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Qualifier("idp-okta")
     public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
             throws MetadataProviderException {
-        String idpOktaWoodfordMetadataURL = "http://woodford-secure.funnelback.co.uk/okta.xml";
+        String idpOktaWoodfordMetadataURL = "http://127.0.0.1/okta.xml";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
                 backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
