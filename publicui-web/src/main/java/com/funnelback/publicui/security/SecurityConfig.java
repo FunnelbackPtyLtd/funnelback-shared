@@ -293,21 +293,21 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return idpDiscovery;
     }
     
-//    @Bean
-//    @Qualifier("idp-ssocircle")
-//    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
-//            throws MetadataProviderException {
-//        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
-//        Timer backgroundTaskTimer = new Timer(true);
-//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-//        httpMetadataProvider.setParserPool(parserPool());
-//        ExtendedMetadataDelegate extendedMetadataDelegate = 
-//               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-//        extendedMetadataDelegate.setMetadataTrustCheck(true);
-//        extendedMetadataDelegate.setMetadataRequireSignature(false);
-//        return extendedMetadataDelegate;
-//    }
+    @Bean
+    @Qualifier("idp-ssocircle")
+    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
+            throws MetadataProviderException {
+        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
+        Timer backgroundTaskTimer = new Timer(true);
+        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
+        httpMetadataProvider.setParserPool(parserPool());
+        ExtendedMetadataDelegate extendedMetadataDelegate = 
+               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+        extendedMetadataDelegate.setMetadataTrustCheck(true);
+        extendedMetadataDelegate.setMetadataRequireSignature(false);
+        return extendedMetadataDelegate;
+    }
 
 //    @Bean
 //    @Qualifier("idp-openidp")
@@ -351,9 +351,9 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-//        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
-//        ssoCircleEmd.initialize();
-//        providers.add(ssoCircleEmd);
+        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
+        ssoCircleEmd.initialize();
+        providers.add(ssoCircleEmd);
 
         ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvider();
         oktaWoodfordEmd.initialize();
