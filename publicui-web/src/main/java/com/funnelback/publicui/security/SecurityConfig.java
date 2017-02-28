@@ -36,5 +36,10 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         }
         //Disable csrf, as we don't care to protect anything here with it.
         http.csrf().disable();
+        
+        // This is usually done in the parent however as we don't actually
+        // call the parent to protect this end point when in non Admin mode
+        // we need to ensure this is disabled here.
+        http.headers().httpStrictTransportSecurity().disable();
     }
 }
