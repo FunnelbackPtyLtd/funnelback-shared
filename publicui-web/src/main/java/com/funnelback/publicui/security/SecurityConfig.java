@@ -293,21 +293,21 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return idpDiscovery;
     }
     
-    @Bean
-    @Qualifier("idp-ssocircle")
-    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
-            throws MetadataProviderException {
-        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
-        Timer backgroundTaskTimer = new Timer(true);
-        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-        httpMetadataProvider.setParserPool(parserPool());
-        ExtendedMetadataDelegate extendedMetadataDelegate = 
-                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-        extendedMetadataDelegate.setMetadataTrustCheck(true);
-        extendedMetadataDelegate.setMetadataRequireSignature(false);
-        return extendedMetadataDelegate;
-    }
+//    @Bean
+//    @Qualifier("idp-ssocircle")
+//    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
+//            throws MetadataProviderException {
+//        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
+//        Timer backgroundTaskTimer = new Timer(true);
+//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
+//        httpMetadataProvider.setParserPool(parserPool());
+//        ExtendedMetadataDelegate extendedMetadataDelegate = 
+//               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+//        extendedMetadataDelegate.setMetadataTrustCheck(true);
+//        extendedMetadataDelegate.setMetadataRequireSignature(false);
+//        return extendedMetadataDelegate;
+//    }
 
 //    @Bean
 //    @Qualifier("idp-openidp")
@@ -325,6 +325,24 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        return extendedMetadataDelegate;
 //    }
 
+
+    @Bean
+    @Qualifier("idp-okta")
+    public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
+            throws MetadataProviderException {
+        String idpOktaWoodfordMetadataURL = "https://woodford-secure.funnelback.co.uk/okta.xml";
+        Timer backgroundTaskTimer = new Timer(true);
+        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+                backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
+        httpMetadataProvider.setParserPool(parserPool());
+        ExtendedMetadataDelegate extendedMetadataDelegate =
+                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+        extendedMetadataDelegate.setMetadataTrustCheck(true);
+        extendedMetadataDelegate.setMetadataRequireSignature(false);
+        return extendedMetadataDelegate;
+    }
+
+
     // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
     // is here
     // Do no forget to call iniitalize method on providers
@@ -333,9 +351,13 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
-        ssoCircleEmd.initialize();
-        providers.add(ssoCircleEmd);
+//        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
+//        ssoCircleEmd.initialize();
+//        providers.add(ssoCircleEmd);
+
+        ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvided();
+        oktaWoodfordEmd.initialize();
+        providers.add(oktaWoodfordEmd);
 
 //        ExtendedMetadataDelegate openIdpEmd = openIdpExtendedMetadataProvider();
 //        openIdpEmd.initialize();
