@@ -392,7 +392,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         // Todo: add to com.funnelback.common.config.Keys
         String entityID = configRepository
                     .getGlobalConfiguration().value("saml.entity_id");
-        if (entity != null) {
+        if (entityID != null) {
              metadataGenerator.setEntityId(entityID);
         } else {
              metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
