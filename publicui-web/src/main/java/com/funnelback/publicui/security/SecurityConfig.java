@@ -284,6 +284,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
         extendedMetadata.setIdpDiscoveryEnabled(false); 
+	extendedMetadata.setSslHostnameVerification("allowAll");
         extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
@@ -296,21 +297,21 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return idpDiscovery;
     }
     
-    @Bean
-    @Qualifier("idp-ssocircle")
-    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
-            throws MetadataProviderException {
-        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
-        Timer backgroundTaskTimer = new Timer(true);
-        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-        httpMetadataProvider.setParserPool(parserPool());
-        ExtendedMetadataDelegate extendedMetadataDelegate = 
-               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-        extendedMetadataDelegate.setMetadataTrustCheck(true);
-        extendedMetadataDelegate.setMetadataRequireSignature(false);
-        return extendedMetadataDelegate;
-    }
+//    @Bean
+//    @Qualifier("idp-ssocircle")
+//    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
+//            throws MetadataProviderException {
+//        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
+//        Timer backgroundTaskTimer = new Timer(true);
+//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
+//        httpMetadataProvider.setParserPool(parserPool());
+//        ExtendedMetadataDelegate extendedMetadataDelegate = 
+//               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+//        extendedMetadataDelegate.setMetadataTrustCheck(true);
+//        extendedMetadataDelegate.setMetadataRequireSignature(false);
+//        return extendedMetadataDelegate;
+//    }
 
 //    @Bean
 //    @Qualifier("idp-openidp")
