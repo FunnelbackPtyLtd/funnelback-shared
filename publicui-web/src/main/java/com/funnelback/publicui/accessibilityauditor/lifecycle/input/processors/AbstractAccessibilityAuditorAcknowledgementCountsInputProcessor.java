@@ -7,16 +7,16 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
- * Base class for accessibility auditor acknowledgment count input processors. Will process the 
- * transaction only of the question is of type {@link SearchQuestionType#ACCESSIBILITY_AUDITOR_ACKNOWLEDGMENT_COUNTS}.
+ * Base class for accessibility auditor acknowledegment count input processors. Will process the 
+ * transaction only of the question is of type {@link SearchQuestionType#ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS}.
  *
  */
-public abstract class AbstractAccessibilityAuditorAcknowledgmentCountsInputProcessor extends AbstractInputProcessor {
+public abstract class AbstractAccessibilityAuditorAcknowledgementCountsInputProcessor extends AbstractInputProcessor {
 
     @Override
     public void processInput(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(st)
-            && SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGMENT_COUNTS.equals(st.getQuestion().getQuestionType())) {
+            && SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS.equals(st.getQuestion().getQuestionType())) {
             processAccessibilityAuditorTransaction(st);
         }
     }

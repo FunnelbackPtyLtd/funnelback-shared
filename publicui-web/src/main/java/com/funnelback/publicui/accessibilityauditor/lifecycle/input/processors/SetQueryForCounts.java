@@ -11,8 +11,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
  * 
  *
  */
-@Component("accessibilityAuditorAcknowledgmentCountsSetQuery")
-public class SetQueryForCounts extends AbstractAccessibilityAuditorAcknowledgmentCountsInputProcessor {
+@Component("accessibilityAuditorAcknowledgementCountsSetQuery")
+public class SetQueryForCounts extends AbstractAccessibilityAuditorAcknowledgementCountsInputProcessor {
 
     /** Query to run if no query is specified - should return all results */
     private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
