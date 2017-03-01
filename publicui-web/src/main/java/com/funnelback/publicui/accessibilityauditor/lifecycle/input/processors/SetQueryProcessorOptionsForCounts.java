@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -19,10 +20,11 @@ import com.google.common.collect.ImmutableList;
  * 
  */
 @Log4j2
-@Component("accessibilityAuditorAcknowledgmentCountsSetQueryProcessorOptions")
-public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAuditorAcknowledgmentCountsInputProcessor {
+@Component("accessibilityAuditorAcknowledgementCountsSetQueryProcessorOptions")
+public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAuditorAcknowledgementCountsInputProcessor {
 
-    public static final String AA_ACKNOWLEDGMENT_COUNT_METADATA_CLASS = "FunAAAcknowledgments"; 
+    public static final String AA_ACKNOWLEDGEMENT_COUNT_METADATA_CLASS = 
+        Metadata.getMetadataClass(Metadata.Names.acknowledgements().getName()); 
     
     
     private final List<String> options;
@@ -85,7 +87,7 @@ public class SetQueryProcessorOptionsForCounts extends AbstractAccessibilityAudi
      */
     
     private String getIndexedTermsOptions() {
-        return "-countIndexedTerms=[" + AA_ACKNOWLEDGMENT_COUNT_METADATA_CLASS + "]";
+        return "-countIndexedTerms=[" + AA_ACKNOWLEDGEMENT_COUNT_METADATA_CLASS + "]";
     }
 
 }

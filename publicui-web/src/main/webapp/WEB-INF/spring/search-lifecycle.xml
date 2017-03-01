@@ -16,7 +16,7 @@
         </bean>
         <ref bean="accessibilityAuditorOptionsForSpeed" />
         <ref bean="accessibilityAuditorSetQuery" />
-        <ref bean="accessibilityAuditorAcknowledgmentCountsSetQuery" />
+        <ref bean="accessibilityAuditorAcknowledgementCountsSetQuery" />
         <ref bean="accessibilityAuditorSetQueryProcessorOptions" />
         <ref bean="accessibilityAuditorConfigureFacets" />
         <ref bean="session" />
@@ -35,7 +35,7 @@
         <ref bean="hostname" />
         <ref bean="userIdInQueryLogs" />
         <!-- This one must be last so that we can override options that have been set -->
-        <ref bean="accessibilityAuditorAcknowledgmentCountsSetQueryProcessorOptions" />
+        <ref bean="accessibilityAuditorAcknowledgementCountsSetQueryProcessorOptions" />
         <ref bean="extraSearchesInputProcessor" />
             <bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
                 <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).extra_searches }" />

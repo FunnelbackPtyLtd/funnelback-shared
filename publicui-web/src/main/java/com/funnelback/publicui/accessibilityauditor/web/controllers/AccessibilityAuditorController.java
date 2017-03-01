@@ -53,13 +53,13 @@ public class AccessibilityAuditorController {
     }
     
     
-    @RequestMapping("/accessibility-auditor-acknowledgment-counts.json")
+    @RequestMapping("/accessibility-auditor-acknowledgement-counts.json")
     @PreAuthorize(PRE_AUTH)
-    public ModelAndView acknowledgmentCounts(
+    public ModelAndView acknowledgementCounts(
             HttpServletRequest request,
             HttpServletResponse response,
             SearchQuestion question) {
-        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGMENT_COUNTS);
+        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS);
     }
     
     
