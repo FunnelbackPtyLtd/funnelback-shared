@@ -389,7 +389,14 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        metadataGenerator.setEntityId("com:funnelback:publicui:sp");
+        // Todo: add to com.funnelback.common.config.Keys
+        String entityID = configRepository
+                    .getGlobalConfiguration().value("saml.entity_id");
+        if (entity != null) {
+             metadataGenerator.setEntityId(entityID);
+        } else {
+             metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
+        }
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager()); 
