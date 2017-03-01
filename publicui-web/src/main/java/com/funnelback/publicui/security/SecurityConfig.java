@@ -368,7 +368,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        providers.add(openIdpEmd);
    
         CachingMetadataManager manager = new CachingMetadataManager(providers);
-        manager.setDefaultIDP("idp-okta"); 
+        manager.setDefaultIDP("http://www.okta.com/exk9ib1diuU9KPR1l0h7"); 
  
         return manager; 
     }
