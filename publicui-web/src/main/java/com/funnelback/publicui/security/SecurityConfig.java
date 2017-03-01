@@ -238,8 +238,8 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     // Allow all certificates to avoid SSL failures on metadata
     @Bean
     public TLSProtocolConfigurer tlsProtocolConfigurer() {
-	TLSProtocolConfigurer configurer = new TLSProtocolConfigurer();
-	configurer.setSslHostnameVerification("allowAll");
+    TLSProtocolConfigurer configurer = new TLSProtocolConfigurer();
+        configurer.setSslHostnameVerification("allowAll");
         return new TLSProtocolConfigurer();
     }
     
