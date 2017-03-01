@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
@@ -95,6 +96,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
+
+    @Autowired
+    @Setter
+    private ConfigRepository configRepository;
     
     @Autowired
     ExecutionContextHolder executionContextHolder;
@@ -368,7 +373,15 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        providers.add(openIdpEmd);
    
         CachingMetadataManager manager = new CachingMetadataManager(providers);
-        manager.setDefaultIDP("http://www.okta.com/exk9ib1diuU9KPR1l0h7"); 
+      
+        // Todo: add to com.funnelback.common.config.Keys
+        String defaultIDP = configRepository
+                    .getGlobalConfiguration().value("saml.default_idp");
+        if (defaultIDP != null) {
+            manager.setDefaultIDP(defaultIDP); 
+        } else { 
+           manager.setDefaultIDP("");
+        }
  
         return manager; 
     }
