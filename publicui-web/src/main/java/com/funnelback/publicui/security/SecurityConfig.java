@@ -280,7 +280,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Bean
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        extendedMetadata.setIdpDiscoveryEnabled(true); 
+        extendedMetadata.setIdpDiscoveryEnabled(false); 
         extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
@@ -330,7 +330,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Qualifier("idp-okta")
     public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
             throws MetadataProviderException {
-        String idpOktaWoodfordMetadataURL = "http://demo-new.funnelback.co.uk/okta.xml";
+        String idpOktaWoodfordMetadataURL = "http://woodfordfunds.oktapreview.com/app/exk9ib1diuU9KPR1l0h7/sso/saml/metadata";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
                 backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
@@ -351,9 +351,9 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
-        ssoCircleEmd.initialize();
-        providers.add(ssoCircleEmd);
+//        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
+//        ssoCircleEmd.initialize();
+//        providers.add(ssoCircleEmd);
 
         ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvider();
         oktaWoodfordEmd.initialize();
@@ -362,8 +362,11 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        ExtendedMetadataDelegate openIdpEmd = openIdpExtendedMetadataProvider();
 //        openIdpEmd.initialize();
 //        providers.add(openIdpEmd);
-        
-        return new CachingMetadataManager(providers);
+   
+        CachingMetadataManager manager = new CachingMetadataManager(providers);
+        manager.setDefaultIDP("idp-okta"); 
+ 
+        return manager; 
     }
  
     // Filter automatically generates default SP metadata
@@ -377,7 +380,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return metadataGenerator;
     }
  
-    // The filter is waiting for connections on URL suffixed with filterSuffix
+  //  // The filter is waiting for connections on URL suffixed with filterSuffix
     // and presents SP metadata there
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
