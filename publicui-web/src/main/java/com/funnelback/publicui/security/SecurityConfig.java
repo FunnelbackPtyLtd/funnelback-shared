@@ -98,7 +98,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 
     @Autowired
-    @Setter
     private ConfigRepository configRepository;
     
     @Autowired
