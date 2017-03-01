@@ -284,7 +284,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
         extendedMetadata.setIdpDiscoveryEnabled(false); 
-	extendedMetadata.setSslHostnameVerification("allowAll");
+        extendedMetadata.setSslHostnameVerification("allowAll");
         extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
