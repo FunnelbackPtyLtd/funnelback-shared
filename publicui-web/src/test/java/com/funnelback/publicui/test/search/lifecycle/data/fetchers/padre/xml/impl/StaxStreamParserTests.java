@@ -547,7 +547,12 @@ public class StaxStreamParserTests {
         Assert.assertNull(fifth.getSummary());
         // And also without cache_url too
         Assert.assertNull(fifth.getCacheUrl());
+        
+        // Date as year only
+        c.clear();
+        c.set(Calendar.YEAR, 1991);
 
+        Assert.assertEquals(c.getTime(), fifth.getDate());
     }
     
     @Test
