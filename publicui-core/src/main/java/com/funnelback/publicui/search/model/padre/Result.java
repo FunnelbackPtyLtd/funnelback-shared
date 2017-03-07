@@ -32,7 +32,7 @@ public class Result implements ResultType {
     /**
      * Date formats used to parse dates in PADRE results.
      */
-    public static final String[] DATE_PATTERNS_IN = {DATE_PATTERN_OUT, "MMM yyyy"};
+    public static final String[] DATE_PATTERNS_IN = {DATE_PATTERN_OUT, "MMM yyyy", "yyyy"};
 
     /**
      * String returned by PADRE when a result has no date.
