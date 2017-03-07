@@ -163,6 +163,10 @@ public class XSLTXStreamViewTests {
         oldXml = oldXml.replaceAll("(?s)<query_system_raw>.*?</query_system_raw>\n", "");
         // Remove <unexpected_tag> used for other tests
         oldXml = oldXml.replaceAll("(?s)<unexpected_tag>.*?</unexpected_tag>\n", "");
+        
+        // Year only dates (e.g. "1991") get parsed as 1st of Jan
+        // and serialized back as dd MMM yyyy
+        oldXml = oldXml.replaceAll("<date>1991</date>", "<date>1 Jan 1991</date>");
 
         // Ensure we're not comparing empty or very small strings
         Assert.assertTrue(oldXml.length() > 50000);
