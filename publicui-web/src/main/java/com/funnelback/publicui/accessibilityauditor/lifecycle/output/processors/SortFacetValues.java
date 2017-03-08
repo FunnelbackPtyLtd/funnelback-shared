@@ -36,6 +36,7 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
         valueComparators.put(Metadata.getMetadataClass(Names.failedLevels().getName()), new LevelNameComparator());
         valueComparators.put(Metadata.getMetadataClass(Names.principle().getName()), new PrincipleIdComparator());
         valueComparators.put(Metadata.getMetadataClass(Names.affectedBy().getName()), new AffectedByComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.successCriterion().getName()), new SuccessCriterionNameComparator());
     }
     
     @Override
@@ -53,7 +54,17 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
                 });
         }
     }
-    
+
+    /**
+     * Compare AA Success Criteria by their label (e.g. : 1.4.6 - Contrast (Enhanced))
+     */
+    static class SuccessCriterionNameComparator implements Comparator<CategoryValue> {
+        @Override
+        public int compare(CategoryValue a, CategoryValue b) {
+            return a.getLabel().compareTo(b.getLabel());
+        }
+    }
+
     /**
      * Compare AA level values by their data (which is the level name: A, AA, AAA)
      */
