@@ -496,7 +496,7 @@
     @param username Username if the remote server requires authentication.
     @param password Password if the remote server requires authentication.
     @param useragent User-Agent string to use.
-    @param timeout Time to wait, in seconds, for the remote content to be returned.
+    @param timeout Time to wait, in seconds, for the remote content to be returned (default = 50 since v15.10.0).
     @param convertrelative: Boolean, whether relative links in the included content should be converted to absolute ones.
 -->
 <#macro IncludeUrl url params...>
