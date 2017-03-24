@@ -10,21 +10,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>This class contains all the input data related to a search.</p>
@@ -228,6 +229,20 @@ public class SearchQuestion {
      */
     @Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
     
+    /**
+     * <p>Query string parameters as an Map</p>
+     * 
+     * <p>Returned as a Map for easy manipulation of individual
+     * parameters without having to work with a string.</p>
+     * 
+     * <p>To convert such a map into a query string suitable for URLs,
+     * see {@link QueryStringUtils#toString(Map, boolean)}
+     * 
+     * @return Query string parameters
+     * @since 15.10
+     */
+    @Getter private final Map<String, List<String>> queryStringMap = new HashMap<>();
+
     /**
      * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>
      * 
