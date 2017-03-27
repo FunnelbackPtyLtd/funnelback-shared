@@ -2,7 +2,10 @@ package com.funnelback.publicui.test.search.web.binding;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,9 +25,12 @@ public class SearchQuestionBinderTest {
 
     @Test
     public void testFromSearchQuestion() {
+        Map<String, List<String>> queryStringMap = new HashMap<>();
+        queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
+        
         SearchQuestion from = new SearchQuestion();
         from.getRawInputParameters().put("my-param", new String[] {"value1", "value2"});
-        from.getQueryStringMap().put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
+        from.setQueryStringMap(queryStringMap);
         from.setQuery("query");
         from.setOriginalQuery("original query");
         from.setCollection(new Collection("coll", null));
@@ -58,6 +64,27 @@ public class SearchQuestionBinderTest {
     @Test
     public void testFromEmptyQuestion() {
         SearchQuestionBinder.bind(new SearchQuestion(), new SearchQuestion());
+    }
+    
+    @Test
+    public void testQueryStringMapIsImmutable() {
+        Map<String, List<String>> queryStringMap = new HashMap<>();
+        queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
+        
+        SearchQuestion from = new SearchQuestion();
+        from.setQueryStringMap(queryStringMap);
+        
+        try {
+            from.getQueryStringMap().put("new-param", Collections.emptyList());
+            Assert.fail("Putting a new entry should have failed");
+        } catch (UnsupportedOperationException uoe) {
+        }
+        
+        try {
+            from.getQueryStringMap().get("my-other-param").add("v3");
+            Assert.fail("Updating an existing entry should have failed");
+        } catch (UnsupportedOperationException uoe) {
+        }   
     }
     
     @Test

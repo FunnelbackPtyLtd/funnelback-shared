@@ -1,6 +1,9 @@
 package com.funnelback.publicui.search.web.binding;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +31,7 @@ public class SearchQuestionBinder {
      */
     public static void bind(SearchQuestion from, SearchQuestion to) {
         to.getRawInputParameters().putAll(from.getRawInputParameters());
-        to.getQueryStringMap().putAll(from.getQueryStringMap());
+        to.setQueryStringMap(from.getQueryStringMap());
         to.setQuery(from.getQuery());
         to.setOriginalQuery(from.getOriginalQuery());
         to.setCollection(from.getCollection());
@@ -51,13 +54,15 @@ public class SearchQuestionBinder {
         
         // Add query string parameters, converting Map<String, String[]>
         // to Map<String, List<String>> for convenience
-        question.getQueryStringMap().putAll(
+        Map<String, List<String>> queryStringMap = new HashMap<>();
+        queryStringMap.putAll(
             request.getParameterMap()
             .entrySet()
             .stream()
             .collect(Collectors.toMap(
                 e -> e.getKey(),
                 e -> Arrays.asList(e.getValue()))));
+        question.setQueryStringMap(queryStringMap);
         
         // Add any HTTP servlet specifics
         String requestId = LogUtils.getRequestIdentifier(request,

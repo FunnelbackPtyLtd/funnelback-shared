@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -232,16 +233,34 @@ public class SearchQuestion {
     /**
      * <p>Query string parameters as an Map</p>
      * 
-     * <p>Returned as a Map for easy manipulation of individual
+     * <p>Returned as an immutable Map for easy manipulation of individual
      * parameters without having to work with a string.</p>
      * 
+     * <p>The map cannot be modified as it is used as a source
+     * to construct URLs in the data model. An immutable copy is returned
+     * instead.</p>
+     * 
      * <p>To convert such a map into a query string suitable for URLs,
-     * see {@link QueryStringUtils#toString(Map, boolean)}
+     * see {@link QueryStringUtils#toString(Map, boolean)}</p>
      * 
      * @return Query string parameters
+     * 
      * @since 15.10
      */
-    @Getter private final Map<String, List<String>> queryStringMap = new HashMap<>();
+    public Map<String, List<String>> getQueryStringMap() {
+        return Collections.unmodifiableMap(queryStringMap);
+    }
+    
+    /**
+     * <p>Sets the query string parameter map.</p>
+     * 
+     * <p>This is for internal use only and shouldn't be called outside of
+     * initializing the search question. Changing the query string map will
+     * affect all the URLs that are constructed in the data model</p>
+     * 
+     * @since 15.10
+     */
+    @Setter private Map<String, List<String>> queryStringMap = new HashMap<>();
 
     /**
      * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>
