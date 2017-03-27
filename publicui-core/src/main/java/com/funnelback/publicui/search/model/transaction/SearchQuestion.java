@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.config.DefaultValues;
@@ -231,14 +231,14 @@ public class SearchQuestion {
     @Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
     
     /**
-     * <p>Query string parameters as an Map</p>
+     * <p>Query string parameters as a Map</p>
      * 
-     * <p>Returned as an immutable Map for easy manipulation of individual
-     * parameters without having to work with a string.</p>
+     * <p>Return a copy of the internal map representing the query string,
+     * for easy manipulation of individual parameters rather than having to decode
+     * the query string.</p>
      * 
-     * <p>The map cannot be modified as it is used as a source
-     * to construct URLs in the data model. An immutable copy is returned
-     * instead.</p>
+     * <p>The map is a copy intended to be modifiable to add/remove/update
+     * query string parameters.</p>
      * 
      * <p>To convert such a map into a query string suitable for URLs,
      * see {@link QueryStringUtils#toString(Map, boolean)}</p>
@@ -247,8 +247,13 @@ public class SearchQuestion {
      * 
      * @since 15.10
      */
-    public Map<String, List<String>> getQueryStringMap() {
-        return Collections.unmodifiableMap(queryStringMap);
+    public Map<String, List<String>> getQueryStringMapCopy() {
+        return queryStringMap.entrySet()
+            .stream()
+            .collect(Collectors.toMap(
+                e -> e.getKey(),
+                // Copy the values into a new list
+                e -> new ArrayList<>(e.getValue())));
     }
     
     /**

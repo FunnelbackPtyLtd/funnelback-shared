@@ -46,9 +46,9 @@ public class SearchQuestionBinderTest {
         SearchQuestionBinder.bind(from, to);
         
         Assert.assertEquals(1, to.getRawInputParameters().size());
-        Assert.assertEquals(1,  to.getQueryStringMap().size());
+        Assert.assertEquals(1,  to.getQueryStringMapCopy().size());
         Assert.assertArrayEquals(new String[] {"value1", "value2"}, to.getRawInputParameters().get("my-param"));
-        Assert.assertEquals(Arrays.asList(new String[] {"v1", "v2"}), to.getQueryStringMap().get("my-other-param"));
+        Assert.assertEquals(Arrays.asList(new String[] {"v1", "v2"}), to.getQueryStringMapCopy().get("my-other-param"));
         Assert.assertEquals("query", to.getQuery());
         Assert.assertEquals("original query", to.getOriginalQuery());
         Assert.assertEquals("coll", to.getCollection().getId());
@@ -67,24 +67,18 @@ public class SearchQuestionBinderTest {
     }
     
     @Test
-    public void testQueryStringMapIsImmutable() {
+    public void testQueryStringMapCopyIsNotImmutable() {
         Map<String, List<String>> queryStringMap = new HashMap<>();
         queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
         
         SearchQuestion from = new SearchQuestion();
         from.setQueryStringMap(queryStringMap);
+
+        // New param
+        from.getQueryStringMapCopy().put("new-param", Collections.emptyList());
         
-        try {
-            from.getQueryStringMap().put("new-param", Collections.emptyList());
-            Assert.fail("Putting a new entry should have failed");
-        } catch (UnsupportedOperationException uoe) {
-        }
-        
-        try {
-            from.getQueryStringMap().get("my-other-param").add("v3");
-            Assert.fail("Updating an existing entry should have failed");
-        } catch (UnsupportedOperationException uoe) {
-        }   
+        // Modify existing value
+        from.getQueryStringMapCopy().get("my-other-param").add("v3");
     }
     
     @Test
@@ -119,14 +113,14 @@ public class SearchQuestionBinderTest {
 
         Assert.assertEquals("127.0.0.1", to.getRequestId());
         
-        Assert.assertEquals(7, to.getQueryStringMap().size());
-        Assert.assertEquals(Arrays.asList(new String[] {"cluster"}), to.getQueryStringMap().get(RequestParameters.ContextualNavigation.CN_CLICKED));
-        Assert.assertEquals(Arrays.asList(new String[] {"cluster1"}), to.getQueryStringMap().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"1"));
-        Assert.assertEquals(Arrays.asList(new String[] {"cluster2"}), to.getQueryStringMap().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"2"));
-        Assert.assertEquals(Arrays.asList(new String[] {"value1", "value2"}), to.getQueryStringMap().get("my-param"));
-        Assert.assertEquals(Arrays.asList(new String[] {""}), to.getQueryStringMap().get("empty"));
-        Assert.assertEquals(Collections.emptyList(), to.getQueryStringMap().get("empty-array"));
-        Assert.assertEquals(Arrays.asList(new String[] {null}), to.getQueryStringMap().get("null"));
+        Assert.assertEquals(7, to.getQueryStringMapCopy().size());
+        Assert.assertEquals(Arrays.asList(new String[] {"cluster"}), to.getQueryStringMapCopy().get(RequestParameters.ContextualNavigation.CN_CLICKED));
+        Assert.assertEquals(Arrays.asList(new String[] {"cluster1"}), to.getQueryStringMapCopy().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"1"));
+        Assert.assertEquals(Arrays.asList(new String[] {"cluster2"}), to.getQueryStringMapCopy().get(RequestParameters.ContextualNavigation.CN_PREV_PREFIX+"2"));
+        Assert.assertEquals(Arrays.asList(new String[] {"value1", "value2"}), to.getQueryStringMapCopy().get("my-param"));
+        Assert.assertEquals(Arrays.asList(new String[] {""}), to.getQueryStringMapCopy().get("empty"));
+        Assert.assertEquals(Collections.emptyList(), to.getQueryStringMapCopy().get("empty-array"));
+        Assert.assertEquals(Arrays.asList(new String[] {null}), to.getQueryStringMapCopy().get("null"));
 
         Assert.assertEquals(13, to.getInputParameterMap().size());
         Assert.assertEquals("127.0.0.1", to.getInputParameterMap().get("REMOTE_ADDR"));
@@ -143,7 +137,6 @@ public class SearchQuestionBinderTest {
         Assert.assertArrayEquals(new String[0], to.getRawInputParameters().get("empty-array"));
         Assert.assertArrayEquals(new String[] {null}, to.getRawInputParameters().get("null"));
         
-        Assert.assertEquals(Arrays.asList(new String[] {"value1", "value2"}), to.getQueryStringMap().get("my-param"));
         Assert.assertEquals("query", to.getQuery());
         Assert.assertEquals("query", to.getOriginalQuery());
         Assert.assertEquals("coll", to.getCollection().getId());

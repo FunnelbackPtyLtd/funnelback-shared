@@ -31,7 +31,7 @@ public class SearchQuestionBinder {
      */
     public static void bind(SearchQuestion from, SearchQuestion to) {
         to.getRawInputParameters().putAll(from.getRawInputParameters());
-        to.setQueryStringMap(from.getQueryStringMap());
+        to.setQueryStringMap(from.getQueryStringMapCopy());
         to.setQuery(from.getQuery());
         to.setOriginalQuery(from.getOriginalQuery());
         to.setCollection(from.getCollection());
