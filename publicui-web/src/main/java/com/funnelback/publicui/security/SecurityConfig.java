@@ -17,29 +17,23 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        switch (executionContextHolder.getExecutionContext()) {
-//        case Admin:
-//            super.configureHttpbasicAndToken(http);
-//            break;
-//        case Novell:
-//            break;
-//        case Public:
-//            http
-//                .authorizeRequests()
-//                .anyRequest()
-//                .permitAll();
-//            break;
-//        case Unknown:
-//            break;
-//        default:
-//            break;
-//        }
-        
-        http
-        .authorizeRequests()
-        .anyRequest()
-        .permitAll();
-        
+        switch (executionContextHolder.getExecutionContext()) {
+        case Admin:
+            super.configureHttpbasicAndToken(http);
+            break;
+        case Novell:
+            break;
+        case Public:
+            http
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll();
+            break;
+        case Unknown:
+            break;
+        default:
+            break;
+        }
         //Disable csrf, as we don't care to protect anything here with it.
         http.csrf().disable();
         
