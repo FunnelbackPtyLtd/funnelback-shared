@@ -7,10 +7,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.stereotype.Component;
 
+import com.funnelback.accessability.techniques.error.FailureConfidence;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
@@ -23,6 +22,8 @@ import com.funnelback.wcag.checker.AccessibilityChecker;
 import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Sets the relevant query processor options needed to generate
@@ -103,13 +104,8 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      * @return PADRE <code>-SF</code> option
      */
     private String getSFOption() {
-        Stream<String> failureTypesAffected = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.failureTypeAffected(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
 
-        Stream<String> failureTypes = Arrays.asList(FailureType.values())
+        Stream<String> failureTypes = Arrays.asList(FailureConfidence.values())
             .stream()
             .map(type -> Stream.of(Names.failureTypesOccurrences(type)))
             .flatMap(Function.identity())
@@ -122,23 +118,22 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
-            Names.profile(),
+            Names.setOfFailingPrinciples(),
+            Names.setOfFailingSuccessCriterions(),
+            Names.setOfFailingTechniques(),
+            Names.techniquesAffectedBy(),
+            Names.occurrencesOfFailingTechniques(),
             Names.domain(),
-            Names.principle(),
-            Names.successCriterion(),
-            Names.affectedBy(),
             Names.passedLevels(),
-            Names.failedLevels(),
-            Names.affected(),
+            Names.explicitFailedLevels(),
+            Names.isAffected(),
             Names.unaffected(),
             Names.checked(),
             Names.format(),
-            Names.occurrences(),
-            Names.checks(),
-            Names.checksPassed())
+            Names.occurencesOfUniqueFailingSuccessCriterions())
             .map(Metadata::getName);
 
-        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, principles, other)
+        String sfOptionValue = Stream.of(failureTypes, principles, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .collect(Collectors.joining(","));
@@ -197,14 +192,14 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         List<String> sums = new ArrayList<>();
 
         // Group by domains & profiles
+        // FIXME: add support for profiles.
         for (String grouping : new String[] {
-                        Names.domain().getName(), Names.profile().getName()
+                        Names.domain().getName()
         }) {
-            // FIXME: Not sure how to avoid hardcoding things here...
-            sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%s.+Occurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s.+Occurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sAffected.+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%s(A|Una)ffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s]:[%s]", Metadata.Names.isAffected().asMetadataClass(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s]:[%s]", Metadata.Names.unaffected().asMetadataClass(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sChecked]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sPassedLevel[A]+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
         }
@@ -234,20 +229,22 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         List<String> counts = new ArrayList<>();
 
         // Group by domains & profiles
+        // FIXME: support profiles
         for (String grouping : new String[] {
-                        Names.domain().getName(), Names.profile().getName()
+                        Names.domain().getName()
         }) {
             // Type of checkers
-            counts.add(String.format("[%s.+Types]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            //Not sure we need anything here.
         }
 
         // Count of unique domains per profile
-        counts.add(String.format("[%s]:[%s]",
-            Metadata.getMetadataClass(Metadata.Names.domain().getName()),
-            Metadata.getMetadataClass(Metadata.Names.profile().getName())));
+        // FIXME: support profiles.
+//        counts.add(String.format("[%s]:[%s]",
+//            Metadata.getMetadataClass(Metadata.Names.domain().getName()),
+//            Metadata.getMetadataClass(Metadata.Names.profile().getName())));
 
         String countByGroupOptionValue = counts.stream().collect(Collectors.joining(","));
-
+        
         return String.format("-countUniqueByGroup=%s", countByGroupOptionValue);
     }
 
@@ -269,7 +266,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      * @return PADRE <code>-sort</code> option
      */
     private String getSortOption() {
-        return "-sort=dmeta" + Metadata.getMetadataClass(Metadata.Names.occurrences().getName());
+        return "-sort=dmeta" + Metadata.getMetadataClass(Metadata.Names.occurrencesOfFailingTechniques().getName());
     }
 
 }

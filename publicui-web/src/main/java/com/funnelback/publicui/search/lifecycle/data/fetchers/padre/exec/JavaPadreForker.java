@@ -92,7 +92,7 @@ public class JavaPadreForker implements PadreForker {
                     //Seg faults are common to avoid support spending too long wondering what exit code 139 is
                     //just log it is a seg fault. If that is put into a Jira ticket any padre/c dev will pick it
                     //up immediately.
-                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toStrings(), rc));
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toString(), rc));
                 }
                 
                 return er;

@@ -25,6 +25,7 @@ import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
 import com.funnelback.wcag.model.WCAG20SuccessCriterion;
+import com.funnelback.wcag.model.WCAG20Technique;
 
 import lombok.AccessLevel;
 import lombok.Setter;
@@ -72,7 +73,7 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
 
         // Populator for the "principles" facet
         categoryValuesPopulators.put(
-            Names.principle(),
+            Names.setOfFailingPrinciples(),
             value -> {
                 try {
                     value.setLabel(WCAG20Principle.fromSection(Integer.parseInt(value.getData())).id);
@@ -83,7 +84,7 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
         
         // Populator for the "success criterion" facet
         categoryValuesPopulators.put(
-            Names.successCriterion(),
+            Names.setOfFailingSuccessCriterions(),
             value -> {
                 try {
                     value.setLabel(value.getData() + " - " + WCAG20SuccessCriterion.fromSection(value.getData()).title);
@@ -92,29 +93,23 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
                 }
             });
         
+        
         categoryValuesPopulators.put(
-            Names.affectedBy(),
+            Names.setOfFailingTechniques(),
+            value -> {
+                try {
+                    value.setLabel(value.getData() + " - " + WCAG20Technique.valueOf(value.getData()).title);
+                } catch (IllegalArgumentException iae) {
+                    log.warn("Unexpected success criterion section: '{}'", value.getData());
+                }
+            });
+        
+        categoryValuesPopulators.put(
+            Names.techniquesAffectedBy(),
             value -> {
                 value.setLabel(i18n.tr(AFFECTED_BY_FACET_I18N_PREFIX + value.getData()));
             });
             
-        for (FailureType type : FailureType.values()) {
-            // Populator for the "issue types" (checker class) facet
-            categoryValuesPopulators.put(
-                Names.issueTypes(type),
-                value -> {
-                    // Find corresponding checker instance
-                    Optional<AccessibilityChecker> checker = checkers.stream()
-                        .filter(accessibilityChecker -> accessibilityChecker.getClass().getSimpleName().equals(value.getData()))
-                        .findFirst();
-
-                    if (checker.isPresent()) {
-                        value.setLabel(checker.get().getProblemDescription());
-                    } else {
-                        log.warn("Unexpected checker class name: '{}'", value.getData());
-                    }
-                });
-        }
     }
 
     @Override
@@ -140,6 +135,10 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
             .stream()
             .filter(key -> Metadata.getMetadataClass(key.getName()).equals(facet.getName()))
             .findFirst();
+        
+        if(category.getValues().size() > 0) {
+            System.out.println("");
+        }
 
         if (mapKeyOption.isPresent()) {
             // We have a populator for this facet, apply it

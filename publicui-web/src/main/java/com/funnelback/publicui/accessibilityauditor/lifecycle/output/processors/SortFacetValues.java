@@ -33,10 +33,11 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
     private final Map<String, Comparator<CategoryValue>> valueComparators = new HashMap<>();
     
     public SortFacetValues() {
-        valueComparators.put(Metadata.getMetadataClass(Names.failedLevels().getName()), new LevelNameComparator());
-        valueComparators.put(Metadata.getMetadataClass(Names.principle().getName()), new PrincipleIdComparator());
-        valueComparators.put(Metadata.getMetadataClass(Names.affectedBy().getName()), new AffectedByComparator());
-        valueComparators.put(Metadata.getMetadataClass(Names.successCriterion().getName()), new SuccessCriterionNameComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.explicitFailedLevels().getName()), new LevelNameComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.setOfFailingPrinciples().getName()), new PrincipleIdComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.techniquesAffectedBy().getName()), new AffectedByComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.setOfFailingSuccessCriterions().getName()), new SuccessCriterionNameComparator());
+        valueComparators.put(Metadata.getMetadataClass(Names.setOfFailingTechniques().getName()), new TechniqueNameComparator());
     }
     
     @Override
@@ -59,6 +60,16 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
      * Compare AA Success Criteria by their label (e.g. : 1.4.6 - Contrast (Enhanced))
      */
     static class SuccessCriterionNameComparator implements Comparator<CategoryValue> {
+        @Override
+        public int compare(CategoryValue a, CategoryValue b) {
+            return a.getLabel().compareTo(b.getLabel());
+        }
+    }
+    
+    /**
+     * Compare AA Techniques by their label
+     */
+    static class TechniqueNameComparator implements Comparator<CategoryValue> {
         @Override
         public int compare(CategoryValue a, CategoryValue b) {
             return a.getLabel().compareTo(b.getLabel());

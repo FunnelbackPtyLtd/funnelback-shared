@@ -52,9 +52,9 @@ public class SortFacetValuesTest {
     @Test
     public void testAffectedByComparator() {
         AffectedByComparator c = new AffectedByComparator();
-        Assert.assertEquals(-1, c.compare(mockCVData("Failure"), mockCVData("Alert")));
-        Assert.assertEquals(1, c.compare(mockCVData("None"), mockCVData("Alert")));
-        Assert.assertEquals(0, c.compare(mockCVData("Alert"), mockCVData("Alert")));
+        Assert.assertEquals(-1, c.compare(mockCVData("SUSPECTED_FAILURE"), mockCVData("FAILED")));
+        Assert.assertEquals(1, c.compare(mockCVData("NONE"), mockCVData("FAILED")));
+        Assert.assertEquals(0, c.compare(mockCVData("POSSIBILITY_OF_FAILURE"), mockCVData("POSSIBILITY_OF_FAILURE")));
 
         Assert.assertEquals("Shouldn't throw an exception", 0, c.compare(mockCVData("Alert"), mockCVData("invalid")));
     }
@@ -72,7 +72,7 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue("AA", "AA", 123, null, null, false));
         c.getValues().add(new CategoryValue("A", "A", 100, null, null, false));
         c.getValues().add(new CategoryValue("AAA", "AAA", 80, null, null, false));
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.failedLevels().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.explicitFailedLevels().getName()));
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
@@ -82,16 +82,17 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue("1", "1", 100, null, null, false));
         c.getValues().add(new CategoryValue("4", "4", 80, null, null, false));
         c.getValues().add(new CategoryValue("2", "2", 80, null, null, false));
-        f = new Facet(Metadata.getMetadataClass(Metadata.Names.principle().getName()));
+        f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()));
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
         // -- Affected by
         c = new Category(null, null);
-        c.getValues().add(new CategoryValue("Alert", "Alert", 123, null, null, false));
-        c.getValues().add(new CategoryValue("None", "None", 100, null, null, false));
-        c.getValues().add(new CategoryValue("Failure", "Failure", 80, null, null, false));
-        f = new Facet(Metadata.getMetadataClass(Metadata.Names.affectedBy().getName()));
+        c.getValues().add(new CategoryValue("POSSIBILITY_OF_FAILURE", "", 123, null, null, false));
+        c.getValues().add(new CategoryValue("SUSPECTED_FAILURE", "", 100, null, null, false));
+        c.getValues().add(new CategoryValue("FAILED", "", 80, null, null, false));
+        c.getValues().add(new CategoryValue("NONE", "", 80, null, null, false));
+        f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
@@ -115,10 +116,10 @@ public class SortFacetValuesTest {
         Assert.assertEquals("3", sr.getFacets().get(1).getCategories().get(0).getValues().get(2).getData());
         Assert.assertEquals("4", sr.getFacets().get(1).getCategories().get(0).getValues().get(3).getData());
 
-        Assert.assertEquals("Failure", sr.getFacets().get(2).getCategories().get(0).getValues().get(0).getData());
-        Assert.assertEquals("Alert", sr.getFacets().get(2).getCategories().get(0).getValues().get(1).getData());
-        Assert.assertEquals("None", sr.getFacets().get(2).getCategories().get(0).getValues().get(2).getData());
-
+        Assert.assertEquals("POSSIBILITY_OF_FAILURE", sr.getFacets().get(2).getCategories().get(0).getValues().get(0).getData());
+        Assert.assertEquals("SUSPECTED_FAILURE", sr.getFacets().get(2).getCategories().get(0).getValues().get(1).getData());
+        Assert.assertEquals("FAILED", sr.getFacets().get(2).getCategories().get(0).getValues().get(2).getData());
+        Assert.assertEquals("NONE", sr.getFacets().get(2).getCategories().get(0).getValues().get(3).getData());
         // Other facet non sorted
         Assert.assertEquals("v2", sr.getFacets().get(3).getCategories().get(0).getValues().get(0).getData());
         Assert.assertEquals("v3", sr.getFacets().get(3).getCategories().get(0).getValues().get(1).getData());

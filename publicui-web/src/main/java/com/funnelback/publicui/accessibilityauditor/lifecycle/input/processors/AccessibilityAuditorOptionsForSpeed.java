@@ -1,12 +1,12 @@
 package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed;
+
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component("accessibilityAuditorOptionsForSpeed")

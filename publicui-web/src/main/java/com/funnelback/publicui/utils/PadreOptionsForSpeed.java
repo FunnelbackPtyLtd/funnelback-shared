@@ -19,13 +19,13 @@ public class PadreOptionsForSpeed {
                           // other options can override what this sets.
             "-" + DAAT_TIMEOUT + "=0", // Turning off daat timeout speeds up query processing.
             "-" + SCO + "=1", //no ranking 
-            "-" + RMCF + "=[]",     // We don't need rmcf for this call override it if set.
-            "-" + CNTO + "=0.001",  // Don't let contextual nav run for too long if it somehow get enabled
+            "-" + RMCF + "=",     // We don't need rmcf for this call override it if set.
+            "-" + CNTO + "=0.001",  // Don't let contextual nav run for too long if it someh   ow get enabled
             "-" + CONTEXTUAL_NAVIGATION + "=false", // Turn of contextual nav we don't need it.
             "-" + GEOSPATIAL_RANGES + "=false", // We don't need to work this out for the counts.
             "-" + RMRF + "=[FunUnusedMetaClass]",  // We don't need to know ranges
             "-" + SUM + "=[FunUnusedMetaClass]", //This does not need to be on
-            "-" + SUMBYGROUP + "=[FunUnusedMetaClass]",
+            "-" + SUMBYGROUP + "=[FunUnusedMetaClass]:[FunUnusedMetaClass]",
             "-" + MBL + "=1", //We don't need to see metadata values
             "-" + SBL + "=1", //Don't need a summaryW
             "-" + SF + "=[FunUnusedMetaClass]", //Don't show summary fields.
