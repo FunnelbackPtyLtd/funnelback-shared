@@ -67,7 +67,7 @@ public class SearchQuestionBinderTest {
     }
     
     @Test
-    public void testQueryStringMapCopyIsNotImmutable() {
+    public void testQueryStringMapCopyIsMutable() {
         Map<String, List<String>> queryStringMap = new HashMap<>();
         queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
         
