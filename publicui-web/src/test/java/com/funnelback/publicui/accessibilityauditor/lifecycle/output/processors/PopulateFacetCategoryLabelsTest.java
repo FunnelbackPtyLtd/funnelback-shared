@@ -19,6 +19,7 @@ import com.funnelback.wcag.checker.AffectedBy;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.checker.html.DocumentTitleChecker;
 import com.funnelback.wcag.checker.pdf.PDFTitleChecker;
+import com.funnelback.wcag.model.WCAG20Technique;
 
 public class PopulateFacetCategoryLabelsTest {
 
@@ -53,7 +54,7 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("2", "2", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.principle().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()));
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -79,7 +80,7 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("2.2.1", "2.2.1", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.successCriterion().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()));
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -98,14 +99,13 @@ public class PopulateFacetCategoryLabelsTest {
     }
 
     @Test
-    public void testPopulateCheckers() throws OutputProcessorException {
+    public void testPopulateTechniques() throws OutputProcessorException {
         for (FailureType type: FailureType.values()) {
             Category c = new Category(null, null);
-            c.getValues().add(new CategoryValue(DocumentTitleChecker.class.getSimpleName(), DocumentTitleChecker.class.getSimpleName(), 0, null, null, false));
-            c.getValues().add(new CategoryValue(PDFTitleChecker.class.getSimpleName(), PDFTitleChecker.class.getSimpleName(), 0, null, null, false));
+            c.getValues().add(new CategoryValue(WCAG20Technique.ARIA1.name(), WCAG20Technique.ARIA1.name(), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.issueTypes(type).getName()));
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingTechniques().getName()));
             f.getCategories().add(c);
             transaction.getResponse().getFacets().add(f);
             
@@ -113,14 +113,12 @@ public class PopulateFacetCategoryLabelsTest {
             
             Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
             
-            Assert.assertEquals("Document does not contain a valid non-empty title element", actual.getValues().get(0).getLabel());
-            Assert.assertEquals(DocumentTitleChecker.class.getSimpleName(), actual.getValues().get(0).getData());
+            Assert.assertEquals("ARIA1", actual.getValues().get(0).getData());
+            Assert.assertEquals("ARIA1 - " + "Using the aria-describedby property to provide a descriptive label for user interface controls", 
+                actual.getValues().get(0).getLabel());
     
-            Assert.assertEquals("PDF document is missing a title", actual.getValues().get(1).getLabel());
-            Assert.assertEquals(PDFTitleChecker.class.getSimpleName(), actual.getValues().get(1).getData());
-    
-            Assert.assertEquals("unknown", actual.getValues().get(2).getLabel());
-            Assert.assertEquals("unknown", actual.getValues().get(2).getData());
+            Assert.assertEquals("unknown", actual.getValues().get(1).getLabel());
+            Assert.assertEquals("unknown", actual.getValues().get(1).getData());
         }
     }
 
@@ -131,7 +129,7 @@ public class PopulateFacetCategoryLabelsTest {
             c.getValues().add(new CategoryValue(by.name(), by.name(), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.affectedBy().getName()));
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
             f.getCategories().add(c);
             transaction.getResponse().getFacets().clear();
             transaction.getResponse().getFacets().add(f);

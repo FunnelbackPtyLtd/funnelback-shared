@@ -1,7 +1,6 @@
 package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.wcag.checker.FailureType;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -53,27 +51,23 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     
     public ConfigureFacets() {
         // Facet on issue type
-        Stream<String> issueTypes = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.issueTypes(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
 
         // Facet on other metadata
         Stream<String> other = Stream.of(
-            Names.profile().getName(),
-            Names.domain().getName(),
-            Names.principle().getName(),
-            Names.successCriterion().getName(),
-            Names.affectedBy().getName(),
-            Names.passedLevels().getName(),
-            Names.failedLevels().getName(),
-            Names.format().getName());
+            Names.domain(),
+            Names.setOfFailingPrinciples(),
+            Names.setOfFailingSuccessCriterions(),
+            Names.setOfFailingTechniques(),
+            Names.techniquesAffectedBy(),
+            Names.passedLevels(),
+            Names.explicitFailedLevels(),
+            Names.format())
+            .map(Metadata::getName);
         
         // Build our facet definitions and QPOs
         List<String> rmcf = new ArrayList<>();
         List<FacetDefinition> facetDefinitions = Stream
-            .of(issueTypes, other)
+            .of(other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .map(metadataClass -> { rmcf.add(metadataClass); return metadataClass; })
