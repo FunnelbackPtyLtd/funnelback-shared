@@ -109,15 +109,17 @@ public class UrlScopeFill extends URLFill {
                     .max()
                     .ifPresent(maxDepth -> {
                         try {
-                            for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(maxDepth).entrySet()) {
-                                categories.add(new CategoryValue(
-                                    entry.getKey(),
-                                    entry.getKey(),
-                                    entry.getValue(),
-                                    URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                                        + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
-                                    entry.getKey(),
-                                    false));
+                            if (maxDepth > currentDepth) {
+                                for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(maxDepth).entrySet()) {
+                                    categories.add(new CategoryValue(
+                                        entry.getKey(),
+                                        entry.getKey(),
+                                        entry.getValue(),
+                                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
+                                            + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
+                                        entry.getKey(),
+                                        false));
+                                }
                             }
                         } catch (UnsupportedEncodingException uee) {
                             throw new RuntimeException(uee);
