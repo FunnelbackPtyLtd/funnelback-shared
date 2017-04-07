@@ -59,6 +59,7 @@
 
     <util:list id="outputFlow">
         <ref bean="padreReturnCodeOutputProcessor" />
+        <ref bean="fixMetaCollectionUpdateDateOutputProcessor" />
         <ref bean="fixPseudoLiveLinksOutputProcessor" />
         <ref bean="curatorOutputProcessor" />
         <ref bean="fixCacheAndClickLinks" />
