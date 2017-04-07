@@ -7,8 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Stack;
+import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -48,8 +50,12 @@ public class FixMetaCollectionUpdateDateTest {
         
         FileUtils.writeStringToFile(indexTime, "Thu Apr 06 20:52:53 2017");
         
+        Calendar expectedDate = Calendar.getInstance(TimeZone.getDefault());
+        expectedDate.set(2017, 3, 6, 20, 52, 53);
+        expectedDate.set(Calendar.MILLISECOND, 0);
+        
         long result = new FixMetaCollectionUpdateDate().componentUpdateTime(indexStem.getAbsolutePath());
-        Assert.assertEquals("Expected correct time to be parsed", result, 1491475973000l);
+        Assert.assertEquals("Expected correct time to be parsed", result, expectedDate.getTimeInMillis() );
     }
 
     @Test
