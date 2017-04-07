@@ -55,9 +55,9 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 
     public static final String NAME = "IncludeUrlInternal";
     
-    public static final int DEFAULT_EXPIRY = 3600; 
+    public static final int DEFAULT_EXPIRY = 3600; // seconds
 
-    public static final int DEFAULT_TIMEOUT = 50; 
+    public static final int DEFAULT_TIMEOUT = 50 * 1000; // milliseconds 
 
     public static final Pattern CONVERT_RELATIVE_PATTERN = Pattern.compile("<([^!>\\.]*?)(href|src|action|background)\\s*=\\s*([\"|']?)(.*?)\\3((\\s+.*?)*)>", Pattern.DOTALL);
     
