@@ -113,13 +113,23 @@
                     </#if>
 					
                     <#if displayOption("ui.modern.content-auditor.search_results.show_wcag_link") >
-                        <a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
-    					
-                        <span class="fa-stack fa-xs">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
-                        </span>
-    					</a>
+                    	<#if question.collection.configuration.valueAsBoolean('accessibility-auditor.check')>
+                    	<!-- NEW AA -->
+	                    	<a class="open-wcag pass" target="_blank" href="/d/manage/${currentCollection}:${question.profile}/analyse/accessibility-auditor/document;documentUrl=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+	                        <span class="fa-stack fa-xs">
+	                            <i class="fa fa-square fa-stack-2x"></i>
+	                            <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
+	                        </span>
+	    					</a>	
+                    	<#elseif question.collection.configuration.valueAsBoolean('wcag.check')>
+                    	<!-- OLD AA -->
+	                    	<a class="open-wcag pass" target="_blank" href="/search/admin/fareporter/doc-check?url=${s.result.liveUrl?url}" data-toggle="tooltip" data-placement="bottom" title="Check Content Accessibility with WCAG Auditor">
+	                        <span class="fa-stack fa-xs">
+	                            <i class="fa fa-square fa-stack-2x"></i>
+	                            <i class="fa fa-wheelchair fa-stack-1x fa-inverse"></i>
+	                        </span>
+	    					</a>	
+                    	</#if>                        
                     </#if>
 
                     <#if s.result.fileType == 'html'>
