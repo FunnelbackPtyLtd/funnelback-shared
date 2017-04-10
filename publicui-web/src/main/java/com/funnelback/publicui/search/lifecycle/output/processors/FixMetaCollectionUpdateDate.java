@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -49,7 +50,8 @@ public class FixMetaCollectionUpdateDate extends AbstractOutputProcessor {
     @Override
     public void processOutput(SearchTransaction searchTransaction) {
         // Ensure we have something to do
-        if (SearchTransactionUtils.hasCollection(searchTransaction)) {
+        if (SearchTransactionUtils.hasCollection(searchTransaction)
+            && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
 
             Config config = searchTransaction.getQuestion().getCollection().getConfiguration();
             if (config.getCollectionType().equals(Type.meta)) {
@@ -71,6 +73,8 @@ public class FixMetaCollectionUpdateDate extends AbstractOutputProcessor {
                                     if (componentUpdateTime > currentUpdateTime.longValue()) {
                                         currentUpdateTime.setValue(componentUpdateTime);
                                     }
+                                } catch (FileNotFoundException e) {
+                                    log.debug("No index_time file for for meta component - Maybe it has never been updated?" + collection, e);
                                 } catch (IOException e) {
                                     log.error("Could not read index time for meta component " + collection, e);
                                 } catch (Exception e) {
