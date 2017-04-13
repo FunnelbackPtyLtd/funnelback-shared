@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.execute.ExecutablePicker;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
@@ -71,6 +72,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     @Setter @Getter
     protected QueryReadLock queryReadLock;
     
+    private ExecutablePicker executablePicker = new ExecutablePicker();
+    
     @Override
     public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
@@ -81,11 +84,11 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             
             
             if (absoluteQueryProcessorPath) {
-                commandLine.add(searchTransaction.getQuestion().getCollection().getConfiguration()
-                        .value(Keys.QUERY_PROCESSOR));
+                commandLine.add(executablePicker.pickAnExecutable(new File(searchTransaction.getQuestion().getCollection().getConfiguration()
+                        .value(Keys.QUERY_PROCESSOR))).toString());
             } else {
-                commandLine.add(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
-                        + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR))
+                commandLine.add(executablePicker.pickAnExecutable(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
+                        + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)))
                     .getAbsolutePath());
             }
 
