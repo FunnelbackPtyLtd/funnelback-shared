@@ -206,7 +206,8 @@ public class DefaultPadreForkingTests {
     
     private String getMockPadre() {
         if (OS.isFamilyWindows()) {
-            return "readfile.exe";
+            // Drop the .exe for windows as we expect that windows will be able to execute the correct one.
+            return "readfile";
         } else {
             return "mock-padre.sh";
         }
