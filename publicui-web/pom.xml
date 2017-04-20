@@ -27,6 +27,27 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <!-- Temporarily build two wars while testing the skinny mode -->
+                    <execution>
+                        <id>normal-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>skinny-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                        <configuration>
+                            <classifier>skinny</classifier>
+                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <!-- Extract PADRE native libs prior to testing -->
