@@ -34,7 +34,7 @@ public class AppCacheManager {
      */
     @Bean
     public CacheManager cacheManager() throws CacheException, IOException {
-        try (InputStream cacheConfigInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("ehcache.xml")) {
+        try (InputStream cacheConfigInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("ehcache-publicui.xml")) {
             Configuration configuration = ConfigurationFactory.parseConfiguration(cacheConfigInputStream);
             
             // Configure the diskStorage - Must be different for different execution contexts (SUPPORT-1347)
