@@ -17,7 +17,7 @@
     <bean id="HostnameRestrictionFilter" class="com.funnelback.publicui.search.web.filters.HostnameRestrictionFilter" />    
 
     <bean id="appCacheManager" class="net.sf.ehcache.CacheManager">
-        <constructor-arg index="0" type="java.net.URL" value="classpath:ehcache.xml" />
+        <constructor-arg index="0" type="java.net.URL" value="classpath:ehcache-publicui.xml" />
     </bean>
 
     <bean id="searchHome" class="java.io.File">
