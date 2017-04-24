@@ -87,7 +87,7 @@ public abstract class AbstractTrimMapper implements UserKeysMapper {
                         + "' with command line '" + cmdLine + "'");
                     
                     ExecutionReturn er = new WindowsNativeExecutor(i18n, WAIT_TIMEOUT)
-                        .execute(cmdLine, env, getUserKeysBinary.getParentFile());
+                        .execute(cmdLine, env, 32, Integer.MAX_VALUE, getUserKeysBinary.getParentFile());
                     
                     String outStr = new String(er.getOutBytes(), er.getCharset());
                     

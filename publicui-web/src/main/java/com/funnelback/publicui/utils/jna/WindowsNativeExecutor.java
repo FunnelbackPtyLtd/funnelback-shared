@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.i18n.I18n;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
+import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -52,22 +54,26 @@ public class WindowsNativeExecutor {
      * Executes the command using native Windows API on the current working directory
      * @param commandLine Command to execute
      * @param environment Environment to use, can be null
+     * @param estimatedSize Expected response size (to avoid growing buffer too frequently)
+     * @param sizeLimit Maximum response size (to ensure memory isn't exhausted)
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment) throws ExecutionException {
-        return execute(commandLine, environment, null);
+    public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int estimatedSize, int sizeLimit) throws ExecutionException {
+        return execute(commandLine, environment, estimatedSize, sizeLimit, null);
     }
     
     /**
      * Executes the command using native Windows API
      * @param commandLineList Command to execute (must be already split into components)
      * @param environment Environment to use, can be null
+     * @param estimatedSize Expected response size (to avoid growing buffer too frequently)
+     * @param sizeLimit Maximum response size (to ensure memory isn't exhausted)
      * @param dir Current directory to use when executing the process
      * @return Result of the execution
      * @throws ExecutionException if something goes wrong, with a nested cause
      */
-    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, File dir)
+    public ExecutionReturn execute(List<String> commandLineList, Map<String, String> environment, int estimatedSize, int sizeLimit, File dir)
         throws ExecutionException {
 
         if (log.isDebugEnabled()) {
@@ -180,7 +186,7 @@ public class WindowsNativeExecutor {
             log.trace("Created native process, pid is " + pi.dwProcessId + ", threadid is " + pi.dwThreadId);
             
             // Read stdout
-            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue());
+            result = readFullStdOut(hChildOutWrite.getValue(), hChildOutRead.getValue(), estimatedSize, sizeLimit);
             
             int state = Kernel32.INSTANCE.WaitForSingleObject(pi.hProcess, waitTimeout);
             if (state != WinBase.WAIT_OBJECT_0) {
@@ -238,16 +244,18 @@ public class WindowsNativeExecutor {
      * Reads STDOUT from the process
      * @param hChildOutWrite Pipe to write to STDOUT. Will be closed.
      * @param hChildOutRead Pipe to read from STDOUT. Will be closed.
+     * @param estimatedSize Expected response size (to avoid growing buffer too frequently)
+     * @param sizeLimit Maximum response size (to ensure memory isn't exhausted)
      * @return Content of STDOUT
      * @throws IOException 
      */
-    private byte[] readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead) throws IOException {
+    private byte[] readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, int sizeLimit) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
             log.warn("Unable to close the stdout write pipe of child process",
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(estimatedSize, sizeLimit);
         ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
         IntByReference nbRead = new IntByReference();
         while(true) {

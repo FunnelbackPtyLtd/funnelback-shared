@@ -266,7 +266,7 @@ public class LocalDataRepository implements DataRepository {
 
         try {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
-                .execute(cmdLine, getDocumentEnvironment, getDocumentBinary.getParentFile());
+                .execute(cmdLine, getDocumentEnvironment, 32, Integer.MAX_VALUE, getDocumentBinary.getParentFile());
             
             Map<String, String> executionOutput = parseExecutionOutput(new String(er.getOutBytes(), er.getCharset()));
             
