@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
+import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
@@ -284,6 +285,10 @@ public class WindowsNativeExecutor {
                 bos.write(b);
                 buf.clear();
             }
+        }
+        
+        if (bos.isTruncated()) {
+            throw new IOException(i18n.tr("padre.forking.failed.sizelimit"));
         }
         
         if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {

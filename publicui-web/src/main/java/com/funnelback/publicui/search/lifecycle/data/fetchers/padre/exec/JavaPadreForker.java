@@ -62,6 +62,10 @@ public class JavaPadreForker implements PadreForker {
             try {
                 int rc = executor.execute(padreCmdLine, environment);
                 
+                if (padreOutput.isTruncated()) {
+                    throw new PadreForkingException(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()));
+                }
+                
                 ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), StandardCharsets.UTF_8);
                 
                 //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
