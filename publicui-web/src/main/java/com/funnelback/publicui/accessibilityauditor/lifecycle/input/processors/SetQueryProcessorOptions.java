@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.accessibility.techniques.error.FailureConfidence;
+import com.funnelback.common.accessibility.FailureConfidence;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
