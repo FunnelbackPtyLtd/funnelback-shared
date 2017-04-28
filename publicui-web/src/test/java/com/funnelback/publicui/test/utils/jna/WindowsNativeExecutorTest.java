@@ -39,7 +39,7 @@ public class WindowsNativeExecutorTest {
     public void testNoEnvironment() throws ExecutionException {
         WindowsNativeExecutor executor = new WindowsNativeExecutor(i18n, 1000*30);
         
-        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"net.exe"}), null, 32, Integer.MAX_VALUE);
         
         Assert.assertEquals(1, er.getReturnCode());
         Assert.assertTrue(new String(er.getOutBytes(), StandardCharsets.UTF_8).contains("The syntax of this command is"));
@@ -51,7 +51,7 @@ public class WindowsNativeExecutorTest {
         
         Map<String, String> env = new HashMap<String, String>();
         env.put("TEST_VAR", "test value");
-        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env);
+        ExecutionReturn er = executor.execute(Arrays.asList(new String[]{"src/test/resources/dummy-search_home/bin/getenv.exe", "TEST_VAR"}), env, 32, Integer.MAX_VALUE);
         
         Assert.assertEquals(new String(er.getOutBytes(), StandardCharsets.UTF_8), 0, er.getReturnCode());
         Assert.assertEquals("test value", new String(er.getOutBytes(), StandardCharsets.UTF_8).trim());
