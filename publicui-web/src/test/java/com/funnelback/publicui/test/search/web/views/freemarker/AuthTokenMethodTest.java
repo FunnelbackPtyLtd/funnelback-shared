@@ -4,8 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.search.web.views.freemarker.AbstractTemplateMethod;
@@ -13,6 +14,7 @@ import com.funnelback.publicui.search.web.views.freemarker.AuthTokenMethod;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 
 import freemarker.template.TemplateModelException;
+import static org.mockito.Mockito.*;
 
 public class AuthTokenMethodTest extends AbstractMethodTest {
 
@@ -24,8 +26,9 @@ public class AuthTokenMethodTest extends AbstractMethodTest {
     @Override
     public void before() {
         configRepository = new MockConfigRepository();
-        configRepository.setGlobalConfiguration(new NoOptionsConfig("dummy")
-            .setValue(Keys.SERVER_SECRET, "server-secret"));
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(serverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("server-secret");
+        configRepository.setServerConfig(serverConfig);
         
         authTokenManager = new DefaultAuthTokenManager();
 

@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.lifecycle.input.processors.userkeys;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,14 +20,16 @@ import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.system.Security;
-import com.funnelback.common.system.Security.System;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.TrustAllCertsX509ExtendedTrustManager;
+import com.funnelback.common.system.Security;
+import com.funnelback.common.system.Security.System;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.service.ConfigRepository;
 
 /**
  * <p>Pass user keys based on a "userkeys" request parameter, which would normally be added
@@ -41,6 +42,9 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public abstract class AbstractManifoldCFMapper implements UserKeysMapper {
 
     private final static String SERVICE_USERNAME = "_svc_manifoldcf";
+    
+    @Autowired
+    private ConfigRepository configRepository;
     
     public AbstractManifoldCFMapper() throws NoSuchAlgorithmException, KeyManagementException {
         // Arrange to trust all SSL certificates (because the admin UI usually has a self signed one
@@ -75,7 +79,8 @@ public abstract class AbstractManifoldCFMapper implements UserKeysMapper {
                 ((HttpsURLConnection) connection).setHostnameVerifier(allHostsValidVerifier);
             }
             
-            String servicePassword = Security.generateSystemPassword(System.MANIFOLDCF, config.value(Keys.SERVER_SECRET));
+            String servicePassword = Security.generateSystemPassword(System.MANIFOLDCF, 
+                                        configRepository.getServerConfig().get(com.funnelback.config.keys.Keys.ServerKeys.SERVER_SECRET));
             String usernameAndPassword = SERVICE_USERNAME + ":" + servicePassword;
             String basicAuth = "Basic " + new String(new Base64().encode(usernameAndPassword.getBytes()));
             connection.setRequestProperty("Authorization", basicAuth);

@@ -432,74 +432,72 @@
                         </#if>
                       </div>
                   </@s.Facet>
-                  
-                
+
                 </@s.FacetedSearch>
 
-                <div id="duplicateContentTab" class="facet">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed > 0) ><span id="duplicateCount" class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed} </span></#if></h3>
-                      </div>
-                      <div class="panel-body">
-                        <@fb.ExtraResults name="duplicates">
-                          <table id="duplicates" class="table table-striped table-responsive">
-                            <thead>
-                              <tr>
-                                <th>Instances</th>
-                                <th>Filesize</th>
-                                <th>Total</th>
-                                <th>Document</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <@s.Results>
-                                <#if s.result.collapsed??>
-                                  <tr>
-                                    <td class="text-center">
-                                      <a class="text-muted duplicates-count" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
-                                        <div class="badge badge-danger"> x <strong>${s.result.collapsed.count + 1}</strong>
-                                                        </div>
-                                    </td>
-                                            <td class="text-center">
-                                                        ${ fb.renderSize(s.result.fileSize) }
-                                            </td>
-                                            <td class="text-center">
-                                                    <i>${fb.renderSize((s.result.collapsed.count + 1) * s.result.fileSize)}</i>
-                                    </td>
-                                    <td>
-                                      <div class="pull-left">
-                                        <a href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
-                                        <span class="fa fa-open"></span>
-                                        <br>
-                                        <!-- SITE (Z) -->
-                                        <a class="text-muted break-word" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}
-                                        </a>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </#if>
-                              </@s.Results>
-
-                            </tbody>
-                          </table>
-                          <div class="text-center">
-                            <ul class="pagination">
-                              <@fb.Prev link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.prevUrl}" rel="prev"><small><i class="glyphicon glyphicon-chevron-left"></i></small> Prev</a></li></@fb.Prev>
-                              <@fb.Page link=main.contentAuditorLink startParamName="duplicate_start_rank"><li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl}">${fb.pageNumber}</a></li></@fb.Page>
-                              <@fb.Next link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.nextUrl}" rel="next">Next <small><i class="glyphicon glyphicon-chevron-right"></i></small></a></li></@fb.Next>
-                            </ul>
-                          </div>
-                        </@fb.ExtraResults>
-                      </div>
-                  </div>
-                </div>
-
+				<@fb.ExtraResults name="duplicates">
+				<#if (extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed gt 0) >
+					<div id="duplicateContentTab" class="facet">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title"><strong class="facetLabel">Duplicate Content </strong><span id="duplicateCount" class="badge badge-danger"> ${extraSearches.duplicates.response.resultPacket.resultsSummary.collapsed!}</span></h3>
+							</div>
+							<div class="panel-body">
+								<table id="duplicates" class="table table-striped table-responsive">
+									<thead>
+										<tr>
+											<th>Instances</th>
+											<th>Filesize</th>
+											<th>Total</th>
+											<th>Document</th>
+										</tr>
+									</thead>
+									<tbody>
+									<@s.Results>
+										<#if s.result.collapsed??>
+										<tr>
+											<td class="text-center">
+												<a class="text-muted duplicates-count" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2">
+													<div class="badge badge-danger"> x <strong>${s.result.collapsed.count + 1}</strong></div>
+												</a>
+											</td>
+											<td class="text-center">
+												${ fb.renderSize(s.result.fileSize) }
+											</td>
+											<td class="text-center">
+												<i>${fb.renderSize((s.result.collapsed.count + 1) * s.result.fileSize)}</i>
+											</td>
+											<td>
+												<div class="pull-left">
+													<a href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2" title="${s.result.title?html}" class="clickable-link"><strong>${s.result.title?html} </strong></a>
+													<span class="fa fa-open"></span>
+													<br>
+													<!-- SITE (Z) -->
+													<a class="text-muted break-word" href="?${removeParam(QueryString, ["start_rank","duplicate_start_rank"])}&amp;duplicate_signature=%3F:${s.result.collapsed.signature}#collection-${currentCollection}-tab-2"> ${s.result.liveUrl?html}</a>
+												</div>
+											</td>
+										</tr>
+										</#if>
+									</@s.Results>
+									</tbody>
+								</table>
+				
+								<#if extraSearches.duplicates.response.resultPacket.resultsSummary!?has_content && extraSearches.duplicates.response.resultPacket.resultsSummary.totalMatching gt response.resultPacket.resultsSummary.numRanks>
+								<div class="text-center">
+									<ul class="pagination">
+										<@fb.Prev link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.prevUrl}" rel="prev"><small><i class="glyphicon glyphicon-chevron-left"></i></small> Prev</a></li></@fb.Prev>
+										<@fb.Page link=main.contentAuditorLink startParamName="duplicate_start_rank"><li <#if fb.pageCurrent> class="active"</#if>><a href="${fb.pageUrl}">${fb.pageNumber}</a></li></@fb.Page>
+										<@fb.Next link=main.contentAuditorLink startParamName="duplicate_start_rank"><li><a href="${fb.nextUrl}" rel="next">Next <small><i class="glyphicon glyphicon-chevron-right"></i></small></a></li></@fb.Next>
+									</ul>
+								</div>
+								</#if>
+							</div>
+						</div>
+					</div>
+				</#if>
+				</@fb.ExtraResults>
 
             </div>
 
-
-
         </div>
     </div>
-

@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -35,7 +35,7 @@ public class DefaultGeolocatorTest {
     public void before() throws FileNotFoundException {
         this.geolocator = new DefaultGeolocator();
         this.configRepository = new MockConfigRepository();
-        this.configRepository.setGlobalConfiguration(new NoOptionsConfig(new File(searchHome), "dummy"));
+        this.configRepository.setGlobalConfiguration(new GlobalOnlyConfig(new File(searchHome)));
     }
 
 

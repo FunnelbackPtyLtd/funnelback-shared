@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.service.config;
 
-import groovy.lang.Script;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -16,12 +14,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +27,11 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
+import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.views.View;
+import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.data.server.ServerConfigData;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -59,6 +55,14 @@ import com.funnelback.springmvc.service.resource.impl.GroovyScriptResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
+
+import groovy.lang.Script;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
@@ -86,6 +90,21 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Value("#{appProperties['config.repository.cache.ttl']?:1}")
     @Setter
     private int cacheTtlSeconds = 1;
+    
+    /**
+     * <p>How often to force reloading of Groovy script, in seconds.</p>
+     * 
+     * <p>This is necessary because when the Groovy class loader will not
+     * detect changes in script dependencies (i.e. a Groovy class using
+     * another class defined in another script). Having that configurable
+     * allow developers (esp. Stencils developers) to work on hook scripts
+     * without having to wait 60s for them to be refreshed.</p>
+     * 
+     * @see FUN-8961
+     */
+    @Value("#{appProperties['config.repository.groovy.reload']?:60}")
+    @Setter
+    private long groovyForceReloadSeconds = 60;
     
     @Autowired
     @Setter
@@ -173,7 +192,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             c.setMetaComponents(
                     resourceManager.load(
                             new SimpleFileResource(new File(collectionConfigFolder, Files.META_CONFIG_FILENAME)),
-                            new String[0]));
+                            AbstractSingleFileResource.wrapDefault(new String[0])).getResource());
         } else {
             c.setMetaComponents(new String[0]);
         }
@@ -181,16 +200,17 @@ public class DefaultConfigRepository implements ConfigRepository {
         c.getTextMinerBlacklist().addAll(
                 resourceManager.load(
                         new UniqueLinesResource(new File(collectionConfigFolder, Files.TEXT_MINER_BLACKLIST)),
-                        new HashSet<String>(0)));
+                        AbstractSingleFileResource.wrapDefault(new HashSet<String>(0))).getResource());
 
         c.getParametersTransforms().addAll(
                 resourceManager.load(
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
-                        new ArrayList<TransformRule>(0)));
+                        AbstractSingleFileResource.wrapDefault(new ArrayList<TransformRule>(0))).getResource());
         c.setQuickLinksConfiguration(resourceManager.load(new ConfigMapResource(
                 collectionId,
                 searchHome,
-                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), new HashMap<String, String>(0)));
+                new File(collectionConfigFolder, Files.QUICKLINKS_CONFIG_FILENAME)), 
+                AbstractSingleFileResource.wrapDefault(new HashMap<String, String>(0))).getResource());
         
         c.getProfiles().putAll(loadProfiles(c));
         
@@ -198,7 +218,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
             if (hookScriptFile.exists()) {
                 try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome));
+                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome, groovyForceReloadSeconds)).getResource();
                     c.getHookScriptsClasses().put(hook, hookScript);
                 } catch (CompilationFailedException cfe) {
                     log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
@@ -206,7 +226,10 @@ public class DefaultConfigRepository implements ConfigRepository {
             }
         }
         
-        c.setCartProcessClass(resourceManager.load(new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome)));
+        c.setCartProcessClass(resourceManager.load(
+                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome, groovyForceReloadSeconds),
+                        AbstractSingleFileResource.wrapDefault(null)
+                    ).getResource());
         
         return c;
     }
@@ -226,10 +249,10 @@ public class DefaultConfigRepository implements ConfigRepository {
             try {
                 p.setPadreOpts(resourceManager.load(new AbstractSingleFileResource<String>(padreOptsFile) {
                         @Override
-                        public String parse() throws IOException {
+                        public String parseResourceOnly() throws IOException {
                             return FileUtils.readFileToString(file);
                         }
-                    }));
+                    }, AbstractSingleFileResource.wrapDefault(null)).getResource());
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
@@ -240,21 +263,24 @@ public class DefaultConfigRepository implements ConfigRepository {
             // Load curator config from each of the supported config files (combining them)
             try {
                 File curatorJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorJsonConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorConfig())).getResource().getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator json configuration.", e);
             }
             
             try {
                 File curatorAdvancedJsonConfigFile = new File(profileDir, Files.CURATOR_JSON_ADVANCED_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), new CuratorConfig()).getTriggerActions());
+                config.addAll(resourceManager.load(new CuratorJsonConfigResource(curatorAdvancedJsonConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorConfig())).getResource().getTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator advanced json configuration.", e);
             }
 
             try {
                 File curatorYamlConfigFile = new File(profileDir, Files.CURATOR_YAML_CONFIG_FILENAME);
-                config.addAll(resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), new CuratorYamlConfig()).toTriggerActions());
+                config.addAll(resourceManager.load(new CuratorYamlConfigResource(curatorYamlConfigFile), 
+                    AbstractSingleFileResource.wrapDefault(new CuratorYamlConfig())).getResource().toTriggerActions());
             } catch (IOException e) {
                 log.error("Error loading curator yaml configuration.", e);
             }
@@ -307,14 +333,14 @@ public class DefaultConfigRepository implements ConfigRepository {
         // Read global config in conf/
         File fnConfig = new File (c.getConfiguration().getConfigDirectory(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
         try {
-            c.setFacetedNavigationConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            c.setFacetedNavigationConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
             
             // Read config in live/idx/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
                     + File.separator + View.live
                     + File.separator + DefaultValues.FOLDER_IDX,
                     Files.FACETED_NAVIGATION_LIVE_CONFIG_FILENAME);
-            c.setFacetedNavigationLiveConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            c.setFacetedNavigationLiveConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
         } catch (IOException ioe) {
             log.error("Unable to read faceted navigation configuration from '" + fnConfig.getAbsolutePath() + "'", ioe);
         }
@@ -331,7 +357,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         // Read global config in conf/<profile>/
         File fnConfig = new File (c.getConfiguration().getConfigDirectory() + File.separator + p.getId(), Files.FACETED_NAVIGATION_CONFIG_FILENAME);
         try {
-            p.setFacetedNavConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser)));
+            p.setFacetedNavConfConfig(resourceManager.load(new FacetedNavigationConfigResource(fnConfig, fnConfigParser), AbstractSingleFileResource.wrapDefault(null)).getResource());
             
             // Read config in live/idx/<profile>/
             fnConfig = new File(c.getConfiguration().getCollectionRoot()
@@ -369,7 +395,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         try {
             return resourceManager.load(
                     new ConfigMapResource(searchHome,
-                            new File(searchHome+File.separator+DefaultValues.FOLDER_CONF, conf.getFileName())));
+                            new File(searchHome+File.separator+DefaultValues.FOLDER_CONF, conf.getFileName())), AbstractSingleFileResource.wrapDefault(null)).getResource();
         } catch (IOException ioe) {
             log.fatal("Could not load global configuration file '"+conf.getFileName()+"'", ioe);
             throw new RuntimeException(ioe);
@@ -403,7 +429,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 new AbstractSingleFileResource<Map<String, String>>(executablesCfg) {
 
                     @Override
-                    public Map<String, String> parse() throws IOException {
+                    public Map<String, String> parseResourceOnly() throws IOException {
                         Map<String, String> out = new HashMap<String, String>();
                         Map<String, String> uncleanMap = ConfigReader.readConfig(file, searchHome);
                         
@@ -422,7 +448,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                     }
 
                     
-                });
+                }, AbstractSingleFileResource.wrapDefault(null)).getResource();
             return m.get(exeName);
         } catch (Exception ioe) {
             log.error("Could not load executables config from '"+executablesCfg+"'", ioe);
@@ -469,7 +495,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 EXTRA_SEARCHES_PREFIX + "." + extraSearchId + CFG_SUFFIX);
         
         try {
-            Properties p = resourceManager.load(new PropertiesResource(config));
+            Properties p = resourceManager.load(new PropertiesResource(config), AbstractSingleFileResource.wrapDefault(null)).getResource();
             if (p != null) {
                 return MapUtils.fromProperties(p);
             } else {
@@ -483,7 +509,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public Config getGlobalConfiguration() {
+    public GlobalOnlyConfig getGlobalConfiguration() {
         try {
             return resourceManager.load(new GlobalConfigResource(searchHome));
         } catch (IOException ioe) {
@@ -523,7 +549,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             for (File folder: folders) {
                 File f = new File(folder, filename);
                 try {
-                    out.putAll(resourceManager.load(new ConfigMapResource(searchHome, f), emptyMap));
+                    out.putAll(resourceManager.load(new ConfigMapResource(searchHome, f), AbstractSingleFileResource.wrapDefault(emptyMap)).getResource());
                 } catch (IOException ioe) {
                     log.error("Unable to load translation bundle from '"+f.getAbsolutePath()+"'", ioe);
                 }
@@ -547,6 +573,14 @@ public class DefaultConfigRepository implements ConfigRepository {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ServerConfigReadOnly getServerConfig() {
+        ServerConfigData serverConfigData = resourceManager.loadResource(new ServerConfigDataResource(searchHome, (f, r) -> {
+            throw new RuntimeException("Writes are not permitted under the public UI.");
+        }));
+        return new DefaultServerConfigReadOnly(serverConfigData);
     }
     
 }

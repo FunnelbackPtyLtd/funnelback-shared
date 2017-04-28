@@ -1,5 +1,8 @@
 package com.funnelback.publicui.test.search.web.controllers;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -12,8 +15,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.search.web.controllers.ClickController;
 
@@ -26,6 +31,11 @@ public class ClickControllerTest {
         
         ClickController controller = new ClickController();
         controller.setAuthTokenManager(authTokenManager);
+        
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(configRepository.getServerConfig()).thenReturn(serverConfig);
+        controller.setConfigRepository(configRepository);
         
         MockHttpServletResponse response = new MockHttpServletResponse();
         
@@ -46,6 +56,11 @@ public class ClickControllerTest {
         
         ClickController controller = new ClickController();
         controller.setAuthTokenManager(authTokenManager);
+        
+        ConfigRepository configRepository = mock(ConfigRepository.class);
+        ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
+        when(configRepository.getServerConfig()).thenReturn(serverConfig);
+        controller.setConfigRepository(configRepository);
         
         MockHttpServletResponse response = new MockHttpServletResponse();
         

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 
@@ -15,7 +15,7 @@ import freemarker.template.TemplateScalarModel;
 
 /**
  * Generates an authentication token for a given URL
- * based on the {@link Keys#SERVER_SECRET};
+ * based on the {@link ServerKeys#SERVER_SECRET};
  * 
  * @since 12.4
  */
@@ -37,7 +37,7 @@ public class AuthTokenMethod extends AbstractTemplateMethod {
     protected Object execMethod(@SuppressWarnings("rawtypes") List arguments) throws TemplateModelException {
         String data = ((TemplateScalarModel) arguments.get(0)).getAsString();
         
-        return authTokenManager.getToken(data, configRepository.getGlobalConfiguration().value(Keys.SERVER_SECRET));
+        return authTokenManager.getToken(data, configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET));
     }
 
 }

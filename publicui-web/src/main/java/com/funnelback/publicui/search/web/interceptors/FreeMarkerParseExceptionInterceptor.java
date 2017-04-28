@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.web.interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,7 @@ import com.funnelback.publicui.search.service.ConfigRepository;
 
 import freemarker.core.ParseException;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>Interceptor handling FreeMarker {@link ParseException}s.</p>
@@ -29,6 +31,7 @@ import lombok.Setter;
  * @author Nicolas Guillaumin
  *
  */
+@Log4j2
 public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -49,7 +52,12 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
         if (ex != null && request.getParameter(RequestParameters.COLLECTION) != null) {
             // From experience the ParseException can be nested at different levels
             // Extract it
-            ParseException pe = extractParseException(ex);
+            ParseException pe = ExceptionUtils.getThrowableList(ex)
+                .stream()
+                .filter(t -> t.getClass().equals(ParseException.class))
+                .map(t -> (ParseException) t)
+                .findFirst()
+                .orElse(null);
             
             if (pe != null) {
                 // Handle ParseException depending on the config
@@ -65,26 +73,14 @@ public class FreeMarkerParseExceptionInterceptor implements HandlerInterceptor {
                        response.setContentType("text/plain");
                        response.getWriter().write(pe.getMessage());                       
                    }
+                   
+                   // Also log it for the per-collection log file
+                   log.error("Error parsing FreeMarker template", pe);
                 }
             }
         }
 
     }
     
-    /**
-     * Recursively check the cause of an Exception to try to
-     * extract a {@link ParseException}
-     * @param t The Exception to inspect
-     * @return A {@link ParseException} if found, or null
-     */
-    private ParseException extractParseException(Throwable t) {
-        if (t instanceof ParseException) {
-            return (ParseException) t;
-        } else if (t.getCause() != null) {
-            return (ParseException) extractParseException(t.getCause());
-        } else {
-            return null;
-        }
-    }
 
 }

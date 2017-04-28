@@ -26,14 +26,14 @@ import com.funnelback.publicui.search.web.controllers.SearchController;
 public class AccessibilityAuditorController {
 
     /**
-     * Users need the sec.wcag role to access the reports. When developing
+     * Users need the sec.accessibility-auditor role to access the reports. When developing
      * with the additional port set, there is usually no authentication when
      * running the app. from Eclipse, so ROLE_ANONYMOUS needs to be permitted.
      * 
      * In practice users cannot access AA on the non admin port (due to an interceptor)
      * so they will always use the admin port which requires authentication.
      */
-    private static final String PRE_AUTH = "hasAnyRole('sec.wcag','ROLE_ANONYMOUS')"; 
+    private static final String PRE_AUTH = "hasAnyRole('sec.accessibility-auditor','ROLE_ANONYMOUS')"; 
     
     @Autowired
     private SearchController searchController;
@@ -49,15 +49,34 @@ public class AccessibilityAuditorController {
             HttpServletRequest request,
             HttpServletResponse response,
             SearchQuestion question) {
-        
-        question.setQuestionType(SearchQuestionType.ACCESSIBILITY_AUDITOR);
-        
+        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR);
+    }
+    
+    
+    @RequestMapping("/accessibility-auditor-acknowledgement-counts.json")
+    @PreAuthorize(PRE_AUTH)
+    public ModelAndView acknowledgementCounts(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question) {
+        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS);
+    }
+    
+    
+    public ModelAndView runQuery(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        SearchQuestion question, 
+        SearchQuestionType searchQuestionType) {
+
+        question.setQuestionType(searchQuestionType);
+
         ModelAndView mav = searchController.search(request, response, question, null);
-        
+
         if (mav != null) {
             return new ModelAndView((String) null, mav.getModel());
         } else {
             return null;
         }
-    }
+}
 }

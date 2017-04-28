@@ -37,7 +37,7 @@ public class MetadataAliasesTests {
                 };
             }
         }, null);
-        config = new ConfigStub(new String[0]);
+        config = new ConfigStub(null);
         config.setValue(Keys.ModernUI.metadataAlias("link"), "h");
         config.setValue(Keys.ModernUI.metadataAlias("site"), "u");
         config.setValue(Keys.ModernUI.metadataAlias("filetype"), "f");

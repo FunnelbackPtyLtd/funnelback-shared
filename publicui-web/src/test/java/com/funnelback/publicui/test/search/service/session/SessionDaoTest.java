@@ -99,13 +99,13 @@ public abstract class SessionDaoTest {
         Random r = new Random();
         SearchHistory sh = new SearchHistory();
         sh.setCollection(collectionId);
-        sh.setCurrStart(r.nextInt());
-        sh.setNumRanks(r.nextInt());
+        sh.setCurrStart(r.nextInt(100000));
+        sh.setNumRanks(r.nextInt(100000));
         sh.setOriginalQuery(UUID.randomUUID().toString());
         sh.setQueryAsProcessed(UUID.randomUUID().toString());
         sh.setSearchDate(new Date());
-        sh.setSearchParams("&param1="+UUID.randomUUID().toString()+"&param2="+r.nextInt());
-        sh.setTotalMatching(r.nextInt());
+        sh.setSearchParams("&param1="+UUID.randomUUID().toString()+"&param2="+r.nextInt(100000));
+        sh.setTotalMatching(r.nextInt(100000));
         sh.setUserId(userId);
         
         return sh;

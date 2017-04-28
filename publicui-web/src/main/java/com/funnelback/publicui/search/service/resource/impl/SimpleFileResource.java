@@ -24,7 +24,7 @@ public class SimpleFileResource extends AbstractSingleFileResource<String[]> {
     }
 
     @Override
-    public String[] parse() throws IOException {
+    public String[] parseResourceOnly() throws IOException {
         log.debug("Loading file '"+file.getAbsolutePath()+"'");
         List<String> lines = FileUtils.readLines(file);                
         CollectionUtils.filter(lines, new RemoveCommentsPredicate());

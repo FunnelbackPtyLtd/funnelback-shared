@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.funnelback.publicui</groupId>
         <artifactId>publicui-parent</artifactId>
-        <version>15.7.1641-SNAPSHOT</version>
+        <version>15.11.1716-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -24,6 +24,27 @@
                         <funnelback.installdir>src/test/resources/dummy-search_home</funnelback.installdir>
                     </systemProperties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <!-- Temporarily build two wars while testing the skinny mode -->
+                    <execution>
+                        <id>normal-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>skinny-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                        <configuration>
+                            <classifier>skinny</classifier>
+                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

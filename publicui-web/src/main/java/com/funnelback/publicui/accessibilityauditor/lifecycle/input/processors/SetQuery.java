@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Set a default query if none is specified, so that the reports will always
@@ -20,7 +19,7 @@ public class SetQuery extends AbstractAccessibilityAuditorInputProcessor {
     private static final String NULL_QUERY = "-FunUnusedMetaClass:showalldocuments";
     
     @Override
-    public void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
+    protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
         if (transaction.getQuestion().getQuery() == null || transaction.getQuestion().getQuery().isEmpty()) {
             transaction.getQuestion().setQuery(NULL_QUERY);
         }

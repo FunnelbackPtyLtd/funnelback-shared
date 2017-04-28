@@ -11,6 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import freemarker.core.ParseException;
+import freemarker.template.TemplateException;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -42,8 +46,15 @@ public class UnhandledExceptionFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
-        HttpServletRequest req = (HttpServletRequest) request;
-        log.error("Unhandled exception for URL '{}{}'", req.getRequestURL(), req.getQueryString() != null ? "?" + req.getQueryString() : "", e);
+        // Special case for FreeMarker exceptions as they're already logged elsewhere, but re-thrown.
+        // Prevent them from being logged twice
+        if (!ExceptionUtils.getThrowableList(e)
+            .stream()
+            .anyMatch(t -> t instanceof ParseException || t instanceof TemplateException)) {
+
+            HttpServletRequest req = (HttpServletRequest) request;
+            log.error("Unhandled exception for URL '{}{}'", req.getRequestURL(), req.getQueryString() != null ? "?" + req.getQueryString() : "", e);
+        }
     }
 
     @Override

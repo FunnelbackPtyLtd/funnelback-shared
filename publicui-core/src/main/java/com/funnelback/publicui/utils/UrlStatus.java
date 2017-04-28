@@ -4,17 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Properties;
 
 import lombok.extern.log4j.Log4j2;
 
 import com.funnelback.common.config.Collection;
 import com.funnelback.common.config.Collections;
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.common.crawl.CrawlerConfigUtils;
 import com.funnelback.common.policy.SimpleLoadingPolicy;
 
 @Log4j2
@@ -54,14 +51,11 @@ public class UrlStatus {
         PrintWriter printWriter = new PrintWriter(bos);//will use default encoding.
         try  {
             
-            File configFile = new File(config.getConfigDirectory(), Files.COLLECTION_FILENAME);
-            Properties properties = CrawlerConfigUtils.readCollectionConfiguration(configFile.getAbsolutePath(), 
-                searchHome.getAbsolutePath());
             int verbose = 0;
             if(log.isDebugEnabled()) {
                 verbose=1;
             }
-            loadingPolicy.setLoadingRules(properties, verbose, printWriter);
+            loadingPolicy.setLoadingRules(config, verbose, printWriter);
             boolean accepted = loadingPolicy.acceptableAddress(url);
             log.debug(new String(bos.toByteArray()));
             if(accepted) {

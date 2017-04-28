@@ -1,0 +1,26 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>ftl-docs</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>help-ftl</outputDirectory>
+            <directory>target/help-ftl/</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>help-ftl</outputDirectory>
+            <directory>src/main/resources/templates/</directory>
+            <includes>
+                <include>*.css</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+</assembly>

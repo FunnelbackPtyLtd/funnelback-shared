@@ -121,7 +121,27 @@ public class DefaultPadreForkingTests {
         Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
         Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
     }
-    
+
+    @Test(expected=DataFetchException.class)
+    public void testExceedPadrePacketSize() throws DataFetchException, EnvironmentVariableException, IOException {
+        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
+        
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("padre-forking", 
+            new NoOptionsConfig(searchHome, "padre-forking")
+            .setValue("query_processor", getMockPadre())
+            .setValue("ui.modern.padre_response_size_limit_bytes", "1"))
+        );
+        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
+        qs.setQuery("test");
+        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        
+        forking.fetchData(st);
+
+        Assert.fail("Expected not to get here - exception should be thrown above");
+    }
+
     @Test
     public void testInvalidPacket() throws Exception {
         List<String> qpOptions = new ArrayList<String>(Arrays.asList(
@@ -173,8 +193,8 @@ public class DefaultPadreForkingTests {
         SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
         
         
-        forking.fetchData(ts);
         
+        forking.fetchData(ts);
         Assert.assertEquals(68, ts.getResponse().getReturnCode());
     }
     
@@ -203,10 +223,42 @@ public class DefaultPadreForkingTests {
             Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
         }
     }
-    
+
+    @Test(expected=DataFetchException.class)
+    public void testWindowsNativeExceedPacketSize() throws Exception {
+        if (OS.isFamilyWindows()) {
+            
+            List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+                new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
+            
+            SearchQuestion qs = new SearchQuestion();
+            qs.setCollection(new Collection("padre-forking", 
+                new NoOptionsConfig(searchHome, "padre-forking")
+                .setValue("query_processor", getMockPadre())
+                .setValue("ui.modern.padre_response_size_limit_bytes", "1"))                
+            );
+            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
+            qs.setQuery("test");
+            qs.setImpersonated(true);
+            SearchTransaction ts = new SearchTransaction(qs, new SearchResponse());
+            
+            try {
+                Advapi32.INSTANCE.ImpersonateSelf(WinNT.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation);
+                forking.fetchData(ts);
+            } finally {
+                Advapi32.INSTANCE.RevertToSelf();
+            }
+
+            Assert.fail("Should have thrown an exception above, not reached here");
+        } else {
+            throw new DataFetchException("No windows native execution on non-windows platforms", null);
+        }
+    }
+
     private String getMockPadre() {
         if (OS.isFamilyWindows()) {
-            return "readfile.exe";
+            // Drop the .exe for windows as we expect that windows will be able to execute the correct one.
+            return "readfile";
         } else {
             return "mock-padre.sh";
         }

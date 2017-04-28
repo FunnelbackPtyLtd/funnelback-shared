@@ -14,7 +14,8 @@ import lombok.Setter;
 
 import org.junit.Assume;
 
-import com.funnelback.common.config.Config;
+import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
@@ -26,7 +27,9 @@ public class MockConfigRepository implements ConfigRepository {
     @Getter @Setter private File xslTemplate;
     private Map<String, Map<String, String>> extraSearchesConfigurations = new HashMap<>();
     
-    @Getter @Setter private Config globalConfiguration;
+    @Getter @Setter private GlobalOnlyConfig globalConfiguration;
+    
+    @Getter @Setter private ServerConfigReadOnly serverConfig;
         
     @Override
     public Collection getCollection(String collectionId) {

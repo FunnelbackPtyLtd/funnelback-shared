@@ -5,16 +5,16 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.AccessLevel;
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.service.ConfigRepository;
-
-import lombok.AccessLevel;
-import lombok.Setter;
 
 /**
  * Only allows access on the Admin port, or an additional developement
@@ -42,23 +42,23 @@ public class AdminPortOnlyRestrictionInterceptor implements
     @Override
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) throws Exception {
-        Config globalCfg = configRepository.getGlobalConfiguration();
+        ServerConfigReadOnly serverConfig = configRepository.getServerConfig();
         
         // We only allow access on the admin port
-        String adminUrlPort = globalCfg.value(Keys.Urls.ADMIN_PORT);
-        String adminJettyPort = globalCfg.value(Keys.Jetty.ADMIN_PORT);
+        int adminUrlPort = serverConfig.get(ServerKeys.Urls.ADMIN_PORT);
+        int adminJettyPort = serverConfig.get(ServerKeys.Jetty.JETTY_ADMIN_PORT);
         
         // Also permit an additional development port (handy if you're running it in eclipse or from maven etc)
-        String additionalAdminPort = globalCfg.value(Keys.Urls.DEVELOPMENT_PORT);
+        int additionalAdminPort = serverConfig.get(ServerKeys.Urls.DEVELOPMENT_PORT); 
         
-        String actualPort = Integer.toString(request.getLocalPort());
-        if (actualPort.equals(adminJettyPort) || actualPort.equals(additionalAdminPort)) {
+        int actualPort = request.getLocalPort();
+        if (actualPort == adminJettyPort || actualPort == additionalAdminPort) {
             return true;
         } else {
             // Redirect them to the right place - The admin version (so they get a login)
             URI originalUri = new URI(request.getRequestURL().toString());
             URI redirectUri = new URI("https", originalUri.getUserInfo(), originalUri.getHost(),
-                Integer.parseInt(adminUrlPort), originalUri.getPath(), request.getQueryString(), null);
+                adminUrlPort, originalUri.getPath(), request.getQueryString(), null);
                         
             response.sendRedirect(redirectUri.toString());
             return false;

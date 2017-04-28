@@ -55,8 +55,10 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
 
     public static final String NAME = "IncludeUrlInternal";
     
-    public static final int DEFAULT_EXPIRY = 3600; 
-    
+    public static final int DEFAULT_EXPIRY = 3600; // seconds
+
+    public static final int DEFAULT_TIMEOUT = 50 * 1000; // milliseconds 
+
     public static final Pattern CONVERT_RELATIVE_PATTERN = Pattern.compile("<([^!>\\.]*?)(href|src|action|background)\\s*=\\s*([\"|']?)(.*?)\\3((\\s+.*?)*)>", Pattern.DOTALL);
     
     protected enum Parameters {
@@ -162,14 +164,15 @@ public class IncludeUrlDirective implements TemplateDirectiveModel {
         
         HttpGet httpGet = new HttpGet(url);
         
+        int timeout = DEFAULT_TIMEOUT;
+        
         TemplateModel param = params.get(Parameters.timeout.toString());
         if (param != null) {
-            int timeout = ((TemplateNumberModel) param).getAsNumber().intValue();
-            HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
-            HttpConnectionParams.setSoTimeout(httpParams, timeout);
-
-            log.debug("Set timeout to '" + timeout + "'");
+            timeout = ((TemplateNumberModel) param).getAsNumber().intValue();
         }
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        log.debug("Set timeout to '" + timeout + "'");
         
         param = params.get(Parameters.useragent.toString());
         if (param != null) {

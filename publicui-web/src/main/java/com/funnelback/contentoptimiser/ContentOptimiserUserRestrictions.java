@@ -1,6 +1,7 @@
 package com.funnelback.contentoptimiser;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import com.funnelback.common.config.Config;
 
@@ -11,6 +12,7 @@ import com.funnelback.common.config.Config;
  * @author tim
  *
  */
+@ToString
 public class ContentOptimiserUserRestrictions {
     @Getter private final boolean allowNonAdminTextAccess;
     @Getter private final boolean allowNonAdminFullAccess;

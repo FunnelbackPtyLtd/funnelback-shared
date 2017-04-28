@@ -12,4 +12,8 @@ public class PadreForkingException extends Exception {
     public PadreForkingException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public PadreForkingException(String message) {
+        super(message);
+    }
 }

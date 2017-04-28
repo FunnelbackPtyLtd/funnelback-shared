@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -50,12 +51,32 @@ public class LogUtilsTests {
     }
 
     @Test
+    public void testGetIpv6RemoteAddr() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("2001:db8:85a3:0:0:8a2e:0370:7334");
+        // Note that leading zeros will be stripped by the processing
+        // below - I guess that's good for canonicalisation.
+        
+        Assert.assertEquals("2001:db8:85a3:0:0:8a2e:370:7334", LogUtils.getRequestIdentifier(request, RequestId.ip, null));
+    }
+
+    @Test
     public void testGetIpForwardedFor() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("1.2.3.4");
         request.addHeader("X-Forwarded-For", "5.6.7.8");
 
         Assert.assertEquals("5.6.7.8", LogUtils.getRequestIdentifier(request, RequestId.ip, null));
+    }
+
+    @Test
+    @Ignore // Fails for now (ignores the header) - We should fix it I think - See FUN-9701
+    public void testGetIpv6ForwardedFor() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("2001:db8:85a3:0:0:8a2e:0370:7334");
+        request.addHeader("X-Forwarded-For", "2004:db8:85a3:0:0:8a2e:0370:7334");
+
+        Assert.assertEquals("2004:db8:85a3:0:0:8a2e:370:7334", LogUtils.getRequestIdentifier(request, RequestId.ip, null));
     }
 
     @Test

@@ -33,7 +33,7 @@ public class CuratorJsonConfigResource extends AbstractSingleFileResource<Curato
      * src/test/resources/dummy-search_home/conf/config-repository/curator-config-test.json
      */
     @Override
-    public CuratorConfig parse() throws IOException {
+    public CuratorConfig parseResourceOnly() throws IOException {
         log.debug("Reading curator configuration data from '" + file.getAbsolutePath() + "'");
         CuratorConfig result;
         

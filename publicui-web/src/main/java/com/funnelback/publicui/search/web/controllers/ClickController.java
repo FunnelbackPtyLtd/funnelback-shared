@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.web.controllers;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -12,6 +13,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +30,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.ProfileId;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.log.ClickLog;
 import com.funnelback.publicui.search.model.log.InteractionLog;
@@ -44,9 +49,6 @@ import com.funnelback.publicui.search.web.binding.ProfileEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.web.MetricsConfiguration;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Click tracking controller
@@ -67,7 +69,7 @@ public class ClickController extends SessionController {
     @Autowired
     @Setter private AuthTokenManager authTokenManager;
 
-    @Autowired
+    @Autowired @Setter
     private ConfigRepository configRepository;
     
     @Autowired
@@ -174,12 +176,11 @@ public class ClickController extends SessionController {
 
         if (collection != null) {
             // Does the token match the target? Forbidden if not.
-            if (!authTokenManager.checkToken(authtoken, redirectUrl.toString(),
-                    collection.getConfiguration().value(Keys.SERVER_SECRET))) {
+            String serverSecret = configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET);
+            if (!authTokenManager.checkToken(authtoken, redirectUrl.toString(), serverSecret)) {
                 if (log.isDebugEnabled()) {
                     log.debug("Invalid token for URL '"+redirectUrl.toString()+"', expected '"
-                        + authTokenManager.getToken(redirectUrl.toString(), collection.getConfiguration()
-                            .value(Keys.SERVER_SECRET))
+                        + authTokenManager.getToken(redirectUrl.toString(), serverSecret)
                         + "' but got '" + authtoken + "'");
                 }
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -222,7 +223,7 @@ public class ClickController extends SessionController {
                 }
                 
                 logService.logClick(new ClickLog(new Date(), collection, collection
-                        .getProfiles().get(profile), requestId, referer, rank,
+                        .getProfiles().get(profile.getId()), requestId, referer, rank,
                         indexUrl, type, LogUtils.getUserId(user)));
                 
                 metrics.counter(MetricRegistry.name(

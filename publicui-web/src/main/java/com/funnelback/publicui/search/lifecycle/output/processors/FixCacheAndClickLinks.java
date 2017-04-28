@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -28,6 +29,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.AuthTokenManager;
 import com.funnelback.publicui.utils.MapUtils;
 
@@ -41,6 +43,9 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
     @Autowired @Setter
     private AuthTokenManager authTokenManager;
+    
+    @Autowired @Setter
+    private ConfigRepository configRepository;
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
@@ -176,7 +181,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
         .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
-        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,question.getCollection().getConfiguration().value(Keys.SERVER_SECRET)), "UTF-8"));
+        .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET)), "UTF-8"));
 
         if (question.getProfile() != null) {
             out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());

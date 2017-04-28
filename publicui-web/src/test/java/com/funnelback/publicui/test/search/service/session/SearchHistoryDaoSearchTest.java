@@ -7,6 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.Assert;
+import lombok.AllArgsConstructor;
+import lombok.experimental.Delegate;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,104 @@ public class SearchHistoryDaoSearchTest extends SessionDaoTest {
     public void before() throws Exception {
         for (int i=0; i<5; i++) {
             repository.saveSearch(generateRandomSearchHistory());
+        }
+    }
+    
+    @Test
+    public void testLongQuery() {
+        Calendar c = Calendar.getInstance();
+        String query = StringUtils.leftPad("", SearchHistory.MAX_QUERY_LENGTH, 'a');
+        {
+            SearchHistory sh = generateRandomSearchHistory(collection.getId(), user.getId());
+            sh.setOriginalQuery(query);
+            sh.setQueryAsProcessed(query);
+            sh.setSearchParams("query=" + query);
+            repository.saveSearch(sh);
+        }
+        List<SearchHistory> history = repository.getSearchHistory(user, collection, 10);
+        
+        assertEquals(1, history.size());
+        
+        {
+            SearchHistory sh = history.get(0);
+            Assert.assertEquals(query, sh.getQueryAsProcessed());
+            Assert.assertEquals(query, sh.getOriginalQuery());
+            
+        }
+        
+        repository.clearSearchHistory(user, collection);
+        
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+    }
+    
+    @Test
+    public void testQueryIsTruncated() {
+        Calendar c = Calendar.getInstance();
+        String query = StringUtils.leftPad("", SearchHistory.MAX_QUERY_LENGTH, 'a') + "b";
+        {
+            SearchHistory sh = generateRandomSearchHistory(collection.getId(), user.getId());
+            sh.setOriginalQuery(query);
+            sh.setQueryAsProcessed(query);
+            repository.saveSearch(sh);
+        }
+        List<SearchHistory> history = repository.getSearchHistory(user, collection, 10);
+        
+        assertEquals(1, history.size());
+        
+        {
+            String truncQuery = StringUtils.leftPad("", SearchHistory.MAX_QUERY_LENGTH, 'a');
+            
+            SearchHistory sh = history.get(0);
+            Assert.assertEquals("Query should be silently truncated", truncQuery, sh.getQueryAsProcessed());
+            Assert.assertEquals("Query should be silently truncated", truncQuery, sh.getOriginalQuery());
+        }
+        
+        repository.clearSearchHistory(user, collection);
+        
+        assertEquals(0, repository.getSearchHistory(user, collection, 10).size());
+    }
+    
+    
+    
+    @Test
+    public void testDBOriginalQueryColumnLength() {
+        Calendar c = Calendar.getInstance();
+        String query = StringUtils.leftPad("", SearchHistory.MAX_QUERY_LENGTH, 'a') + "b";
+        {
+            SearchHistory sh = new DelegateSearchHistory(generateRandomSearchHistory(collection.getId(), user.getId())) {
+                @Override
+                public String getOriginalQuery() {
+                    return query;
+                }
+            };
+
+            try {
+                repository.saveSearch(sh);
+                Assert.fail("This should fail as the original query is too long, if not MAX_QUERY_LENGTH is wrong");
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+    
+    @Test
+    public void testDBQueryAsProcessedColumnLength() {
+        Calendar c = Calendar.getInstance();
+        String query = StringUtils.leftPad("", SearchHistory.MAX_QUERY_LENGTH, 'a') + "b";
+        {
+            SearchHistory sh = new DelegateSearchHistory(generateRandomSearchHistory(collection.getId(), user.getId())) {
+                @Override
+                public String getQueryAsProcessed() {
+                    return query;
+                }
+            };
+
+            try {
+                repository.saveSearch(sh);
+                Assert.fail("This should fail as the query as processes is too long, if not MAX_QUERY_LENGTH is wrong");
+            } catch (Exception e) {
+                
+            }
         }
     }
     
@@ -148,5 +251,9 @@ public class SearchHistoryDaoSearchTest extends SessionDaoTest {
     }
 
 
+    @AllArgsConstructor
+    private class DelegateSearchHistory extends SearchHistory {
+        @Delegate private SearchHistory searchHistory;
+    }
 
 }
