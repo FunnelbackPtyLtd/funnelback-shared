@@ -1,10 +1,25 @@
 package com.funnelback.publicui.security;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import com.funnelback.common.config.Keys;
@@ -16,17 +31,6 @@ import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenS
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.
-            inMemoryAuthentication()
-                .withUser("ignoredusername").password("password").roles("USER");
-        // As I understand it, this is required to provide a UserDetailsService, but
-        // we don't actually care about the roles here (because we just care about
-        // whether users were permitted at all or not.
-    }
 
     @Autowired
     private ConfigRepository configRepository;
@@ -42,15 +46,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             http
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
-                .x509();
-            // We don't map any special roles etc to certificate properties, but if a later groovy script or
-            // something wants access to the certificate, I believe it can be accessed with something like
-            // the following during a request.
-            // 
-            // ((X509Certificate)
-            // SecurityContextHolder.getContext().getAuthentication().getCredentials()).getIssuerDN().getName()
-            //
-            // See http://stackoverflow.com/questions/37720622
+                .x509().userDetailsService(new X509UserDetailsService());
         } else {
             switch (executionContextHolder.getExecutionContext()) {
             case Admin:
@@ -76,4 +72,23 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         // we need to ensure this is disabled here.
         http.headers().httpStrictTransportSecurity().disable();
     }
+
+    public class X509UserDetailsService implements UserDetailsService {
+        // This very simple user details service is intended to cause spring to
+        // store the certificate, so that if it's needed later it can be fetched
+        // with something like...
+        //
+        // ((X509Certificate)
+        // SecurityContextHolder.getContext().getAuthentication().getCredentials()).getIssuerDN().getName()
+        //
+        // That gets the username from the certificate, but other values could
+        // also be accessed
+        //
+        // See http://stackoverflow.com/questions/37720622
+        @Override
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+            return new User(username, "N/A", Arrays.asList(() -> "ROLE_SSL"));
+        }
+    }
+
 }
