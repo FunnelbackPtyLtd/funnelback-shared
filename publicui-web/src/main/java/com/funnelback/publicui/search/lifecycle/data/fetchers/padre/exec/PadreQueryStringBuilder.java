@@ -175,10 +175,15 @@ public class PadreQueryStringBuilder {
             }
         }
         
-        if (question.getInputParameterMap().containsKey(Parameters.s.toString())
-            && question.getInputParameterMap().get(Parameters.s.toString()) != null) {
+        if (question.getRawInputParameters().containsKey(Parameters.s.toString())
+            && question.getRawInputParameters().get(Parameters.s.toString()) != null) {
             // Append user-entered system query, if any
-            query.append(" ").append(question.getInputParameterMap().get(Parameters.s.toString()).trim());
+            // Concatenate multiple values with space
+            for (String value: question.getRawInputParameters().get(Parameters.s.toString())) {
+                if (value != null) {
+                    query.append(" ").append(value.trim());
+                }
+            }
         }
         
         return query.toString().trim();
