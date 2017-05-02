@@ -19,6 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQue
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.wcag.checker.AccessibilityChecker;
+import com.funnelback.wcag.checker.AccessibilityChecker.Level;
 import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
@@ -116,6 +117,11 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(principle -> Stream.of(Names.principleOccurrences(principle)))
             .flatMap(Function.identity())
             .map(Metadata::getName);
+        
+        Stream<String> scFailuresByLevel = Arrays.asList(Level.values())
+            .stream()
+            .map(Metadata.Names::occurrencesOfFailingSuccessCriteriaByLevel)
+            .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
             Names.setOfFailingPrinciples(),
@@ -133,7 +139,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             Names.occurencesOfUniqueFailingSuccessCriterions())
             .map(Metadata::getName);
 
-        String sfOptionValue = Stream.of(failureTypes, principles, other)
+        String sfOptionValue = Stream.of(failureTypes, principles, scFailuresByLevel, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .collect(Collectors.joining(","));
