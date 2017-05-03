@@ -133,7 +133,6 @@
     <properties>
         <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
         <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-        <version.codahale-metrics>3.0.2</version.codahale-metrics>
     </properties>
 
     <dependencies>
@@ -351,22 +350,15 @@
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-servlet</artifactId>
-            <version>${version.codahale-metrics}</version>
+            <version>${version.metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
-            <version>${version.codahale-metrics}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
