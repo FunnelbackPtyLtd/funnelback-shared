@@ -61,18 +61,18 @@ public class X509AuthenticationIT {
     // run the test from within eclipse)
     
     @Test
-    public void testX509Auth() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, CertificateException, UnrecoverableKeyException {
+    public void testX509Auth() throws Exception {
         String responseText = performTestRequest(Optional.of(KEYSTORE_PATH));
         Assert.assertEquals("Expected access to be granted", "Access granted!\n", responseText);
     }
 
     @Test(expected=SSLHandshakeException.class)
-    public void testX509AuthUntrusted() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, CertificateException, UnrecoverableKeyException {
+    public void testX509AuthUntrusted() throws Exception {
         String responseText = performTestRequest(Optional.of(UNTRUSTED_KEYSTORE_PATH));
     }
 
     @Test
-    public void testNoClientCertificate() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, CertificateException, UnrecoverableKeyException {
+    public void testNoClientCertificate() throws Exception {
         String responseText = performTestRequest(Optional.empty());
         Assert.assertTrue("Expected access to be denied", responseText.contains("Access Denied"));
     }
@@ -92,55 +92,60 @@ public class X509AuthenticationIT {
     private static final String TRUSTSTORE_PATH = "src/test/resources/x509/keystores/client-truststore.jks";
     private static final String TRUSTSTORE_PASSWORD = "funnelback";
 
-    private String performTestRequest(Optional<String> keystorePath) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, CertificateException, UnrecoverableKeyException {
-        // We load in a trust store which trusts the jetty instance's self signed certificate for 'localhost'
-        // See https://hc.apache.org/httpcomponents-client-4.3.x/httpclient/examples/org/apache/http/examples/client/ClientCustomSSL.java
-        KeyStore trustStore  = KeyStore.getInstance("jks");
-        try (InputStream in = new FileInputStream(new File(TRUSTSTORE_PATH))) {
-            trustStore.load(in, TRUSTSTORE_PASSWORD.toCharArray());
-        }
-
-        SSLContextBuilder scb = SSLContexts.custom().loadTrustMaterial(trustStore);
-        
-        // If we were given a keystore, we load it in - It will provide the client certificate that
-        // the jetty server has been configured ot trust
-        if (keystorePath.isPresent()) {
-            KeyStore keyStore  = KeyStore.getInstance("jks");
-            try (InputStream in = new FileInputStream(new File(keystorePath.get()))) {
-                keyStore.load(in, KEYSTORE_PASSWORD.toCharArray());
+    private String performTestRequest(Optional<String> keystorePath) throws Exception {
+        try {
+            // We load in a trust store which trusts the jetty instance's self signed certificate for 'localhost'
+            // See https://hc.apache.org/httpcomponents-client-4.3.x/httpclient/examples/org/apache/http/examples/client/ClientCustomSSL.java
+            KeyStore trustStore  = KeyStore.getInstance("jks");
+            try (InputStream in = new FileInputStream(new File(TRUSTSTORE_PATH))) {
+                trustStore.load(in, TRUSTSTORE_PASSWORD.toCharArray());
             }
+    
+            SSLContextBuilder scb = SSLContexts.custom().loadTrustMaterial(trustStore);
             
-            scb.loadKeyMaterial(keyStore, KEY_PASSWORD.toCharArray());
-        }
-
-        // The SSLConnection stuff is where the certificate exchange happens
-        // SSLContextBuilder.KeyManagerDelegate.chooseClientAlias is a good
-        // spot to breakpoint if you need to see the client certificate process
-        // in action
-        SSLContext sslcontext = scb.build();
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext);
-
-        // This tells Apache HttpClient to use our custom SSLConnectionSocketFactory
-        // for creating SSLConnections (and hence, makes our certificates available.
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("https", sslsf)
-            .build();
-        HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
-        CloseableHttpClient httpclient = HttpClients.custom()
-                .setSSLSocketFactory(sslsf)
-                .setConnectionManager(ccm)
+            // If we were given a keystore, we load it in - It will provide the client certificate that
+            // the jetty server has been configured ot trust
+            if (keystorePath.isPresent()) {
+                KeyStore keyStore  = KeyStore.getInstance("jks");
+                try (InputStream in = new FileInputStream(new File(keystorePath.get()))) {
+                    keyStore.load(in, KEYSTORE_PASSWORD.toCharArray());
+                }
+                
+                scb.loadKeyMaterial(keyStore, KEY_PASSWORD.toCharArray());
+            }
+    
+            // The SSLConnection stuff is where the certificate exchange happens
+            // SSLContextBuilder.KeyManagerDelegate.chooseClientAlias is a good
+            // spot to breakpoint if you need to see the client certificate process
+            // in action
+            SSLContext sslcontext = scb.build();
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext);
+    
+            // This tells Apache HttpClient to use our custom SSLConnectionSocketFactory
+            // for creating SSLConnections (and hence, makes our certificates available.
+            Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("https", sslsf)
                 .build();
-
-        // Finally, we can actually make our HTTPS request!
-        HttpGet get = new HttpGet(X509AuthenticationIT.TEST_URL);
-
-        try (CloseableHttpResponse response = httpclient.execute(get)) {
-            HttpEntity entity = response.getEntity();
-
-            String responseText = IOUtils.toString(entity.getContent());
-            EntityUtils.consume(entity);
-
-            return responseText;
+            HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
+            CloseableHttpClient httpclient = HttpClients.custom()
+                    .setSSLSocketFactory(sslsf)
+                    .setConnectionManager(ccm)
+                    .build();
+    
+            // Finally, we can actually make our HTTPS request!
+            HttpGet get = new HttpGet(X509AuthenticationIT.TEST_URL);
+    
+            try (CloseableHttpResponse response = httpclient.execute(get)) {
+                HttpEntity entity = response.getEntity();
+    
+                String responseText = IOUtils.toString(entity.getContent());
+                EntityUtils.consume(entity);
+    
+                return responseText;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
