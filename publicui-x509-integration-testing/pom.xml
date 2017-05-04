@@ -47,7 +47,6 @@
                         </systemProperty>
                         <systemProperty>
                             <name>jetty.keystore</name>
-                            <!-- <value>${project.basedir}/src/test/resources/x509/server/keystore</value> -->
                             <value>${project.basedir}/src/test/resources/x509/keystores/server-keystore.jks</value>
                         </systemProperty>
                         <systemProperty>
@@ -60,12 +59,6 @@
                         <contextPath>/s</contextPath>
                         <jettyEnvXml>${project.basedir}/src/test/resources/jetty-env.xml</jettyEnvXml>
                     </webApp>
-                    <connectors>
-                        <connector implementation="org.mortbay.jetty.security.SslSocketConnector">
-                            <port>8443</port>
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
-                    </connectors>
                 </configuration>
                 <executions>
                     <execution>
