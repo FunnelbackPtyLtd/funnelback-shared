@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -66,9 +67,14 @@ public class X509AuthenticationIT {
         Assert.assertEquals("Expected access to be granted", "Access granted!\n", responseText);
     }
 
-    @Test(expected=SSLHandshakeException.class)
+    @Test
     public void testX509AuthUntrusted() throws Exception {
-        String responseText = performTestRequest(Optional.of(UNTRUSTED_KEYSTORE_PATH));
+        try {
+            performTestRequest(Optional.of(UNTRUSTED_KEYSTORE_PATH));
+        } catch (SSLHandshakeException|SocketException e) {
+            return; // That's what we want to happen
+        }
+        Assert.fail("Expected to get an SSLHandshakeException or SocketException when connecting ");
     }
 
     @Test
@@ -134,7 +140,7 @@ public class X509AuthenticationIT {
     
             // Finally, we can actually make our HTTPS request!
             HttpGet get = new HttpGet(X509AuthenticationIT.TEST_URL);
-    
+            
             try (CloseableHttpResponse response = httpclient.execute(get)) {
                 HttpEntity entity = response.getEntity();
     
