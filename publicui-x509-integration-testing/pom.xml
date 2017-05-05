@@ -15,8 +15,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <stopKey>STOP</stopKey>
-                    <stopPort>9099</stopPort>
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
@@ -39,6 +37,8 @@
                 <version>9.3.12.v20160915</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <stopKey>STOP</stopKey>
+                    <stopPort>9099</stopPort>
                     <systemProperties>
                         <systemProperty>
                             <name>funnelback.installdir</name>
