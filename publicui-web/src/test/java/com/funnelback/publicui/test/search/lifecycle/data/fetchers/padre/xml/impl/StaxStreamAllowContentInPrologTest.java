@@ -2,7 +2,9 @@ package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.im
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -26,13 +28,13 @@ public class StaxStreamAllowContentInPrologTest {
     @Test(expected=XmlParsingException.class)
     public void testContentInPrologDisabled() throws XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
-        parser.parse(("Content in\nprolog<br>\r\n"+ xml).getBytes(),Charset.defaultCharset(), false);
+        parser.parse(new ByteArrayInputStream(("Content in\nprolog<br>\r\n"+ xml).getBytes()),Charset.defaultCharset(), false);
     }
 
     @Test(expected=XmlParsingException.class)
     public void testContentInPrologEnabled() throws XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
-        ResultPacket rp = parser.parse(("Content in\nprolog\n"+ xml).getBytes(),Charset.defaultCharset(), true);
+        ResultPacket rp = parser.parse(new ByteArrayInputStream(("Content in\nprolog\n"+ xml).getBytes()),Charset.defaultCharset(), true);
         assertNotNull(rp);
     }
 

@@ -9,15 +9,11 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.SneakyThrows;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,10 +39,12 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 import com.funnelback.publicui.utils.QueryStringUtils;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+
+import lombok.SneakyThrows;
 
 public class FixCacheAndClickLinksTests {
 
@@ -71,10 +69,7 @@ public class FixCacheAndClickLinksTests {
         question.getRawInputParameters().put("HTTP_REFERER", new String[] {"REFERER"});
 
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")));
         response.getResultPacket().getBestBets().add(
                 new BestBet("trigger", "http://www.url.com", "title", "description", "http://www.url.com"));
         response.getCurator().getExhibits()

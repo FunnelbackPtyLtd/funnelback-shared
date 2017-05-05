@@ -1,6 +1,11 @@
 package com.funnelback.publicui.xml.padre;
 
 import java.io.ByteArrayInputStream;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,15 +57,31 @@ public class StaxStreamParser implements PadreXmlParser {
     private static final String XML_HEADER_TAG = "<?xml";
     
     @Override
-    public ResultPacket parse(byte[] padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
+    public ResultPacket parse(InputStream padreStdOut, Charset charset, boolean allowContentInProlog) throws XmlParsingException {
 
-        int xmlStartOffset = 0;
+        // TODO TEST
         if (allowContentInProlog) {
-            xmlStartOffset = ArrayFindUtils.findArray(padreStdOut, XML_HEADER_TAG.getBytes(charset), 0);
+            byte[] expected = XML_HEADER_TAG.getBytes(charset);
+            int matchedUpTo = 0;
+            while(matchedUpTo < expected.length) {
+                int nextChar;
+                try {
+                    nextChar = padreStdOut.read();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if(nextChar == -1) {
+                    throw new XmlParsingException("Unable to find start of xml, could not find: '<?xml'");
+                }
+                if(nextChar == expected[matchedUpTo]) {
+                    matchedUpTo++;
+                }
+            }
+            
+            padreStdOut = new SequenceInputStream(new ByteArrayInputStream(expected), padreStdOut);
+
         }
-        if(xmlStartOffset == -1) {
-            throw new XmlParsingException("Unable to find start of xml, could not find: '<?xml'");
-        }
+        
         
         
         
@@ -68,7 +89,8 @@ public class StaxStreamParser implements PadreXmlParser {
         
         try {
             XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
-                                    .createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
+                                    //.createXMLStreamReader(new ByteArrayInputStream(padreStdOut, xmlStartOffset, padreStdOut.length), 
+                                        .createXMLStreamReader(padreStdOut,
                                             charset.displayName());
         
             

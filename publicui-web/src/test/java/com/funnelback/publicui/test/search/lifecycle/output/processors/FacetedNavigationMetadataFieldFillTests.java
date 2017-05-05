@@ -16,6 +16,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,10 +33,7 @@ public class FacetedNavigationMetadataFieldFillTests extends FacetedNavigationAb
         
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
-        response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/faceted-navigation-xpathfill.xml")));
         st = new SearchTransaction(question, response);
         
         processor = new FacetedNavigation();

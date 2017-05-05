@@ -1,6 +1,5 @@
 package com.funnelback.publicui.utils.jna;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,15 +8,10 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
 import com.funnelback.publicui.i18n.I18n;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.JavaPadreForker;
-import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
+import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -31,6 +25,10 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Executes a process using native Windows APIs
@@ -238,9 +236,9 @@ public class WindowsNativeExecutor {
         }
         
         if (log.isTraceEnabled()) {
-            log.trace("Process result is: '" + new String(result.getOutput(), getCharset()) + "'");
+            log.trace("Process result is: '" + new String(result.getOutput().toByteArray(), getCharset()) + "'");
         }
-        return new ExecutionReturn(returnCode, result.getOutput(), null, result.getUntruncatedSize(), getCharset());
+        return new ExecutionReturn(returnCode, result.getOutput().toInputStream(), null, result.getUntruncatedSize(), getCharset());
     }
 
     /**
@@ -258,7 +256,8 @@ public class WindowsNativeExecutor {
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
         }
 
-        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(estimatedSize, sizeLimit);
+        BoundedByteArrayOutputStream bos = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(estimatedSize), sizeLimit);
+        
         ByteBuffer buf = ByteBuffer.allocate(STDOUT_BUFFER_SIZE);
         IntByReference nbRead = new IntByReference();
         while(true) {
@@ -299,13 +298,13 @@ public class WindowsNativeExecutor {
         }
         
         
-        return new PossiblyTruncatedBytes(bos.toByteArray(), (int) bos.getUntruncatedSize());
+        return new PossiblyTruncatedBytes(bos.getUnderlyingStream(), (int) bos.getUntruncatedSize());
     }
     
     @RequiredArgsConstructor
     private class PossiblyTruncatedBytes {
         @Getter
-        private final byte[] output;
+        private final ChunkedByteArrayOutputStream output;
         
         @Getter
         private final int untruncatedSize;

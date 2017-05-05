@@ -15,9 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -52,6 +51,8 @@ import com.funnelback.publicui.utils.jna.WindowsFileInputStream;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor;
 import com.funnelback.publicui.utils.jna.WindowsNativeExecutor.ExecutionException;
 import com.google.common.collect.ArrayListMultimap;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * {@link DataRepository} implementation against the 
@@ -269,7 +270,7 @@ public class LocalDataRepository implements DataRepository {
             ExecutionReturn er = new WindowsNativeExecutor(i18n, GET_DOCUMENT_WAIT_TIMEOUT)
                 .execute(cmdLine, getDocumentEnvironment, 32, Integer.MAX_VALUE, getDocumentBinary.getParentFile());
             
-            Map<String, String> executionOutput = parseExecutionOutput(new String(er.getOutBytes(), er.getCharset()));
+            Map<String, String> executionOutput = parseExecutionOutput(new String(IOUtils.toByteArray(er.getOutBytes()), er.getCharset()));
             
             if (er.getReturnCode() != GET_DOCUMENT_SUCCESS) {
                 String error = executionOutput.get(ERROR_KEY);
@@ -279,7 +280,7 @@ public class LocalDataRepository implements DataRepository {
                     // Unknown error
                     log.error("Document fetcher returned a non-zero status ("
                         + er.getReturnCode()+") with command line '"
-                        + cmdLine + "'. Output was '"+ new String(er.getOutBytes(), er.getCharset()) + "'");
+                        + cmdLine + "'. Output was '"+ new String(IOUtils.toByteArray(er.getOutBytes()), er.getCharset()) + "'");
                     throw new TRIMException("Error while retrieving document: "
                         + error);
                 }

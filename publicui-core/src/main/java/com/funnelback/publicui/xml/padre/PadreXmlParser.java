@@ -1,5 +1,6 @@
 package com.funnelback.publicui.xml.padre;
 
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -19,7 +20,7 @@ public interface PadreXmlParser {
      * @return Parsed {@link ResultPacket}
      * @throws XmlParsingException If the XML is malformed
      */
-    public ResultPacket parse(byte[] padreStdOut, 
+    public ResultPacket parse(InputStream padreStdOut, 
         Charset charset,
         boolean skipCommentInProlog) throws XmlParsingException;
     

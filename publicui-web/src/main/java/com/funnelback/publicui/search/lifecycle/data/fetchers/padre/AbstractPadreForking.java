@@ -134,13 +134,13 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             try {
                 padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env, padreResponseSizeLimit);
                 
-                if (log.isTraceEnabled()) {
-                    log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
-                        + "---- RAW result packet BEGIN ----:\n\n"
-                            +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
-                            +"\n---- RAW result packet END ----");
-                    
-                }
+//                if (log.isTraceEnabled()) {
+//                    log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
+//                        + "---- RAW result packet BEGIN ----:\n\n"
+//                            +new String(padreOutput.getOutBytes(), padreOutput.getCharset())
+//                            +"\n---- RAW result packet END ----");
+//                    
+//                }
 
                 updateTransaction(searchTransaction, padreOutput);
             } catch (PadreForkingException pfe) {
@@ -153,19 +153,19 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                             .map(rc -> "With exit code " + rc)
                             .orElse(""),
                     pxpe);
-                if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
-                    log.error("PADRE response was: {}\n",
-                            new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
-                    //This works around this issue created by: 
-                    //https://issues.apache.org/jira/browse/LOG4J2-1434
-                    //By writing this message after a large padre result packet,
-                    //we drop the size of the cache from the thread local.
-                    //
-                    //We only bother to do this if the padre packet was big at least 1MB.
-                    if(padreOutput.getOutBytes().length > 1024 * 1024) {
-                        log.error("Ignore this message, work around for LOG4J2-1434");
-                    }
-                }
+//                if (padreOutput != null && padreOutput.getOutBytes() != null && padreOutput.getOutBytes().length > 0) {
+//                    log.error("PADRE response was: {}\n",
+//                            new String(padreOutput.getOutBytes(), padreOutput.getCharset()));
+//                    //This works around this issue created by: 
+//                    //https://issues.apache.org/jira/browse/LOG4J2-1434
+//                    //By writing this message after a large padre result packet,
+//                    //we drop the size of the cache from the thread local.
+//                    //
+//                    //We only bother to do this if the padre packet was big at least 1MB.
+//                    if(padreOutput.getOutBytes().length > 1024 * 1024) {
+//                        log.error("Ignore this message, work around for LOG4J2-1434");
+//                    }
+//                }
                 throw new DataFetchException(i18n.tr("padre.response.parsing.failed"), pxpe);
             }
         }

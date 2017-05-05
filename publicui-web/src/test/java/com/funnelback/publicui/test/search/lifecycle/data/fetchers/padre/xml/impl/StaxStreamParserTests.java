@@ -1,22 +1,42 @@
 package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl;
 
-import com.funnelback.publicui.search.model.padre.*;
-import com.funnelback.publicui.search.model.padre.QSup.Source;
-import com.funnelback.publicui.xml.XmlParsingException;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
-
-import org.junit.Assert;
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.funnelback.publicui.search.model.padre.BestBet;
+import com.funnelback.publicui.search.model.padre.Category;
+import com.funnelback.publicui.search.model.padre.Cluster;
+import com.funnelback.publicui.search.model.padre.ClusterNav;
+import com.funnelback.publicui.search.model.padre.ContextualNavigation;
+import com.funnelback.publicui.search.model.padre.CoolerWeighting;
+import com.funnelback.publicui.search.model.padre.DateCount;
+import com.funnelback.publicui.search.model.padre.Explain;
+import com.funnelback.publicui.search.model.padre.GeoBoundingBox;
+import com.funnelback.publicui.search.model.padre.QSup.Source;
+import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.padre.SumByGroup;
+import com.funnelback.publicui.search.model.padre.TierBar;
+import com.funnelback.publicui.search.model.padre.UniqueByGroup;
+import com.funnelback.publicui.xml.XmlParsingException;
+import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 public class StaxStreamParserTests {
 
@@ -26,7 +46,7 @@ public class StaxStreamParserTests {
     public void before() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/complex.xml")),StandardCharsets.UTF_8,
             false);
         assertNotNull(rp);
     }
@@ -41,7 +61,7 @@ public class StaxStreamParserTests {
         
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/metadata-sums.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/metadata-sums.xml")),StandardCharsets.UTF_8,
             false);
         
         Assert.assertEquals(new Double(7218.000000), rp.getMetadataSums().get("failures2"));
@@ -53,7 +73,7 @@ public class StaxStreamParserTests {
     public void testMetadataSumsEmpty() throws Exception {   
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/metadata-sums-EMPTY.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/metadata-sums-EMPTY.xml")),StandardCharsets.UTF_8,
             false);
         
         Assert.assertEquals(0, rp.getMetadataSums().size());
@@ -168,7 +188,7 @@ public class StaxStreamParserTests {
     public void testUniqueCountsByGroups() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/unique_counts_by_groups.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/unique_counts_by_groups.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals(4, rp.getUniqueCountsByGroups().size());
         
@@ -186,7 +206,7 @@ public class StaxStreamParserTests {
     public void testUniqueCountsByGroupsEmpty() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/unique_counts_by_groups-EMPTY.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/unique_counts_by_groups-EMPTY.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals(0, rp.getUniqueCountsByGroups().size());
     }
@@ -195,7 +215,7 @@ public class StaxStreamParserTests {
     public void testSumByGroup() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/sum_by_groups.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/sum_by_groups.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals(3, rp.getSumByGroups().size());
         
@@ -213,7 +233,7 @@ public class StaxStreamParserTests {
     public void testSumByGroupEmpty() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/sum_by_groups-EMPTY.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/sum_by_groups-EMPTY.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals(rp.getSumByGroups().size(), 0);
     }
@@ -222,7 +242,7 @@ public class StaxStreamParserTests {
     public void testIndexedTermCounts() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/rmcfIdxTerms.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/rmcfIdxTerms.xml")),StandardCharsets.UTF_8,
             false);
         
         Assert.assertEquals(3, rp.getIndexedTermCounts().size());
@@ -246,7 +266,7 @@ public class StaxStreamParserTests {
     public void testIndexedTermCountsEmpty() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/rmcfIdxTerms-EMPTY.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/rmcfIdxTerms-EMPTY.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals(rp.getIndexedTermCounts().size(), 0);
     }
@@ -738,21 +758,21 @@ public class StaxStreamParserTests {
     @Test(expected=XmlParsingException.class)
     public void testInvalidXml() throws IOException, XmlParsingException {
         new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/invalid.xml.bad")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/invalid.xml.bad")),StandardCharsets.UTF_8,
             false);
     }
     
     @Test(expected=IllegalStateException.class)
     public void testBadlyFormedExplainTag() throws IllegalStateException, XmlParsingException, IOException {
         new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/badly-formed-explain-tag.xml")),StandardCharsets.UTF_8,
             false);
     }
     
     @Test
     public void testBoundingBox() throws Exception{
         Map<String, GeoBoundingBox> boxes = new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/bounding-box.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/bounding-box.xml")),StandardCharsets.UTF_8,
             false).boundingBoxes;
         Assert.assertTrue(boxes.containsKey("location"));
         GeoBoundingBox box = boxes.get("location");
@@ -765,7 +785,7 @@ public class StaxStreamParserTests {
     @Test
     public void testNanOrgin() throws Exception{
         ResultPacket resultPacket = new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/bounding-box.xml")),StandardCharsets.UTF_8,
+            new FileInputStream(new File("src/test/resources/padre-xml/bounding-box.xml")),StandardCharsets.UTF_8,
             false);
         Assert.assertEquals("a nan,nan orgin returned by padre means the orgin was not set but was used", 0, resultPacket.getOrigin().length);
     }

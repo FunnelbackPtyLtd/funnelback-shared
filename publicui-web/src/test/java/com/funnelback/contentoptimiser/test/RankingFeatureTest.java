@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -26,7 +27,7 @@ public class RankingFeatureTest {
     public void testHintMaxOther() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/explain-mockup.xml")),
                 StandardCharsets.UTF_8,
             false);
         
@@ -80,7 +81,7 @@ public class RankingFeatureTest {
     @Test public void testHintMaxPossibleMultiwordOnly() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/explain-mockup.xml")),
             StandardCharsets.UTF_8,
             false);
         
@@ -138,7 +139,7 @@ public class RankingFeatureTest {
         assertFalse(h.isInteresting());
         
         ResultPacket oneWordQuery = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/complex.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/complex.xml")),
             StandardCharsets.UTF_8,
             false);
         h = new RankingFeatureMaxPossibleMultiWordOnly("name","content",oneWordQuery);
@@ -155,7 +156,7 @@ public class RankingFeatureTest {
     public void testHintMaxPossible() throws XmlParsingException, IOException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/explain-mockup.xml")),
             StandardCharsets.UTF_8,
             false);
         

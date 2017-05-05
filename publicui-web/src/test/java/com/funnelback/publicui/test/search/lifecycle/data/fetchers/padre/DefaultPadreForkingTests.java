@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,22 +106,54 @@ public class DefaultPadreForkingTests {
     }
     
     @Test
+    public void makeBig() throws IOException {
+        File f = new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml");
+        
+        File big = new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml");
+        
+        String[] parts = FileUtils.readFileToString(f).split("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        FileUtils.writeStringToFile(big, parts[0], false);
+        int syz = 40 * 1024 * 1024;
+        byte[] mmm = new byte[syz];
+        for(int i = 0; i < syz ; i++) {
+            mmm[i] = 'm';
+        }
+        
+        FileUtils.writeByteArrayToFile(big, mmm, true);
+        
+        FileUtils.writeStringToFile(big, parts[1], true);
+    }
+    
+    @Test
     public void test() throws DataFetchException, EnvironmentVariableException, IOException {
-        List<String> qpOptions = new ArrayList<String>(Arrays.asList(
-            new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml"}));
         
-        SearchQuestion qs = new SearchQuestion();
-        qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
-        qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
-        qs.setQuery("test");
-        SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+        int iters = 10;
         
+        ArrayList<Pair<SearchTransaction, ExecutionReturn>> execRets = new ArrayList<>(iters);
+        for(int i = 0; i < iters; i++) {
+            List<String> qpOptions = new ArrayList<String>(Arrays.asList(
+                new String[]{"src/test/resources/dummy-search_home/conf/padre-forking/mock-packet-ff.xml"}));
+            
+            SearchQuestion qs = new SearchQuestion();
+            qs.setCollection(new Collection("padre-forking", new NoOptionsConfig(searchHome, "padre-forking").setValue("query_processor", getMockPadre())));
+            qs.getDynamicQueryProcessorOptions().addAll(qpOptions);
+            qs.setQuery("test");
+            SearchTransaction st = new SearchTransaction(qs, new SearchResponse());
+            
+            
+            forking.fetchData(st);
+            execRets.add(Pair.of(st, this.lastExecRet));
+            
+            Assert.assertNotNull(st.getResponse());
+            Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
+            Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
+        }
         
-        forking.fetchData(st);
+        System.gc();
         
-        Assert.assertNotNull(st.getResponse());
-        Assert.assertEquals(10, st.getResponse().getResultPacket().getResults().size());
-        Assert.assertEquals("Online visa applications", st.getResponse().getResultPacket().getResults().get(0).getTitle());
+        System.out.println("Ok done"); 
+        System.gc();
+        System.in.read();
     }
 
     @Test(expected=DataFetchException.class)
@@ -218,7 +252,7 @@ public class DefaultPadreForkingTests {
             
             Assert.assertNotNull(ts.getResponse());
             Assert.assertEquals(FileUtils.readFileToString(new File("src/test/resources/dummy-search_home/conf/padre-forking/mock-packet.xml")), 
-                new String(this.lastExecRet.getOutBytes()));
+                new String(IOUtils.toByteArray(this.lastExecRet.getOutBytes())));
             Assert.assertEquals(10, ts.getResponse().getResultPacket().getResults().size());
             Assert.assertEquals("Online visa applications", ts.getResponse().getResultPacket().getResults().get(0).getTitle());
         }

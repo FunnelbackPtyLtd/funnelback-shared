@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
@@ -13,6 +14,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
+import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
 import com.funnelback.publicui.utils.ExecutionReturn;
 
 import lombok.RequiredArgsConstructor;
@@ -44,8 +46,12 @@ public class JavaPadreForker implements PadreForker {
                 padreCmdLine.addArguments(commandLine.subList(1, commandLine.size()).toArray(new String[]{}), false);
             }
             
-            BoundedByteArrayOutputStream padreOutput = new BoundedByteArrayOutputStream(AVG_PADRE_PACKET_SIZE, sizeLimit);
-            BoundedByteArrayOutputStream padreError = new BoundedByteArrayOutputStream(AVG_PADRE_ERR_SIZE, sizeLimit);
+            
+            BoundedByteArrayOutputStream padreOutput = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(10*1024), sizeLimit);
+            
+//            Reference<ChunkedByteArrayOutputStream> padreOutput= new Reference<>();
+            
+            BoundedByteArrayOutputStream padreError = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(AVG_PADRE_ERR_SIZE), sizeLimit);
             
             log.debug("Executing '" + padreCmdLine + "' with environment " + environment);
             
@@ -61,12 +67,13 @@ public class JavaPadreForker implements PadreForker {
             try {
                 int rc = executor.execute(padreCmdLine, environment);
                 
+
                 if (padreOutput.isTruncated()) {
                     throw new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()),
                         padreOutput.getUntruncatedSize());
                 }
                 
-                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), (int) padreOutput.getUntruncatedSize(), StandardCharsets.UTF_8);
+                
                 
                 // Check if the process was killed by us before we complain it has bad exit code.
                 if(watchdog.killedProcess()) {
@@ -74,8 +81,9 @@ public class JavaPadreForker implements PadreForker {
                 }
                 
                 //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
-                if(er.getErrBytes().length > 0) {
-                    String error = new String(er.getErrBytes()).trim();
+                if(padreError.getUnderlyingStream().size() > 0) {
+                    
+                    String error = readPadreOutputForLogs(padreError).trim();
                     if(error.length() > 0) {
                         log.debug("PADRE printed the following to STDERR: '" + 
                             error + "' " + getExecutionDetails(padreCmdLine, environment));
@@ -88,8 +96,8 @@ public class JavaPadreForker implements PadreForker {
                     log.debug("Output for non zero exit code (code: {}) when running: {}\nSTDOUT:\n{}\nSTDERR\n{}",
                         rc,
                         getExecutionDetails(padreCmdLine, environment),
-                            new String(er.getOutBytes(), StandardCharsets.UTF_8),
-                            new String(er.getErrBytes(), StandardCharsets.UTF_8));    
+                            readPadreOutputForLogs(padreOutput),
+                            readPadreOutputForLogs(padreError));    
                 }
                 
                 if(rc == 139) {
@@ -99,6 +107,11 @@ public class JavaPadreForker implements PadreForker {
                     throw new PadreForkingException(i18n.tr("padre.forking.java.failed.seg.fault", padreCmdLine.toString(), rc));
                 }
                 
+                ExecutionReturn er = new ExecutionReturn(rc, 
+                    padreOutput.getUnderlyingStream().toInputStream(), 
+                    padreError.getUnderlyingStream().toInputStream(),
+                    (int) Math.min(padreOutput.getUntruncatedSize(), (long) Integer.MAX_VALUE),
+                    StandardCharsets.UTF_8);
                 return er;
             } catch (ExecuteException ee) {
                 throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ee);
@@ -115,6 +128,17 @@ public class JavaPadreForker implements PadreForker {
             System.gc();
             throw new PadreForkingException(i18n.tr("padre.forking.java.oom", padreCmdLine.toString()), oome);
         }
+    }
+    
+    /**
+     * Reads from the outputstrean creating a String for padre logs.
+     * 
+     * <p>One day we should change this to show the first and last parts of the stream.
+     * @param os
+     * @return
+     */
+    private String readPadreOutputForLogs(BoundedByteArrayOutputStream os) {
+        return new String(os.getUnderlyingStream().toByteArray(), StandardCharsets.UTF_8);
     }
     
     /**

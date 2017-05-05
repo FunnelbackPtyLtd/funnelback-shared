@@ -1,9 +1,6 @@
 package com.funnelback.publicui.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import lombok.Getter;
 
@@ -21,7 +18,7 @@ import lombok.Getter;
  */
 public class BoundedByteArrayOutputStream extends OutputStream {
 
-    private final ByteArrayOutputStream underlyingStream;
+    @Getter private final ChunkedByteArrayOutputStream underlyingStream;
     private final int sizeLimit;
     private boolean isTruncated = false;
 
@@ -29,8 +26,8 @@ public class BoundedByteArrayOutputStream extends OutputStream {
     @Getter
     private long untruncatedSize;
     
-    public BoundedByteArrayOutputStream(int initialSize, int sizeLimit) {
-        underlyingStream = new ByteArrayOutputStream(initialSize);
+    public BoundedByteArrayOutputStream(ChunkedByteArrayOutputStream chunkedByteArrayOutputStream, int sizeLimit) {
+        underlyingStream = chunkedByteArrayOutputStream;
         this.sizeLimit = sizeLimit;
     }
 
@@ -60,10 +57,6 @@ public class BoundedByteArrayOutputStream extends OutputStream {
 
     public void reset() {
         underlyingStream.reset();
-    }
-
-    public byte toByteArray()[] {
-        return underlyingStream.toByteArray();
     }
 
     /**

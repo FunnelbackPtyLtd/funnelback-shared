@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.utils.BoundedByteArrayOutputStream;
+import com.funnelback.publicui.utils.ChunkedByteArrayOutputStream;
 
 public class BoundedByteArrayOutputStreamTest {
 
@@ -13,18 +14,18 @@ public class BoundedByteArrayOutputStreamTest {
     
     @Test
     public void testWithinCapacity() throws IOException {
-        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(10, 20)) {
+        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(2), 20)) {
             os.write(testData);
             
             Assert.assertFalse("Expected output stream not to be truncated", os.isTruncated());
-            Assert.assertArrayEquals(os.toByteArray(), testData);
+            Assert.assertArrayEquals(os.getUnderlyingStream().toByteArray(), testData);
             Assert.assertEquals("Expected correct untruncated length", os.getUntruncatedSize(), testData.length);
         }
     }
 
     @Test
     public void testExceedCapactiy() throws IOException {
-        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(10, 20)) {
+        try (BoundedByteArrayOutputStream os = new BoundedByteArrayOutputStream(new ChunkedByteArrayOutputStream(3), 20)) {
             os.write(testData);
             os.write(testData);
             

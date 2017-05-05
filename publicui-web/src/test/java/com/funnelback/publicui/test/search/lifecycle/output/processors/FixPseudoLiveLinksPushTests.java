@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,8 +31,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 import com.funnelback.publicui.xml.XmlParsingException;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -65,10 +63,7 @@ public class FixPseudoLiveLinksPushTests {
         question.setCollection(new Collection("meta-livelinks", new NoOptionsConfig("meta-livelinks")));
         
         SearchResponse response = new SearchResponse();
-        response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/fix-pseudo-live-links-push.xml")),
-            StandardCharsets.UTF_8,
-            false));
+        response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/fix-pseudo-live-links-push.xml")));
         
         st = new SearchTransaction(question, response);
         

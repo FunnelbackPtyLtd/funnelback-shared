@@ -1,12 +1,10 @@
 package com.funnelback.publicui.test.search.lifecycle.output.processors;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +22,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
-import com.funnelback.publicui.xml.padre.StaxStreamParser;
+import com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.xml.impl.StaxStreamTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -43,10 +41,7 @@ public class DateFacetSortTests {
         
         SearchResponse response = new SearchResponse();
         // Re-use same XML as xpath-fill
-        response.setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-datefieldfill.xml")), 
-            StandardCharsets.UTF_8,
-            false));
+        response.setResultPacket(StaxStreamTestHelper.parse(new File("src/test/resources/padre-xml/faceted-navigation-datefieldfill.xml")));
         st = new SearchTransaction(question, response);
         
         new FacetedNavigation().processOutput(st);

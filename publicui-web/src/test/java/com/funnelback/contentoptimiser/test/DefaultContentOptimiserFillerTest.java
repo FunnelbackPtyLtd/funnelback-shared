@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -196,7 +197,7 @@ public class DefaultContentOptimiserFillerTest {
     private ResultPacket getDefaultTestResultPacket() throws IOException, XmlParsingException {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/explain-mockup-v2.xml")),
+            new FileInputStream(new File("src/test/resources/padre-xml/explain-mockup-v2.xml")),
             StandardCharsets.UTF_8,
             false);
         
