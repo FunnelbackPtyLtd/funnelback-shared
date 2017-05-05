@@ -38,8 +38,6 @@
                 <version>9.3.12.v20160915</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopPort>8005</stopPort>
-                    <stopKey>STOP</stopKey>
                     <systemProperties>
                         <systemProperty>
                             <name>funnelback.installdir</name>
