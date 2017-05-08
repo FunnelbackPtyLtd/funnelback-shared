@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.service.config;
 
-import groovy.lang.Script;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -15,12 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
-
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -65,6 +57,13 @@ import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigRes
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
 
+import groovy.lang.Script;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 /**
  * <p>Default {@link ConfigRepository} implementation.</p>
  * 
@@ -91,6 +90,21 @@ public class DefaultConfigRepository implements ConfigRepository {
     @Value("#{appProperties['config.repository.cache.ttl']?:1}")
     @Setter
     private int cacheTtlSeconds = 1;
+    
+    /**
+     * <p>How often to force reloading of Groovy script, in seconds.</p>
+     * 
+     * <p>This is necessary because when the Groovy class loader will not
+     * detect changes in script dependencies (i.e. a Groovy class using
+     * another class defined in another script). Having that configurable
+     * allow developers (esp. Stencils developers) to work on hook scripts
+     * without having to wait 60s for them to be refreshed.</p>
+     * 
+     * @see FUN-8961
+     */
+    @Value("#{appProperties['config.repository.groovy.reload']?:60}")
+    @Setter
+    private long groovyForceReloadSeconds = 60;
     
     @Autowired
     @Setter
@@ -204,7 +218,7 @@ public class DefaultConfigRepository implements ConfigRepository {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
             if (hookScriptFile.exists()) {
                 try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome)).getResource();
+                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome, groovyForceReloadSeconds)).getResource();
                     c.getHookScriptsClasses().put(hook, hookScript);
                 } catch (CompilationFailedException cfe) {
                     log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
@@ -213,7 +227,7 @@ public class DefaultConfigRepository implements ConfigRepository {
         }
         
         c.setCartProcessClass(resourceManager.load(
-                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome),
+                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome, groovyForceReloadSeconds),
                         AbstractSingleFileResource.wrapDefault(null)
                     ).getResource());
         

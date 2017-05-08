@@ -14,7 +14,9 @@
             <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_process }" />
             <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Input }" />
         </bean>
+        <ref bean="accessibilityAuditorOptionsForSpeed" />
         <ref bean="accessibilityAuditorSetQuery" />
+        <ref bean="accessibilityAuditorAcknowledgementCountsSetQuery" />
         <ref bean="accessibilityAuditorSetQueryProcessorOptions" />
         <ref bean="accessibilityAuditorConfigureFacets" />
         <ref bean="session" />
@@ -32,6 +34,8 @@
         <ref bean="exploreQueryInputProcessor" />
         <ref bean="hostname" />
         <ref bean="userIdInQueryLogs" />
+        <!-- This one must be last so that we can override options that have been set -->
+        <ref bean="accessibilityAuditorAcknowledgementCountsSetQueryProcessorOptions" />
         <ref bean="extraSearchesInputProcessor" />
             <bean id="ExtraSearchesHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
                 <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).extra_searches }" />
@@ -55,6 +59,7 @@
 
     <util:list id="outputFlow">
         <ref bean="padreReturnCodeOutputProcessor" />
+        <ref bean="fixMetaCollectionUpdateDateOutputProcessor" />
         <ref bean="fixPseudoLiveLinksOutputProcessor" />
         <ref bean="curatorOutputProcessor" />
         <ref bean="fixCacheAndClickLinks" />
@@ -63,6 +68,7 @@
         <ref bean="facetedNavigationOutputProcessor" />
         <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
         <ref bean="accessibilityAuditorPopulateFacetCategoryLabels" />
+        <ref bean="accessibilityAuditorSortFacetValues" />
         <ref bean="dateFacetSortOutputProcessor" />
         <ref bean="contextualNavigationOutputProcessor" />
         <ref bean="quickLinksOutputProcessor" />

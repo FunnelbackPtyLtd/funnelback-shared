@@ -49,15 +49,34 @@ public class AccessibilityAuditorController {
             HttpServletRequest request,
             HttpServletResponse response,
             SearchQuestion question) {
-        
-        question.setQuestionType(SearchQuestionType.ACCESSIBILITY_AUDITOR);
-        
+        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR);
+    }
+    
+    
+    @RequestMapping("/accessibility-auditor-acknowledgement-counts.json")
+    @PreAuthorize(PRE_AUTH)
+    public ModelAndView acknowledgementCounts(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            SearchQuestion question) {
+        return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS);
+    }
+    
+    
+    public ModelAndView runQuery(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        SearchQuestion question, 
+        SearchQuestionType searchQuestionType) {
+
+        question.setQuestionType(searchQuestionType);
+
         ModelAndView mav = searchController.search(request, response, question, null);
-        
+
         if (mav != null) {
             return new ModelAndView((String) null, mav.getModel());
         } else {
             return null;
         }
-    }
+}
 }

@@ -110,4 +110,20 @@ public class UrlScopeFillTests {
         
     }
 
+    @Test
+    public void testNoRepeats() {
+        Map<String, Integer> countsFromPadre = new HashMap<String, Integer>();
+        countsFromPadre.put("example.com/foo", 10);
+
+        SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
+        when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
+        when(st.getQuestion().getInputParameterMap().get(new UrlScopeFill("").getQueryStringParamName())).thenReturn("example.com/foo");
+
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st);
+
+        Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
+
+        Assert.assertEquals("Expected that result set would be empty when we've already selected the deepest available option",  0, result.size());
+    }
+
 }

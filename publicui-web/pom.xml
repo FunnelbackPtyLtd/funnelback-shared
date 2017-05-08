@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.funnelback.publicui</groupId>
         <artifactId>publicui-parent</artifactId>
-        <version>15.9.1705-SNAPSHOT</version>
+        <version>15.11.1718-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -24,6 +24,27 @@
                         <funnelback.installdir>src/test/resources/dummy-search_home</funnelback.installdir>
                     </systemProperties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <!-- Temporarily build two wars while testing the skinny mode -->
+                    <execution>
+                        <id>normal-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>skinny-war</id>
+                        <phase>package</phase>
+                        <goals><goal>war</goal></goals>
+                        <configuration>
+                            <classifier>skinny</classifier>
+                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -112,7 +133,6 @@
     <properties>
         <m2eclipse.wtp.contextRoot>/s</m2eclipse.wtp.contextRoot>
         <install.dir.local>${env.SEARCH_HOME}/web/webapps/</install.dir.local>
-        <version.codahale-metrics>3.0.2</version.codahale-metrics>
     </properties>
 
     <dependencies>
@@ -330,22 +350,15 @@
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-servlet</artifactId>
-            <version>${version.codahale-metrics}</version>
+            <version>${version.metrics}</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-graphite</artifactId>
-            <version>${version.codahale-metrics}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${version.codahale-metrics}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -402,6 +415,8 @@
 			<version>1.0.2.RELEASE</version>
 		</dependency>
     </dependencies>
+
+<!-- Possibly still necessary - TODO - Check now that squiz-suite is removed
     <dependencyManagement>
     	<dependencies>
     		<dependency>
@@ -411,4 +426,5 @@
     		</dependency>
     	</dependencies>
     </dependencyManagement>
+-->
 </project>

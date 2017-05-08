@@ -57,7 +57,8 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
     protected final void runPadreBinary(String padreBinary,
             List<String> options,
             HttpServletRequest request, HttpServletResponse response,
-            boolean detectHeaders) throws IOException, PadreForkingException {
+            boolean detectHeaders,
+            int sizeLimit) throws IOException, PadreForkingException {
         CGIEnvironment cgi = new CGIEnvironment(request);
 
         Map<String, String> env = cgi.getEnvironment();
@@ -72,7 +73,7 @@ public abstract class AbstractRunPadreBinaryController extends SessionController
         }
 
         try {
-            ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env);
+            ExecutionReturn out = new JavaPadreForker(i18n, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS).execute(commandLine, env, sizeLimit);
 
             String output = new String(out.getOutBytes(), out.getCharset());
             if (detectHeaders) {

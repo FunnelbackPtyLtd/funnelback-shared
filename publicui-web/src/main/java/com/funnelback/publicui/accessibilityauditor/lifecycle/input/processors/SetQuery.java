@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 
 /**
  * Set a default query if none is specified, so that the reports will always

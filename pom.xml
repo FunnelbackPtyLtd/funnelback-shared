@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.funnelback</groupId>
         <artifactId>java-parent</artifactId>
-        <version>15.9.1705-SNAPSHOT</version>
+        <version>15.11.1718-SNAPSHOT</version>
         <relativePath></relativePath>
     </parent>
 
@@ -39,6 +39,7 @@
         <module>publicui-doc</module>
         <module>publicui-form-converter</module>
         <module>publicui-templates</module>
+        <module>publicui-x509-integration-testing</module>
     </modules>
 
     <build>

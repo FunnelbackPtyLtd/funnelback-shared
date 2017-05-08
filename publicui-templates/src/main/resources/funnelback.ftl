@@ -375,12 +375,12 @@
                 <#assign facet = f in fb>
                 <#assign facet_has_next = f_has_next in fb>
                 <#assign facet_index = f_index in fb>
-                <#-- Do we have values for this facet in the extra searches ? -->
-                <#if question.selectedFacets?seq_contains(f.name) && extra?exists
-                    && extra[ExtraSearches.FACETED_NAVIGATION]?exists
-                    && extra[ExtraSearches.FACETED_NAVIGATION].response?exists
-                    && extra[ExtraSearches.FACETED_NAVIGATION].response.facets?exists>
-                    <#list extra[ExtraSearches.FACETED_NAVIGATION].response.facets as extraFacet>
+                <#-- Do we have values for this facet in the extraSearches searches ? -->
+                <#if question.selectedFacets?seq_contains(f.name) && extraSearches?exists
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION]?exists
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response?exists
+                    && extraSearches[ExtraSearches.FACETED_NAVIGATION].response.facets?exists>
+                    <#list extraSearches[ExtraSearches.FACETED_NAVIGATION].response.facets as extraFacet>
                         <#if extraFacet.name == f.name>
                             <#assign facet = extraFacet in fb>
                             <#assign facet_has_next = extraFacet_has_next in fb>
@@ -496,7 +496,7 @@
     @param username Username if the remote server requires authentication.
     @param password Password if the remote server requires authentication.
     @param useragent User-Agent string to use.
-    @param timeout Time to wait, in seconds, for the remote content to be returned.
+    @param timeout Time to wait, in seconds, for the remote content to be returned (default = 50 since v15.10.0).
     @param convertrelative: Boolean, whether relative links in the included content should be converted to absolute ones.
 -->
 <#macro IncludeUrl url params...>

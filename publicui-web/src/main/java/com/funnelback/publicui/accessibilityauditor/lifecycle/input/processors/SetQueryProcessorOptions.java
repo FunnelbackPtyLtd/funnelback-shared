@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.accessibility.FailureConfidence;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.common.function.StreamUtils;
@@ -18,6 +19,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQue
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.wcag.checker.AccessibilityChecker;
+import com.funnelback.wcag.checker.AccessibilityChecker.Level;
 import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
@@ -36,7 +38,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
     /** Default value for PADRE's MBL option */
     private static final int DEFAULT_MBL = 250;
-    
+
     private final List<String> options = new ArrayList<>();
 
     public SetQueryProcessorOptions() {
@@ -51,19 +53,22 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         options.add(getCountUniqueByGroupSensitiveOption());
         options.add(getRmcSensitiveOption());
         options.add(getSortOption());
-        
+
         log.debug("Initialised with options: {}", options.stream().collect(Collectors.joining(System.getProperty("line.separator"))));
     }
-    
+
     @Override
     protected void processAccessibilityAuditorTransaction(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(st)
             && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
 
             st.getQuestion().getDynamicQueryProcessorOptions().addAll(options);
-            st.getQuestion().getAdditionalParameters().remove("sort");
+
+            new AccessibilityAuditorDaatOption().getDaatOption(st.getQuestion().getCollection().getConfiguration())
+                .ifPresent(option -> st.getQuestion().getDynamicQueryProcessorOptions().add(option));
         }
     }
+
     
     /**
      * Disable logging to avoid
@@ -74,7 +79,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getLogOption() {
         return "-" + QueryProcessorOptionKeys.LOG + "=off";
     }
-    
+
     /**
      * Get the SM option to output metadata fields
      * 
@@ -83,7 +88,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getSMOption() {
         return "-SM=both";
     }
-    
+
     /**
      * Get the rmc_sensitive option to preserve case in metadata
      * 
@@ -92,7 +97,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getRmcSensitiveOption() {
         return "-rmc_sensitive=on";
     }
-    
+
     /**
      * Ge the SF option with the list of metadata fields to return with each
      * result
@@ -100,13 +105,8 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      * @return PADRE <code>-SF</code> option
      */
     private String getSFOption() {
-        Stream<String> failureTypesAffected = Arrays.asList(FailureType.values())
-            .stream()
-            .map(type -> Stream.of(Names.failureTypeAffected(type)))
-            .flatMap(Function.identity())
-            .map(Metadata::getName);
 
-        Stream<String> failureTypes = Arrays.asList(FailureType.values())
+        Stream<String> failureTypes = Arrays.asList(FailureConfidence.values())
             .stream()
             .map(type -> Stream.of(Names.failureTypesOccurrences(type)))
             .flatMap(Function.identity())
@@ -117,32 +117,36 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(principle -> Stream.of(Names.principleOccurrences(principle)))
             .flatMap(Function.identity())
             .map(Metadata::getName);
+        
+        Stream<String> scFailuresByLevel = Arrays.asList(Level.values())
+            .stream()
+            .map(Metadata.Names::occurrencesOfFailingSuccessCriteriaByLevel)
+            .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
-            Names.profile(),
+            Names.setOfFailingPrinciples(),
+            Names.setOfFailingSuccessCriterions(),
+            Names.setOfFailingTechniques(),
+            Names.techniquesAffectedBy(),
+            Names.occurrencesOfFailingTechniques(),
             Names.domain(),
-            Names.principle(),
-            Names.successCriterion(),
-            Names.affectedBy(),
             Names.passedLevels(),
-            Names.failedLevels(),
-            Names.affected(),
+            Names.explicitFailedLevels(),
+            Names.isAffected(),
             Names.unaffected(),
             Names.checked(),
             Names.format(),
-            Names.occurrences(),
-            Names.checks(),
-            Names.checksPassed())
+            Names.occurencesOfUniqueFailingSuccessCriterions())
             .map(Metadata::getName);
-        
-        String sfOptionValue = Stream.of(failureTypesAffected, failureTypes, principles, other)
+
+        String sfOptionValue = Stream.of(failureTypes, principles, scFailuresByLevel, other)
             .flatMap(Function.identity())
             .map(Metadata::getMetadataClass)
             .collect(Collectors.joining(","));
 
         return String.format("-SF=[%s]", sfOptionValue);
     }
-    
+
     /**
      * Set the MBL option. The longest value for a metadata will be when
      * a document is affected by all checker types, meaning the
@@ -158,23 +162,23 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
         // Collect maximum length for each failure type
         List<Integer> lengths = new ArrayList<>();
-        
-        for (FailureType failureType: FailureType.values()) {
+
+        for (FailureType failureType : FailureType.values()) {
             lengths.add(checkers.stream()
                 .filter(checker -> checker.getFailureType().equals(failureType))
                 .map(checker -> checker.getClass().getSimpleName())
                 .collect(Collectors.joining("|"))   // Separator doesn't matter here, we care only about the length
                 .length());
         }
-        
+
         int mblOptionValue = lengths.stream()
             .max(Integer::max)
-            .orElse(DEFAULT_MBL);   // Not supposed to happen, but default to something just in case
-        
+            .orElse(DEFAULT_MBL); // Not supposed to happen, but default to something just in case
+
         // +1 to account for possible null terminator in PADRE
         return String.format("-MBL=%d", mblOptionValue + 1);
     }
-    
+
     /**
      * Get the sum option, used to sum metadata values
      * 
@@ -184,7 +188,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
         // FIXME: Sum all AA metadata for now
         return String.format("-sum=[%s.+]", Metadata.getMetadataClassPrefix());
     }
-    
+
     /**
      * Get the sumByGroup option to sum metadata values per group
      * 
@@ -192,25 +196,25 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      */
     private String getSumByGroupOption() {
         List<String> sums = new ArrayList<>();
-        
+
         // Group by domains & profiles
-        for (String grouping: new String[] {
-                        Names.domain().getName(), Names.profile().getName()
+        // FIXME: add support for profiles.
+        for (String grouping : new String[] {
+                        Names.domain().getName()
         }) {
-            // FIXME: Not sure how to avoid hardcoding things here...
-            sums.add(String.format("[%sOccurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%s.+Occurrences]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s.+Occurrences.*]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sAffected.+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
-            sums.add(String.format("[%s(A|Una)ffected]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s]:[%s]", Metadata.Names.isAffected().asMetadataClass(), Metadata.getMetadataClass(grouping)));
+            sums.add(String.format("[%s]:[%s]", Metadata.Names.unaffected().asMetadataClass(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sChecked]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
             sums.add(String.format("[%sPassedLevel[A]+]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
         }
-        
+
         String sumByGroupOptionValue = sums.stream().collect(Collectors.joining(","));
-        
+
         return String.format("-sumByGroup=%s", sumByGroupOptionValue);
     }
-    
+
     /**
      * Get the sum case sensitivity option to preserve
      * case in sums
@@ -220,7 +224,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getSumByGroupSensitiveOption() {
         return "-sumByGroupSensitive=on";
     }
-    
+
     /**
      * Get the countUniqueByGroup option, used to count distinct
      * values of a metadata
@@ -229,25 +233,27 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
      */
     private String getCountByGroupOption() {
         List<String> counts = new ArrayList<>();
-        
+
         // Group by domains & profiles
-        for (String grouping: new String[] {
-                        Names.domain().getName(), Names.profile().getName()
+        // FIXME: support profiles
+        for (String grouping : new String[] {
+                        Names.domain().getName()
         }) {
             // Type of checkers
-            counts.add(String.format("[%s.+Types]:[%s]", Metadata.getMetadataClassPrefix(), Metadata.getMetadataClass(grouping)));
+            //Not sure we need anything here.
         }
-        
+
         // Count of unique domains per profile
-        counts.add(String.format("[%s]:[%s]",
-            Metadata.getMetadataClass(Metadata.Names.domain().getName()),
-            Metadata.getMetadataClass(Metadata.Names.profile().getName())));
-        
+        // FIXME: support profiles.
+//        counts.add(String.format("[%s]:[%s]",
+//            Metadata.getMetadataClass(Metadata.Names.domain().getName()),
+//            Metadata.getMetadataClass(Metadata.Names.profile().getName())));
+
         String countByGroupOptionValue = counts.stream().collect(Collectors.joining(","));
         
         return String.format("-countUniqueByGroup=%s", countByGroupOptionValue);
     }
-    
+
     /**
      * Get the group count case sensitivity option to preserve
      * case in unique groups
@@ -257,16 +263,16 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
     private String getCountUniqueByGroupSensitiveOption() {
         return "-countUniqueByGroupSensitive=on";
     }
-    
+
     /**
-     * Always sort by occurrences in order to display "top documents"
+     * By default, sort by occurrences in order to display "top documents".
      * 
-     * FIXME: Perhaps let the user control the sort?
+     * Can be overwritten by passing in 'sort=' as a query parameter.
      * 
      * @return PADRE <code>-sort</code> option
      */
     private String getSortOption() {
-        return "-sort=dmeta" + Metadata.getMetadataClass(Metadata.Names.occurrences().getName());
+        return "-sort=dmeta" + Metadata.getMetadataClass(Metadata.Names.occurrencesOfFailingTechniques().getName());
     }
 
 }

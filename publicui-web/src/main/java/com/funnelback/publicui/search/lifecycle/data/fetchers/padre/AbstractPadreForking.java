@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.common.execute.ExecutablePicker;
 import com.funnelback.common.lock.ThreadSharedFileLock.FileLockException;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.data.AbstractDataFetcher;
@@ -71,6 +72,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     @Setter @Getter
     protected QueryReadLock queryReadLock;
     
+    private ExecutablePicker executablePicker = new ExecutablePicker();
+    
     @Override
     public void fetchData(SearchTransaction searchTransaction) throws DataFetchException {
         if (SearchTransactionUtils.hasCollection(searchTransaction)
@@ -81,11 +84,11 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
             
             
             if (absoluteQueryProcessorPath) {
-                commandLine.add(searchTransaction.getQuestion().getCollection().getConfiguration()
-                        .value(Keys.QUERY_PROCESSOR));
+                commandLine.add(executablePicker.pickAnExecutable(new File(searchTransaction.getQuestion().getCollection().getConfiguration()
+                        .value(Keys.QUERY_PROCESSOR))).toString());
             } else {
-                commandLine.add(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
-                        + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR))
+                commandLine.add(executablePicker.pickAnExecutable(new File(searchHome, DefaultValues.FOLDER_BIN + File.separator
+                        + searchTransaction.getQuestion().getCollection().getConfiguration().value(Keys.QUERY_PROCESSOR)))
                     .getAbsolutePath());
             }
 
@@ -122,17 +125,16 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
                 env.put(EnvironmentKeys.SystemRoot.toString(), System.getenv(EnvironmentKeys.SystemRoot.toString()));
             }
     
-            
-            
-            
-            
             long padreWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
                 .valueAsLong(Keys.ModernUI.PADRE_FORK_TIMEOUT, DefaultValues.ModernUI.PADRE_FORK_TIMEOUT_MS);
-            
+
+            int padreResponseSizeLimit = searchTransaction.getQuestion().getCollection().getConfiguration()
+                .valueAsInt(Keys.ModernUI.PADRE_RESPONSE_SIZE_LIMIT, DefaultValues.ModernUI.PADRE_RESPONSE_SIZE_LIMIT);
+
             ExecutionReturn padreOutput = null;
             
             try {
-                padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env);
+                padreOutput = runPadre(searchTransaction, padreWaitTimeout, commandLine, env, padreResponseSizeLimit);
                 
                 if (log.isTraceEnabled()) {
                     log.trace("Padre exit code is: " + padreOutput.getReturnCode() + "\n"
@@ -173,7 +175,8 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
     
     ExecutionReturn runPadre(SearchTransaction searchTransaction, long padreWaitTimeout, 
                                 List<String> commandLine,
-                                Map<String, String> env) throws DataFetchException, PadreForkingException {
+                                Map<String, String> env,
+                                int sizeLimit) throws DataFetchException, PadreForkingException {
         try {
             queryReadLock.lock(searchTransaction.getQuestion().getCollection());
         } catch (FileLockException e) {
@@ -181,9 +184,9 @@ public abstract class AbstractPadreForking extends AbstractDataFetcher {
         }
         try {
             if (searchTransaction.getQuestion().isImpersonated()) {
-                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env);
+                return new WindowsNativePadreForker(i18n, (int) padreWaitTimeout).execute(commandLine, env, sizeLimit);
             } else {
-                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env);
+                return new JavaPadreForker(i18n, padreWaitTimeout).execute(commandLine, env, sizeLimit);
             }
         } finally {
             queryReadLock.release(searchTransaction.getQuestion().getCollection());

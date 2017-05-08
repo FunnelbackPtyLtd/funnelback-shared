@@ -60,6 +60,28 @@ public class PadreQueryStringBuilderTest {
         Assert.assertEquals("collection=dummy&profile=_default&s=additional+meta+expr",
                 new PadreQueryStringBuilder(qs, true).buildQueryString());
     }
+
+    @Test
+    public void testSingleSystemParameters() {
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("dummy", null));
+        qs.setQuery(null);
+        qs.getRawInputParameters().put("s", new String[] {"single value"});
+        
+        Assert.assertEquals("collection=dummy&profile=_default&s=single+value",
+            new PadreQueryStringBuilder(qs, true).buildQueryString());
+    }
+
+    @Test
+    public void testMultipleSystemParameters() {
+        SearchQuestion qs = new SearchQuestion();
+        qs.setCollection(new Collection("dummy", null));
+        qs.setQuery(null);
+        qs.getRawInputParameters().put("s", new String[] {"first value", "second value"});
+        
+        Assert.assertEquals("collection=dummy&profile=_default&s=first+value+second+value",
+            new PadreQueryStringBuilder(qs, true).buildQueryString());
+    }
     
     @Test
     public void testSystemQueryWithExistingSystemQuery() {

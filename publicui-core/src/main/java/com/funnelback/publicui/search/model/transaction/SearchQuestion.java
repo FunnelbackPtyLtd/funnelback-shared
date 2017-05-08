@@ -9,13 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.config.DefaultValues;
@@ -23,8 +17,16 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>This class contains all the input data related to a search.</p>
@@ -228,6 +230,43 @@ public class SearchQuestion {
      */
     @Getter private final Map<String, String> inputParameterMap = new SingleValueMapWrapper(rawInputParameters);
     
+    /**
+     * <p>Query string parameters as a Map</p>
+     * 
+     * <p>Return a copy of the internal map representing the query string,
+     * for easy manipulation of individual parameters rather than having to decode
+     * the query string.</p>
+     * 
+     * <p>The map is a copy intended to be modifiable to add/remove/update
+     * query string parameters.</p>
+     * 
+     * <p>To convert such a map into a query string suitable for URLs,
+     * see {@link QueryStringUtils#toString(Map, boolean)}</p>
+     * 
+     * @return Query string parameters
+     * 
+     * @since 15.10
+     */
+    public Map<String, List<String>> getQueryStringMapCopy() {
+        return queryStringMap.entrySet()
+            .stream()
+            .collect(Collectors.toMap(
+                e -> e.getKey(),
+                // Copy the values into a new list
+                e -> new ArrayList<>(e.getValue())));
+    }
+    
+    /**
+     * <p>Sets the query string parameter map.</p>
+     * 
+     * <p>This is for internal use only and shouldn't be called outside of
+     * initializing the search question. Changing the query string map will
+     * affect all the URLs that are constructed in the data model</p>
+     * 
+     * @since 15.10
+     */
+    @Setter private Map<String, List<String>> queryStringMap = new HashMap<>();
+
     /**
      * <p>Indicates the 'type' of question, which may trigger special processing in the search lifecycle.</p>
      * 
@@ -579,7 +618,13 @@ public class SearchQuestion {
     
     /** Enum for identifying special types of search requests requiring special processing */
     public enum SearchQuestionType {
-        SEARCH, EXTRA_SEARCH, CONTENT_AUDITOR, CONTENT_AUDITOR_DUPLICATES, ACCESSIBILITY_AUDITOR;
+        SEARCH, 
+        EXTRA_SEARCH, 
+        CONTENT_AUDITOR, 
+        CONTENT_AUDITOR_DUPLICATES, 
+        ACCESSIBILITY_AUDITOR,
+        ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS;
+        ;
     }
     
 }

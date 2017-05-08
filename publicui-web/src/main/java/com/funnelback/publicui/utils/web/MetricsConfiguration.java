@@ -1,7 +1,5 @@
 package com.funnelback.publicui.utils.web;
 
-import static com.codahale.metrics.MetricRegistry.name;
-
 import java.io.IOException;
 
 import javax.annotation.PreDestroy;
@@ -13,10 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
-import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
-import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
-import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.funnelback.common.metric.MetricRegistryReporter;
 import com.funnelback.publicui.search.service.ConfigRepository;
@@ -36,9 +30,6 @@ public class MetricsConfiguration implements ServletContextAware {
     
     /** All/global namespace */
     public static final String ALL_NS = "_all";
-    
-    /** JVM metrics namespace */
-    public static final String JVM = "jvm";
     
     /** View type (xml/json/html) namespace */
     public static final String VIEW_TYPE_NS = "view-type";
@@ -71,17 +62,6 @@ public class MetricsConfiguration implements ServletContextAware {
     private MetricRegistry registry = new MetricRegistry();
     
     private MetricRegistryReporter registryReporter;
-    
-    /**
-     * Builds a new configuration and register JVM metrics on it
-     */
-    public MetricsConfiguration() {
-        // Register JVM metrics
-        registry.register(name(JVM, "file"), new FileDescriptorRatioGauge());
-        registry.register(name(JVM, "gc"), new GarbageCollectorMetricSet());
-        registry.register(name(JVM, "memory"), new MemoryUsageGaugeSet());
-        registry.register(name(JVM, "thread"), new ThreadStatesGaugeSet());
-    }
     
     /**
      * @return The {@link MetricRegistry} for the application, with configured

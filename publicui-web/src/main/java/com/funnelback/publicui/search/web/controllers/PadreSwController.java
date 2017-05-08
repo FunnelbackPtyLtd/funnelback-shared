@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingException;
 
 /**
@@ -37,7 +38,7 @@ public class PadreSwController extends AbstractRunPadreBinaryController {
     @RequestMapping("/padre-sw.cgi")
     public void padreSw(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
-            runPadreBinary(PADRE_SW, null, request, response, false);
+            runPadreBinary(PADRE_SW, null, request, response, false, DefaultValues.ModernUI.PADRE_RESPONSE_SIZE_LIMIT);
         } catch (PadreForkingException e) {
             PadreSwController.log.debug("Unable to run " + PADRE_SW, e);
             throw new ServletException(e);
