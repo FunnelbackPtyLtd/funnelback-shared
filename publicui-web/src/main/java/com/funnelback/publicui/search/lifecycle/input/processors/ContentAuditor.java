@@ -371,7 +371,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SCO + "=" + "1");
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.COLLAPSING_SCOPED + "=" + "on");
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SORT + "=" + "collapse_count");
-        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SERVICE_VOLUME + "=" + "high");
+        question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.SERVICE_VOLUME + "=" /* Intentionally empty */);
         // FUN-7978 Do not pollute analytics
         question.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.LOG + "=off");
         

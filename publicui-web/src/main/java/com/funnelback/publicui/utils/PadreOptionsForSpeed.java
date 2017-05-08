@@ -85,9 +85,7 @@ public class PadreOptionsForSpeed {
      * rely on the 'high' setting.
      */
     public String getHighServiceVolumeOption() {
-        //If this is to be used else where we should set
-        // 
-        return "-" + SERVICE_VOLUME + "=high";
+        return "-" + SERVICE_VOLUME + "=" /* Intentionally empty */;
     }
     
     
