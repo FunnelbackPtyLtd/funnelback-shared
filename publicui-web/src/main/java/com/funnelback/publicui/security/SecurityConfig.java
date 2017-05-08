@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
@@ -95,6 +96,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
+
+    @Autowired
+    private ConfigRepository configRepository;
     
     @Autowired
     ExecutionContextHolder executionContextHolder;
@@ -235,9 +239,12 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     }
  
     // Setup TLS Socket Factory
+    // Allow all certificates to avoid SSL failures on metadata
     @Bean
     public TLSProtocolConfigurer tlsProtocolConfigurer() {
-        return new TLSProtocolConfigurer();
+        TLSProtocolConfigurer configurer = new TLSProtocolConfigurer();
+        configurer.setSslHostnameVerification("allowAll");
+        return configurer;
     }
     
     @Bean
@@ -280,7 +287,8 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Bean
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        extendedMetadata.setIdpDiscoveryEnabled(true); 
+        extendedMetadata.setIdpDiscoveryEnabled(false); 
+        extendedMetadata.setSslHostnameVerification("allowAll");
         extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
@@ -293,21 +301,21 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return idpDiscovery;
     }
     
-    @Bean
-    @Qualifier("idp-ssocircle")
-    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
-            throws MetadataProviderException {
-        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
-        Timer backgroundTaskTimer = new Timer(true);
-        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-        httpMetadataProvider.setParserPool(parserPool());
-        ExtendedMetadataDelegate extendedMetadataDelegate = 
-                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-        extendedMetadataDelegate.setMetadataTrustCheck(true);
-        extendedMetadataDelegate.setMetadataRequireSignature(false);
-        return extendedMetadataDelegate;
-    }
+//    @Bean
+//    @Qualifier("idp-ssocircle")
+//    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
+//            throws MetadataProviderException {
+//        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
+//        Timer backgroundTaskTimer = new Timer(true);
+//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
+//        httpMetadataProvider.setParserPool(parserPool());
+//        ExtendedMetadataDelegate extendedMetadataDelegate = 
+//               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+//        extendedMetadataDelegate.setMetadataTrustCheck(true);
+//        extendedMetadataDelegate.setMetadataRequireSignature(false);
+//        return extendedMetadataDelegate;
+//    }
 
 //    @Bean
 //    @Qualifier("idp-openidp")
@@ -325,6 +333,24 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        return extendedMetadataDelegate;
 //    }
 
+
+    @Bean
+    @Qualifier("idp-okta")
+    public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
+            throws MetadataProviderException {
+        String idpOktaWoodfordMetadataURL = "http://woodford-secure.funnelback.co.uk/app/exk9ib1diuU9KPR1l0h7/sso/saml/metadata";
+        Timer backgroundTaskTimer = new Timer(true);
+        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+                backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
+        httpMetadataProvider.setParserPool(parserPool());
+        ExtendedMetadataDelegate extendedMetadataDelegate =
+                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+        extendedMetadataDelegate.setMetadataTrustCheck(true);
+        extendedMetadataDelegate.setMetadataRequireSignature(false);
+        return extendedMetadataDelegate;
+    }
+
+
     // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
     // is here
     // Do no forget to call iniitalize method on providers
@@ -333,29 +359,51 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
-        ssoCircleEmd.initialize();
-        providers.add(ssoCircleEmd);
+//        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
+//        ssoCircleEmd.initialize();
+//        providers.add(ssoCircleEmd);
+
+        ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvider();
+        oktaWoodfordEmd.initialize();
+        providers.add(oktaWoodfordEmd);
 
 //        ExtendedMetadataDelegate openIdpEmd = openIdpExtendedMetadataProvider();
 //        openIdpEmd.initialize();
 //        providers.add(openIdpEmd);
-        
-        return new CachingMetadataManager(providers);
+   
+        CachingMetadataManager manager = new CachingMetadataManager(providers);
+      
+        // Todo: add to com.funnelback.common.config.Keys
+        String defaultIDP = configRepository
+                    .getGlobalConfiguration().value("saml.default_idp");
+        if (defaultIDP != null) {
+            manager.setDefaultIDP(defaultIDP); 
+        } else { 
+           manager.setDefaultIDP("");
+        }
+ 
+        return manager; 
     }
  
     // Filter automatically generates default SP metadata
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        metadataGenerator.setEntityId("com:funnelback:publicui:sp");
+        // Todo: add to com.funnelback.common.config.Keys
+        String entityID = configRepository
+                    .getGlobalConfiguration().value("saml.entity_id");
+        if (entityID != null) {
+             metadataGenerator.setEntityId(entityID);
+        } else {
+             metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
+        }
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager()); 
         return metadataGenerator;
     }
  
-    // The filter is waiting for connections on URL suffixed with filterSuffix
+  //  // The filter is waiting for connections on URL suffixed with filterSuffix
     // and presents SP metadata there
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
