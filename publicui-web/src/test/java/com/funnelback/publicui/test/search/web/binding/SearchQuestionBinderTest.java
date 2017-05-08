@@ -17,6 +17,7 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues.RequestId;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
@@ -29,6 +30,7 @@ public class SearchQuestionBinderTest {
         queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
         
         SearchQuestion from = new SearchQuestion();
+        from.setExecutionContext(ExecutionContext.Public);
         from.getRawInputParameters().put("my-param", new String[] {"value1", "value2"});
         from.setQueryStringMap(queryStringMap);
         from.setQuery("query");
@@ -45,6 +47,7 @@ public class SearchQuestionBinderTest {
         SearchQuestion to = new SearchQuestion();
         SearchQuestionBinder.bind(from, to);
         
+        Assert.assertEquals(ExecutionContext.Public, to.getExecutionContext());
         Assert.assertEquals(1, to.getRawInputParameters().size());
         Assert.assertEquals(1,  to.getQueryStringMapCopy().size());
         Assert.assertArrayEquals(new String[] {"value1", "value2"}, to.getRawInputParameters().get("my-param"));
@@ -109,8 +112,9 @@ public class SearchQuestionBinderTest {
         to.setQuery("query");
         to.setCollection(new Collection("coll", config));
         
-        SearchQuestionBinder.bind(request, to, localeResolver);
+        SearchQuestionBinder.bind(ExecutionContext.Unknown, request, to, localeResolver);
 
+        Assert.assertEquals(ExecutionContext.Unknown, to.getExecutionContext());
         Assert.assertEquals("127.0.0.1", to.getRequestId());
         
         Assert.assertEquals(7, to.getQueryStringMapCopy().size());
