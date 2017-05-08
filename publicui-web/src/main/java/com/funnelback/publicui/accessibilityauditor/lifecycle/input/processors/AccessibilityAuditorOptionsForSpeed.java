@@ -15,6 +15,10 @@ public class AccessibilityAuditorOptionsForSpeed extends AbstractAccessibilityAu
     protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
         PadreOptionsForSpeed optionsForSpeed = new PadreOptionsForSpeed();
         
+        // Always want high service volume
+        transaction.getQuestion().getDynamicQueryProcessorOptions()
+            .add(optionsForSpeed.getHighServiceVolumeOption());
+        
         //Speed up query processing
         transaction.getQuestion().getDynamicQueryProcessorOptions()
             .addAll(optionsForSpeed.getOptionsThatDoNotAffectResultSet());
@@ -22,7 +26,8 @@ public class AccessibilityAuditorOptionsForSpeed extends AbstractAccessibilityAu
         //It probably makes sense that we don't reduce the result set when we are auditing the documents.
         transaction.getQuestion().getDynamicQueryProcessorOptions()
             .addAll(optionsForSpeed.getOptionsToTurnOfReducingResultSet());
-            
+        
+        
     }
 
 }

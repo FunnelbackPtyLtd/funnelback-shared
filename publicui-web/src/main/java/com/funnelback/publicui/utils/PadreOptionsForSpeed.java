@@ -77,6 +77,16 @@ public class PadreOptionsForSpeed {
             );
     }
     
+    /**
+     * Returns the option to set a 'high' service volume.
+     * 
+     * This is the default, but in some systems (CA, AA) we need to ensure
+     * it is not being overwritten by the collection's config because we
+     * rely on the 'high' setting.
+     */
+    public String getHighServiceVolumeOption() {
+        return "-" + SERVICE_VOLUME + "=" /* Intentionally empty */;
+    }
     
     
 }
