@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>publicui-x509-integration-testing</artifactId>
+    <artifactId>publicui-saml-integration-testing</artifactId>
     <name>Modern UI for Funnelback - SAML Integration testing</name>
     <parent>
         <groupId>com.funnelback.publicui</groupId>
@@ -22,6 +22,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.20</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <testBaseUrl>http://localhost:${jetty.http.port}</testBaseUrl>
+                        <mujinaBaseUrl>http://localhost:${mujina.http.port}</mujinaBaseUrl>
+                    </systemPropertyVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
