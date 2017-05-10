@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
@@ -32,6 +33,7 @@ public class SearchQuestionBinder {
      */
     public static void bind(SearchQuestion from, SearchQuestion to) {
         to.setExecutionContext(from.getExecutionContext());
+        to.setFunnelbackVersion(from.getFunnelbackVersion());
         to.getRawInputParameters().putAll(from.getRawInputParameters());
         to.setQueryStringMap(from.getQueryStringMapCopy());
         to.setQuery(from.getQuery());
@@ -52,8 +54,13 @@ public class SearchQuestionBinder {
      * @param request
      * @param question
      */
-    public static void bind(ExecutionContext executionContext, HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
+    public static void bind(ExecutionContext executionContext,
+            HttpServletRequest request,
+            SearchQuestion question,
+            LocaleResolver localeResolver,
+            FunnelbackVersion funnelbackVersion) {
         question.setExecutionContext(executionContext);
+        question.setFunnelbackVersion(funnelbackVersion);
         question.getRawInputParameters().putAll(request.getParameterMap());
         
         // Add query string parameters, converting Map<String, String[]>
