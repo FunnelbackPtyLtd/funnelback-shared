@@ -16,6 +16,8 @@ public class ExecutionReturn {
     
     @Getter private final byte[] errBytes;
     
+    @Getter private final int untruncatedOutputSize;
+    
     /**
      * Charset of the bytes.
      */

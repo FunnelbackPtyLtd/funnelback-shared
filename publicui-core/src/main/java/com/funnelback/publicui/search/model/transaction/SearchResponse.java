@@ -45,6 +45,9 @@ public class SearchResponse {
     /** PADRE return code (0 = success) */
     @Getter @Setter private int returnCode;
     
+    /** Amount of output produced by PADRE responding to the query, in bytes. */
+    @Getter @Setter private Integer untruncatedPadreOutputSize;
+    
     /**
      * Computed facets based on the PADRE
      * result packet and collection configuration.
