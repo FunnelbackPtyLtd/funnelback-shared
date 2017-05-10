@@ -4,6 +4,7 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.COLLECTION_NS;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.ERRORS_COUNT;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_ELAPSED_TIME;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_UNTRUNCATED_OUTPUT_SIZE;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 
@@ -71,17 +72,20 @@ public class MetricsTest {
         st.getResponse().getResultPacket().setPadreElapsedTime(123);
         st.getResponse().getResultPacket().setResultsSummary(new ResultsSummary());
         st.getResponse().getResultPacket().getResultsSummary().setTotalMatching(456); 
+        st.getResponse().setUntruncatedPadreOutputSize(789);
         processor.processOutput(st);
         
         Assert.assertEquals(0, metrics.counter(MetricRegistry.name(ALL_NS, ALL_NS, ERRORS_COUNT)).getCount());
         Assert.assertEquals(456, metrics.histogram(MetricRegistry.name(ALL_NS, TOTAL_MATCHING)).getSnapshot().getMean(), 0.1);
         Assert.assertEquals(123, metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_ELAPSED_TIME)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(789, metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_UNTRUNCATED_OUTPUT_SIZE)).getSnapshot().getMean(), 0.1);
         Assert.assertEquals(1, metrics.meter(MetricRegistry.name(ALL_NS, QUERIES)).getCount());
         Assert.assertNotSame(0, metrics.meter(MetricRegistry.name(ALL_NS, QUERIES)).getMeanRate());
         
         Assert.assertEquals(0, metrics.counter(MetricRegistry.name(COLLECTION_NS, "metrics._default", ERRORS_COUNT)).getCount());
         Assert.assertEquals(456, metrics.histogram(MetricRegistry.name(COLLECTION_NS, "metrics._default", TOTAL_MATCHING)).getSnapshot().getMean(), 0.1);
         Assert.assertEquals(123, metrics.histogram(MetricRegistry.name(COLLECTION_NS, "metrics._default", PADRE_ELAPSED_TIME)).getSnapshot().getMean(), 0.1);
+        Assert.assertEquals(789, metrics.histogram(MetricRegistry.name(COLLECTION_NS, "metrics._default", PADRE_UNTRUNCATED_OUTPUT_SIZE)).getSnapshot().getMean(), 0.1);
         Assert.assertEquals(1, metrics.meter(MetricRegistry.name(COLLECTION_NS, "metrics._default", QUERIES)).getCount());
         Assert.assertNotSame(0, metrics.meter(MetricRegistry.name(COLLECTION_NS, "metrics._default", QUERIES)).getMeanRate());
     }

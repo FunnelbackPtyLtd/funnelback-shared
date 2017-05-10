@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import lombok.Getter;
+
 /**
  * A ByteArrayOutputStream with a limited size,
  * which can be used to cap memory usage.
@@ -22,6 +24,10 @@ public class BoundedByteArrayOutputStream extends OutputStream {
     private final ByteArrayOutputStream underlyingStream;
     private final int sizeLimit;
     private boolean isTruncated = false;
+
+    /** The size the output would have been if it had not been truncated */
+    @Getter
+    private int untruncatedSize;
     
     public BoundedByteArrayOutputStream(int initialSize, int sizeLimit) {
         underlyingStream = new ByteArrayOutputStream(initialSize);
@@ -30,6 +36,7 @@ public class BoundedByteArrayOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(int b) {
+        untruncatedSize += 1;
         if (!isTruncated && sizeIsBelowLimit()) {
             underlyingStream.write(b);
         } else {
@@ -39,6 +46,7 @@ public class BoundedByteArrayOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(byte b[], int off, int len) {
+        untruncatedSize += len;
         if (!isTruncated && sizeIsBelowLimit()) {
             underlyingStream.write(b, off, len);
         } else {

@@ -9,6 +9,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -83,7 +84,7 @@ public class WindowsNativeExecutor {
                     + "Current Thread ID is: " + Kernel32.INSTANCE.GetCurrentThreadId());
         }
         
-        byte[] result = null;
+        PossiblyTruncatedBytes result = null;
         int returnCode = -1;
 
         final WinBase.PROCESS_INFORMATION pi = new WinBase.PROCESS_INFORMATION();
@@ -236,9 +237,9 @@ public class WindowsNativeExecutor {
         }
         
         if (log.isTraceEnabled()) {
-            log.trace("Process result is: '" + new String(result, getCharset()) + "'");
+            log.trace("Process result is: '" + new String(result.getOutput(), getCharset()) + "'");
         }
-        return new ExecutionReturn(returnCode, result, null, getCharset());
+        return new ExecutionReturn(returnCode, result.getOutput(), null, result.getUntruncatedSize(), getCharset());
     }
 
     /**
@@ -250,7 +251,7 @@ public class WindowsNativeExecutor {
      * @return Content of STDOUT
      * @throws IOException 
      */
-    private byte[] readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, int sizeLimit) throws IOException {
+    private PossiblyTruncatedBytes readFullStdOut(HANDLE hChildOutWrite, HANDLE hChildOutRead, int estimatedSize, int sizeLimit) throws IOException {
         if ( !Kernel32.INSTANCE.CloseHandle(hChildOutWrite)) {
             log.warn("Unable to close the stdout write pipe of child process",
                 new Win32Exception(Kernel32.INSTANCE.GetLastError()));
@@ -297,7 +298,16 @@ public class WindowsNativeExecutor {
         }
         
         
-        return bos.toByteArray();
+        return new PossiblyTruncatedBytes(bos.toByteArray(), bos.getUntruncatedSize());
+    }
+    
+    @RequiredArgsConstructor
+    private class PossiblyTruncatedBytes {
+        @Getter
+        private final byte[] output;
+        
+        @Getter
+        private final int untruncatedSize;
     }
     
     /**
