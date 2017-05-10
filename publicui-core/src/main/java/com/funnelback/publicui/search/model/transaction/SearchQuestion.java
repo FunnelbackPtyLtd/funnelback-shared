@@ -42,7 +42,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @JsonIgnoreProperties("principal")
 public class SearchQuestion {
-        
+
+    /**
+     * Execution context of the Search UI. Can be "admin"
+     * or "public", depending if the search is ran on the admin
+     * port or public port.
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private ExecutionContext executionContext;
+    
     /**
      * <p>Query terms.</p>
      * 

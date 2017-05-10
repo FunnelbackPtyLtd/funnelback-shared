@@ -2,11 +2,13 @@ package com.funnelback.publicui.utils.web;
 
 import javax.servlet.ServletContext;
 
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
+
+import com.funnelback.publicui.search.model.transaction.ExecutionContext;
+
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Holds data tied to the execution context, such as the
@@ -17,14 +19,6 @@ import org.springframework.web.context.ServletContextAware;
 @Component
 public class ExecutionContextHolder implements ServletContextAware {
 
-    public static enum ExecutionContext {
-        Admin,
-        Public,
-        /** Used for special instance of Public UI for Novell OES 2 DLS */
-        Novell,
-        Unknown;
-    }
-    
     /**
      * URL where the webapp is deployed (Ex: <code>/s</code>).
      */

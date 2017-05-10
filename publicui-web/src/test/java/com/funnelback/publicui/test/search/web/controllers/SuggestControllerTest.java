@@ -26,11 +26,11 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.ProfileId;
 import com.funnelback.dataapi.connector.padre.suggest.Suggestion;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.service.Suggester;
 import com.funnelback.publicui.search.web.controllers.SuggestController;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
-import com.funnelback.publicui.utils.web.ExecutionContextHolder.ExecutionContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")

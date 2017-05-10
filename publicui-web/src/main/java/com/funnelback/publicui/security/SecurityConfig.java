@@ -42,8 +42,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             case Admin:
                 super.configureHttpbasicAndToken(http);
                 break;
-            case Novell:
-                break;
             case Public:
                 http.authorizeRequests().anyRequest().permitAll();
                 break;

@@ -162,6 +162,7 @@
     <bean class="com.funnelback.publicui.search.web.controllers.session.ResultsCartProcessController" />
     <bean class="com.funnelback.publicui.test.mock.MockLogService" />
     <bean class="com.funnelback.springmvc.utils.web.LocalHostnameHolder" />
+    <bean class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />
     
     <bean class="com.funnelback.publicui.search.service.index.DefaultQueryReadLock" />
 
