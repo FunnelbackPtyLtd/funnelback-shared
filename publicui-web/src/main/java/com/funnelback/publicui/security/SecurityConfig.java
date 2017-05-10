@@ -339,16 +339,32 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 //        extendedMetadataDelegate.setMetadataRequireSignature(false);
 //        return extendedMetadataDelegate;
 //    }
-
+//
+//
+//    @Bean
+//    @Qualifier("idp-okta")
+//    public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
+//            throws MetadataProviderException {
+//        String idpOktaWoodfordMetadataURL = "http://woodford-secure.funnelback.co.uk/app/exk9ib1diuU9KPR1l0h7/sso/saml/metadata";
+//        Timer backgroundTaskTimer = new Timer(true);
+//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
+//                backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
+//        httpMetadataProvider.setParserPool(parserPool());
+//        ExtendedMetadataDelegate extendedMetadataDelegate =
+//                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+//        extendedMetadataDelegate.setMetadataTrustCheck(true);
+//        extendedMetadataDelegate.setMetadataRequireSignature(false);
+//        return extendedMetadataDelegate;
+//    }
 
     @Bean
-    @Qualifier("idp-okta")
-    public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
+    @Qualifier("idp-mujina")
+    public ExtendedMetadataDelegate mujinaExtendedMetadataProvider()
             throws MetadataProviderException {
-        String idpOktaWoodfordMetadataURL = "http://woodford-secure.funnelback.co.uk/app/exk9ib1diuU9KPR1l0h7/sso/saml/metadata";
+        String mujinaMetadataURL = "http://localhost:8080/metadata";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
+                backgroundTaskTimer, httpClient(), mujinaMetadataURL);
         httpMetadataProvider.setParserPool(parserPool());
         ExtendedMetadataDelegate extendedMetadataDelegate =
                 new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
@@ -366,28 +382,20 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-//        ExtendedMetadataDelegate ssoCircleEmd = ssoCircleExtendedMetadataProvider();
-//        ssoCircleEmd.initialize();
-//        providers.add(ssoCircleEmd);
-
-        ExtendedMetadataDelegate oktaWoodfordEmd = oktaWoodfordExtendedMetadataProvider();
-        oktaWoodfordEmd.initialize();
-        providers.add(oktaWoodfordEmd);
-
-//        ExtendedMetadataDelegate openIdpEmd = openIdpExtendedMetadataProvider();
-//        openIdpEmd.initialize();
-//        providers.add(openIdpEmd);
+        ExtendedMetadataDelegate mujinaEmd = mujinaExtendedMetadataProvider();
+        mujinaEmd.initialize();
+        providers.add(mujinaEmd);
    
         CachingMetadataManager manager = new CachingMetadataManager(providers);
       
-        // Todo: add to com.funnelback.common.config.Keys
-        String defaultIDP = configRepository
-                    .getGlobalConfiguration().value("saml.default_idp");
-        if (defaultIDP != null) {
-            manager.setDefaultIDP(defaultIDP); 
-        } else { 
-           manager.setDefaultIDP("");
-        }
+//        // Todo: add to com.funnelback.common.config.Keys
+//        String defaultIDP = configRepository
+//                    .getGlobalConfiguration().value("saml.default_idp");
+//        if (defaultIDP != null) {
+//            manager.setDefaultIDP(defaultIDP); 
+//        } else { 
+//           manager.setDefaultIDP("");
+//        }
  
         return manager; 
     }
@@ -397,13 +405,14 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
         // Todo: add to com.funnelback.common.config.Keys
-        String entityID = configRepository
-                    .getGlobalConfiguration().value("saml.entity_id");
-        if (entityID != null) {
-             metadataGenerator.setEntityId(entityID);
-        } else {
-             metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
-        }
+//        String entityID = configRepository
+//                    .getGlobalConfiguration().value("saml.entity_id");
+//        if (entityID != null) {
+//             metadataGenerator.setEntityId(entityID);
+//        } else {
+//             metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
+//        }
+        String entityId = "http://mock-idp";
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager()); 
