@@ -29,6 +29,15 @@
         <constructor-arg ref="searchHome"></constructor-arg>
     </bean>
 
+    <bean
+        id="funnelbackVersion"
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="com.funnelback.common.Environment" />
+        <property name="targetMethod" value="getFunnelbackVersion" />
+        <property name="arguments" ref="searchHome" />
+    </bean>    
+
+
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>

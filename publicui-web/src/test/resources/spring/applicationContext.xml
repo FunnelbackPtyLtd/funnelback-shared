@@ -164,6 +164,12 @@
     <bean class="com.funnelback.springmvc.utils.web.LocalHostnameHolder" />
     <bean class="com.funnelback.publicui.utils.web.ExecutionContextHolder" />
     
+    <bean class="com.funnelback.common.Environment.FunnelbackVersion">
+        <constructor-arg value="1" />
+        <constructor-arg value="2" />
+        <constructor-arg value="3" />
+    </bean>
+    
     <bean class="com.funnelback.publicui.search.service.index.DefaultQueryReadLock" />
 
     <bean name="recommenderJsonView"
