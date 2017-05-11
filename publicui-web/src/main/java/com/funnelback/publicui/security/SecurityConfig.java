@@ -188,48 +188,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return new SAMLBootstrap();
     }
  
-    // Logger for SAML messages and events
-    @Bean
-    public SAMLDefaultLogger samlLogger() {
-        return new SAMLDefaultLogger();
-    }
- 
-    // SAML 2.0 WebSSO Assertion Consumer
-    @Bean
-    public WebSSOProfileConsumer webSSOprofileConsumer() {
-        WebSSOProfileConsumerImpl result = new WebSSOProfileConsumerImpl();
-        result.setMaxAuthenticationAge(60 * 60 * 24 * 14); // Code below suggests this is in seconds
-        return result;
-    }
- 
-    // SAML 2.0 Holder-of-Key WebSSO Assertion Consumer
-    @Bean
-    public WebSSOProfileConsumerHoKImpl hokWebSSOprofileConsumer() {
-        return new WebSSOProfileConsumerHoKImpl();
-    }
- 
-    // SAML 2.0 Web SSO profile
-    @Bean
-    public WebSSOProfile webSSOprofile() {
-        return new WebSSOProfileImpl();
-    }
- 
-    // SAML 2.0 Holder-of-Key Web SSO profile
-    @Bean
-    public WebSSOProfileConsumerHoKImpl hokWebSSOProfile() {
-        return new WebSSOProfileConsumerHoKImpl();
-    }
- 
-    // SAML 2.0 ECP profile
-    @Bean
-    public WebSSOProfileECPImpl ecpprofile() {
-        return new WebSSOProfileECPImpl();
-    }
- 
-    @Bean
-    public SingleLogoutProfile logoutprofile() {
-        return new SingleLogoutProfileImpl();
-    }
  
     // Central storage of cryptographic keys
     @Bean
