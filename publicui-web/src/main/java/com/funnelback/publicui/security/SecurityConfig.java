@@ -1,42 +1,17 @@
 package com.funnelback.publicui.security;
 
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import com.funnelback.common.config.Keys;
-import com.funnelback.publicui.search.service.ConfigRepository;
-import com.funnelback.publicui.utils.web.ExecutionContextHolder;
-import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
-
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.saml2.metadata.provider.HTTPMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.xml.parse.ParserPool;
-import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -46,7 +21,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.security.saml.SAMLDiscovery;
@@ -58,34 +36,13 @@ import org.springframework.security.saml.SAMLWebSSOHoKProcessingFilter;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
 import org.springframework.security.saml.key.JKSKeyManager;
 import org.springframework.security.saml.key.KeyManager;
-import org.springframework.security.saml.log.SAMLDefaultLogger;
 import org.springframework.security.saml.metadata.CachingMetadataManager;
 import org.springframework.security.saml.metadata.ExtendedMetadata;
 import org.springframework.security.saml.metadata.ExtendedMetadataDelegate;
 import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
-import org.springframework.security.saml.parser.ParserPoolHolder;
-import org.springframework.security.saml.processor.HTTPArtifactBinding;
-import org.springframework.security.saml.processor.HTTPPAOS11Binding;
-import org.springframework.security.saml.processor.HTTPPostBinding;
-import org.springframework.security.saml.processor.HTTPRedirectDeflateBinding;
-import org.springframework.security.saml.processor.HTTPSOAP11Binding;
-import org.springframework.security.saml.processor.SAMLBinding;
-import org.springframework.security.saml.processor.SAMLProcessorImpl;
 import org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer;
-import org.springframework.security.saml.trust.httpclient.TLSProtocolSocketFactory;
-import org.springframework.security.saml.util.VelocityFactory;
-import org.springframework.security.saml.websso.ArtifactResolutionProfile;
-import org.springframework.security.saml.websso.ArtifactResolutionProfileImpl;
-import org.springframework.security.saml.websso.SingleLogoutProfile;
-import org.springframework.security.saml.websso.SingleLogoutProfileImpl;
-import org.springframework.security.saml.websso.WebSSOProfile;
-import org.springframework.security.saml.websso.WebSSOProfileConsumer;
-import org.springframework.security.saml.websso.WebSSOProfileConsumerHoKImpl;
-import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl;
-import org.springframework.security.saml.websso.WebSSOProfileECPImpl;
-import org.springframework.security.saml.websso.WebSSOProfileImpl;
 import org.springframework.security.saml.websso.WebSSOProfileOptions;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.FilterChainProxy;
@@ -98,6 +55,10 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
 @Configuration
 @EnableWebSecurity
@@ -138,33 +99,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Autowired
     private SAMLUserDetailsServiceImpl samlUserDetailsServiceImpl;
      
-    // Initialization of the velocity engine
-    @Bean
-    public VelocityEngine velocityEngine() {
-        return VelocityFactory.getEngine();
-    }
  
-    // XML parser pool needed for OpenSAML parsing
-    @Bean(initMethod = "initialize")
-    public StaticBasicParserPool parserPool() {
-        return new StaticBasicParserPool();
-    }
- 
-    @Bean(name = "parserPoolHolder")
-    public ParserPoolHolder parserPoolHolder() {
-        return new ParserPoolHolder();
-    }
- 
-    // Bindings, encoders and decoders used for creating and parsing messages
-    @Bean
-    public MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager() {
-        return new MultiThreadedHttpConnectionManager();
-    }
- 
-    @Bean
-    public HttpClient httpClient() {
-        return new HttpClient(multiThreadedHttpConnectionManager());
-    }
  
     // SAML Authentication Provider responsible for validating of received SAML
     // messages
@@ -211,27 +146,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         configurer.setSslHostnameVerification("allowAll");
         return configurer;
     }
-    
-    @Bean
-    public ProtocolSocketFactory socketFactory() {
-        return new TLSProtocolSocketFactory(keyManager(), null, "default");
-    }
-
-    @Bean
-    public Protocol socketFactoryProtocol() {
-        return new Protocol("https", socketFactory(), 443);
-    }
-
-    @Bean
-    public MethodInvokingFactoryBean socketFactoryInitialization() {
-        MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
-        methodInvokingFactoryBean.setTargetClass(Protocol.class);
-        methodInvokingFactoryBean.setTargetMethod("registerProtocol");
-        Object[] args = {"https", socketFactoryProtocol()};
-        methodInvokingFactoryBean.setArguments(args);
-        return methodInvokingFactoryBean;
-    }
-    
+        
     @Bean
     public WebSSOProfileOptions defaultWebSSOProfileOptions() {
         WebSSOProfileOptions webSSOProfileOptions = new WebSSOProfileOptions();
@@ -266,55 +181,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return idpDiscovery;
     }
     
-//    @Bean
-//    @Qualifier("idp-ssocircle")
-//    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
-//            throws MetadataProviderException {
-//        String idpSSOCircleMetadataURL = "http://idp.ssocircle.com/idp-meta.xml";
-//        Timer backgroundTaskTimer = new Timer(true);
-//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-//        httpMetadataProvider.setParserPool(parserPool());
-//        ExtendedMetadataDelegate extendedMetadataDelegate = 
-//               new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-//        extendedMetadataDelegate.setMetadataTrustCheck(true);
-//        extendedMetadataDelegate.setMetadataRequireSignature(false);
-//        return extendedMetadataDelegate;
-//    }
-
-//    @Bean
-//    @Qualifier("idp-openidp")
-//    public ExtendedMetadataDelegate openIdpExtendedMetadataProvider()
-//            throws MetadataProviderException {
-//        String idpSSOCircleMetadataURL = "https://openidp.feide.no/simplesaml/saml2/idp/metadata.php";
-//        Timer backgroundTaskTimer = new Timer(true);
-//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-//                backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-//        httpMetadataProvider.setParserPool(parserPool());
-//        ExtendedMetadataDelegate extendedMetadataDelegate = 
-//                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-//        extendedMetadataDelegate.setMetadataTrustCheck(true);
-//        extendedMetadataDelegate.setMetadataRequireSignature(false);
-//        return extendedMetadataDelegate;
-//    }
-//
-//
-//    @Bean
-//    @Qualifier("idp-okta")
-//    public ExtendedMetadataDelegate oktaWoodfordExtendedMetadataProvider()
-//            throws MetadataProviderException {
-//        String idpOktaWoodfordMetadataURL = "http://woodford-secure.funnelback.co.uk/app/exk9ib1diuU9KPR1l0h7/sso/saml/metadata";
-//        Timer backgroundTaskTimer = new Timer(true);
-//        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-//                backgroundTaskTimer, httpClient(), idpOktaWoodfordMetadataURL);
-//        httpMetadataProvider.setParserPool(parserPool());
-//        ExtendedMetadataDelegate extendedMetadataDelegate =
-//                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-//        extendedMetadataDelegate.setMetadataTrustCheck(true);
-//        extendedMetadataDelegate.setMetadataRequireSignature(false);
-//        return extendedMetadataDelegate;
-//    }
-
     @Bean
     @Qualifier("idp-mujina")
     public ExtendedMetadataDelegate mujinaExtendedMetadataProvider()
@@ -322,8 +188,8 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         String mujinaMetadataURL = System.getProperty("mujinaBaseUrl", "http://localhost:8080") + "/metadata";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, httpClient(), mujinaMetadataURL);
-        httpMetadataProvider.setParserPool(parserPool());
+                backgroundTaskTimer, SamlConfig.httpClient(), mujinaMetadataURL);
+        httpMetadataProvider.setParserPool(SamlConfig.parserPool());
         ExtendedMetadataDelegate extendedMetadataDelegate =
                 new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
         extendedMetadataDelegate.setMetadataTrustCheck(true);
@@ -377,13 +243,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return metadataGenerator;
     }
  
-  //  // The filter is waiting for connections on URL suffixed with filterSuffix
-    // and presents SP metadata there
-    @Bean
-    public MetadataDisplayFilter metadataDisplayFilter() {
-        return new MetadataDisplayFilter();
-    }
-     
     // Handler deciding where to redirect user after successful login
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
@@ -425,93 +284,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Bean
     public MetadataGeneratorFilter metadataGeneratorFilter() {
         return new MetadataGeneratorFilter(metadataGenerator());
-    }
-     
-    // Handler for successful logout
-    @Bean
-    public SimpleUrlLogoutSuccessHandler successLogoutHandler() {
-        SimpleUrlLogoutSuccessHandler successLogoutHandler = new SimpleUrlLogoutSuccessHandler();
-        successLogoutHandler.setDefaultTargetUrl("/");
-        return successLogoutHandler;
-    }
-     
-    // Logout handler terminating local session
-    @Bean
-    public SecurityContextLogoutHandler logoutHandler() {
-        SecurityContextLogoutHandler logoutHandler = 
-                new SecurityContextLogoutHandler();
-        logoutHandler.setInvalidateHttpSession(true);
-        logoutHandler.setClearAuthentication(true);
-        return logoutHandler;
-    }
- 
-    // Filter processing incoming logout messages
-    // First argument determines URL user will be redirected to after successful
-    // global logout
-    @Bean
-    public SAMLLogoutProcessingFilter samlLogoutProcessingFilter() {
-        return new SAMLLogoutProcessingFilter(successLogoutHandler(),
-                logoutHandler());
-    }
-     
-    // Overrides default logout processing filter with the one processing SAML
-    // messages
-    @Bean
-    public SAMLLogoutFilter samlLogoutFilter() {
-        return new SAMLLogoutFilter(successLogoutHandler(),
-                new LogoutHandler[] { logoutHandler() },
-                new LogoutHandler[] { logoutHandler() });
-    }
-    
-    // Bindings
-    private ArtifactResolutionProfile artifactResolutionProfile() {
-        final ArtifactResolutionProfileImpl artifactResolutionProfile = 
-                new ArtifactResolutionProfileImpl(httpClient());
-        artifactResolutionProfile.setProcessor(new SAMLProcessorImpl(soapBinding()));
-        return artifactResolutionProfile;
-    }
-    
-    @Bean
-    public HTTPArtifactBinding artifactBinding(ParserPool parserPool, VelocityEngine velocityEngine) {
-        return new HTTPArtifactBinding(parserPool, velocityEngine, artifactResolutionProfile());
-    }
- 
-    @Bean
-    public HTTPSOAP11Binding soapBinding() {
-        return new HTTPSOAP11Binding(parserPool());
-    }
-    
-    @Bean
-    public HTTPPostBinding httpPostBinding() {
-        return new HTTPPostBinding(parserPool(), velocityEngine());
-    }
-    
-    @Bean
-    public HTTPRedirectDeflateBinding httpRedirectDeflateBinding() {
-        return new HTTPRedirectDeflateBinding(parserPool());
-    }
-    
-    @Bean
-    public HTTPSOAP11Binding httpSOAP11Binding() {
-        return new HTTPSOAP11Binding(parserPool());
-    }
-    
-    @Bean
-    public HTTPPAOS11Binding httpPAOS11Binding() {
-        return new HTTPPAOS11Binding(parserPool());
-    }
-    
-    // Processor
-    @Bean
-    public SAMLProcessorImpl processor() {
-        Collection<SAMLBinding> bindings = new ArrayList<SAMLBinding>();
-        bindings.add(httpRedirectDeflateBinding());
-        bindings.add(httpPostBinding());
-        bindings.add(artifactBinding(parserPool(), velocityEngine()));
-        bindings.add(httpSOAP11Binding());
-        bindings.add(httpPAOS11Binding());
-        return new SAMLProcessorImpl(bindings);
-    }
+    }    
     
     /**
      * Define the security filter chain in order to support SSO Auth by using SAML 2.0
@@ -525,15 +298,15 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/login/**"),
                 samlEntryPoint()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/logout/**"),
-                samlLogoutFilter()));
+                SamlConfig.samlLogoutFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/metadata/**"),
-                metadataDisplayFilter()));
+                new MetadataDisplayFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSO/**"),
                 samlWebSSOProcessingFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSOHoK/**"),
                 samlWebSSOHoKProcessingFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SingleLogout/**"),
-                samlLogoutProcessingFilter()));
+                SamlConfig.samlLogoutProcessingFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/discovery/**"),
                 samlIDPDiscovery()));
         return new FilterChainProxy(chains);
