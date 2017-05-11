@@ -361,7 +361,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Qualifier("idp-mujina")
     public ExtendedMetadataDelegate mujinaExtendedMetadataProvider()
             throws MetadataProviderException {
-        String mujinaMetadataURL = "http://localhost:8080/metadata";
+        String mujinaMetadataURL = System.getProperty("mujinaBaseUrl", "http://localhost:8080") + "/metadata";
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
                 backgroundTaskTimer, httpClient(), mujinaMetadataURL);

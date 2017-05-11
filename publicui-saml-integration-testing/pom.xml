@@ -58,49 +58,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.3.12.v20160915</version>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopKey>STOP</stopKey>
-                    <stopPort>${jetty.stop.port}</stopPort>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>funnelback.installdir</name>
-                            <value>${project.basedir}/src/test/resources/saml/search-home</value>
-                        </systemProperty>
-                    </systemProperties>
-                    <httpConnector>
-                        <port>${jetty.http.port}</port>
-                    </httpConnector>
-                    <webApp>
-                        <contextPath>/s</contextPath>
-                        <jettyEnvXml>${project.basedir}/src/test/resources/jetty-env.xml</jettyEnvXml>
-                    </webApp>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start-jetty</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <configuration>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
-                            <daemon>true</daemon>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-jetty</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <!-- I'm not fond of this dependency copy thing, but I couldn't find any better way to
                 depend on the mujina-idp than this as described at http://stackoverflow.com/questions/29704842/integration-testing-spring-boot-based-microservices/37397777#37397777 -->
                 <groupId>org.apache.maven.plugins</groupId>
@@ -129,7 +86,6 @@
                     <outputDirectory>${project.build.directory}/wars</outputDirectory>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>com.bazaarvoice.maven.plugins</groupId>
                 <artifactId>process-exec-maven-plugin</artifactId>
@@ -158,6 +114,54 @@
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>stop-all</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Must do jetty after mujina since (for now at least), publicui must read the SAML metadata at startup -->
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.12.v20160915</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <stopKey>STOP</stopKey>
+                    <stopPort>${jetty.stop.port}</stopPort>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>funnelback.installdir</name>
+                            <value>${project.basedir}/src/test/resources/saml/search-home</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>mujinaBaseUrl</name>
+                            <value>http://localhost:${mujina.http.port}</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <httpConnector>
+                        <port>${jetty.http.port}</port>
+                    </httpConnector>
+                    <webApp>
+                        <contextPath>/s</contextPath>
+                        <jettyEnvXml>${project.basedir}/src/test/resources/jetty-env.xml</jettyEnvXml>
+                    </webApp>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
                         </goals>
                     </execution>
                 </executions>
