@@ -45,7 +45,11 @@ public class SearchResponse {
     /** PADRE return code (0 = success) */
     @Getter @Setter private int returnCode;
     
-    /** Amount of output produced by PADRE responding to the query, in bytes. */
+    /** 
+     * Amount of output produced by PADRE responding to the query, in bytes.
+     * 
+     * @since 15.12
+     */
     @Getter @Setter private Integer untruncatedPadreOutputSize;
     
     /**
