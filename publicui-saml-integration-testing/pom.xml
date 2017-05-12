@@ -9,6 +9,10 @@
         <version>15.11.1718-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <mujina.http.port>8080</mujina.http.port>
+    </properties>
+
     <build>
         <finalName>funnelback-publicui</finalName>
         <plugins>
@@ -42,14 +46,14 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>reserve-tomcat-port</id>
+                        <id>reserve-ports</id>
                         <goals>
                             <goal>reserve-network-port</goal>
                         </goals>
                         <phase>process-resources</phase>
                         <configuration>
                             <portNames>
-                                <portName>mujina.http.port</portName>
+                                <!-- <portName>mujina.http.port</portName> -->
                                 <portName>jetty.http.port</portName>
                                 <portName>jetty.stop.port</portName>
                             </portNames>
@@ -77,7 +81,7 @@
                         <artifactItem>
                             <groupId>org.openconext</groupId>
                             <artifactId>mujina-idp</artifactId>
-                            <version>5.0.4</version>
+                            <version>5.0.5</version>
                             <type>jar</type>
                             <overWrite>false</overWrite>
                             <outputDirectory>${project.build.directory}/mujina-idp-dependency/</outputDirectory>
@@ -104,7 +108,7 @@
                             <arguments>
                                 <argument>java</argument>
                                 <argument>-jar</argument>
-                                <argument>${project.build.directory}/mujina-idp-dependency/mujina-idp-5.0.4.jar</argument>
+                                <argument>${project.build.directory}/mujina-idp-dependency/mujina-idp-5.0.5.jar</argument>
                                 <argument>--server.port=${mujina.http.port}</argument>
                             </arguments>
                         </configuration>
