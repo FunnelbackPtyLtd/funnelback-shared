@@ -10,16 +10,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.LocaleResolver;
 
-import waffle.servlet.WindowsPrincipal;
-
+import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
+import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.log.LogUtils;
 import com.funnelback.publicui.utils.MapKeyFilter;
 import com.funnelback.publicui.utils.MapUtils;
+
+import waffle.servlet.WindowsPrincipal;
 
 public class SearchQuestionBinder {
     
@@ -30,6 +32,8 @@ public class SearchQuestionBinder {
      * not things which are subsequently set by input processors.
      */
     public static void bind(SearchQuestion from, SearchQuestion to) {
+        to.setExecutionContext(from.getExecutionContext());
+        to.setFunnelbackVersion(from.getFunnelbackVersion());
         to.getRawInputParameters().putAll(from.getRawInputParameters());
         to.setQueryStringMap(from.getQueryStringMapCopy());
         to.setQuery(from.getQuery());
@@ -44,12 +48,19 @@ public class SearchQuestionBinder {
         to.setClive(from.getClive());
     }
     
+    
     /**
      * Binds properties of the given {@link SearchQuestion} to the given {@link HttpServletRequest}
      * @param request
      * @param question
      */
-    public static void bind(HttpServletRequest request, SearchQuestion question, LocaleResolver localeResolver) {
+    public static void bind(ExecutionContext executionContext,
+            HttpServletRequest request,
+            SearchQuestion question,
+            LocaleResolver localeResolver,
+            FunnelbackVersion funnelbackVersion) {
+        question.setExecutionContext(executionContext);
+        question.setFunnelbackVersion(funnelbackVersion);
         question.getRawInputParameters().putAll(request.getParameterMap());
         
         // Add query string parameters, converting Map<String, String[]>

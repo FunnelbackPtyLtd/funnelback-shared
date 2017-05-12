@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.spring;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.funnelback.common.config.Keys;
+import com.funnelback.common.config.DefaultValues;
+import com.funnelback.common.config.Files;
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeFolders;
 import com.funnelback.common.testutils.SearchHomeProvider;
@@ -50,6 +52,9 @@ public class SpringContextTests {
             File searchHome = SearchHomeProvider.getWritableSearchHomeIHaveToUseStrings("SpringContextTests", 
                 "testThatContextLoadedSuccessfully", null, searchHomeConfigs, null);
             new File(SearchHomeFolders.getConfDir(searchHome), "realm.properties").createNewFile();
+            java.nio.file.Files.write(
+                Paths.get(searchHome.getAbsolutePath(), DefaultValues.FOLDER_VERSION, Files.RELEASE_INFO),
+                "Funnelback 1.2.3".getBytes());
             SpringContextTestHelper.WAS_SET = true;
             props.setProperty("funnelback.installdir", searchHome.getAbsolutePath());
             

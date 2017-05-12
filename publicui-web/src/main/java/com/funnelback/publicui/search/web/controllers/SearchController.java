@@ -28,6 +28,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.codahale.metrics.MetricRegistry;
+import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -41,6 +42,7 @@ import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.search.web.binding.StringArrayFirstSlotEditor;
 import com.funnelback.publicui.search.web.controllers.session.SessionController;
 import com.funnelback.publicui.search.web.exception.ViewTypeNotFoundException;
+import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 
 import freemarker.template.TemplateException;
 
@@ -99,6 +101,12 @@ public class SearchController extends SessionController {
     
     @Autowired
     private ConfigRepository configRepository;
+    
+    @Autowired
+    private ExecutionContextHolder executionContextHolder;
+    
+    @Autowired
+    private FunnelbackVersion funnelbackVersion;
     
     @Autowired
     private LocaleResolver localeResolver;
@@ -193,7 +201,7 @@ public class SearchController extends SessionController {
         if (question.getCollection() != null) {
             // This is were the magic happens. The TransactionProcessor
             // will take care of processing the search request.
-            SearchQuestionBinder.bind(request, question, localeResolver);
+            SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
             transaction = processor.process(question, user);
         } else {
             // Collection is null = non existent

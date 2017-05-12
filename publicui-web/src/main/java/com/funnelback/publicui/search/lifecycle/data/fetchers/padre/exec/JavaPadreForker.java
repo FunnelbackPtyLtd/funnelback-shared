@@ -66,7 +66,7 @@ public class JavaPadreForker implements PadreForker {
                     throw new PadreForkingException(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()));
                 }
                 
-                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), StandardCharsets.UTF_8);
+                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), padreOutput.getUntruncatedSize(), StandardCharsets.UTF_8);
                 
                 //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
                 if(er.getErrBytes().length > 0) {

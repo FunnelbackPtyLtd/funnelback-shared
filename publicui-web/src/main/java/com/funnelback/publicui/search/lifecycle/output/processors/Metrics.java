@@ -4,6 +4,7 @@ import static com.funnelback.publicui.utils.web.MetricsConfiguration.ALL_NS;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.COLLECTION_NS;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.ERRORS_COUNT;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_ELAPSED_TIME;
+import static com.funnelback.publicui.utils.web.MetricsConfiguration.PADRE_UNTRUNCATED_OUTPUT_SIZE;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.QUERIES;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.TOTAL_MATCHING;
 import static com.funnelback.publicui.utils.web.MetricsConfiguration.UNKNOWN;
@@ -42,7 +43,10 @@ public class Metrics extends AbstractOutputProcessor {
     
     /** Average time taken by padre across all searches */
     private Histogram allPadreElapsedTimeHistogram;
-    
+
+    /** Output size produced by padre across all searches */
+    private Histogram allPadreUntruncatedSizeHistogram;
+
     /** Global number of queries processed */
     private Meter allQueriesMeter;
     
@@ -78,6 +82,13 @@ public class Metrics extends AbstractOutputProcessor {
 
                 }
 
+                if (st.getResponse().getUntruncatedPadreOutputSize() != null) {
+                    allPadreUntruncatedSizeHistogram.update(st.getResponse().getUntruncatedPadreOutputSize());
+                    
+                    metrics.histogram(MetricRegistry.name(COLLECTION_NS , collectionAndProfile, PADRE_UNTRUNCATED_OUTPUT_SIZE))
+                        .update(st.getResponse().getUntruncatedPadreOutputSize());
+                }
+
             }
         
             if (st.getError() != null) {
@@ -93,6 +104,7 @@ public class Metrics extends AbstractOutputProcessor {
         allErrorsCounter = metrics.counter(MetricRegistry.name(ALL_NS, ERRORS_COUNT));
         allTotalMatchingHistogram = metrics.histogram(MetricRegistry.name(ALL_NS, TOTAL_MATCHING));
         allPadreElapsedTimeHistogram = metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_ELAPSED_TIME));
+        allPadreUntruncatedSizeHistogram = metrics.histogram(MetricRegistry.name(ALL_NS, PADRE_UNTRUNCATED_OUTPUT_SIZE));
         allQueriesMeter = metrics.meter(MetricRegistry.name(ALL_NS, QUERIES));
     }
     

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -42,7 +43,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @JsonIgnoreProperties("principal")
 public class SearchQuestion {
-        
+
+    /**
+     * Execution context of the Search UI. Can be "admin"
+     * or "public", depending if the search is ran on the admin
+     * port or public port.
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private ExecutionContext executionContext;
+    
     /**
      * <p>Query terms.</p>
      * 
@@ -338,6 +348,13 @@ public class SearchQuestion {
      * @since 14.0
      */
     @Getter @Setter private String hostname;
+    
+    /**
+     * <p>Funnelback version</p>
+     * 
+     * @since 15.12
+     */
+    @Getter @Setter private FunnelbackVersion funnelbackVersion;
     
     /**
      * Common query string parameters names.

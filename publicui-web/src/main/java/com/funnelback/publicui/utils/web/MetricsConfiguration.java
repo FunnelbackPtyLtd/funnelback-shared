@@ -43,6 +43,8 @@ public class MetricsConfiguration implements ServletContextAware {
     public static final String ERRORS_COUNT = "errors_count";
     /** Metric name for time spent by PADRE processing the query */
     public static final String PADRE_ELAPSED_TIME = "padre-elapsed-time";
+    /** Metric name for output size produced by PADRE processing the query */
+    public static final String PADRE_UNTRUNCATED_OUTPUT_SIZE = "padre-untruncated-output-size";
     /** Metric name for total number of matching results */
     public static final String TOTAL_MATCHING = "total-matching";
     /** Metric name for cache requests */

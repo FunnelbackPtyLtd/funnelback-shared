@@ -31,6 +31,7 @@ public class DefaultPadreForking extends AbstractPadreForking {
             padreOutput.getCharset(),
             transaction.getQuestion().getInputParameterMap().containsKey(RequestParameters.DEBUG)));
         transaction.getResponse().setReturnCode(padreOutput.getReturnCode());
+        transaction.getResponse().setUntruncatedPadreOutputSize(padreOutput.getUntruncatedOutputSize());
     }
 
     public void setI18n(I18n i18n) {

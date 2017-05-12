@@ -103,7 +103,7 @@ public class ResultPacket {
     
     /** Time spent by PADRE processing the query, in milliseconds */
     @Getter @Setter private Integer padreElapsedTime;
-    
+
     /**
      * Time spent by PADRE processing contextual navigation,
      * in seconds.
