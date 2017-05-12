@@ -160,8 +160,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO - Need to somehow combine this with the FunnelbackAdminAuthenticationProvider one in SecurityConfigBase I assume.
-        
         super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
         
         if (enableSamlAuthentication) {
