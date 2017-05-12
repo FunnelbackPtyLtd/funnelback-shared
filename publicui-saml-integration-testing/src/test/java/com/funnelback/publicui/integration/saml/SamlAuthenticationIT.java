@@ -1,5 +1,6 @@
 package com.funnelback.publicui.integration.saml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,29 +32,12 @@ public class SamlAuthenticationIT {
 
     private static String testBaseUrl = "http://localhost:8084";
     private static String mujinaBaseUrl = "http://localhost:8080";
+    private static File searchHome = new File("src/test/resources/saml/search-home/");
 
     @BeforeClass
     public static void setupProperties() {
         testBaseUrl = System.getProperty("testBaseUrl", testBaseUrl);
         mujinaBaseUrl = System.getProperty("mujinaBaseUrl", mujinaBaseUrl);
-    }
-
-    @Test
-    public void testInitialRedirect() throws Exception {
-        CloseableHttpClient httpclient = HttpClients.custom().build();
-
-        HttpGet get = new HttpGet(testBaseUrl + "/s/search.html");
-
-        try (CloseableHttpResponse response = httpclient.execute(get)) {
-            HttpEntity entity = response.getEntity();
-
-            String responseText = IOUtils.toString(entity.getContent());
-            EntityUtils.consume(entity);
-
-            Assert.assertTrue("Expected to be redirected to the IdP login page",
-                responseText.contains("Login page") && responseText.contains("Mujina Identity Provider"));
-
-        }
     }
 
     @Test
@@ -70,7 +54,7 @@ public class SamlAuthenticationIT {
             EntityUtils.consume(entity);
 
             Assert.assertTrue("Expected to get the collection listing page with proactive http basic",
-                responseText.contains("Welcome to the Funnelback search service"));
+                responseText.contains("Access granted!"));
         }
 
         HttpGet get2 = new HttpGet(testBaseUrl + "/s/search.html");
@@ -83,17 +67,32 @@ public class SamlAuthenticationIT {
             EntityUtils.consume(entity);
 
             Assert.assertTrue("Expected to get the collection listing page with a JSESSIONID cookie",
-                responseText.contains("Welcome to the Funnelback search service"));
+                responseText.contains("Access granted!"));
         }
     }
 
     @Test
     public void testTokenAuth() throws Exception {
-        // TODO - How can I get a token (I don't have admin-api to log in)
+        CloseableHttpClient httpclient = HttpClients.custom().build();
+
+        String token = TokenUtils.makeToken(searchHome, "test", "admin", "dummyHash");
+        
+        HttpGet get = new HttpGet(testBaseUrl + "/s/search.html");
+        get.addHeader("X-Security-Token", token); // That's admin:admin
+
+        try (CloseableHttpResponse response = httpclient.execute(get)) {
+            HttpEntity entity = response.getEntity();
+
+            String responseText = IOUtils.toString(entity.getContent());
+            EntityUtils.consume(entity);
+            
+            Assert.assertTrue("Expected to get the collection listing page with an X-Security-Token header",
+                responseText.contains("Access granted!"));
+        }
     }
 
     @Test
-    public void testFullSamlAuth() throws Exception {
+    public void testSamlAuth() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom()
             .setRedirectStrategy(new LaxRedirectStrategy())
             // We want to follow a POST redirect to a GET - see http://stackoverflow.com/a/23181680/797
@@ -129,6 +128,7 @@ public class SamlAuthenticationIT {
             
             Document doc = Jsoup.parse(responseText);
             
+            // Likely very fragile to changes in Mujina (but that probably doesn't change often)
             targetUrl = doc.select("form").first().attr("action");
             confirmFormParameters.add(new BasicNameValuePair("SAMLResponse", doc.select("input[name='SAMLResponse']").first().attr("value")));
             confirmFormParameters.add(new BasicNameValuePair("Signature", doc.select("input[name='Signature']").first().attr("value")));
@@ -146,7 +146,7 @@ public class SamlAuthenticationIT {
             EntityUtils.consume(entity);
 
             Assert.assertTrue("Expected to reach the Funnelback collection listing page after SAML authentication",
-                responseText.contains("Welcome to the Funnelback search service"));
+                responseText.contains("Access granted!"));
         }
 
     }
