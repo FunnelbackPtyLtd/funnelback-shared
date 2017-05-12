@@ -57,9 +57,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.funnelback.common.config.Keys;
+import com.funnelback.publicui.search.model.transaction.ExecutionContext;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
-import com.funnelback.publicui.utils.web.ExecutionContextHolder.ExecutionContext;
 import com.funnelback.springmvc.api.config.security.FunnelbackAdminAuthenticationProvider;
 import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
@@ -73,8 +73,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     
     @Autowired
     ExecutionContextHolder executionContextHolder;
-    
-    boolean enableSamlAuthentication = true;
 
     /**
      * Defines the web based security configuration.
@@ -84,37 +82,27 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
      */
     @Override  
     protected void configure(HttpSecurity http) throws Exception {
-        // super.configureHttpbasicAndToken(http);
-        // Can't do that - causes an infinite redirect loop in SAML...
-        // I assume because of the disagreement about the httpBasic entryPoint
-        // So instead, we'll just setup the token based stuff here now (and possibly
-        // split it up in the parent when we finish).
-//        http.authorizeRequests()
-//        .anyRequest()
-//        .authenticated()
-//        .and()
-        http.rememberMe()
-        .rememberMeServices(tokenBasedRememberMeServices());
-        
-        // New SAML stuff
-
- 
-        // OLD stuff - need to integrate this up
         boolean requireX509Authentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.REQUIRE_X509, false);
-
+        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.ENABLE_SAML, false);
+        
         if (requireX509Authentication) {
             http
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .x509().userDetailsService(new X509UserDetailsService());
         } else if (enableSamlAuthentication) {
+            // If SAML is on, we always authenticate search results
+            // regardless of the ExecutionContext.
+            //
+            // Note: we still allow HttpBasic and Token auth alongside SAML
+            // but HttpBasic must be proactive (we'll never return 401).
             http.rememberMe()
                 .rememberMeServices(tokenBasedRememberMeServices());
 
             // This causes us to have httpBasic enabled, but if it fails
             // (because there's no header, samlEntryPoint is used to
             // initiate authentication (which redirects the user
-            // off to the IdP's login process).
+            // off to the IdP's login process rather than returning 401).
             http
                 .httpBasic()
                     .authenticationEntryPoint(samlEntryPoint());
@@ -161,7 +149,9 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
-        
+
+        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.ENABLE_SAML, false);
+
         if (enableSamlAuthentication) {
             auth
                 .authenticationProvider(samlAuthenticationProvider());
