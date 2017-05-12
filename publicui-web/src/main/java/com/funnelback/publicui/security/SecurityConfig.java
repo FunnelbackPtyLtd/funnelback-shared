@@ -56,8 +56,11 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.utils.web.ExecutionContextHolder;
+import com.funnelback.publicui.utils.web.ExecutionContextHolder.ExecutionContext;
+import com.funnelback.springmvc.api.config.security.FunnelbackAdminAuthenticationProvider;
 import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
 @Configuration
@@ -71,28 +74,101 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Autowired
     ExecutionContextHolder executionContextHolder;
     
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        switch (executionContextHolder.getExecutionContext()) {
-//        case Admin:
-//            super.configureHttpbasicAndToken(http);
-//            break;
-//        case Novell:
-//            break;
-//        case Public:
-//            http
-//                .authorizeRequests()
-//                .anyRequest()
-//                .permitAll();
-//            break;
-//        case Unknown:
-//            break;
-//        default:
-//            break;
-//        }
-//        //Disable csrf, as we don't care to protect anything here with it.
-//        http.csrf().disable();
-//    }
+    boolean enableSamlAuthentication = true;
+
+    /**
+     * Defines the web based security configuration.
+     * 
+     * @param   http It allows configuring web based security for specific http requests.
+     * @throws  Exception 
+     */
+    @Override  
+    protected void configure(HttpSecurity http) throws Exception {
+        // super.configureHttpbasicAndToken(http);
+        // Can't do that - causes an infinite redirect loop in SAML...
+        // I assume because of the disagreement about the httpBasic entryPoint
+        // So instead, we'll just setup the token based stuff here now (and possibly
+        // split it up in the parent when we finish).
+//        http.authorizeRequests()
+//        .anyRequest()
+//        .authenticated()
+//        .and()
+        http.rememberMe()
+        .rememberMeServices(tokenBasedRememberMeServices());
+        
+        // New SAML stuff
+
+ 
+        // OLD stuff - need to integrate this up
+        boolean requireX509Authentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.REQUIRE_X509, false);
+
+        if (requireX509Authentication) {
+            http
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .x509().userDetailsService(new X509UserDetailsService());
+        } else if (enableSamlAuthentication) {
+            http.rememberMe()
+                .rememberMeServices(tokenBasedRememberMeServices());
+
+            // This causes us to have httpBasic enabled, but if it fails
+            // (because there's no header, samlEntryPoint is used to
+            // initiate authentication (which redirects the user
+            // off to the IdP's login process).
+            http
+                .httpBasic()
+                    .authenticationEntryPoint(samlEntryPoint());
+
+            http
+                .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
+                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
+
+            http
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/error").permitAll()
+                .antMatchers("/saml/**").permitAll()
+                .anyRequest().authenticated();
+            http.logout().logoutSuccessUrl("/");
+        } else {
+            if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+                super.configureHttpbasicAndToken(http);
+            } else if (ExecutionContext.Public.equals(executionContextHolder.getExecutionContext())) {
+                http.authorizeRequests().anyRequest().permitAll();
+            } else {
+                // Do nothing - These get no security by default.
+            }
+        }
+        
+        // Disable csrf, as we don't care to protect anything here with it.
+        http.csrf().disable();
+
+        // This is usually done in the parent however as we don't actually
+        // call the parent to protect this end point when in non Admin mode
+        // we need to ensure this is disabled here.
+        http.headers().httpStrictTransportSecurity().disable();
+    }
+
+    @Autowired
+    FunnelbackAdminAuthenticationProvider funnelbackAdminAuthenticationProvider;
+    
+    /**
+     * Sets a custom authentication provider.
+     * 
+     * @param   auth SecurityBuilder used to create an AuthenticationManager.
+     * @throws  Exception 
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // TODO - Need to somehow combine this with the FunnelbackAdminAuthenticationProvider one in SecurityConfigBase I assume.
+        
+        super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
+        
+        if (enableSamlAuthentication) {
+            auth
+                .authenticationProvider(samlAuthenticationProvider());
+        }
+    } 
     
     
 
@@ -324,80 +400,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-     
-    /**
-     * Defines the web based security configuration.
-     * 
-     * @param   http It allows configuring web based security for specific http requests.
-     * @throws  Exception 
-     */
-    @Override  
-    protected void configure(HttpSecurity http) throws Exception {
-        // New SAML stuff
-        http
-            .httpBasic()
-                .authenticationEntryPoint(samlEntryPoint());
-        http
-            .csrf()
-                .disable();
-        http
-            .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
-            .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
-        http        
-            .authorizeRequests()
-            .antMatchers("/").permitAll()
-            .antMatchers("/error").permitAll()
-            .antMatchers("/saml/**").permitAll()
-            .anyRequest().authenticated();
-        http
-            .logout()
-                .logoutSuccessUrl("/");
- 
-        // OLD stuff - need to integrate this up
-//        boolean requireX509Authentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.REQUIRE_X509, false);
-//
-//        if (requireX509Authentication) {
-//            http
-//                .authorizeRequests().anyRequest().authenticated()
-//                .and()
-//                .x509().userDetailsService(new X509UserDetailsService());
-//        } else {
-//            switch (executionContextHolder.getExecutionContext()) {
-//            case Admin:
-//                super.configureHttpbasicAndToken(http);
-//                break;
-//            case Novell:
-//                break;
-//            case Public:
-//                http.authorizeRequests().anyRequest().permitAll();
-//                break;
-//            case Unknown:
-//                break;
-//            default:
-//                break;
-//            }
-//        }
-//        
-//        // Disable csrf, as we don't care to protect anything here with it.
-//        http.csrf().disable();
-//
-//        // This is usually done in the parent however as we don't actually
-//        // call the parent to protect this end point when in non Admin mode
-//        // we need to ensure this is disabled here.
-//        http.headers().httpStrictTransportSecurity().disable();
-    }
-
-    /**
-     * Sets a custom authentication provider.
-     * 
-     * @param   auth SecurityBuilder used to create an AuthenticationManager.
-     * @throws  Exception 
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .authenticationProvider(samlAuthenticationProvider());
-    } 
     
     public class X509UserDetailsService implements UserDetailsService {
         // This very simple user details service is intended to cause spring to
