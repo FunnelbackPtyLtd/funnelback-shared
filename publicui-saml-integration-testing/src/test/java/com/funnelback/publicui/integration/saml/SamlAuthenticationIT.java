@@ -85,7 +85,7 @@ public class SamlAuthenticationIT {
             Assert.assertTrue("Expected to get the collection listing page with a JSESSIONID cookie",
                 responseText.contains("Welcome to the Funnelback search service"));
         }
-}
+    }
 
     @Test
     public void testTokenAuth() throws Exception {
