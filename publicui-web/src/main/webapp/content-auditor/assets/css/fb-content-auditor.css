@@ -1626,6 +1626,9 @@ footer a,footer a:focus,footer a:hover {
 
 .facets .panel .panel-body .category {
     border-bottom: 1px solid #eee;
+	line-height: inherit;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
 }
 
 .facets .panel .panel-body .category:hover {
