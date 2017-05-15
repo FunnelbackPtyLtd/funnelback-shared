@@ -9,5 +9,7 @@
         <Root level="ERROR">
             <AppenderRef ref="Console" />
         </Root>
+        <!-- Avoid noise from predictive segmentation, for which the data is not included -->
+        <Logger name="com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationConnector" level="fatal" />
     </Loggers>
 </Configuration>
