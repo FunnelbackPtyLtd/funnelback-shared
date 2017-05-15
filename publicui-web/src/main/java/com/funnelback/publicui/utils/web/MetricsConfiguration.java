@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
+import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.funnelback.common.metric.MetricRegistryReporter;
@@ -65,12 +66,16 @@ public class MetricsConfiguration implements ServletContextAware {
     
     private MetricRegistryReporter registryReporter;
     
+    private JmxReporter jmxReporter;
+    
     /**
      * @return The {@link MetricRegistry} for the application, with configured
      * reporters
      */
     @Bean
     public MetricRegistry metricRegistry() {
+        jmxReporter = JmxReporter.forRegistry(registry).build();
+        jmxReporter.start();
         
         String hostName = hostnameHolder.getHostname();
         if (hostName == null) {
@@ -93,6 +98,9 @@ public class MetricsConfiguration implements ServletContextAware {
      */
     @PreDestroy
     public void preDestroy() {
+        if (jmxReporter != null) {
+            jmxReporter.close();
+        }
         if (registryReporter != null) {
             try {
                 registryReporter.close();
