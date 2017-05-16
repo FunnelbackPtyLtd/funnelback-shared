@@ -124,6 +124,7 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
             .map(Metadata::getName);
 
         Stream<String> other = Stream.of(
+            Names.setOfFailingSuccessCriterions(),
             Names.setOfFailingPrinciples(),
             Names.setOfFailingSuccessCriterions(),
             Names.setOfFailingTechniques(),
