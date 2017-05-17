@@ -25,11 +25,8 @@ public class SSOController {
     private static final Logger LOG = LoggerFactory
             .getLogger(SSOController.class);
 
-    @Autowired
-    private MetadataManager metadata;
-
     @RequestMapping(value = "/idpSelection", method = RequestMethod.GET)
-    public ModelAndView idpSelection(HttpServletRequest request, Model model) {
+    public ModelAndView idpSelection(HttpServletRequest request, Model model, MetadataManager metadata) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             LOG.warn("The current user is already logged.");
