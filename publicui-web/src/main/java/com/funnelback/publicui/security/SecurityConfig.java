@@ -87,7 +87,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Override  
     protected void configure(HttpSecurity http) throws Exception {
         boolean requireX509Authentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.REQUIRE_X509, false);
-        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.ENABLE_SAML, false);
+        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
         
         if (requireX509Authentication) {
             http
@@ -154,7 +154,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
 
-        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.ENABLE_SAML, false);
+        boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
 
         if (enableSamlAuthentication) {
             auth
@@ -199,14 +199,14 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     }
     
     @Bean
-    @Qualifier("idp-mujina")
     @Conditional(IsSamlEnabledCondition.class)
-    public ExtendedMetadataDelegate mujinaExtendedMetadataProvider()
+    public ExtendedMetadataDelegate extendedMetadataProvider()
             throws MetadataProviderException {
-        String mujinaMetadataURL = System.getProperty("mujinaBaseUrl", "http://localhost:8080") + "/metadata";
+        String metadataURL = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.IDENTITY_PROVIDER_METADATA_URL, "");
+
         Timer backgroundTaskTimer = new Timer(true);
         HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, new HttpClient(new MultiThreadedHttpConnectionManager()), mujinaMetadataURL);
+                backgroundTaskTimer, new HttpClient(new MultiThreadedHttpConnectionManager()), metadataURL);
 
         StaticBasicParserPool parserPool = new StaticBasicParserPool();
         try {
@@ -227,27 +227,17 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 
     // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
     // is here
-    // Do no forget to call iniitalize method on providers
     @Bean
     @Qualifier("metadata")
     @Conditional(IsSamlEnabledCondition.class)
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-        ExtendedMetadataDelegate mujinaEmd = mujinaExtendedMetadataProvider();
+        ExtendedMetadataDelegate mujinaEmd = extendedMetadataProvider();
         mujinaEmd.initialize();
         providers.add(mujinaEmd);
    
         CachingMetadataManager manager = new CachingMetadataManager(providers);
-      
-//        // Todo: add to com.funnelback.common.config.Keys
-//        String defaultIDP = configRepository
-//                    .getGlobalConfiguration().value("saml.default_idp");
-//        if (defaultIDP != null) {
-//            manager.setDefaultIDP(defaultIDP); 
-//        } else { 
-//           manager.setDefaultIDP("");
-//        }
  
         return manager; 
     }
@@ -257,15 +247,10 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Conditional(IsSamlEnabledCondition.class)
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        // Todo: add to com.funnelback.common.config.Keys
-//        String entityID = configRepository
-//                    .getGlobalConfiguration().value("saml.entity_id");
-//        if (entityID != null) {
-//             metadataGenerator.setEntityId(entityID);
-//        } else {
-//             metadataGenerator.setEntityId("com:funnelback:publicui:sp"); 
-//        }
-        String entityId = "http://mock-idp";
+
+        String entityId = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.ENTITY_ID, "");;
+        metadataGenerator.setEntityId(entityId);
+        
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager()); 

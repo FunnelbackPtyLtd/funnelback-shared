@@ -32,7 +32,7 @@ public class IsSamlEnabledCondition implements Condition {
         if (isEnabled == null) {
             GlobalOnlyConfig config = new GlobalOnlyConfig(new File(System.getProperty(Config.SYSPROP_INSTALL_DIR)));
             
-            isEnabled = config.valueAsBoolean(Keys.Auth.PublicUI.ENABLE_SAML, false);
+            isEnabled = config.valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
         }
         return isEnabled;
     }
