@@ -15,6 +15,7 @@ import java.util.Timer;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.eclipse.jetty.util.security.Password;
 import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.saml2.metadata.provider.BaseMetadataProvider;
 import org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -171,19 +173,33 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         }
     } 
     
-    // Central storage of cryptographic keys
+    // See KeyManager doc in section 8.1 of
+    // http://docs.spring.io/spring-security-saml/docs/current/reference/html/security.html
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
     public KeyManager keyManager() {
-        DefaultResourceLoader loader = new DefaultResourceLoader();
-        Resource storeFile = loader
-                .getResource("classpath:/saml/samlKeystore.jks");
-        String storePass = "nalle123";
-        Map<String, String> passwords = new HashMap<String, String>();
-        passwords.put("apollo", "nalle123");
-        String defaultKey = "apollo";
+        String samlKeystorePath = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.KEYSTORE_PATH);
+        String samlKeystorePassword = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.KEYSTORE_PASSWORD);
+        String samlKeyAlias = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.KEY_ALIAS);
+        String samlKeyPassword = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.KEY_PASSWORD);
         
-        return new JKSKeyManager(storeFile, storePass, passwords, defaultKey);
+        if (samlKeystorePassword.startsWith(Password.__OBFUSCATE)) {
+            samlKeystorePassword = Password.deobfuscate(samlKeystorePassword);
+        }
+        if (samlKeyPassword.startsWith(Password.__OBFUSCATE)) {
+            samlKeyPassword = Password.deobfuscate(samlKeyPassword);
+        }
+        
+        FileSystemResourceLoader loader = new FileSystemResourceLoader();
+        Resource samlKeystoreResource = loader.getResource(samlKeystorePath);
+
+        Map<String, String> passwords = new HashMap<String, String>();
+        passwords.put(samlKeyAlias, samlKeyPassword);
+        // It's unclear to me why we'd ever want to provide
+        // keys for other passwords here - Hopefully I'll
+        // find out before we ship if there's a good one.
+        
+        return new JKSKeyManager(samlKeystoreResource, samlKeystorePassword, passwords, samlKeyAlias);
     }
  
     // Setup TLS Socket Factory
@@ -192,7 +208,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Conditional(IsSamlEnabledCondition.class)
     public TLSProtocolConfigurer tlsProtocolConfigurer() {
         TLSProtocolConfigurer configurer = new TLSProtocolConfigurer();
-        configurer.setSslHostnameVerification("allowAll");
+        //configurer.setSslHostnameVerification("allowAll");
         return configurer;
     }
     
@@ -201,9 +217,9 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Conditional(IsSamlEnabledCondition.class)
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        extendedMetadata.setIdpDiscoveryEnabled(false); 
-        extendedMetadata.setSslHostnameVerification("allowAll");
-        extendedMetadata.setSignMetadata(false);
+        //extendedMetadata.setIdpDiscoveryEnabled(false); 
+        //extendedMetadata.setSslHostnameVerification("allowAll");
+        //extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
     
