@@ -25,6 +25,7 @@ import org.springframework.security.saml.SAMLLogoutFilter;
 import org.springframework.security.saml.SAMLLogoutProcessingFilter;
 import org.springframework.security.saml.SAMLProcessingFilter;
 import org.springframework.security.saml.SAMLWebSSOHoKProcessingFilter;
+import org.springframework.security.saml.context.SAMLContextProvider;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.saml.log.SAMLDefaultLogger;
@@ -80,7 +81,7 @@ public class SamlConfig {
 
     // Initialization of OpenSAML library
     @Bean
-    public SAMLBootstrap sAMLBootstrap() {
+    public static SAMLBootstrap SAMLBootstrap() {
         return new SAMLBootstrap();
     }
 
@@ -310,7 +311,7 @@ public class SamlConfig {
 
     // Provider of default SAML Context
     @Bean
-    public SAMLContextProviderImpl contextProvider() {
+    public SAMLContextProvider contextProvider() {
         return new SAMLContextProviderImpl();
     }
 
@@ -329,7 +330,7 @@ public class SamlConfig {
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/logout/**"),
                 samlLogoutFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/metadata/**"),
-                new MetadataDisplayFilter()));
+                metadataDisplayFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSO/**"),
                 samlWebSSOProcessingFilter(authenticationManager, successRedirectHandler, authenticationFailureHandler)));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSOHoK/**"),
@@ -339,5 +340,10 @@ public class SamlConfig {
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/discovery/**"),
                 samlIDPDiscovery()));
         return new FilterChainProxy(chains);
+    }
+
+    @Bean
+    public MetadataDisplayFilter metadataDisplayFilter() {
+        return new MetadataDisplayFilter();
     }
 }
