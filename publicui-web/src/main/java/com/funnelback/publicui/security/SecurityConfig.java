@@ -1,5 +1,11 @@
 package com.funnelback.publicui.security;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +15,9 @@ import java.util.Timer;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
+import org.opensaml.saml2.metadata.provider.BaseMetadataProvider;
+import org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider;
 import org.opensaml.saml2.metadata.provider.HTTPMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
@@ -77,7 +86,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     
     @Autowired(required=false)
     SAMLAuthenticationProvider samlAuthenticationProvider;
-    
+
     /**
      * Defines the web based security configuration.
      * 
@@ -203,21 +212,33 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public ExtendedMetadataDelegate extendedMetadataProvider()
             throws MetadataProviderException {
         String metadataURL = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.IDENTITY_PROVIDER_METADATA_URL, "");
+        
+        AbstractMetadataProvider metadataProvider;
+        if (metadataURL.startsWith("file:")) {
+            // Local filesystem
+            try {
+                File metadataFile = Paths.get(new URI(metadataURL)).toFile();
+                metadataProvider = new FilesystemMetadataProvider(metadataFile);
+            } catch (URISyntaxException e) {
+                throw new MetadataProviderException("Invalid URI for metadata file", e);
+            }
+        } else {
+            // We assume it's an HTTP[s] url
+            metadataProvider = new HTTPMetadataProvider(
+                new Timer(true), new HttpClient(new MultiThreadedHttpConnectionManager()), metadataURL);
+        }
 
-        Timer backgroundTaskTimer = new Timer(true);
-        HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-                backgroundTaskTimer, new HttpClient(new MultiThreadedHttpConnectionManager()), metadataURL);
 
         StaticBasicParserPool parserPool = new StaticBasicParserPool();
         try {
             parserPool.initialize();
         } catch (XMLParserException e) {
-            throw new MetadataProviderException("Exception initialising XML parser", e);
+            throw new MetadataProviderException("Exception initialising SAML XML metadata parser", e);
         }
-        httpMetadataProvider.setParserPool(parserPool);
+        metadataProvider.setParserPool(parserPool);
         
         ExtendedMetadataDelegate extendedMetadataDelegate =
-                new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+                new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
         extendedMetadataDelegate.setMetadataTrustCheck(true);
         extendedMetadataDelegate.setMetadataRequireSignature(false);
 
