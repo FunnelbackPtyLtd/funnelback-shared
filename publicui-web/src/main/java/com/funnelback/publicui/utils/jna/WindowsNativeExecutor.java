@@ -290,7 +290,7 @@ public class WindowsNativeExecutor {
         }
         
         if (bos.isTruncated()) {
-            throw new IOException(new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit")));
+            throw new IOException(new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit"), bos.getUntruncatedSize()));
         }
         
         if (! Kernel32.INSTANCE.CloseHandle(hChildOutRead)) {
