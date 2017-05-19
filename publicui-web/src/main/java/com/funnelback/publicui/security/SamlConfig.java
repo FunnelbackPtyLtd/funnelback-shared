@@ -9,6 +9,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.velocity.app.VelocityEngine;
+import org.opensaml.saml2.metadata.provider.MetadataProvider;
+import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.parse.XMLParserException;
@@ -29,6 +31,9 @@ import org.springframework.security.saml.context.SAMLContextProvider;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.saml.log.SAMLDefaultLogger;
+import org.springframework.security.saml.metadata.CachingMetadataManager;
+import org.springframework.security.saml.metadata.ExtendedMetadata;
+import org.springframework.security.saml.metadata.ExtendedMetadataDelegate;
 import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
@@ -40,6 +45,7 @@ import org.springframework.security.saml.processor.HTTPRedirectDeflateBinding;
 import org.springframework.security.saml.processor.HTTPSOAP11Binding;
 import org.springframework.security.saml.processor.SAMLBinding;
 import org.springframework.security.saml.processor.SAMLProcessorImpl;
+import org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer;
 import org.springframework.security.saml.trust.httpclient.TLSProtocolSocketFactory;
 import org.springframework.security.saml.util.VelocityFactory;
 import org.springframework.security.saml.websso.ArtifactResolutionProfile;
@@ -335,5 +341,37 @@ public class SamlConfig {
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
         return new MetadataDisplayFilter();
+    }
+    
+    @Bean
+    @Qualifier("metadata")
+    public CachingMetadataManager metadata(ExtendedMetadataDelegate extendedMetadataDelegate) throws MetadataProviderException {
+        List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
+        providers.add(extendedMetadataDelegate);
+        return new CachingMetadataManager(providers); 
+    }
+    
+    @Bean
+    public TLSProtocolConfigurer tlsProtocolConfigurer() {
+        return new TLSProtocolConfigurer();
+    }
+    
+    @Bean
+    public ExtendedMetadata extendedMetadata() {
+        return new ExtendedMetadata();
+    }
+
+    @Bean
+    @Conditional(IsSamlEnabledCondition.class)
+    public static SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        return successRedirectHandler;
+    }
+
+    @Bean
+    @Conditional(IsSamlEnabledCondition.class)
+    public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
+        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+        return failureHandler;
     }
 }

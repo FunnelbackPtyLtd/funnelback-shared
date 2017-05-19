@@ -82,20 +82,6 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Autowired
     ExecutionContextHolder executionContextHolder;
 
-    /* SAML Related Beans - see SamlConfig */
-    @Autowired(required=false)
-    SAMLEntryPoint samlEntryPoint;
-    
-    @Autowired(required=false)
-    MetadataGeneratorFilter metadataGeneratorFilter;
-    
-    @Autowired(required=false)
-    @Qualifier("samlFilter")
-    FilterChainProxy samlFilter;
-    
-    @Autowired(required=false)
-    SAMLAuthenticationProvider samlAuthenticationProvider;
-
     /**
      * Defines the web based security configuration.
      * 
@@ -179,20 +165,49 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         }
     } 
     
-    // SAML Authentication Provider responsible for validating of received SAML
-    // messages
+    /* SAML Related Beans - see SamlConfig - Not 'required' because SAML may not be enabled */
+    @Autowired(required=false)
+    SAMLEntryPoint samlEntryPoint;
+    
+    @Autowired(required=false)
+    MetadataGeneratorFilter metadataGeneratorFilter;
+    
+    @Autowired(required=false)
+    @Qualifier("samlFilter")
+    FilterChainProxy samlFilter;
+    
+    @Autowired(required=false)
+    SAMLAuthenticationProvider samlAuthenticationProvider;
+
+    /**
+     * Defines how we create a User object from the authentication info the SAML
+     * Identity Provider (IdP) provides to us.
+     */
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
     public SAMLAuthenticationProvider samlAuthenticationProvider() {
         SAMLAuthenticationProvider samlAuthenticationProvider = new SAMLAuthenticationProvider();
-        samlAuthenticationProvider.setUserDetails(new SAMLUserDetailsServiceImpl());
+        samlAuthenticationProvider.setUserDetails(new SAMLUserDetailsService() {
+            public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+                String userID = credential.getNameID().getValue();
+
+                // For publicui we don't authorise at all, so it's sufficient to
+                // just provide a user object - We include the username in case
+                // it proves useful to later processing (e.g. DLS)
+                return new User(userID, "N/A", Arrays.asList(() -> "ROLE_SAML"));
+            }
+        });
         samlAuthenticationProvider.setForcePrincipalAsString(false);
         return samlAuthenticationProvider;
     }
 
-
-    // See KeyManager doc in section 8.1 of
-    // http://docs.spring.io/spring-security-saml/docs/current/reference/html/security.html
+    /**
+     * Defines where we store our private key and certificate so that the Identity Provider (IdP)
+     * can validate our traffic.
+     * 
+     * See KeyManager doc in section 8.1 of
+     * http://docs.spring.io/spring-security-saml/docs/current/reference/html/security.html
+     */
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
     public KeyManager keyManager() {
@@ -220,21 +235,12 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return new JKSKeyManager(samlKeystoreResource, samlKeystorePassword, passwords, samlKeyAlias);
     }
  
+    /**
+     * Loads the Identity Provider (IdP) metadata (which tells us how to do the SAML login, how to confirm it's them etc)
+     */
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
-    public TLSProtocolConfigurer tlsProtocolConfigurer() {
-        return new TLSProtocolConfigurer();
-    }
-    
-    @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public ExtendedMetadata extendedMetadata() {
-        return new ExtendedMetadata();
-    }
-    
-    @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public ExtendedMetadataDelegate extendedMetadataProvider()
+    public ExtendedMetadataDelegate extendedMetadataProvider(ExtendedMetadata extendedMetadata)
             throws MetadataProviderException {
         String metadataURL = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.IDENTITY_PROVIDER_METADATA_URL, "");
         
@@ -252,8 +258,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             metadataProvider = new HTTPMetadataProvider(
                 new Timer(true), new HttpClient(new MultiThreadedHttpConnectionManager()), metadataURL);
         }
-
-
+        
         StaticBasicParserPool parserPool = new StaticBasicParserPool();
         try {
             parserPool.initialize();
@@ -263,63 +268,28 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         metadataProvider.setParserPool(parserPool);
         
         ExtendedMetadataDelegate extendedMetadataDelegate =
-                new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
-        extendedMetadataDelegate.setMetadataTrustCheck(true);
-        extendedMetadataDelegate.setMetadataRequireSignature(false);
+                new ExtendedMetadataDelegate(metadataProvider, extendedMetadata);
+
+        extendedMetadataDelegate.initialize();
 
         return extendedMetadataDelegate;
     }
-
-
-    // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
-    // is here
-    @Bean
-    @Qualifier("metadata")
-    @Conditional(IsSamlEnabledCondition.class)
-    public CachingMetadataManager metadata() throws MetadataProviderException {
-        List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
-
-        ExtendedMetadataDelegate mujinaEmd = extendedMetadataProvider();
-        mujinaEmd.initialize();
-        providers.add(mujinaEmd);
-   
-        CachingMetadataManager manager = new CachingMetadataManager(providers);
  
-        return manager; 
-    }
- 
-    // Filter automatically generates default SP metadata
+    /**
+     * Generates our Service Provider (SP) metadata (allowing the remote Identity Provider (IdP) to understand us)
+     */
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
-    public MetadataGenerator metadataGenerator() {
+    public MetadataGenerator metadataGenerator(ExtendedMetadata extendedMetadata, KeyManager keyManager) {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
 
         String entityId = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.ENTITY_ID, "");;
         metadataGenerator.setEntityId(entityId);
-        metadataGenerator.setExtendedMetadata(extendedMetadata());
-        metadataGenerator.setKeyManager(keyManager()); 
+        metadataGenerator.setExtendedMetadata(extendedMetadata);
+        metadataGenerator.setKeyManager(keyManager); 
         return metadataGenerator;
     }
     
-    // Handler deciding where to redirect user after successful login
-    @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public static SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-        successRedirectHandler.setDefaultTargetUrl("/search.html");
-        return successRedirectHandler;
-    }
-
-    // Handler deciding where to redirect user after failed login
-    @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
-        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-        //failureHandler.setUseForward(true);
-        failureHandler.setDefaultFailureUrl("/search.html");
-        return failureHandler;
-    }
-
     /**
      * Returns the authentication manager currently used by Spring.
      * It represents a bean definition with the aim allow wiring from
@@ -350,27 +320,4 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             return new User(username, "N/A", Arrays.asList(() -> "ROLE_SSL"));
         }
     }
-    
-    public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
-        
-        public Object loadUserBySAML(SAMLCredential credential)
-                throws UsernameNotFoundException {
-            
-            // The method is supposed to identify local account of user referenced by
-            // data in the SAML assertion and return UserDetails object describing the user.
-            
-            String userID = credential.getNameID().getValue();
-            
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-            authorities.add(authority);
-
-            // In a real scenario, this implementation has to locate user in a arbitrary
-            // dataStore based on information present in the SAMLCredential and
-            // returns such a date in a form of application specific UserDetails object.
-            return new User(userID, "<abc123>", true, true, true, true, authorities);
-        }
-        
-    }
-
 }
