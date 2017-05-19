@@ -2,7 +2,7 @@ image: funnelback-rnd/base
 
 build:
     script:
-        - mvn -B -Dmaven.test.failure.ignore=false clean verify
+        - mvn -U -B -Dmaven.test.failure.ignore=false clean verify
     tags:
         - funnelback-rnd
         - docker
