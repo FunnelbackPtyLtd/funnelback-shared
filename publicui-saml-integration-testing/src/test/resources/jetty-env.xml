@@ -6,7 +6,9 @@
         <Arg></Arg>  <!-- Empty arg here means global to JVM accoding to http://www.eclipse.org/jetty/documentation/current/using-jetty-jndi.html -->
         <Arg>java:comp/env/userSaltMap</Arg>
         <Arg>
-            <New class="java.util.concurrent.ConcurrentHashMap"></New>
+            <New class="java.util.concurrent.ConcurrentHashMap">
+                <Put name="admin">dummyHash</Put>
+            </New>
         </Arg>
     </New>
 </Configure>
