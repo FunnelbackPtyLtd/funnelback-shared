@@ -16,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.hamcrest.core.StringContains;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Assert;
@@ -52,9 +53,9 @@ public class SamlAuthenticationIT {
 
             String responseText = IOUtils.toString(entity.getContent());
             EntityUtils.consume(entity);
-
-            Assert.assertTrue("Expected to get the collection listing page with proactive http basic",
-                responseText.contains("Access granted!"));
+            
+            Assert.assertThat("Expected to reach the Funnelback collection listing page after proactive HTTP Basic authentication", responseText,
+                StringContains.containsString("Access granted!"));
         }
 
         HttpGet get2 = new HttpGet(testBaseUrl + "/s/search.html");
@@ -66,8 +67,8 @@ public class SamlAuthenticationIT {
             String responseText = IOUtils.toString(entity.getContent());
             EntityUtils.consume(entity);
 
-            Assert.assertTrue("Expected to get the collection listing page with a JSESSIONID cookie",
-                responseText.contains("Access granted!"));
+            Assert.assertThat("Expected to get the collection listing page with a JSESSIONID cookie", responseText,
+                StringContains.containsString("Access granted!"));
         }
     }
 
@@ -86,8 +87,8 @@ public class SamlAuthenticationIT {
             String responseText = IOUtils.toString(entity.getContent());
             EntityUtils.consume(entity);
             
-            Assert.assertTrue("Expected to get the collection listing page with an X-Security-Token header",
-                responseText.contains("Access granted!"));
+            Assert.assertThat("Expected to get the collection listing page with an X-Security-Token header", responseText,
+                StringContains.containsString("Access granted!"));
         }
     }
 
@@ -106,8 +107,10 @@ public class SamlAuthenticationIT {
             String responseText = IOUtils.toString(entity.getContent());
             EntityUtils.consume(entity);
 
-            Assert.assertTrue("Expected to be redirected to the IdP login page",
-                responseText.contains("Login page") && responseText.contains("Mujina Identity Provider"));
+            Assert.assertThat("Expected to be redirected to the IdP login page", responseText,
+                StringContains.containsString("Login page"));
+            Assert.assertThat("Expected to be redirected to the IdP login page", responseText,
+                StringContains.containsString("Mujina Identity Provider"));
         }
 
         HttpPost postLoginForm = new HttpPost(mujinaBaseUrl + "/login");
@@ -145,8 +148,8 @@ public class SamlAuthenticationIT {
             String responseText = IOUtils.toString(entity.getContent());
             EntityUtils.consume(entity);
 
-            Assert.assertTrue("Expected to reach the Funnelback collection listing page after SAML authentication",
-                responseText.contains("Access granted!"));
+            Assert.assertThat("Expected to reach the Funnelback collection listing page after SAML authentication", responseText,
+                StringContains.containsString("Access granted!"));
         }
 
     }
