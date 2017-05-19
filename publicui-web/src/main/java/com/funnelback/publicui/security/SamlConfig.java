@@ -333,7 +333,6 @@ public class SamlConfig {
         return new TLSProtocolConfigurer();
     }
     
-    // TODO -Can we remove this now?
     @Bean
     public VelocityEngine velocityEngine() {
         return VelocityFactory.getEngine();
