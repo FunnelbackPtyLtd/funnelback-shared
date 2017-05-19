@@ -347,7 +347,7 @@ public class SamlConfig {
     public WebSSOProfileConsumer webSSOprofileConsumer() {
         WebSSOProfileConsumerImpl result = new WebSSOProfileConsumerImpl();
         result.setMaxAuthenticationAge(60 * 60 * 24 * 14);
-        // Code inspection suggests that is in seconds
+        // Code inspection suggests that is in seconds, so that's two weeks.
         return result;
     }
 }
