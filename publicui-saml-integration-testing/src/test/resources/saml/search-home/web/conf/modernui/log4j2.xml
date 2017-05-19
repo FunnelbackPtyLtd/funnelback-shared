@@ -6,7 +6,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="ERROR">
+        <Root level="TRACE">
             <AppenderRef ref="Console" />
         </Root>
         <!-- Avoid noise from predictive segmentation, for which the data is not included -->
