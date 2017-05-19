@@ -299,16 +299,6 @@ public class SamlConfig {
         return new MetadataGeneratorFilter(metadataGenerator);
     }
 
-    // SAML Authentication Provider responsible for validating of received SAML
-    // messages
-    @Bean
-    public SAMLAuthenticationProvider samlAuthenticationProvider(SAMLUserDetailsServiceImpl samlUserDetailsServiceImpl) {
-        SAMLAuthenticationProvider samlAuthenticationProvider = new SAMLAuthenticationProvider();
-        samlAuthenticationProvider.setUserDetails(samlUserDetailsServiceImpl);
-        samlAuthenticationProvider.setForcePrincipalAsString(false);
-        return samlAuthenticationProvider;
-    }
-
     // Provider of default SAML Context
     @Bean
     public SAMLContextProvider contextProvider() {

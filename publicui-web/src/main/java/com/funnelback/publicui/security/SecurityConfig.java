@@ -24,6 +24,8 @@ import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.parse.XMLParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -37,11 +39,14 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
+import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.SAMLEntryPoint;
 import org.springframework.security.saml.key.JKSKeyManager;
 import org.springframework.security.saml.key.KeyManager;
@@ -51,11 +56,13 @@ import org.springframework.security.saml.metadata.ExtendedMetadataDelegate;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
 import org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer;
+import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Service;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.transaction.ExecutionContext;
@@ -168,11 +175,22 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
 
         if (enableSamlAuthentication) {
-            auth
-                .authenticationProvider(samlAuthenticationProvider);
+            auth.authenticationProvider(samlAuthenticationProvider);
         }
     } 
     
+    // SAML Authentication Provider responsible for validating of received SAML
+    // messages
+    @Bean
+    @Conditional(IsSamlEnabledCondition.class)
+    public SAMLAuthenticationProvider samlAuthenticationProvider() {
+        SAMLAuthenticationProvider samlAuthenticationProvider = new SAMLAuthenticationProvider();
+        samlAuthenticationProvider.setUserDetails(new SAMLUserDetailsServiceImpl());
+        samlAuthenticationProvider.setForcePrincipalAsString(false);
+        return samlAuthenticationProvider;
+    }
+
+
     // See KeyManager doc in section 8.1 of
     // http://docs.spring.io/spring-security-saml/docs/current/reference/html/security.html
     @Bean
@@ -202,25 +220,16 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         return new JKSKeyManager(samlKeystoreResource, samlKeystorePassword, passwords, samlKeyAlias);
     }
  
-    // Setup TLS Socket Factory
-    // Allow all certificates to avoid SSL failures on metadata
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
     public TLSProtocolConfigurer tlsProtocolConfigurer() {
-        TLSProtocolConfigurer configurer = new TLSProtocolConfigurer();
-        //configurer.setSslHostnameVerification("allowAll");
-        return configurer;
+        return new TLSProtocolConfigurer();
     }
     
-    // Setup advanced info about metadata
     @Bean
     @Conditional(IsSamlEnabledCondition.class)
     public ExtendedMetadata extendedMetadata() {
-        ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        //extendedMetadata.setIdpDiscoveryEnabled(false); 
-        //extendedMetadata.setSslHostnameVerification("allowAll");
-        //extendedMetadata.setSignMetadata(false);
-        return extendedMetadata;
+        return new ExtendedMetadata();
     }
     
     @Bean
@@ -287,9 +296,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 
         String entityId = configRepository.getGlobalConfiguration().value(Keys.Auth.PublicUI.SAML.ENTITY_ID, "");;
         metadataGenerator.setEntityId(entityId);
-        
         metadataGenerator.setExtendedMetadata(extendedMetadata());
-        metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager()); 
         return metadataGenerator;
     }
@@ -308,7 +315,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     @Conditional(IsSamlEnabledCondition.class)
     public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
         SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-        failureHandler.setUseForward(true);
+        //failureHandler.setUseForward(true);
         failureHandler.setDefaultFailureUrl("/search.html");
         return failureHandler;
     }
@@ -343,4 +350,27 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             return new User(username, "N/A", Arrays.asList(() -> "ROLE_SSL"));
         }
     }
+    
+    public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
+        
+        public Object loadUserBySAML(SAMLCredential credential)
+                throws UsernameNotFoundException {
+            
+            // The method is supposed to identify local account of user referenced by
+            // data in the SAML assertion and return UserDetails object describing the user.
+            
+            String userID = credential.getNameID().getValue();
+            
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
+            authorities.add(authority);
+
+            // In a real scenario, this implementation has to locate user in a arbitrary
+            // dataStore based on information present in the SAMLCredential and
+            // returns such a date in a form of application specific UserDetails object.
+            return new User(userID, "<abc123>", true, true, true, true, authorities);
+        }
+        
+    }
+
 }
