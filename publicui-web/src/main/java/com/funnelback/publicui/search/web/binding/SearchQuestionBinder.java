@@ -48,6 +48,12 @@ public class SearchQuestionBinder {
         to.setClive(from.getClive());
     }
     
+    public static SearchQuestion makeCloneOfReleventFields(SearchQuestion question) {
+        SearchQuestion newQuestion = new SearchQuestion();
+        bind(question, newQuestion);
+        return newQuestion;
+    }
+    
     
     /**
      * Binds properties of the given {@link SearchQuestion} to the given {@link HttpServletRequest}

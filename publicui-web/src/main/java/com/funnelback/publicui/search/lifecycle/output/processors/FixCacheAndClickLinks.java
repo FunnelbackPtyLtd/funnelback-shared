@@ -109,10 +109,11 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      */
     //This is public because tests are not in the same package.
     public void setClickTrackingUrl(SearchTransaction searchTransaction, String q) {
+        boolean fixClickTrackingUrl = searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING);
         for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
             if(r.isDocumentVisibleToUser()) {
                 if (q.length() > 0) {
-                    if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+                    if (fixClickTrackingUrl) {
                         r.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), q, r));
                     } else {
                         r.setClickTrackingUrl(r.getLiveUrl());

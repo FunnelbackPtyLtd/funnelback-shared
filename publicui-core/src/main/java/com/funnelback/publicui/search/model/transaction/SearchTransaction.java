@@ -4,6 +4,7 @@ package com.funnelback.publicui.search.model.transaction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
+import java.util.function.Function;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

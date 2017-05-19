@@ -27,7 +27,7 @@ public class BoundedByteArrayOutputStream extends OutputStream {
 
     /** The size the output would have been if it had not been truncated */
     @Getter
-    private int untruncatedSize;
+    private long untruncatedSize;
     
     public BoundedByteArrayOutputStream(int initialSize, int sizeLimit) {
         underlyingStream = new ByteArrayOutputStream(initialSize);

@@ -1,6 +1,5 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -63,10 +62,15 @@ public class JavaPadreForker implements PadreForker {
                 int rc = executor.execute(padreCmdLine, environment);
                 
                 if (padreOutput.isTruncated()) {
-                    throw new PadreForkingException(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()));
+                    throw new PadreForkingExceptionPacketSizeTooBig(i18n.tr("padre.forking.failed.sizelimit", padreCmdLine.toString()),
+                        padreOutput.getUntruncatedSize());
                 }
                 
-                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), padreOutput.getUntruncatedSize(), StandardCharsets.UTF_8);
+                ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), (int) padreOutput.getUntruncatedSize(), StandardCharsets.UTF_8);
+                
+                if(watchdog.killedProcess()) {
+                    throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()));
+                }
                 
                 //Ideally padre should never be writting to STDERR unless something is wrong with the collection.
                 if(er.getErrBytes().length > 0) {
@@ -100,7 +104,7 @@ public class JavaPadreForker implements PadreForker {
             } catch (IOException ioe) {
                 throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
             } finally {
-                if (watchdog.killedProcess()) {
+                if (watchdog.killedProcess()) { // TODO remove
                     log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
                         + getExecutionDetails(padreCmdLine, environment));
                 }

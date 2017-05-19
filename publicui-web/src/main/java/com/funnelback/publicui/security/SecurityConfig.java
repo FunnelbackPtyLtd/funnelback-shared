@@ -42,10 +42,9 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
             case Admin:
                 super.configureHttpbasicAndToken(http);
                 break;
+            case Unknown:
             case Public:
                 http.authorizeRequests().anyRequest().permitAll();
-                break;
-            case Unknown:
                 break;
             default:
                 break;

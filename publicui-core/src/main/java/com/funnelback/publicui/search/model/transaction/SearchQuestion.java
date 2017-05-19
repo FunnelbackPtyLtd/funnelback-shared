@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -219,7 +220,11 @@ public class SearchQuestion {
      * 
      * @see #inputParameterMap
      */
-    @Getter private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
+    private final Map<String, String[]> rawInputParameters = new HashMap<String, String[]>();
+    
+    public Map<String, String[]> getRawInputParameters() {
+        return this.rawInputParameters;
+    }
 
     /**
      * <p>Input parameters map.</p>
@@ -355,6 +360,16 @@ public class SearchQuestion {
      * @since 15.12
      */
     @Getter @Setter private FunnelbackVersion funnelbackVersion;
+    
+    
+    /**
+     * <p>A optional maxPadrePacketSize which may be overridden to set the max 
+     * Padre packet size that will be permitted. Generally the Config option
+     * ui.modern.padre_response_size_limit_bytes should be set in preference to
+     * setting this.</p>
+     * @since 15.12
+     */
+    @Getter @Setter private Optional<Integer> maxPadrePacketSize = Optional.empty();
     
     /**
      * Common query string parameters names.
