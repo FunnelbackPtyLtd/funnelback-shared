@@ -191,7 +191,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         }
         
         FileSystemResourceLoader loader = new FileSystemResourceLoader();
-        Resource samlKeystoreResource = loader.getResource(samlKeystorePath);
+        Resource samlKeystoreResource = loader.getResource("file://" + samlKeystorePath);
 
         Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(samlKeyAlias, samlKeyPassword);
@@ -309,7 +309,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
     public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
         SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
         failureHandler.setUseForward(true);
-        failureHandler.setDefaultFailureUrl("/error");
+        failureHandler.setDefaultFailureUrl("/search.html");
         return failureHandler;
     }
 
