@@ -16,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.hamcrest.core.AllOf;
 import org.hamcrest.core.StringContains;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -108,9 +109,7 @@ public class SamlAuthenticationIT {
             EntityUtils.consume(entity);
 
             Assert.assertThat("Expected to be redirected to the IdP login page", responseText,
-                StringContains.containsString("Login page"));
-            Assert.assertThat("Expected to be redirected to the IdP login page", responseText,
-                StringContains.containsString("Mujina Identity Provider"));
+                AllOf.allOf(StringContains.containsString("Login page"), StringContains.containsString("Mujina Identity Provider")));
         }
 
         HttpPost postLoginForm = new HttpPost(mujinaBaseUrl + "/login");
