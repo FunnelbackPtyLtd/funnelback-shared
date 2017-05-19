@@ -299,7 +299,7 @@ public class WindowsNativeExecutor {
         }
         
         
-        return new PossiblyTruncatedBytes(bos.toByteArray(), bos.getUntruncatedSize());
+        return new PossiblyTruncatedBytes(bos.toByteArray(), (int) bos.getUntruncatedSize());
     }
     
     @RequiredArgsConstructor
