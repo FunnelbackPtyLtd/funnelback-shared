@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.security.saml.SAMLDiscovery;
 import org.springframework.security.saml.SAMLEntryPoint;
@@ -74,15 +73,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * actually do any interesting configuration with.
  * 
  * Out of sight, out of mind...
+ * 
+ * Based heavily on 
+ * https://github.com/vdenotaris/spring-boot-security-saml-sample/blob/8a68cf63c2a83ae4f724cb55ef90f4635216a7ba/src/main/java/com/vdenotaris/spring/boot/security/saml/web/config/WebSecurityConfig.java
+ * which seems to be the only example of configuring spring-security-saml
+ * in code rather than XML.
  */
 @Configuration
 @Conditional(IsSamlEnabledCondition.class)
 public class SamlConfig {
 
-    // Logger for SAML messages and events
     @Bean
-    public SAMLDefaultLogger samlLogger() {
-        return new SAMLDefaultLogger();
+    public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
+        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+        return failureHandler;
     }
 
     // Initialization of OpenSAML library
@@ -91,66 +95,15 @@ public class SamlConfig {
         return new SAMLBootstrap();
     }
 
-    // SAML 2.0 WebSSO Assertion Consumer
     @Bean
-    public WebSSOProfileConsumer webSSOprofileConsumer() {
-        WebSSOProfileConsumerImpl result = new WebSSOProfileConsumerImpl();
-        result.setMaxAuthenticationAge(60 * 60 * 24 * 14); // Code below
-                                                           // suggests this is
-                                                           // in seconds
-        return result;
-    }
-
-    // SAML 2.0 Holder-of-Key WebSSO Assertion Consumer
-    @Bean
-    public WebSSOProfileConsumerHoKImpl hokWebSSOprofileConsumer() {
-        return new WebSSOProfileConsumerHoKImpl();
-    }
-
-    // SAML 2.0 Web SSO profile
-    @Bean
-    public WebSSOProfile webSSOprofile() {
-        return new WebSSOProfileImpl();
-    }
-
-    // SAML 2.0 Holder-of-Key Web SSO profile
-    @Bean
-    public WebSSOProfileConsumerHoKImpl hokWebSSOProfile() {
-        return new WebSSOProfileConsumerHoKImpl();
-    }
-
-    // SAML 2.0 ECP profile
-    @Bean
-    public WebSSOProfileECPImpl ecpprofile() {
-        return new WebSSOProfileECPImpl();
+    public static SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        return successRedirectHandler;
     }
 
     @Bean
-    public SingleLogoutProfile logoutprofile() {
-        return new SingleLogoutProfileImpl();
-    }
-
-    @Bean
-    public Protocol socketFactoryProtocol(KeyManager keyManager) {
-        ProtocolSocketFactory protocolSocketFactory = new TLSProtocolSocketFactory(keyManager, null, "default");
-        
-        Protocol protocol = new Protocol("https", protocolSocketFactory, 443);
-        Protocol.registerProtocol("https", protocol);
-        
-        return protocol;
-    }
-
-    @Bean
-    public WebSSOProfileOptions defaultWebSSOProfileOptions() {
-        WebSSOProfileOptions webSSOProfileOptions = new WebSSOProfileOptions();
-        webSSOProfileOptions.setIncludeScoping(false);
-        return webSSOProfileOptions;
-    }
-
-    // Initialization of the velocity engine
-    @Bean
-    public VelocityEngine velocityEngine() {
-        return VelocityFactory.getEngine();
+    public HTTPArtifactBinding artifactBinding(ParserPool parserPool, VelocityEngine velocityEngine) {
+        return new HTTPArtifactBinding(parserPool, velocityEngine, artifactResolutionProfile());
     }
 
     // Bindings
@@ -160,14 +113,50 @@ public class SamlConfig {
         return artifactResolutionProfile;
     }
 
+    // Provider of default SAML Context
     @Bean
-    public HTTPArtifactBinding artifactBinding(ParserPool parserPool, VelocityEngine velocityEngine) {
-        return new HTTPArtifactBinding(parserPool, velocityEngine, artifactResolutionProfile());
+    public SAMLContextProvider contextProvider() {
+        return new SAMLContextProviderImpl();
     }
 
     @Bean
-    public HTTPSOAP11Binding soapBinding() {
-        return new HTTPSOAP11Binding(parserPool());
+    public WebSSOProfileOptions defaultWebSSOProfileOptions() {
+        WebSSOProfileOptions webSSOProfileOptions = new WebSSOProfileOptions();
+        webSSOProfileOptions.setIncludeScoping(false);
+        return webSSOProfileOptions;
+    }
+
+    // SAML 2.0 ECP profile
+    @Bean
+    public WebSSOProfileECPImpl ecpprofile() {
+        return new WebSSOProfileECPImpl();
+    }
+
+    @Bean
+    public ExtendedMetadata extendedMetadata() {
+        return new ExtendedMetadata();
+    }
+
+    // SAML 2.0 Holder-of-Key Web SSO profile
+    @Bean
+    public WebSSOProfileConsumerHoKImpl hokWebSSOProfile() {
+        return new WebSSOProfileConsumerHoKImpl();
+    }
+
+    // SAML 2.0 Holder-of-Key WebSSO Assertion Consumer
+    @Bean
+    public WebSSOProfileConsumerHoKImpl hokWebSSOprofileConsumer() {
+        return new WebSSOProfileConsumerHoKImpl();
+    }
+
+    @Bean
+    public HttpClient httpClient() {
+        return new HttpClient(multiThreadedHttpConnectionManager());
+    }
+
+    @Bean
+    public HTTPPAOS11Binding httpPAOS11Binding() {
+        return new HTTPPAOS11Binding(parserPool());
     }
 
     @Bean
@@ -185,21 +174,42 @@ public class SamlConfig {
         return new HTTPSOAP11Binding(parserPool());
     }
 
+    // Logout handler terminating local session
     @Bean
-    public HTTPPAOS11Binding httpPAOS11Binding() {
-        return new HTTPPAOS11Binding(parserPool());
+    public SecurityContextLogoutHandler logoutHandler() {
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.setInvalidateHttpSession(true);
+        logoutHandler.setClearAuthentication(true);
+        return logoutHandler;
     }
 
-    // Processor
     @Bean
-    public SAMLProcessorImpl processor() {
-        Collection<SAMLBinding> bindings = new ArrayList<SAMLBinding>();
-        bindings.add(httpRedirectDeflateBinding());
-        bindings.add(httpPostBinding());
-        bindings.add(artifactBinding(parserPool(), velocityEngine()));
-        bindings.add(httpSOAP11Binding());
-        bindings.add(httpPAOS11Binding());
-        return new SAMLProcessorImpl(bindings);
+    public SingleLogoutProfile logoutprofile() {
+        return new SingleLogoutProfileImpl();
+    }
+
+    @Bean
+    @Qualifier("metadata")
+    public CachingMetadataManager metadata(ExtendedMetadataDelegate extendedMetadataDelegate) throws MetadataProviderException {
+        List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
+        providers.add(extendedMetadataDelegate);
+        return new CachingMetadataManager(providers); 
+    }
+
+    @Bean
+    public MetadataDisplayFilter metadataDisplayFilter() {
+        return new MetadataDisplayFilter();
+    }
+
+    @Bean
+    public MetadataGeneratorFilter metadataGeneratorFilter(MetadataGenerator metadataGenerator) {
+        return new MetadataGeneratorFilter(metadataGenerator);
+    }
+
+    // Bindings, encoders and decoders used for creating and parsing messages
+    @Bean
+    public MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager() {
+        return new MultiThreadedHttpConnectionManager();
     }
 
     // XML parser pool needed for OpenSAML parsing
@@ -219,76 +229,16 @@ public class SamlConfig {
         return new ParserPoolHolder();
     }
 
-    // Bindings, encoders and decoders used for creating and parsing messages
+    // Processor
     @Bean
-    public MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager() {
-        return new MultiThreadedHttpConnectionManager();
-    }
-
-    @Bean
-    public HttpClient httpClient() {
-        return new HttpClient(multiThreadedHttpConnectionManager());
-    }
-
-    // Handler for successful logout
-    @Bean
-    public SimpleUrlLogoutSuccessHandler successLogoutHandler() {
-        SimpleUrlLogoutSuccessHandler successLogoutHandler = new SimpleUrlLogoutSuccessHandler();
-        successLogoutHandler.setDefaultTargetUrl("/");
-        return successLogoutHandler;
-    }
-
-    // Logout handler terminating local session
-    @Bean
-    public SecurityContextLogoutHandler logoutHandler() {
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.setInvalidateHttpSession(true);
-        logoutHandler.setClearAuthentication(true);
-        return logoutHandler;
-    }
-
-    // Filter processing incoming logout messages
-    // First argument determines URL user will be redirected to after successful
-    // global logout
-    @Bean
-    public SAMLLogoutProcessingFilter samlLogoutProcessingFilter() {
-        return new SAMLLogoutProcessingFilter(successLogoutHandler(), logoutHandler());
-    }
-
-    // Overrides default logout processing filter with the one processing SAML
-    // messages
-    @Bean
-    public SAMLLogoutFilter samlLogoutFilter() {
-        return new SAMLLogoutFilter(successLogoutHandler(), new LogoutHandler[] { logoutHandler() },
-            new LogoutHandler[] { logoutHandler() });
-    }
-
-    // IDP Discovery Service
-    @Bean
-    public SAMLDiscovery samlIDPDiscovery() {
-        SAMLDiscovery idpDiscovery = new SAMLDiscovery();
-        idpDiscovery.setIdpSelectionPath("/saml/idpSelection");
-        return idpDiscovery;
-    }
-
-    @Bean
-    public SAMLWebSSOHoKProcessingFilter samlWebSSOHoKProcessingFilter(AuthenticationManager authenticationManager, SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler, SimpleUrlAuthenticationFailureHandler authenticationFailureHandler)
-        throws Exception {
-        SAMLWebSSOHoKProcessingFilter samlWebSSOHoKProcessingFilter = new SAMLWebSSOHoKProcessingFilter();
-        samlWebSSOHoKProcessingFilter.setAuthenticationSuccessHandler(successRedirectHandler);
-        samlWebSSOHoKProcessingFilter.setAuthenticationManager(authenticationManager);
-        samlWebSSOHoKProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        return samlWebSSOHoKProcessingFilter;
-    }
-
-    // Processing filter for WebSSO profile messages
-    @Bean
-    public SAMLProcessingFilter samlWebSSOProcessingFilter(AuthenticationManager authenticationManager, SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler, SimpleUrlAuthenticationFailureHandler authenticationFailureHandler) throws Exception {
-        SAMLProcessingFilter samlWebSSOProcessingFilter = new SAMLProcessingFilter();
-        samlWebSSOProcessingFilter.setAuthenticationManager(authenticationManager);
-        samlWebSSOProcessingFilter.setAuthenticationSuccessHandler(successRedirectHandler);
-        samlWebSSOProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        return samlWebSSOProcessingFilter;
+    public SAMLProcessorImpl processor() {
+        Collection<SAMLBinding> bindings = new ArrayList<SAMLBinding>();
+        bindings.add(httpRedirectDeflateBinding());
+        bindings.add(httpPostBinding());
+        bindings.add(artifactBinding(parserPool(), velocityEngine()));
+        bindings.add(httpSOAP11Binding());
+        bindings.add(httpPAOS11Binding());
+        return new SAMLProcessorImpl(bindings);
     }
 
     // Entry point to initialize authentication, default values taken from
@@ -298,17 +248,6 @@ public class SamlConfig {
         SAMLEntryPoint samlEntryPoint = new SAMLEntryPoint();
         samlEntryPoint.setDefaultProfileOptions(defaultWebSSOProfileOptions());
         return samlEntryPoint;
-    }
-
-    @Bean
-    public MetadataGeneratorFilter metadataGeneratorFilter(MetadataGenerator metadataGenerator) {
-        return new MetadataGeneratorFilter(metadataGenerator);
-    }
-
-    // Provider of default SAML Context
-    @Bean
-    public SAMLContextProvider contextProvider() {
-        return new SAMLContextProviderImpl();
     }
 
     /**
@@ -338,17 +277,77 @@ public class SamlConfig {
         return new FilterChainProxy(chains);
     }
 
+    // IDP Discovery Service
     @Bean
-    public MetadataDisplayFilter metadataDisplayFilter() {
-        return new MetadataDisplayFilter();
+    public SAMLDiscovery samlIDPDiscovery() {
+        SAMLDiscovery idpDiscovery = new SAMLDiscovery();
+        idpDiscovery.setIdpSelectionPath("/saml/idpSelection");
+        return idpDiscovery;
+    }
+
+    // Logger for SAML messages and events
+    @Bean
+    public SAMLDefaultLogger samlLogger() {
+        return new SAMLDefaultLogger();
+    }
+
+    // Overrides default logout processing filter with the one processing SAML
+    // messages
+    @Bean
+    public SAMLLogoutFilter samlLogoutFilter() {
+        return new SAMLLogoutFilter(successLogoutHandler(), new LogoutHandler[] { logoutHandler() },
+            new LogoutHandler[] { logoutHandler() });
+    }
+
+    // Filter processing incoming logout messages
+    // First argument determines URL user will be redirected to after successful
+    // global logout
+    @Bean
+    public SAMLLogoutProcessingFilter samlLogoutProcessingFilter() {
+        return new SAMLLogoutProcessingFilter(successLogoutHandler(), logoutHandler());
+    }
+
+    @Bean
+    public SAMLWebSSOHoKProcessingFilter samlWebSSOHoKProcessingFilter(AuthenticationManager authenticationManager, SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler, SimpleUrlAuthenticationFailureHandler authenticationFailureHandler)
+        throws Exception {
+        SAMLWebSSOHoKProcessingFilter samlWebSSOHoKProcessingFilter = new SAMLWebSSOHoKProcessingFilter();
+        samlWebSSOHoKProcessingFilter.setAuthenticationSuccessHandler(successRedirectHandler);
+        samlWebSSOHoKProcessingFilter.setAuthenticationManager(authenticationManager);
+        samlWebSSOHoKProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        return samlWebSSOHoKProcessingFilter;
+    }
+
+    // Processing filter for WebSSO profile messages
+    @Bean
+    public SAMLProcessingFilter samlWebSSOProcessingFilter(AuthenticationManager authenticationManager, SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler, SimpleUrlAuthenticationFailureHandler authenticationFailureHandler) throws Exception {
+        SAMLProcessingFilter samlWebSSOProcessingFilter = new SAMLProcessingFilter();
+        samlWebSSOProcessingFilter.setAuthenticationManager(authenticationManager);
+        samlWebSSOProcessingFilter.setAuthenticationSuccessHandler(successRedirectHandler);
+        samlWebSSOProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        return samlWebSSOProcessingFilter;
+    }
+
+    @Bean
+    public HTTPSOAP11Binding soapBinding() {
+        return new HTTPSOAP11Binding(parserPool());
+    }
+
+    @Bean
+    public Protocol socketFactoryProtocol(KeyManager keyManager) {
+        ProtocolSocketFactory protocolSocketFactory = new TLSProtocolSocketFactory(keyManager, null, "default");
+        
+        Protocol protocol = new Protocol("https", protocolSocketFactory, 443);
+        Protocol.registerProtocol("https", protocol);
+        
+        return protocol;
     }
     
+    // Handler for successful logout
     @Bean
-    @Qualifier("metadata")
-    public CachingMetadataManager metadata(ExtendedMetadataDelegate extendedMetadataDelegate) throws MetadataProviderException {
-        List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
-        providers.add(extendedMetadataDelegate);
-        return new CachingMetadataManager(providers); 
+    public SimpleUrlLogoutSuccessHandler successLogoutHandler() {
+        SimpleUrlLogoutSuccessHandler successLogoutHandler = new SimpleUrlLogoutSuccessHandler();
+        successLogoutHandler.setDefaultTargetUrl("/");
+        return successLogoutHandler;
     }
     
     @Bean
@@ -356,22 +355,25 @@ public class SamlConfig {
         return new TLSProtocolConfigurer();
     }
     
+    // Initialization of the velocity engine
     @Bean
-    public ExtendedMetadata extendedMetadata() {
-        return new ExtendedMetadata();
+    public VelocityEngine velocityEngine() {
+        return VelocityFactory.getEngine();
     }
 
+    // SAML 2.0 Web SSO profile
     @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public static SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-        return successRedirectHandler;
+    public WebSSOProfile webSSOprofile() {
+        return new WebSSOProfileImpl();
     }
 
+    // SAML 2.0 WebSSO Assertion Consumer
     @Bean
-    @Conditional(IsSamlEnabledCondition.class)
-    public static SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
-        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-        return failureHandler;
+    public WebSSOProfileConsumer webSSOprofileConsumer() {
+        WebSSOProfileConsumerImpl result = new WebSSOProfileConsumerImpl();
+        result.setMaxAuthenticationAge(60 * 60 * 24 * 14); // Code below
+                                                           // suggests this is
+                                                           // in seconds
+        return result;
     }
 }
