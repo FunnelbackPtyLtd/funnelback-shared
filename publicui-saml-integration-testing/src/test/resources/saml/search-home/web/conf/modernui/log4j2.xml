@@ -6,9 +6,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="TRACE">
+        <Root level="ERROR">
             <AppenderRef ref="Console" />
         </Root>
+        <Logger name="com.funnelback" level="trace" />
         <!-- Avoid noise from predictive segmentation, for which the data is not included -->
         <Logger name="com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationConnector" level="fatal" />
     </Loggers>

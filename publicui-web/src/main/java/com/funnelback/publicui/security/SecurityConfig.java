@@ -55,9 +55,12 @@ import com.funnelback.publicui.utils.web.ExecutionContextHolder;
 import com.funnelback.springmvc.api.config.security.FunnelbackAdminAuthenticationProvider;
 import com.funnelback.springmvc.api.config.security.ProtectAllHttpBasicAndTokenSecurityConfig;
 
+import lombok.extern.log4j.Log4j2;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@Log4j2
 public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
 
     @Autowired
@@ -78,11 +81,13 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
         boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
         
         if (requireX509Authentication) {
+            log.info("Configuring publicui security with x.509 client certificate requirement");
             http
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .x509().userDetailsService(new X509UserDetailsService());
         } else if (enableSamlAuthentication) {
+            log.info("Configuring publicui security with SAML");
             // If SAML is on, we always authenticate search results
             // regardless of the ExecutionContext.
             //
@@ -111,6 +116,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
                 .anyRequest().authenticated();
             http.logout().logoutSuccessUrl("/");
         } else {
+            log.info("Configuring default publicui security (admin basic/token, search public)");
             if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
                 super.configureHttpbasicAndToken(http);
             } else if (ExecutionContext.Public.equals(executionContextHolder.getExecutionContext())) {
