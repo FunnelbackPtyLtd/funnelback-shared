@@ -25,25 +25,21 @@ public class TokenUtils {
                     
                     @Override
                     public boolean isEnabled() {
-                        // TODO Auto-generated method stub
                         return false;
                     }
                     
                     @Override
                     public boolean isCredentialsNonExpired() {
-                        // TODO Auto-generated method stub
                         return false;
                     }
                     
                     @Override
                     public boolean isAccountNonLocked() {
-                        // TODO Auto-generated method stub
                         return false;
                     }
                     
                     @Override
                     public boolean isAccountNonExpired() {
-                        // TODO Auto-generated method stub
                         return false;
                     }
                     
@@ -54,20 +50,17 @@ public class TokenUtils {
                     
                     @Override
                     public String getPassword() {
-                        // TODO Auto-generated method stub
                         return new FunnelbackRealmProperties(new File(searchHome, "conf/realm.properties")).getUserInfo(username)
                             .getEncodedPassword();
                     }
                     
                     @Override
                     public Collection<? extends GrantedAuthority> getAuthorities() {
-                        // TODO Auto-generated method stub
                         return null;
                     }
                 };
             }
         };
-            //new FunnelbackUserDetailsManager(new FunnelbackRealmProperties(new File("/opt/")), resourceManager, searchHome, masterPasswordEncoder);
         ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
         map.put(userName, salt);
         DefaultUserTokenSalt userTokenSalt = new DefaultUserTokenSalt(map);
