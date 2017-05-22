@@ -23,7 +23,7 @@ public class ResultFieldsTest {
         Result result = new Result();
         result.setLiveUrl("live");
         XJPathResultDataFetcher resultFetcher = new XJPathResultDataFetcher();
-        List<Object> values = resultFetcher.fetchFeilds(resultFields.getFieldNames(), resultFetcher.parseFields(resultFields.getXPaths()), result);
+        List<Object> values = resultFetcher.fetchFeilds(resultFetcher.parseFields(resultFields.getXPaths()), result);
         
         Assert.assertEquals("Perhaps the default XPath is no longer valid", "live", values.get(0).toString());
     }
@@ -37,7 +37,7 @@ public class ResultFieldsTest {
         Result result = new Result();
         result.setLiveUrl("live");
         XJPathResultDataFetcher resultFetcher = new XJPathResultDataFetcher();
-        List<Object> values = resultFetcher.fetchFeilds(resultFields.getFieldNames(), resultFetcher.parseFields(resultFields.getXPaths()), result);
+        List<Object> values = resultFetcher.fetchFeilds(resultFetcher.parseFields(resultFields.getXPaths()), result);
         
         Assert.assertEquals(1, values.size());
         Assert.assertNull(values.get(0));

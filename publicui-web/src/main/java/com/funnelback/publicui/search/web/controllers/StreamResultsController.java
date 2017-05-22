@@ -27,7 +27,7 @@ import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.streamedresults.CommaSeparatedList;
 import com.funnelback.publicui.streamedresults.CommaSeparatedListEditor;
 import com.funnelback.publicui.streamedresults.DataConverter;
-import com.funnelback.publicui.streamedresults.PagedSearcher;
+import com.funnelback.publicui.streamedresults.PagedQuery;
 import com.funnelback.publicui.streamedresults.ResultFields;
 import com.funnelback.publicui.streamedresults.TransactionToResults;
 import com.funnelback.publicui.streamedresults.converters.CSVDataConverter;
@@ -171,7 +171,7 @@ public class StreamResultsController {
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
             // the SearchTransaction to the data type expected e.g. CSV.
-            PagedSearcher pageSearcher = new PagedSearcher(question, !optimisations);
+            PagedQuery pageSearcher = new PagedQuery(question, !optimisations);
             try(TransactionToResults transactionToResults = new TransactionToResults(dataConverter, 
                                                                                         compiledExpressions, 
                                                                                         resultFields.getFieldNames(), 

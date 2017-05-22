@@ -18,14 +18,12 @@ public class XJPathResultDataFetcher implements ResultDataFetcher<List<CompiledE
     }
 
     @Override
-    public List<Object> fetchFeilds(List<String> fieldNames, 
-            List<CompiledExpression> compiledExpressions, 
-            Result result) {
+    public List<Object> fetchFeilds(List<CompiledExpression> compiledExpressions, Result result) {
         JXPathContext context = JXPathContext.newContext(result);
         context.setLenient(true);
-        List<Object> data = new ArrayList<>(fieldNames.size());
-        for(int i = 0; i < fieldNames.size(); i++) {
-            data.add(compiledExpressions.get(i).getValue(context));
+        List<Object> data = new ArrayList<>(compiledExpressions.size());
+        for(CompiledExpression exp : compiledExpressions) {
+            data.add(exp.getValue(context));
         }
         return data;
     }

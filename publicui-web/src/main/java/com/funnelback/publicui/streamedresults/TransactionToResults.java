@@ -148,7 +148,7 @@ public class TransactionToResults implements Closeable {
         
         // First convert the Result to a List of fields that where requested by the xPaths
         List<List<Object>> valuesForResults = gcFriendlyListTraverser(results, 
-            (result) -> resultDataFetcher.fetchFeilds(fieldNames, expressions, result));
+            (result) -> resultDataFetcher.fetchFeilds(expressions, result));
         
         AtomicBoolean isFirstResult = new AtomicBoolean(isFirst);
 

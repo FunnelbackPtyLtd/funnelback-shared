@@ -22,8 +22,16 @@ import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Process a query (by default) getting every result by paging over the result list.
+ * 
+ * <p>This class runs a a query many times so that we can travers every result. This class
+ * takes care of setting num_ranks to a value that wont cause a OOM but doesn't cuse 
+ * unnecessary extra calls to padre-sw. See runOnEachPage</p>
+ *
+ */
 @Log4j2
-public class PagedSearcher {
+public class PagedQuery {
 
     private SearchQuestion baseSearchQuestion;
     private final int maxNumRanks; 
@@ -40,42 +48,11 @@ public class PagedSearcher {
     private final int TARGET_RESPONSE_SIZE = (int) (MAX_RESPONSE_SIZE * 0.8);
     
     /**
-     * Computes the maximum padre packet size we will use based on the JVMs max memory
      * 
-     * <p>It tries to take into account how inefficent we are with the padre packet as well
-     * as how many concurrent requests we want to be able to support. It is dynamic so setting
-     * a larger JVM heap will </p>
-     * @return
+     * @param searchQuestion
+     * @param disableOptimisation
      */
-    private final int getMaxResponseSizeBasedOnJVM() {
-        final long JVMmemory = Runtime.getRuntime().maxMemory();
-        final int inefficencyFactory = 3; // This is how inefficient we are with the padre packet we get:
-                                        // 3 from storing the padre output in a byte[] (note that worst case for this is 3
-                                        // because of ByteArrayoutputStream doubling of buf + creating the array). We get 2 from Java
-                                        // strings being twice the size of their UTF-8 counterparts + 1 for the array
-        final int minGarenteedConcurrentRequests = 4;
-        
-        final long memoryWeCanUseEstimate = (long) (JVMmemory * 0.9);
-        
-        long maxPadrePacketSize = memoryWeCanUseEstimate / (minGarenteedConcurrentRequests * inefficencyFactory);
-        
-        // Don't go under 5MB
-        if(maxPadrePacketSize < 5 * 1024 * 1024) {
-            maxPadrePacketSize = 5 * 1024 * 1024;
-        }
-        
-        if(maxPadrePacketSize >= (long) Integer.MAX_VALUE) {
-            maxPadrePacketSize = Integer.MAX_VALUE;
-        }
-        
-        
-        log.debug("Max padre packet size this can handle is: ~" + maxPadrePacketSize/1024/1024 + "MB");
-        
-        return (int) maxPadrePacketSize;
-    }
-    
-    
-    public PagedSearcher(SearchQuestion searchQuestion, boolean disableOptimisation) {
+    public PagedQuery(SearchQuestion searchQuestion, boolean disableOptimisation) {
         this.disableOptimisation = disableOptimisation;
         baseSearchQuestion = searchQuestion;
         
@@ -92,6 +69,15 @@ public class PagedSearcher {
         baseSearchQuestion.getRawInputParameters().remove(START_RANK);
     }
     
+    /**
+     * Executes the query using the given SearchExecutor passing the resulting SearchTransaction to the onPage Consumer.
+     * 
+     * @param searchExecutor When given a SearchQuestio this should execute the search and return 
+     * the resulting SearchTransaction
+     * @param onPage A Consumer which will be given the resulting SearchTransaction (as a reference)
+     * once we are done with it. The consumer may null out the value in the reference to allow
+     * earlier GC.
+     */
     public void runOnEachPage(Function<SearchQuestion, SearchTransaction> searchExecutor,
         Consumer<Reference<SearchTransaction>> onPage) {
         int startRank = initialStartRank;
@@ -109,34 +95,26 @@ public class PagedSearcher {
             }
             
             SearchQuestion questionCutDown = SearchQuestionBinder.makeCloneOfReleventFields(baseSearchQuestion);
+            
+            // Ensure we don't get packets that are too big.
             questionCutDown.setMaxPadrePacketSize(Optional.of(MAX_RESPONSE_SIZE));
             
+            // Override any num_rank and start_rank values set.
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.NUM_RANKS, new String[]{numRank + ""});
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.START_RANK, new String[]{startRank + ""});
             
             // We always must go as deep as possible
-            // TODO allow setting of daat depth by the user or set this to as small as value as possible?
+            // TODO we could set this to maximum num_ranks + start_rank we will ever want.
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.DAAT, new String[]{"10000000"});
             questionCutDown.getDynamicQueryProcessorOptions().add(QueryProcessorOptionKeys.DAAT_TIMEOUT + "=3600");
             
-            if(!this.disableOptimisation) {
-                PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
-                
-                Stream.concat(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs().stream(), 
-                    Stream.of(padreOptionsForSpeed.getHighServiceVolumeOptionAsPair()))
-                .forEach(option -> {
-                    // This is interesting we want to override things like RMCF and count g bits when facets are enabled.
-                    // but we still need faceted nav to cut down the query.
-                    if(!questionCutDown.getRawInputParameters().containsKey(option.getOption())) {
-                        questionCutDown.getRawInputParameters().put(option.getOption(), new String[]{option.getValue()});
-                    }
-                });
-            }
+            // Apply optimisations if enabled
+            applyOptimisations(questionCutDown, new PadreOptionsForSpeed());
             
-            
-            
+            // Run the query.
             SearchTransaction transaction = searchExecutor.apply(questionCutDown);
             
+            // Inspect possible errors.
             if(transaction.getError() != null) {
                 if(padrePacketWasTooLarge(transaction.getError().getAdditionalData())) {
                     if(numRank == 1) {
@@ -183,6 +161,27 @@ public class PagedSearcher {
         }
         
     }
+    
+    /**
+     * Applies optimisations to the SearchQuestion if enabled.
+     * 
+     * @param searchQuestion
+     * @param padreOptionsForSpeed
+     */
+    public void applyOptimisations(SearchQuestion searchQuestion, PadreOptionsForSpeed padreOptionsForSpeed) {
+        if(!this.disableOptimisation) {
+            Stream.concat(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs().stream(), 
+                Stream.of(padreOptionsForSpeed.getHighServiceVolumeOptionAsPair()))
+            .forEach(option -> {
+                // This is interesting we want to override things like RMCF and count g bits when facets are enabled.
+                // but we still need faceted nav to cut down the query.
+                if(!searchQuestion.getRawInputParameters().containsKey(option.getOption())) {
+                    searchQuestion.getRawInputParameters().put(option.getOption(), new String[]{option.getValue()});
+                }
+            });
+        }
+    }
+    
     
     /**
      * Calculates the num_ranks to set to get a padre result packet of size TARGET_RESPONSE_SIZE
@@ -254,7 +253,7 @@ public class PagedSearcher {
     private static Optional<Integer> getIntFromMap(Map<String, String[]> map, String key) {
         return Optional.ofNullable(map.get(key))
         .map(a -> a[a.length-1]) // get the last like padre would
-        .map(PagedSearcher::parseInt)
+        .map(PagedQuery::parseInt)
         .filter(Optional::isPresent)
         .map(Optional::get);
     }
@@ -265,6 +264,41 @@ public class PagedSearcher {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+    
+    /**
+     * Computes the maximum padre packet size we will use based on the JVMs max memory
+     * 
+     * <p>It tries to take into account how inefficent we are with the padre packet as well
+     * as how many concurrent requests we want to be able to support. It is dynamic so setting
+     * a larger JVM heap will </p>
+     * @return
+     */
+    private final int getMaxResponseSizeBasedOnJVM() {
+        final long JVMmemory = Runtime.getRuntime().maxMemory();
+        final int inefficencyFactory = 3; // This is how inefficient we are with the padre packet we get:
+                                        // 3 from storing the padre output in a byte[] (note that worst case for this is 3
+                                        // because of ByteArrayoutputStream doubling of buf + creating the array). We get 2 from Java
+                                        // strings being twice the size of their UTF-8 counterparts + 1 for the array
+        final int minGarenteedConcurrentRequests = 4;
+        
+        final long memoryWeCanUseEstimate = (long) (JVMmemory * 0.9);
+        
+        long maxPadrePacketSize = memoryWeCanUseEstimate / (minGarenteedConcurrentRequests * inefficencyFactory);
+        
+        // Don't go under 5MB
+        if(maxPadrePacketSize < 5 * 1024 * 1024) {
+            maxPadrePacketSize = 5 * 1024 * 1024;
+        }
+        
+        if(maxPadrePacketSize >= (long) Integer.MAX_VALUE) {
+            maxPadrePacketSize = Integer.MAX_VALUE;
+        }
+        
+        
+        log.debug("Max padre packet size this can handle is: ~" + maxPadrePacketSize/1024/1024 + "MB");
+        
+        return (int) maxPadrePacketSize;
     }
     
 }
