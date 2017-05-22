@@ -2,65 +2,44 @@ package com.funnelback.publicui.integration.x509;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.Socket;
 import java.net.SocketException;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Map;
 import java.util.Optional;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.PrivateKeyDetails;
-import org.apache.http.conn.ssl.PrivateKeyStrategy;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class X509AuthenticationIT {
+public class X509SecurityIT {
+    private static X509ConfiguredJettyServer server;
+    private static File searchHome = new File("src/test/resources/x509/search-home");
 
-    // The easiest way I've found to hand-run this for development
-    // is to run `mvn -Dmaven.failsafe.debug verify` on the command
-    // line which will start the jetty instance and then wait for
-    // a debug connection (which you can ignore and instead manually
-    // run the test from within eclipse)
-    
+    @BeforeClass
+    public static void startServer() throws Exception {
+        X509SecurityIT.server = new X509ConfiguredJettyServer(searchHome);
+        X509SecurityIT.server.start();
+    }
+
     @Test
     public void testX509Auth() throws Exception {
         String responseText = performTestRequest(Optional.of(KEYSTORE_PATH));
@@ -139,7 +118,7 @@ public class X509AuthenticationIT {
                     .build();
     
             // Finally, we can actually make our HTTPS request!
-            HttpGet get = new HttpGet(X509AuthenticationIT.TEST_URL);
+            HttpGet get = new HttpGet(X509SecurityIT.server.getBaseUrl() + "/s/search.html");
             
             try (CloseableHttpResponse response = httpclient.execute(get)) {
                 HttpEntity entity = response.getEntity();
@@ -154,5 +133,9 @@ public class X509AuthenticationIT {
             throw e;
         }
     }
-
+    
+    @AfterClass
+    public static void stopServer() throws Exception {
+        X509SecurityIT.server.stop();
+    }
 }
