@@ -31,7 +31,7 @@ public class XJPathTest {
         Result result = new Result();
         result.setCacheUrl("http://foo");
         result.getMetaData().put("a", "bar");
-        List<Object> data = dataFetcher.fetchFeilds(dataFetcher.parseFields(toList("/")), result);
+        List<Object> data = dataFetcher.fetchFeilds(dataFetcher.parseFields(toList("cacheUrl", "metaData/a")), result);
         
         Assert.assertEquals("http://foo", data.get(0));
         Assert.assertEquals("bar", data.get(1));
