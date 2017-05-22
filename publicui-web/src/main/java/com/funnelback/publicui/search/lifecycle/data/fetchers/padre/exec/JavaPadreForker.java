@@ -68,6 +68,7 @@ public class JavaPadreForker implements PadreForker {
                 
                 ExecutionReturn er = new ExecutionReturn(rc, padreOutput.toByteArray(), padreError.toByteArray(), (int) padreOutput.getUntruncatedSize(), StandardCharsets.UTF_8);
                 
+                // Check if the process was killed by us before we complain it has bad exit code.
                 if(watchdog.killedProcess()) {
                     throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()));
                 }
@@ -104,7 +105,7 @@ public class JavaPadreForker implements PadreForker {
             } catch (IOException ioe) {
                 throw new PadreForkingException(i18n.tr("padre.forking.java.failed", padreCmdLine.toString()), ioe);
             } finally {
-                if (watchdog.killedProcess()) { // TODO remove
+                if (watchdog.killedProcess()) {
                     log.error("Query processor exceeded timeout of " + padreWaitTimeout + "ms and was killed."
                         + getExecutionDetails(padreCmdLine, environment));
                 }
