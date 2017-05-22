@@ -39,7 +39,6 @@
         <module>publicui-doc</module>
         <module>publicui-form-converter</module>
         <module>publicui-templates</module>
-        <module>publicui-saml-integration-testing</module>
         <module>publicui-x509-integration-testing</module>
     </modules>
 
