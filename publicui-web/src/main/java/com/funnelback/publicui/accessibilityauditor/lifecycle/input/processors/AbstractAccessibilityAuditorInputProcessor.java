@@ -18,7 +18,9 @@ public abstract class AbstractAccessibilityAuditorInputProcessor extends Abstrac
     @Override
     public void processInput(SearchTransaction st) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuestion(st)
-            && SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType())) {
+            && 
+            (SearchQuestionType.ACCESSIBILITY_AUDITOR.equals(st.getQuestion().getQuestionType()))
+            || SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS.equals(st.getQuestion().getQuestionType())) {
             processAccessibilityAuditorTransaction(st);
         }
     }

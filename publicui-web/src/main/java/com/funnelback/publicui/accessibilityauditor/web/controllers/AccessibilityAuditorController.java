@@ -2,18 +2,24 @@ package com.funnelback.publicui.accessibilityauditor.web.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.web.controllers.SearchController;
+import com.funnelback.publicui.search.web.controllers.StreamResultsController;
+import com.funnelback.publicui.streamedresults.CommaSeparatedList;
 
 /**
  * Accessibility Auditor controller. Delegates the actual
@@ -37,6 +43,9 @@ public class AccessibilityAuditorController {
     
     @Autowired
     private SearchController searchController;
+    
+    @Autowired
+    private StreamResultsController streamResultsController;
 
     @InitBinder
     public void initBinder(DataBinder binder) {
@@ -62,6 +71,21 @@ public class AccessibilityAuditorController {
         return runQuery(request, response, question, SearchQuestionType.ACCESSIBILITY_AUDITOR_ACKNOWLEDGEMENT_COUNTS);
     }
     
+    
+    @RequestMapping("/accessibility-auditor-all-results.json")
+    @PreAuthorize(PRE_AUTH)
+    public void getAllResults(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @RequestParam(required=false) CommaSeparatedList fields,
+        @RequestParam(required=false) CommaSeparatedList fieldnames,
+        @RequestParam(required=false, defaultValue="true") boolean optimisations,
+        @Valid SearchQuestion question,
+        @ModelAttribute SearchUser user) throws Exception {
+        
+        streamResultsController.getAllResults(request, response, fields, fieldnames, optimisations, question, user,
+            SearchQuestionType.ACCESSIBILITY_AUDITOR_GET_ALL_RESULTS);
+    }
     
     public ModelAndView runQuery(
         HttpServletRequest request,

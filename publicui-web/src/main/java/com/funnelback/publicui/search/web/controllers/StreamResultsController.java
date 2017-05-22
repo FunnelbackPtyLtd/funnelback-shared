@@ -22,6 +22,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.streamedresults.CommaSeparatedList;
@@ -137,7 +138,7 @@ public class StreamResultsController {
      * @throws Exception
      */
     @RequestMapping("/all-results.*")
-    public void acknowledgementCounts(
+    public void getAllResults(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required=false) CommaSeparatedList fields,
@@ -146,11 +147,26 @@ public class StreamResultsController {
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user) throws Exception {
         
+        getAllResults(request, response, fields, fieldnames, optimisations, question, user, SearchQuestionType.SEARCH_GET_ALL_RESULTS);
+        
+    }
+    
+    public void getAllResults(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        CommaSeparatedList fields,
+        CommaSeparatedList fieldnames,
+        boolean optimisations,
+        @Valid SearchQuestion question,
+        @ModelAttribute SearchUser user,
+        SearchQuestionType searchQuestionType) throws Exception {
+        
         // Parse the fields and fieldnames, this ensures that the size of the resulting lists are the same.
-        ResultFields resultFields = new ResultFields(Optional.of(fields).map(CommaSeparatedList::getList), 
-            Optional.of(fieldnames).map(CommaSeparatedList::getList));
+        ResultFields resultFields = new ResultFields(Optional.ofNullable(fields).map(CommaSeparatedList::getList), 
+            Optional.ofNullable(fieldnames).map(CommaSeparatedList::getList));
         
         if (question.getCollection() != null) {
+            question.setQuestionType(searchQuestionType);
             SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
             
             // Find the data converter to use based on the extension.

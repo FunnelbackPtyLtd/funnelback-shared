@@ -95,6 +95,7 @@ public class PagedQuery {
             }
             
             SearchQuestion questionCutDown = SearchQuestionBinder.makeCloneOfReleventFields(baseSearchQuestion);
+            questionCutDown.setQuestionType(baseSearchQuestion.getQuestionType());
             
             // Ensure we don't get packets that are too big.
             questionCutDown.setMaxPadrePacketSize(Optional.of(MAX_RESPONSE_SIZE));
