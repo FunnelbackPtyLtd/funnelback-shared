@@ -17,14 +17,14 @@ public interface DataConverter<T> {
     
     public T createWritter(OutputStream outputStream) throws IOException;
 
-    public void writeHead(List<String> fieldNames, T writter) throws IOException ;
+    public void writeHead(List<String> fieldNames, T writer) throws IOException ;
     
-    public void writeRecord(List<String> fieldNames, List<Object> values, T writter) throws IOException;
+    public void writeRecord(List<String> fieldNames, List<Object> values, T writer) throws IOException;
     
-    public void writeSeperator(T writter) throws IOException ;
+    public void writeSeperator(T writer) throws IOException ;
     
-    public void writeFooter(T writter) throws IOException ;
+    public void writeFooter(T writer) throws IOException ;
     
-    public void finished(T writter) throws IOException;
+    public void finished(T writer) throws IOException;
     
 }

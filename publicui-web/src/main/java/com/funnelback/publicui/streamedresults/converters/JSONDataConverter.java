@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Component
 public class JSONDataConverter implements DataConverter<JsonGenerator> {
 
+    /** Use the same object mapper used by search.json */
     @Autowired
     @Qualifier("jackson2ObjectMapper")
     private ObjectMapper jacksonObjectMapper;
@@ -36,31 +37,31 @@ public class JSONDataConverter implements DataConverter<JsonGenerator> {
     }
 
     @Override
-    public void writeHead(List<String> fieldNames, JsonGenerator writter) throws IOException {
-        writter.writeStartArray();
+    public void writeHead(List<String> fieldNames, JsonGenerator writer) throws IOException {
+        writer.writeStartArray();
     }
 
     @Override
-    public void writeRecord(List<String> fieldNames, List<Object> values, JsonGenerator writter) throws IOException {
+    public void writeRecord(List<String> fieldNames, List<Object> values, JsonGenerator writer) throws IOException {
         Map<String, Object> map = new HashMap<>();
         for(int i = 0; i < fieldNames.size(); i++) {
             map.put(fieldNames.get(i), values.get(i));
         }
-        writter.writeObject(map);
+        writer.writeObject(map);
     }
 
     @Override
-    public void writeSeperator(JsonGenerator writter) throws IOException {
+    public void writeSeperator(JsonGenerator writer) throws IOException {
     }
 
     @Override
-    public void writeFooter(JsonGenerator writter) throws IOException {
-        writter.writeEndArray();
+    public void writeFooter(JsonGenerator writer) throws IOException {
+        writer.writeEndArray();
     }
 
     @Override
-    public void finished(JsonGenerator writter) throws IOException {
-        writter.close();
+    public void finished(JsonGenerator writer) throws IOException {
+        writer.close();
     }
 
     

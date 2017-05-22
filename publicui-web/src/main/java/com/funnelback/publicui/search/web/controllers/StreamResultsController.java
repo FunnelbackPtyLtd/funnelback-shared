@@ -73,6 +73,12 @@ public class StreamResultsController {
     /**
      * Gets the data converter to use based on the extension.
      * 
+     * <p>Note that the return type is of object this is because I can't seem to do:
+     * DataConverter<?> converter = getDataConverterFromExtension("");
+     * converter.writeHead(convert.getWritter()); // here is the issue.
+     * Java doesn't understand that the type returned by convert.getWritter() is the
+     * same type as what is expected by converter.writeHead().</p>
+     * 
      * @param ext
      * @return
      */
@@ -96,7 +102,7 @@ public class StreamResultsController {
      * the fields of the Results to be returned as well as override the names of those
      * results.<p>
      * 
-     * <p>The set of URL options are:</p>
+     * <p>The set of relevant URL request parameters are:</p>
      * <ul>
      * <li>fields: A comma separated list of xPaths used to declare which fields of the Result object should
      * be returned for example "liveUrl,metaData/a" would give the live URL of each reasult as well as the value
@@ -106,14 +112,17 @@ public class StreamResultsController {
      * set the values for fields will be used instead.</li>
      * <li>num_ranks: If not set on the URL num_ranks will be set to the largest possible value, if a smaller amount is
      * required it should be set on the URL, this will ensure that only the requested num_ranks are returned however
-     * the query may be run multiple times.</li>
-     * <li>start_rank: If 
-     * <li>optimisations: A true/false option that lets you turn off optimisations </li>
+     * the query may be run multiple times. If you are doing client side paging you will need to use the start_rank
+     * query processor option to start the next page at the right spot.</li>
+     * <li>optimisations: A true/false option that lets you turn off optimisations. In general the optimisations
+     * attempt to turn off ranking and result processing options (each metadata/facet counting). It is not recommended
+     * to turn this on and instead you should enable each option to be used by setting it in the request URL.</li>
      * </ul>
      * 
-     * <p>By default the liveUrl of every result will be returned to the user. In this mode
-     * as num_ranks has not been set in the URL parameters, it will be effectively set to its
-     * largest value. By default the CGI parameter fields is 
+     * <p>By default the liveUrl of every result will be returned to the user.</p>
+     * 
+     * <p>The available extensions are 'csv' and 'json'</p>
+     * 
      * @param request
      * @param response
      * @param fields
@@ -133,24 +142,32 @@ public class StreamResultsController {
             @Valid SearchQuestion question,
             @ModelAttribute SearchUser user) throws Exception {
         
+        // Parse the fields and fieldnames, this ensures that the size of the resulting lists are the same.
         ResultFields resultFields = new ResultFields(Optional.of(fields).map(CommaSeparatedList::getList), 
             Optional.of(fieldnames).map(CommaSeparatedList::getList));
         
         if (question.getCollection() != null) {
             SearchQuestionBinder.bind(executionContextHolder.getExecutionContext(), request, question, localeResolver, funnelbackVersion);
             
-            
+            // Find the data converter to use based on the extension.
             DataConverter<Object> dataConverter = getDataConverterFromExtension(FilenameUtils.getExtension(request.getRequestURI()));
             
+            // TODO I am not sure how an exception should be returned here. Do I try to make a message in the 
+            // requested format e.g. csv/json or should I write nothing or should I just write some text back
+            // which is what the JAVA URL connection seems to expect (ie that error case returned bytes are different from
+            // the non error case bytes).
             if(dataConverter == null) {
                 log.warn("Search called with an unknown extension '" + request.getRequestURL()+"'.");
                 throw new RuntimeException("Unknown extension: " + FilenameUtils.getExtension(request.getRequestURI()));
             }
             
+            // Compile the xPaths once.
             List<CompiledExpression> compiledExpressions = RESULT_DATA_FETCHER.parseFields(resultFields.getXPaths());
             
+            // Now execute our query using the Paged searcher which takes care of making smaller request
+            // then pass the result of each search the TransactionToResults class which will convert
+            // the SearchTransaction to the data type expected e.g. CSV.
             PagedSearcher pageSearcher = new PagedSearcher(question, !optimisations);
-            
             try(TransactionToResults transactionToResults = new TransactionToResults(dataConverter, 
                                                                                         compiledExpressions, 
                                                                                         resultFields.getFieldNames(), 

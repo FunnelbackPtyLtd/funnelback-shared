@@ -10,7 +10,6 @@ import java.util.function.Function;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.jxpath.CompiledExpression;
-import org.apache.commons.jxpath.JXPathContext;
 
 import com.funnelback.common.Reference;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -19,20 +18,35 @@ import com.funnelback.publicui.streamedresults.datafetcher.XJPathResultDataFetch
 import com.funnelback.publicui.streamedresults.outputstreams.CloseIgnoringOutputStream;
 
 /**
+ * Converts SearchTransactions to results in some form defined by the DataConverter.
+ * 
+ * <p>This expects to be given multiple SearchTransactions which this will accept
+ * and fetch out the the requested fields of each Result (based on xPaths) and then
+ * write those fields to the {@link HttpServletResponse#getOutputStream()} in the format
+ * the DataConverter implements.</p>
  * 
  * <p>The OutputStream on the HTTP Response will not be closed by this</p>
  *
  */
 public class TransactionToResults implements Closeable {
 
+    
     private final DataConverter<Object> dataConverter;
     private final List<CompiledExpression> xpaths;
     private final List<String> fieldNames;
+    
+    /** Used to detmine if it is looking at the firstTransaction */
     private final AtomicBoolean isFirstTransaction = new AtomicBoolean(true);
+    
+    /** Used to determine if it is looking at the very first Result */
     private final AtomicBoolean isFirstResult = new AtomicBoolean(true);
+    
     private final  HttpServletResponse response;
+    
     private final  XJPathResultDataFetcher resultDataFetcher;
-    private Object writter;
+    
+    /** The writer that must be passed to the dataConverter */
+    private Object writer;
     
     
     public TransactionToResults(DataConverter<Object> dataConverter, List<CompiledExpression> xpaths,
@@ -58,11 +72,11 @@ public class TransactionToResults implements Closeable {
         try {
             // Create the writter that will be passed to the dataConverter. 
             // must be done to prevent some dataConverters from trying to close the stream to early.
-            writter = dataConverter.createWritter(new CloseIgnoringOutputStream(response.getOutputStream()));
+            writer = dataConverter.createWritter(new CloseIgnoringOutputStream(response.getOutputStream()));
             
             // Pass the user set field names to the writter, at this point
             // a CSV writer might write the header of the CSV file using the field names.
-            dataConverter.writeHead(fieldNames, writter);
+            dataConverter.writeHead(fieldNames, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +101,7 @@ public class TransactionToResults implements Closeable {
        
         try {
             // Write the results out to the user.
-            if(!writeResults(results, dataConverter, writter, fieldNames, xpaths, isFirstResult.get())) {
+            if(!writeResults(results, dataConverter, writer, fieldNames, xpaths, isFirstResult.get())) {
                 isFirstResult.set(false);
             }
         } catch (IOException e) {
@@ -95,16 +109,31 @@ public class TransactionToResults implements Closeable {
         }
     }
     
+    /**
+     * Finishes off writing the data but does not close the OutputStream of the HTTP response.
+     */
     @Override
     public void close() throws IOException {
-        dataConverter.writeFooter(writter);
-        dataConverter.finished(writter);
+        dataConverter.writeFooter(writer);
+        dataConverter.finished(writer);
     }
     
 
-    public <T> boolean writeResults(List<Result> results, 
+    /**
+     * Passes each result to the dataConverter so that it may be written out.
+     * 
+     * @param results
+     * @param dataConverter
+     * @param writer
+     * @param fieldNames
+     * @param expressions
+     * @param isFirst 
+     * @return the value of isFirst that should be passed in on the next call.
+     * @throws IOException
+     */
+    <T> boolean writeResults(List<Result> results, 
         DataConverter<T> dataConverter, 
-        T writter,
+        T writer,
         List<String> fieldNames,
         List<CompiledExpression> expressions,
         boolean isFirst) throws IOException {
@@ -116,19 +145,32 @@ public class TransactionToResults implements Closeable {
         // before we can start having the GC collect objects.
         // The clickTrackingUrl and cacheUrl accounted for 78% of the size of the Results,
         // if that is not requested we can drop the memory requirements considerably.
+        
+        // First convert the Result to a List of fields that where requested by the xPaths
         List<List<Object>> valuesForResults = gcFriendlyListTraverser(results, 
             (result) -> resultDataFetcher.fetchFeilds(fieldNames, expressions, result));
+        
+        AtomicBoolean isFirstResult = new AtomicBoolean(isFirst);
 
+        // now pass that list of values requested to the dataConverter so that it might
+        // write the values out in some format (e.g. CSV).
         gcFriendlyListTraverser(valuesForResults, (values) -> {
             try {
-                dataConverter.writeRecord(fieldNames, values, writter);
+                
+                // Write the separator if results have been written before.
+                if(!isFirstResult.get()) {
+                    dataConverter.writeSeperator(writer);
+                }
+                
+                dataConverter.writeRecord(fieldNames, values, writer);
+                isFirstResult.set(false);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             return null;
         });
 
-        return isFirst;
+        return isFirstResult.get();
     }
 
     /**

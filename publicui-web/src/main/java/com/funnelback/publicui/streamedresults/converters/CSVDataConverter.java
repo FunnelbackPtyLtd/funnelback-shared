@@ -31,32 +31,33 @@ public class CSVDataConverter implements DataConverter<CSVPrinter>{
     }
 
     @Override
-    public void writeHead(List<String> fieldNames, CSVPrinter writter) throws IOException {
-        writter.printRecord(fieldNames);
+    public void writeHead(List<String> fieldNames, CSVPrinter writer) throws IOException {
+        writer.printRecord(fieldNames);
     }
 
     @Override
-    public void writeRecord(List<String> fieldNames, List<Object> values, CSVPrinter writter) throws IOException {
+    public void writeRecord(List<String> fieldNames, List<Object> values, CSVPrinter writer) throws IOException {
         List<String> strings = new ArrayList<>(values.size());
         for(int i = 0; i < values.size(); i++) {
-            //TODO do something special on Date
+            //TODO do something special on Date it would be nice to return a date that is in the
+            // same format as the JSON from.
             strings.add(Optional.ofNullable(values.get(i)).map(Object::toString).orElse(""));
         }
-        writter.printRecord(strings);
+        writer.printRecord(strings);
         
     }
 
     @Override
-    public void writeSeperator(CSVPrinter writter) throws IOException {
+    public void writeSeperator(CSVPrinter writer) throws IOException {
         
     }
 
     @Override
-    public void writeFooter(CSVPrinter writter) throws IOException {
+    public void writeFooter(CSVPrinter writer) throws IOException {
     }
 
     @Override
-    public void finished(CSVPrinter writter) throws IOException {
-        writter.close();
+    public void finished(CSVPrinter writer) throws IOException {
+        writer.close();
     }
 }
