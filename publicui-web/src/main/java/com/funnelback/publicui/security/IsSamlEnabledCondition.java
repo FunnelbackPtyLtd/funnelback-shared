@@ -29,11 +29,11 @@ public class IsSamlEnabledCondition implements Condition {
     @Override
     @Synchronized
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        if (isEnabled == null) {
+//        if (isEnabled == null) {
             GlobalOnlyConfig config = new GlobalOnlyConfig(new File(System.getProperty(Config.SYSPROP_INSTALL_DIR)));
             
             isEnabled = config.valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
-        }
+//        }
         return isEnabled;
     }
 
