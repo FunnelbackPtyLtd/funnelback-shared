@@ -26,6 +26,7 @@ import com.funnelback.common.config.Config;
  */
 public class X509ConfiguredJettyServer {
     private Server server;
+    ServerConnector sslConnector;
     private String priorInstallDirPropertyValue;
     private File searchHome;
     
@@ -65,17 +66,14 @@ public class X509ConfiguredJettyServer {
         sslContextFactory.setWantClientAuth(true);
         sslContextFactory.setNeedClientAuth(false);
 
-        HttpConfiguration http_config = new HttpConfiguration();
-        http_config.setSecureScheme("https");
-        http_config.setSecurePort(8443);
-        HttpConfiguration https_config = new HttpConfiguration(http_config);
+        HttpConfiguration https_config = new HttpConfiguration(new HttpConfiguration());
         https_config.addCustomizer(new SecureRequestCustomizer());
 
         // SSL Connector
-        ServerConnector sslConnector = new ServerConnector(server,
+        sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
             new HttpConnectionFactory(https_config));
-        sslConnector.setPort(8443);
+        sslConnector.setPort(0);
         server.addConnector(sslConnector);
         
         final WebAppContext context = new WebAppContext();
@@ -94,6 +92,6 @@ public class X509ConfiguredJettyServer {
     }
     
     public String getBaseUrl() {
-        return "https://localhost:8443";
+        return "https://localhost:" + sslConnector.getLocalPort();
     }
 }

@@ -12,6 +12,7 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.boot.SpringApplication;
 
@@ -54,7 +55,7 @@ public class SamlConfiguredJettyServer {
     }
 
     private Server createServer() throws NamingException {
-        final Server server = new Server(8084);
+        final Server server = new Server(0);
 
         final WebAppContext context = new WebAppContext();
         context.setContextPath("/s");
@@ -74,6 +75,6 @@ public class SamlConfiguredJettyServer {
     }
     
     public String getBaseUrl() {
-        return "http://localhost:8084";
+        return "http://localhost:" + ((ServerConnector)server.getConnectors()[0]).getLocalPort();
     }
 }
