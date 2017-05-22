@@ -19,7 +19,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.funnelback.common.config.Config;
 
 /**
- * Starts an stops a Jetty server configured for X.509 client certificate authentication.
+ * Starts and stops a Jetty server configured for X.509 client certificate authentication.
  * 
  * WARNING - This has to mess with the Config.SYSPROP_INSTALL_DIR system property.
  * It resets it at the end, but that may be a problem if other tests run in parallel.
@@ -56,12 +56,6 @@ public class X509ConfiguredJettyServer {
     private Server createServer() throws NamingException {
         final Server server = new Server();
 
-        HttpConfiguration http_config = new HttpConfiguration();
-        http_config.setSecureScheme("https");
-        http_config.setSecurePort(8443);
-        
-        // === jetty-https.xml ===
-        // SSL Context Factory
         SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(new File("src/test/resources/x509/keystores/server-keystore.jks").getAbsolutePath());
         sslContextFactory.setKeyStorePassword("funnelback");
@@ -71,7 +65,9 @@ public class X509ConfiguredJettyServer {
         sslContextFactory.setWantClientAuth(true);
         sslContextFactory.setNeedClientAuth(false);
 
-        // SSL HTTP Configuration
+        HttpConfiguration http_config = new HttpConfiguration();
+        http_config.setSecureScheme("https");
+        http_config.setSecurePort(8443);
         HttpConfiguration https_config = new HttpConfiguration(http_config);
         https_config.addCustomizer(new SecureRequestCustomizer());
 

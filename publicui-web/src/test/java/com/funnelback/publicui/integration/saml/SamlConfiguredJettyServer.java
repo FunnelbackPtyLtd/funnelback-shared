@@ -19,7 +19,7 @@ import com.funnelback.common.Environment;
 import com.funnelback.common.config.Config;
 
 /**
- * Starts an stops a Jetty server configured for SAML.
+ * Starts and stops a Jetty server configured for SAML.
  * 
  * WARNING - This has to mess with the Config.SYSPROP_INSTALL_DIR system property.
  * It resets it at the end, but that may be a problem if other tests run in parallel.
