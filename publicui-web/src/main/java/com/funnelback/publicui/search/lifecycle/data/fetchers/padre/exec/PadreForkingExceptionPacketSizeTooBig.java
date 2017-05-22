@@ -3,9 +3,8 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 import lombok.Getter;
 
 /**
- * A padre forking exception that occured because some limit we applied was reached
+ * A padre forking exception that is thrown when the output from padre is too large. 
  * 
- * e.g. a timeout or the response packet size was too large.
  *
  */
 public class PadreForkingExceptionPacketSizeTooBig extends PadreForkingException {
