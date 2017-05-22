@@ -24,7 +24,7 @@ public class CSVDataConverter implements DataConverter<CSVPrinter>{
     }
 
     @Override
-    public CSVPrinter createWritter(OutputStream outputStream) throws IOException {
+    public CSVPrinter createWriter(OutputStream outputStream) throws IOException {
         //RFC 4180
         CSVPrinter csvPrinter = new CSVPrinter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
         return csvPrinter;

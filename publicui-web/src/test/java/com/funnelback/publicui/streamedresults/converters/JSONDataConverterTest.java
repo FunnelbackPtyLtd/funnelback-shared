@@ -18,7 +18,7 @@ public class JSONDataConverterTest {
     public void test() throws Exception {
         JSONDataConverter jsonDataConverter = new JSONDataConverter();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        JsonGenerator writter = jsonDataConverter.createWritter(bos);
+        JsonGenerator writter = jsonDataConverter.createWriter(bos);
         jsonDataConverter.writeHead(null, writter);
         jsonDataConverter.writeRecord(asList("k1", "k2"), asList("v1", "v2"), writter);
         jsonDataConverter.writeSeperator(writter);

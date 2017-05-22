@@ -32,7 +32,7 @@ public class JSONDataConverter implements DataConverter<JsonGenerator> {
     }
 
     @Override
-    public JsonGenerator createWritter(OutputStream outputStream) throws IOException {
+    public JsonGenerator createWriter(OutputStream outputStream) throws IOException {
         return jacksonObjectMapper.getFactory().createGenerator(outputStream);
     }
 

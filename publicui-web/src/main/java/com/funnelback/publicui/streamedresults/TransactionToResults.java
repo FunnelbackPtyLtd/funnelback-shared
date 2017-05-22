@@ -72,7 +72,7 @@ public class TransactionToResults implements Closeable {
         try {
             // Create the writter that will be passed to the dataConverter. 
             // must be done to prevent some dataConverters from trying to close the stream to early.
-            writer = dataConverter.createWritter(new CloseIgnoringOutputStream(response.getOutputStream()));
+            writer = dataConverter.createWriter(new CloseIgnoringOutputStream(response.getOutputStream()));
             
             // Pass the user set field names to the writter, at this point
             // a CSV writer might write the header of the CSV file using the field names.
