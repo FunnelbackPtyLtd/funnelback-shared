@@ -58,8 +58,8 @@ public class SamlConfiguredJettyServer {
 
         final WebAppContext context = new WebAppContext();
         context.setContextPath("/s");
-        context.setResourceBase("/opt/funnelback-publicui/publicui-web/src/main/webapp");
-        context.setDescriptor("/opt/funnelback-publicui/publicui-web/src/main/webapp/WEB-INF/web.xml");
+        context.setResourceBase(new File("src/main/webapp").getAbsolutePath());
+        context.setDescriptor(new File("src/main/webapp/WEB-INF/web.xml").getAbsolutePath());
         context.setParentLoaderPriority(true);
         context.setServer(server);
         
