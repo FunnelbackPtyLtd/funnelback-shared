@@ -1,6 +1,6 @@
 package com.funnelback.publicui.utils;
 
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.BB;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.*;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CNTO;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COLLAPSING;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION;
@@ -12,7 +12,6 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.DAAT_TIMEOUT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.DIVERSITY_RANK_LIMIT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.GEOSPATIAL_RANGES;
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.MBL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.QSUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.REPETITIOUSNESS_FACTOR;
@@ -31,11 +30,11 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.STEM;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SUM;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SUMBYGROUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.TITLE_DUP_FACTOR;
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.VSIMPLE;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.google.common.collect.ImmutableList;
 
 import lombok.AllArgsConstructor;
@@ -57,8 +56,12 @@ public class PadreOptionsForSpeed {
         //If this is to be used else where we should set
         // -countIndexedTerms, "[FunUnusedMetaClass]
         return ImmutableList.of(
-            new OptionAndValue(VSIMPLE, "1"), // Turning on vsimple reduces ranking complexity, this should be done early so other
-                          // other options can override what this sets.
+            
+            // Don't unable VSIMPLE as it turns some optimisations back off!
+            // instead just enable what it would have: -sco=0 -cool=off -SSS=0 -kmod=0
+            //new OptionAndValue(VSIMPLE, "1"),
+            new OptionAndValue(COOL, "off"),
+            new OptionAndValue(KMOD, "0"),
             new OptionAndValue(DAAT_TIMEOUT, "0"), // Turning off daat timeout speeds up query processing.
             new OptionAndValue(SCO, "1"), //no ranking 
             new OptionAndValue(RMCF, ""),     // We don't need rmcf for this call override it if set.

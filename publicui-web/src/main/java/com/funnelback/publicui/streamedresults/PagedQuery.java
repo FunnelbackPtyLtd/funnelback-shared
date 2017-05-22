@@ -106,7 +106,7 @@ public class PagedQuery {
             // We always must go as deep as possible
             // TODO we could set this to maximum num_ranks + start_rank we will ever want.
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.DAAT, new String[]{"10000000"});
-            questionCutDown.getDynamicQueryProcessorOptions().add(QueryProcessorOptionKeys.DAAT_TIMEOUT + "=3600");
+            questionCutDown.getDynamicQueryProcessorOptions().add("-" + QueryProcessorOptionKeys.DAAT_TIMEOUT + "=3600");
             
             // Apply optimisations if enabled
             applyOptimisations(questionCutDown, new PadreOptionsForSpeed());
