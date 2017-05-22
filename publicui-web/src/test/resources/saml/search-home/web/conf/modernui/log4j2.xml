@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="Console" />
+        </Root>
+        <Logger name="com.funnelback" level="trace" />
+        <!-- Avoid noise from predictive segmentation, for which the data is not included -->
+        <Logger name="com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationConnector" level="fatal" />
+    </Loggers>
+</Configuration>
