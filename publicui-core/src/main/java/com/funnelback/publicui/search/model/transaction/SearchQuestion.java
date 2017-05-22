@@ -369,6 +369,7 @@ public class SearchQuestion {
      * setting this.</p>
      * @since 15.12
      */
+    @XStreamOmitField
     @Getter @Setter private Optional<Integer> maxPadrePacketSize = Optional.empty();
     
     /**

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.funnelback.common.Reference;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
@@ -121,21 +122,19 @@ public class PagedSearcher {
             if(!this.disableOptimisation) {
                 PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
                 
-                //TODO set these via RMCF
-                questionCutDown.getDynamicQueryProcessorOptions().addAll(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSet());
-                questionCutDown.getDynamicQueryProcessorOptions().add(padreOptionsForSpeed.getHighServiceVolumeOption());
-                
-                
-                // We will also disable rmcf even if it is enabled with facets later on as this is the most expensive of
-                // all operations and the one must
-                if(questionCutDown.getRawInputParameters().get(QueryProcessorOptionKeys.RMCF) != null) {
-                    questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.RMCF, new String[]{"[]"});
-                }
+                Stream.concat(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs().stream(), 
+                    Stream.of(padreOptionsForSpeed.getHighServiceVolumeOptionAsPair()))
+                .forEach(option -> {
+                    // This is interesting we want to override things like RMCF and count g bits when facets are enabled.
+                    // but we still need faceted nav to cut down the query.
+                    if(!questionCutDown.getRawInputParameters().containsKey(option.getOption())) {
+                        questionCutDown.getRawInputParameters().put(option.getOption(), new String[]{option.getValue()});
+                    }
+                });
             }
             
             
             
-            long time = System.currentTimeMillis();
             SearchTransaction transaction = searchExecutor.apply(questionCutDown);
             
             if(transaction.getError() != null) {
@@ -158,12 +157,11 @@ public class PagedSearcher {
             }
             
             
-            System.out.println(System.currentTimeMillis()-time);
-            
             if(Optional.ofNullable(transaction.getResponse()).map(SearchResponse::getResultPacket).isPresent()) {
                 tryForMore = transaction.getResponse().getResultPacket().getResultsSummary().getTotalMatching()> startRank -1 + numRank;
-                System.out.println(transaction.getResponse().getResultPacket().getResults().size());
-                System.out.println(transaction.getResponse().getUntruncatedPadreOutputSize()/1024/1024 + " MB");
+                log.debug("Padre packet size was: {}MB for {} results", 
+                    transaction.getResponse().getUntruncatedPadreOutputSize()/1024/1024,
+                    transaction.getResponse().getResultPacket().getResults().size());
             } else {
                 // No ResultPacket means we have no more results.
                 tryForMore = false;
@@ -182,7 +180,6 @@ public class PagedSearcher {
             
             // Pass on the transaction
             onPage.accept(transactionReference);
-            
         }
         
     }

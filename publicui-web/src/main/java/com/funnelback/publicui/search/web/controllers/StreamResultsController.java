@@ -115,7 +115,9 @@ public class StreamResultsController {
      * the query may be run multiple times. If you are doing client side paging you will need to use the start_rank
      * query processor option to start the next page at the right spot.</li>
      * <li>optimisations: A true/false option that lets you turn off optimisations. In general the optimisations
-     * attempt to turn off ranking and result processing options (each metadata/facet counting). It is not recommended
+     * attempt to turn off ranking and result processing options (e.g. metadata/facet counting), as well as reducing the
+     * size of the result summaries returned (SBL=1) and number of bytes of metadata returned (MBL=1).
+     * It is not recommended
      * to turn this on and instead you should enable each option to be used by setting it in the request URL.</li>
      * </ul>
      * 
