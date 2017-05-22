@@ -5,6 +5,10 @@ import java.io.OutputStream;
 
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * A OutputStream that when close is called close() is not called on the underlying stream.
+ *
+ */
 @Log4j2
 public class CloseIgnoringOutputStream extends DelegateOutputStream {
 
