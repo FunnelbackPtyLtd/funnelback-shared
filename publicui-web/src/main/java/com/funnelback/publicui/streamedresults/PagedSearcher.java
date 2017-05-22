@@ -94,7 +94,7 @@ public class PagedSearcher {
     public void runOnEachPage(Function<SearchQuestion, SearchTransaction> searchExecutor,
         Consumer<Reference<SearchTransaction>> onPage) {
         int startRank = initialStartRank;
-        int numRank = 100;
+        int numRank = 100; // Start low and work our way up.
         
         boolean tryForMore = true;
         while(tryForMore) {
@@ -114,13 +114,17 @@ public class PagedSearcher {
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.START_RANK, new String[]{startRank + ""});
             
             // We always must go as deep as possible
+            // TODO allow setting of daat depth by the user or set this to as small as value as possible?
             questionCutDown.getRawInputParameters().put(QueryProcessorOptionKeys.DAAT, new String[]{"10000000"});
             questionCutDown.getDynamicQueryProcessorOptions().add(QueryProcessorOptionKeys.DAAT_TIMEOUT + "=3600");
             
             if(!this.disableOptimisation) {
                 PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
+                
+                //TODO set these via RMCF
                 questionCutDown.getDynamicQueryProcessorOptions().addAll(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSet());
                 questionCutDown.getDynamicQueryProcessorOptions().add(padreOptionsForSpeed.getHighServiceVolumeOption());
+                
                 
                 // We will also disable rmcf even if it is enabled with facets later on as this is the most expensive of
                 // all operations and the one must
