@@ -48,6 +48,14 @@ public class SearchQuestionBinder {
         to.setClive(from.getClive());
     }
     
+    /**
+     * Makes a clone of the given SearchQuestion
+     * 
+     * see {@link SearchQuestionBinder#bind(SearchQuestion, SearchQuestion)}
+     * 
+     * @param question
+     * @return
+     */
     public static SearchQuestion makeCloneOfReleventFields(SearchQuestion question) {
         SearchQuestion newQuestion = new SearchQuestion();
         bind(question, newQuestion);
