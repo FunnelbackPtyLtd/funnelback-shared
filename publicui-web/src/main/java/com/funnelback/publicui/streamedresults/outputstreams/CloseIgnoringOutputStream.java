@@ -18,6 +18,6 @@ public class CloseIgnoringOutputStream extends DelegateOutputStream {
 
     @Override
     public void close() throws IOException {
-       log.debug("Tsk tsk tsk, closed was called when it shouldn't have been."); 
+       log.debug("Call closed, underlying output stream will not have close called."); 
     }
 }
