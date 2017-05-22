@@ -25,6 +25,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.hamcrest.core.AllOf;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.StringContains;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -59,7 +62,12 @@ public class X509SecurityIT {
     @Test
     public void testNoClientCertificate() throws Exception {
         String responseText = performTestRequest(Optional.empty());
-        Assert.assertTrue("Expected access to be denied", responseText.contains("Access Denied"));
+        Assert.assertThat("Expected access to be denied", responseText,
+            AllOf.allOf(
+                StringContains.containsString("Access Denied"), 
+                IsNot.not((StringContains.containsString("granted")))
+            )
+        );
     }
     
     // Our search_home has a custom template to make this just say "Access Granted!"
