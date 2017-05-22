@@ -237,8 +237,6 @@ public class SearchController extends SessionController {
 
     }
     
-    
-    
     private Map<String, Object> getModel(ViewTypes vt, HttpServletRequest request, SearchTransaction st) {
         Map<String, Object> out = new HashMap<String, Object>();
         switch (vt) {
