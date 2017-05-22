@@ -20,33 +20,32 @@ import org.hamcrest.core.AllOf;
 import org.hamcrest.core.StringContains;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SamlAuthenticationIT {
-
-    // The easiest way I've found to hand-run this for development
-    // is to run `mvn -Dmaven.failsafe.debug verify` on the command
-    // line which will start the jetty instance and then wait for
-    // a debug connection (which you can ignore and instead manually
-    // run the test from within eclipse)
-
-    private static String testBaseUrl = "http://localhost:8084";
-    private static String mujinaBaseUrl = "http://localhost:8080";
-    private static File searchHome = new File("src/test/resources/saml/search-home/");
+public class SamlSecurityIT {
+    private static SamlConfiguredJettyServer server;
+    private static MujinaIdentityProviderServer mujina;
+    private static File searchHome = new File("src/test/resources/saml/search-home");
 
     @BeforeClass
-    public static void setupProperties() {
-        testBaseUrl = System.getProperty("testBaseUrl", testBaseUrl);
-        mujinaBaseUrl = System.getProperty("mujinaBaseUrl", mujinaBaseUrl);
+    public static void startServers() throws Exception {
+        SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
+        SamlSecurityIT.mujina.start();
+        
+        SamlSecurityIT.server = new SamlConfiguredJettyServer(searchHome);
+        SamlSecurityIT.server.start();
     }
 
     @Test
     public void testProactiveHttpBasic() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
 
-        HttpGet get = new HttpGet(testBaseUrl + "/s/search.html");
+        HttpGet get = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
         get.addHeader("Authorization", "Basic YWRtaW46YWRtaW4="); // That's admin:admin
 
         try (CloseableHttpResponse response = httpclient.execute(get)) {
@@ -59,7 +58,7 @@ public class SamlAuthenticationIT {
                 StringContains.containsString("Access granted!"));
         }
 
-        HttpGet get2 = new HttpGet(testBaseUrl + "/s/search.html");
+        HttpGet get2 = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
         // Do it again with no authorization header now - The JSESSIONID cookie should suffice
 
         try (CloseableHttpResponse response = httpclient.execute(get2)) {
@@ -79,7 +78,7 @@ public class SamlAuthenticationIT {
 
         String token = TokenUtils.makeToken(searchHome, "test", "admin", "dummyHash");
         
-        HttpGet get = new HttpGet(testBaseUrl + "/s/search.html");
+        HttpGet get = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
         get.addHeader("X-Security-Token", token); // That's admin:admin
 
         try (CloseableHttpResponse response = httpclient.execute(get)) {
@@ -100,7 +99,7 @@ public class SamlAuthenticationIT {
             // We want to follow a POST redirect to a GET - see http://stackoverflow.com/a/23181680/797
             .build();
 
-        HttpGet getLoginPage = new HttpGet(testBaseUrl + "/s/search.html");
+        HttpGet getLoginPage = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
 
         try (CloseableHttpResponse response = httpclient.execute(getLoginPage)) {
             HttpEntity entity = response.getEntity();
@@ -112,7 +111,7 @@ public class SamlAuthenticationIT {
                 AllOf.allOf(StringContains.containsString("Login page"), StringContains.containsString("Mujina Identity Provider")));
         }
 
-        HttpPost postLoginForm = new HttpPost(mujinaBaseUrl + "/login");
+        HttpPost postLoginForm = new HttpPost(SamlSecurityIT.mujina.getBaseUrl() + "/login");
 
         List<NameValuePair> loginFormParameters = new ArrayList<>();
         loginFormParameters.add(new BasicNameValuePair("username", "admin"));
@@ -152,5 +151,10 @@ public class SamlAuthenticationIT {
         }
 
     }
-
+    
+    @AfterClass
+    public static void stopServers() throws Exception {
+        SamlSecurityIT.server.stop();
+        SamlSecurityIT.mujina.stop();
+    }
 }
