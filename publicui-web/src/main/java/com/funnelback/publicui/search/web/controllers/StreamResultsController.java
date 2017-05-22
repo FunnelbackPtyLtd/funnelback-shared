@@ -125,6 +125,8 @@ public class StreamResultsController {
      * 
      * <p>The available extensions are 'csv' and 'json'</p>
      * 
+     * <p>The comma separated lists are encoded like a record in a CSV file following RFC 4180</p>
+     * 
      * @param request
      * @param response
      * @param fields
