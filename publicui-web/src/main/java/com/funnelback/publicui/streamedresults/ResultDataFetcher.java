@@ -25,6 +25,6 @@ public interface ResultDataFetcher<T> {
      * @param result The result to get the fields out of.
      * @return the object at the xPaths as given to parseFields() for the given result.
      */
-    public List<Object> fetchFeilds(T context, Result result);
+    public List<Object> fetchFieldValues(T context, Result result);
     
 }

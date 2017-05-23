@@ -18,7 +18,7 @@ public class XJPathResultDataFetcher implements ResultDataFetcher<List<CompiledE
     }
 
     @Override
-    public List<Object> fetchFeilds(List<CompiledExpression> compiledExpressions, Result result) {
+    public List<Object> fetchFieldValues(List<CompiledExpression> compiledExpressions, Result result) {
         JXPathContext context = JXPathContext.newContext(result);
         context.setLenient(true);
         List<Object> data = new ArrayList<>(compiledExpressions.size());
