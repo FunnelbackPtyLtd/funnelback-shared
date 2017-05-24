@@ -87,7 +87,7 @@ public class PagedQuery {
         while(tryForMore) {
             
             // Check if we have reached the num ranks requested.
-            if(startRank - initialStartRank + numRank > maxNumRanks) {
+            if(startRank - initialStartRank + numRank >= maxNumRanks) {
                 numRank = maxNumRanks - startRank + initialStartRank;
                 if(numRank <= 0) {
                     break;

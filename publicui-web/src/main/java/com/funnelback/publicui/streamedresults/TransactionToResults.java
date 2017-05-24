@@ -1,9 +1,12 @@
 package com.funnelback.publicui.streamedresults;
 
+import static lombok.AccessLevel.PACKAGE;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
@@ -13,9 +16,14 @@ import org.apache.commons.jxpath.CompiledExpression;
 
 import com.funnelback.common.Reference;
 import com.funnelback.publicui.search.model.padre.Result;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.streamedresults.datafetcher.XJPathResultDataFetcher;
 import com.funnelback.publicui.streamedresults.outputstreams.CloseIgnoringOutputStream;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Converts SearchTransactions to results in some form defined by the DataConverter.
@@ -31,22 +39,22 @@ import com.funnelback.publicui.streamedresults.outputstreams.CloseIgnoringOutput
 public class TransactionToResults implements Closeable {
 
     
-    private final DataConverter<Object> dataConverter;
-    private final List<CompiledExpression> xpaths;
-    private final List<String> fieldNames;
+    @Getter(PACKAGE) private final DataConverter<Object> dataConverter;
+    @Getter(PACKAGE) private final List<CompiledExpression> xpaths;
+    @Getter(PACKAGE) private final List<String> fieldNames;
     
     /** Used to detmine if it is looking at the firstTransaction */
-    private final AtomicBoolean isFirstTransaction = new AtomicBoolean(true);
+    @Getter(PACKAGE) private final AtomicBoolean isFirstTransaction = new AtomicBoolean(true);
     
     /** Used to determine if it is looking at the very first Result */
-    private final AtomicBoolean isFirstResult = new AtomicBoolean(true);
+    @Getter(PACKAGE) private final AtomicBoolean isFirstResult = new AtomicBoolean(true);
     
-    private final  HttpServletResponse response;
+    @Getter(PACKAGE) private final  HttpServletResponse response;
     
-    private final  XJPathResultDataFetcher resultDataFetcher;
+    @Getter(PACKAGE) private final  XJPathResultDataFetcher resultDataFetcher;
     
     /** The writer that must be passed to the dataConverter */
-    private Object writer;
+    @Getter(PACKAGE) @Setter(PACKAGE) private Object writer;
     
     
     public TransactionToResults(DataConverter<Object> dataConverter, List<CompiledExpression> xpaths,
@@ -61,24 +69,36 @@ public class TransactionToResults implements Closeable {
     
     
     void onFirstTransaction(SearchTransaction transaction) {
-        // On the first transaction tell our client how many results they can expect.
-        // they can use that to verify if something went wrong.
-        response.setHeader("X-Funnelback-Total-Matching", 
-            transaction.getResponse().getResultPacket().getResultsSummary().getTotalMatching() + "");
+        addHeadersFromFirstTransaction(transaction);
         
         // Set the content type based on the data Converter
         response.setContentType(dataConverter.getContentType());
         
         try {
-            // Create the writter that will be passed to the dataConverter. 
+            // Create the writer that will be passed to the dataConverter. 
             // must be done to prevent some dataConverters from trying to close the stream to early.
             writer = dataConverter.createWriter(new CloseIgnoringOutputStream(response.getOutputStream()));
             
-            // Pass the user set field names to the writter, at this point
+            // Pass the user set field names to the writer, at this point
             // a CSV writer might write the header of the CSV file using the field names.
             dataConverter.writeHead(fieldNames, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    void addHeadersFromFirstTransaction(SearchTransaction firstTransaction) {
+        // On the first transaction tell our client how many results they can expect.
+        // they can use that to verify if something went wrong, or to work how much data
+        // they are going to get back.
+        if(Optional.ofNullable(firstTransaction).map(SearchTransaction::getResponse)
+            .map(SearchResponse::getResultPacket)
+            .map(ResultPacket::getResultsSummary)
+            .isPresent()) {
+            response.setHeader("X-Funnelback-Total-Matching", 
+                firstTransaction.getResponse().getResultPacket().getResultsSummary().getTotalMatching() + "");
+            response.setHeader("X-Funnelback-Total-Matching-Is-Estimated-Counts", 
+                firstTransaction.getResponse().getResultPacket().getResultsSummary().getEstimatedCounts() + "");
         }
     }
     
@@ -101,7 +121,7 @@ public class TransactionToResults implements Closeable {
        
         try {
             // Write the results out to the user.
-            if(!writeResults(results, dataConverter, writer, fieldNames, xpaths, isFirstResult.get())) {
+            if(!writeResults(results, writer, isFirstResult.get())) {
                 isFirstResult.set(false);
             }
         } catch (IOException e) {
@@ -131,11 +151,8 @@ public class TransactionToResults implements Closeable {
      * @return the value of isFirst that should be passed in on the next call.
      * @throws IOException
      */
-    <T> boolean writeResults(List<Result> results, 
-        DataConverter<T> dataConverter, 
+    <T> boolean writeResults(List<Result> results,
         T writer,
-        List<String> fieldNames,
-        List<CompiledExpression> expressions,
         boolean isFirst) throws IOException {
 
         // It is likely the case that the request fields produces a list of objects
@@ -148,7 +165,7 @@ public class TransactionToResults implements Closeable {
         
         // First convert the Result to a List of fields that where requested by the xPaths
         List<List<Object>> valuesForResults = gcFriendlyListTraverser(results, 
-            (result) -> resultDataFetcher.fetchFieldValues(expressions, result));
+            (result) -> resultDataFetcher.fetchFieldValues(xpaths, result));
         
         AtomicBoolean isFirstResult = new AtomicBoolean(isFirst);
 

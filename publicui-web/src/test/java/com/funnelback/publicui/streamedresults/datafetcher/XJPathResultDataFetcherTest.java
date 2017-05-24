@@ -11,7 +11,7 @@ import com.funnelback.publicui.search.model.padre.Result;
 
 
 
-public class XJPathTest {
+public class XJPathResultDataFetcherTest {
 
     XJPathResultDataFetcher dataFetcher = new XJPathResultDataFetcher();
     

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +40,16 @@ public class CSVDataConverter implements DataConverter<CSVPrinter>{
     public void writeRecord(List<String> fieldNames, List<Object> values, CSVPrinter writer) throws IOException {
         List<String> strings = new ArrayList<>(values.size());
         for(int i = 0; i < values.size(); i++) {
-            //TODO do something special on Date it would be nice to return a date that is in the
-            // same format as the JSON from.
-            strings.add(Optional.ofNullable(values.get(i)).map(Object::toString).orElse(""));
+            
+            Object value = values.get(i);
+            // By default search.json appears to be giving dates as milliseconds since January 1, 1970, 00:00:00 GMT
+            // so we do the same here for consistency.
+            if(value != null && values.get(i) instanceof Date) {
+                Date date = (Date) value;
+                strings.add(date.getTime() + "");
+            } else {
+                strings.add(Optional.ofNullable(value).map(Object::toString).orElse(""));
+            }
         }
         writer.printRecord(strings);
         

@@ -27,7 +27,7 @@ public class CommaSeparatedListEditor extends PropertyEditorSupport {
     
     
     
-    private List<String> parseValue(String s) {
+    List<String> parseValue(String s) {
         try {
             // We use RFC 4180 to parse the fields just like the CSV that would be returned.
             try(CSVParser csvParser = new CSVParser(new StringReader(s), CSVFormat.RFC4180)) {
