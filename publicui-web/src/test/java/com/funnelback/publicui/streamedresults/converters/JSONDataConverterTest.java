@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -16,7 +17,7 @@ public class JSONDataConverterTest {
 
     @Test
     public void test() throws Exception {
-        JSONDataConverter jsonDataConverter = new JSONDataConverter();
+        JSONDataConverter jsonDataConverter = new JSONDataConverter(new ObjectMapper());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         JsonGenerator writter = jsonDataConverter.createWriter(bos);
         jsonDataConverter.writeHead(null, writter);

@@ -14,9 +14,11 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelback.publicui.streamedresults.DataConverter;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Component
 public class JSONDataConverter implements DataConverter<JsonGenerator> {
 
