@@ -1,7 +1,7 @@
 package com.funnelback.publicui.test.utils;
 
-import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,6 +41,11 @@ public class QueryStringUtilsTests {
     }
     
     @Test
+    public void testToStringEmptyMap() {
+        Assert.assertEquals("", QueryStringUtils.toString(new HashMap<>(), false));
+    }
+    
+    @Test
     public void testToMap() {
         String input = "param1=value1"
             + "&param2=first+value"
@@ -70,6 +75,11 @@ public class QueryStringUtilsTests {
         Assert.assertEquals(Arrays.asList(new String[] {"null"}), map.get("param5"));
         Assert.assertEquals(Arrays.asList(new String[] {"something=with=equals"}), map.get("param6"));
         Assert.assertEquals(Arrays.asList(new String[] {"something&with&ampersands"}), map.get("param7"));
+    }
+    
+    @Test
+    public void testToMapEmptyString() {
+        Assert.assertEquals(new HashMap<>(), QueryStringUtils.toMap(""));
     }
     
 }

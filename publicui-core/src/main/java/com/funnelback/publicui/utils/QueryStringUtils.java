@@ -104,6 +104,10 @@ public class QueryStringUtils {
      */
     @SneakyThrows(UnsupportedEncodingException.class)
     public static String toString(Map<String, List<String>> qs, boolean prependQuestionMark) {
+        if (qs.isEmpty()) {
+            return "";
+        }
+        
         StringBuffer out = new StringBuffer();
         for (Map.Entry<String, List<String>> entry: qs.entrySet()) {
             if (entry.getValue() != null) {
