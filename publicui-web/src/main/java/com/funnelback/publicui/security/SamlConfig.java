@@ -88,7 +88,7 @@ public class SamlConfig {
         }
         
         FileSystemResourceLoader loader = new FileSystemResourceLoader();
-        Resource samlKeystoreResource = loader.getResource("file://" + samlKeystorePath);
+        Resource samlKeystoreResource = loader.getResource("file:" + samlKeystorePath);
 
         Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(samlKeyAlias, samlKeyPassword);
