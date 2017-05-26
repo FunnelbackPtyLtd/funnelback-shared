@@ -37,7 +37,7 @@ public class CommaSeparatedListEditor extends PropertyEditorSupport {
                     .collect(Collectors.toList());
             }
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
 }

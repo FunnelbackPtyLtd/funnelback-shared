@@ -11,13 +11,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.funnelback.common.Reference;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreForkingExceptionPacketSizeTooBig;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.padre.ResultsSummary;
+import com.funnelback.publicui.search.model.transaction.SearchError;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -27,7 +26,6 @@ import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -66,7 +64,6 @@ public class PagedQuery {
         this.disableOptimisation = disableOptimisation;
         baseSearchQuestion = searchQuestion;
         
-        //TODO TEST these.
         // Either go up to the set num ranks or return all documents.
         numDocsWanted = getLastIntFromMap(baseSearchQuestion.getRawInputParameters(), NUM_RANKS)
             .filter(i -> i > 0).orElse(Integer.MAX_VALUE);
@@ -345,7 +342,11 @@ public class PagedQuery {
                 // The padre packet was too large we can re-cover from this.
                 return true;
             } else {
-                throw new RuntimeException("Hard error occurred", transaction.getError().getAdditionalData());
+                throw new RuntimeException(Optional.of(transaction.getError())
+                    .map(SearchError::getAdditionalData)
+                    .map(Throwable::getMessage)
+                    .orElse("An error occurred. Please check the logs for more details."),
+                    transaction.getError().getAdditionalData());
             }
         }
         return false;

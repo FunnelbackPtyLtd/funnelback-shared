@@ -92,8 +92,7 @@ public class StreamResultsController {
             return (DataConverter) this.CSVDataConverter;
         }
         
-        throw new RuntimeException();
-        
+        return null;
     }
     /**
      * A special end point that can return all results back to the user regardless of collection size.
@@ -177,31 +176,44 @@ public class StreamResultsController {
             // which is what the JAVA URL connection seems to expect (ie that error case returned bytes are different from
             // the non error case bytes).
             if(dataConverter == null) {
-                log.warn("Search called with an unknown extension '" + request.getRequestURL()+"'.");
-                throw new RuntimeException("Unknown extension: " + FilenameUtils.getExtension(request.getRequestURI()));
+                log.debug("Search called with an unknown extension '" + request.getRequestURL()+"'.");
+                response.sendError(HttpStatus.SC_BAD_REQUEST, "Unknown extension, valid extensions are '.json' and '.csv'.");
+                return;
             }
             
             // Compile the xPaths once.
-            List<CompiledExpression> compiledExpressions = RESULT_DATA_FETCHER.parseFields(resultFields.getXPaths());
+            List<CompiledExpression> compiledExpressions;
+            try {
+                compiledExpressions = RESULT_DATA_FETCHER.parseFields(resultFields.getXPaths());
+            } catch (Exception e) {
+                log.debug("Unable to parse the xPath fields.", e);
+                response.sendError(HttpStatus.SC_BAD_REQUEST, "Unable to parse the xPath fields: " + e.getMessage());
+                return;
+            }
             
             // Now execute our query using the Paged searcher which takes care of making smaller request
             // then pass the result of each search the TransactionToResults class which will convert
             // the SearchTransaction to the data type expected e.g. CSV.
-            PagedQuery pageSearcher = new PagedQuery(question, !optimisations);
-            try(TransactionToResults transactionToResults = new TransactionToResults(dataConverter, 
-                                                                                        compiledExpressions, 
-                                                                                        resultFields.getFieldNames(), 
-                                                                                        response, 
-                                                                                        RESULT_DATA_FETCHER)) {
-                pageSearcher.runOnEachPage((q) -> processor.process(q, user), transactionToResults::onEachTransaction);
+            try {
+                PagedQuery pageSearcher = new PagedQuery(question, !optimisations);
+                try(TransactionToResults transactionToResults = new TransactionToResults(dataConverter, 
+                                                                                            compiledExpressions, 
+                                                                                            resultFields.getFieldNames(), 
+                                                                                            response, 
+                                                                                            RESULT_DATA_FETCHER)) {
+                    pageSearcher.runOnEachPage((q) -> processor.process(q, user), transactionToResults::onEachTransaction);
+                }
+            } catch (Exception e) {
+                response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
             
             
             response.getOutputStream().close();
             
         } else {
-            response.setStatus(HttpStatus.SC_NOT_FOUND);
+            response.sendError(HttpStatus.SC_NOT_FOUND, "Collection not found.");
             response.getOutputStream().close();
         }
+        
     }
 }
