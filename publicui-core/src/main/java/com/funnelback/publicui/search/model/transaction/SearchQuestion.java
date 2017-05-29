@@ -42,7 +42,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties("principal")
+@JsonIgnoreProperties({"principal","maxPadrePacketSize"})
 public class SearchQuestion {
 
     /**
