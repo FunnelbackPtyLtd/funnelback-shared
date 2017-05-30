@@ -72,7 +72,7 @@ public class AccessibilityAuditorController {
     }
     
     
-    @RequestMapping("/accessibility-auditor-all-results.json")
+    @RequestMapping("/accessibility-auditor-all-results.*")
     @PreAuthorize(PRE_AUTH)
     public void getAllResults(
         HttpServletRequest request,
