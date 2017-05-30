@@ -28,6 +28,15 @@ public class ResultFields {
         xPaths = new ArrayList<>(rawXPaths.orElse(Collections.emptyList()));
         fieldNames = new ArrayList<>(rawFieldNames.orElse(Collections.emptyList()));
         
+       // By default return the list of URLs in the index.
+        if(xPaths.size() == 0) {
+            xPaths.add("liveUrl");
+            if(fieldNames.size() == 0) {
+                fieldNames.add("Live URL");
+            }
+        }
+        
+        
         // Add dummy xpaths if we don't have enough.
         for(int i = xPaths.size(); i < fieldNames.size(); i++) {
             xPaths.add("DummyPathToGetANull");
@@ -39,11 +48,7 @@ public class ResultFields {
         }
         
         
-        // By default return the list of URLs in the index.
-        if(xPaths.size() == 0) {
-            xPaths.add("liveUrl");
-            fieldNames.add("Live URL");
-        }
+        
     }
     
 }

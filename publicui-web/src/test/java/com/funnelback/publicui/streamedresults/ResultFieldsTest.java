@@ -32,6 +32,7 @@ public class ResultFieldsTest {
     public void testMissingXPaths() {
         ResultFields resultFields = new ResultFields(Optional.empty(), Optional.of(Arrays.asList("Name A")));
         Assert.assertEquals(1, resultFields.getXPaths().size());
+        Assert.assertEquals("If no fields= option is given then default to liveUrl", "liveUrl", resultFields.getXPaths().get(0));
         Assert.assertEquals("Name A", resultFields.getFieldNames().get(0));
         
         Result result = new Result();
@@ -40,7 +41,7 @@ public class ResultFieldsTest {
         List<Object> values = resultFetcher.fetchFieldValues(resultFetcher.parseFields(resultFields.getXPaths()), result);
         
         Assert.assertEquals(1, values.size());
-        Assert.assertNull(values.get(0));
+        Assert.assertEquals("live", values.get(0));
     }
     
     @Test
