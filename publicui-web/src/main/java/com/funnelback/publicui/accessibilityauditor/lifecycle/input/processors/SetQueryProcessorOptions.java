@@ -3,6 +3,7 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ import com.funnelback.wcag.checker.AccessibilityChecker.Level;
 import com.funnelback.wcag.checker.CheckerClasses;
 import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
+import com.funnelback.wcag.model.WCAG20Technique;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -150,34 +152,21 @@ public class SetQueryProcessorOptions extends AbstractAccessibilityAuditorInputP
 
     /**
      * Set the MBL option. The longest value for a metadata will be when
-     * a document is affected by all checker types, meaning the
-     * list of all checker classes joined together with a separator
+     * a document is affected by all techniques.
      * 
      * @return PADRE <code>-MBL</code> option
      */
-    private String getMBLOption() {
-        List<AccessibilityChecker> checkers = Arrays.asList(CheckerClasses.allCheckerClasses)
-            .stream()
-            .map(StreamUtils::newInstance)
-            .collect(Collectors.toList());
+    String getMBLOption() {
+        
+        AtomicInteger i = new AtomicInteger();
+        int totalSize = StreamUtils.ofNullable(WCAG20Technique.values())
+        .map(v -> v.id)
+        .map(name -> name.length())
+        .map(length -> length++) // Add one to the length to account for the metadata separator e.g. '|'
+        .mapToInt(Integer::intValue).sum()
+        + 1; // Add one to account for a NUL in C.
 
-        // Collect maximum length for each failure type
-        List<Integer> lengths = new ArrayList<>();
-
-        for (FailureType failureType : FailureType.values()) {
-            lengths.add(checkers.stream()
-                .filter(checker -> checker.getFailureType().equals(failureType))
-                .map(checker -> checker.getClass().getSimpleName())
-                .collect(Collectors.joining("|"))   // Separator doesn't matter here, we care only about the length
-                .length());
-        }
-
-        int mblOptionValue = lengths.stream()
-            .max(Integer::max)
-            .orElse(DEFAULT_MBL); // Not supposed to happen, but default to something just in case
-
-        // +1 to account for possible null terminator in PADRE
-        return String.format("-MBL=%d", mblOptionValue + 1);
+        return "-MBL=" + Integer.toString(Integer.max(DEFAULT_MBL, totalSize));
     }
 
     /**
