@@ -96,6 +96,17 @@ public class URLFillTest {
 
         Assert.assertEquals(4, URLFill.countSegments("example.org/about/products/vacuum-cleaners/bagless"));
         Assert.assertEquals(4, URLFill.countSegments("example.org/about/products/vacuum-cleaners/bagless/"));
-}
+    }
+    
+   @Test
+   public void testGetDepth() {
+       Assert.assertEquals(2, URLFill.getDepth("folder1", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(1, URLFill.getDepth("folder1/folder2", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(0, URLFill.getDepth("folder1/folder2/folder3", "smb://server/folder1/folder2/folder3"));
+       
+       Assert.assertEquals(-1, URLFill.getDepth("folder1/folder2/folder4", "smb://server/folder1/folder2/folder3/"));
+       Assert.assertEquals(-1, URLFill.getDepth("folder0/folder1", "smb://server/folder1/folder2/folder3"));
+       Assert.assertEquals(-1, URLFill.getDepth("dummy", "smb://server/folder1/folder2/folder3"));
+   }
     
 }

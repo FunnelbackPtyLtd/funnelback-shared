@@ -122,15 +122,18 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             int count = entry.getValue();
             
             if (item.toLowerCase().startsWith(url)
-                    && isOneLevelDeeper(currentConstraint, item.toLowerCase())) {
+                    // Only consider parent items (which are de facto selected)
+                    // and 1-depth children (Padre may return deeper children)
+                    && getDepth(currentConstraint, item.toLowerCase()) <= 1) {
+                
                 // 'v' metadata value is the URI only, without
                 // the host or protocol.
                 String vValue = item.replaceFirst("(\\w+://)?[^/]*/", "");
-                
-                item = item.substring(url.length());
+
+                String relativeItem = item.substring(url.length());
 
                 // Display only the folder name
-                String label = item.substring(item.lastIndexOf('/')+1);
+                String label = relativeItem.substring(relativeItem.lastIndexOf('/')+1);
                 
                 // FUN-7440:
                 // - The 'label' needs to be decoded as we want do present a nice name for
@@ -138,34 +141,36 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                 // - The 'item' needs to be decoded as well. It get converted into a v:...
                 //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
                 categories.add(new CategoryValue(
-                        URLDecoder.decode(item, "UTF-8"),
+                        URLDecoder.decode(relativeItem, "UTF-8"),
                         URLDecoder.decode(label, "UTF-8"),
                         count,
                         URLEncoder.encode(getQueryStringParamName(), "UTF-8")
                             + "=" + URLEncoder.encode(vValue, "UTF-8"),
                         getMetadataClass(),
-                        // URL fill values are never selected because they're a hierarchy
-                        // with only one value at each level. As a result the currently
-                        // "selected" path segment is never present in the list of categories,
-                        // only the children segments are. As soon as a child is selected, it
-                        // becomes the "current", and the new list contains only its childs, etc.
-                        false));
+                        // A URL fill value is selected if it's a parent or equal of the current constraint,
+                        // because the parents had to be traversed to reach the current constraint.
+                        // e.g with smb:///server/folder1/folder2/file3.txt the values
+                        // "folder1" and "folder2" were selected to reach "file3.txt"
+                        // So set selected=true to all parents and current values, but not
+                        // for deeper ones
+                        getDepth(currentConstraint, item.toLowerCase()) <= 0));
             }
         }
         return categories;
     }
     
     /**
-     * Checks if an URL is contained in the current constraints and is only
-     * one level deeper than the current constraints.
+     * Get the depth of a URL, from the current constraint.
      *  
      * @param currentConstraint Currently constraint URL, such as <tt>folder1/folder2/</tt>
-     * @param checkUrl URL to check, absolute (Ex: <tt>smb://server/folder/folder2/file3.txt</tt>)
-     * @return true if the URL is in the current constraints, false otherwise
+     * @param checkUrl URL to check, absolute (Ex: <tt>smb://server/folder1/folder2/file3.txt</tt>)
+     * @return the depth of the check URL compared to the current constraint. Will be negative if
+     * the check URL is a parent, zero if the check URL is identical to the contraint, or positive
+     * if the check URL is deeper (with the value indicating how deep)
      */
-    private boolean isOneLevelDeeper(String currentConstraint, String checkUrl) {
+    static int getDepth(String currentConstraint, String checkUrl) {
         if (currentConstraint == null || checkUrl == null) {
-            return false;
+            return -1;
         }
         
         int i = checkUrl.indexOf(currentConstraint);
@@ -173,10 +178,16 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             // Remove head + currentConstraint
             String part = checkUrl.substring(i + currentConstraint.length());
             if (part.startsWith("/")) { part = part.substring(1); }
-            return (part.length() > 0 && StringUtils.countMatches(part, "/") < 1);
+            if (part.length() > 0) {
+                // We have at least one part below our constraint
+                return 1 + StringUtils.countMatches(part, "/");
+            } else {
+                // No part after the constraint, so we're identical
+                return 0;
+            }
         }
         
-        return false;        
+        return -1;        
     }
     
     /**
