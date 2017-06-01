@@ -7,6 +7,7 @@
         <!-- passThroughParametersInputProcessor should be first as it populates required values for following processors -->
         <ref bean="passThroughParametersInputProcessor" />
         <ref bean="passThroughEnvironmentVariabesInputProcessor" />
+        <ref bean="restrictToCurrentProfileConfig" />
         <ref bean="localeOverrideInputProcessor" />
         <ref bean="contentAuditorInputProcessor" />
         <ref bean="geolocationInputProcessor" />
