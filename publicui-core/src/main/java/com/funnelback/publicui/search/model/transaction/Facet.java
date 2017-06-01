@@ -212,7 +212,7 @@ public class Facet {
 
         @Override
         public String toString() {
-            return label + " (" + count + "). data=[" + data + "], queryStringParam=[" + queryStringParam + "]";
+            return label + " (" + count + "). data=[" + data + "], queryStringParam=[" + queryStringParam + "], selected=" + selected;
         }
 
         /**

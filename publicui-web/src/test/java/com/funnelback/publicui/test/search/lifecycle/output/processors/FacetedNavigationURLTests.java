@@ -23,6 +23,8 @@ import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
+import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
@@ -115,7 +117,7 @@ public class FacetedNavigationURLTests {
     @Test
     public void testCategorySelection() throws Exception {
         st.getResponse().setResultPacket(new StaxStreamParser().parse(
-            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls.xml")),
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/faceted-navigation-urls-selected.xml")),
             StandardCharsets.UTF_8,
             false));
         
@@ -131,8 +133,20 @@ public class FacetedNavigationURLTests {
         
         Facet f = st.getResponse().getFacets().get(0);
         Assert.assertEquals("By URL", f.getName());
-        Assert.assertEquals(0, f.getCategories().size());
+        Assert.assertEquals(1, f.getCategories().size());
 
+        Category c = f.getCategories().get(0);
+        Assert.assertTrue(c.getCategories().isEmpty());
+        Assert.assertEquals("f.By URL|url", c.getQueryStringParamName());
+
+        Assert.assertEquals(1, c.getValues().size());
+        CategoryValue cv = c.getValues().get(0);
+        Assert.assertEquals("v", cv.getConstraint());
+        Assert.assertEquals(46, cv.getCount());
+        Assert.assertEquals("cleopatra", cv.getData());
+        Assert.assertEquals("cleopatra", cv.getLabel());
+        Assert.assertEquals("f.By+URL%7Curl=Shakespeare%2Fcleopatra", cv.getQueryStringParam());
+        Assert.assertTrue(cv.isSelected());
     }
     
         
