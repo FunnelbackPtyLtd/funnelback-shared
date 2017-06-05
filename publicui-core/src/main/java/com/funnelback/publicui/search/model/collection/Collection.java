@@ -1,19 +1,11 @@
 package com.funnelback.publicui.search.model.collection;
 
-import groovy.lang.Script;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.config.Collection.Type;
@@ -22,6 +14,16 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.model.collection.paramtransform.TransformRule;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import groovy.lang.Script;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * <p>A search collection.</p>
  * 
@@ -29,10 +31,12 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * 
  * @since 11.0
  */
-@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @JsonIgnoreProperties({"parametersTransforms", "configuration", "quickLinksConfiguration", "hookScriptsClasses", "cartProcessClass"})
 @Log4j2
+@Builder
+@EqualsAndHashCode
 public class Collection {
 
     public static final String COLLECTION_ID_PATTERN = "[\\w-]+"; 
@@ -108,7 +112,7 @@ public class Collection {
      * provided with each new collections: <code>_default</code> and
      * <code>_default_preview</code>, used in the preview / publish system.</p>
      */
-    @Getter private final Map<String, Profile> profiles = new HashMap<String, Profile>();
+    @Getter @NonNull private final Map<String, Profile> profiles;
     
     /** Faceted navigation configuration in <code>conf/[collection]/faceted_navigation.cfg</code> */
     @Getter @Setter private FacetedNavigationConfig facetedNavigationConfConfig;
@@ -121,7 +125,7 @@ public class Collection {
      * 
      * @since 12.0
      */
-    @Getter private final Set<String> textMinerBlacklist = new HashSet<String>();
+    @NonNull @Getter private final Set<String> textMinerBlacklist;
     
     /**
      * <p>On meta collections, list of sub collections IDs.<p>
@@ -146,7 +150,7 @@ public class Collection {
      * implementation class (compiled Groovy script).</p>
      */
     @XStreamOmitField
-    @Getter private final Map<Hook, Class<Script>> hookScriptsClasses = new HashMap<Hook, Class<Script>>();
+    @Getter @NonNull private final Map<Hook, Class<Script>> hookScriptsClasses;
     
     /**
      * <p><em>Internal use</em>: Groovy class to use to process the results cart</p>
@@ -173,11 +177,38 @@ public class Collection {
     }
     
     public Collection(String id, Config config) {
+        this();
         if (!id.matches(COLLECTION_ID_PATTERN)) {
             throw new IllegalArgumentException("Invalid collection identifier requested");
         }
         this.id = id;
         this.configuration = config;
+    }
+    
+    public Collection() {
+        this.profiles = new HashMap<>();
+        this.textMinerBlacklist = new HashSet<String>();
+        this.hookScriptsClasses = new HashMap<>();
+    }
+    
+    /**
+     * A Collection builder with the currently set fields already set on the builder.
+     *  
+     * @return
+     */
+    public CollectionBuilder cloneBuilder() {
+        return Collection.builder()
+            .id(getId())
+            .configuration(getConfiguration())
+            .quickLinksConfiguration(getQuickLinksConfiguration())
+            .profiles(getProfiles())
+            .facetedNavigationConfConfig(getFacetedNavigationConfConfig())
+            .facetedNavigationLiveConfig(getFacetedNavigationLiveConfig())
+            .textMinerBlacklist(getTextMinerBlacklist())
+            .metaComponents(getMetaComponents())
+            .parametersTransforms(getParametersTransforms())
+            .hookScriptsClasses(getHookScriptsClasses())
+            .cartProcessClass(getCartProcessClass());
     }
     
 }

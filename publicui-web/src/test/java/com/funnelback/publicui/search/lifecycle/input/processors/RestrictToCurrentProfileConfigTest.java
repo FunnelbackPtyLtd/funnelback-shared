@@ -9,7 +9,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.publicui.search.lifecycle.input.processors.RestrictToCurrentProfileConfig.SinlgeProfileOnlyCollection;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -43,13 +42,15 @@ public class RestrictToCurrentProfileConfigTest {
     @Test
     public void testProfileIsNull() {
         Collection collection = mock(Collection.class);
-        Assert.assertEquals(0, new SinlgeProfileOnlyCollection(collection, null).getProfiles().size());
+        
+        
+        Assert.assertEquals(0, new RestrictToCurrentProfileConfig().getProfiles(null, collection).size());
     }
     
     @Test
     public void testUnknownProfile() {
         Collection collection = mock(Collection.class);
         when(collection.getProfiles()).thenReturn(new HashMap<>());
-        Assert.assertEquals(0, new SinlgeProfileOnlyCollection(collection, "unknown").getProfiles().size());
+        Assert.assertEquals(0, new RestrictToCurrentProfileConfig().getProfiles("unknown", collection).size());
     }
 }

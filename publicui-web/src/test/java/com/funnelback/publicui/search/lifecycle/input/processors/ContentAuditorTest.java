@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +26,14 @@ public class ContentAuditorTest {
     @Test
     public void checkCollectionIsNotModifiedWithCAFacetConfig() {
         SearchQuestion question = new SearchQuestion();
-        //Collection is a shared cached object ensure it is not changed.
-        Collection collection = mock(Collection.class);
         FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
-        when(collection.getFacetedNavigationConfConfig()).thenReturn(sharedConfig);
-        when(collection.getFacetedNavigationLiveConfig()).thenReturn(sharedConfig);
+        
+        //Collection is a shared cached object ensure it is not changed.
+        Collection collection = spy(new Collection().cloneBuilder()
+            .facetedNavigationConfConfig(sharedConfig)
+            .facetedNavigationLiveConfig(sharedConfig)
+            .build());
+        
         question.setCollection(collection);
         
         
@@ -62,20 +64,21 @@ public class ContentAuditorTest {
     public void testCAOverridesProfileConfig() {
         SearchQuestion question = new SearchQuestion();
         //Collection is a shared cached object ensure it is not changed.
-        Collection collection = mock(Collection.class);
+        Collection collection = new Collection();
         FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
-        when(collection.getFacetedNavigationConfConfig()).thenReturn(sharedConfig);
-        when(collection.getFacetedNavigationLiveConfig()).thenReturn(sharedConfig);
+        collection.setFacetedNavigationConfConfig(sharedConfig);
+        collection.setFacetedNavigationLiveConfig(sharedConfig);
         question.setCollection(collection);
         
         //Make this collection have a profile
         Map<String, Profile> profiles = new HashMap<>();
-        when(collection.getProfiles()).thenReturn(profiles);
-        Profile profile = mock(Profile.class);
+        collection = collection.cloneBuilder().profiles(profiles).build();
+        Profile profile = new Profile();
+        // And the profile has a faceted nav config.
+        profile.setFacetedNavConfConfig(sharedConfig);
         profiles.put("_default", profile);
         
-        //And the profile has a faceted nav config.
-        when(profile.getFacetedNavConfConfig()).thenReturn(sharedConfig);
+        
         
         ContentAuditor contentAuditor = spy(new ContentAuditor());
         
