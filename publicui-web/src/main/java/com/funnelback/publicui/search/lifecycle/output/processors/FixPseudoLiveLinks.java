@@ -100,7 +100,6 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
             }
         
         }
-
     }
     
     /**
@@ -115,15 +114,16 @@ public class FixPseudoLiveLinks extends AbstractOutputProcessor {
      * @return
      */
     private Type getResultCollectionType(Collection resultCollection, Result r) {
-        if (Type.push.equals(resultCollection.getType())
-            || Type.push2.equals(resultCollection.getType())) {
+        Type type = resultCollection.getType();
+        if (Type.push.equals(type)
+            || Type.push2.equals(type)) {
             try {
                 return ResultUtils.getCollectionTypeFromURL(r.getLiveUrl());
             } catch (UndeterminedCollectionTypeException e){
                 return Type.unknown;
             }
         } else {
-            return resultCollection.getType();
+            return type;
         }
     }
     

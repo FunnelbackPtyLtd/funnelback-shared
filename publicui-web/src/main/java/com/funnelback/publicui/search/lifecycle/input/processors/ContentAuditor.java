@@ -28,9 +28,6 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigDelegateProfile;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideProfilesConfigCollection;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigCollection;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
@@ -184,22 +181,24 @@ public class ContentAuditor extends AbstractInputProcessor {
     
     void updateQuestionWithContentAuditorFacetConfig(SearchQuestion question) {
         FacetedNavigationConfig caFacetConfig = buildFacetConfig(question);
+        
+      //Override each profile to have have the CA facet config.
+        Map<String, Profile> profiles = new HashMap<>();
+        Optional.ofNullable(question.getCollection().getProfiles())
+            .ifPresent(p -> 
+                p.forEach((profileId, profile) -> {
+                profiles.put(profileId, profile.cloneBuilder().facetedNavConfConfig(caFacetConfig).build());
+                }));
 
         
         //The Collection needs to be treated as immutable as it is shared, we instead wrap the collection with
         //a class which extends Collection and returns everything from the collection except for
         //the collection level faceted conf which we will override for Content Auditor.
-        Collection c = new OverrideFacetConfigCollection(question.getCollection(), caFacetConfig, caFacetConfig);
+        Collection c = question.getCollection().cloneBuilder()
+            .facetedNavigationConfConfig(caFacetConfig)
+            .facetedNavigationLiveConfig(caFacetConfig)
+            .build();
         
-        //Override each profile to have have the CA facet config.
-        Map<String, Profile> profiles = new HashMap<>();
-        Optional.ofNullable(c.getProfiles())
-            .ifPresent(p -> 
-                p.forEach((profileId, profile) -> {
-                profiles.put(profileId, new OverrideFacetConfigDelegateProfile(profile, caFacetConfig));
-                }));
-        
-        c = new OverrideProfilesConfigCollection(c, profiles);
         question.setCollection(c);
     }
     

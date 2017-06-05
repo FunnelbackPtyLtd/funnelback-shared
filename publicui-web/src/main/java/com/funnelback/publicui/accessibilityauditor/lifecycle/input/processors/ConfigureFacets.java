@@ -1,7 +1,6 @@
 package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -18,9 +17,6 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigCollection;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideFacetConfigDelegateProfile;
-import com.funnelback.publicui.search.model.collection.delegate.OverrideProfilesConfigCollection;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
@@ -93,14 +89,20 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
     protected void processAccessibilityAuditorTransaction(SearchTransaction transaction) throws InputProcessorException {
         // Use delegate collections & profiles to avoid modifying the collection
         // object which is cached in EhCache
-        Collection c = new OverrideFacetConfigCollection(
-            transaction.getQuestion().getCollection(), facetedNavigationConfig, facetedNavigationConfig);
+        
+        Map<String, Profile> profiles = transaction.getQuestion().getCollection().getProfiles().entrySet()
+        .stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().cloneBuilder()
+            .facetedNavConfConfig(facetedNavigationConfig)
+            .build()));
+        
+        Collection c = transaction.getQuestion().getCollection().cloneBuilder()
+                        .facetedNavigationConfConfig(facetedNavigationConfig)
+                        .facetedNavigationLiveConfig(facetedNavigationConfig)
+                        .profiles(profiles)
+                        .build();
+            
 
-        Map<String, Profile> profiles = new HashMap<>();
-        c.getProfiles().forEach(
-            (profileId, profile) -> profiles.put(profileId, new OverrideFacetConfigDelegateProfile(profile, facetedNavigationConfig)));
-
-        c = new OverrideProfilesConfigCollection(c, profiles);
         transaction.getQuestion().setCollection(c);
     }
     

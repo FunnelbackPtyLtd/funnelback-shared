@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +26,8 @@ import lombok.Setter;
  */
 @JsonIgnoreProperties("curatorConfig")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Profile {
 
     /**
@@ -52,6 +56,19 @@ public class Profile {
     
     public Profile(String id) {
         this.id = id;
+    }
+    
+    /**
+     * A Profile builder with the currently set fields already set on the builder.
+     *  
+     * @return
+     */
+    public ProfileBuilder cloneBuilder() {
+        return Profile.builder()
+            .id(getId())
+            .facetedNavConfConfig(getFacetedNavConfConfig())
+            .curatorConfig(getCuratorConfig())
+            .padreOpts(getPadreOpts());
     }
     
 }
