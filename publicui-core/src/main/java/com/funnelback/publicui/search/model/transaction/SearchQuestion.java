@@ -373,6 +373,14 @@ public class SearchQuestion {
     @Getter @Setter private Optional<Integer> maxPadrePacketSize = Optional.empty();
     
     /**
+     * Custom data placeholder allowing any arbitrary data to be
+     * stored by hook scripts.
+     * 
+     * @since 15.12
+     */
+    @Getter private final Map<String, Object> customData = new HashMap<>();
+    
+    /**
      * Common query string parameters names.
      * 
      * @since 11.0

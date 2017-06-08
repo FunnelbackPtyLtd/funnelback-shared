@@ -29,7 +29,7 @@ public class SearchQuestionBinderTest {
     public void testFromSearchQuestion() {
         Map<String, List<String>> queryStringMap = new HashMap<>();
         queryStringMap.put("my-other-param", Arrays.asList(new String[] {"v1", "v2"}));
-        
+
         SearchQuestion from = new SearchQuestion();
         from.setExecutionContext(ExecutionContext.Public);
         from.setFunnelbackVersion(new FunnelbackVersion(1, 2, 3));
@@ -45,6 +45,7 @@ public class SearchQuestionBinderTest {
         from.setCnClickedCluster("cluster");
         from.getCnPreviousClusters().add("previous-clusters");
         from.setClive(new String[] {"ab", "cd"});
+        from.getCustomData().put("custom", "data");
         
         SearchQuestion to = new SearchQuestion();
         SearchQuestionBinder.bind(from, to);
@@ -65,6 +66,8 @@ public class SearchQuestionBinderTest {
         Assert.assertEquals("cluster", to.getCnClickedCluster());
         Assert.assertEquals("previous-clusters", to.getCnPreviousClusters().get(0));
         Assert.assertArrayEquals(new String[] {"ab", "cd"}, to.getClive());
+        Assert.assertEquals(1, to.getCustomData().size());
+        Assert.assertEquals("data", to.getCustomData().get("custom"));
     }
     
     @Test
