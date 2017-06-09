@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.SetOfFailingSuccessCriterions;
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 import com.funnelback.common.function.StreamUtils;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -21,8 +23,8 @@ import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.wcag.checker.AccessibilityChecker;
+import com.funnelback.wcag.checker.AffectedBy;
 import com.funnelback.wcag.checker.CheckerClasses;
-import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.model.WCAG20Principle;
 import com.funnelback.wcag.model.WCAG20SuccessCriterion;
 import com.funnelback.wcag.model.WCAG20Technique;
@@ -87,7 +89,9 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
             Names.setOfFailingSuccessCriterions(),
             value -> {
                 try {
-                    value.setLabel(value.getData() + " - " + WCAG20SuccessCriterion.fromSection(value.getData()).title);
+                    WCAG20SuccessCriterion sc = new SetOfFailingSuccessCriterions().fromIndexForm(value.getData())
+                        .orElseThrow(() -> new IllegalArgumentException());
+                    value.setLabel(sc.getSection() + " - " + sc.title);
                 } catch (IllegalArgumentException iae) {
                     log.warn("Unexpected success criterion section: '{}'", value.getData());
                 }
@@ -107,7 +111,12 @@ public class PopulateFacetCategoryLabels extends AbstractAccessibilityAuditorOut
         categoryValuesPopulators.put(
             Names.techniquesAffectedBy(),
             value -> {
-                value.setLabel(i18n.tr(AFFECTED_BY_FACET_I18N_PREFIX + value.getData()));
+                Optional<AffectedBy> affectedBy = new TechniquesAffectedBy().fromIndexForm(value.getData());
+                if(affectedBy.isPresent()) {
+                    value.setLabel(i18n.tr(AFFECTED_BY_FACET_I18N_PREFIX + affectedBy.get().name()));
+                } else {
+                    log.warn("Unexpected affected by value: '{}'", value.getData());
+                }
             });
             
     }
