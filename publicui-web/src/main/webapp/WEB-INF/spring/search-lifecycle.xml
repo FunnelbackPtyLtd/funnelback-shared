@@ -35,6 +35,7 @@
         <ref bean="exploreQueryInputProcessor" />
         <ref bean="hostname" />
         <ref bean="userIdInQueryLogs" />
+        <ref bean="reMapRMCFOptionInputProcessor" />
         <!-- This one must be last so that we can override options that have been set -->
         <ref bean="accessibilityAuditorAcknowledgementCountsSetQueryProcessorOptions" />
         <ref bean="extraSearchesInputProcessor" />
@@ -60,6 +61,7 @@
 
     <util:list id="outputFlow">
         <ref bean="padreReturnCodeOutputProcessor" />
+        <ref bean="reMapRMCFOutputProcessor" />
         <ref bean="fixMetaCollectionUpdateDateOutputProcessor" />
         <ref bean="fixPseudoLiveLinksOutputProcessor" />
         <ref bean="curatorOutputProcessor" />

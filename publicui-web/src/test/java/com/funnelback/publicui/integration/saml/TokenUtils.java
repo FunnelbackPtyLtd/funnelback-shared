@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.funnelback.springmvc.api.config.security.FunnelbackRealmProperties;
+import com.funnelback.springmvc.api.config.security.applicationtoken.NoTokensUserApplicationTokens;
 import com.funnelback.springmvc.web.security.DefaultUserTokenSalt;
 import com.funnelback.springmvc.web.security.HeaderOrParameterTokenBasedRememberMeServices;
 
@@ -64,7 +65,8 @@ public class TokenUtils {
         ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
         map.put(userName, salt);
         DefaultUserTokenSalt userTokenSalt = new DefaultUserTokenSalt(map);
-        HeaderOrParameterTokenBasedRememberMeServices tokenService = new HeaderOrParameterTokenBasedRememberMeServices(serverSecret, userDetailsService, userTokenSalt);
+        HeaderOrParameterTokenBasedRememberMeServices tokenService = new HeaderOrParameterTokenBasedRememberMeServices(serverSecret, userDetailsService, userTokenSalt, 
+            new NoTokensUserApplicationTokens());
         return tokenService.generateTokenForUser(userName, 10000, TimeUnit.DAYS);
         
     }
