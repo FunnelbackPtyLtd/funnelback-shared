@@ -119,7 +119,9 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
             int orderA = TECHNIQUES_AFFECTED_BY.fromIndexForm(a.getData()).map(AffectedBy::ordinal).orElse(-1);
             int orderB = TECHNIQUES_AFFECTED_BY.fromIndexForm(b.getData()).map(AffectedBy::ordinal).orElse(-1);
 
-            return Integer.compare(orderA, orderB);
+            // Order in enum is least likely to be a failure to most likely 
+            // multiply by -1 to switch the order to most likely failure to least likely.
+            return Integer.compare(orderA, orderB) * -1;
         }
 
     }
