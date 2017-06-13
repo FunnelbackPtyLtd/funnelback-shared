@@ -20,7 +20,7 @@ import com.funnelback.wcag.checker.FailureType;
 import com.funnelback.wcag.checker.html.DocumentTitleChecker;
 import com.funnelback.wcag.checker.pdf.PDFTitleChecker;
 import com.funnelback.wcag.model.WCAG20Technique;
-
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 public class PopulateFacetCategoryLabelsTest {
 
     private PopulateFacetCategoryLabels processor;
@@ -76,8 +76,8 @@ public class PopulateFacetCategoryLabelsTest {
     @Test
     public void testPopulateSuccessCriteria() throws OutputProcessorException {
         Category c = new Category(null, null);
-        c.getValues().add(new CategoryValue("1.2.3", "1.2.3", 0, null, null, false));
-        c.getValues().add(new CategoryValue("2.2.1", "2.2.1", 0, null, null, false));
+        c.getValues().add(new CategoryValue("123", "123", 0, null, null, false));
+        c.getValues().add(new CategoryValue("221", "221", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
         Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()));
@@ -89,10 +89,10 @@ public class PopulateFacetCategoryLabelsTest {
         Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
         
         Assert.assertEquals("1.2.3 - Audio Description or Media Alternative (Prerecorded)", actual.getValues().get(0).getLabel());
-        Assert.assertEquals("1.2.3", actual.getValues().get(0).getData());
+        Assert.assertEquals("123", actual.getValues().get(0).getData());
 
         Assert.assertEquals("2.2.1 - Timing Adjustable", actual.getValues().get(1).getLabel());
-        Assert.assertEquals("2.2.1", actual.getValues().get(1).getData());
+        Assert.assertEquals("221", actual.getValues().get(1).getData());
 
         Assert.assertEquals("unknown", actual.getValues().get(2).getLabel());
         Assert.assertEquals("unknown", actual.getValues().get(2).getData());
@@ -126,7 +126,11 @@ public class PopulateFacetCategoryLabelsTest {
     public void testPopulateAffectedBy() throws OutputProcessorException {
         for (AffectedBy by: AffectedBy.values()) {
             Category c = new Category(null, null);
-            c.getValues().add(new CategoryValue(by.name(), by.name(), 0, null, null, false));
+            
+            TechniquesAffectedBy techniquesAffectedBy = new TechniquesAffectedBy();
+                
+            c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(by), 
+                techniquesAffectedBy.toIndexForm(by), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
             Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
@@ -139,12 +143,9 @@ public class PopulateFacetCategoryLabelsTest {
             Category actual = transaction.getResponse().getFacets().get(0).getCategories().get(0);
             
             Assert.assertEquals("translated:facets.label.affectedBy." + by.name(), actual.getValues().get(0).getLabel());
-            Assert.assertEquals(by.name(), actual.getValues().get(0).getData());
+            Assert.assertEquals(techniquesAffectedBy.toIndexForm(by), actual.getValues().get(0).getData());
     
-            // In the real world an unknown value would not have a translation
-            // and would be return as-is by I18n. The 'facets.label.affectedBy.' prefix is a side
-            // effect or using a I18n mock in this test
-            Assert.assertEquals("translated:facets.label.affectedBy.unknown", actual.getValues().get(1).getLabel());
+            Assert.assertEquals("unknown", actual.getValues().get(1).getLabel());
             Assert.assertEquals("unknown", actual.getValues().get(1).getData());
         }
     }
