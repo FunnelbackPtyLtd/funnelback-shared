@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.funnelback.common.filter.accessibility.Metadata;
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 import com.funnelback.publicui.accessibilityauditor.lifecycle.output.processors.SortFacetValues.AffectedByComparator;
 import com.funnelback.publicui.accessibilityauditor.lifecycle.output.processors.SortFacetValues.LevelNameComparator;
 import com.funnelback.publicui.accessibilityauditor.lifecycle.output.processors.SortFacetValues.PrincipleIdComparator;
@@ -17,9 +18,10 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.wcag.checker.AffectedBy;
 
 public class SortFacetValuesTest {
-
+    
     @Test
     public void testSuccessCriterionNameComparator() {
         SuccessCriterionNameComparator c = new SuccessCriterionNameComparator();
@@ -47,16 +49,6 @@ public class SortFacetValuesTest {
         Assert.assertEquals(0, c.compare(mockCVData("4"), mockCVData("4")));
 
         Assert.assertEquals("Shouldn't throw an exception", 0, c.compare(mockCVData("4"), mockCVData("invalid")));
-    }
-
-    @Test
-    public void testAffectedByComparator() {
-        AffectedByComparator c = new AffectedByComparator();
-        Assert.assertEquals(-1, c.compare(mockCVData("SUSPECTED_FAILURE"), mockCVData("FAILED")));
-        Assert.assertEquals(1, c.compare(mockCVData("NONE"), mockCVData("FAILED")));
-        Assert.assertEquals(0, c.compare(mockCVData("POSSIBILITY_OF_FAILURE"), mockCVData("POSSIBILITY_OF_FAILURE")));
-
-        Assert.assertEquals("Shouldn't throw an exception", 0, c.compare(mockCVData("Alert"), mockCVData("invalid")));
     }
 
     @Test
@@ -126,6 +118,28 @@ public class SortFacetValuesTest {
         Assert.assertEquals("v1", sr.getFacets().get(3).getCategories().get(0).getValues().get(2).getData());
 
     }
+    
+    @Test
+    public void testAffectedByComparator() {
+        
+        
+        AffectedByComparator c = new AffectedByComparator();
+        //Assert.assertEquals(-1, c.compare(mockCVData("1"), mockCVData("2")));
+        
+        Assert.assertEquals(-1, c.compare(mockCVData("unknown"), mockCVData(AffectedBy.NONE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.NONE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.FAILED)));
+        
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.NONE), mockCVData("unknown")));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.NONE)));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.FAILED), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
+        
+        Assert.assertEquals(0, c.compare(mockCVData(AffectedBy.FAILED), mockCVData(AffectedBy.FAILED)));
+
+        Assert.assertEquals("Shouldn't throw an exception", 0, c.compare(mockCVData("what?"), mockCVData("invalid!")));
+    }
 
     private static CategoryValue mockCVLabel(String label) {
         CategoryValue cv = Mockito.mock(CategoryValue.class);
@@ -138,6 +152,11 @@ public class SortFacetValuesTest {
         Mockito.when(cv.getData()).thenReturn(data);
 
         return cv;
+    }
+    
+    private static CategoryValue mockCVData(AffectedBy affectedBy) {
+        TechniquesAffectedBy techniquesAffectedBy = new TechniquesAffectedBy();
+        return mockCVData(techniquesAffectedBy.toIndexForm(affectedBy));
     }
 
 }
