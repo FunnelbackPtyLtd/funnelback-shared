@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
+import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -55,7 +56,7 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
                 });
         }
     }
-
+    
     /**
      * Compare AA Success Criteria by their label (e.g. : 1.4.6 - Contrast (Enhanced))
      */
@@ -111,21 +112,16 @@ public class SortFacetValues extends AbstractAccessibilityAuditorOutputProcessor
      * Compare AA "affected by" (Failures, Alert, None).
      */
     static class AffectedByComparator implements Comparator<CategoryValue> {
-        
+        private static final TechniquesAffectedBy TECHNIQUES_AFFECTED_BY = new TechniquesAffectedBy();
+
         @Override
         public int compare(CategoryValue a, CategoryValue b) {
-            try {
-                // Rely on the enum order, as values are defined by decreasing priority
-                AffectedBy aAffected = AffectedBy.valueOf(a.getData());
-                AffectedBy bAffected = AffectedBy.valueOf(b.getData());
-            
-                return aAffected.compareTo(bAffected);
-            } catch (IllegalArgumentException iae) {
-                log.warn("Invalid AA affected by", iae);
-                return 0;
-            }
+            int orderA = TECHNIQUES_AFFECTED_BY.fromIndexForm(a.getData()).map(AffectedBy::ordinal).orElse(-1);
+            int orderB = TECHNIQUES_AFFECTED_BY.fromIndexForm(b.getData()).map(AffectedBy::ordinal).orElse(-1);
+
+            return Integer.compare(orderA, orderB);
         }
-        
+
     }
 
 }
