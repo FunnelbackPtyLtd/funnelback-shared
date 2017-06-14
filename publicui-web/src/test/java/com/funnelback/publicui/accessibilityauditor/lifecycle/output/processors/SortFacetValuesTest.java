@@ -79,11 +79,12 @@ public class SortFacetValuesTest {
         sr.getFacets().add(f);
 
         // -- Affected by
+        TechniquesAffectedBy techniquesAffectedBy = new TechniquesAffectedBy();
         c = new Category(null, null);
-        c.getValues().add(new CategoryValue("POSSIBILITY_OF_FAILURE", "", 123, null, null, false));
-        c.getValues().add(new CategoryValue("SUSPECTED_FAILURE", "", 100, null, null, false));
-        c.getValues().add(new CategoryValue("FAILED", "", 80, null, null, false));
-        c.getValues().add(new CategoryValue("NONE", "", 80, null, null, false));
+        c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.POSSIBILITY_OF_FAILURE), "", 123, null, null, false));
+        c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.SUSPECTED_FAILURE), "", 100, null, null, false));
+        c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.FAILED), "", 80, null, null, false));
+        c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.NONE), "", 80, null, null, false));
         f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
         f.getCategories().add(c);
         sr.getFacets().add(f);
@@ -107,11 +108,13 @@ public class SortFacetValuesTest {
         Assert.assertEquals("2", sr.getFacets().get(1).getCategories().get(0).getValues().get(1).getData());
         Assert.assertEquals("3", sr.getFacets().get(1).getCategories().get(0).getValues().get(2).getData());
         Assert.assertEquals("4", sr.getFacets().get(1).getCategories().get(0).getValues().get(3).getData());
+        
 
-        Assert.assertEquals("POSSIBILITY_OF_FAILURE", sr.getFacets().get(2).getCategories().get(0).getValues().get(0).getData());
-        Assert.assertEquals("SUSPECTED_FAILURE", sr.getFacets().get(2).getCategories().get(0).getValues().get(1).getData());
-        Assert.assertEquals("FAILED", sr.getFacets().get(2).getCategories().get(0).getValues().get(2).getData());
-        Assert.assertEquals("NONE", sr.getFacets().get(2).getCategories().get(0).getValues().get(3).getData());
+        Assert.assertEquals(techniquesAffectedBy.toIndexForm(AffectedBy.FAILED), sr.getFacets().get(2).getCategories().get(0).getValues().get(0).getData());
+        Assert.assertEquals(techniquesAffectedBy.toIndexForm(AffectedBy.SUSPECTED_FAILURE), sr.getFacets().get(2).getCategories().get(0).getValues().get(1).getData());
+        Assert.assertEquals(techniquesAffectedBy.toIndexForm(AffectedBy.POSSIBILITY_OF_FAILURE), sr.getFacets().get(2).getCategories().get(0).getValues().get(2).getData());
+        Assert.assertEquals(techniquesAffectedBy.toIndexForm(AffectedBy.NONE), sr.getFacets().get(2).getCategories().get(0).getValues().get(3).getData());
+        
         // Other facet non sorted
         Assert.assertEquals("v2", sr.getFacets().get(3).getCategories().get(0).getValues().get(0).getData());
         Assert.assertEquals("v3", sr.getFacets().get(3).getCategories().get(0).getValues().get(1).getData());
@@ -126,15 +129,15 @@ public class SortFacetValuesTest {
         AffectedByComparator c = new AffectedByComparator();
         //Assert.assertEquals(-1, c.compare(mockCVData("1"), mockCVData("2")));
         
-        Assert.assertEquals(-1, c.compare(mockCVData("unknown"), mockCVData(AffectedBy.NONE)));
-        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.NONE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
-        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
-        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.FAILED)));
+        Assert.assertEquals(1, c.compare(mockCVData("unknown"), mockCVData(AffectedBy.NONE)));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.NONE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
+        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.FAILED)));
         
-        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.NONE), mockCVData("unknown")));
-        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.NONE)));
-        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
-        Assert.assertEquals(1, c.compare(mockCVData(AffectedBy.FAILED), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.NONE), mockCVData("unknown")));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE), mockCVData(AffectedBy.NONE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.SUSPECTED_FAILURE), mockCVData(AffectedBy.POSSIBILITY_OF_FAILURE)));
+        Assert.assertEquals(-1, c.compare(mockCVData(AffectedBy.FAILED), mockCVData(AffectedBy.SUSPECTED_FAILURE)));
         
         Assert.assertEquals(0, c.compare(mockCVData(AffectedBy.FAILED), mockCVData(AffectedBy.FAILED)));
 
@@ -158,5 +161,6 @@ public class SortFacetValuesTest {
         TechniquesAffectedBy techniquesAffectedBy = new TechniquesAffectedBy();
         return mockCVData(techniquesAffectedBy.toIndexForm(affectedBy));
     }
+    
 
 }
