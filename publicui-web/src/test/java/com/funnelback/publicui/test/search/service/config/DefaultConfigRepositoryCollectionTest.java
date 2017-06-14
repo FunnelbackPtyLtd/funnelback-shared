@@ -62,7 +62,13 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         Assert.assertTrue(coll.getHookScriptsClasses().isEmpty());
         
         // Create hook script
-        FileUtils.writeStringToFile(new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy"), "print 'hello'");
+        File hookFile = new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy");
+        FileUtils.writeStringToFile(hookFile, "print 'hello'");
+        
+        // Set the hook file date so that it appears to be created a long time ago
+        // this will stop the cache from re-loading it.
+        hookFile.setLastModified(200);
+        
         coll = configRepository.getCollection("config-repository");
         Assert.assertEquals(1, coll.getHookScriptsClasses().size());
         Assert.assertTrue(coll.getHookScriptsClasses().containsKey(Hook.pre_datafetch));
