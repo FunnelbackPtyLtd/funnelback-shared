@@ -63,12 +63,13 @@ public class ContentAuditorTest {
     @Test
     public void testCAOverridesProfileConfig() {
         SearchQuestion question = new SearchQuestion();
+        question.setProfile("_default");
         //Collection is a shared cached object ensure it is not changed.
         Collection collection = new Collection();
         FacetedNavigationConfig sharedConfig = mock(FacetedNavigationConfig.class);
         collection.setFacetedNavigationConfConfig(sharedConfig);
         collection.setFacetedNavigationLiveConfig(sharedConfig);
-        question.setCollection(collection);
+        
         
         //Make this collection have a profile
         Map<String, Profile> profiles = new HashMap<>();
@@ -77,6 +78,8 @@ public class ContentAuditorTest {
         // And the profile has a faceted nav config.
         profile.setFacetedNavConfConfig(sharedConfig);
         profiles.put("_default", profile);
+        
+        question.setCollection(collection);
         
         
         
@@ -93,5 +96,11 @@ public class ContentAuditorTest {
         Assert.assertEquals("After updating the Collection to have the new facet config"
             + " the selectConfiguration method should be returning the facet config.",
             caFacetConfig, FacetedNavigationUtils.selectConfiguration(question.getCollection(), "_default"));
+        
+        Assert.assertSame(caFacetConfig, 
+            question.getCollection().getProfiles().get("_default").getFacetedNavConfConfig());
+        
+        Assert.assertSame(caFacetConfig, question.getCollection().getFacetedNavigationConfConfig());
+        Assert.assertSame(caFacetConfig, question.getCollection().getFacetedNavigationLiveConfig());
     }
 }

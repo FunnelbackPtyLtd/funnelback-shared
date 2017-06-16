@@ -197,6 +197,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         Collection c = question.getCollection().cloneBuilder()
             .facetedNavigationConfConfig(caFacetConfig)
             .facetedNavigationLiveConfig(caFacetConfig)
+            .profiles(profiles)
             .build();
         
         question.setCollection(c);
