@@ -1,8 +1,11 @@
 package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import com.funnelback.common.function.QuadriConsumer;
 import com.funnelback.publicui.utils.ExecutionReturn;
 
 /**
@@ -26,4 +29,8 @@ public interface PadreForker {
      */
     public ExecutionReturn execute(List<String> commandLine, Map<String, String> environment, int sizeLimit) throws PadreForkingException;  
     
+    
+    public interface PadreOuputLogger extends QuadriConsumer<Supplier<byte[]>, Supplier<byte[]>, Integer, Charset> {
+        
+    }
 }

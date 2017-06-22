@@ -1,13 +1,10 @@
 package com.funnelback.publicui.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
-
-import lombok.AllArgsConstructor;
 
 
 
@@ -82,7 +79,7 @@ public class ChunkedByteArrayOutputStream extends OutputStream {
         streams.add(new GCFriendlyInputStream(new SizeKnownByteArrayInputStream(underlyingStream.toByteArray())));
         
             
-        return new SizeRecordingSequenceInputStream(streams);
+        return new GFCFriendlySequenceInputStream(streams);
     }
     
     /**
@@ -103,73 +100,5 @@ public class ChunkedByteArrayOutputStream extends OutputStream {
         byte[] currentStreamArray = this.underlyingStream.toByteArray();
         System.arraycopy(currentStreamArray, 0, bytes, start, currentStreamArray.length);
         return bytes;
-    }
-    
-    
-    @AllArgsConstructor
-    protected static class GCFriendlyInputStream extends InputStream {
-        private SizeKnownByteArrayInputStream byteArrayInputStream;
-        
-
-        public int hashCode() {
-            return byteArrayInputStream.hashCode();
-        }
-
-        public int read(byte[] b) throws IOException {
-            return byteArrayInputStream.read(b);
-        }
-
-        public boolean equals(Object obj) {
-            return byteArrayInputStream.equals(obj);
-        }
-
-        public int read() {
-            return byteArrayInputStream.read();
-        }
-
-        public int read(byte[] b, int off, int len) {
-            return byteArrayInputStream.read(b, off, len);
-        }
-
-        public long skip(long n) {
-            return byteArrayInputStream.skip(n);
-        }
-
-        public int available() {
-            return byteArrayInputStream.available();
-        }
-
-        public boolean markSupported() {
-            return byteArrayInputStream.markSupported();
-        }
-
-        public void mark(int readAheadLimit) {
-            byteArrayInputStream.mark(readAheadLimit);
-        }
-
-        public void reset() {
-            byteArrayInputStream.reset();
-        }
-
-        public void close() throws IOException {
-            byteArrayInputStream.close();
-            byteArrayInputStream = null;
-        }
-
-        public String toString() {
-            return byteArrayInputStream.toString();
-        }
-        
-        /**
-         * Returns the total size of the stream.
-         * 
-         * @return
-         */
-        public int getSize() {
-            return byteArrayInputStream.getSize();
-        }
-
-        
-        
     }
 }
