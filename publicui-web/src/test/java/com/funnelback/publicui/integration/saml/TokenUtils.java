@@ -51,8 +51,9 @@ public class TokenUtils {
                     
                     @Override
                     public String getPassword() {
-                        return new FunnelbackRealmProperties(new File(searchHome, "conf/realm.properties")).getUserInfo(username)
-                            .getEncodedPassword();
+                        FunnelbackRealmProperties funnelbackRealmProperties = new FunnelbackRealmProperties();
+                        funnelbackRealmProperties.setSearchHome(searchHome);
+                        return funnelbackRealmProperties.getUserInfo(username).getEncodedPassword();
                     }
                     
                     @Override
