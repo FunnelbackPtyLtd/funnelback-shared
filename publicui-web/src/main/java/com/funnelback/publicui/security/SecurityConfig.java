@@ -120,7 +120,7 @@ public class SecurityConfig extends ProtectAllHttpBasicAndTokenSecurityConfig {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configureGlobal(auth, funnelbackAdminAuthenticationProvider);
+        super.configureGlobal();
 
         boolean enableSamlAuthentication = configRepository.getGlobalConfiguration().valueAsBoolean(Keys.Auth.PublicUI.SAML.ENABLED, false);
 
