@@ -3,9 +3,10 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Map;
-
-import lombok.SneakyThrows;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +18,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.QueryStringUtils;
+
+import lombok.SneakyThrows;
 
 public class FacetScopeTests {
 
@@ -119,5 +122,37 @@ public class FacetScopeTests {
         Assert.assertEquals("82.30", qs.get("f.ATAR cut-off|A"));
         Assert.assertEquals("_default", qs.get("profile"));
     }
+    
+    @Test
+    public void testOptionInBothFacetScopeAndNonFacetScopeForm() throws Exception {
+        st.getQuestion().getRawInputParameters().put("a", new String[]{"foo"});
+        st.getQuestion().getRawInputParameters().put("facetScope", new String[] {
+                //encode(
+                        encode("a") + "=" + encode("b")
+                        + "&" + encode("a") + "=" + encode("c")
+                        });//);            // Second value for same param
+        
+        processor.processInput(st);
+
+        
+        
+        
+        Assert.assertTrue(st.getQuestion().getRawInputParameters().keySet().contains("a"));
+        
+        Set<String> values = Arrays.asList(st.getQuestion().getRawInputParameters().get("a")).stream().collect(Collectors.toSet());
+        
+        Assert.assertTrue(values.contains("c"));
+        Assert.assertTrue(values.contains("b"));
+        Assert.assertTrue(values.contains("foo"));
+    }
+    
+    @Test
+    public void testArrayConcat() {
+        Assert.assertArrayEquals(new String[0], processor.concatArray(null, null));
+        Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(null, new String[]{"b"}));
+        Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(new String[]{"b"}, null));
+        Assert.assertArrayEquals(new String[]{"a", "b"}, processor.concatArray(new String[]{"a"}, new String[]{"a"}));
+    }
+    
     
 }
