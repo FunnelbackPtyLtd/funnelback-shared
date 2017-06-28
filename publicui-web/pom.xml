@@ -461,9 +461,11 @@
             <version>1.0.2.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.openconext</groupId>
-            <artifactId>mujina-idp</artifactId>
-            <version>5.0.5</version>
+            <groupId>com.funnelback</groupId>
+            <artifactId>funnelback-springmvc-common</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

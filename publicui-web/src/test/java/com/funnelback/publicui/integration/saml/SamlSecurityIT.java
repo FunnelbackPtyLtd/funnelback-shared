@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.funnelback.springmvc.utils.saml.TokenUtils;
+
 public class SamlSecurityIT {
     private static SamlConfiguredJettyServer server;
     private static MujinaIdentityProviderServer mujina;
