@@ -144,7 +144,14 @@ public class FacetScopeTests {
         Assert.assertTrue(values.contains("c"));
         Assert.assertTrue(values.contains("b"));
         Assert.assertTrue(values.contains("foo"));
-        
+    }
+    
+    @Test
+    public void testArrayConcat() {
+        Assert.assertArrayEquals(new String[0], processor.concatArray(null, null));
+        Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(null, new String[]{"b"}));
+        Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(new String[]{"b"}, null));
+        Assert.assertArrayEquals(new String[]{"a", "b"}, processor.concatArray(new String[]{"a"}, new String[]{"a"}));
     }
     
     
