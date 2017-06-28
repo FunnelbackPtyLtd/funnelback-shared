@@ -151,7 +151,7 @@ public class FacetScopeTests {
         Assert.assertArrayEquals(new String[0], processor.concatArray(null, null));
         Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(null, new String[]{"b"}));
         Assert.assertArrayEquals(new String[]{"b"}, processor.concatArray(new String[]{"b"}, null));
-        Assert.assertArrayEquals(new String[]{"a", "b"}, processor.concatArray(new String[]{"a"}, new String[]{"a"}));
+        Assert.assertArrayEquals(new String[]{"a", "b"}, processor.concatArray(new String[]{"a"}, new String[]{"b"}));
     }
     
     
