@@ -42,12 +42,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <executions>
-                    <!-- Temporarily build two wars while testing the skinny mode -->
-                    <execution>
-                        <id>normal-war</id>
-                        <phase>package</phase>
-                        <goals><goal>war</goal></goals>
-                    </execution>
+                    <!-- Temporarily build an extra war while testing the skinny mode - See FUN-10187 -->
                     <execution>
                         <id>skinny-war</id>
                         <phase>package</phase>
