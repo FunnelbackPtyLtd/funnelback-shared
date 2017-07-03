@@ -1,7 +1,5 @@
 package com.funnelback.publicui.contentauditor;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,14 +17,13 @@ import org.springframework.stereotype.Controller;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.ToString;
 
 /**
@@ -55,9 +52,8 @@ public class UrlScopeFill extends URLFill {
         private static final String TAG = "url";
 
         @Override
-        @SneakyThrows(UnsupportedEncodingException.class)
-        public List<CategoryValue> computeValues(final SearchTransaction st) {
-            List<CategoryValue> categories = new ArrayList<CategoryValue>();
+        public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+            List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
             
             // Find out the currently selected value and its depth
             String currentlySelectedValue = st.getQuestion().getInputParameterMap().get(this.getQueryStringParamName());
@@ -86,19 +82,19 @@ public class UrlScopeFill extends URLFill {
             if (numSegmentsToUse != Integer.MAX_VALUE) {
                 // We found some level  to return
                 for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(numSegmentsToUse).entrySet()) {
-                    categories.add(new CategoryValue(
+                    categories.add(new CategoryValueComputedDataHolder(
                         entry.getKey(),
                         entry.getKey(),
                         entry.getValue(),
-                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                            + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
                         entry.getKey(),
                         // URLScope fill values are never selected because they're a hierarchy
                         // with only one value at each level. As a result the currently
                         // "selected" path segment is never present in the list of categories,
                         // only the children segments are. As soon as a child is selected, it
                         // becomes the "current", and the new list contains only its childs, etc.
-                        false));
+                        false,
+                        getQueryStringParamName(),
+                        entry.getKey()));
                 }
             } else {
                 // No levels returned. Use the deepest level we were able to get from
@@ -108,22 +104,19 @@ public class UrlScopeFill extends URLFill {
                     .mapToInt(Integer::intValue)
                     .max()
                     .ifPresent(maxDepth -> {
-                        try {
-                            if (maxDepth > currentDepth) {
-                                for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(maxDepth).entrySet()) {
-                                    categories.add(new CategoryValue(
-                                        entry.getKey(),
-                                        entry.getKey(),
-                                        entry.getValue(),
-                                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                                            + "=" + URLEncoder.encode(entry.getKey(), "UTF-8"),
-                                        entry.getKey(),
-                                        false));
-                                }
+                        if (maxDepth > currentDepth) {
+                            for (Entry<String, Integer>  entry : segmentCounts.getSegmentCounts().get(maxDepth).entrySet()) {
+                                categories.add(new CategoryValueComputedDataHolder(
+                                    entry.getKey(),
+                                    entry.getKey(),
+                                    entry.getValue(),
+                                    entry.getKey(),
+                                    false,
+                                    getQueryStringParamName(),
+                                    entry.getKey()));
                             }
-                        } catch (UnsupportedEncodingException uee) {
-                            throw new RuntimeException(uee);
                         }
+                        
                     });
                 
             }

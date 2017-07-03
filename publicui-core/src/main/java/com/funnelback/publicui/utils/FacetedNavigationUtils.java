@@ -1,8 +1,11 @@
 package com.funnelback.publicui.utils;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -94,6 +97,81 @@ public class FacetedNavigationUtils {
             .stream()
             .filter(entry -> entry.getKey().equals(cDef.getQueryStringParamName()))
             .anyMatch(entry -> entry.getValue().contains(categoryValue));
+    }
+    
+    /**
+     * Remove the query key value pair from the queryStringMap looking in the facetScope param as well.
+     * 
+     * <p>If no values are left over for a key, the key will be removed from the map as well.<p>
+     * 
+     * @param queryStringMap The query section of the URL as a Map (see {@link SearchQuestion#getQueryStringMapCopy()}, 
+     * which will have the paramName=paramValue removed.
+     * @param paramName Name of the parameter to remove the value from
+     * @param paramValue Value to remove
+     */
+    public static void removeQueryStringFacetValue(Map<String, List<String>> queryStringMap, String paramName, String paramValue) {
+        editQueryStringFacetValue(queryStringMap, map -> removeValueAndPossiblyParameterFromMap(map, paramName, paramValue));
+    }
+    
+    /**
+     * Remove from the query any key value pair with a specific key from the queryStringMap looking in the facetScope param as well.
+     * 
+     * 
+     * @param queryStringMap The query section of the URL as a Map (see {@link SearchQuestion#getQueryStringMapCopy()}
+     * @param paramName Name of the parameter to remove the value from.
+     */
+    public static void removeQueryStringFacetKey(Map<String, List<String>> queryStringMap, String paramName) {
+        editQueryStringFacetValue(queryStringMap, map -> map.remove(paramName));
+    }
+
+    /**
+     * <p>Remove a value from a Map, and possibly the key as well if the value to remove was the only one</p>
+     *
+     * @param queryStringMap Map to remove the value from
+     * @param paramName Name of the parameter to remove the value from
+     * @param paramValue Value to remove
+     */
+    private static void removeValueAndPossiblyParameterFromMap(Map<String, List<String>> queryStringMap, String paramName, String paramValue) {
+        if (queryStringMap.containsKey(paramName)) {
+            // Remove the value if there's one. There may be multiple values for the
+            // same name, when multiple values are selected (checkboxes)
+            queryStringMap.get(paramName).remove(paramValue);
+            if (queryStringMap.get(paramName).isEmpty()) {
+                // If it was the only value, remove the parameter entirely
+                queryStringMap.remove(paramName);
+            }
+        }
+    }
+    
+    /**
+     * Applies the modifier to the given map and if the facetScope is present creates a Map from that and passes it to the modifier.
+     * 
+     * <p>This is usefil when working on facets as the options map be set directly on the map or within the facetScope value.</p>
+     * @param queryStringMap
+     * @param modifier
+     */
+    public static void editQueryStringFacetValue(Map<String, List<String>> queryStringMap, Consumer<Map<String, List<String>>> modifier) {
+        modifier.accept(queryStringMap);
+
+        // Also remove value from the facetScope if it exists
+        if (queryStringMap.containsKey(SearchQuestion.RequestParameters.FACET_SCOPE)) {
+            // Assume facetScope has only 1 value
+            Map<String, List<String>> facetScopeQs = QueryStringUtils.toMap(queryStringMap
+                .get(SearchQuestion.RequestParameters.FACET_SCOPE)
+                .stream()
+                .findFirst()
+                .orElse(""));
+
+            modifier.accept(facetScopeQs);
+
+            // If no parameters remain in facetScope, just remove it from the query string
+            if (facetScopeQs.isEmpty()) {
+                queryStringMap.remove(SearchQuestion.RequestParameters.FACET_SCOPE);
+            } else {
+                // Serialize it back
+                queryStringMap.put(SearchQuestion.RequestParameters.FACET_SCOPE, asList(QueryStringUtils.toString(facetScopeQs, false)));
+            }
+        }
     }
     
 }

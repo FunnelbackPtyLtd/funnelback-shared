@@ -2,7 +2,6 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,20 +9,20 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>{@link CategoryDefinition} based on an URL prefix.<p>
@@ -92,8 +91,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     /** {@inheritDoc} */
     @Override
     @SneakyThrows(UnsupportedEncodingException.class)
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
-        List<CategoryValue> categories = new ArrayList<CategoryValue>();
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
 
         
         String url = data;
@@ -140,12 +139,10 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                 //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
                 // - The 'item' needs to be decoded as well. It get converted into a v:...
                 //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
-                categories.add(new CategoryValue(
+                categories.add(new CategoryValueComputedDataHolder(
                         URLDecoder.decode(relativeItem, "UTF-8"),
                         URLDecoder.decode(label, "UTF-8"),
                         count,
-                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                            + "=" + URLEncoder.encode(vValue, "UTF-8"),
                         getMetadataClass(),
                         // A URL fill value is selected if it's a parent or equal of the current constraint,
                         // because the parents had to be traversed to reach the current constraint.
@@ -153,7 +150,11 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                         // "folder1" and "folder2" were selected to reach "file3.txt"
                         // So set selected=true to all parents and current values, but not
                         // for deeper ones
-                        getDepth(currentConstraint, item.toLowerCase()) <= 0));
+                        getDepth(currentConstraint, item.toLowerCase()) <= 0,
+                        getQueryStringParamName(),
+                        vValue
+                        )
+                    );
             }
         }
         return categories;
