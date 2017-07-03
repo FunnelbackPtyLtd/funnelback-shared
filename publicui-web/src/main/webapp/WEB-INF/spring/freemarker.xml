@@ -96,6 +96,9 @@
                 <entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.SearchMethod).NAME}">
                     <bean class="com.funnelback.publicui.search.web.views.freemarker.SearchMethod" />
                 </entry>
+                <entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.GetFacetsMethod).NAME}">
+                    <bean class="com.funnelback.publicui.search.web.views.freemarker.GetFacetsMethod" />
+                </entry>
                 <entry key="#{T(com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod).NAME}">
                     <bean class="com.funnelback.publicui.search.web.views.freemarker.HTMLDecodeMethod" />
                 </entry>

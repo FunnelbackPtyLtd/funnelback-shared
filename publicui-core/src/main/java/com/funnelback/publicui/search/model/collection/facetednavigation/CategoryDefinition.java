@@ -1,9 +1,12 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -92,7 +95,30 @@ public abstract class CategoryDefinition {
      * @param st SearchTransaction to use to compute the values.
      * @return The computed values.
      */
-    public abstract List<CategoryValue> computeValues(final SearchTransaction st);
+    public List<CategoryValue> computeValues(final SearchTransaction st) {
+        return computeData(st)
+            .stream()
+            .map(data -> {                
+                try {
+                    return new CategoryValue(data.getData(), 
+                        data.getLabel(), 
+                        data.getCount(), 
+                        URLEncoder.encode(data.getQueryStringParamName(), "UTF-8")
+                            + "=" + URLEncoder.encode(data.getQueryStringParamValue(), "UTF-8"), 
+                        data.getConstraint(), 
+                        data.isSelected(), 
+                        data.getQueryStringParamName(), 
+                        data.getQueryStringParamValue()
+                        
+                        );
+                } catch (UnsupportedEncodingException e) {
+                    //Will never happen.
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
+    }
+    
+    public abstract List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st);
     
     /**
      * Get the query string parameter name for this category.
@@ -164,5 +190,6 @@ public abstract class CategoryDefinition {
         /** Value. */
         public String value;
     }
+    
     
 }
