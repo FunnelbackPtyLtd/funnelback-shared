@@ -59,7 +59,7 @@ ${queryToReport}
                         <li class="active"><a href="#collection-${currentCollection}-tab-recommendations" data-toggle="tab" id="tab-nav-recommendations" title="View Recommendations">Recommendations</a></li>
                         <li><a href="#collection-${currentCollection}-tab-0" data-toggle="tab" id="tab-nav-overview" title="View Overview">Overview</a></li>
                         <li><a class="tab-switch-1" href="#collection-${currentCollection}-tab-1" data-toggle="tab" id="tab-nav-attributes" title="View Attributes">Attributes</a></li>
-                        <li><a href="#collection-${currentCollection}-tab-2" data-toggle="tab" id="tab-nav-results" title="View Search Results">Search Results</a></li>
+                        <li><a href="#collection-${currentCollection}-tab-2" data-toggle="tab" id="tab-nav-results" title="View Search Results">Results <span class="badge detail-count">${response.resultPacket.resultsSummary.totalMatching}</span></a></li>
                     </ul>
                     
                     <#if (response.resultPacket.resultsSummary.totalMatching > 0)>
