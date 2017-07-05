@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -20,26 +21,65 @@ import org.hamcrest.core.AllOf;
 import org.hamcrest.core.StringContains;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
+import com.funnelback.common.testutils.SearchHomeConfigs;
+import com.funnelback.common.testutils.SearchHomeProvider;
+import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
+import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 
 public class SamlSecurityIT {
-    private static SamlConfiguredJettyServer server;
+    private static DefaultSecurityConfiguredJettyServer server;
     private static MujinaIdentityProviderServer mujina;
-    private static File searchHome = new File("src/test/resources/saml/search-home");
+    private static File searchHome;
 
     @BeforeClass
     public static void startServers() throws Exception {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
         SamlSecurityIT.mujina.start();
+
+        SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
+        searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "test");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.enabled", "true");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.identity-provider-metadata-url", "http://localhost:8080/metadata");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.entity-id", "com:funnelback:publicui:sp");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.keystore-path", new File("src/test/resources/saml/samlKeystore.jks").getAbsolutePath());
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.keystore-password", "nalle123");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-alias", "apollo");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-password", "nalle123");
+
+        // Configuring admin here should not be necessary, but should also not break things
+        // it was breaking things (running the test twice, with and without, seems expensive)
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.enabled", "true");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.identity-provider-metadata-url", "http://localhost:8080/metadata");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.entity-id", "com:funnelback:publicui:sp");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.keystore-path", new File("src/test/resources/saml/samlKeystore.jks").getAbsolutePath());
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.keystore-password", "nalle123");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.key-alias", "apollo");
+        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.key-password", "nalle123");
+
+        searchHome = SearchHomeProvider.getWritableSearchHome(SamlSecurityIT.class, new TestName(), searchHomeConfigs);
         
-        SamlSecurityIT.server = new SamlConfiguredJettyServer(searchHome);
+        DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
+
+        File modernUiProperties = new File(searchHome, "web/conf/modernui/modernui.properties");
+        modernUiProperties.getParentFile().mkdirs();
+        FileUtils.write(modernUiProperties, "");
+
+        File versionFile = new File(searchHome, "VERSION/funnelback-release");
+        versionFile.getParentFile().mkdirs();
+        FileUtils.write(versionFile, "Funnelback 9.9.9\n");
+
+        File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
+        noCollectionFile.getParentFile().mkdirs();
+        FileUtils.write(noCollectionFile, "Access granted!\n");
+
+        SamlSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s");
         SamlSecurityIT.server.start();
     }
 
@@ -47,7 +87,7 @@ public class SamlSecurityIT {
     public void testProactiveHttpBasic() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
 
-        HttpGet get = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
+        HttpGet get = new HttpGet(server.getBaseUrl() + "search.html");
         get.addHeader("Authorization", "Basic YWRtaW46YWRtaW4="); // That's admin:admin
 
         try (CloseableHttpResponse response = httpclient.execute(get)) {
@@ -60,7 +100,7 @@ public class SamlSecurityIT {
                 StringContains.containsString("Access granted!"));
         }
 
-        HttpGet get2 = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
+        HttpGet get2 = new HttpGet(server.getBaseUrl() + "search.html");
         // Do it again with no authorization header now - The JSESSIONID cookie should suffice
 
         try (CloseableHttpResponse response = httpclient.execute(get2)) {
@@ -80,7 +120,7 @@ public class SamlSecurityIT {
 
         String token = TokenUtils.makeToken(searchHome, "test", "admin", "dummyHash");
         
-        HttpGet get = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
+        HttpGet get = new HttpGet(server.getBaseUrl() + "search.html");
         get.addHeader("X-Security-Token", token); // That's admin:admin
 
         try (CloseableHttpResponse response = httpclient.execute(get)) {
@@ -101,7 +141,7 @@ public class SamlSecurityIT {
             // We want to follow a POST redirect to a GET - see http://stackoverflow.com/a/23181680/797
             .build();
 
-        HttpGet getLoginPage = new HttpGet(SamlSecurityIT.server.getBaseUrl() + "/s/search.html");
+        HttpGet getLoginPage = new HttpGet(server.getBaseUrl() + "search.html");
 
         try (CloseableHttpResponse response = httpclient.execute(getLoginPage)) {
             HttpEntity entity = response.getEntity();
@@ -113,7 +153,7 @@ public class SamlSecurityIT {
                 AllOf.allOf(StringContains.containsString("Login page"), StringContains.containsString("Mujina Identity Provider")));
         }
 
-        HttpPost postLoginForm = new HttpPost(SamlSecurityIT.mujina.getBaseUrl() + "/login");
+        HttpPost postLoginForm = new HttpPost(mujina.getBaseUrl() + "/login");
 
         List<NameValuePair> loginFormParameters = new ArrayList<>();
         loginFormParameters.add(new BasicNameValuePair("username", "admin"));
@@ -151,7 +191,6 @@ public class SamlSecurityIT {
             Assert.assertThat("Expected to reach the Funnelback collection listing page after SAML authentication", responseText,
                 StringContains.containsString("Access granted!"));
         }
-
     }
     
     @AfterClass
