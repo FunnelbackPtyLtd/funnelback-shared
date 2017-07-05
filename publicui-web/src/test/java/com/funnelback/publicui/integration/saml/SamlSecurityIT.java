@@ -1,6 +1,7 @@
 package com.funnelback.publicui.integration.saml;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,15 +35,22 @@ import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 
 public class SamlSecurityIT {
-    private static DefaultSecurityConfiguredJettyServer server;
-    private static MujinaIdentityProviderServer mujina;
-    private static File searchHome;
+    protected static DefaultSecurityConfiguredJettyServer server;
+    protected static MujinaIdentityProviderServer mujina;
+    protected static File searchHome;
 
     @BeforeClass
     public static void startServers() throws Exception {
         SamlSecurityIT.mujina = new MujinaIdentityProviderServer();
         SamlSecurityIT.mujina.start();
 
+        searchHome = createSearchHome();
+
+        SamlSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s");
+        SamlSecurityIT.server.start();
+    }
+
+    public static File createSearchHome() throws Exception, IOException {
         SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
         searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "test");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.enabled", "true");
@@ -53,17 +61,7 @@ public class SamlSecurityIT {
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-alias", "apollo");
         searchHomeConfigs.getGlobalCfgDefault().put("auth.publicui.saml.key-password", "nalle123");
 
-        // Configuring admin here should not be necessary, but should also not break things
-        // it was breaking things (running the test twice, with and without, seems expensive)
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.enabled", "true");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.identity-provider-metadata-url", "http://localhost:8080/metadata");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.entity-id", "com:funnelback:publicui:sp");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.keystore-path", new File("src/test/resources/saml/samlKeystore.jks").getAbsolutePath());
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.keystore-password", "nalle123");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.key-alias", "apollo");
-        searchHomeConfigs.getGlobalCfgDefault().put("auth.admin.saml.key-password", "nalle123");
-
-        searchHome = SearchHomeProvider.getWritableSearchHome(SamlSecurityIT.class, new TestName(), searchHomeConfigs);
+        File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(SamlSecurityIT.class, searchHomeConfigs, "SAML-Server");
         
         DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
 
@@ -78,9 +76,8 @@ public class SamlSecurityIT {
         File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
         noCollectionFile.getParentFile().mkdirs();
         FileUtils.write(noCollectionFile, "Access granted!\n");
-
-        SamlSecurityIT.server = new DefaultSecurityConfiguredJettyServer(searchHome, "/s");
-        SamlSecurityIT.server.start();
+        
+        return searchHome;
     }
 
     @Test
