@@ -88,7 +88,10 @@ public class ContentAuditor extends AbstractInputProcessor {
 
     /** The class in which duplicated title info is returned */
     private static final String DUPLICATE_TITLE_META_CLASS = "FunDuplicateTitle";
-    
+
+    /** The class in which the edit URL is returned */
+    private static final String EDIT_URL_META_CLASS = "FunEditLink";
+
     /** Resource manger for reading (and caching) config files */
     @Autowired
     @Setter
@@ -168,6 +171,9 @@ public class ContentAuditor extends AbstractInputProcessor {
         for (Map.Entry<String, String> entry : readMetadataInfo(question, Keys.ModernUI.ContentAuditor.DISPLAY_METADATA).entrySet()) {
             sfValue.append("," + entry.getKey());
         }
+        
+        sfValue.append("," + EDIT_URL_META_CLASS); // Always include the edit URL metadata
+        
         question.getAdditionalParameters().put(RequestParameters.SUMMARY_FIELDS, new String[] {"[" + sfValue.toString() + "]"});
 
         if (question.getQuery() == null || question.getQuery().length() < 1) {
