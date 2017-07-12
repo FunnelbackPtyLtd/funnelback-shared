@@ -41,6 +41,22 @@
   <header role="banner" id="page-header" class="navbar navbar-fixed-top navbar-inverse">
     <div class="container-fluid">
       <div id="navbar-header">
+        <ul class="pull-left dashboard-selector">
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-bars"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href='/a/#/services'>
+                <i class="fa fa-diamond fa-dropdown-menu-icon"></i> Marketing
+              </a></li>
+              <li><a href='/search/admin/index.cgi'>
+                <i class="fa fa-hdd-o fa-dropdown-menu-icon"></i> Administration
+              </a></li>
+            </ul>
+          </li>
+        </ul>        
+
         <!--<button data-target=".navbar-side" data-toggle="collapse" type="button" class="navbar-toggle collapsed">
         <span class="sr-only">Toggle Sidebar Navigation</span>
         <span class="fa fa-bars fa-lg"></span>
@@ -62,7 +78,7 @@
         </a>
 
       </div>
-      <div class="nav navbar-nav navbar-right">
+      <div class="nav navbar-nav">
         <div class="search-form">
           <#-- QUERY FORM -->
           <form action="${main.contentAuditorLink}" method="GET" class="form form-inline">
