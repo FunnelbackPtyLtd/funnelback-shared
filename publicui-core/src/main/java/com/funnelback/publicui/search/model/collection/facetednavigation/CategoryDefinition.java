@@ -5,13 +5,17 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.AllArgsConstructor;
@@ -95,8 +99,8 @@ public abstract class CategoryDefinition {
      * @param st SearchTransaction to use to compute the values.
      * @return The computed values.
      */
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
-        return computeData(st)
+    public List<CategoryValue> computeValues(final SearchTransaction st, FacetDefinition fdef) {
+        return computeData(st, fdef)
             .stream()
             .map(data -> {                
                 try {
@@ -118,7 +122,7 @@ public abstract class CategoryDefinition {
             }).collect(Collectors.toList());
     }
     
-    public abstract List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st);
+    public abstract List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition fdef);
     
     /**
      * Get the query string parameter name for this category.
@@ -176,6 +180,47 @@ public abstract class CategoryDefinition {
         
         int colon = item.indexOf(MD_VALUE_SEPARATOR);
         return new MetadataAndValue(item.substring(0, colon), item.substring(colon + 1));
+    }
+    
+    protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
+        
+        // Usually the response for counts would be the one from the normal search.
+        Optional<SearchResponse> responseForCounts = Optional.of(st.getResponse());
+        
+        SearchResponse sr = st.getResponse();
+        
+        Integer countIfNotPresent = null;
+        
+        if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
+            sr = Optional.ofNullable(st.getExtraSearches().get(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString()))
+                .map(SearchTransaction::getResponse)
+                .orElse(sr);
+            
+            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
+                // In the case that the constraints are ANDed then the constraints come
+                // from the original Response 
+                responseForCounts = Optional.of(st.getResponse());
+                // In the ANDed case any time a value is present but the original Response does not
+                // have the value then the count is zero.
+                countIfNotPresent = 0;
+            }
+        }
+        
+        if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
+            // In the case of OR our counts are always wrong.
+            responseForCounts= Optional.empty();
+            countIfNotPresent = null;
+        }
+        
+        return new FacetSearchData(sr, responseForCounts, countIfNotPresent);
+    }
+    
+    @AllArgsConstructor
+    public static class FacetSearchData {
+        @Getter SearchResponse responseForValues;
+        @Getter Optional<SearchResponse> responseForCounts;
+
+        @Getter Integer countIfNotPresent; 
     }
 
     /**

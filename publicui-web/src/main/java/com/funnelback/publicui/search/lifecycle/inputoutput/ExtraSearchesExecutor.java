@@ -87,7 +87,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
             for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
                 try {
-                    searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
+                    searchTransaction.getExtraSearches().put(entry.getKey(), entry.getValue().get(extraSearchesWaitTimeout, TimeUnit.HOURS));
                 } catch (TimeoutException te) {
                     log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + entry.getKey() + "'."
                             + "Consider raising 'extra.searches.timeout'.", te);

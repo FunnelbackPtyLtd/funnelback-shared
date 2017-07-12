@@ -102,7 +102,7 @@ public class FacetedNavigationDateFieldFillTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("d", cv.getConstraint());
-        Assert.assertEquals(8, cv.getCount());
+        Assert.assertEquals(8, cv.getCount() + 0);
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
         Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003", cv.getQueryStringParam());
@@ -124,7 +124,7 @@ public class FacetedNavigationDateFieldFillTests {
 
         cv = c.getValues().get(0);
         Assert.assertEquals("X", cv.getConstraint());
-        Assert.assertEquals(2137, cv.getCount());
+        Assert.assertEquals(2137, cv.getCount() + 0);
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("Past 6 months", cv.getLabel());
         Assert.assertEquals("f.By+date+on+X%7CX=d%3C25Jun2003%3E26Dec2002", cv.getQueryStringParam());
@@ -157,7 +157,7 @@ public class FacetedNavigationDateFieldFillTests {
 
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("d", cv.getConstraint());
-        Assert.assertEquals(8, cv.getCount());
+        Assert.assertEquals(8, cv.getCount() + 0);
         Assert.assertEquals("d", cv.getData());
         Assert.assertEquals("Today", cv.getLabel());
         Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7Cd=d%3D24Jun2003", cv.getQueryStringParam());
@@ -172,7 +172,7 @@ public class FacetedNavigationDateFieldFillTests {
 
         cv = subCategory.getValues().get(1);
         Assert.assertEquals("O", cv.getConstraint());
-        Assert.assertEquals(12, cv.getCount());
+        Assert.assertEquals(12, cv.getCount() + 0);
         Assert.assertEquals("O", cv.getData());
         Assert.assertEquals("2005", cv.getLabel());
         Assert.assertEquals("f.By+date+on+d%2CZ%2CO%7CO=O%3D2005", cv.getQueryStringParam());

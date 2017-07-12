@@ -68,6 +68,7 @@
         <ref bean="fixCacheAndClickLinks" />
         <ref bean="fixDisplayUrlsOutputProcessor" />
         <ref bean="htmlEncodeSummaries" />
+        <ref bean="extraSearchesExecutor" />
         <ref bean="facetedNavigationOutputProcessor" />
         <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
         <ref bean="accessibilityAuditorPopulateFacetCategoryLabels" />
@@ -76,7 +77,6 @@
         <ref bean="contextualNavigationOutputProcessor" />
         <ref bean="quickLinksOutputProcessor" />
         <ref bean="queryCleanOutputProcessor" />
-        <ref bean="extraSearchesExecutor" />
         <ref bean="contentOptimiserOutputProcessor" />
         <ref bean="textMinerOutputProcessor" />
         <ref bean="getTranslationsOutputProcessor" />

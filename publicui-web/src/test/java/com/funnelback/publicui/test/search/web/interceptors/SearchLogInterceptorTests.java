@@ -10,10 +10,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -61,12 +61,12 @@ public class SearchLogInterceptorTests {
         CategoryDefinition cDef = new MetadataFieldFill("X");
         cDef.setFacetName("Location");
         cDef.setLabel("X");
-        FacetDefinition fDef = new FacetDefinition("Location", Arrays.asList(new CategoryDefinition[] {cDef}));
+        FacetDefinition fDef = FacetDefinition.getFacetWithDefaults("Location", Arrays.asList(new CategoryDefinition[] {cDef}));
 
         CategoryDefinition cDef2 = new MetadataFieldFill("Y");
         cDef2.setFacetName("Type");
         cDef2.setLabel("Y");
-        FacetDefinition fDef2 = new FacetDefinition("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));
+        FacetDefinition fDef2 = FacetDefinition.getFacetWithDefaults("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));
 
         FacetedNavigationConfig fnConf = new FacetedNavigationConfig(Arrays.asList(new FacetDefinition[] {fDef, fDef2}));
         st.getQuestion().getCollection().setFacetedNavigationLiveConfig(fnConf);

@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.CategoryAndSiblings;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillCategoryValueUrls;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
@@ -49,22 +51,30 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                 for(FacetDefinition f: config.getFacetDefinitions()) {
                     final Facet facet = new Facet(f.getName());
                     
+                    List<Facet.Category> cats = new ArrayList<>();
+                    
                     for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
-                        Facet.Category c = fillCategories(ct, searchTransaction);
+                        Facet.Category c = fillCategories(f, ct, searchTransaction);
                         if (c != null) {
-                            // We can only fill out the URLs after the entire category
-                            // with its children have been created.
-                            Flattener.flatten(c, Facet.Category::getCategories)
-                                .forEach(cat -> fillUrls.fillURLs(searchTransaction, cat));
-                            
                             facet.getCategories().add(c);
-                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())) {
-                                // This category has been selected. Stop calculating other
-                                // values for it (FUN-4462)
-                                break;
-                            }
+                            cats.add(c);
+//                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())
+//                                &&) {
+//                                // This category has been selected. Stop calculating other
+//                                // values for it (FUN-4462)
+//                                break;
+//                            }
                         }
                     }
+                    
+                    
+                     // We can only fill out the URLs after the entire category
+                    // with its children and its siblings have been created.
+                    List<CategoryAndSiblings> cas = CategoryAndSiblings.toCategoriesWithSiblings(cats);
+                    cas.stream().flatMap(Flattener.mapper(c -> {
+                        return CategoryAndSiblings.toCategoriesWithSiblings(c.getCategory().getCategories());
+                    }))
+                    .forEach(catAndSibs -> fillUrls.fillURLs(searchTransaction, f, catAndSibs.getSiblings(), catAndSibs.getCategory()));
                     
                     // Sort all categories for this facet by the count of the first value of
                     // each category. This is useful for GScope based facets where there's only
@@ -76,7 +86,9 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             }
         }
     }
-
+    
+    
+    
     /**
      * Fills the categories for a given {@link CategoryDefinition}, by computing all the
      * values from the result packet (Delegated to the {@link CategoryDefinition} implementation.
@@ -87,12 +99,13 @@ public class FacetedNavigation extends AbstractOutputProcessor {
      * @param searchTransaction
      * @return
      */
-    private Facet.Category fillCategories(final CategoryDefinition cDef, SearchTransaction searchTransaction) {
+    private Facet.Category fillCategories(final FacetDefinition facetDefinition,
+            final CategoryDefinition cDef, SearchTransaction searchTransaction) {
         log.trace("Filling category '" + cDef + "'");
         
         // Fill the values for this category
         Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
-        category.getValues().addAll(cDef.computeValues(searchTransaction));
+        category.getValues().addAll(cDef.computeValues(searchTransaction, facetDefinition));
         Collections.sort(category.getValues(), new CategoryValue.ByCountComparator(true));
     
         // Find out if this category is currently selected
@@ -122,14 +135,14 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             if (valueMatches) {
                 log.trace("Value has been selected.");
                 for (CategoryDefinition subCategoryDef: cDef.getSubCategories()) {
-                    Facet.Category c = fillCategories(subCategoryDef, searchTransaction);
+                    Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction);
                     if (c != null) {
                         category.getCategories().add(c);
-                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())) {
-                            // This category has been selected. Stop calculating other
-                            // values for it (FUN-4462)
-                            break;
-                        }
+//                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())) {
+//                            // This category has been selected. Stop calculating other
+//                            // values for it (FUN-4462)
+//                            break;
+//                        }
                     }
                 }
             }

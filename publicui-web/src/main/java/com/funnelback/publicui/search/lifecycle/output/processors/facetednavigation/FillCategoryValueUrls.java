@@ -2,12 +2,15 @@ package com.funnelback.publicui.search.lifecycle.output.processors.facetednaviga
 
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.function.Flattener;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -27,10 +30,13 @@ public class FillCategoryValueUrls {
      * @param st
      * @param category
      */
-    public void fillURLs(SearchTransaction st, Facet.Category category) {
+    public void fillURLs(SearchTransaction st, 
+            FacetDefinition facetDef,
+            List<Facet.Category> siblings,
+            Facet.Category category) {
         for(CategoryValue categoryValue : category.getValues()) {
             
-            String selectUrl = QueryStringUtils.toString(getSelectUrlMap(st, categoryValue), true);
+            String selectUrl = QueryStringUtils.toString(getSelectUrlMap(st, facetDef, categoryValue, siblings), true);
             String unselectUrl = QueryStringUtils.toString(getUnselectUrlMap(st, category, categoryValue), true);
             
             String toggleUrl = categoryValue.isSelected()? unselectUrl : selectUrl;
@@ -41,13 +47,56 @@ public class FillCategoryValueUrls {
         }
     }
     
-    Map<String, List<String>> getSelectUrlMap(SearchTransaction st, CategoryValue categoryValue) {
+    /**
+     * Creates the URL paramaters for selecting the given category value.
+     * 
+     * <p>I am pretty sure this will not work when multiple category types are mixed under the same facet
+     * definition. Perhaps a problem with the stencils also exists?</p>
+     * 
+     * @param st
+     * @param facetDef
+     * @param categoryValue
+     * @return
+     */
+    Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition facetDef, CategoryValue categoryValue,
+        List<Facet.Category> siblings) {
         // Will this work when selecting in the case of 
         Map<String, List<String>> selectUrlQs = st.getQuestion().getQueryStringMapCopy();
-        // This will replace any currently selected value of the facet, this is NOT what
-        // we want when in "Multiple value mode"
-        FacetedNavigationUtils.removeQueryStringFacetKey(selectUrlQs, categoryValue.getQueryStringParamName());
-        selectUrlQs.put(categoryValue.getQueryStringParamName(), asList(categoryValue.getQueryStringParamValue()));
+        
+        if(facetDef.getSelectionType() == FacetSelectionType.SINGLE) {
+            // This will replace any currently selected value of the facet, this is NOT what
+            // we want when in "Multiple value mode"
+            FacetedNavigationUtils.removeQueryStringFacetKey(selectUrlQs, categoryValue.getQueryStringParamName());
+            
+            // Also remove any selected siblings 
+            // We also remove any selected children of our siblings, I don't think this will happen 
+            // but it is safer this way, if someone gets into a bad state we effectivly get them
+            // back to a good state.
+            siblings.stream()
+                .flatMap(Flattener.mapper(c -> c.getCategories()))
+                .forEach(cv -> { 
+                    FacetedNavigationUtils.removeQueryStringFacetKey(selectUrlQs, cv.getQueryStringParamName());
+                });
+            
+            selectUrlQs.put(categoryValue.getQueryStringParamName(), asList(categoryValue.getQueryStringParamValue()));
+        } else {
+            // Unselect the URL.
+            FacetedNavigationUtils.removeQueryStringFacetValue(selectUrlQs, 
+                categoryValue.getQueryStringParamName(), 
+                categoryValue.getQueryStringParamValue());
+            
+            List<String> values = new ArrayList<>();
+            
+            if(selectUrlQs.containsKey(categoryValue.getQueryStringParamName())) {
+               values.addAll(selectUrlQs.get(categoryValue.getQueryStringParamName())); 
+            }
+            
+            values.add(categoryValue.getQueryStringParamValue());
+            
+            selectUrlQs.put(categoryValue.getQueryStringParamName(), values);
+        }
+        
+        
         return selectUrlQs;
     }
     

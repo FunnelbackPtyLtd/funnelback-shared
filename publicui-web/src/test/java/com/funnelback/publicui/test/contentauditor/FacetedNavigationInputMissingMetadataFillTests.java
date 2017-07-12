@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.contentauditor;
 
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,6 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationInputMissingMetadataFillTests {
@@ -60,7 +61,7 @@ public class FacetedNavigationInputMissingMetadataFillTests {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         MissingMetadataFill categoryDefinition = new MissingMetadataFill();
         categoryDefinition.setFacetName("Missing Metadata");
-        facetDefinitions.add(new FacetDefinition("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
+        facetDefinitions.add(getFacetWithDefaults("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
         
         question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig(facetDefinitions));
 

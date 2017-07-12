@@ -8,6 +8,7 @@ import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
 
 public class FacetedNavigationCountThresholdMetadataFieldFillTestUtils {
 
@@ -27,15 +28,15 @@ public class FacetedNavigationCountThresholdMetadataFieldFillTestUtils {
                 )
             );
         categories.addAll(metadataFillWithThresholdDefition("O", "Location", 0, new ArrayList<>()));
-        facetDefinitions.add(new FacetDefinition("Location", categories));
+        facetDefinitions.add(getFacetWithDefaults("Location", categories));
         
-        facetDefinitions.add(new FacetDefinition("Job Category",  
+        facetDefinitions.add(getFacetWithDefaults("Job Category",   
             metadataFillWithThresholdDefition("W", "Job Category", 0, 
                 metadataFillWithThresholdDefition("V", "Job Category", 0, new ArrayList<>())
             )
         ));
 
-        facetDefinitions.add(new FacetDefinition("Type",  
+        facetDefinitions.add(getFacetWithDefaults("Type",  
             metadataFillWithThresholdDefition("U", "Type", 0, new ArrayList<>())
         ));
         

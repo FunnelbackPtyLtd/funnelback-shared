@@ -31,7 +31,7 @@ public class CategoryValueComputedDataHolder {
      * 
      * @since 15.14
      */
-    @Getter @Setter private int count;
+    @Getter @Setter private Integer count;
     
     /**
      * Constraint used to get this value. Can be a metadata class

@@ -16,6 +16,7 @@ import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -91,9 +92,13 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     /** {@inheritDoc} */
     @Override
     @SneakyThrows(UnsupportedEncodingException.class)
-    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
+        
+        // Note that Date facets are incompatible with getting data from the Unscoped query.
+        // this is because Date facets by nature force hierarchy where data from the unscoped
+        // query implies no hierarchy
+        
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
-
         
         String url = data;
 

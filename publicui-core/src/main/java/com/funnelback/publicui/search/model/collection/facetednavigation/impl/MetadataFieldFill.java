@@ -9,9 +9,12 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
@@ -33,16 +36,23 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 
     /** {@inheritDoc} */
     @Override
-    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
+        FacetSearchData facetData = getFacetSearchData(st, facetDefinition);
+        
         // For each metadata count <rmc item="a:new south wales">42</rmc>
-        for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
+        for (Entry<String, Integer> entry : facetData.getResponseForValues().getResultPacket().getRmcs().entrySet()) {
             String item = entry.getKey();
             if (item.startsWith(MetadataBasedCategory.METADATA_ABSENT_PREFIX)) {
                 continue; // Skip the 'documents with none of this metadata' count
             }
-            int count = entry.getValue();
+            
+            Integer count = facetData.getResponseForCounts().map(SearchResponse::getResultPacket)
+                    .map(ResultPacket::getRmcs)
+                    .map(rmcs -> rmcs.get(entry.getKey()))
+                    .orElse(facetData.getCountIfNotPresent());
+            
             MetadataAndValue mdv = parseMetadata(item);
             if (this.data.equals(mdv.metadata)) {
                 String queryStringParamValue = mdv.value;
