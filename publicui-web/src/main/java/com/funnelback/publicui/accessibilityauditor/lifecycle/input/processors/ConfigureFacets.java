@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
@@ -119,7 +122,8 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions);
+        return new FacetDefinition(field, categoryDefinitions, 
+            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
     }
     
     /**
@@ -132,7 +136,8 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions);
+        return new FacetDefinition(field, categoryDefinitions, 
+            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
     }
     
     /**
@@ -147,7 +152,8 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(URL_FACET_ID);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(URL_FACET_ID, categoryDefinitions);
+        return new FacetDefinition(URL_FACET_ID, categoryDefinitions, 
+            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
     }
 
 }

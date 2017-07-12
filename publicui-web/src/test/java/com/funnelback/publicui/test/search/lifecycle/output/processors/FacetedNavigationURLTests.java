@@ -102,7 +102,7 @@ public class FacetedNavigationURLTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("v", cv.getConstraint());
-        Assert.assertEquals(46, cv.getCount());
+        Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
         Assert.assertEquals("f.By+URL%7Curl=Shakespeare%2Fcleopatra", cv.getQueryStringParam());
@@ -142,7 +142,7 @@ public class FacetedNavigationURLTests {
         Assert.assertEquals(1, c.getValues().size());
         CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("v", cv.getConstraint());
-        Assert.assertEquals(46, cv.getCount());
+        Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("cleopatra", cv.getData());
         Assert.assertEquals("cleopatra", cv.getLabel());
         Assert.assertEquals("f.By+URL%7Curl=Shakespeare%2Fcleopatra", cv.getQueryStringParam());

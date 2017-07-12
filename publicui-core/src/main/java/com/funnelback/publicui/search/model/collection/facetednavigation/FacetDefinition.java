@@ -4,7 +4,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
+
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -31,6 +38,15 @@ public class FacetDefinition {
      */
     @Getter private final List<CategoryDefinition> categoryDefinitions;
     
+    @NotNull @NonNull
+    @Getter private FacetSelectionType selectionType;
+    
+    @NotNull @NonNull
+    @Getter private FacetConstraintJoin constraintJoin;
+    
+    @NotNull @NonNull
+    @Getter private FacetValues facetValues;
+    
     /**
      * Recursively get the list of all query string parameters used.
      * @return The list of every query string parameter used in this
@@ -50,5 +66,9 @@ public class FacetDefinition {
     public final class Schema {
         public static final String FACET = "Facet";
         public static final String DATA = "Data";
+    }
+    
+    public static FacetDefinition getFacetWithDefaults(String name, List<CategoryDefinition> categoryDefinitions) {
+        return new FacetDefinition(name, categoryDefinitions, FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
     }
 }

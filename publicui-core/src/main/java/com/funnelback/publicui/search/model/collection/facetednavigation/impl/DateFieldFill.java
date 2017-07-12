@@ -11,10 +11,14 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.padre.DateCount;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -41,20 +45,29 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 
     /** {@inheritDoc} */
     @Override
-    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
+        FacetSearchData facetData = getFacetSearchData(st, facetDefinition);
+        
         // For each metadata count <rmc item="a:new south wales">42</rmc>
-        for (Entry<String, DateCount> entry : st.getResponse().getResultPacket().getDateCounts().entrySet()) {
+        for (Entry<String, DateCount> entry : facetData.getResponseForValues().getResultPacket().getDateCounts().entrySet()) {
             String item = entry.getKey();
             DateCount dc = entry.getValue();
             MetadataAndValue mdv = parseMetadata(item);
             if (this.data.equals(mdv.metadata)) {
                 String queryStringParamValue = dc.getQueryTerm();
+                Integer count = facetData.getResponseForCounts()
+                        .map(SearchResponse::getResultPacket)
+                        .map(ResultPacket::getDateCounts)
+                        .map(dateCounts -> dateCounts.get(entry.getKey()))
+                        .map(DateCount::getCount)
+                        .orElse(facetData.getCountIfNotPresent());
+                
                 categories.add(new CategoryValueComputedDataHolder(
                         mdv.metadata,
                         mdv.value,
-                        dc.getCount(),
+                        count,
                         getMetadataClass(),
                         FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), dc.getQueryTerm()),
                         getQueryStringParamName(),

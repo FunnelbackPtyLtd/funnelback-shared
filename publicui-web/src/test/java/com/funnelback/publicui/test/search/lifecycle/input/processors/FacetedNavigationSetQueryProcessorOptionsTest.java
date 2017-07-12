@@ -61,10 +61,10 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
         // Configure faceted navigation
         CategoryDefinition cDef1 = new MetadataFieldFill("a");
         CategoryDefinition cDef2 = new URLFill("http://example.org/");
-        FacetDefinition fDef1 = new FacetDefinition("facet1", Lists.newArrayList(cDef1, cDef2));
+        FacetDefinition fDef1 = FacetDefinition.getFacetWithDefaults("facet1", Lists.newArrayList(cDef1, cDef2));
 
         CategoryDefinition cDef3 = new GScopeItem("categoryName", 12);
-        FacetDefinition fDef2 = new FacetDefinition("facet2", Lists.newArrayList(cDef3));
+        FacetDefinition fDef2 = FacetDefinition.getFacetWithDefaults("facet2", Lists.newArrayList(cDef3));
 
         FacetedNavigationConfig fnConfig = new FacetedNavigationConfig(Lists.newArrayList(fDef1, fDef2));
         processor.setFacetedNavigationConfigProvider((q) -> fnConfig);

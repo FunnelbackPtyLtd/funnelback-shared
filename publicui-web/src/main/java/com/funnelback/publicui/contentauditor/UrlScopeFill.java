@@ -18,6 +18,7 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -52,7 +53,7 @@ public class UrlScopeFill extends URLFill {
         private static final String TAG = "url";
 
         @Override
-        public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+        public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
             List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
             
             // Find out the currently selected value and its depth

@@ -14,6 +14,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -30,7 +32,8 @@ public class FillCategoryValueUrlsTest {
     public void testFillUrls() {
         FillCategoryValueUrls fillUrls = new FillCategoryValueUrls(){
             @Override
-            Map<String, List<String>> getSelectUrlMap(SearchTransaction st, CategoryValue categoryValue) {
+            Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition fd, CategoryValue categoryValue,
+                List<Facet.Category> siblings) {
                 return ImmutableMap.of("s", asList("select"));
             }
             
@@ -50,7 +53,7 @@ public class FillCategoryValueUrlsTest {
         Category cat = mock(Category.class);
         when(cat.getValues()).thenReturn(asList(categoryValueSelected, categoryValueUnselected));
         
-        fillUrls.fillURLs(null, cat);
+        fillUrls.fillURLs(null, null, null, cat);
         
         verify(categoryValueSelected, times(1)).setSelectUrl("?s=select");
         verify(categoryValueSelected, times(1)).setUnselectUrl("?s=unselect");
@@ -62,10 +65,21 @@ public class FillCategoryValueUrlsTest {
     }
     
     @Test
-    public void testGetSelectUrl() {
+    public void testGetSelectUrlSingleURL() {
+        Facet.Category sibling = mock(Facet.Category.class);
+        when(sibling.getQueryStringParamName()).thenReturn("fac|bb");
+        
+        Facet.Category nephew = mock(Facet.Category.class);
+        when(nephew.getQueryStringParamName()).thenReturn("fac|bbchild");
+        
+        when(sibling.getCategories()).thenReturn(asList(nephew));
+        List<Facet.Category> siblings = asList(sibling);
+        
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQueryStringMap(ImmutableMap.of(
             "a", asList("b"), 
+            "fac|bb", asList("set by sibling"),
+            "fac|bbchild", asList("set child of sibling"),
             "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:foobar"),
             "fac|a", asList("a:foo", "a:bar"),
             "start_rank", asList("12")));
@@ -74,11 +88,17 @@ public class FillCategoryValueUrlsTest {
         when(catVal.getQueryStringParamName()).thenReturn("fac|a");
         when(catVal.getQueryStringParamValue()).thenReturn("plop");
         
-        Map<String, List<String>> result = new FillCategoryValueUrls().getSelectUrlMap(st, catVal);
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.SINGLE);
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getSelectUrlMap(st, facetDef, catVal, siblings);
         
         Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
         Assert.assertTrue("Map should still have unrelated params even in facet scope", result.containsKey("facetScope"));
         Assert.assertEquals("f.Facet%7CZ=value1", result.get("facetScope").get(0));
+        
+        Assert.assertFalse("Should have unset siblings", result.containsKey("fac|bb"));
+        Assert.assertFalse("Should have unset children of our siblings", result.containsKey("fac|bbchild"));
         
         Assert.assertEquals("Other values for this facet should have been unselected, and only"
             + " one should be selected.", 1, result.get("fac|a").size());
@@ -87,6 +107,39 @@ public class FillCategoryValueUrlsTest {
         
         Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
             result.containsKey("start_rank"));
+    }
+    
+    @Test
+    public void testGetSelectUrlMultiSelectURL() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQueryStringMap(ImmutableMap.of(
+            "a", asList("b"), 
+            "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:foobar"),
+            "fac|a", asList("a:foo", "a:bar")));
+        
+        CategoryValue catVal = mock(CategoryValue.class);
+        when(catVal.getQueryStringParamName()).thenReturn("fac|a");
+        when(catVal.getQueryStringParamValue()).thenReturn("plop");
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.MULTIPLE);
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getSelectUrlMap(st, facetDef, catVal, null);
+        
+        Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
+        Assert.assertTrue("Map should still have unrelated params even in facet scope", result.containsKey("facetScope"));
+        Assert.assertTrue("Should keep already selected values for this facet.",
+             result.get("facetScope").get(0).contains("fac%7Ca=a%3Afoobar"));
+        
+        Assert.assertTrue("Should keep unrelated param within facet scope.",
+                result.get("facetScope").get(0).contains("f.Facet%7CZ=value1"));
+        
+        Assert.assertEquals("Should have kept all other values for this facet, should have:"
+            + "a:foo, a:bar and plop", 3, result.get("fac|a").size());
+        
+        Assert.assertTrue("should have the facet value a:bar", result.get("fac|a").contains("a:foo"));
+        Assert.assertTrue("should have the facet value a:bar", result.get("fac|a").contains("a:bar"));
+        Assert.assertTrue("should have the facet value plop", result.get("fac|a").contains("plop"));
     }
     
     @Test

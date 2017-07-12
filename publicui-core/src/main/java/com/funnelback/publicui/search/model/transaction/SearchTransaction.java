@@ -84,7 +84,12 @@ public class SearchTransaction {
      * <p>These questions will be submitted in parallel to the main search.</p>
      */
     @XStreamOmitField
-    @Getter private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
+    private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
+    
+    public Map<String, SearchQuestion> getExtraSearchesQuestions() {
+        return extraSearchesQuestions;
+    }
+    
     
     /**
      * <em>Internal use</em>: Holds the extra searches tasks being executed.

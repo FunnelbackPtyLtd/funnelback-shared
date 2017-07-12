@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -212,7 +213,8 @@ public class Facet {
             @Override
             public int compare(Category c1, Category c2) {
                 if (c1.getValues().size() > 0 && c2.getValues().size() > 0) {
-                    return c2.getValues().get(0).getCount() - c1.getValues().get(0).getCount();
+                    return Optional.ofNullable(c2.getValues().get(0).getCount()).orElse(Integer.MIN_VALUE) 
+                            - Optional.ofNullable(c1.getValues().get(0).getCount()).orElse(Integer.MIN_VALUE);
                 } else if (c1.getValues().size() > 0) {
                     return 1;
                 } else {
@@ -243,7 +245,7 @@ public class Facet {
          * @param selected
          */
         @Deprecated
-        public CategoryValue(String data, String label, int count, String queryStringParam, String constraint,
+        public CategoryValue(String data, String label, Integer count, String queryStringParam, String constraint,
             boolean selected) {
             super();
             this.data = data;
@@ -255,7 +257,7 @@ public class Facet {
         }
         
         
-        public CategoryValue(String data, String label, int count, 
+        public CategoryValue(String data, String label, Integer count, 
             String queryStringParam, String constraint, boolean selected,
             String queryStringParamName, String queryStringParamValue) {
           super();
@@ -276,7 +278,7 @@ public class Facet {
         @Getter @Setter private String label;
         
         /** Count of occurrences for this value */
-        @Getter @Setter private int count;
+        @Getter @Setter private Integer count;
         
         /**
          * Query String parameters to use to select this value
