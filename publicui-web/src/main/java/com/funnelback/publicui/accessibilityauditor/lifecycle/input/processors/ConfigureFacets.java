@@ -122,8 +122,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(field, categoryDefinitions);
     }
     
     /**
@@ -136,8 +135,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(field, categoryDefinitions);
     }
     
     /**
@@ -152,8 +150,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(URL_FACET_ID);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(URL_FACET_ID, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(URL_FACET_ID, categoryDefinitions);
     }
 
 }

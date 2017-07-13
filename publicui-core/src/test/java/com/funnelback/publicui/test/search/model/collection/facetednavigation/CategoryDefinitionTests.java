@@ -64,7 +64,7 @@ public class CategoryDefinitionTests {
     }
     
     @Test
-    public void getFacetSearchDataTest() {
+    public void getFacetSearchDataTestAndFromScoped() {
         FacetDefinition fdef = mock(FacetDefinition.class);
         when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
         when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
@@ -75,8 +75,91 @@ public class CategoryDefinitionTests {
         
         FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
         
-        // TODO something?
+        Assert.assertEquals(st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
     }
+    
+    @Test
+    public void getFacetSearchDataTestLegacyFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.LEGACY);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        // Legacy has everything come from the main search packet, as legacy did
+        // not support unscoped query.
+        Assert.assertEquals(st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        // Don't worry about default count as we wont need one legacy.
+    }
+    
+    
+    @Test
+    public void getFacetSearchDataTestOrFromScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the OR case are not supported.",
+            false, data.getResponseForCounts().isPresent());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
+    }
+    
+    @Test
+    public void getFacetSearchDataTestOrFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the OR case are not supported.",
+            false, data.getResponseForCounts().isPresent());
+        Assert.assertEquals("Values come from the unscoped query",
+            extraSearchTransaction.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
+    }
+    
+    @Test
+    public void getFacetSearchDataTestAndFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the AND case come from the main query because we scope the"
+            + " existing query further.",
+            st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals("Values come from the unscoped query",
+            extraSearchTransaction.getResponse(), data.getResponseForValues());
+        Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
+            + " the scopped query then ANDing with that value will result in a zero result page.",
+            0, data.getCountIfNotPresent() + 0);
+    }
+    
+    
     
     public class MockCategoryDefinition extends CategoryDefinition {
         

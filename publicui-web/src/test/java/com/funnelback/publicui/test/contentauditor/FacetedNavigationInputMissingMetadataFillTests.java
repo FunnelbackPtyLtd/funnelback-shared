@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.contentauditor;
 
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithUpgradedValues;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,13 +16,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
-import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -31,6 +31,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
+import com.funnelback.publicui.test.search.lifecycle.input.processors.BothFacetedNavigationInputProcessors;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
@@ -40,7 +41,10 @@ public class FacetedNavigationInputMissingMetadataFillTests {
     private DefaultConfigRepository configRepository;
     
     private SearchTransaction st;
-    private FacetedNavigation processor;
+    private BothFacetedNavigationInputProcessors processor;
+    
+    @Autowired
+    private File searchHome;
 
     @Before
     public void before() throws Exception {
@@ -61,17 +65,15 @@ public class FacetedNavigationInputMissingMetadataFillTests {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         MissingMetadataFill categoryDefinition = new MissingMetadataFill();
         categoryDefinition.setFacetName("Missing Metadata");
-        facetDefinitions.add(getFacetWithDefaults("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
+        facetDefinitions.add(getFacetWithUpgradedValues("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
         
         question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig(facetDefinitions));
 
-        processor = new FacetedNavigation();
+        processor = new BothFacetedNavigationInputProcessors();
     }
     
     @Test
-    public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
-        FacetedNavigation processor = new FacetedNavigation();
-        
+    public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {        
         // No transaction
         processor.processInput(null);
         
@@ -86,12 +88,12 @@ public class FacetedNavigationInputMissingMetadataFillTests {
         processor.processInput(st);
         
         // No faceted navigation config
-        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        question.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         st = new SearchTransaction(question, null);
         processor.processInput(st);
         
         // No QP Options
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy"));
         c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null));
         question.setCollection(c);
         st = new SearchTransaction(question, null);

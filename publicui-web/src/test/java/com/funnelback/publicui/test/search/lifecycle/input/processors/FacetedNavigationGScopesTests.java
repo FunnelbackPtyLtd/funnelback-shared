@@ -21,7 +21,7 @@ public class FacetedNavigationGScopesTests {
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
-    private FacetedNavigation processor;
+    private BothFacetedNavigationInputProcessors processor;
     private SearchTransaction st;
 
     @Before
@@ -30,7 +30,8 @@ public class FacetedNavigationGScopesTests {
         question.setCollection(configRepository.getCollection("faceted-navigation-gscopes"));
         st = new SearchTransaction(question, null);
         
-        processor = new FacetedNavigation();
+        processor = new BothFacetedNavigationInputProcessors();
+        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test

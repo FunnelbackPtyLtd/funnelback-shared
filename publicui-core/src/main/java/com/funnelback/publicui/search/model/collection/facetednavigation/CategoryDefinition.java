@@ -190,26 +190,28 @@ public abstract class CategoryDefinition {
         SearchResponse sr = st.getResponse();
         
         Integer countIfNotPresent = null;
-        
-        if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
-            sr = Optional.ofNullable(st.getExtraSearches().get(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString()))
-                .map(SearchTransaction::getResponse)
-                .orElse(sr);
-            
-            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
-                // In the case that the constraints are ANDed then the constraints come
-                // from the original Response 
-                responseForCounts = Optional.of(st.getResponse());
-                // In the ANDed case any time a value is present but the original Response does not
-                // have the value then the count is zero.
-                countIfNotPresent = 0;
+        // legacy does not work with unscoped values
+        if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
+            if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
+                sr = Optional.ofNullable(st.getExtraSearches().get(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString()))
+                    .map(SearchTransaction::getResponse)
+                    .orElse(sr);
+                
+                if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
+                    // In the case that the constraints are ANDed then the constraints come
+                    // from the original Response 
+                    responseForCounts = Optional.of(st.getResponse());
+                    // In the ANDed case any time a value is present but the original Response does not
+                    // have the value then the count is zero.
+                    countIfNotPresent = 0;
+                }
             }
-        }
-        
-        if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
-            // In the case of OR our counts are always wrong.
-            responseForCounts= Optional.empty();
-            countIfNotPresent = null;
+            
+            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
+                // In the case of OR our counts are always wrong.
+                responseForCounts= Optional.empty();
+                countIfNotPresent = null;
+            }
         }
         
         return new FacetSearchData(sr, responseForCounts, countIfNotPresent);

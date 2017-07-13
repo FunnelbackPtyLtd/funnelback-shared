@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.contentauditor;
 
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithUpgradedValues;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.test.search.lifecycle.output.processors.FacetedNavigationAbstractMetadataFieldFillTestMethods;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationOutputCountThresholdMetadataFieldFillTests extends FacetedNavigationAbstractMetadataFieldFillTestMethods {
@@ -73,15 +74,15 @@ public class FacetedNavigationOutputCountThresholdMetadataFieldFillTests extends
                 )
             );
         categories.addAll(metadataFillWithThresholdDefition("O", "Location", 0, new ArrayList<>()));
-        facetDefinitions.add(getFacetWithDefaults("Location", categories));
+        facetDefinitions.add(getFacetWithUpgradedValues("Location", categories));
         
-        facetDefinitions.add(getFacetWithDefaults("Job Category",  
+        facetDefinitions.add(getFacetWithUpgradedValues("Job Category",  
             metadataFillWithThresholdDefition("W", "Job Category", 1, 
                 metadataFillWithThresholdDefition("V", "Job Category", 0, new ArrayList<>())
             )
         ));
 
-        facetDefinitions.add(getFacetWithDefaults("Type",  
+        facetDefinitions.add(getFacetWithUpgradedValues("Type",  
             metadataFillWithThresholdDefition("U", "Type", 0, new ArrayList<>())
         ));
         
