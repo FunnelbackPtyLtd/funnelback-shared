@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
@@ -21,7 +20,7 @@ public class FacetedNavigationDateTests {
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
-    private FacetedNavigation processor;
+    private BothFacetedNavigationInputProcessors processor;
     private SearchTransaction st;
 
     @Before
@@ -30,7 +29,8 @@ public class FacetedNavigationDateTests {
         question.setCollection(configRepository.getCollection("faceted-navigation-date"));
         st = new SearchTransaction(question, null);
         
-        processor = new FacetedNavigation();
+        processor = new BothFacetedNavigationInputProcessors();
+        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test

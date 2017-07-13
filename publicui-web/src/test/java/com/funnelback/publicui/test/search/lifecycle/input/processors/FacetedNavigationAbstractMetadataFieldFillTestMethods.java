@@ -17,18 +17,17 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public abstract class FacetedNavigationAbstractMetadataFieldFillTestMethods {
 
     private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
-    protected FacetedNavigation processor;
+    protected BothFacetedNavigationInputProcessors processor;
     protected SearchTransaction st;
 
     public FacetedNavigationAbstractMetadataFieldFillTestMethods() {
         super();
+        
     }
 
     @Test
-    public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
-        FacetedNavigation processor = new FacetedNavigation();
-        
         // No transaction
+    public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
         processor.processInput(null);
         
         // No question

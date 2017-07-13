@@ -23,6 +23,7 @@
         <ref bean="session" />
         <ref bean="userKeysInputProcessor" />
         <ref bean="facetScopeInputProcessor" />
+        <ref bean="legacyFacetedNavigationInputProcessor" />
         <ref bean="facetedNavigationInputProcessor" />
         <ref bean="facetedNavigationSetQueryProcessorOptionsInputProcessor" />
         <ref bean="multiFacetedNavigationInputProcessor" />

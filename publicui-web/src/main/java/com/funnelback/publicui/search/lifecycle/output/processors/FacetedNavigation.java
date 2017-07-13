@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.CategoryAndSiblings;
@@ -58,12 +59,16 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                         if (c != null) {
                             facet.getCategories().add(c);
                             cats.add(c);
-//                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())
-//                                &&) {
-//                                // This category has been selected. Stop calculating other
-//                                // values for it (FUN-4462)
-//                                break;
-//                            }
+                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())
+                                && f.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+                                // This category has been selected. Stop calculating other
+                                // values for it (FUN-4462)
+                                // We only do this in legacy mode, it is not clear if we want to do this in new modes.
+                                // we only want to do this in the drill down case.
+                                // Note that this does not work for metadata and so this legacy code here makes gscopes
+                                // and metadata inconsitent.
+                                break;
+                            }
                         }
                     }
                     
@@ -138,11 +143,16 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction);
                     if (c != null) {
                         category.getCategories().add(c);
-//                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())) {
-//                            // This category has been selected. Stop calculating other
-//                            // values for it (FUN-4462)
-//                            break;
-//                        }
+                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())
+                                && facetDefinition.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+                            // This category has been selected. Stop calculating other
+                            // values for it (FUN-4462)
+                            // We only do this in legacy mode, it is not clear if we want to do this in new modes.
+                            // we only want to do this in the drill down case.
+                            // Note that this does not work for metadata and so this legacy code here makes gscopes
+                            // and metadata inconsitent.
+                            break;
+                        }
                     }
                 }
             }

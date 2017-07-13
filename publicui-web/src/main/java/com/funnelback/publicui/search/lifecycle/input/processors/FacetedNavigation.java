@@ -72,6 +72,10 @@ public class FacetedNavigation extends AbstractInputProcessor {
                     for (final FacetSelectedDetailts facetParameter : facetParamaters) {
                         // Find corresponding facet in config
                         FacetDefinition f = facetConfigs.get(facetParameter.getFacetName());
+                        
+                        if(f != null && f.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+                            continue;
+                        }
                     
                         if (f != null) {
                             searchTransaction.getQuestion().getSelectedFacets().add(f.getName());

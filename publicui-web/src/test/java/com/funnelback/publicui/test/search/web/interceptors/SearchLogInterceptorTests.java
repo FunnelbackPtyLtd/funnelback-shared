@@ -61,12 +61,12 @@ public class SearchLogInterceptorTests {
         CategoryDefinition cDef = new MetadataFieldFill("X");
         cDef.setFacetName("Location");
         cDef.setLabel("X");
-        FacetDefinition fDef = FacetDefinition.getFacetWithDefaults("Location", Arrays.asList(new CategoryDefinition[] {cDef}));
+        FacetDefinition fDef = FacetDefinition.getFacetWithUpgradedValues("Location", Arrays.asList(new CategoryDefinition[] {cDef}));
 
         CategoryDefinition cDef2 = new MetadataFieldFill("Y");
         cDef2.setFacetName("Type");
         cDef2.setLabel("Y");
-        FacetDefinition fDef2 = FacetDefinition.getFacetWithDefaults("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));
+        FacetDefinition fDef2 = FacetDefinition.getFacetWithUpgradedValues("Type", Arrays.asList(new CategoryDefinition[] {cDef2}));
 
         FacetedNavigationConfig fnConf = new FacetedNavigationConfig(Arrays.asList(new FacetDefinition[] {fDef, fDef2}));
         st.getQuestion().getCollection().setFacetedNavigationLiveConfig(fnConf);

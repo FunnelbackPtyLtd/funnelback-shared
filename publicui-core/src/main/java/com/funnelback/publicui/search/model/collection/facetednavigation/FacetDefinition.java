@@ -68,7 +68,7 @@ public class FacetDefinition {
         public static final String DATA = "Data";
     }
     
-    public static FacetDefinition getFacetWithDefaults(String name, List<CategoryDefinition> categoryDefinitions) {
-        return new FacetDefinition(name, categoryDefinitions, FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+    public static FacetDefinition getFacetWithUpgradedValues(String name, List<CategoryDefinition> categoryDefinitions) {
+        return new FacetDefinition(name, categoryDefinitions, FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
     }
 }

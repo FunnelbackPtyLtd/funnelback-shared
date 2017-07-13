@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.common.config.NoOptionsConfig;
-import com.funnelback.publicui.search.lifecycle.input.processors.FacetedNavigation;
+import com.funnelback.common.system.EnvironmentVariableException;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -31,7 +30,7 @@ public class FacetedNavigationMetdataTypeFillTests {
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
-    private FacetedNavigation processor;
+    private BothFacetedNavigationInputProcessors processor;
     private SearchTransaction st;
     
     @Autowired
@@ -44,12 +43,12 @@ public class FacetedNavigationMetdataTypeFillTests {
         question.setCollection(configRepository.getCollection("faceted-navigation-metadatatypefill"));
         st = new SearchTransaction(question, null);
         
-        processor = new FacetedNavigation();
+        processor = new BothFacetedNavigationInputProcessors();
+        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test
     public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
-        FacetedNavigation processor = new FacetedNavigation();
         
         // No transaction
         processor.processInput(null);

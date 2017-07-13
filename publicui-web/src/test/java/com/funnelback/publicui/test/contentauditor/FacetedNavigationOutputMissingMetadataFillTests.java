@@ -1,6 +1,6 @@
 package com.funnelback.publicui.test.contentauditor;
 
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithUpgradedValues;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -64,7 +64,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         MissingMetadataFill categoryDefinition = new MissingMetadataFill();
         categoryDefinition.setFacetName("Missing Metadata");
-        facetDefinitions.add(getFacetWithDefaults("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
+        facetDefinitions.add(getFacetWithUpgradedValues("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
         
         question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig(facetDefinitions));
 

@@ -16,9 +16,6 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
-import com.funnelback.common.facetednavigation.models.FacetSelectionType;
-import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.contentauditor.CountThresholdMetadataFieldFill;
 import com.funnelback.publicui.contentauditor.MapUtil;
@@ -295,8 +292,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
     /**
@@ -309,8 +305,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
     /** Creates a URL scope based facet definition */
@@ -322,8 +317,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        FacetDefinition result = new FacetDefinition(label, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        FacetDefinition result = FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
         return result;
     }
 
@@ -337,8 +331,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
     
     private FacetDefinition createDuplicateTitlesFacetDefinition(String label, String metadataClass) {
@@ -348,8 +341,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
 
-        return new FacetDefinition(label, categoryDefinitions, 
-            FacetSelectionType.SINGLE, FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
 

@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithDefaults;
 public class UrlScopeFillTests {
 
     @Test
