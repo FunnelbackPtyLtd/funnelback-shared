@@ -120,6 +120,11 @@ public class CategoryDefinitionTests {
 
         public List<CategoryValueComputedDataHolder> computedData;
         
+        @Override
+        public List<CategoryValueComputedDataHolder> computeData(SearchTransaction st, FacetDefinition fdef) {
+            return computedData;
+        }
+        
     }
     
     @Test

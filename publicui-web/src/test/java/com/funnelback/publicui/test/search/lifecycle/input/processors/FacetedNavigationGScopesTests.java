@@ -88,7 +88,6 @@ public class FacetedNavigationGScopesTests {
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-        // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
         Assert.assertTrue("Wa want '10,16+' or '16,10+' (order is not important) yet we got: " 
                 + st.getQuestion().getFacetsGScopeConstraints(), 
                 st.getQuestion().getFacetsGScopeConstraints().equals("10,16+")

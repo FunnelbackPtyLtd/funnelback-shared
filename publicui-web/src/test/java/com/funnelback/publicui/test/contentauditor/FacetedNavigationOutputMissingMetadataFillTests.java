@@ -37,6 +37,8 @@ import com.funnelback.publicui.xml.padre.StaxStreamParser;
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationOutputMissingMetadataFillTests {
 
+    private final File searchHome = new File("src/test/resources/dummy-search_home/");
+    
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
@@ -95,7 +97,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
 
@@ -116,7 +118,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         Assert.assertEquals(4, c.getValues().size());
         
         Facet.CategoryValue cv = c.getValues().get(0);
-        Assert.assertEquals("missing", cv.getConstraint() + 0);
+        Assert.assertEquals("missing", cv.getConstraint());
         Assert.assertEquals(7, cv.getCount() + 0);
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("X", cv.getLabel());

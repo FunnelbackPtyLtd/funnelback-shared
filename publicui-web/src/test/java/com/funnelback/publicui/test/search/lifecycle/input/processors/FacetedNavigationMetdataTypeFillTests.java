@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,6 +22,8 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
+import lombok.Setter;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationMetdataTypeFillTests {
@@ -29,6 +33,10 @@ public class FacetedNavigationMetdataTypeFillTests {
     
     private FacetedNavigation processor;
     private SearchTransaction st;
+    
+    @Autowired
+    @Setter
+    protected File searchHome;
 
     @Before
     public void before() {
@@ -57,12 +65,12 @@ public class FacetedNavigationMetdataTypeFillTests {
         processor.processInput(st);
         
         // No faceted navigation config
-        question.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        question.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         st = new SearchTransaction(question, null);
         processor.processInput(st);
         
         // No QP Options
-        Collection c = new Collection("dummy", new NoOptionsConfig("dummy"));
+        Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy"));
         c.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(null));
         question.setCollection(c);
         st = new SearchTransaction(question, null);
@@ -110,10 +118,14 @@ public class FacetedNavigationMetdataTypeFillTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        
         Assert.assertTrue(
-                "|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0))
-                || "|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0)));
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ new zealand $++\""));
+            
+        Assert.assertTrue(
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\""));
+        
         
         // Multiple facets
         st.getQuestion().getRawInputParameters().clear();
@@ -136,13 +148,19 @@ public class FacetedNavigationMetdataTypeFillTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(4, st.getQuestion().getFacetsQueryConstraints().size());
+        
         Assert.assertTrue(
-                st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]")
-                || st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]"));
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ new zealand $++\""));
+            
         Assert.assertTrue(
-                st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ nsw $++\" Y:\"$++ tas $++\"]")
-                || st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ tas $++\" Y:\"$++ nsw $++\"]")); 
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\""));
+        
+        Assert.assertTrue(
+            st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ nsw $++\""));
+            
+        Assert.assertTrue(
+            st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ tas $++\""));
 
     }
     
