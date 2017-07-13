@@ -323,11 +323,6 @@ header .navbar-brand {
     margin-left: 0 !important;
 }
 
-header .nav,header li a {
-    width: 100%;
-    display: block !important;
-}
-
 /* Logo / Identity*/
 #brand {
     margin-left: 25px;
@@ -2555,6 +2550,27 @@ html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-usera
     background-position: 0 0; 
 }
 
+.navbar .dashboard-selector {
+    padding-left: 10px;
+    margin-top: 15px;
+    margin-right: 0px;
+    color: rgba(0,0,0,0);
+}
 
+.navbar .dashboard-selector .fa-bars {
+    margin-left: -4px;
+    text-align: left;
+    color: #fff;
+}
+
+.navbar .dashboard-selector .fa-dropdown-menu-icon {
+  width: 18px;
+  margin-right: 5px;
+  text-align: center;
+}
+
+.dashboard-selector .dropdown-menu li a {
+    padding: 3px 10px;
+}
 
 
