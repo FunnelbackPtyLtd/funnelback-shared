@@ -2,11 +2,13 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -148,7 +150,7 @@ public class FacetedNavigation extends AbstractInputProcessor {
     
     public Map<String, FacetDefinition> getFacetDefinitions(FacetedNavigationConfig config) {
         Map<String, FacetDefinition> facetConfigs = new HashMap<>();
-        for(FacetDefinition facet: config.getFacetDefinitions()) {
+        for(FacetDefinition facet: Optional.ofNullable(config.getFacetDefinitions()).orElse(Collections.emptyList())) {
             facetConfigs.putIfAbsent(facet.getName(), facet);
         }
         return facetConfigs;
@@ -208,13 +210,14 @@ public class FacetedNavigation extends AbstractInputProcessor {
         
             
         for(Map.Entry<String, Collection<String>> e : queryConstraintsByFacet.asMap().entrySet()) {
-            StringBuffer newConstraints = new StringBuffer();
+            
             FacetDefinition f = facetDefinitions.get(e.getKey());
             Collection<String> queryConstraint = e.getValue();
             if (queryConstraint.size() == 1) {
-                newConstraints.append("|" + queryConstraint.iterator().next());
+                out.add("|" + queryConstraint.iterator().next());
             } else if (queryConstraint.size() > 1) {
                 if(f.getConstraintJoin() == FacetConstraintJoin.OR) {
+                    StringBuffer newConstraints = new StringBuffer();
                     newConstraints.append("|[");
                     for (Iterator<String> it = queryConstraint.iterator(); it.hasNext();) {
                         newConstraints.append(it.next());
@@ -223,17 +226,14 @@ public class FacetedNavigation extends AbstractInputProcessor {
                         }
                     }
                     newConstraints.append("]");
+                    out.add(newConstraints.toString());
                 } else {
+                    // Each one of these can be a seperate constraint so lets do that.
                     for (Iterator<String> it = queryConstraint.iterator(); it.hasNext();) {
-                        newConstraints.append("|").append(it.next());
-                        if (it.hasNext()) {
-                            newConstraints.append(" ");
-                        }
+                        out.add("|" + it.next());
                     } 
                 }
             }
-            
-            out.add(newConstraints.toString());
         }
         
         

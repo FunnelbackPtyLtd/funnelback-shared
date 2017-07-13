@@ -62,11 +62,13 @@ public class FacetedNavigationDateTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
         
-        Assert.assertTrue("We are looking for \"|[d>2003 d<2004]\" or \"|[d<2004 d>2003]\" order not important", 
-            st.getQuestion().getFacetsQueryConstraints().get(0).equals("|[d>2003 d<2004]")
-            || st.getQuestion().getFacetsQueryConstraints().get(0).equals("|[d<2004 d>2003]"));
+        Assert.assertTrue("We are looking for \"|d>2003\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|d>2003"));
+        
+        Assert.assertTrue("We are looking for \"|d<2004\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|d<2004"));
 
         st.getQuestion().getRawInputParameters().clear();
         st.getQuestion().getRawInputParameters().put("f.By date on d,Z,O|d", new String[] {"d>2003"});
@@ -76,8 +78,8 @@ public class FacetedNavigationDateTests {
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
-        Assert.assertEquals("|d>2003", st.getQuestion().getFacetsQueryConstraints().get(1));
-        Assert.assertEquals("|Z>1Jan2005", st.getQuestion().getFacetsQueryConstraints().get(0));
+        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|d>2003"));
+        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Z>1Jan2005"));
 
         st.getQuestion().getRawInputParameters().clear();
         st.getQuestion().getRawInputParameters().put("f.By date on d,Z,O|d", new String[] {"d>2003", "d<2004"});
@@ -86,17 +88,21 @@ public class FacetedNavigationDateTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(4, st.getQuestion().getFacetsQueryConstraints().size());
         
-        Assert.assertTrue("We are looking for \"|[d>2003 d<2004]\" or \"|[d<2004 d>2003]\" order not important", 
-            st.getQuestion().getFacetsQueryConstraints().get(1).equals("|[d>2003 d<2004]")
-            || st.getQuestion().getFacetsQueryConstraints().get(1).equals("|[d<2004 d>2003]"));
+        
+        Assert.assertTrue("We are looking for \"|d>2003\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|d>2003"));
+        
+        Assert.assertTrue("We are looking for \"|d<2004\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|d<2004"));
+        
+        Assert.assertTrue("We are looking for \"|d>Z>1Jan2005\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z>1Jan2005"));
+        
+        Assert.assertTrue("We are looking for \"|Z<12Mar2010\"", 
+            st.getQuestion().getFacetsQueryConstraints().contains("|Z<12Mar2010"));
        
-        
-        
-        Assert.assertTrue("We are looking for \"|[Z>1Jan2005 Z<12Mar2010]\" or \"|[Z<12Mar2010 Z>1Jan2005]\" order not important",  
-            st.getQuestion().getFacetsQueryConstraints().get(0).contains("|[Z>1Jan2005 Z<12Mar2010]")
-            || st.getQuestion().getFacetsQueryConstraints().get(0).contains("|[Z<12Mar2010 Z>1Jan2005]"));
     }
     
     @Test

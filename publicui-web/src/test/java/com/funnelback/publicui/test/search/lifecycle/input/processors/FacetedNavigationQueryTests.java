@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.util.Optional;
+
 import javax.annotation.Resource;
 
 import org.junit.Assert;
@@ -91,7 +93,8 @@ public class FacetedNavigationQueryTests {
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertEquals("3,16+", st.getQuestion().getFacetsGScopeConstraints());
+        Assert.assertTrue( Optional.of(st.getQuestion().getFacetsGScopeConstraints())
+            .map(c -> c.equals("3,16+") || c.equals("16,3+")).get());
         
     }
 

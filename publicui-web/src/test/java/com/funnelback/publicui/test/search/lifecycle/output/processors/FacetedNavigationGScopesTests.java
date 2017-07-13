@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,6 +27,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
+import lombok.Setter;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationGScopesTests {
@@ -33,6 +36,10 @@ public class FacetedNavigationGScopesTests {
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
 
+    @Autowired
+    @Setter
+    protected File searchHome;
+    
     private SearchTransaction st;
     private FacetedNavigation processor;
     
@@ -72,7 +79,7 @@ public class FacetedNavigationGScopesTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
     
