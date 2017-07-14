@@ -10,11 +10,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.NotNull;
+
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -49,8 +55,29 @@ public class Facet {
      */
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
     
-    public Facet(String name) {
+    /**
+     * @since 15.14
+     */
+    @NotNull @NonNull
+    @Getter private FacetSelectionType selectionType;
+    
+    /**
+     * @since 15.14
+     */
+    @NotNull @NonNull
+    @Getter private FacetConstraintJoin constraintJoin;
+    
+    /**
+     * @since 15.14
+     */
+    @NotNull @NonNull
+    @Getter private FacetValues facetValues;
+    
+    public Facet(String name, FacetSelectionType selectionType, FacetConstraintJoin constraintJoin, FacetValues facetValues) {
         this.name = name;
+        this.selectionType = selectionType;
+        this.constraintJoin = constraintJoin;
+        this.facetValues = facetValues;
     }
     
     @Override

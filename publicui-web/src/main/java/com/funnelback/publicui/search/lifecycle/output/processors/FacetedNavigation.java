@@ -50,7 +50,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             
             if (config != null) {
                 for(FacetDefinition f: config.getFacetDefinitions()) {
-                    final Facet facet = new Facet(f.getName());
+                    final Facet facet = new Facet(f.getName(), f.getSelectionType(), f.getConstraintJoin(), f.getFacetValues());
                     
                     List<Facet.Category> cats = new ArrayList<>();
                     
