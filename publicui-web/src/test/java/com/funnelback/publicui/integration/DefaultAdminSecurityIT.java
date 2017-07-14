@@ -51,14 +51,7 @@ public class DefaultAdminSecurityIT {
         DefaultAdminSecurityIT.server.start();
     }
 
-    public static File createSearchHome() throws Exception, IOException {
-        SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
-        searchHomeConfigs.getGlobalCfgDefault().put("server_secret", DefaultAdminSecurityIT.SERVER_SECRET);
-
-        File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(DefaultAdminSecurityIT.class, searchHomeConfigs, "Normal-Admin-Server");
-        
-        DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
-
+    public static void commonPublicUISearchHomeSetup(File searchHome) throws IOException {
         File modernUiProperties = new File(searchHome, "web/conf/modernui/modernui.properties");
         modernUiProperties.getParentFile().mkdirs();
         FileUtils.write(modernUiProperties, "");
@@ -70,6 +63,16 @@ public class DefaultAdminSecurityIT {
         File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
         noCollectionFile.getParentFile().mkdirs();
         FileUtils.write(noCollectionFile, "Access granted!\n");
+    }
+
+    private static File createSearchHome() throws Exception, IOException {
+        SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
+        searchHomeConfigs.getGlobalCfgDefault().put("server_secret", DefaultAdminSecurityIT.SERVER_SECRET);
+
+        File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(DefaultAdminSecurityIT.class, searchHomeConfigs, "Normal-Admin-Server");
+        
+        DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
+        DefaultAdminSecurityIT.commonPublicUISearchHomeSetup(searchHome);
 
         // Add a service user for testing
         File realmProperties = new File(searchHome, "conf/realm.properties");
@@ -86,6 +89,7 @@ public class DefaultAdminSecurityIT {
 
         return searchHome;
     }
+
 
     @Test
     public void testNoAuth() throws Exception {
