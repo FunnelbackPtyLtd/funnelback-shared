@@ -30,6 +30,7 @@ import org.junit.rules.TestName;
 
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
+import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
@@ -64,18 +65,7 @@ public class SamlSecurityIT {
         File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(SamlSecurityIT.class, searchHomeConfigs, "SAML-Server");
         
         DefaultSecurityConfiguredJettyServer.basicSearchHomeSetupForServer(searchHome);
-
-        File modernUiProperties = new File(searchHome, "web/conf/modernui/modernui.properties");
-        modernUiProperties.getParentFile().mkdirs();
-        FileUtils.write(modernUiProperties, "");
-
-        File versionFile = new File(searchHome, "VERSION/funnelback-release");
-        versionFile.getParentFile().mkdirs();
-        FileUtils.write(versionFile, "Funnelback 9.9.9\n");
-
-        File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
-        noCollectionFile.getParentFile().mkdirs();
-        FileUtils.write(noCollectionFile, "Access granted!\n");
+        DefaultAdminSecurityIT.commonPublicUISearchHomeSetup(searchHome);
         
         return searchHome;
     }
