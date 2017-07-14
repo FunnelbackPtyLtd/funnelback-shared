@@ -9,9 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
-import org.h2.expression.Function;
-
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
