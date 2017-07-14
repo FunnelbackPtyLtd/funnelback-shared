@@ -28,7 +28,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import com.funnelback.common.system.Security;
 import com.funnelback.common.testutils.SearchHomeConfigs;
 import com.funnelback.common.testutils.SearchHomeProvider;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
@@ -36,6 +38,7 @@ import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 
 public class DefaultAdminSecurityIT {
+    private static final String SERVER_SECRET = "autotest-server-secret";
     protected static DefaultSecurityConfiguredJettyServer server;
     protected static File searchHome;
 
@@ -50,7 +53,7 @@ public class DefaultAdminSecurityIT {
 
     public static File createSearchHome() throws Exception, IOException {
         SearchHomeConfigs searchHomeConfigs = SearchHomeConfigs.getWithDefaults();
-        searchHomeConfigs.getGlobalCfgDefault().put("server_secret", "test");
+        searchHomeConfigs.getGlobalCfgDefault().put("server_secret", DefaultAdminSecurityIT.SERVER_SECRET);
 
         File searchHome = SearchHomeProvider.getNamedWritableSearchHomeForTestClass(DefaultAdminSecurityIT.class, searchHomeConfigs, "Normal-Admin-Server");
         
@@ -67,7 +70,17 @@ public class DefaultAdminSecurityIT {
         File noCollectionFile = new File(searchHome, "web/templates/modernui/no-collection.ftl");
         noCollectionFile.getParentFile().mkdirs();
         FileUtils.write(noCollectionFile, "Access granted!\n");
-        
+
+      // Add a service user for testing
+      File realmProperties = new File(searchHome, "conf/realm.properties");
+      String pw_hash = BCrypt.hashpw(Security.generateSystemPassword(com.funnelback.common.system.Security.System.ADMIN_API, DefaultAdminSecurityIT.SERVER_SECRET), BCrypt.gensalt());
+      FileUtils.write(realmProperties, Security.getServiceAccountName(com.funnelback.common.system.Security.System.ADMIN_API) + ": BCRYPT:" + pw_hash + ",_svc_admin_api,admin\n", true);
+      
+      File adminUserIni = new File(searchHome, "admin/users/admin.ini");
+      File sampleSuperUserIni = new File(searchHome, "share/sample-super-user.ini.dist");
+      sampleSuperUserIni.getParentFile().mkdirs();
+      FileUtils.copyFile(adminUserIni, sampleSuperUserIni);
+
         return searchHome;
     }
 
@@ -101,6 +114,27 @@ public class DefaultAdminSecurityIT {
     }
 
     @Test
+    public void testHttpBasicServiceUser() throws Exception {
+        CloseableHttpClient httpclient = HttpClients.custom().build();
+
+        String username = Security.getServiceAccountName(Security.System.ADMIN_API);
+        String password = Security.generateSystemPassword(Security.System.ADMIN_API, DefaultAdminSecurityIT.SERVER_SECRET);
+        
+        HttpGet get = new HttpGet(server.getBaseUrl() + "search.html");
+        get.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((username+":"+password).getBytes()));
+
+        try (CloseableHttpResponse response = httpclient.execute(get)) {
+            HttpEntity entity = response.getEntity();
+
+            String responseText = IOUtils.toString(entity.getContent());
+            EntityUtils.consume(entity);
+            
+            Assert.assertThat("Expected to reach the Funnelback collection listing page after proactive HTTP Basic authentication", responseText,
+                StringContains.containsString("Access granted!"));
+        }
+    }
+
+    @Test
     public void testInvalidHttpBasicUser() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
 
@@ -117,7 +151,7 @@ public class DefaultAdminSecurityIT {
     public void testTokenAuth() throws Exception {
         CloseableHttpClient httpclient = HttpClients.custom().build();
 
-        String token = TokenUtils.makeToken(searchHome, "test", "admin", "dummyHash");
+        String token = TokenUtils.makeToken(searchHome, DefaultAdminSecurityIT.SERVER_SECRET, "admin", "dummyHash");
         
         HttpGet get = new HttpGet(server.getBaseUrl() + "search.html");
         get.addHeader("X-Security-Token", token); // That's admin:admin
