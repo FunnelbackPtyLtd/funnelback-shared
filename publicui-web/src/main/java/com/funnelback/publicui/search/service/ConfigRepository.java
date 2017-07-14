@@ -10,6 +10,7 @@ import lombok.Getter;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 
 
@@ -34,7 +35,12 @@ public interface ConfigRepository {
      * @return A {@link Collection}
      */
     public Collection getCollection(String collectionId);
-    
+
+    /**
+     * TODO
+     */
+    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView);
+
     /**
      * @return All available collections on this repository
      */

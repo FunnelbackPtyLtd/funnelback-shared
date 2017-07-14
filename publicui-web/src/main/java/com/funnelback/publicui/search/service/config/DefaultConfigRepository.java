@@ -22,6 +22,10 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.profile.ProfileAndView;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.common.profile.ProfileView;
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
@@ -31,6 +35,10 @@ import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
@@ -39,6 +47,7 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
@@ -581,6 +590,40 @@ public class DefaultConfigRepository implements ConfigRepository {
             throw new RuntimeException("Writes are not permitted under the public UI.");
         }));
         return new DefaultServerConfigReadOnly(serverConfigData);
+    }
+
+    @Override
+    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) {
+        // TODO Obviously we'll need to cache this
+        
+        if (profileIdAndView == null || profileIdAndView.trim().isEmpty()) {
+            profileIdAndView = "_default";
+        }
+        
+        CollectionId collectionIdObj = new CollectionId(collectionId);
+        
+        String profileId = profileIdAndView;
+        ProfileView profileView = ProfileView.live;
+        if (profileIdAndView.endsWith(DefaultValues.PREVIEW_SUFFIX)) {
+            profileId = profileId.substring(0, profileId.length() - DefaultValues.PREVIEW_SUFFIX.length());
+            profileView = ProfileView.preview;
+        }
+
+        ProfileAndView profileAndView = new ProfileAndView(new ProfileId(profileId), profileView);
+        
+        FileProfileConfigData data;
+        try {
+            data = new FileProfileConfigData(searchHome, 
+                collectionIdObj,
+                profileAndView.getProfileId(),
+                profileAndView.getProfileView(),
+                (f, c) -> c.run());
+            ServiceConfig serviceConfig = new DefaultServiceConfig(data, new NoConfigEnvironment());
+
+            return serviceConfig;
+        } catch (ProfileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }

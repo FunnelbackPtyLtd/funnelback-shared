@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.web.interceptors;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,9 +16,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
+import com.funnelback.common.profile.ProfileAndView;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileView;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.data.file.profile.FileProfileConfigData;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -38,11 +50,19 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     private final static Pattern OLD_IP_PATTERN = Pattern.compile("^[\\d\\.]+$");
     
     
+    @Autowired
+    private File searchHome;
+
     /**
      * Pattern to match collection id in the query string
      */
     private final static Pattern QUERY_STRING_COLLECTION_PATTERN = Pattern.compile(".*collection=([^&$]*)?.*");
-    
+
+    /**
+     * Pattern to match the profile ID and view in the query string
+     */
+    private final static Pattern QUERY_STRING_PROFILE_AND_VIEW_PATTERN = Pattern.compile(".*profile=([^&$]*)?.*");
+
     @Autowired
     private ConfigRepository configRepository;
     
@@ -60,12 +80,35 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getParameter(RequestParameters.COLLECTION) != null
+            && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
+
+            if (request.getParameter(RequestParameters.PROFILE) != null
+                //&& ProfileId.isValidname(request.getParameter(RequestParameters.PROFILE))
+                ) {
+
+            }
+        }
+        
+        if (request.getParameter(RequestParameters.COLLECTION) != null
                 && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
+
+            ServiceConfig serviceConfig = configRepository.getServiceConfig(request.getParameter(RequestParameters.COLLECTION), request.getParameter(RequestParameters.PROFILE));
+            
+            String accessRestriction = serviceConfig.get(new ProfileAndCollectionConfigOption<String>(
+                Keys.ACCESS_RESTRICTION,
+                Marshallers.STRING_MARSHALLER,
+                Validators.acceptAll(),
+                ""
+                ));
+            
+            System.out.println("access_restriction="+accessRestriction);
+
+            
             Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
             if (c != null) {
                 if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
-                    String accessRestriction = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
-                    log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
+                    String accessRestriction2 = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
+                    log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction2 + "' for collection '" + c.getId() + "'");
                     if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
                         log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
                         return true;
