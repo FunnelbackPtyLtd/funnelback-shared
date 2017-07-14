@@ -71,15 +71,18 @@ public class DefaultAdminSecurityIT {
         noCollectionFile.getParentFile().mkdirs();
         FileUtils.write(noCollectionFile, "Access granted!\n");
 
-      // Add a service user for testing
-      File realmProperties = new File(searchHome, "conf/realm.properties");
-      String pw_hash = BCrypt.hashpw(Security.generateSystemPassword(com.funnelback.common.system.Security.System.ADMIN_API, DefaultAdminSecurityIT.SERVER_SECRET), BCrypt.gensalt());
-      FileUtils.write(realmProperties, Security.getServiceAccountName(com.funnelback.common.system.Security.System.ADMIN_API) + ": BCRYPT:" + pw_hash + ",_svc_admin_api,admin\n", true);
-      
-      File adminUserIni = new File(searchHome, "admin/users/admin.ini");
-      File sampleSuperUserIni = new File(searchHome, "share/sample-super-user.ini.dist");
-      sampleSuperUserIni.getParentFile().mkdirs();
-      FileUtils.copyFile(adminUserIni, sampleSuperUserIni);
+        // Add a service user for testing
+        File realmProperties = new File(searchHome, "conf/realm.properties");
+        String pw_hash = BCrypt.hashpw(
+            Security.generateSystemPassword(com.funnelback.common.system.Security.System.ADMIN_API, DefaultAdminSecurityIT.SERVER_SECRET),
+            BCrypt.gensalt());
+        FileUtils.write(realmProperties, Security.getServiceAccountName(com.funnelback.common.system.Security.System.ADMIN_API)
+            + ": BCRYPT:" + pw_hash + ",_svc_admin_api,admin\n", true);
+
+        File adminUserIni = new File(searchHome, "admin/users/admin.ini");
+        File sampleSuperUserIni = new File(searchHome, "share/sample-super-user.ini.dist");
+        sampleSuperUserIni.getParentFile().mkdirs();
+        FileUtils.copyFile(adminUserIni, sampleSuperUserIni);
 
         return searchHome;
     }
