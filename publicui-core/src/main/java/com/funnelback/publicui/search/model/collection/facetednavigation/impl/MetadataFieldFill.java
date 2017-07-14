@@ -48,12 +48,15 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
                 continue; // Skip the 'documents with none of this metadata' count
             }
             
-            Integer count = facetData.getResponseForCounts().map(SearchResponse::getResultPacket)
+            MetadataAndValue mdv = parseMetadata(item);
+            
+            Integer count = facetData.getResponseForCounts().apply(this, mdv.value)
+                    .map(SearchResponse::getResultPacket)
                     .map(ResultPacket::getRmcs)
                     .map(rmcs -> rmcs.get(entry.getKey()))
-                    .orElse(facetData.getCountIfNotPresent());
+                    .orElse(facetData.getCountIfNotPresent().apply(this, mdv.value));
             
-            MetadataAndValue mdv = parseMetadata(item);
+            
             if (this.data.equals(mdv.metadata)) {
                 String queryStringParamValue = mdv.value;
                 categories.add(new CategoryValueComputedDataHolder(

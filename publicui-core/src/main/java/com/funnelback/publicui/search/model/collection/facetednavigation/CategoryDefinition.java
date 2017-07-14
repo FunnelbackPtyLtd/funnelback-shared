@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.ivy.core.module.descriptor.ExtendsDescriptor;
+import org.h2.expression.Function;
+
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
@@ -185,11 +188,12 @@ public abstract class CategoryDefinition {
     protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
         
         // Usually the response for counts would be the one from the normal search.
-        Optional<SearchResponse> responseForCounts = Optional.of(st.getResponse());
+        SearchResonseForCountSupplier responseForCounts = (c, v) -> Optional.of(st.getResponse());
         
         SearchResponse sr = st.getResponse();
         
-        Integer countIfNotPresent = null;
+        CountSupplier countIfNotPresent = (c,v) -> null;
+        
         // legacy does not work with unscoped values
         if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
@@ -200,17 +204,28 @@ public abstract class CategoryDefinition {
                 if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
                     // In the case that the constraints are ANDed then the constraints come
                     // from the original Response 
-                    responseForCounts = Optional.of(st.getResponse());
+                    responseForCounts = (c, v) -> Optional.of(st.getResponse());
                     // In the ANDed case any time a value is present but the original Response does not
                     // have the value then the count is zero.
-                    countIfNotPresent = 0;
+                    countIfNotPresent = (c,v) -> 0;
                 }
             }
             
             if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
-                // In the case of OR our counts are always wrong.
-                responseForCounts= Optional.empty();
-                countIfNotPresent = null;
+                
+                // In the case of OR we might have a extra search that tells us the counts.
+                responseForCounts = (c,v) -> Optional.empty();
+                
+                countIfNotPresent = (catDef, value) -> {
+                    String extraSearchName = new ExtraSearchNames().getExtraSearchName(facetDefinition, catDef, value);
+                    System.out.println("Looking for: " + extraSearchName);
+                    return Optional.ofNullable(st.getExtraSearches().get(extraSearchName))
+                        .map(SearchTransaction::getResponse)
+                        .map(r -> r.getResultPacket())
+                        .map(r -> r.getResultsSummary())
+                        .map(r -> r.getTotalMatching())
+                        .orElse(null); // Totally matching?
+                };
             }
         }
         
@@ -220,9 +235,18 @@ public abstract class CategoryDefinition {
     @AllArgsConstructor
     public static class FacetSearchData {
         @Getter SearchResponse responseForValues;
-        @Getter Optional<SearchResponse> responseForCounts;
+        
+        @Getter SearchResonseForCountSupplier responseForCounts;
 
-        @Getter Integer countIfNotPresent; 
+        @Getter CountSupplier countIfNotPresent; 
+    }
+    
+    public static interface SearchResonseForCountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Optional<SearchResponse>> {
+        
+    }
+    
+    public static interface CountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Integer> {
+        
     }
 
     /**

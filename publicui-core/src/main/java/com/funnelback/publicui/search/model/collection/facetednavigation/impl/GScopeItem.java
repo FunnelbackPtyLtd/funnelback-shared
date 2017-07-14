@@ -14,6 +14,7 @@ import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
@@ -50,11 +51,16 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
         
         if (facetData.getResponseForValues().getResultPacket().getGScopeCounts().get(userSetGScope) != null) {
             String queryStringParamValue = data;
-            Integer count = facetData.getResponseForCounts()
+            if(st.getQuestion().getQuestionType() == SearchQuestionType.SEARCH) {
+                System.out.println("Finally at mains search");
+            }
+            
+            Integer count = facetData.getResponseForCounts().apply(this, Integer.toString(userSetGScope))
                     .map(SearchResponse::getResultPacket)
                     .map(ResultPacket::getGScopeCounts)
                     .map(gscopeCounts -> gscopeCounts.get(userSetGScope))
-                    .orElse(facetData.getCountIfNotPresent());
+                    .orElse(facetData.getCountIfNotPresent().apply(this, Integer.toString(userSetGScope)));
+            
             categories.add(new CategoryValueComputedDataHolder(
                     Integer.toString(userSetGScope),
                     data,

@@ -15,8 +15,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
     @Override
     public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
         throws InputProcessorException {
-        SearchQuestion out = new SearchQuestion();
-        SearchQuestionBinder.bind(originalQuestion, out);
+        SearchQuestion out = buildBasicExtraFacetSearch(originalQuestion);
         
         // Remove faceted navigation parameters
         MapKeyFilter filter = new MapKeyFilter(originalQuestion.getRawInputParameters());
@@ -34,5 +33,12 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
         
         return out;
     }
+    
+    public SearchQuestion buildBasicExtraFacetSearch(SearchQuestion originalQuestion) {
+        SearchQuestion out = new SearchQuestion();
+        SearchQuestionBinder.bind(originalQuestion, out);
+        return out;
+    }
+    
 
 }

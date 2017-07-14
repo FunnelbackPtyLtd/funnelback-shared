@@ -86,6 +86,7 @@ public class SearchTransaction {
     @XStreamOmitField
     private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
     
+    //TODO remove
     public Map<String, SearchQuestion> getExtraSearchesQuestions() {
         return extraSearchesQuestions;
     }
