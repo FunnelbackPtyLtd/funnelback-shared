@@ -5,6 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
@@ -54,7 +57,8 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("2", "2", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()),
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -80,7 +84,8 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("221", "221", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()),
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -105,7 +110,9 @@ public class PopulateFacetCategoryLabelsTest {
             c.getValues().add(new CategoryValue(WCAG20Technique.ARIA1.name(), WCAG20Technique.ARIA1.name(), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingTechniques().getName()));
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingTechniques().getName()),
+                FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+            
             f.getCategories().add(c);
             transaction.getResponse().getFacets().add(f);
             
@@ -133,7 +140,8 @@ public class PopulateFacetCategoryLabelsTest {
                 techniquesAffectedBy.toIndexForm(by), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()),
+                FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
             f.getCategories().add(c);
             transaction.getResponse().getFacets().clear();
             transaction.getResponse().getFacets().add(f);

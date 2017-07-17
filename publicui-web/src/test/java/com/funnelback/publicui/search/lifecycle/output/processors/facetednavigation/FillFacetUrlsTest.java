@@ -5,6 +5,9 @@ import static java.util.Arrays.asList;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -21,7 +24,9 @@ public class FillFacetUrlsTest {
             "facetScope", asList("f.author%7Cbar=foo"),
             "start_rank", asList("12")));
         
-        Facet facet = new Facet("author");
+        Facet facet = new Facet("author", FacetSelectionType.SINGLE,
+            FacetConstraintJoin.LEGACY,
+            FacetValues.FROM_SCOPED_QUERY);
         
         new FillFacetUrls().setUnselectAllUrl(facet, st);
         

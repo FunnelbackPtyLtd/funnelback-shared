@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.metadata.MetdataValueMappers.TechniquesAffectedBy;
 import com.funnelback.publicui.accessibilityauditor.lifecycle.output.processors.SortFacetValues.AffectedByComparator;
@@ -64,7 +67,8 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue("AA", "AA", 123, null, null, false));
         c.getValues().add(new CategoryValue("A", "A", 100, null, null, false));
         c.getValues().add(new CategoryValue("AAA", "AAA", 80, null, null, false));
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.explicitFailedLevels().getName()));
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.explicitFailedLevels().getName()),
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
@@ -74,7 +78,8 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue("1", "1", 100, null, null, false));
         c.getValues().add(new CategoryValue("4", "4", 80, null, null, false));
         c.getValues().add(new CategoryValue("2", "2", 80, null, null, false));
-        f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()));
+        f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()),
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
@@ -85,7 +90,8 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.SUSPECTED_FAILURE), "", 100, null, null, false));
         c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.FAILED), "", 80, null, null, false));
         c.getValues().add(new CategoryValue(techniquesAffectedBy.toIndexForm(AffectedBy.NONE), "", 80, null, null, false));
-        f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
+        f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()),
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
@@ -94,7 +100,8 @@ public class SortFacetValuesTest {
         c.getValues().add(new CategoryValue("v2", "v2", 123, null, null, false));
         c.getValues().add(new CategoryValue("v3", "v3", 100, null, null, false));
         c.getValues().add(new CategoryValue("v1", "v1", 80, null, null, false));
-        f = new Facet("OtherFacet");
+        f = new Facet("OtherFacet",
+            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(c);
         sr.getFacets().add(f);
 
