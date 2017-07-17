@@ -374,8 +374,8 @@ public class Facet {
                 }
                 
                 return direction * 
-                    (Optional.of(c1.getCount()).orElse(Integer.MIN_VALUE) - 
-                        Optional.of(c2.getCount()).orElse(Integer.MIN_VALUE));
+                    (Optional.ofNullable(c1.getCount()).orElse(Integer.MIN_VALUE) - 
+                        Optional.ofNullable(c2.getCount()).orElse(Integer.MIN_VALUE));
             }
            
         }
