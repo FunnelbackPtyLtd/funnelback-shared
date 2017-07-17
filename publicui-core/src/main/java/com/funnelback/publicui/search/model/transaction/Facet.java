@@ -368,12 +368,16 @@ public class Facet {
             
             @Override
             public int compare(CategoryValue c1, CategoryValue c2) {
+                int direction = 1;
                 if (reverse) {
-                    return c2.getCount() - c1.getCount();
-                } else {
-                    return c1.getCount() - c2.getCount();
+                    direction = -1;
                 }
+                
+                return direction * 
+                    (Optional.of(c1.getCount()).orElse(Integer.MIN_VALUE) - 
+                        Optional.of(c2.getCount()).orElse(Integer.MIN_VALUE));
             }
+           
         }
     }
 }
