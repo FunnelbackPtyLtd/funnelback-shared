@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.web.views.freemarker;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,12 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -54,6 +61,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
                 url.lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 
         Config config = null;
+        ServiceConfigReadOnly serviceConfig = null;
         String settingPrefix = null;
         
         if (model.containsKey(SearchController.ModelAttributes.question.toString())) {
@@ -61,6 +69,7 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
             SearchQuestion q = (SearchQuestion) model.get(SearchController.ModelAttributes.question.toString());
             if (q.getCollection() != null && q.getCollection().getConfiguration() != null) {
                 config = q.getCollection().getConfiguration();
+                serviceConfig = q.getCurrentProfile().getServiceConfig();
                 settingPrefix = Keys.ModernUI.FORM_PREFIX;
             }
         } else if (model.containsKey(RequestParameters.COLLECTION)
@@ -80,9 +89,10 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
         }
         
         if (config != null && settingPrefix != null) {
-            
             setCustomHeaders(settingPrefix, name, config, response);
-            setCustomContentType(settingPrefix, name, config, response);
+        }
+        if (serviceConfig != null && settingPrefix != null) {
+            setCustomContentType(settingPrefix, name, serviceConfig, response);
         }
     }
     
@@ -113,21 +123,17 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
     
     /**
      * Sets a custom content type, if configured in the collection's configuration
-     * @param settingPrefix Prefix to use to read the setting in collection.cfg
+     * @param settingPrefix Prefix to use to read the setting in profile/collection.cfg
      * @param tplName Name of the current form, without extension.
      * @param config Collection configuration.
      * @param response
      */
-    private void setCustomContentType(String settingPrefix, String tplName, Config config, HttpServletResponse response) {
-        // Search for a custom content type
-        String propertyPrefix = settingPrefix + "." + tplName;
-        if (config.hasValue(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)) {
-            // setContentType(config.value(propertyPrefix+".content_type"));
-            response.setContentType(config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX));
-            log.debug("Set custom Content Type '"
-                    + config.value(propertyPrefix+"."+Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX)
-                    + "' for form '"+tplName+"'");
-        }
-
+    private void setCustomContentType(String settingPrefix, String tplName, ServiceConfigReadOnly serviceConfig, HttpServletResponse response) {
+        Optional<String> customContentType = serviceConfig.get(FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(tplName));
+        
+        customContentType.ifPresent((contentType) -> {
+            response.setContentType(contentType);
+            log.debug("Set custom Content Type '" + contentType + "' for form '"+tplName+"'");            
+        });
     }
 }

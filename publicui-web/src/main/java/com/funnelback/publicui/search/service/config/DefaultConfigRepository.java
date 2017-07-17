@@ -265,7 +265,8 @@ public class DefaultConfigRepository implements ConfigRepository {
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
-
+            
+            p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
             
             CuratorConfig config = new CuratorConfig();  // Empty default curator config
             
@@ -325,8 +326,12 @@ public class DefaultConfigRepository implements ConfigRepository {
         return configDir.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                // Only directories that doesn't starts with a dot (.svn ...)
-                return pathname.isDirectory() && !pathname.getName().startsWith(".");
+                // Only directories that don't starts with:
+                // - a dot (.svn ...)
+                // - an at-symbol (@groovy ...)
+                return pathname.isDirectory() && 
+                    !pathname.getName().startsWith(".") && 
+                    !pathname.getName().startsWith("@");
             }
         });
     }

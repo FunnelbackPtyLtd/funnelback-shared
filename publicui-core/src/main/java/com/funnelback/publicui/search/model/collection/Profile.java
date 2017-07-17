@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.collection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -49,6 +50,8 @@ public class Profile {
     @XStreamOmitField
     @Getter @Setter private CuratorConfig curatorConfig = new CuratorConfig();
 
+    @Getter @Setter private ServiceConfigReadOnly serviceConfig;
+
     /**
      * <p>Specific query processor options for this profile.</p>
      * 
@@ -70,7 +73,8 @@ public class Profile {
             .id(getId())
             .facetedNavConfConfig(getFacetedNavConfConfig())
             .curatorConfig(getCuratorConfig())
-            .padreOpts(getPadreOpts());
+            .padreOpts(getPadreOpts())
+            .serviceConfig(getServiceConfig());
     }
     
 }

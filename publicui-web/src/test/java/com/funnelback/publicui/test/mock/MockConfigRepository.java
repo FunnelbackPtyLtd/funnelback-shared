@@ -16,6 +16,7 @@ import org.junit.Assume;
 
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
@@ -122,6 +123,11 @@ public class MockConfigRepository implements ConfigRepository {
     @Override
     public File getXslTemplate(String collectionId, String profileId) {
         return xslTemplate;
+    }
+
+    @Override
+    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) {
+        throw new UnsupportedOperationException("Sorry, not yet implemented!");
     }
     
 }

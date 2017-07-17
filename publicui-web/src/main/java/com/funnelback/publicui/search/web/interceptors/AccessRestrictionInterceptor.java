@@ -26,6 +26,7 @@ import com.funnelback.common.profile.ProfileView;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.marshallers.Marshallers;
@@ -92,7 +93,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
         if (request.getParameter(RequestParameters.COLLECTION) != null
                 && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
 
-            ServiceConfig serviceConfig = configRepository.getServiceConfig(request.getParameter(RequestParameters.COLLECTION), request.getParameter(RequestParameters.PROFILE));
+            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(request.getParameter(RequestParameters.COLLECTION), request.getParameter(RequestParameters.PROFILE));
             
             String accessRestriction = serviceConfig.get(new ProfileAndCollectionConfigOption<String>(
                 Keys.ACCESS_RESTRICTION,

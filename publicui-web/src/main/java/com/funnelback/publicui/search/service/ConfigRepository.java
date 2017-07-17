@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import lombok.Getter;
-
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
+
+import lombok.Getter;
 
 
 /**
@@ -37,9 +38,11 @@ public interface ConfigRepository {
     public Collection getCollection(String collectionId);
 
     /**
-     * TODO
+     * @param collectionId ID of the collection (technical name)
+     * @param profileIdAndView ID of the profile (with optional '_preview' suffix for preview view)
+     * @return A {@link ServiceConfigReadOnly} for the given service
      */
-    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView);
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView);
 
     /**
      * @return All available collections on this repository
@@ -101,5 +104,4 @@ public interface ConfigRepository {
     public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
     
     public ServerConfigReadOnly getServerConfig();
-
 }

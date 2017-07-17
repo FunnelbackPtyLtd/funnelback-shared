@@ -71,13 +71,21 @@ public class SearchQuestion {
      * Searched {@link Collection}.
      */
     @Getter @Setter private Collection collection;
-    
+
     /**
      * Search {@link Profile}, defaulting to "_default"
      */
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
     @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
+
+    // TODO - This seems a dodgy way to achieve this
+    // but it's sort of unclear to me what the 'right'
+    // way is - I can't see a good way to set it with
+    // SpringMVC data binding
+    public Profile getCurrentProfile() {
+        return collection.getProfiles().get(profile);
+    }
     
     /**
      * Specific component of a meta-collection to query
