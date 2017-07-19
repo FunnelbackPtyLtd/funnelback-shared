@@ -67,7 +67,8 @@ public class FillCategoryValueUrlsTest {
         st.getQuestion().setQueryStringMap(ImmutableMap.of(
             "a", asList("b"), 
             "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:foobar"),
-            "fac|a", asList("a:foo", "a:bar")));
+            "fac|a", asList("a:foo", "a:bar"),
+            "start_rank", asList("12")));
         
         CategoryValue catVal = mock(CategoryValue.class);
         when(catVal.getQueryStringParamName()).thenReturn("fac|a");
@@ -83,6 +84,9 @@ public class FillCategoryValueUrlsTest {
             + " one should be selected.", 1, result.get("fac|a").size());
         Assert.assertEquals("We should have selected the plop value",
             "plop", result.get("fac|a").get(0));
+        
+        Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
+            result.containsKey("start_rank"));
     }
     
     @Test
@@ -91,7 +95,8 @@ public class FillCategoryValueUrlsTest {
         st.getQuestion().setQueryStringMap(ImmutableMap.of(
             "a", asList("b"),
             "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:bar&fac%7Ca=foo"),
-            "fac|a", asList("a:foo", "a:bar")));
+            "fac|a", asList("a:foo", "a:bar"),
+            "start_rank", asList("12")));
         // When we unselect this facet we only unselect where both key and value match
         // this is probbaly going to work with multi select facets.
         
@@ -121,6 +126,9 @@ public class FillCategoryValueUrlsTest {
         
         Assert.assertEquals("We should have unset this facet category value's key and value", 
             1, result.get("fac|a").size());
+        
+        Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
+            result.containsKey("start_rank"));
     }
     
     

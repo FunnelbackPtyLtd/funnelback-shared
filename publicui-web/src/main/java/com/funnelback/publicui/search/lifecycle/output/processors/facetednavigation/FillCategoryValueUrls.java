@@ -13,8 +13,11 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
+import com.google.common.collect.ImmutableList;
 
 public class FillCategoryValueUrls {
+    
+    
 
     /**
      * Adds the select, unselect and toggle URL to the given category.
@@ -48,6 +51,9 @@ public class FillCategoryValueUrls {
         // we want when in "Multiple value mode"
         FacetedNavigationUtils.removeQueryStringFacetKey(selectUrlQs, categoryValue.getQueryStringParamName());
         selectUrlQs.put(categoryValue.getQueryStringParamName(), asList(categoryValue.getQueryStringParamValue()));
+        
+        new FillFacetUrls().removeParameters(selectUrlQs);
+        
         return selectUrlQs;
     }
     
@@ -72,6 +78,8 @@ public class FillCategoryValueUrls {
             .map(value -> value.getQueryStringParamName())
             // Remove all children.
             .forEach(queryStringParamName -> FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
+        
+        new FillFacetUrls().removeParameters(unselectUrlQs);
         
         return unselectUrlQs;
     }
