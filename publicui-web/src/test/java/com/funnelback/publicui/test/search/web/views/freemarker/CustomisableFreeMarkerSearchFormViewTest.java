@@ -1,36 +1,51 @@
 package com.funnelback.publicui.test.search.web.views.freemarker;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.controllers.SearchController;
 import com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView;
+import com.google.common.collect.Maps;
 
 public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMarkerFormView {
 
     private Map<String, Object> model;
-    private Config config;
     private MockHttpServletResponse response;
+    private ServiceConfig serviceConfig;
     
     @Before
     public void before() throws Exception {
+        File searchHome = new File("src/test/resources/dummy-search_home");
         model = new HashMap<String, Object>();
         
-        config = new NoOptionsConfig("dummy");
-        SearchQuestion sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", config));
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         
-        model.put(SearchController.ModelAttributes.question.toString(), sq);
+        SearchQuestion mockSearchQuestion = Mockito.mock(SearchQuestion.class);
+        Mockito.when(mockSearchQuestion.getFrontendConfig()).thenReturn(serviceConfig);
+        
+        model.put("question", mockSearchQuestion);
         
         response = new MockHttpServletResponse();
         response.setContentType("text/html");
@@ -39,7 +54,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     @Test
     public void testNothingToDo() {
         // No custom content type or header
-        customiseOutput("conf/dummy/_default/simple.ftl", model, response);
+        customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
         
         Assert.assertEquals("text/html", response.getContentType());
         Assert.assertEquals(1, response.getHeaderNames().size());
@@ -48,7 +63,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomContentType() {
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX, "test/junit");
+        serviceConfig.set(FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm("simple"), Optional.of("test/junit"));
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
 
         Assert.assertEquals("test/junit", response.getContentType());
@@ -58,11 +73,10 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomHeaders() {
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "2");
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "First-Header: Value 1   ");
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".2", "Second-Header     :second value...");
-        // The third one should be ignored
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".3", "Third-Header: value 3");
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "First-Header: Value 1   ");
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.2", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "Second-Header     :second value...");
         
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
 
@@ -75,8 +89,8 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
     
     @Test
     public void testCustomHeaderColon() {
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "1");
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "Access-Control-Allow-Origin: http://server.com/");
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.99", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "Access-Control-Allow-Origin: http://server.com/");
         
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
 
@@ -87,9 +101,9 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
 
     @Test
     public void testBoth() {
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX, "text/csv");
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "1");
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "Content-Disposition: attachment");
+        serviceConfig.set(FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm("simple"), Optional.of("text/csv"));
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "Content-Disposition: attachment");
 
         customiseOutput("conf/dummy/_default/simple.ftl", model, response);
 

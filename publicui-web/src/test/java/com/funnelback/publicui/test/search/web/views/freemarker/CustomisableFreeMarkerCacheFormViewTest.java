@@ -2,6 +2,7 @@ package com.funnelback.publicui.test.search.web.views.freemarker;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,22 +12,40 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.views.freemarker.CustomisableFreeMarkerFormView;
+import com.google.common.collect.Maps;
 
 public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMarkerFormView {
 
+    private static final String PROFILE_NAME = "profileName";
     private Map<String, Object> model;
-    private Config config;
+    private ServiceConfig serviceConfig;
     private MockHttpServletResponse response;
     
     @Before
     public void before() throws Exception {
         model = new HashMap<String, Object>();
-        config  =new NoOptionsConfig("dummy");
         
-        model.put(RequestParameters.COLLECTION, new Collection("dummy", config));
+        serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        
+        Profile p = new Profile();
+        p.setServiceConfig(serviceConfig);
+        
+        Collection c = new Collection("dummy", null);
+        c.getProfiles().put(PROFILE_NAME, p);
+        model.put(RequestParameters.COLLECTION, c);
+        model.put(RequestParameters.PROFILE, PROFILE_NAME);
         
         response = new MockHttpServletResponse();
         response.setContentType("text/html");
@@ -44,7 +63,7 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
     
     @Test
     public void testCustomContentType() {
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX, "test/junit");
+        serviceConfig.set(FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm("simple"), Optional.of("test/junit"));
         customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 
         Assert.assertEquals("test/junit", response.getContentType());
@@ -54,11 +73,10 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
     
     @Test
     public void testCustomHeaders() {
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "2");
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "First-Header: Value 1   ");
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".2", "Second-Header     :second value...");
-        // The third one should be ignored
-        config.setValue(Keys.ModernUI.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".3", "Third-Header: value 3");
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.cache.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "First-Header: Value 1   ");
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.cache.form.simple.headers.2", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "Second-Header     :second value...");
         
         customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 
@@ -71,9 +89,9 @@ public class CustomisableFreeMarkerCacheFormViewTest extends CustomisableFreeMar
 
     @Test
     public void testBoth() {
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.FORM_CONTENT_TYPE_SUFFIX, "text/csv");
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_COUNT_SUFFIX, "1");
-        config.setValue(Keys.ModernUI.Cache.FORM_PREFIX + ".simple." + Keys.ModernUI.HEADERS_SUFFIX + ".1", "Content-Disposition: attachment");
+        serviceConfig.set(FrontEndKeys.UI.Modern.Cache.getCustomContentTypeOptionForForm("simple"), Optional.of("text/csv"));
+        serviceConfig.set(new ProfileAndCollectionConfigOption<String>("ui.modern.cache.form.simple.headers.1", Marshallers.STRING_MARSHALLER,
+            Validators.acceptAll(), ""), "Content-Disposition: attachment");
 
         customiseOutput("conf/dummy/_default/simple.cache.ftl", model, response);
 

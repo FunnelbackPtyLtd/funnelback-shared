@@ -2,6 +2,7 @@ package com.funnelback.publicui.search.web.interceptors;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +30,7 @@ import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.file.profile.FileProfileConfigData;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.marshallers.Marshallers;
 import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.i18n.I18n;
@@ -81,75 +83,58 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getParameter(RequestParameters.COLLECTION) != null
-            && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
-
-            if (request.getParameter(RequestParameters.PROFILE) != null
-                //&& ProfileId.isValidname(request.getParameter(RequestParameters.PROFILE))
-                ) {
-
-            }
-        }
-        
-        if (request.getParameter(RequestParameters.COLLECTION) != null
                 && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
 
-            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(request.getParameter(RequestParameters.COLLECTION), request.getParameter(RequestParameters.PROFILE));
+            String collectionId = request.getParameter(RequestParameters.COLLECTION);
+            String frontendId = request.getParameter(RequestParameters.PROFILE);
             
-            String accessRestriction = serviceConfig.get(new ProfileAndCollectionConfigOption<String>(
-                Keys.ACCESS_RESTRICTION,
-                Marshallers.STRING_MARSHALLER,
-                Validators.acceptAll(),
-                ""
-                ));
+            if (frontendId == null || frontendId.trim().isEmpty()) {
+                frontendId = DefaultValues.DEFAULT_PROFILE;
+            }
             
-            System.out.println("access_restriction="+accessRestriction);
-
+            // Will throw a ProfileNotFound exception if given invalid data - Seems a fair way to abort
+            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(collectionId, frontendId);
             
-            Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-            if (c != null) {
-                if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
-                    String accessRestriction2 = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
-                    log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction2 + "' for collection '" + c.getId() + "'");
-                    if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
-                        log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
-                        return true;
-                    } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
-                        log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + ". Denying access");
-                        denyAccess(request, response, c);
-                        return false;
-                    } else {
-                        String ip = getConnectingIp(request, c);
-                        String hostName = request.getRemoteHost();
-                        
-                        String[] authorized = StringUtils.split(accessRestriction, ",");
-                        for (String range : authorized) {
-                            if (NetUtils.isCIDR(range)) {
-                                if (NetUtils.isIPv4AddressinCIDR(ip, range)){
-                                    return true;
-                                }
-                            }else if (OLD_IP_PATTERN.matcher(range).matches()) {
-                                //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
-                                //unsupported format
-                                denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
-                                        " in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
-                                return false;
-                            } else {
-                                // It's a hostname
-                                if (hostName.matches("^.*" + range + "$")) {
-                                    log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-                                    return true;
-                                }
+            if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {
+                String accessRestriction = serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).get();
+                log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + collectionId + ":" + frontendId + "'");
+                if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
+                    log.debug("Access restriction explicitely disabled. Granting access to " + collectionId + ":" + frontendId);
+                    return true;
+                } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
+                    log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + "for " + collectionId + ":" + frontendId + ". Denying access");
+                    denyAccess(request, response, serviceConfig, collectionId + ":" + frontendId);
+                    return false;
+                } else {
+                    String ip = getConnectingIp(request, serviceConfig);
+                    String hostName = request.getRemoteHost();
+                    
+                    String[] authorized = StringUtils.split(accessRestriction, ",");
+                    for (String range : authorized) {
+                        if (NetUtils.isCIDR(range)) {
+                            if (NetUtils.isIPv4AddressinCIDR(ip, range)){
+                                return true;
+                            }
+                        }else if (OLD_IP_PATTERN.matcher(range).matches()) {
+                            //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
+                            //unsupported format
+                            denyAccess(request, response, serviceConfig, collectionId + ":" + frontendId, Keys.ACCESS_RESTRICTION + 
+                                    " in " + collectionId + ":" + frontendId + " is misconfigured, IP ranges must be in CIDR format");
+                            return false;
+                        } else {
+                            // It's a hostname
+                            if (hostName.matches("^.*" + range + "$")) {
+                                log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + collectionId + ":" + frontendId + "'");
+                                return true;
                             }
                         }
-                        log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
-                        denyAccess(request, response, c);
-                        return false;
                     }
-                } else {
-                    log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for collection '" + c.getId() + "'");
+                    log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + collectionId + ":" + frontendId + "'");
+                    denyAccess(request, response, serviceConfig, collectionId + ":" + frontendId);
+                    return false;
                 }
             } else {
-                log.debug("Invalid collection id '" + request.getParameter(RequestParameters.COLLECTION) + "'");
+                log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for " + collectionId + ":" + frontendId + "'");
             }
         }
         return true;
@@ -163,15 +148,15 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
      * @param message Message to be displayed.
      * @throws IOException
      */
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection, String message) throws IOException {
-        if (collection.getConfiguration().hasValue(Keys.ACCESS_ALTERNATE)) {
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String frontendLogContent, String message) throws IOException {
+        if (serviceConfig.get(FrontEndKeys.ACCESS_ALTERNATE).isPresent()) {
             StringBuffer out = new StringBuffer(request.getContextPath()).append(request.getPathInfo());
             
             Matcher m = QUERY_STRING_COLLECTION_PATTERN.matcher(request.getQueryString());
             if (m.find()) {
                 out.append("?")
                     .append(request.getQueryString().substring(0, m.start(1)))
-                    .append(collection.getConfiguration().value(Keys.ACCESS_ALTERNATE))
+                    .append(serviceConfig.get(FrontEndKeys.ACCESS_ALTERNATE).get())
                     .append(request.getQueryString().substring(m.end(1), request.getQueryString().length()));
             } else {
                 // No collection in the initial request, should not happen as we should have been
@@ -179,27 +164,27 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                 throw new IllegalStateException(i18n.tr("parameter.missing", RequestParameters.COLLECTION));
             }
             
-            log.debug("Applying access alternate setting for collection '" + collection.getId() + "'. Redirecting to '" + out.toString() + "'");
+            log.debug("Applying access alternate setting for '" + frontendLogContent + "'. Redirecting to '" + out.toString() + "'");
             response.sendRedirect(out.toString());
         } else {
             // No access_alternate. Simply deny access
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("text/plain");
-            response.getWriter().write(i18n.tr("access.collection.denied", collection.getId(), message));
+            response.getWriter().write(i18n.tr("access.frontend.denied", frontendLogContent, message));
         }
     }
     
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
-        denyAccess(request, response, collection, "");
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String frontendLogContent) throws IOException {
+        denyAccess(request, response, serviceConfig, frontendLogContent, "");
     }
     
-    public String getConnectingIp(HttpServletRequest request, Collection c) {
+    public String getConnectingIp(HttpServletRequest request, ServiceConfigReadOnly serviceConfig) {
         String ip = request.getRemoteAddr();
         log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
-        if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
+        if (serviceConfig.get(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR)) {
             ip = NetUtils.getIpPreferingXForwardedFor(ip
                     , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
-                    , c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES));
+                    , serviceConfig.get(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES).get());
         }
         log.trace("Connecting IP is: " + ip);
         return ip;

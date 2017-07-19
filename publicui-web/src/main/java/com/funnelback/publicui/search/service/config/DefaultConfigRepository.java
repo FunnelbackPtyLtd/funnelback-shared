@@ -32,6 +32,7 @@ import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.common.config.ServiceId;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
@@ -40,6 +41,7 @@ import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
+import com.funnelback.config.data.service.ServiceConfigData;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -65,6 +67,7 @@ import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataResource;
 
 import groovy.lang.Script;
 import lombok.Setter;
@@ -266,7 +269,11 @@ public class DefaultConfigRepository implements ConfigRepository {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
             
-            p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
+            try {
+                p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
+            } catch (ProfileNotFoundException e) {
+                log.error("Profile vanished while being loaded '"+profileDir.getName()+"'",e);
+            }
             
             CuratorConfig config = new CuratorConfig();  // Empty default curator config
             
@@ -598,15 +605,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) {
-        // TODO Obviously we'll need to cache this
-        
-        if (profileIdAndView == null || profileIdAndView.trim().isEmpty()) {
-            profileIdAndView = "_default";
-        }
-        
-        CollectionId collectionIdObj = new CollectionId(collectionId);
-        
+    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
         String profileId = profileIdAndView;
         ProfileView profileView = ProfileView.live;
         if (profileIdAndView.endsWith(DefaultValues.PREVIEW_SUFFIX)) {
@@ -614,21 +613,12 @@ public class DefaultConfigRepository implements ConfigRepository {
             profileView = ProfileView.preview;
         }
 
-        ProfileAndView profileAndView = new ProfileAndView(new ProfileId(profileId), profileView);
-        
-        FileProfileConfigData data;
-        try {
-            data = new FileProfileConfigData(searchHome, 
-                collectionIdObj,
-                profileAndView.getProfileId(),
-                profileAndView.getProfileView(),
-                (f, c) -> c.run());
-            ServiceConfig serviceConfig = new DefaultServiceConfig(data, new NoConfigEnvironment());
+        ServiceConfigData serviceConfigData = resourceManager.loadResource(new ServiceConfigDataResource(searchHome,
+            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView, (f, r) -> {
+                throw new RuntimeException("Writes are not permitted under the public UI.");
+            }));
 
-            return serviceConfig;
-        } catch (ProfileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return new DefaultServiceConfig(serviceConfigData, new NoConfigEnvironment());
     }
     
 }

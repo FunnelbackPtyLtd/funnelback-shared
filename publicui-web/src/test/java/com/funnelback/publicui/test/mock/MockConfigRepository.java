@@ -17,6 +17,7 @@ import org.junit.Assume;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
 
@@ -27,11 +28,13 @@ public class MockConfigRepository implements ConfigRepository {
     @Getter private final Map<String, String> translations = new HashMap<String, String>();
     @Getter @Setter private File xslTemplate;
     private Map<String, Map<String, String>> extraSearchesConfigurations = new HashMap<>();
-    
+
     @Getter @Setter private GlobalOnlyConfig globalConfiguration;
     
     @Getter @Setter private ServerConfigReadOnly serverConfig;
-        
+
+    @Getter @Setter private ServiceConfigReadOnly serviceConfig;
+
     @Override
     public Collection getCollection(String collectionId) {
         return collections.get(collectionId);
@@ -58,7 +61,7 @@ public class MockConfigRepository implements ConfigRepository {
     public void removeAllCollections() {
         collections.clear();
     }
-    
+
     @Override
     public Map<String, String> getGlobalConfigurationFile(GlobalConfiguration conf) {
         return globalConfigs.get(conf);
@@ -126,8 +129,8 @@ public class MockConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) {
-        throw new UnsupportedOperationException("Sorry, not yet implemented!");
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) {
+        return serviceConfig;
     }
     
 }

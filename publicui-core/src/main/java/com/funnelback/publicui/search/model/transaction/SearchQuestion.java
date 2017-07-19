@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
@@ -79,12 +80,25 @@ public class SearchQuestion {
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
     @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 
-    // TODO - This seems a dodgy way to achieve this
-    // but it's sort of unclear to me what the 'right'
-    // way is - I can't see a good way to set it with
-    // SpringMVC data binding
-    public Profile getCurrentProfile() {
-        return collection.getProfiles().get(profile);
+    /**
+     * The frontend ID which will be used for the request, which will always correspond to the
+     * name of a profile which exists within the selected collection.
+     * 
+     * Note that this may differ from profile if the requested profile does not actually exist
+     * on disk (in which case it will be set to DefaultValues.DEFAULT_PROFILE, as that is what's used).
+     * 
+     * @since 15.12
+     */
+    // We could instead just overwrite profile with this 'real on disk' value, but there's some
+    // concern that doing so would create backwards compatibility issues.
+    @NonNull
+    @Getter @Setter private String frontendId;
+
+    /**
+     * Returns the (modern) config of the frontend being used to process the current request
+     */
+    public ServiceConfigReadOnly getFrontendConfig() {
+        return collection.getProfiles().get(frontendId).getServiceConfig();
     }
     
     /**
