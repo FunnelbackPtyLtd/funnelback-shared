@@ -76,13 +76,16 @@ public class FillCategoryValueUrlsTest {
         List<Facet.Category> siblings = asList(sibling);
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getQuestion().setQueryStringMap(ImmutableMap.of(
-            "a", asList("b"), 
-            "fac|bb", asList("set by sibling"),
-            "fac|bbchild", asList("set child of sibling"),
-            "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:foobar"),
-            "fac|a", asList("a:foo", "a:bar"),
-            "start_rank", asList("12")));
+        st.getQuestion().setQueryStringMap(
+            ImmutableMap.<String, List<String>>builder()
+            .put("a", asList("b")) 
+            .put("fac|bb", asList("set by sibling"))
+            .put("fac|bbchild", asList("set child of sibling"))
+            .put("facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:foobar"))
+            .put("fac|a", asList("a:foo", "a:bar"))
+            .put("start_rank", asList("12"))
+            .build()
+            );
         
         CategoryValue catVal = mock(CategoryValue.class);
         when(catVal.getQueryStringParamName()).thenReturn("fac|a");
