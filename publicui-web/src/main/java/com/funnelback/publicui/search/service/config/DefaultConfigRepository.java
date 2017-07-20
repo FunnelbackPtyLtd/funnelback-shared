@@ -37,11 +37,14 @@ import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
 import com.funnelback.config.data.service.ServiceConfigData;
+import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -605,7 +608,7 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public ServiceConfig getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
         String profileId = profileIdAndView;
         ProfileView profileView = ProfileView.live;
         if (profileIdAndView.endsWith(DefaultValues.PREVIEW_SUFFIX)) {
@@ -618,7 +621,7 @@ public class DefaultConfigRepository implements ConfigRepository {
                 throw new RuntimeException("Writes are not permitted under the public UI.");
             }));
 
-        return new DefaultServiceConfig(serviceConfigData, new NoConfigEnvironment());
+        return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
     
 }
