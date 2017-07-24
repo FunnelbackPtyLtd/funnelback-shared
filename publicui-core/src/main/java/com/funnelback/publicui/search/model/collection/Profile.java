@@ -26,7 +26,7 @@ import lombok.Setter;
  * 
  * @since 11.0
  */
-@JsonIgnoreProperties("curatorConfig")
+@JsonIgnoreProperties({"curatorConfig", "serviceConfig"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

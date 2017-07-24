@@ -44,7 +44,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"principal","maxPadrePacketSize"})
+@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig"})
 public class SearchQuestion {
 
     /**
@@ -93,13 +93,13 @@ public class SearchQuestion {
     // We could instead just overwrite profile with this 'real on disk' value, but there's some
     // concern that doing so would create backwards compatibility issues.
     @NonNull
-    @XStreamOmitField // because we don't want people relying on the name service!
+    @XStreamOmitField
     @Getter @Setter private String currentProfile;
 
     /**
      * Returns the (modern) config of the currentProfile
      */
-    @JsonIgnore // XStream won't serialize getters it seems, but Jackson will.
+    // XStream won't serialize getters it seems, excluded from Jackson on the class
     public ServiceConfigReadOnly getCurrentProfileConfig() {
         return collection.getProfiles().get(currentProfile).getServiceConfig();
     }
