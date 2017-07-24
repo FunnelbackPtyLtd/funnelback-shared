@@ -43,7 +43,7 @@ public class CustomisableFreeMarkerSearchFormViewTest extends CustomisableFreeMa
         serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         
         SearchQuestion mockSearchQuestion = Mockito.mock(SearchQuestion.class);
-        Mockito.when(mockSearchQuestion.getFrontendConfig()).thenReturn(serviceConfig);
+        Mockito.when(mockSearchQuestion.getCurrentProfileConfig()).thenReturn(serviceConfig);
         
         model.put("question", mockSearchQuestion);
         

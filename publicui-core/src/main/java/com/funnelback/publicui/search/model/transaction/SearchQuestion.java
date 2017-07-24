@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
@@ -81,7 +82,7 @@ public class SearchQuestion {
     @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
 
     /**
-     * The frontend ID which will be used for the request, which will always correspond to the
+     * The profile which will be used for the request. This one will always correspond to the
      * name of a profile which exists within the selected collection.
      * 
      * Note that this may differ from profile if the requested profile does not actually exist
@@ -92,13 +93,15 @@ public class SearchQuestion {
     // We could instead just overwrite profile with this 'real on disk' value, but there's some
     // concern that doing so would create backwards compatibility issues.
     @NonNull
-    @Getter @Setter private String frontendId;
+    @XStreamOmitField // because we don't want people relying on the name service!
+    @Getter @Setter private String currentProfile;
 
     /**
-     * Returns the (modern) config of the frontend being used to process the current request
+     * Returns the (modern) config of the currentProfile
      */
-    public ServiceConfigReadOnly getFrontendConfig() {
-        return collection.getProfiles().get(frontendId).getServiceConfig();
+    @JsonIgnore // XStream won't serialize getters it seems, but Jackson will.
+    public ServiceConfigReadOnly getCurrentProfileConfig() {
+        return collection.getProfiles().get(currentProfile).getServiceConfig();
     }
     
     /**

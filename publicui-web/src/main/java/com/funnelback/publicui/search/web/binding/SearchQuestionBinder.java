@@ -151,12 +151,12 @@ public class SearchQuestionBinder {
         // Security Principal
         question.setPrincipal(request.getUserPrincipal());
         
-        // Set frontendId, based on profile, but ensuring it exists on disk for the given collection
-        String frontendId = question.getProfile();
-        if (!question.getCollection().getProfiles().containsKey(frontendId)) {
-            frontendId = DefaultValues.DEFAULT_PROFILE;
+        // Set currentProfile, based on profile, but ensuring it exists on disk for the given collection
+        String currentProfile = question.getProfile();
+        if (!question.getCollection().getProfiles().containsKey(currentProfile)) {
+            currentProfile = DefaultValues.DEFAULT_PROFILE;
         }
-        question.setFrontendId(frontendId);
+        question.setCurrentProfile(currentProfile);
     }
 
     /**

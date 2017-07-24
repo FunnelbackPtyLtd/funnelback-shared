@@ -50,6 +50,7 @@ public class Profile {
     @XStreamOmitField
     @Getter @Setter private CuratorConfig curatorConfig = new CuratorConfig();
 
+    @XStreamOmitField
     @Getter @Setter private ServiceConfigReadOnly serviceConfig;
 
     /**

@@ -44,6 +44,7 @@ import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
 import com.funnelback.config.data.service.ServiceConfigData;
+import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
 import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;

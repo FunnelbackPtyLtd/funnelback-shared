@@ -14,15 +14,15 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.extern.log4j.Log4j2;
 
-@Component("restrictToCurrentFrontendConfig")
+@Component("restrictToCurrentProfileConfig")
 @Log4j2
-public class RestrictToCurrentFrontendConfig extends AbstractInputProcessor {
+public class RestrictToCurrentProfileConfig extends AbstractInputProcessor {
 
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         searchTransaction.getQuestion().setCollection(
             searchTransaction.getQuestion().getCollection().cloneBuilder()
-            .profiles(getProfiles(searchTransaction.getQuestion().getFrontendId(), searchTransaction.getQuestion().getCollection())).build());
+            .profiles(getProfiles(searchTransaction.getQuestion().getCurrentProfile(), searchTransaction.getQuestion().getCollection())).build());
     }
     
     public Map<String, Profile> getProfiles(String profile, Collection collection) {

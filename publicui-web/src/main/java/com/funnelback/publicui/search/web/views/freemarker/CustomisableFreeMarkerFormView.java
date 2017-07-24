@@ -57,14 +57,14 @@ public class CustomisableFreeMarkerFormView extends FreeMarkerView {
         if (model.containsKey(SearchController.ModelAttributes.question.toString())) {
             // Model contains a SearchQuestion object, it's a search request
             SearchQuestion q = (SearchQuestion) model.get(SearchController.ModelAttributes.question.toString());
-            if (q.getFrontendConfig() != null) {
+            if (q.getCurrentProfileConfig() != null) {
                 // Find the form name by inspecting the last part of the URL,
                 // like 'csv' in 'conf/<collection/<profile/csv.ftl'
                 String name = url.substring(
                         url.lastIndexOf('/')+1,
                         url.lastIndexOf(DefaultConfigRepository.FTL_SUFFIX));
 
-                ServiceConfigReadOnly serviceConfig = q.getFrontendConfig();
+                ServiceConfigReadOnly serviceConfig = q.getCurrentProfileConfig();
                 ProfileAndCollectionConfigOption<Optional<String>> contentTypeConfigOption = FrontEndKeys.UI.Modern.getCustomContentTypeOptionForForm(name);
 
                 setCustomContentType(contentTypeConfigOption, serviceConfig, response);

@@ -27,9 +27,9 @@ public class RestrictToCurrentProfileConfigTest {
         Map<String, Profile> profilesOrig = st.getQuestion().getCollection().getProfiles();
         st.getQuestion().getCollection().getProfiles().put("p1", p1);
         st.getQuestion().getCollection().getProfiles().put("p2", p2);
-        st.getQuestion().setFrontendId("p1");
+        st.getQuestion().setCurrentProfile("p1");
         
-        new RestrictToCurrentFrontendConfig().processInput(st);
+        new RestrictToCurrentProfileConfig().processInput(st);
         
         Assert.assertEquals("The underlying Map of profiles must not be edited as it is share between requests",
             2, profilesOrig.size());
@@ -44,13 +44,13 @@ public class RestrictToCurrentProfileConfigTest {
         Collection collection = mock(Collection.class);
         
         
-        Assert.assertEquals(0, new RestrictToCurrentFrontendConfig().getProfiles(null, collection).size());
+        Assert.assertEquals(0, new RestrictToCurrentProfileConfig().getProfiles(null, collection).size());
     }
     
     @Test
     public void testUnknownProfile() {
         Collection collection = mock(Collection.class);
         when(collection.getProfiles()).thenReturn(new HashMap<>());
-        Assert.assertEquals(0, new RestrictToCurrentFrontendConfig().getProfiles("unknown", collection).size());
+        Assert.assertEquals(0, new RestrictToCurrentProfileConfig().getProfiles("unknown", collection).size());
     }
 }
