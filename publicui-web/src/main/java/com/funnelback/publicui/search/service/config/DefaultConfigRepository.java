@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
@@ -33,6 +35,7 @@ import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.ServiceId;
+import com.funnelback.common.groovy.GroovyLoader;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
@@ -66,7 +69,7 @@ import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
-import com.funnelback.springmvc.service.resource.impl.GroovyScriptResource;
+import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
@@ -74,6 +77,8 @@ import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataRes
 import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataResource;
 
 import groovy.lang.Script;
+import groovy.util.ResourceException;
+import groovy.util.ScriptException;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
@@ -110,17 +115,16 @@ public class DefaultConfigRepository implements ConfigRepository {
     /**
      * <p>How often to force reloading of Groovy script, in seconds.</p>
      * 
-     * <p>This is necessary because when the Groovy class loader will not
-     * detect changes in script dependencies (i.e. a Groovy class using
-     * another class defined in another script). Having that configurable
-     * allow developers (esp. Stencils developers) to work on hook scripts
-     * without having to wait 60s for them to be refreshed.</p>
+     * <p>This is set to 1000 years (not too big to avoid surprise overflows), 
+     * as we shouldn't need to reload the the groovy class loader. This option is
+     * left in place in case the GroovyEngineScript doesn't work as expected
+     * and we do need to revert the behaviour.</p>
      * 
      * @see FUN-8961
      */
-    @Value("#{appProperties['config.repository.groovy.reload']?:60}")
+    @Value("#{appProperties['config.repository.groovy.reload']?:2147483647}") // Integer.MAX_VALUE is used as 1000 years is too large for int.
     @Setter
-    private long groovyForceReloadSeconds = 60;
+    private long groovyForceReloadSeconds = TimeUnit.SECONDS.convert(365*1000, TimeUnit.DAYS);
     
     @Autowired
     @Setter
@@ -230,24 +234,35 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         c.getProfiles().putAll(loadProfiles(c));
         
+        // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
+        // that way.
+        GroovyLoader collectionGroovyLoader = resourceManager.load(
+            new GroovyCollectionLoaderResource(searchHome, new CollectionId(collectionId), groovyForceReloadSeconds));
+        
         for (Hook hook: Hook.values()) {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
-            if (hookScriptFile.exists()) {
-                try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome, groovyForceReloadSeconds)).getResource();
-                    c.getHookScriptsClasses().put(hook, hookScript);
-                } catch (CompilationFailedException cfe) {
-                    log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
-                }
-            }
+            loadScriptHandleExceptions(collectionGroovyLoader, hookScriptFile)
+                .ifPresent(hookScript -> c.getHookScriptsClasses().put(hook, hookScript));
         }
         
-        c.setCartProcessClass(resourceManager.load(
-                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome, groovyForceReloadSeconds),
-                        AbstractSingleFileResource.wrapDefault(null)
-                    ).getResource());
+        loadScriptHandleExceptions(collectionGroovyLoader, new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))
+            .ifPresent(c::setCartProcessClass);
         
         return c;
+    }
+    
+    private Optional<Class<Script>> loadScriptHandleExceptions(GroovyLoader groovyLoader, File hookScriptFile) {
+        if (hookScriptFile.exists()) {
+            try {
+                return Optional.of(groovyLoader.loadScript(hookScriptFile));
+                
+            } catch (CompilationFailedException cfe) {
+                log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
+            } catch (IOException | ResourceException | ScriptException e) {
+                log.error("Error in hook script '"+hookScriptFile+"' failed", e);
+            }
+        }
+        return Optional.empty();
     }
     
     /**
