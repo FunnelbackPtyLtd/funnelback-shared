@@ -27,7 +27,7 @@ public class RestrictToCurrentProfileConfigTest {
         Map<String, Profile> profilesOrig = st.getQuestion().getCollection().getProfiles();
         st.getQuestion().getCollection().getProfiles().put("p1", p1);
         st.getQuestion().getCollection().getProfiles().put("p2", p2);
-        st.getQuestion().setProfile("p1");
+        st.getQuestion().setCurrentProfile("p1");
         
         new RestrictToCurrentProfileConfig().processInput(st);
         

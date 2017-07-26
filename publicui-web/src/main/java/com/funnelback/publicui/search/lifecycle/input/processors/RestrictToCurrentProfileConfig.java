@@ -22,7 +22,7 @@ public class RestrictToCurrentProfileConfig extends AbstractInputProcessor {
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         searchTransaction.getQuestion().setCollection(
             searchTransaction.getQuestion().getCollection().cloneBuilder()
-            .profiles(getProfiles(searchTransaction.getQuestion().getProfile(), searchTransaction.getQuestion().getCollection())).build());
+            .profiles(getProfiles(searchTransaction.getQuestion().getCurrentProfile(), searchTransaction.getQuestion().getCollection())).build());
     }
     
     public Map<String, Profile> getProfiles(String profile, Collection collection) {

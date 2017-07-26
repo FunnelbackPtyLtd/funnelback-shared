@@ -12,9 +12,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
@@ -42,7 +44,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"principal","maxPadrePacketSize"})
+@JsonIgnoreProperties({"principal","maxPadrePacketSize", "currentProfile", "currentProfileConfig"})
 public class SearchQuestion {
 
     /**
@@ -71,13 +73,36 @@ public class SearchQuestion {
      * Searched {@link Collection}.
      */
     @Getter @Setter private Collection collection;
-    
+
     /**
      * Search {@link Profile}, defaulting to "_default"
      */
     @NonNull
     @javax.validation.constraints.Pattern(regexp="[\\w-_]+")
     @Getter @Setter private String profile = DefaultValues.DEFAULT_PROFILE;
+
+    /**
+     * The profile which will be used for the request. This one will always correspond to the
+     * name of a profile which exists within the selected collection.
+     * 
+     * Note that this may differ from profile if the requested profile does not actually exist
+     * on disk (in which case it will be set to DefaultValues.DEFAULT_PROFILE, as that is what's used).
+     * 
+     * @since 15.12
+     */
+    // We could instead just overwrite profile with this 'real on disk' value, but there's some
+    // concern that doing so would create backwards compatibility issues.
+    @NonNull
+    @XStreamOmitField
+    @Getter @Setter private String currentProfile;
+
+    /**
+     * Returns the (modern) config of the currentProfile
+     */
+    // XStream won't serialize getters it seems, excluded from Jackson on the class
+    public ServiceConfigReadOnly getCurrentProfileConfig() {
+        return collection.getProfiles().get(currentProfile).getServiceConfig();
+    }
     
     /**
      * Specific component of a meta-collection to query
