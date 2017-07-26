@@ -106,7 +106,7 @@ public class DefaultConfigRepository implements ConfigRepository {
      * 
      * @see FUN-8961
      */
-    @Value("#{appProperties['config.repository.groovy.reload']?:31536000000}")
+    @Value("#{appProperties['config.repository.groovy.reload']?:2147483647}") // Integer.MAX_VALUE is used as 1000 years is too large for int.
     @Setter
     private long groovyForceReloadSeconds = TimeUnit.SECONDS.convert(365*1000, TimeUnit.DAYS);
     
