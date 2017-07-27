@@ -151,6 +151,12 @@ public class SearchQuestionBinder {
         // Security Principal
         question.setPrincipal(request.getUserPrincipal());
         
+        // Set currentProfile, based on profile, but ensuring it exists on disk for the given collection
+        String currentProfile = question.getProfile();
+        if (!question.getCollection().getProfiles().containsKey(currentProfile)) {
+            currentProfile = DefaultValues.DEFAULT_PROFILE;
+        }
+        question.setCurrentProfile(currentProfile);
     }
 
     /**

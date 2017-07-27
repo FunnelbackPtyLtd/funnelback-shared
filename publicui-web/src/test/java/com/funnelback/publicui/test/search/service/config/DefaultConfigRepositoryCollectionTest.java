@@ -57,7 +57,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
     }
     
     @Test
-    public void testHookScripts() throws IOException {
+    public void testHookScripts() throws Exception {
         Collection coll = configRepository.getCollection("config-repository");
         Assert.assertTrue(coll.getHookScriptsClasses().isEmpty());
         
@@ -80,6 +80,7 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
         
         // Update hook script
         writeAndTouchFuture(new File(TEST_DIR, "hook_"+Hook.pre_datafetch.name()+".groovy"), "print 'world'");
+        Thread.sleep(100); //GroovyScriptEngine wont re-check unless 100ms has passed.
         coll = configRepository.getCollection("config-repository");
         Assert.assertEquals(1, coll.getHookScriptsClasses().size());
         Assert.assertTrue(coll.getHookScriptsClasses().containsKey(Hook.pre_datafetch));
