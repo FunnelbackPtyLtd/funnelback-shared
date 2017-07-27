@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -349,17 +350,10 @@ public class DefaultConfigRepository implements ConfigRepository {
      * @return
      */
     private File[] getProfileDirs(File configDir) {
-        return configDir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                // Only directories that don't starts with:
-                // - a dot (.svn ...)
-                // - an at-symbol (@groovy ...)
-                return pathname.isDirectory() && 
-                    !pathname.getName().startsWith(".") && 
-                    !pathname.getName().startsWith("@");
-            }
-        });
+        String collectionName = configDir.getName();
+        return Arrays.stream(com.funnelback.common.config.Collections.getProfiles(searchHome, collectionName))
+            .map((profileId) -> new File(configDir, profileId))
+            .toArray(File[]::new);
     }
 
     /**
