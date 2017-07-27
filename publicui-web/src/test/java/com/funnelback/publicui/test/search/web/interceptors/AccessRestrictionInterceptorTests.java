@@ -102,7 +102,7 @@ public class AccessRestrictionInterceptorTests {
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
     }
 
@@ -128,7 +128,7 @@ public class AccessRestrictionInterceptorTests {
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of("10.7.6.5/8"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
     }
     
@@ -144,14 +144,14 @@ public class AccessRestrictionInterceptorTests {
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of("bad.com"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
         response = new MockHttpServletResponse();
 
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of("remote"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
     }
 
@@ -177,7 +177,7 @@ public class AccessRestrictionInterceptorTests {
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of("1.2.3.4"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
     }
     
@@ -231,7 +231,7 @@ public class AccessRestrictionInterceptorTests {
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of("100.100.239.0/24"));
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
         Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
-        Assert.assertEquals("access.frontend.denied", response.getContentAsString());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
     }
     
