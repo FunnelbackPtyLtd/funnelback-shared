@@ -2558,6 +2558,7 @@ html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-usera
 }
 
 .navbar .dashboard-selector .fa-bars {
+    font-size: 18px;
     margin-left: -4px;
     text-align: left;
     color: #fff;
@@ -2573,4 +2574,7 @@ html[data-useragent*='MSIE 10.0'] .navbar-inverse .navbar-brand, html[data-usera
     padding: 3px 10px;
 }
 
+.selected-dashboard {
+    border-left: 2px solid #f26a35;
+}
 
