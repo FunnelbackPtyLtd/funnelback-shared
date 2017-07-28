@@ -19,6 +19,7 @@
                 <prop key="url_escaping_charset">UTF-8</prop>
                 <!-- Prevent FreeMarker from logging Exception itself through JUL, they should get log by us with Log4j -->
                 <prop key="log_template_exceptions">false</prop>
+                <prop key="object_wrapper">com.funnelback.publicui.search.web.views.freemarker.FunnelbackFreemarkerObjectWrapper</prop>
             </props>
         </property>
         <property name="defaultEncoding" value="UTF-8" />
