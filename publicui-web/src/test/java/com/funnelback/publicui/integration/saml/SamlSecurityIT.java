@@ -180,6 +180,23 @@ public class SamlSecurityIT {
         }
     }
     
+    @Test
+    public void testFetchMetadata() throws Exception {
+        CloseableHttpClient httpclient = HttpClients.custom().build();
+
+        HttpGet get = new HttpGet(server.getBaseUrl() + "saml/metadata");
+
+        try (CloseableHttpResponse response = httpclient.execute(get)) {
+            HttpEntity entity = response.getEntity();
+
+            String responseText = IOUtils.toString(entity.getContent());
+            EntityUtils.consume(entity);
+            
+            Assert.assertThat("Expected to get the SAML metadata", responseText,
+                StringContains.containsString("X509Certificate"));
+        }
+    }
+    
     @AfterClass
     public static void stopServers() throws Exception {
         SamlSecurityIT.server.stop();
