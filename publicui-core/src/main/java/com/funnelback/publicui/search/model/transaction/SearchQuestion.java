@@ -21,6 +21,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAlsoHasAStringGetMethod;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -101,7 +102,7 @@ public class SearchQuestion {
      */
     // XStream won't serialize getters it seems, excluded from Jackson on the class
     public ServiceConfigReadOnly getCurrentProfileConfig() {
-        return collection.getProfiles().get(currentProfile).getServiceConfig();
+        return new ServerConfigReadOnlyWhichAlsoHasAStringGetMethod(collection.getProfiles().get(currentProfile).getServiceConfig());
     }
     
     /**
