@@ -24,6 +24,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -34,6 +35,7 @@ import lombok.ToString;
  * 
  * @since 11.0
  */
+@Log4j2
 @ToString
 @RequiredArgsConstructor
 public abstract class CategoryDefinition {
@@ -214,14 +216,15 @@ public abstract class CategoryDefinition {
                 responseForCounts = (c,v) -> Optional.empty();
                 
                 countIfNotPresent = (catDef, value) -> {
-                    String extraSearchName = new ExtraSearchNames().getExtraSearchName(facetDefinition, catDef, value);
-                    System.out.println("Looking for: " + extraSearchName);
+                    String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facetDefinition, catDef, value);
+                    log.debug("Using extra search: {} to find the count for category with param name {} and value {}",
+                        extraSearchName, catDef.getQueryStringParamName(), value);
                     return Optional.ofNullable(st.getExtraSearches().get(extraSearchName))
                         .map(SearchTransaction::getResponse)
                         .map(r -> r.getResultPacket())
                         .map(r -> r.getResultsSummary())
                         .map(r -> r.getTotalMatching())
-                        .orElse(null); // Totally matching?
+                        .orElse(null); // Totall matching?
                 };
             }
         }

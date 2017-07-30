@@ -7,10 +7,13 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.web.binding.SearchQuestionBinder;
 import com.funnelback.publicui.utils.MapKeyFilter;
+import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 
 public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFactory {
 
     private static final String NUM_RANKS_OPT = "-num_ranks=1";
+    
+    PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
     
     @Override
     public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
@@ -37,6 +40,9 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
     public SearchQuestion buildBasicExtraFacetSearch(SearchQuestion originalQuestion) {
         SearchQuestion out = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, out);
+        
+        out.getDynamicQueryProcessorOptions().addAll(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSet());
+        
         return out;
     }
     

@@ -82,7 +82,15 @@ public class PadreOptionsForSpeed {
             new OptionAndValue(COUNT_DATES, ""), //Setting this to empty turns off counting dates.
             new OptionAndValue(COUNTGBITS, ""), //Setting this to empty turns it off.
             new OptionAndValue(COUNT_URLS, ""), //Emptu count_urls turns of url counting.
-            new OptionAndValue(SORT, "") //Turn of sorting
+            new OptionAndValue(SORT, ""), //Turn of sorting
+            
+            // Turn of supression options, these do no change the set they just re-order the results.
+            new OptionAndValue("SSS", "0"),
+            new OptionAndValue("neardup", "1"),
+            new OptionAndValue("title_dup_factor", "1"),
+            new OptionAndValue("same_collection_suppression", "0"),
+            new OptionAndValue("same_meta_suppression", "0")
+            
             );
     }
     

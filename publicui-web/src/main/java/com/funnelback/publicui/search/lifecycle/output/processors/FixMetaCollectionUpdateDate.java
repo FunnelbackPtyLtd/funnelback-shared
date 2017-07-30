@@ -55,43 +55,43 @@ public class FixMetaCollectionUpdateDate extends AbstractOutputProcessor {
 
             Config config = searchTransaction.getQuestion().getCollection().getConfiguration();
             if (config.getCollectionType().equals(Type.meta)) {
-                final MutableLong currentUpdateTime = new MutableLong(
-                    searchTransaction.getResponse().getResultPacket().getDetails().getCollectionUpdated().getTime());
-
-                queryReadLock.doWithReadLockWithCE(config, (CallableCE<Void, MissingIndexException>) () -> {
-                    File indexStem = new File(config.getCollectionRoot(),
-                        View.live + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
-
-                    processIndex.processIndex(config.getCollectionName(), indexStem.getAbsolutePath(),
-                        new FollowMetaCollectionProcessorNoCE<RuntimeException>() {
-
-                            @Override
-                            public void atComponentIndex(String collection, String indexStem) {
-                                try {
-                                    long componentUpdateTime = componentUpdateTime(indexStem);
-
-                                    if (componentUpdateTime > currentUpdateTime.longValue()) {
-                                        currentUpdateTime.setValue(componentUpdateTime);
-                                    }
-                                } catch (FileNotFoundException e) {
-                                    log.debug("No index_time file for for meta component - Maybe it has never been updated?" + collection, e);
-                                } catch (IOException e) {
-                                    log.error("Could not read index time for meta component " + collection, e);
-                                } catch (Exception e) {
-                                    log.error("Exception getting index time for meta component " + collection, e);
-                                }
-                            }
-
-                            @Override
-                            public void indexStemMissing(String collection, String indexStem) throws MissingIndexException {
-                                log.debug("Could not check " + collection + "'s index at " + indexStem
-                                    + " for update time because the index stem does not exist. Perhaps it has never been updated.");
-                            }
-                        });
-                    return null;
-                });
-
-                searchTransaction.getResponse().getResultPacket().getDetails().setCollectionUpdated(new Date(currentUpdateTime.getValue()));
+//                final MutableLong currentUpdateTime = new MutableLong(
+//                    searchTransaction.getResponse().getResultPacket().getDetails().getCollectionUpdated().getTime());
+//
+//                queryReadLock.doWithReadLockWithCE(config, (CallableCE<Void, MissingIndexException>) () -> {
+//                    File indexStem = new File(config.getCollectionRoot(),
+//                        View.live + File.separator + DefaultValues.FOLDER_IDX + File.separator + DefaultValues.INDEXFILES_PREFIX);
+//
+//                    processIndex.processIndex(config.getCollectionName(), indexStem.getAbsolutePath(),
+//                        new FollowMetaCollectionProcessorNoCE<RuntimeException>() {
+//
+//                            @Override
+//                            public void atComponentIndex(String collection, String indexStem) {
+//                                try {
+//                                    long componentUpdateTime = componentUpdateTime(indexStem);
+//
+//                                    if (componentUpdateTime > currentUpdateTime.longValue()) {
+//                                        currentUpdateTime.setValue(componentUpdateTime);
+//                                    }
+//                                } catch (FileNotFoundException e) {
+//                                    log.debug("No index_time file for for meta component - Maybe it has never been updated?" + collection, e);
+//                                } catch (IOException e) {
+//                                    log.error("Could not read index time for meta component " + collection, e);
+//                                } catch (Exception e) {
+//                                    log.error("Exception getting index time for meta component " + collection, e);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void indexStemMissing(String collection, String indexStem) throws MissingIndexException {
+//                                log.debug("Could not check " + collection + "'s index at " + indexStem
+//                                    + " for update time because the index stem does not exist. Perhaps it has never been updated.");
+//                            }
+//                        });
+//                    return null;
+//                });
+//
+//                searchTransaction.getResponse().getResultPacket().getDetails().setCollectionUpdated(new Date(currentUpdateTime.getValue()));
             }
         }
     }
