@@ -32,7 +32,7 @@ public class Facet {
      * 
      * <p>The URL is one where the facet is not selected, the URL may be used as the base URL
      * to append to to select values within the facet.</p>
-     *  @Since 15.14
+     *  @Since 15.12
      */
     @Getter @Setter private String unselectAllUrl;
     
@@ -60,6 +60,7 @@ public class Facet {
     /**
      * 
      * @return List of selected values, useful to build breadcrumbs
+     * @Since 15.12
      */
     public List<CategoryValue> getSelectedValues() {
         return getValuesAsStream().filter(CategoryValue::isSelected).collect(Collectors.toList());
@@ -68,6 +69,7 @@ public class Facet {
     /**
      * 
      * @return List of unselected values
+     * @Since 15.12
      */
     public List<CategoryValue> getUnselectedValues() {
         return getValuesAsStream().filter(not(CategoryValue::isSelected)).collect(Collectors.toList());
@@ -76,6 +78,7 @@ public class Facet {
     /**
      * 
      * @return List of all facet values both selected and unselected.
+     * @Since 15.12
      */
     public List<Facet.CategoryValue> getAllValues() {
         return getValuesAsStream().collect(Collectors.toList());
@@ -120,6 +123,7 @@ public class Facet {
 
     /**
      * @return True if any of the values of this facet is selected
+     * @Since 15.12
      */
     public boolean isSelected() {
         return getValuesAsStream().anyMatch(CategoryValue::isSelected);
@@ -301,28 +305,32 @@ public class Facet {
         
         /** Name of the query string parameter for this value (e.g. <code>f.Location|X</code>)
          * 
-         * @Since 15.14 
+         * @Since 15.12 
          */
         @Getter @Setter private String queryStringParamName;
         
         /** Value of the query string parameter for this value (e.g. <code>Syndey</code>)
          *  
-         * @Since 15.14 
+         * @Since 15.12 
          */
         @Getter @Setter private String queryStringParamValue;
 
         /** URL to use to select this facet, built from the current URL
          *  
-         * @Since 15.14 
+         * @Since 15.12 
          */
         @Getter @Setter private String selectUrl;
 
         /** URL to use to unselect this facet, built from the current URL
          *  
-         * @Since 15.14 
+         * @Since 15.12 
          */
         @Getter @Setter private String unselectUrl;
         
+        /** URL to use to toggle the select status of the facet value.
+         *  
+         * @Since 15.12 
+         */
         @Getter @Setter private String toggleUrl;
 
         @Override
