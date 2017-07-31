@@ -27,7 +27,6 @@ public class CountThresholdMetadataFieldFill extends MetadataFieldFill {
     
     @Override
     public List<CategoryValue> computeValues(final SearchTransaction st, FacetDefinition facetDefinition) {
-        // TODO , FacetDefinition facetDefinition
         List<CategoryValue> result = super.computeValues(st, facetDefinition);
         return result.stream().filter((cv) -> Optional.ofNullable(cv.getCount()).orElse(Integer.MIN_VALUE) > threshold).collect(Collectors.toList());
     }
