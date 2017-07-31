@@ -1,17 +1,21 @@
 package com.funnelback.publicui.search.model.transaction;
+import static com.funnelback.common.function.Predicates.not;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.funnelback.common.function.Flattener;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 
 /**
  * <p>Facets, generated from the result data (Metadata counts,
@@ -23,6 +27,14 @@ public class Facet {
 
     /** Facet name, for example "Location" */
     @Getter @Setter private String name;
+    
+    /** URL to use to unselect all possible values of this facet, built from the current URL
+     * 
+     * <p>The URL is one where the facet is not selected, the URL may be used as the base URL
+     * to append to to select values within the facet.</p>
+     *  @Since 15.12
+     */
+    @Getter @Setter private String unselectAllUrl;
     
     /**
      * Categories definitions of this facet, for example
@@ -43,6 +55,33 @@ public class Facet {
     @Override
     public String toString() {
         return "Facet '" + name + "'";
+    }
+    
+    /**
+     * 
+     * @return List of selected values, useful to build breadcrumbs
+     * @Since 15.12
+     */
+    public List<CategoryValue> getSelectedValues() {
+        return getValuesAsStream().filter(CategoryValue::isSelected).collect(Collectors.toList());
+    }
+
+    /**
+     * 
+     * @return List of unselected values
+     * @Since 15.12
+     */
+    public List<CategoryValue> getUnselectedValues() {
+        return getValuesAsStream().filter(not(CategoryValue::isSelected)).collect(Collectors.toList());
+    }
+    
+    /**
+     * 
+     * @return List of all facet values both selected and unselected.
+     * @Since 15.12
+     */
+    public List<Facet.CategoryValue> getAllValues() {
+        return getValuesAsStream().collect(Collectors.toList());
     }
     
     /**
@@ -71,6 +110,23 @@ public class Facet {
             }
         }
         return null;
+    }
+    
+    
+    
+    private Stream<Facet.CategoryValue> getValuesAsStream() {
+        return this.getCategories().stream()
+            .flatMap(Flattener.mapper(Category::getCategories))
+            .map(Category::getValues)
+            .flatMap(List::stream);
+    }
+
+    /**
+     * @return True if any of the values of this facet is selected
+     * @Since 15.12
+     */
+    public boolean isSelected() {
+        return getValuesAsStream().anyMatch(CategoryValue::isSelected);
     }
     
     /**
@@ -180,6 +236,43 @@ public class Facet {
     @AllArgsConstructor
     public static class CategoryValue {
         
+        /**
+         * Backwards compatible constructor where not all fields are set, may result in problems.
+         * 
+         * @param data
+         * @param label
+         * @param count
+         * @param queryStringParam
+         * @param constraint
+         * @param selected
+         */
+        @Deprecated
+        public CategoryValue(String data, String label, int count, String queryStringParam, String constraint,
+            boolean selected) {
+            super();
+            this.data = data;
+            this.label = label;
+            this.count = count;
+            this.queryStringParam = queryStringParam;
+            this.constraint = constraint;
+            this.selected = selected;
+        }
+        
+        
+        public CategoryValue(String data, String label, int count, 
+            String queryStringParam, String constraint, boolean selected,
+            String queryStringParamName, String queryStringParamValue) {
+          super();
+          this.data = data;
+          this.label = label;
+          this.count = count;
+          this.queryStringParam = queryStringParam;
+          this.constraint = constraint;
+          this.selected = selected;
+          this.queryStringParamName = queryStringParamName;
+          this.queryStringParamValue = queryStringParamValue;
+      }
+
         /** Actual value of the category (Ex: "Sydney"). */
         @Getter @Setter private String data;
         
@@ -209,6 +302,36 @@ public class Facet {
          * @since 15.8
          */
         @Getter @Setter private boolean selected;
+        
+        /** Name of the query string parameter for this value (e.g. <code>f.Location|X</code>)
+         * 
+         * @Since 15.12 
+         */
+        @Getter @Setter private String queryStringParamName;
+        
+        /** Value of the query string parameter for this value (e.g. <code>Syndey</code>)
+         *  
+         * @Since 15.12 
+         */
+        @Getter @Setter private String queryStringParamValue;
+
+        /** URL to use to select this facet, built from the current URL
+         *  
+         * @Since 15.12 
+         */
+        @Getter @Setter private String selectUrl;
+
+        /** URL to use to unselect this facet, built from the current URL
+         *  
+         * @Since 15.12 
+         */
+        @Getter @Setter private String unselectUrl;
+        
+        /** URL to use to toggle the select status of the facet value.
+         *  
+         * @Since 15.12 
+         */
+        @Getter @Setter private String toggleUrl;
 
         @Override
         public String toString() {

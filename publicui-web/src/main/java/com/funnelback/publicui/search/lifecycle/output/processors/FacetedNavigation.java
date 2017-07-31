@@ -3,13 +3,14 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillCategoryValueUrls;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
@@ -20,12 +21,21 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Transforms result metadata/url/gscope counts into proper facet hierarchy
  */
 @Component("facetedNavigationOutputProcessor")
 @Log4j2
 public class FacetedNavigation extends AbstractOutputProcessor {
+    
+    @Setter
+    private FillCategoryValueUrls fillUrls = new FillCategoryValueUrls();
+    
+    @Setter
+    private FillFacetUrls fillFacetUrls = new FillFacetUrls();
 
     @Override
     public void processOutput(SearchTransaction searchTransaction) {
@@ -42,6 +52,11 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
                         Facet.Category c = fillCategories(ct, searchTransaction);
                         if (c != null) {
+                            // We can only fill out the URLs after the entire category
+                            // with its children have been created.
+                            Flattener.flatten(c, Facet.Category::getCategories)
+                                .forEach(cat -> fillUrls.fillURLs(searchTransaction, cat));
+                            
                             facet.getCategories().add(c);
                             if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())) {
                                 // This category has been selected. Stop calculating other
@@ -55,6 +70,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     // each category. This is useful for GScope based facets where there's only
                     // one category-value per category
                     Collections.sort(facet.getCategories(), new Category.ByFirstCategoryValueComparator());
+                    fillFacetUrls.setUnselectAllUrl(facet, searchTransaction);
                     searchTransaction.getResponse().getFacets().add(facet);
                 }
             }
@@ -127,5 +143,10 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             return null;
         }
     }
+    
+    
+    
+    
+    
 
 }

@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,9 +7,9 @@ import java.util.List;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -19,7 +17,6 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.ToString;
 
 /**
@@ -43,18 +40,21 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 
     /** {@inheritDoc} */
     @Override
-    @SneakyThrows(UnsupportedEncodingException.class)
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
-        List<CategoryValue> categories = new ArrayList<CategoryValue>();
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         ResultPacket rp = st.getResponse().getResultPacket();
         if (rp.getGScopeCounts().get(userSetGScope) != null) {
-            categories.add(new CategoryValue(
+            String queryStringParamValue = data;
+            categories.add(new CategoryValueComputedDataHolder(
                     Integer.toString(userSetGScope),
                     data,
                     rp.getGScopeCounts().get(userSetGScope),
-                    URLEncoder.encode(getQueryStringParamName(), "UTF-8") + "=" + URLEncoder.encode(data, "UTF-8"),
                     Integer.toString(getGScopeNumber()),
-                    FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data)));
+                    FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data),
+                    getQueryStringParamName(),
+                    queryStringParamValue
+                    )
+                );
         }
         return categories;
     }

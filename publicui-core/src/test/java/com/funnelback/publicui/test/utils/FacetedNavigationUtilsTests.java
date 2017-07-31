@@ -1,8 +1,10 @@
 package com.funnelback.publicui.test.utils;
 
+import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +18,8 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
+import com.google.common.collect.ImmutableMap;
 
 public class FacetedNavigationUtilsTests {
 
@@ -77,5 +79,57 @@ public class FacetedNavigationUtilsTests {
         Assert.assertFalse(FacetedNavigationUtils.isCategorySelected(cDef, selectedCategories, "value2"));
     }
     
+    @Test
+    public void testRemoveQueryStringFacetValueNothingLeftOver() {
+        Map<String, List<String>> queryStringMap = new HashMap<>(
+            ImmutableMap.of("a", toList("foo"),
+                            "facetScope", toList("a=foo")));
+        
+        FacetedNavigationUtils.removeQueryStringFacetValue(queryStringMap, "a", "foo");
+        
+        Assert.assertEquals("All values are empty lists so the key should be removed as "
+            + "well resilting in a empty map.",
+            0, queryStringMap.size());
+    }
+    
+    @Test
+    public void testRemoveQueryStringFacetValue() {
+        Map<String, List<String>> queryStringMap = new HashMap<>(
+            ImmutableMap.of("a", toList("foo"),
+                            "facetScope", toList("a=foo&a=bar")));
+        
+        FacetedNavigationUtils.removeQueryStringFacetValue(queryStringMap, "a", "foo");
+        
+        Assert.assertEquals("a=bar does not match the value and so should be kept",
+            1, queryStringMap.size());
+        
+        Assert.assertEquals("a=bar", queryStringMap.get("facetScope").get(0));
+    }
+    
+    @Test
+    public void testEmptyMap() {
+        Map<String, List<String>> queryStringMap = new HashMap<>();
+        
+        FacetedNavigationUtils.removeQueryStringFacetValue(queryStringMap, "a", "foo");
+        
+        Assert.assertEquals("Map should stay empty", 0, queryStringMap.size());
+    }
+    
+    @Test
+    public void testRemoveQueryStringFacetKeyNothingLeftOver() {
+        Map<String, List<String>> queryStringMap = new HashMap<>(
+            ImmutableMap.of("a", toList("foo", "foobar"),
+                            "facetScope", toList("a=foo&a=bar")));
+        
+        FacetedNavigationUtils.removeQueryStringFacetKey(queryStringMap, "a");
+        
+        Assert.assertEquals("All values are empty lists so the key should be removed as "
+            + "well resilting in a empty map.",
+            0, queryStringMap.size());
+    }
+    
+    public List<String> toList(String ... vals) {
+        return new ArrayList<>(asList(vals));
+    }
 
 }

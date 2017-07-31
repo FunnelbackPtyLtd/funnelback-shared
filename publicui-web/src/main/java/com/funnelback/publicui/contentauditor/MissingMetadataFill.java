@@ -1,22 +1,18 @@
 package com.funnelback.publicui.contentauditor;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lombok.SneakyThrows;
-
 import com.funnelback.common.padre.MetadataClass;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 /**
  * A custom metadata fill which is used to capture the 'remainder' documents (i.e. those which did not have any of the 
@@ -40,9 +36,8 @@ public class MissingMetadataFill extends MetadataFieldFill {
      * (i.e. those for which no metadata in this class was set) which will select those documents.
      */
     @Override
-    @SneakyThrows(UnsupportedEncodingException.class)
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
-        List<CategoryValue> categories = new ArrayList<CategoryValue>();
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
         if (st.hasResponse() && st.getResponse().hasResultPacket() && st.getResponse().getResultPacket().hasResults()) {
             
@@ -62,14 +57,14 @@ public class MissingMetadataFill extends MetadataFieldFill {
                 if (!MetadataClass.RESERVED_CLASS_PATTERN.matcher(metadataClass).matches()) {
                     // Don't report reserved classes (should not be user-visible)
                     
-                    categories.add(new CategoryValue(
+                    categories.add(new CategoryValueComputedDataHolder(
                         metadataClass,
                         metadataClass,
                         count,
-                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                        + "=" + URLEncoder.encode(metadataClass, "UTF-8"),
                         getMetadataClass(),
-                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), metadataClass)));
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), metadataClass),
+                        getQueryStringParamName(),
+                        metadataClass));
                 }
             }
         }

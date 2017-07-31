@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -40,9 +41,8 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 
     /** {@inheritDoc} */
     @Override
-    @SneakyThrows(UnsupportedEncodingException.class)
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
-        List<CategoryValue> categories = new ArrayList<CategoryValue>();
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
         // For each metadata count <rmc item="a:new south wales">42</rmc>
         for (Entry<String, DateCount> entry : st.getResponse().getResultPacket().getDateCounts().entrySet()) {
@@ -50,14 +50,15 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
             DateCount dc = entry.getValue();
             MetadataAndValue mdv = parseMetadata(item);
             if (this.data.equals(mdv.metadata)) {
-                categories.add(new CategoryValue(
+                String queryStringParamValue = dc.getQueryTerm();
+                categories.add(new CategoryValueComputedDataHolder(
                         mdv.metadata,
                         mdv.value,
                         dc.getCount(),
-                        URLEncoder.encode(getQueryStringParamName(), "UTF-8")
-                            + "=" + URLEncoder.encode(dc.getQueryTerm(), "UTF-8"),
                         getMetadataClass(),
-                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), dc.getQueryTerm())));
+                        FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), dc.getQueryTerm()),
+                        getQueryStringParamName(),
+                        queryStringParamValue));
             }
         }
         return categories;
