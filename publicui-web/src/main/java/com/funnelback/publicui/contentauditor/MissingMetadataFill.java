@@ -40,7 +40,6 @@ public class MissingMetadataFill extends MetadataFieldFill {
      */
     @Override
     public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
-        //TODO , FacetDefinition facetDefinition
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
         if (st.hasResponse() && st.getResponse().hasResultPacket() && st.getResponse().getResultPacket().hasResults()) {
