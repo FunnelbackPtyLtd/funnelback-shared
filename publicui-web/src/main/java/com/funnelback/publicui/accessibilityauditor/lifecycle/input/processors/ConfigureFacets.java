@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
@@ -119,7 +122,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(field, categoryDefinitions);
     }
     
     /**
@@ -132,7 +135,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(field);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(field, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(field, categoryDefinitions);
     }
     
     /**
@@ -147,7 +150,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         fill.setFacetName(URL_FACET_ID);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(URL_FACET_ID, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(URL_FACET_ID, categoryDefinitions);
     }
 
 }

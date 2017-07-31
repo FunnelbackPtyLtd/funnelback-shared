@@ -1,5 +1,7 @@
 package com.funnelback.publicui.test.contentauditor;
 
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition.getFacetWithUpgradedValues;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -31,11 +33,12 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationOutputMissingMetadataFillTests {
 
+    private final File searchHome = new File("src/test/resources/dummy-search_home/");
+    
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
     
@@ -61,7 +64,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         List<FacetDefinition> facetDefinitions = new ArrayList<FacetDefinition>();
         MissingMetadataFill categoryDefinition = new MissingMetadataFill();
         categoryDefinition.setFacetName("Missing Metadata");
-        facetDefinitions.add(new FacetDefinition("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
+        facetDefinitions.add(getFacetWithUpgradedValues("Missing Metadata", Arrays.asList(new CategoryDefinition[]{categoryDefinition})));
         
         question.getCollection().setFacetedNavigationConfConfig(new FacetedNavigationConfig(facetDefinitions));
 
@@ -94,7 +97,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
 
@@ -116,7 +119,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("missing", cv.getConstraint());
-        Assert.assertEquals(7, cv.getCount());
+        Assert.assertEquals(7, cv.getCount() + 0);
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("X", cv.getLabel());
         Assert.assertEquals("f.Missing+Metadata%7Cmissing=X", cv.getQueryStringParam());
@@ -145,7 +148,7 @@ public class FacetedNavigationOutputMissingMetadataFillTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("missing", cv.getConstraint());
-        Assert.assertEquals(7, cv.getCount());
+        Assert.assertEquals(7, cv.getCount() + 0);
         Assert.assertEquals("X", cv.getData());
         Assert.assertEquals("X", cv.getLabel());
         Assert.assertEquals("f.Missing+Metadata%7Cmissing=X", cv.getQueryStringParam());

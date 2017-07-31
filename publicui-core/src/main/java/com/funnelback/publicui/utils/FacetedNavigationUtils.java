@@ -15,6 +15,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -51,6 +52,10 @@ public class FacetedNavigationUtils {
         }
         
         return config;
+    }
+    
+    public static FacetedNavigationConfig selectConfiguration(SearchTransaction st) {
+        return selectConfiguration(st.getQuestion().getCollection(), st.getQuestion().getProfile());
     }
     
     /**

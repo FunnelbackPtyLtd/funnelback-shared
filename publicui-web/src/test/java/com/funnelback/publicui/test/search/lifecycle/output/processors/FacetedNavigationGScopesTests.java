@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,6 +27,8 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 
+import lombok.Setter;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
 public class FacetedNavigationGScopesTests {
@@ -33,6 +36,10 @@ public class FacetedNavigationGScopesTests {
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
 
+    @Autowired
+    @Setter
+    protected File searchHome;
+    
     private SearchTransaction st;
     private FacetedNavigation processor;
     
@@ -72,7 +79,7 @@ public class FacetedNavigationGScopesTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
     
@@ -101,7 +108,7 @@ public class FacetedNavigationGScopesTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("40", cv.getConstraint());
-        Assert.assertEquals(108, cv.getCount());
+        Assert.assertEquals(108, cv.getCount() + 0 + 0);
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C40=Full", cv.getQueryStringParam());
@@ -119,7 +126,7 @@ public class FacetedNavigationGScopesTests {
         
         cv = c.getValues().get(0);
         Assert.assertEquals("1", cv.getConstraint());
-        Assert.assertEquals(22, cv.getCount());
+        Assert.assertEquals(22, cv.getCount() + 0 + 0);
         Assert.assertEquals("1", cv.getData());
         Assert.assertEquals("Henry IV", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C1=Henry+IV", cv.getQueryStringParam());
@@ -157,7 +164,7 @@ public class FacetedNavigationGScopesTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("8", cv.getConstraint());
-        Assert.assertEquals(46, cv.getCount());
+        Assert.assertEquals(46, cv.getCount() + 0);
         Assert.assertEquals("8", cv.getData());
         Assert.assertEquals("Cleopatra", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C8=Cleopatra", cv.getQueryStringParam());
@@ -194,7 +201,7 @@ public class FacetedNavigationGScopesTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("10", cv.getConstraint());
-        Assert.assertEquals(33, cv.getCount());
+        Assert.assertEquals(33, cv.getCount() + 0);
         Assert.assertEquals("10", cv.getData());
         Assert.assertEquals("Coriolanus", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C10=Coriolanus", cv.getQueryStringParam());
@@ -210,7 +217,7 @@ public class FacetedNavigationGScopesTests {
         
         cv = c.getValues().get(0);
         Assert.assertEquals("40", cv.getConstraint());
-        Assert.assertEquals(3, cv.getCount());
+        Assert.assertEquals(3, cv.getCount() + 0);
         Assert.assertEquals("40", cv.getData());
         Assert.assertEquals("Full (nested)", cv.getLabel());
         Assert.assertEquals("f.By+Story%7C40=Full+%28nested%29", cv.getQueryStringParam());

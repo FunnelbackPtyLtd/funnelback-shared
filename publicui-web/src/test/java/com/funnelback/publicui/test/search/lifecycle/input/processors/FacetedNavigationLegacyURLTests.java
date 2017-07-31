@@ -15,7 +15,7 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationURLTests {
+public class FacetedNavigationLegacyURLTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
@@ -30,7 +30,6 @@ public class FacetedNavigationURLTests {
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test
@@ -55,10 +54,6 @@ public class FacetedNavigationURLTests {
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertEquals("|v:\"Shakespeare/cleopatra\"", st.getQuestion().getFacetsQueryConstraints().get(0));
-        
-        
-        
-        
     }
     
     

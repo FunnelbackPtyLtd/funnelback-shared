@@ -1,7 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.util.Optional;
-
 import javax.annotation.Resource;
 
 import org.junit.Assert;
@@ -17,7 +15,7 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationQueryTests {
+public class FacetedNavigationLegacyGScopesTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
@@ -28,22 +26,10 @@ public class FacetedNavigationQueryTests {
     @Before
     public void before() {
         SearchQuestion question = new SearchQuestion();
-        question.setCollection(configRepository.getCollection("faceted-navigation-query"));
+        question.setCollection(configRepository.getCollection("faceted-navigation-gscopes"));
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
-    }
-    
-    @Test
-    public void testEmpty() {
-        st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[0]);
-        processor.processInput(st);
-        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-
-        st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[] {""});
-        processor.processInput(st);
-        Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
     }
     
     @Test
@@ -51,7 +37,7 @@ public class FacetedNavigationQueryTests {
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         
-        st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[] {"Plumbers"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|1", new String[] {"Henry IV"});
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
@@ -59,25 +45,23 @@ public class FacetedNavigationQueryTests {
         
         // Multiple categories
         st.getQuestion().getRawInputParameters().clear();
-        st.getQuestion().getRawInputParameters().put("f.By Query|1", new String[] {"Plumbers"});
-        st.getQuestion().getRawInputParameters().put("f.By Query|3", new String[] {"Car needed"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|1", new String[] {"Henry IV"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|10", new String[] {"Coriolanus"});
         st.getQuestion().getFacetsQueryConstraints().clear();
         st.getQuestion().setFacetsGScopeConstraints(null);
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
-        // FIXME: FUN-4480 This should be 3,1| here because both values are part of the same facet
-        Assert.assertTrue("3,1+".equals(st.getQuestion().getFacetsGScopeConstraints())
-                || "1,3+".equals(st.getQuestion().getFacetsGScopeConstraints()));
-        
+        // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
+        Assert.assertTrue("10,1+".equals(st.getQuestion().getFacetsGScopeConstraints()) || "1,10+".equals(st.getQuestion().getFacetsGScopeConstraints()));        
     }
-
+    
     @Test
     public void testSameName() {
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         
-        st.getQuestion().getRawInputParameters().put("f.By Query|16", new String[] {"Plumbers"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|16", new String[] {"Henry IV"});
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
@@ -85,18 +69,19 @@ public class FacetedNavigationQueryTests {
         
         // Multiple categories
         st.getQuestion().getRawInputParameters().clear();
-        st.getQuestion().getRawInputParameters().put("f.By Query|16", new String[] {"Plumbers"});
-        st.getQuestion().getRawInputParameters().put("f.By Query|3", new String[] {"Car needed"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|16", new String[] {"Henry IV"});
+        st.getQuestion().getRawInputParameters().put("f.By Story|10", new String[] {"Coriolanus"});
         st.getQuestion().getFacetsQueryConstraints().clear();
         st.getQuestion().setFacetsGScopeConstraints(null);
         processor.processInput(st);
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertTrue( Optional.of(st.getQuestion().getFacetsGScopeConstraints())
-            .map(c -> c.equals("3,16+") || c.equals("16,3+")).get());
-        
+        Assert.assertTrue("Wa want '10,16+' or '16,10+' (order is not important) yet we got: " 
+                + st.getQuestion().getFacetsGScopeConstraints(), 
+                st.getQuestion().getFacetsGScopeConstraints().equals("10,16+")
+                || st.getQuestion().getFacetsGScopeConstraints().equals("16,10+"));                
     }
-
+    
     
 }

@@ -18,7 +18,7 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationCombinedTests {
+public class FacetedNavigationLegacyCombinedTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
@@ -33,7 +33,6 @@ public class FacetedNavigationCombinedTests {
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test
@@ -42,7 +41,6 @@ public class FacetedNavigationCombinedTests {
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
         
         st.getQuestion().getRawInputParameters().put("f.By URL|url", new String[] {"Shakespeare/cleopatra"});
-        // This next line does not make sense when would this happen?
         st.getQuestion().getRawInputParameters().put("f.By Date|d", new String[] {"1500-01-01", "1600-01-01"});
         st.getQuestion().getRawInputParameters().put("f.By Query|41", new String[] {"King"});
         st.getQuestion().getRawInputParameters().put("f.By Play|10", new String[] {"Coriolanus"});
@@ -50,30 +48,24 @@ public class FacetedNavigationCombinedTests {
         processor.processInput(st);
         
         Assert.assertNotNull(st.getQuestion().getFacetsGScopeConstraints());
-        
-        // Note that 1,10,41++ is also valid.
-        // the current implementation happens to do something like 1,10+41+
+        // FIXME: FUN-4480 This should be 1,10|41+
         
         Assert.assertTrue("We expect all three gscopes to be logical AND (note this is reverse polish)", 
-            st.getQuestion().getFacetsGScopeConstraints().endsWith("++")||
-            st.getQuestion().getFacetsGScopeConstraints().equals("1,10+41+"));
+            st.getQuestion().getFacetsGScopeConstraints().endsWith("++"));
         
-        //We will check we set the correct constrains by replace '+' and ',' with space and spluting on space.
+        //We will check we set the correct constrains, by chopping of the end bit (++) and spliting by comma
         List<String> gscopesConstrains = Arrays.asList(
-            st.getQuestion().getFacetsGScopeConstraints().replace("+", " ").replace(",", " ").split(" "));
+            st.getQuestion().getFacetsGScopeConstraints().substring(0, 
+                                    st.getQuestion().getFacetsGScopeConstraints().length() - "++".length()
+                                    ).split(","));
         Assert.assertTrue(gscopesConstrains.contains("1"));
         Assert.assertTrue(gscopesConstrains.contains("10"));
         Assert.assertTrue(gscopesConstrains.contains("41"));
-        Assert.assertEquals(3, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
         
         Assert.assertTrue(
-            "we should see the 1600 date coinstrain.",
-            st.getQuestion().getFacetsQueryConstraints().contains("|d:\"$++ 1600-01-01 $++\""));
-        
-        Assert.assertTrue(
-            "Should see the 1500 date constraint.",
-            st.getQuestion().getFacetsQueryConstraints().contains("|d:\"$++ 1500-01-01 $++\""));
-        
+            "we should see: '|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]' in facet query constraints",
+            st.getQuestion().getFacetsQueryConstraints().contains("|[d:\"$++ 1600-01-01 $++\" d:\"$++ 1500-01-01 $++\"]"));
         Assert.assertTrue("we should see: '|v:\"Shakespeare/cleopatra\"' in facet query constraints", 
             st.getQuestion().getFacetsQueryConstraints().contains("|v:\"Shakespeare/cleopatra\""));
         

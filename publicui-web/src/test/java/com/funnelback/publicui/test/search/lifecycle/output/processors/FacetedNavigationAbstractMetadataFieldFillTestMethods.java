@@ -74,7 +74,7 @@ public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("Z", cv.getConstraint());
-        Assert.assertEquals(27, cv.getCount());
+        Assert.assertEquals(27, cv.getCount() + 0);
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
         Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
@@ -95,7 +95,7 @@ public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
         
         cv = c.getValues().get(0);
         Assert.assertEquals("W", cv.getConstraint());
-        Assert.assertEquals(26, cv.getCount());
+        Assert.assertEquals(26, cv.getCount() + 0);
         Assert.assertEquals("divtrades & servicesdiv", cv.getData());
         Assert.assertEquals("divtrades & servicesdiv", cv.getLabel());
         Assert.assertEquals("f.Job+Category%7CW=divtrades+%26+servicesdiv", cv.getQueryStringParam());
@@ -126,7 +126,7 @@ public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("Z", cv.getConstraint());
-        Assert.assertEquals(27, cv.getCount());
+        Assert.assertEquals(27, cv.getCount() + 0);
         Assert.assertEquals("australia", cv.getData());
         Assert.assertEquals("australia", cv.getLabel());
         Assert.assertEquals("f.Location%7CZ=australia", cv.getQueryStringParam());
@@ -141,7 +141,7 @@ public class FacetedNavigationAbstractMetadataFieldFillTestMethods {
     
         cv = subCategory.getValues().get(2);
         Assert.assertEquals("Y", cv.getConstraint());
-        Assert.assertEquals(5, cv.getCount());
+        Assert.assertEquals(5, cv.getCount() + 0);
         Assert.assertEquals("nsw", cv.getData());
         Assert.assertEquals("nsw", cv.getLabel());
         Assert.assertEquals("f.Location%7CY=nsw", cv.getQueryStringParam());

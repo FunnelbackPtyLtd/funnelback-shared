@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
@@ -25,6 +23,8 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.impl.Da
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Parses a faceted navigation configuration using a Stax Stream parser.
@@ -81,7 +81,10 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
                 .map(c -> convert(facet.getName(), c))
                 .collect(Collectors.toList());
             
-            FacetDefinition facetDefinition = new FacetDefinition(facet.getName(), categoryDefinitions);
+            FacetDefinition facetDefinition = new FacetDefinition(facet.getName(), categoryDefinitions,
+                facet.getSelectionType(),
+                facet.getConstraintJoin(),
+                facet.getFacetValues());
             
             facetDefinitions.add(facetDefinition);
         }

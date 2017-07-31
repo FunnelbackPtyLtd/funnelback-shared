@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.config.NoOptionsConfig;
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FacetedNavigationWhiteBlackList;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -31,7 +34,7 @@ public class FacetedNavigationWhiteBlackListTest {
         ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d", "c", false));
         ct.getValues().add(new Facet.CategoryValue("value3", "category3", 13, "e=f", "e", false));
         
-        Facet f = new Facet("Test Facet");
+        Facet f = new Facet("Test Facet", FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
         f.getCategories().add(ct);
         
         SearchResponse sr = new SearchResponse();

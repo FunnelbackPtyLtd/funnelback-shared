@@ -292,7 +292,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
     /**
@@ -305,7 +305,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
     /** Creates a URL scope based facet definition */
@@ -317,7 +317,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        FacetDefinition result = new FacetDefinition(label, categoryDefinitions);
+        FacetDefinition result = FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
         return result;
     }
 
@@ -331,7 +331,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
         
-        return new FacetDefinition(label, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
     
     private FacetDefinition createDuplicateTitlesFacetDefinition(String label, String metadataClass) {
@@ -341,7 +341,7 @@ public class ContentAuditor extends AbstractInputProcessor {
         fill.setFacetName(label);
         categoryDefinitions.add(fill);
 
-        return new FacetDefinition(label, categoryDefinitions);
+        return FacetDefinition.getFacetWithUpgradedValues(label, categoryDefinitions);
     }
 
 

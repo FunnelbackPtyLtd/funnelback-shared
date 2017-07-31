@@ -99,7 +99,7 @@ public class FacetedNavigationQueryTests {
         
         Facet.CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("2", cv.getConstraint());
-        Assert.assertEquals(630, cv.getCount());
+        Assert.assertEquals(630, cv.getCount() + 0);
         Assert.assertEquals("2", cv.getData());
         Assert.assertEquals("Managers", cv.getLabel());
         Assert.assertEquals("f.By+Query%7C2=Managers", cv.getQueryStringParam());
@@ -117,7 +117,7 @@ public class FacetedNavigationQueryTests {
         
         cv = c.getValues().get(0);
         Assert.assertEquals("1", cv.getConstraint());
-        Assert.assertEquals(27, cv.getCount());
+        Assert.assertEquals(27, cv.getCount() + 0);
         Assert.assertEquals("1", cv.getData());
         Assert.assertEquals("Plumbers", cv.getLabel());
         Assert.assertEquals("f.By+Query%7C1=Plumbers", cv.getQueryStringParam());

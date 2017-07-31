@@ -11,11 +11,11 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 import com.funnelback.publicui.test.search.lifecycle.input.processors.BothFacetedNavigationInputProcessors;
-import com.funnelback.publicui.test.search.lifecycle.input.processors.FacetedNavigationAbstractMetadataFieldFillTestMethods;
+import com.funnelback.publicui.test.search.lifecycle.input.processors.FacetedNavigationLegacyAbstractMetadataFieldFillTestMethods;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationInputCountThresholdMetadataFieldFillTests extends FacetedNavigationAbstractMetadataFieldFillTestMethods {
+public class FacetedNavigationLegacyInputCountThresholdMetadataFieldFillTests extends FacetedNavigationLegacyAbstractMetadataFieldFillTestMethods {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
@@ -31,7 +31,6 @@ public class FacetedNavigationInputCountThresholdMetadataFieldFillTests extends 
         question.getCollection().setFacetedNavigationConfConfig(FacetedNavigationCountThresholdMetadataFieldFillTestUtils.buildFacetConfig());
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
 }

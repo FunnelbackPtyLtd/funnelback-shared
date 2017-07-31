@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,8 +8,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.CategoryAndSiblings;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillCategoryValueUrls;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
@@ -47,24 +50,36 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             
             if (config != null) {
                 for(FacetDefinition f: config.getFacetDefinitions()) {
-                    final Facet facet = new Facet(f.getName());
+                    final Facet facet = new Facet(f.getName(), f.getSelectionType(), f.getConstraintJoin(), f.getFacetValues());
+                    
+                    List<Facet.Category> cats = new ArrayList<>();
                     
                     for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
-                        Facet.Category c = fillCategories(ct, searchTransaction);
+                        Facet.Category c = fillCategories(f, ct, searchTransaction);
                         if (c != null) {
-                            // We can only fill out the URLs after the entire category
-                            // with its children have been created.
-                            Flattener.flatten(c, Facet.Category::getCategories)
-                                .forEach(cat -> fillUrls.fillURLs(searchTransaction, cat));
-                            
                             facet.getCategories().add(c);
-                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())) {
+                            cats.add(c);
+                            if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(ct.getQueryStringParamName())
+                                && f.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
                                 // This category has been selected. Stop calculating other
                                 // values for it (FUN-4462)
+                                // We only do this in legacy mode, it is not clear if we want to do this in new modes.
+                                // we only want to do this in the drill down case.
+                                // Note that this does not work for metadata and so this legacy code here makes gscopes
+                                // and metadata inconsitent.
                                 break;
                             }
                         }
                     }
+                    
+                    
+                     // We can only fill out the URLs after the entire category
+                    // with its children and its siblings have been created.
+                    List<CategoryAndSiblings> cas = CategoryAndSiblings.toCategoriesWithSiblings(cats);
+                    cas.stream().flatMap(Flattener.mapper(c -> {
+                        return CategoryAndSiblings.toCategoriesWithSiblings(c.getCategory().getCategories());
+                    }))
+                    .forEach(catAndSibs -> fillUrls.fillURLs(searchTransaction, f, catAndSibs.getSiblings(), catAndSibs.getCategory()));
                     
                     // Sort all categories for this facet by the count of the first value of
                     // each category. This is useful for GScope based facets where there's only
@@ -76,7 +91,9 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             }
         }
     }
-
+    
+    
+    
     /**
      * Fills the categories for a given {@link CategoryDefinition}, by computing all the
      * values from the result packet (Delegated to the {@link CategoryDefinition} implementation.
@@ -87,12 +104,13 @@ public class FacetedNavigation extends AbstractOutputProcessor {
      * @param searchTransaction
      * @return
      */
-    private Facet.Category fillCategories(final CategoryDefinition cDef, SearchTransaction searchTransaction) {
+    private Facet.Category fillCategories(final FacetDefinition facetDefinition,
+            final CategoryDefinition cDef, SearchTransaction searchTransaction) {
         log.trace("Filling category '" + cDef + "'");
         
         // Fill the values for this category
         Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
-        category.getValues().addAll(cDef.computeValues(searchTransaction));
+        category.getValues().addAll(cDef.computeValues(searchTransaction, facetDefinition));
         Collections.sort(category.getValues(), new CategoryValue.ByCountComparator(true));
     
         // Find out if this category is currently selected
@@ -122,12 +140,17 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             if (valueMatches) {
                 log.trace("Value has been selected.");
                 for (CategoryDefinition subCategoryDef: cDef.getSubCategories()) {
-                    Facet.Category c = fillCategories(subCategoryDef, searchTransaction);
+                    Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction);
                     if (c != null) {
                         category.getCategories().add(c);
-                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())) {
+                        if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())
+                                && facetDefinition.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
                             // This category has been selected. Stop calculating other
                             // values for it (FUN-4462)
+                            // We only do this in legacy mode, it is not clear if we want to do this in new modes.
+                            // we only want to do this in the drill down case.
+                            // Note that this does not work for metadata and so this legacy code here makes gscopes
+                            // and metadata inconsitent.
                             break;
                         }
                     }

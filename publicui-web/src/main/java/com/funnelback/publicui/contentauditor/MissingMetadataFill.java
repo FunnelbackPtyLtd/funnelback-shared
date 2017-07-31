@@ -8,9 +8,12 @@ import java.util.Map.Entry;
 import com.funnelback.common.padre.MetadataClass;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
@@ -36,19 +39,25 @@ public class MissingMetadataFill extends MetadataFieldFill {
      * (i.e. those for which no metadata in this class was set) which will select those documents.
      */
     @Override
-    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
         if (st.hasResponse() && st.getResponse().hasResultPacket() && st.getResponse().getResultPacket().hasResults()) {
+            FacetSearchData facetData = getFacetSearchData(st, facetDefinition);
             
             // Subtract out the metadata entries which have been assigned
-            for (Entry<String, Integer> entry : st.getResponse().getResultPacket().getRmcs().entrySet()) {
+            for (Entry<String, Integer> entry : facetData.getResponseForValues().getResultPacket().getRmcs().entrySet()) {
                 String item = entry.getKey();
                 if (!item.startsWith(MetadataBasedCategory.METADATA_ABSENT_PREFIX)) {
                     continue; // Skip the actual entry counts
                 }
                 
-                int count = entry.getValue();
+                Integer count = facetData.getResponseForCounts()
+                        .map(SearchResponse::getResultPacket)
+                        .map(ResultPacket::getRmcs)
+                        .map(rmcs -> rmcs.get(entry.getKey()))
+                        .orElse(facetData.getCountIfNotPresent());
+                
                 MetadataAndValue mdv = parseMetadata(item);
 
                 // Strip absent prefix

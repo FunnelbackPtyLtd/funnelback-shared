@@ -7,14 +7,20 @@ import org.junit.Assert;
 import org.junit.Test;
 import static java.util.Arrays.asList;
 
+import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.MetadataAndValue;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-
+import static org.mockito.Mockito.*;
+import static com.funnelback.publicui.search.model.transaction.SearchTransaction.ExtraSearches.FACETED_NAVIGATION;
 public class CategoryDefinitionTests {
 
     @Test
@@ -57,19 +63,113 @@ public class CategoryDefinitionTests {
 
     }
     
-    
-    public class CategoryDefinitionComputeData extends CategoryDefinition {
+    @Test
+    public void getFacetSearchDataTestAndFromScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
         
-        public CategoryDefinitionComputeData(String data, List<CategoryValueComputedDataHolder> computedData) {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals(st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
+    }
+    
+    @Test
+    public void getFacetSearchDataTestLegacyFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.LEGACY);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        // Legacy has everything come from the main search packet, as legacy did
+        // not support unscoped query.
+        Assert.assertEquals(st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        // Don't worry about default count as we wont need one legacy.
+    }
+    
+    
+    @Test
+    public void getFacetSearchDataTestOrFromScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the OR case are not supported.",
+            false, data.getResponseForCounts().isPresent());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
+    }
+    
+    @Test
+    public void getFacetSearchDataTestOrFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the OR case are not supported.",
+            false, data.getResponseForCounts().isPresent());
+        Assert.assertEquals("Values come from the unscoped query",
+            extraSearchTransaction.getResponse(), data.getResponseForValues());
+        Assert.assertNull(data.getCountIfNotPresent());
+    }
+    
+    @Test
+    public void getFacetSearchDataTestAndFromUnScoped() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the AND case come from the main query because we scope the"
+            + " existing query further.",
+            st.getResponse(), data.getResponseForCounts().get());
+        Assert.assertEquals("Values come from the unscoped query",
+            extraSearchTransaction.getResponse(), data.getResponseForValues());
+        Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
+            + " the scopped query then ANDing with that value will result in a zero result page.",
+            0, data.getCountIfNotPresent() + 0);
+    }
+    
+    
+    
+    public class MockCategoryDefinition extends CategoryDefinition {
+        
+        public MockCategoryDefinition(String data) {
             super(data);
-            this.computedData = computedData;
         }
 
-        public List<CategoryValueComputedDataHolder> computedData;
-
         @Override
-        public List<CategoryValueComputedDataHolder> computeData(SearchTransaction st) {
-            return computedData;
+        public List<CategoryValueComputedDataHolder> computeData(SearchTransaction st, FacetDefinition fdef) {
+            throw new NotImplementedException("not mocked");
         }
 
         @Override
@@ -87,19 +187,40 @@ public class CategoryDefinitionTests {
             throw new NotImplementedException("not mocked");
         }
         
+        @Override
+        public FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
+            return super.getFacetSearchData(st, facetDefinition);
+        }
+        
+    }
+    
+    public class CategoryDefinitionComputeData extends MockCategoryDefinition {
+        
+        public CategoryDefinitionComputeData(String data, List<CategoryValueComputedDataHolder> computedData) {
+            super(data);
+            this.computedData = computedData;
+        }
+
+        public List<CategoryValueComputedDataHolder> computedData;
+        
+        @Override
+        public List<CategoryValueComputedDataHolder> computeData(SearchTransaction st, FacetDefinition fdef) {
+            return computedData;
+        }
+        
     }
     
     @Test
     public void testComputeValues() {
         CategoryValueComputedDataHolder data = new CategoryValueComputedDataHolder("dhawking", 
             "David", 12, "constraint?", false, "f.author|", "author=dhawking");
-        List<CategoryValue> values = new CategoryDefinitionComputeData("d", asList(data)).computeValues(null);
+        List<CategoryValue> values = new CategoryDefinitionComputeData("d", asList(data)).computeValues(null, null);
         Assert.assertEquals(1, values.size());
         
         
         Assert.assertEquals("dhawking", values.get(0).getData());
         Assert.assertEquals("David", values.get(0).getLabel());
-        Assert.assertEquals(12, values.get(0).getCount());
+        Assert.assertEquals(12, 0 + values.get(0).getCount());
         Assert.assertEquals("constraint?", values.get(0).getConstraint());
         Assert.assertEquals(false, values.get(0).isSelected());
         Assert.assertEquals("f.author|", values.get(0).getQueryStringParamName());

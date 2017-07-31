@@ -23,6 +23,7 @@
         <ref bean="session" />
         <ref bean="userKeysInputProcessor" />
         <ref bean="facetScopeInputProcessor" />
+        <ref bean="legacyFacetedNavigationInputProcessor" />
         <ref bean="facetedNavigationInputProcessor" />
         <ref bean="facetedNavigationSetQueryProcessorOptionsInputProcessor" />
         <ref bean="multiFacetedNavigationInputProcessor" />
@@ -68,6 +69,7 @@
         <ref bean="fixCacheAndClickLinks" />
         <ref bean="fixDisplayUrlsOutputProcessor" />
         <ref bean="htmlEncodeSummaries" />
+        <ref bean="extraSearchesExecutor" />
         <ref bean="facetedNavigationOutputProcessor" />
         <ref bean="facetedNavigationWhiteBlackListOutputProcessor" />
         <ref bean="accessibilityAuditorPopulateFacetCategoryLabels" />
@@ -76,7 +78,6 @@
         <ref bean="contextualNavigationOutputProcessor" />
         <ref bean="quickLinksOutputProcessor" />
         <ref bean="queryCleanOutputProcessor" />
-        <ref bean="extraSearchesExecutor" />
         <ref bean="contentOptimiserOutputProcessor" />
         <ref bean="textMinerOutputProcessor" />
         <ref bean="getTranslationsOutputProcessor" />

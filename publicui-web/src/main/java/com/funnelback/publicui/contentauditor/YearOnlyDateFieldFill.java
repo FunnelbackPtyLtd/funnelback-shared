@@ -3,6 +3,7 @@ package com.funnelback.publicui.contentauditor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -19,10 +20,10 @@ public class YearOnlyDateFieldFill extends DateFieldFill {
     }
 
     @Override
-    public List<CategoryValue> computeValues(final SearchTransaction st) {
+    public List<CategoryValue> computeValues(final SearchTransaction st, FacetDefinition facetDefinition) {
         List<CategoryValue> result = new ArrayList<>();
         
-        for (CategoryValue cv : super.computeValues(st)) {
+        for (CategoryValue cv : super.computeValues(st, facetDefinition)) {
             if (cv.getLabel().matches("\\d+")) {
                 result.add(cv);
             }

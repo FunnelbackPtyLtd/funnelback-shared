@@ -1,7 +1,5 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
-import java.util.Optional;
-
 import javax.annotation.Resource;
 
 import org.junit.Assert;
@@ -17,7 +15,7 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationQueryTests {
+public class FacetedNavigationLegacyQueryTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
@@ -32,7 +30,6 @@ public class FacetedNavigationQueryTests {
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test
@@ -93,8 +90,7 @@ public class FacetedNavigationQueryTests {
         
         Assert.assertEquals(0, st.getQuestion().getFacetsQueryConstraints().size());
         // FIXME: FUN-4480 This should be 10,1| here because both values are part of the same facet
-        Assert.assertTrue( Optional.of(st.getQuestion().getFacetsGScopeConstraints())
-            .map(c -> c.equals("3,16+") || c.equals("16,3+")).get());
+        Assert.assertEquals("3,16+", st.getQuestion().getFacetsGScopeConstraints());
         
     }
 

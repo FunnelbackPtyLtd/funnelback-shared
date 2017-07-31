@@ -22,7 +22,7 @@ import com.funnelback.publicui.search.service.config.DefaultConfigRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/test/resources/spring/applicationContext.xml")
-public class FacetedNavigationXPathFillTests {
+public class FacetedNavigationLegacyXPathFillTests {
 
     private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
     
@@ -39,11 +39,11 @@ public class FacetedNavigationXPathFillTests {
         st = new SearchTransaction(question, null);
         
         processor = new BothFacetedNavigationInputProcessors();
-        processor.switchAllFacetConfigToSelectionAnd(st);
     }
     
     @Test
     public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
+        
         // No transaction
         processor.processInput(null);
         
@@ -100,12 +100,10 @@ public class FacetedNavigationXPathFillTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
-        
-        
-        
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ new zealand $++\""));
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\""));
+        Assert.assertEquals(1, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertTrue(
+                "|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0))
+                || "|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]".equals(st.getQuestion().getFacetsQueryConstraints().get(0)));
         
         // Multiple facets
         st.getQuestion().getRawInputParameters().clear();
@@ -128,14 +126,13 @@ public class FacetedNavigationXPathFillTests {
         processor.processInput(st);
         
         Assert.assertNull(st.getQuestion().getFacetsGScopeConstraints());
-        Assert.assertEquals(4, st.getQuestion().getFacetsQueryConstraints().size());
-        
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ new zealand $++\""));
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Z:\"$++ australia $++\""));
-        
-        
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ nsw $++\""));
-        Assert.assertTrue(st.getQuestion().getFacetsQueryConstraints().contains("|Y:\"$++ tas $++\""));
+        Assert.assertEquals(2, st.getQuestion().getFacetsQueryConstraints().size());
+        Assert.assertTrue(
+                st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ new zealand $++\" Z:\"$++ australia $++\"]")
+                || st.getQuestion().getFacetsQueryConstraints().contains("|[Z:\"$++ australia $++\" Z:\"$++ new zealand $++\"]"));
+        Assert.assertTrue(
+                st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ nsw $++\" Y:\"$++ tas $++\"]")
+                || st.getQuestion().getFacetsQueryConstraints().contains("|[Y:\"$++ tas $++\" Y:\"$++ nsw $++\"]")); 
     }
     
 

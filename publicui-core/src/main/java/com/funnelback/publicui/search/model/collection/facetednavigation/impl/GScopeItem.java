@@ -8,9 +8,11 @@ import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -40,15 +42,23 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
 
     /** {@inheritDoc} */
     @Override
-    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st) {
+    public List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition facetDefinition) {
+        
+        FacetSearchData facetData = getFacetSearchData(st, facetDefinition);
+        
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
-        ResultPacket rp = st.getResponse().getResultPacket();
-        if (rp.getGScopeCounts().get(userSetGScope) != null) {
+        
+        if (facetData.getResponseForValues().getResultPacket().getGScopeCounts().get(userSetGScope) != null) {
             String queryStringParamValue = data;
+            Integer count = facetData.getResponseForCounts()
+                    .map(SearchResponse::getResultPacket)
+                    .map(ResultPacket::getGScopeCounts)
+                    .map(gscopeCounts -> gscopeCounts.get(userSetGScope))
+                    .orElse(facetData.getCountIfNotPresent());
             categories.add(new CategoryValueComputedDataHolder(
                     Integer.toString(userSetGScope),
                     data,
-                    rp.getGScopeCounts().get(userSetGScope),
+                    count,
                     Integer.toString(getGScopeNumber()),
                     FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data),
                     getQueryStringParamName(),
