@@ -6,11 +6,11 @@ package com.funnelback.common.facetednavigation.models;
  */
 public enum FacetConstraintJoin {
     /**
-     * Requires that all selected constraints are meet.  
+     * Requires that all selected constraints are met.  
      */
     AND,
     /**
-     * Requires that at least on of the selected constraints are meet.
+     * Requires that at least one of the selected constraints are met.
      */
     OR,
     /**
