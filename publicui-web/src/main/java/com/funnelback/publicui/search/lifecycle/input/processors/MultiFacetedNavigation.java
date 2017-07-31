@@ -22,12 +22,11 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
  */
 @Component("multiFacetedNavigationInputProcessor")
 public class MultiFacetedNavigation extends AbstractInputProcessor {
-
-    //TODO account for CA or AA wanting to use this.
     
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         
+        // Currently this wont work for AA or CA.
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.SEARCH)) {
             if(Config.isTrue(searchTransaction.getQuestion()
