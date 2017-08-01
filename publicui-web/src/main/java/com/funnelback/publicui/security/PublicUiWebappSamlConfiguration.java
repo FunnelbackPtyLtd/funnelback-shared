@@ -20,15 +20,15 @@ import com.funnelback.springmvc.api.config.security.saml.WebappSamlConfiguration
 public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration {
 
     private DefaultServerConfigReadOnly config;
-    
+
     private ExecutionContextHolder executionContextHolder;
-    
+
     @Autowired
     public PublicUiWebappSamlConfiguration(File searchHome, ExecutionContextHolder executionContextHolder) {
         config = new DefaultServerConfigReadOnly(new FileServerConfigDataReadOnly(searchHome));
         this.executionContextHolder = executionContextHolder;
     }
-    
+
     @Override
     public Optional<File> groovySamlPermissionMapperFile() {
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
@@ -85,11 +85,7 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
 
     @Override
     public Optional<String> getEntityId() {
-        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            return config.get(ServerKeys.Auth.Admin.SAML.ENTITY_ID);
-        } else {
-            return config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID);
-        }
+        return config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID);
     }
 
 }
