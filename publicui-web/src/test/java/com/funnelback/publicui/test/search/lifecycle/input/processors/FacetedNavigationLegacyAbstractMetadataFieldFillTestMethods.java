@@ -26,8 +26,6 @@ public abstract class FacetedNavigationLegacyAbstractMetadataFieldFillTestMethod
 
     @Test
     public void testMissingData() throws FileNotFoundException, EnvironmentVariableException {
-// TODO remove this?        FacetedNavigation processor = new FacetedNavigation();
-        
         // No transaction
         processor.processInput(null);
         

@@ -59,7 +59,7 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
                         .orElse(facetData.getCountIfNotPresent().apply(this, mdv.value));
                 
                 categories.add(new CategoryValueComputedDataHolder(
-                        mdv.value, // TODO did it make sense to change this to value, why did it use metadata before???
+                        mdv.metadata, // Why is this metadata class?
                         mdv.value,
                         count,
                         getMetadataClass(),

@@ -47,7 +47,7 @@
                 <i class="fa fa-bars"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a href='/a/#/services'>
+              <li><a href='/a/#/services' class="selected-dashboard">
                 <i class="fa fa-diamond fa-dropdown-menu-icon"></i> Marketing
               </a></li>
               <li><a href='/search/admin/index.cgi'>

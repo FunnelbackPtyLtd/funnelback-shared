@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +12,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
@@ -22,16 +25,31 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.common.profile.ProfileAndView;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.common.profile.ProfileView;
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.common.config.ServiceId;
+import com.funnelback.common.groovy.GroovyLoader;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
+import com.funnelback.config.data.service.ServiceConfigData;
+import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
+import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Collection.Hook;
 import com.funnelback.publicui.search.model.collection.Profile;
@@ -39,6 +57,7 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
@@ -51,13 +70,16 @@ import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.springmvc.service.resource.ResourceManager;
 import com.funnelback.springmvc.service.resource.impl.AbstractSingleFileResource;
-import com.funnelback.springmvc.service.resource.impl.GroovyScriptResource;
+import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderResource;
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataResource;
 
 import groovy.lang.Script;
+import groovy.util.ResourceException;
+import groovy.util.ScriptException;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.Cache;
@@ -94,17 +116,16 @@ public class DefaultConfigRepository implements ConfigRepository {
     /**
      * <p>How often to force reloading of Groovy script, in seconds.</p>
      * 
-     * <p>This is necessary because when the Groovy class loader will not
-     * detect changes in script dependencies (i.e. a Groovy class using
-     * another class defined in another script). Having that configurable
-     * allow developers (esp. Stencils developers) to work on hook scripts
-     * without having to wait 60s for them to be refreshed.</p>
+     * <p>This is set to 1000 years (not too big to avoid surprise overflows), 
+     * as we shouldn't need to reload the the groovy class loader. This option is
+     * left in place in case the GroovyEngineScript doesn't work as expected
+     * and we do need to revert the behaviour.</p>
      * 
      * @see FUN-8961
      */
-    @Value("#{appProperties['config.repository.groovy.reload']?:60}")
+    @Value("#{appProperties['config.repository.groovy.reload']?:2147483647}") // Integer.MAX_VALUE is used as 1000 years is too large for int.
     @Setter
-    private long groovyForceReloadSeconds = 60;
+    private long groovyForceReloadSeconds = TimeUnit.SECONDS.convert(365*1000, TimeUnit.DAYS);
     
     @Autowired
     @Setter
@@ -214,24 +235,35 @@ public class DefaultConfigRepository implements ConfigRepository {
         
         c.getProfiles().putAll(loadProfiles(c));
         
+        // Force the use of the same groovy loader for all of our scripts. It is probably less suprising for users
+        // that way.
+        GroovyLoader collectionGroovyLoader = resourceManager.load(
+            new GroovyCollectionLoaderResource(searchHome, new CollectionId(collectionId), groovyForceReloadSeconds));
+        
         for (Hook hook: Hook.values()) {
             File hookScriptFile = new File(collectionConfigFolder, Files.HOOK_PREFIX + hook.toString() + Files.HOOK_SUFFIX);
-            if (hookScriptFile.exists()) {
-                try {
-                    Class<Script> hookScript = resourceManager.load(new GroovyScriptResource(hookScriptFile, collectionId, searchHome, groovyForceReloadSeconds)).getResource();
-                    c.getHookScriptsClasses().put(hook, hookScript);
-                } catch (CompilationFailedException cfe) {
-                    log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
-                }
-            }
+            loadScriptHandleExceptions(collectionGroovyLoader, hookScriptFile)
+                .ifPresent(hookScript -> c.getHookScriptsClasses().put(hook, hookScript));
         }
         
-        c.setCartProcessClass(resourceManager.load(
-                        new GroovyScriptResource(new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX), collectionId, searchHome, groovyForceReloadSeconds),
-                        AbstractSingleFileResource.wrapDefault(null)
-                    ).getResource());
+        loadScriptHandleExceptions(collectionGroovyLoader, new File(collectionConfigFolder, Files.CART_PROCESS_PREFIX + Files.GROOVY_SUFFIX))
+            .ifPresent(c::setCartProcessClass);
         
         return c;
+    }
+    
+    private Optional<Class<Script>> loadScriptHandleExceptions(GroovyLoader groovyLoader, File hookScriptFile) {
+        if (hookScriptFile.exists()) {
+            try {
+                return Optional.of(groovyLoader.loadScript(hookScriptFile));
+                
+            } catch (CompilationFailedException cfe) {
+                log.error("Compilation of hook script '"+hookScriptFile+"' failed", cfe);
+            } catch (IOException | ResourceException | ScriptException e) {
+                log.error("Error in hook script '"+hookScriptFile+"' failed", e);
+            }
+        }
+        return Optional.empty();
     }
     
     /**
@@ -256,7 +288,12 @@ public class DefaultConfigRepository implements ConfigRepository {
             } catch (IOException e) {
                 log.error("Could not read padre opts file from '"+padreOptsFile+"'",e);
             }
-
+            
+            try {
+                p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
+            } catch (ProfileNotFoundException e) {
+                log.error("Profile vanished while being loaded '"+profileDir.getName()+"'",e);
+            }
             
             CuratorConfig config = new CuratorConfig();  // Empty default curator config
             
@@ -313,13 +350,10 @@ public class DefaultConfigRepository implements ConfigRepository {
      * @return
      */
     private File[] getProfileDirs(File configDir) {
-        return configDir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                // Only directories that doesn't starts with a dot (.svn ...)
-                return pathname.isDirectory() && !pathname.getName().startsWith(".");
-            }
-        });
+        String collectionName = configDir.getName();
+        return Arrays.stream(com.funnelback.common.config.Collections.getProfiles(searchHome, collectionName))
+            .map((profileId) -> new File(configDir, profileId))
+            .toArray(File[]::new);
     }
 
     /**
@@ -581,6 +615,23 @@ public class DefaultConfigRepository implements ConfigRepository {
             throw new RuntimeException("Writes are not permitted under the public UI.");
         }));
         return new DefaultServerConfigReadOnly(serverConfigData);
+    }
+
+    @Override
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
+        String profileId = profileIdAndView;
+        ProfileView profileView = ProfileView.live;
+        if (profileIdAndView.endsWith(DefaultValues.PREVIEW_SUFFIX)) {
+            profileId = profileId.substring(0, profileId.length() - DefaultValues.PREVIEW_SUFFIX.length());
+            profileView = ProfileView.preview;
+        }
+
+        ServiceConfigData serviceConfigData = resourceManager.loadResource(new ServiceConfigDataResource(searchHome,
+            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView, (f, r) -> {
+                throw new RuntimeException("Writes are not permitted under the public UI.");
+            }));
+
+        return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
     
 }

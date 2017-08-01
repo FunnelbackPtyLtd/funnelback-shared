@@ -119,7 +119,8 @@ public class FixMetaCollectionUpdateDateTest {
         
         processor.processOutput(st);
         
-        Assert.assertEquals("Expected updated date to be the greatest of any component", st.getResponse().getResultPacket().getDetails().getCollectionUpdated().getTime(), 3l);
+        Assert.assertEquals("Expected updated date to be the greatest of any component", 
+            st.getResponse().getResultPacket().getDetails().getCollectionUpdated().getTime(), 3l);
     }
 
     class TestIndexProcessor extends ProcessIndex {

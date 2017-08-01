@@ -7,12 +7,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +20,11 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * <p>Executes the extra searches on the input phase using the questions
@@ -102,6 +100,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (searchTransaction != null && searchTransaction.getExtraSearchesTasks().size() > 0) {
+            // Wait for all pending extra searches task to complete,
+            // and fill {@link #extraSearches}.
             for (final Entry<String, FutureTask<SearchTransaction>> entry : searchTransaction.getExtraSearchesTasks().entrySet()) {
                 waitForExtraSearch(searchTransaction, entry.getKey(), entry.getValue());
             }
@@ -111,14 +111,11 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     private void waitForExtraSearch(SearchTransaction searchTransaction, 
             String extraSearchName,
             FutureTask<SearchTransaction> extraSearchFuture) {
-        // Wait for all pending extra searches task to complete,
-        // and fill {@link #extraSearches}.
+        
         long extraSearchesWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
             .valueAsLong(Keys.ModernUI.EXTRA_SEARCH_TIMEOUT, DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS);
-        
         try {
-            //TODO revert to MS
-            searchTransaction.getExtraSearches().put(extraSearchName, extraSearchFuture.get(extraSearchesWaitTimeout, TimeUnit.HOURS));
+            searchTransaction.getExtraSearches().put(extraSearchName, extraSearchFuture.get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
         } catch (TimeoutException te) {
             log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + extraSearchName + "'."
                     + "Consider raising 'extra.searches.timeout'.", te);

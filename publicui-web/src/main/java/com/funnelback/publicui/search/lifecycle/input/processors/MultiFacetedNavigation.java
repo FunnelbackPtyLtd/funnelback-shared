@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+
 import static com.funnelback.publicui.search.model.transaction.SearchTransaction.ExtraSearches.FACETED_NAVIGATION;
 
 import java.util.Collections;
@@ -41,8 +42,6 @@ import lombok.extern.log4j.Log4j2;
 @Component("multiFacetedNavigationInputProcessor")
 @Log4j2
 public class MultiFacetedNavigation extends AbstractInputProcessor {
-
-    //TODO account for CA or AA wanting to use this.
     
     @Autowired @Setter
     private ExtraSearchesExecutor extraSearchesExecutor;
@@ -50,6 +49,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         
+        // Currently this wont work for AA or CA.
         if (SearchTransactionUtils.hasCollection(searchTransaction)
                 && searchTransaction.getQuestion().getQuestionType().equals(SearchQuestion.SearchQuestionType.SEARCH)) {
             if(Config.isTrue(searchTransaction.getQuestion()
@@ -57,6 +57,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                 || doAnyFacetsNeedFullFacetValues(searchTransaction)) {
                 SearchQuestion q = new FacetedNavigationQuestionFactory()
                     .buildQuestion(searchTransaction.getQuestion(), null);
+                
                 searchTransaction.addExtraSearch(FACETED_NAVIGATION.toString(), q);
                 
                 addExtraSearchesForOrBasedFacetCounts(searchTransaction);
@@ -119,16 +120,16 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     }
     
     
-    public boolean doAnyFacetsNeedFullFacetValues(SearchTransaction st) {
-         return Optional.of(getFacetDefinitions(st))
-            .map(fl -> fl.stream().anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY))
-            .orElse(false);
-    }
-    
     public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {
         return Optional.ofNullable(FacetedNavigationUtils.selectConfiguration(st))
             .map(c -> c.getFacetDefinitions())
             .orElse(Collections.emptyList());
+    }
+    
+    public boolean doAnyFacetsNeedFullFacetValues(SearchTransaction st) {
+         return getFacetDefinitions(st)
+             .stream()
+             .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY);
     }
 
 }

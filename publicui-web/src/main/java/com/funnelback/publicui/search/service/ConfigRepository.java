@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import lombok.Getter;
-
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.model.collection.Collection;
+
+import lombok.Getter;
 
 
 /**
@@ -34,7 +37,15 @@ public interface ConfigRepository {
      * @return A {@link Collection}
      */
     public Collection getCollection(String collectionId);
-    
+
+    /**
+     * @param collectionId ID of the collection (technical name)
+     * @param profileIdAndView ID of the profile (with optional '_preview' suffix for preview view)
+     * @return A {@link ServiceConfigReadOnly} for the given service
+     * @throws ProfileNotFoundException 
+     */
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException;
+
     /**
      * @return All available collections on this repository
      */
@@ -93,7 +104,7 @@ public interface ConfigRepository {
      * @return
      */
     public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
-    
+
     public ServerConfigReadOnly getServerConfig();
 
 }

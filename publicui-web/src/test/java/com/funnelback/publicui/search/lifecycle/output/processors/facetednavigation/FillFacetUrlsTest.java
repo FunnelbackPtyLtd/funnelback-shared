@@ -21,7 +21,8 @@ public class FillFacetUrlsTest {
         st.getQuestion().setQueryStringMap(ImmutableMap.of(
             "unrelated", asList("we"),
             "f.author|bar", asList("foo", "bar"),
-            "facetScope", asList("f.author%7Cbar=foo")));
+            "facetScope", asList("f.author%7Cbar=foo"),
+            "start_rank", asList("12")));
         
         Facet facet = new Facet("author", FacetSelectionType.SINGLE,
             FacetConstraintJoin.LEGACY,
@@ -30,6 +31,9 @@ public class FillFacetUrlsTest {
         new FillFacetUrls().setUnselectAllUrl(facet, st);
         
         Assert.assertEquals("?unrelated=we", facet.getUnselectAllUrl());
+        
+        Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
+            facet.getUnselectAllUrl().contains("start_rank"));
         
     }
 }

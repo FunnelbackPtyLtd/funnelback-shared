@@ -187,6 +187,7 @@ public abstract class CategoryDefinition {
     protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
         
         // Usually the response for counts would be the one from the normal search.
+
         SearchResonseForCountSupplier responseForCounts = (c, v) -> Optional.of(st.getResponse());
         
         SearchResponse sr = st.getResponse();
@@ -210,8 +211,7 @@ public abstract class CategoryDefinition {
                 }
             }
             
-            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
-                
+            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {    
                 // In the case of OR we might have a extra search that tells us the counts.
                 responseForCounts = (c,v) -> Optional.empty();
                 

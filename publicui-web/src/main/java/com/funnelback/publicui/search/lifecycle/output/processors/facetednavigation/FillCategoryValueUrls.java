@@ -18,6 +18,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
 
 public class FillCategoryValueUrls {
+    
 
     /**
      * Adds the select, unselect and toggle URL to the given category.
@@ -96,6 +97,7 @@ public class FillCategoryValueUrls {
             selectUrlQs.put(categoryValue.getQueryStringParamName(), values);
         }
         
+        new FillFacetUrls().removeParameters(selectUrlQs);
         
         return selectUrlQs;
     }
@@ -121,6 +123,8 @@ public class FillCategoryValueUrls {
             .map(value -> value.getQueryStringParamName())
             // Remove all children.
             .forEach(queryStringParamName -> FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
+        
+        new FillFacetUrls().removeParameters(unselectUrlQs);
         
         return unselectUrlQs;
     }

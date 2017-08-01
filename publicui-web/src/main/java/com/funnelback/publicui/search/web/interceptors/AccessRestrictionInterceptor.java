@@ -1,6 +1,8 @@
 package com.funnelback.publicui.search.web.interceptors;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,9 +17,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
+import com.funnelback.common.profile.ProfileAndView;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileView;
+import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.data.file.profile.FileProfileConfigData;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.config.marshallers.Marshallers;
+import com.funnelback.config.validators.Validators;
 import com.funnelback.publicui.i18n.I18n;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -38,11 +53,19 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     private final static Pattern OLD_IP_PATTERN = Pattern.compile("^[\\d\\.]+$");
     
     
+    @Autowired
+    private File searchHome;
+
     /**
      * Pattern to match collection id in the query string
      */
     private final static Pattern QUERY_STRING_COLLECTION_PATTERN = Pattern.compile(".*collection=([^&$]*)?.*");
-    
+
+    /**
+     * Pattern to match the profile ID and view in the query string
+     */
+    private final static Pattern QUERY_STRING_PROFILE_AND_VIEW_PATTERN = Pattern.compile(".*profile=([^&$]*)?.*");
+
     @Autowired
     private ConfigRepository configRepository;
     
@@ -61,51 +84,57 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getParameter(RequestParameters.COLLECTION) != null
                 && request.getParameter(RequestParameters.COLLECTION).matches(Collection.COLLECTION_ID_PATTERN)) {
-            Collection c = configRepository.getCollection(request.getParameter(RequestParameters.COLLECTION));
-            if (c != null) {
-                if (c.getConfiguration().hasValue(Keys.ACCESS_RESTRICTION)) {
-                    String accessRestriction = c.getConfiguration().value(Keys.ACCESS_RESTRICTION);
-                    log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + c.getId() + "'");
-                    if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
-                        log.debug("Access restriction explicitely disabled. Granting access to " + c.getId());
-                        return true;
-                    } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
-                        log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + ". Denying access");
-                        denyAccess(request, response, c);
-                        return false;
-                    } else {
-                        String ip = getConnectingIp(request, c);
-                        String hostName = request.getRemoteHost();
-                        
-                        String[] authorized = StringUtils.split(accessRestriction, ",");
-                        for (String range : authorized) {
-                            if (NetUtils.isCIDR(range)) {
-                                if (NetUtils.isIPv4AddressinCIDR(ip, range)){
-                                    return true;
-                                }
-                            }else if (OLD_IP_PATTERN.matcher(range).matches()) {
-                                //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
-                                //unsupported format
-                                denyAccess(request, response, c, Keys.ACCESS_RESTRICTION + 
-                                        " in this collection's collection.cfg is misconfigured, IP ranges must be in CIDR format");
-                                return false;
-                            } else {
-                                // It's a hostname
-                                if (hostName.matches("^.*" + range + "$")) {
-                                    log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + c.getId() + "'");
-                                    return true;
-                                }
+
+            String collectionId = request.getParameter(RequestParameters.COLLECTION);
+            String profileId = request.getParameter(RequestParameters.PROFILE);
+            
+            if (profileId == null || profileId.trim().isEmpty()) {
+                profileId = DefaultValues.DEFAULT_PROFILE;
+            }
+            
+            // Will throw a ProfileNotFound exception if given invalid data - Seems a fair way to abort
+            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            
+            if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {
+                String accessRestriction = serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).get();
+                log.trace(Keys.ACCESS_RESTRICTION + " = '" + accessRestriction + "' for collection '" + collectionId + ":" + profileId + "'");
+                if (DefaultValues.NO_RESTRICTION.equals(accessRestriction)) {
+                    log.debug("Access restriction explicitely disabled. Granting access to " + collectionId + ":" + profileId);
+                    return true;
+                } else if (DefaultValues.NO_ACCESS.equals(accessRestriction)) {
+                    log.debug("Access restriction expliciltely set to " + DefaultValues.NO_ACCESS + "for " + collectionId + ":" + profileId + ". Denying access");
+                    denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
+                    return false;
+                } else {
+                    String ip = getConnectingIp(request, serviceConfig);
+                    String hostName = request.getRemoteHost();
+                    
+                    String[] authorized = StringUtils.split(accessRestriction, ",");
+                    for (String range : authorized) {
+                        if (NetUtils.isCIDR(range)) {
+                            if (NetUtils.isIPv4AddressinCIDR(ip, range)){
+                                return true;
+                            }
+                        }else if (OLD_IP_PATTERN.matcher(range).matches()) {
+                            //Catch IPs that don't have a slash, ie someone has entered a IP range  in the old 
+                            //unsupported format
+                            denyAccess(request, response, serviceConfig, collectionId + ":" + profileId, Keys.ACCESS_RESTRICTION + 
+                                    " in " + collectionId + ":" + profileId + " is misconfigured, IP ranges must be in CIDR format");
+                            return false;
+                        } else {
+                            // It's a hostname
+                            if (hostName.matches("^.*" + range + "$")) {
+                                log.debug("'" + hostName + "' matches '" + range + "'. Granting access to '" + collectionId + ":" + profileId + "'");
+                                return true;
                             }
                         }
-                        log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + c.getId() + "'");
-                        denyAccess(request, response, c);
-                        return false;
                     }
-                } else {
-                    log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for collection '" + c.getId() + "'");
+                    log.debug("Neither IP '" + ip + "' or hostname '" + hostName + "' matched. Denying access to '" + collectionId + ":" + profileId + "'");
+                    denyAccess(request, response, serviceConfig, collectionId + ":" + profileId);
+                    return false;
                 }
             } else {
-                log.debug("Invalid collection id '" + request.getParameter(RequestParameters.COLLECTION) + "'");
+                log.debug("No " + Keys.ACCESS_RESTRICTION + " setting for " + collectionId + ":" + profileId + "'");
             }
         }
         return true;
@@ -119,15 +148,15 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
      * @param message Message to be displayed.
      * @throws IOException
      */
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection, String message) throws IOException {
-        if (collection.getConfiguration().hasValue(Keys.ACCESS_ALTERNATE)) {
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String profileLogContent, String message) throws IOException {
+        if (serviceConfig.get(FrontEndKeys.ACCESS_ALTERNATE).isPresent()) {
             StringBuffer out = new StringBuffer(request.getContextPath()).append(request.getPathInfo());
             
             Matcher m = QUERY_STRING_COLLECTION_PATTERN.matcher(request.getQueryString());
             if (m.find()) {
                 out.append("?")
                     .append(request.getQueryString().substring(0, m.start(1)))
-                    .append(collection.getConfiguration().value(Keys.ACCESS_ALTERNATE))
+                    .append(serviceConfig.get(FrontEndKeys.ACCESS_ALTERNATE).get())
                     .append(request.getQueryString().substring(m.end(1), request.getQueryString().length()));
             } else {
                 // No collection in the initial request, should not happen as we should have been
@@ -135,27 +164,27 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                 throw new IllegalStateException(i18n.tr("parameter.missing", RequestParameters.COLLECTION));
             }
             
-            log.debug("Applying access alternate setting for collection '" + collection.getId() + "'. Redirecting to '" + out.toString() + "'");
+            log.debug("Applying access alternate setting for '" + profileLogContent + "'. Redirecting to '" + out.toString() + "'");
             response.sendRedirect(out.toString());
         } else {
             // No access_alternate. Simply deny access
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("text/plain");
-            response.getWriter().write(i18n.tr("access.collection.denied", collection.getId(), message));
+            response.getWriter().write(i18n.tr("access.profile.denied", profileLogContent, message));
         }
     }
     
-    private void denyAccess(HttpServletRequest request, HttpServletResponse response, Collection collection) throws IOException {
-        denyAccess(request, response, collection, "");
+    private void denyAccess(HttpServletRequest request, HttpServletResponse response, ServiceConfigReadOnly serviceConfig, String profileLogContent) throws IOException {
+        denyAccess(request, response, serviceConfig, profileLogContent, "");
     }
     
-    public String getConnectingIp(HttpServletRequest request, Collection c) {
+    public String getConnectingIp(HttpServletRequest request, ServiceConfigReadOnly serviceConfig) {
         String ip = request.getRemoteAddr();
         log.trace("Real request IP (ignoring X-Forwarded-For): " + ip);
-        if (c.getConfiguration().valueAsBoolean(Keys.AccessRestriction.PREFER_X_FORWARDED_FOR)){
+        if (serviceConfig.get(FrontEndKeys.AccessRestriction.PREFER_X_FORWARDED_FOR)) {
             ip = NetUtils.getIpPreferingXForwardedFor(ip
                     , request.getHeader(SearchQuestion.RequestParameters.Header.X_FORWARDED_FOR)
-                    , c.getConfiguration().value(Keys.AccessRestriction.IGNORED_IP_RANGES));
+                    , serviceConfig.get(FrontEndKeys.AccessRestriction.IGNORED_IP_RANGES).get());
         }
         log.trace("Connecting IP is: " + ip);
         return ip;

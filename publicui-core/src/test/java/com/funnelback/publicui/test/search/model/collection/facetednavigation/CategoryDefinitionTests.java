@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
@@ -16,7 +17,9 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.MetadataAndValue;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
+
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -133,6 +136,7 @@ public class CategoryDefinitionTests {
     @Test
     public void getFacetSearchDataTestOrFromUnScoped() {
         FacetDefinition fdef = mock(FacetDefinition.class);
+
         when(fdef.getName()).thenReturn("facet-name");
         when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
         when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
@@ -185,6 +189,7 @@ public class CategoryDefinitionTests {
         Assert.assertEquals("Counts in the AND case come from the main query because we scope the"
             + " existing query further.",
             st.getResponse(), data.getResponseForCounts().apply(null, null).get());
+        
         Assert.assertEquals("Values come from the unscoped query",
             extraSearchTransaction.getResponse(), data.getResponseForValues());
         Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
