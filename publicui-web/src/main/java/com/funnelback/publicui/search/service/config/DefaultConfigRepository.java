@@ -25,10 +25,6 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
-import com.funnelback.common.profile.ProfileAndView;
-import com.funnelback.common.profile.ProfileId;
-import com.funnelback.common.profile.ProfileNotFoundException;
-import com.funnelback.common.profile.ProfileView;
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
@@ -37,17 +33,15 @@ import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.config.ServiceId;
 import com.funnelback.common.groovy.GroovyLoader;
+import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
+import com.funnelback.common.profile.ProfileView;
 import com.funnelback.common.views.View;
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
-import com.funnelback.config.configtypes.service.DefaultServiceConfig;
 import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
-import com.funnelback.config.configtypes.service.ServiceConfig;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.data.environment.NoConfigEnvironment;
-import com.funnelback.config.data.file.profile.FileProfileConfigData;
 import com.funnelback.config.data.server.ServerConfigData;
-import com.funnelback.config.data.service.ServiceConfigData;
 import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
 import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -57,7 +51,6 @@ import com.funnelback.publicui.search.model.collection.paramtransform.TransformR
 import com.funnelback.publicui.search.model.curator.config.Configurer;
 import com.funnelback.publicui.search.model.curator.config.CuratorConfig;
 import com.funnelback.publicui.search.model.curator.config.CuratorYamlConfig;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
 import com.funnelback.publicui.search.service.resource.impl.ConfigMapResource;
 import com.funnelback.publicui.search.service.resource.impl.CuratorJsonConfigResource;
@@ -75,7 +68,7 @@ import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
-import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataReadOnlyResource;
 
 import groovy.lang.Script;
 import groovy.util.ResourceException;
@@ -626,10 +619,8 @@ public class DefaultConfigRepository implements ConfigRepository {
             profileView = ProfileView.preview;
         }
 
-        ServiceConfigData serviceConfigData = resourceManager.loadResource(new ServiceConfigDataResource(searchHome,
-            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView, (f, r) -> {
-                throw new RuntimeException("Writes are not permitted under the public UI.");
-            }));
+        ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
+            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView));
 
         return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
