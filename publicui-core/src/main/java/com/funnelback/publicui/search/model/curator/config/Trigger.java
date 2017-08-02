@@ -71,7 +71,7 @@ public interface Trigger {
             p = Pattern.compile(queryParameterPatternString);
         } catch (PatternSyntaxException e) {
             Logger log = org.apache.logging.log4j.LogManager.getLogger(Trigger.class);
-            log.error(queryParameterPatternKey + " is not a valid regular expression - Curator will not trigger on any query parameters", e);
+            log.error(queryParameterPatternKey.getKey() + " is not a valid regular expression - Curator will not trigger on any query parameters", e);
             return "";
         }
         
