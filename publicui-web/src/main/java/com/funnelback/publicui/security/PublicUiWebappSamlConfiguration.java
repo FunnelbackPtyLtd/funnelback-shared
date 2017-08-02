@@ -19,6 +19,8 @@ import com.funnelback.springmvc.api.config.security.saml.WebappSamlConfiguration
 @Primary // We want to win over the default, admin configuration
 public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration {
 
+    private static final String PUBLIC_UI_SAML_SUFFIX = ":publicui:sp";
+
     private DefaultServerConfigReadOnly config;
 
     private ExecutionContextHolder executionContextHolder;
@@ -85,7 +87,13 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
 
     @Override
     public Optional<String> getEntityId() {
-        return config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID);
+        Optional<String> cfgValue;
+        if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
+            cfgValue = config.get(ServerKeys.Auth.Admin.SAML.ENTITY_ID_PREFIX);
+        } else {
+            cfgValue = config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID_PREFIX);
+        }
+        return cfgValue.map(value -> value + PUBLIC_UI_SAML_SUFFIX);
     }
 
 }
