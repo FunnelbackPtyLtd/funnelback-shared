@@ -10,6 +10,8 @@ public class FacetExtraSearchNames {
     
     private static final String FACET_EXTRA_SEARCH_PREFIX = "INTERNAL_FACETED_NAV_SEARCH_";
     
+    public static final String SEARCH_FOR_UNSCOPED_VALUES = FACET_EXTRA_SEARCH_PREFIX + "UNSCOPED_VALUES";
+    
 
     public String getExtraSearchName(Facet facet, CategoryValue value) {
         return getExtraSearchName(facet.getName(), value.getQueryStringParamName(), value.getData());
@@ -46,5 +48,15 @@ public class FacetExtraSearchNames {
     
     private String encode(String s) {
         return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
+    }
+    
+    /**
+     * Is the extra search a extra search for faceted navigation?
+     *  
+     * @param extraSearchName
+     * @return
+     */
+    public boolean isFacetExtraSearch(String extraSearchName) {
+        return extraSearchName.startsWith(FACET_EXTRA_SEARCH_PREFIX);
     }
 }

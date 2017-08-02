@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
@@ -92,7 +91,6 @@ public class SearchQuestion {
      */
     // We could instead just overwrite profile with this 'real on disk' value, but there's some
     // concern that doing so would create backwards compatibility issues.
-    @NonNull
     @XStreamOmitField
     @Getter @Setter private String currentProfile;
 

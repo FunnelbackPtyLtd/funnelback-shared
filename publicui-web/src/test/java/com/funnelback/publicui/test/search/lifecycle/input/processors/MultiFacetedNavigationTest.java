@@ -25,10 +25,12 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetEx
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 
 import static org.mockito.Mockito.*;
 import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.*;
 import static com.funnelback.common.facetednavigation.models.FacetValues.*;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 
 public class MultiFacetedNavigationTest {
 
@@ -158,7 +160,7 @@ public class MultiFacetedNavigationTest {
         
         // Updated the ExtraSearchExecutor to mock returning the dummy unscoped extra search
         ExtraSearchesExecutor executor = mock(ExtraSearchesExecutor.class);
-        when(executor.getAndMaybeWaitForExtraSearch(st, "FACETED_NAVIGATION"))
+        when(executor.getAndMaybeWaitForExtraSearch(st, SEARCH_FOR_UNSCOPED_VALUES))
             .thenReturn(Optional.of(unscopedExtraSearch));
         
         multiFacetedNavigation.setExtraSearchesExecutor(executor);
@@ -184,6 +186,20 @@ public class MultiFacetedNavigationTest {
         
         Assert.assertTrue("Should have added over ruling padre speed up options like rmcf=[]",
             questionOr.getRawInputParameters().containsKey("rmcf"));
+    }
+    
+    @Test
+    public void testAddExtraSearchToGetUnscopedValues() throws Exception {
+        SearchTransaction searchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        new MultiFacetedNavigation().addExtraSearchToGetUnscopedValues(searchTransaction);
+        SearchQuestion extraSearch = searchTransaction.getExtraSearchesQuestions().get(SEARCH_FOR_UNSCOPED_VALUES);
+        Assert.assertNotNull("The unscoped extra search is missing are missing", extraSearch);
+        
+        Assert.assertFalse("Should not have overridden rmcf (to turn it off) or other options "
+            + "needed by faceted nav", extraSearch.getRawInputParameters().containsKey("rmcf"));
+        
+        Assert.assertTrue("Should have turned of features not needed by faceted nav", 
+            extraSearch.getRawInputParameters().containsKey("SSS"));
     }
     
     private FacetDefinition facet(FacetConstraintJoin join, FacetValues values) {

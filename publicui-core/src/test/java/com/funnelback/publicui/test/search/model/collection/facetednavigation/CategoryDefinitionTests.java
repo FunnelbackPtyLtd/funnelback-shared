@@ -26,7 +26,7 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import static org.mockito.Mockito.*;
-import static com.funnelback.publicui.search.model.transaction.SearchTransaction.ExtraSearches.FACETED_NAVIGATION;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 public class CategoryDefinitionTests {
 
     @Test
@@ -77,7 +77,7 @@ public class CategoryDefinitionTests {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
         
         FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
         
@@ -94,7 +94,7 @@ public class CategoryDefinitionTests {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
         
         FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
         
@@ -115,7 +115,7 @@ public class CategoryDefinitionTests {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
         
         MockCategoryDefinition catDef = new MockCategoryDefinition("") {
             @Override
@@ -151,7 +151,7 @@ public class CategoryDefinitionTests {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
         
         FacetExtraSearchNames facetExtraSearchNames = new FacetExtraSearchNames();
         
@@ -182,7 +182,7 @@ public class CategoryDefinitionTests {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
-        st.getExtraSearches().put(FACETED_NAVIGATION.toString(), extraSearchTransaction);
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
         
         FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
         

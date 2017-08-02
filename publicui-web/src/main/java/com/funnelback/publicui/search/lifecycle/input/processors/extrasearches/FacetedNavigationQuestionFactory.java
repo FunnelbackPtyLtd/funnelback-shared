@@ -13,7 +13,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
 
     private static final String NUM_RANKS_OPT = "-num_ranks=1";
     
-    PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
+    //PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
     
     @Override
     public SearchQuestion buildQuestion(SearchQuestion originalQuestion, Map<String, String> extraSearchConfiguration)
@@ -41,7 +41,7 @@ public class FacetedNavigationQuestionFactory implements ExtraSearchQuestionFact
         SearchQuestion out = new SearchQuestion();
         SearchQuestionBinder.bind(originalQuestion, out);
         
-        out.getDynamicQueryProcessorOptions().addAll(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSet());
+        //out.getDynamicQueryProcessorOptions().addAll(padreOptionsForSpeed.getOptionsThatDoNotAffectResultSet());
         
         return out;
     }

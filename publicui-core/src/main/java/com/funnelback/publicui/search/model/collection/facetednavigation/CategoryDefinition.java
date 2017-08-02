@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -197,7 +198,7 @@ public abstract class CategoryDefinition {
         // legacy does not work with unscoped values
         if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
-                sr = Optional.ofNullable(st.getExtraSearches().get(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString()))
+                sr = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES.toString()))
                     .map(SearchTransaction::getResponse)
                     .orElse(sr);
                 
