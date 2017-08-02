@@ -4,15 +4,14 @@ package com.funnelback.publicui.search.model.transaction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
-import java.util.function.Function;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * <p>Represents a full search transaction consisting of 
@@ -83,12 +82,8 @@ public class SearchTransaction {
      * 
      * <p>These questions will be submitted in parallel to the main search.</p>
      */
-    @XStreamOmitField
+    @XStreamOmitField @Getter
     private final Map<String, SearchQuestion> extraSearchesQuestions = new HashMap<String, SearchQuestion>();
-    
-    public Map<String, SearchQuestion> getExtraSearchesQuestions() {
-        return extraSearchesQuestions;
-    }
     
     
     /**

@@ -8,6 +8,7 @@ import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -50,6 +51,7 @@ public class FillFacetUrls {
                     .forEach(m::remove);
                 });
         removeParameters(qs);
+        
         facet.setUnselectAllUrl(QueryStringUtils.toString(qs, true));
     }
 }

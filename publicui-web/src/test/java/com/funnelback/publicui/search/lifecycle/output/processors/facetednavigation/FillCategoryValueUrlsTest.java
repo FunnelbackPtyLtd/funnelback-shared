@@ -153,6 +153,7 @@ public class FillCategoryValueUrlsTest {
             "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:bar&fac%7Ca=foo"),
             "fac|a", asList("a:foo", "a:bar"),
             "start_rank", asList("12")));
+
         // When we unselect this facet we only unselect where both key and value match
         // this is probbaly going to work with multi select facets.
         
