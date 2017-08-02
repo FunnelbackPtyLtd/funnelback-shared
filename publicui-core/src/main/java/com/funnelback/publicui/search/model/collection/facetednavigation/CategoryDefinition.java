@@ -24,6 +24,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -34,6 +36,7 @@ import lombok.ToString;
  * 
  * @since 11.0
  */
+@Log4j2
 @ToString
 @RequiredArgsConstructor
 public abstract class CategoryDefinition {
@@ -185,32 +188,45 @@ public abstract class CategoryDefinition {
     protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
         
         // Usually the response for counts would be the one from the normal search.
-        Optional<SearchResponse> responseForCounts = Optional.of(st.getResponse());
+
+        SearchResonseForCountSupplier responseForCounts = (c, v) -> Optional.of(st.getResponse());
         
         SearchResponse sr = st.getResponse();
         
-        Integer countIfNotPresent = null;
+        CountSupplier countIfNotPresent = (c,v) -> null;
+        
         // legacy does not work with unscoped values
         if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
-                sr = Optional.ofNullable(st.getExtraSearches().get(SearchTransaction.ExtraSearches.FACETED_NAVIGATION.toString()))
+                sr = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES.toString()))
                     .map(SearchTransaction::getResponse)
                     .orElse(sr);
                 
                 if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
                     // In the case that the constraints are ANDed then the constraints come
                     // from the original Response 
-                    responseForCounts = Optional.of(st.getResponse());
+                    responseForCounts = (c, v) -> Optional.of(st.getResponse());
                     // In the ANDed case any time a value is present but the original Response does not
                     // have the value then the count is zero.
-                    countIfNotPresent = 0;
+                    countIfNotPresent = (c,v) -> 0;
                 }
             }
             
-            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {
-                // In the case of OR our counts are always wrong.
-                responseForCounts= Optional.empty();
-                countIfNotPresent = null;
+            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {    
+                // In the case of OR we might have a extra search that tells us the counts.
+                responseForCounts = (c,v) -> Optional.empty();
+                
+                countIfNotPresent = (catDef, value) -> {
+                    String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facetDefinition, catDef, value);
+                    log.debug("Using extra search: {} to find the count for category with param name {} and value {}",
+                        extraSearchName, catDef.getQueryStringParamName(), value);
+                    return Optional.ofNullable(st.getExtraSearches().get(extraSearchName))
+                        .map(SearchTransaction::getResponse)
+                        .map(r -> r.getResultPacket())
+                        .map(r -> r.getResultsSummary())
+                        .map(r -> r.getTotalMatching())
+                        .orElse(null); // Totall matching?
+                };
             }
         }
         
@@ -220,9 +236,18 @@ public abstract class CategoryDefinition {
     @AllArgsConstructor
     public static class FacetSearchData {
         @Getter SearchResponse responseForValues;
-        @Getter Optional<SearchResponse> responseForCounts;
+        
+        @Getter SearchResonseForCountSupplier responseForCounts;
 
-        @Getter Integer countIfNotPresent; 
+        @Getter CountSupplier countIfNotPresent; 
+    }
+    
+    public static interface SearchResonseForCountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Optional<SearchResponse>> {
+        
+    }
+    
+    public static interface CountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Integer> {
+        
     }
 
     /**

@@ -33,6 +33,9 @@ public class FacetedNavigationDateFieldFillTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
+    
+    @Resource(name="searchHome")
+    private File searchHome;
 
     private SearchTransaction st;
     private FacetedNavigation processor;
@@ -79,7 +82,7 @@ public class FacetedNavigationDateFieldFillTests {
         
         // Config but no faceted_nav. config
         sq = new SearchQuestion();
-        sq.setCollection(new Collection("dummy", new NoOptionsConfig("dummy")));
+        sq.setCollection(new Collection("dummy", new NoOptionsConfig(searchHome, "dummy")));
         processor.processOutput(new SearchTransaction(sq, response));
     }
     

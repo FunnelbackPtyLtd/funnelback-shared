@@ -1,7 +1,5 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,17 +11,13 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
-
-import lombok.SneakyThrows;
 
 /**
  * <p>{@link CategoryDefinition} based on a metadata class
@@ -57,15 +51,15 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
             MetadataAndValue mdv = parseMetadata(item);
             if (this.data.equals(mdv.metadata)) {
                 String queryStringParamValue = dc.getQueryTerm();
-                Integer count = facetData.getResponseForCounts()
+                Integer count = facetData.getResponseForCounts().apply(this, mdv.value)
                         .map(SearchResponse::getResultPacket)
                         .map(ResultPacket::getDateCounts)
                         .map(dateCounts -> dateCounts.get(entry.getKey()))
                         .map(DateCount::getCount)
-                        .orElse(facetData.getCountIfNotPresent());
+                        .orElse(facetData.getCountIfNotPresent().apply(this, mdv.value));
                 
                 categories.add(new CategoryValueComputedDataHolder(
-                        mdv.metadata,
+                        mdv.metadata, // Why is this metadata class?
                         mdv.value,
                         count,
                         getMetadataClass(),
