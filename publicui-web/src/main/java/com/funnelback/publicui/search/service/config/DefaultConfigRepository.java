@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
+import com.funnelback.admin.api.service.cache.config.ServerConfigDataResource;
 import com.funnelback.common.config.CollectionId;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
@@ -67,7 +68,6 @@ import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderReso
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
-import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataReadOnlyResource;
 
 import groovy.lang.Script;
