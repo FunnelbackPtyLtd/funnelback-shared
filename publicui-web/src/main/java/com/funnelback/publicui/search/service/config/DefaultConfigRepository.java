@@ -41,7 +41,7 @@ import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
 import com.funnelback.config.configtypes.service.DefaultServiceConfigReadOnly;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
-import com.funnelback.config.data.server.ServerConfigData;
+import com.funnelback.config.data.server.ServerConfigDataReadOnly;
 import com.funnelback.config.data.service.ServiceConfigDataReadOnly;
 import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.model.collection.Collection;
@@ -67,7 +67,7 @@ import com.funnelback.springmvc.service.resource.impl.GroovyCollectionLoaderReso
 import com.funnelback.springmvc.service.resource.impl.PropertiesResource;
 import com.funnelback.springmvc.service.resource.impl.config.CollectionConfigResource;
 import com.funnelback.springmvc.service.resource.impl.config.GlobalConfigResource;
-import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataResource;
+import com.funnelback.springmvc.service.resource.impl.config.ServerConfigDataReadOnlyResource;
 import com.funnelback.springmvc.service.resource.impl.config.ServiceConfigDataReadOnlyResource;
 
 import groovy.lang.Script;
@@ -604,9 +604,7 @@ public class DefaultConfigRepository implements ConfigRepository {
 
     @Override
     public ServerConfigReadOnly getServerConfig() {
-        ServerConfigData serverConfigData = resourceManager.loadResource(new ServerConfigDataResource(searchHome, (f, r) -> {
-            throw new RuntimeException("Writes are not permitted under the public UI.");
-        }));
+        ServerConfigDataReadOnly serverConfigData = resourceManager.loadResource(new ServerConfigDataReadOnlyResource(searchHome));
         return new DefaultServerConfigReadOnly(serverConfigData);
     }
 

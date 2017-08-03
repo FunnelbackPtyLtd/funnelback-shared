@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import javax.annotation.Resource;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,13 +25,22 @@ public class CuratorTests {
 
     @Resource(name="localConfigRepository")
     private DefaultConfigRepository configRepository;
+
+    private static final String COLLECTION_ID = "curator";
     
+    private SearchQuestion question;
+
+    @Before
+    public void before() throws Exception {
+        question = new SearchQuestion();
+        question.setCollection(configRepository.getCollection(COLLECTION_ID));
+        question.setQuery("uniquequery");
+    }
+
     @Test
     public void testCuratorInputProcessor() throws FileNotFoundException, InputProcessorException {
-        SearchQuestion question = new SearchQuestion();
-        question.setQuery("uniquequery");
         question.setProfile("profile1");
-        question.setCollection(configRepository.getCollection("curator"));
+        question.setCurrentProfile("profile1");
 
         SearchTransaction st = new SearchTransaction(question, new SearchResponse());
 
@@ -45,10 +55,8 @@ public class CuratorTests {
 
     @Test
     public void testCuratorInputProcessorMissingProfile() throws FileNotFoundException, InputProcessorException {
-        SearchQuestion question = new SearchQuestion();
-        question.setQuery("uniquequery");
         question.setProfile("profile-missing");
-        question.setCollection(configRepository.getCollection("curator"));
+        question.setCurrentProfile("profile-missing");
 
         SearchTransaction st = new SearchTransaction(question, null);
 
