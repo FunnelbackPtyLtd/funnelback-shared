@@ -1,13 +1,18 @@
 package com.funnelback.publicui.security;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
+import com.funnelback.config.configtypes.server.ServerConfigOptionDefinition;
 import com.funnelback.config.data.file.server.FileServerConfigDataReadOnly;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.config.types.ConfigPassword;
@@ -20,15 +25,17 @@ import com.funnelback.springmvc.api.config.security.saml.WebappSamlConfiguration
 public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration {
 
     private DefaultServerConfigReadOnly config;
-    
+    private ServletContext servletContext;
+
     private ExecutionContextHolder executionContextHolder;
-    
+
     @Autowired
-    public PublicUiWebappSamlConfiguration(File searchHome, ExecutionContextHolder executionContextHolder) {
+    public PublicUiWebappSamlConfiguration(File searchHome, ServletContext servletContext, ExecutionContextHolder executionContextHolder) {
         config = new DefaultServerConfigReadOnly(new FileServerConfigDataReadOnly(searchHome));
         this.executionContextHolder = executionContextHolder;
+        this.servletContext = servletContext;
     }
-    
+
     @Override
     public Optional<File> groovySamlPermissionMapperFile() {
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
@@ -85,11 +92,22 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
 
     @Override
     public Optional<String> getEntityId() {
+        ServerConfigOptionDefinition<Optional<String>> key;
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            return config.get(ServerKeys.Auth.Admin.SAML.ENTITY_ID);
+            key = ServerKeys.Auth.Admin.SAML.ENTITY_ID_PREFIX;
         } else {
-            return config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID);
+            key = ServerKeys.Auth.PublicUI.SAML.ENTITY_ID_PREFIX;
         }
+
+        return config.get(key).map((prefix) -> {
+            String fullEntityId = prefix + servletContext.getContextPath();
+            try {
+                return new URI(fullEntityId).toString();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Invalid SAML entity ID - " + fullEntityId + " based on global.cfg's "
+                    + key.getKey() + " was expected to be a valid URI", e);
+            }
+        });
     }
 
 }
