@@ -47,6 +47,7 @@ public class SearchQuestionBinder {
         to.getCnPreviousClusters().addAll(from.getCnPreviousClusters());
         to.setClive(from.getClive());
         to.getCustomData().putAll(from.getCustomData());
+        to.setCurrentProfile(from.getCurrentProfile());
     }
     
     /**

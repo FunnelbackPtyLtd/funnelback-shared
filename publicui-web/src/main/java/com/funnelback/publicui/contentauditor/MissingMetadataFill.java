@@ -52,16 +52,16 @@ public class MissingMetadataFill extends MetadataFieldFill {
                     continue; // Skip the actual entry counts
                 }
                 
-                Integer count = facetData.getResponseForCounts()
+                MetadataAndValue mdv = parseMetadata(item);
+                
+                // Strip absent prefix
+                String metadataClass = mdv.metadata.substring(MetadataBasedCategory.METADATA_ABSENT_PREFIX.length());
+                
+                Integer count = facetData.getResponseForCounts().apply(this, metadataClass)
                         .map(SearchResponse::getResultPacket)
                         .map(ResultPacket::getRmcs)
                         .map(rmcs -> rmcs.get(entry.getKey()))
-                        .orElse(facetData.getCountIfNotPresent());
-                
-                MetadataAndValue mdv = parseMetadata(item);
-
-                // Strip absent prefix
-                String metadataClass = mdv.metadata.substring(MetadataBasedCategory.METADATA_ABSENT_PREFIX.length());
+                        .orElse(facetData.getCountIfNotPresent().apply(this, metadataClass));
 
                 if (!MetadataClass.RESERVED_CLASS_PATTERN.matcher(metadataClass).matches()) {
                     // Don't report reserved classes (should not be user-visible)

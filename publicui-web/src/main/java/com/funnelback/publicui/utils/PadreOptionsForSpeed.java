@@ -1,9 +1,10 @@
 package com.funnelback.publicui.utils;
 
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.*;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.BB;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CNTO;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COLLAPSING;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.COOL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNTGBITS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNTINDEXEDTERMS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNT_DATES;
@@ -12,6 +13,7 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.DAAT_TIMEOUT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.DIVERSITY_RANK_LIMIT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.GEOSPATIAL_RANGES;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.KMOD;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.QSUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.REPETITIOUSNESS_FACTOR;
@@ -32,10 +34,11 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.SUMBYGROUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.TITLE_DUP_FACTOR;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +48,23 @@ public class PadreOptionsForSpeed {
     public static class OptionAndValue{
         @Getter private final String option;
         @Getter private final String value;
+    }
+    
+    /**
+     * Returns all options for counting that may be returned by getOptionsThatDoNotAffectResultSetAsPairs();
+     * 
+     * @return
+     */
+    public Set<String> getOptionsForCounting() {
+        return ImmutableSet.of(RMCF,
+            GEOSPATIAL_RANGES,
+            RMRF,
+            SUM,
+            SUMBYGROUP,
+            COUNTINDEXEDTERMS,
+            COUNT_DATES,
+            COUNTGBITS,
+            COUNT_URLS);
     }
     
     /**
@@ -67,6 +87,7 @@ public class PadreOptionsForSpeed {
             new OptionAndValue(RMCF, ""),     // We don't need rmcf for this call override it if set.
             new OptionAndValue(CNTO, "0.001"),  // Don't let contextual nav run for too long if it someh   ow get enabled
             new OptionAndValue(CONTEXTUAL_NAVIGATION, "false"), // Turn of contextual nav we don't need it.
+            
             new OptionAndValue(GEOSPATIAL_RANGES, "false"), // We don't need to work this out for the counts.
             new OptionAndValue(RMRF, "[FunUnusedMetaClass]"),  // We don't need to know ranges
             new OptionAndValue(SUM, "[FunUnusedMetaClass]"), //This does not need to be on
@@ -82,7 +103,15 @@ public class PadreOptionsForSpeed {
             new OptionAndValue(COUNT_DATES, ""), //Setting this to empty turns off counting dates.
             new OptionAndValue(COUNTGBITS, ""), //Setting this to empty turns it off.
             new OptionAndValue(COUNT_URLS, ""), //Emptu count_urls turns of url counting.
-            new OptionAndValue(SORT, "") //Turn of sorting
+            new OptionAndValue(SORT, ""), //Turn of sorting
+            
+            // Turn of supression options, these do no change the set they just re-order the results.
+            new OptionAndValue(SSS, "0"),
+            new OptionAndValue(NEARDUP, "1"),
+            new OptionAndValue(TITLE_DUP_FACTOR, "1"),
+            new OptionAndValue(SAME_COLLECTION_SUPPRESSION, "0"),
+            new OptionAndValue(SAME_META_SUPPRESSION, "0")
+            
             );
     }
     
@@ -97,13 +126,6 @@ public class PadreOptionsForSpeed {
         //If this is to be used else where we should set
         // -countIndexedTerms, "[FunUnusedMetaClass]
         return ImmutableList.of(
-            new OptionAndValue(DIVERSITY_RANK_LIMIT, "10"), //scan less results for diversification.
-            new OptionAndValue(SSS, "0"), //Turn off same site suppression
-            new OptionAndValue(NEARDUP, "1"), //Setting to 1 turns it off
-            new OptionAndValue(REPETITIOUSNESS_FACTOR, "1"), //Setting to 1 turns it off
-            new OptionAndValue(SAME_COLLECTION_SUPPRESSION, "0"), //Setting to 0 turns it off
-            new OptionAndValue(SAME_META_SUPPRESSION, "1"), //Setting to 1 turns it off
-            new OptionAndValue(TITLE_DUP_FACTOR, "1"), //Setting to 1 turns it off
             new OptionAndValue(COLLAPSING, "off")
             );
     }

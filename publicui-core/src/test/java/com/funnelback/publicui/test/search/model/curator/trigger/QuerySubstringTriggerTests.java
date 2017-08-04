@@ -1,35 +1,40 @@
 package com.funnelback.publicui.test.search.model.curator.trigger;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.curator.trigger.QuerySubstringTrigger;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.google.common.collect.Maps;
 
 public class QuerySubstringTriggerTests {
 
+    private static final String COLLECTION_ID = "test-collection";
+    private static final String PROFILE_NAME = "profileName";
+    private SearchQuestion question;
+
     @Test
     public void testQuerySubstringTrigger() {
-        QuerySubstringTrigger qst = new QuerySubstringTrigger();
-        
-        SearchQuestion question = new SearchQuestion();
-        
-        Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
-            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
-            .thenReturn(DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN);
-        question.setCollection(new Collection("test-collection", config));
-        
+        Profile profile = new Profile();
+        profile.setServiceConfig(new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment()));
+        Collection collection = new Collection(COLLECTION_ID, null);
+        collection.getProfiles().put(PROFILE_NAME, profile);
+
+        question = new SearchQuestion();
+        question.setCollection(collection);
+        question.setCurrentProfile(PROFILE_NAME);
+
         SearchTransaction st = new SearchTransaction(question, null);
-        
+
+        QuerySubstringTrigger qst = new QuerySubstringTrigger();
         qst.setTriggerSubstring("bar");
 
         question.setQuery("foo");
@@ -44,18 +49,20 @@ public class QuerySubstringTriggerTests {
 
     @Test
     public void testMultiParamQuerySubstringTrigger() {
-        QuerySubstringTrigger qst = new QuerySubstringTrigger();
-        
-        SearchQuestion question = new SearchQuestion();
-        
-        Config config = mock(Config.class);
-        when(config.value(Keys.ModernUI.Curator.QUERY_PARAMETER_PATTERN, 
-            DefaultValues.ModernUI.Curator.QUERY_PARAMETER_PATTERN))
-            .thenReturn("^q.*");
-        question.setCollection(new Collection("test-collection", config));
-        
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.UI.Modern.Curator.QUERY_PARAMETER_PATTERN, "^q.*");
+        Profile profile = new Profile();
+        profile.setServiceConfig(serviceConfig);
+        Collection collection = new Collection(COLLECTION_ID, null);
+        collection.getProfiles().put(PROFILE_NAME, profile);
+
+        question = new SearchQuestion();
+        question.setCollection(collection);
+        question.setCurrentProfile(PROFILE_NAME);
+
         SearchTransaction st = new SearchTransaction(question, null);
-        
+
+        QuerySubstringTrigger qst = new QuerySubstringTrigger();
         qst.setTriggerSubstring("bar");
 
         question.getInputParameterMap().put("q_first", "first");

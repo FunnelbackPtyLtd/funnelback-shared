@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
@@ -21,6 +20,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.geolocation.Location;
 import com.funnelback.publicui.search.model.log.Log;
+import com.funnelback.publicui.search.model.profile.ServerConfigReadOnlyWhichAlsoHasAStringGetMethod;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.utils.SingleValueMapWrapper;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -92,7 +92,6 @@ public class SearchQuestion {
      */
     // We could instead just overwrite profile with this 'real on disk' value, but there's some
     // concern that doing so would create backwards compatibility issues.
-    @NonNull
     @XStreamOmitField
     @Getter @Setter private String currentProfile;
 
@@ -101,7 +100,7 @@ public class SearchQuestion {
      */
     // XStream won't serialize getters it seems, excluded from Jackson on the class
     public ServiceConfigReadOnly getCurrentProfileConfig() {
-        return collection.getProfiles().get(currentProfile).getServiceConfig();
+        return new ServerConfigReadOnlyWhichAlsoHasAStringGetMethod(collection.getProfiles().get(currentProfile).getServiceConfig());
     }
     
     /**

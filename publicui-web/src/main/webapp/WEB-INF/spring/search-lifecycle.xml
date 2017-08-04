@@ -82,6 +82,7 @@
         <ref bean="textMinerOutputProcessor" />
         <ref bean="getTranslationsOutputProcessor" />
         <ref bean="searchHistoryOutputProcessor" />
+        <ref bean="removeFacetedNavigationExtraSearches" />
         <ref bean="metricsOutputProcessor" />
         <bean id="postProcessHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">
             <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).post_process }" />
