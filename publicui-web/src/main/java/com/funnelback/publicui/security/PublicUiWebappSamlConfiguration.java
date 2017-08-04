@@ -33,6 +33,7 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
     public PublicUiWebappSamlConfiguration(File searchHome, ServletContext servletContext, ExecutionContextHolder executionContextHolder) {
         config = new DefaultServerConfigReadOnly(new FileServerConfigDataReadOnly(searchHome));
         this.executionContextHolder = executionContextHolder;
+        this.servletContext = servletContext;
     }
 
     @Override
