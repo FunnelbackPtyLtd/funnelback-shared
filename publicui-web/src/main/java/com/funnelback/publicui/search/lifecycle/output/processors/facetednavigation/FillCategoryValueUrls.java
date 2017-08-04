@@ -19,6 +19,7 @@ import com.funnelback.publicui.utils.QueryStringUtils;
 
 public class FillCategoryValueUrls {
     
+    private FillFacetUrls fillFacetUrls = new FillFacetUrls();
 
     /**
      * Adds the select, unselect and toggle URL to the given category.
@@ -38,7 +39,7 @@ public class FillCategoryValueUrls {
         for(CategoryValue categoryValue : category.getValues()) {
             
             String selectUrl = QueryStringUtils.toString(getSelectUrlMap(st, facetDef, categoryValue, siblings), true);
-            String unselectUrl = QueryStringUtils.toString(getUnselectUrlMap(st, category, categoryValue), true);
+            String unselectUrl = QueryStringUtils.toString(getUnselectUrlMap(st, facetDef, category, categoryValue), true);
             
             String toggleUrl = categoryValue.isSelected()? unselectUrl : selectUrl;
             
@@ -80,7 +81,7 @@ public class FillCategoryValueUrls {
                 });
             
             selectUrlQs.put(categoryValue.getQueryStringParamName(), asList(categoryValue.getQueryStringParamValue()));
-        } else {
+        } else if(facetDef.getSelectionType() == FacetSelectionType.MULTIPLE) {
             // Unselect the URL.
             FacetedNavigationUtils.removeQueryStringFacetValue(selectUrlQs, 
                 categoryValue.getQueryStringParamName(), 
@@ -95,6 +96,9 @@ public class FillCategoryValueUrls {
             values.add(categoryValue.getQueryStringParamValue());
             
             selectUrlQs.put(categoryValue.getQueryStringParamName(), values);
+        } else if(facetDef.getSelectionType() == FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS) {
+            fillFacetUrls.unselectAllFacets(selectUrlQs);
+            selectUrlQs.put(categoryValue.getQueryStringParamName(), asList(categoryValue.getQueryStringParamValue()));
         }
         
         new FillFacetUrls().removeParameters(selectUrlQs);
@@ -102,12 +106,26 @@ public class FillCategoryValueUrls {
         return selectUrlQs;
     }
     
-    Map<String, List<String>> getUnselectUrlMap(SearchTransaction st, Facet.Category category, CategoryValue categoryValue) {
+    
+    public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {
+        return Optional.ofNullable(FacetedNavigationUtils.selectConfiguration(st))
+            .map(c -> c.getFacetDefinitions())
+            .orElse(Collections.emptyList());
+    }
+    
+    Map<String, List<String>> getUnselectUrlMap(SearchTransaction st, 
+            FacetDefinition facetDef, 
+            Facet.Category category, 
+            CategoryValue categoryValue) {
         // Unselect the current facet.
+        Map<String, List<String>> unselectUrlQs = st.getQuestion().getQueryStringMapCopy();
+        
+        
         // This will work in "Multiple value mode" as it only removes the matching facet
         // and not other selected facets ie the value removed must also match.
-        Map<String, List<String>> unselectUrlQs = st.getQuestion().getQueryStringMapCopy();
         // Remove specfic key and value from params.
+        // This will work for SINGLE_AND_UNSELECT_OTHER_FACETS, as unselecting this type of
+        // facet does not mean that other facets should unselected.
         FacetedNavigationUtils.removeQueryStringFacetValue(unselectUrlQs, 
             categoryValue.getQueryStringParamName(), categoryValue.getQueryStringParamValue());
         
@@ -123,6 +141,7 @@ public class FillCategoryValueUrls {
             .map(value -> value.getQueryStringParamName())
             // Remove all children.
             .forEach(queryStringParamName -> FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
+        
         
         new FillFacetUrls().removeParameters(unselectUrlQs);
         

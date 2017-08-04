@@ -10,7 +10,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
 
 import com.google.common.collect.ImmutableList;
-
+import static com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters.FACET_PREFIX;
 /**
  * Adds the UnselectALLUrl to the given facet.
  *
@@ -42,16 +42,30 @@ public class FillFacetUrls {
      * @param st
      */
     public void setUnselectAllUrl(Facet facet, SearchTransaction st) {
-        Map<String, List<String>> qs = st.getQuestion().getQueryStringMapCopy();
-        FacetedNavigationUtils.editQueryStringFacetValue(qs, 
+        Map<String, List<String>> urlQuestion = st.getQuestion().getQueryStringMapCopy();
+        unslectFacet(urlQuestion, facet);
+        removeParameters(urlQuestion);
+        
+        facet.setUnselectAllUrl(QueryStringUtils.toString(urlQuestion, true));
+    }
+    
+    public void unslectFacet(Map<String, List<String>> urlQuestion, Facet facet) {
+        FacetedNavigationUtils.editQueryStringFacetValue(urlQuestion, 
             m -> {
-                    m.keySet().stream().filter(k -> k.startsWith("f." + facet.getName() + "|"))
+                    m.keySet().stream().filter(k -> k.startsWith(FACET_PREFIX + facet.getName() + "|"))
                     .collect(Collectors.toList()).stream() // Convert back to a List so that we 
                                                            // don't modify the map while iterating over it.
                     .forEach(m::remove);
                 });
-        removeParameters(qs);
-        
-        facet.setUnselectAllUrl(QueryStringUtils.toString(qs, true));
+    }
+    
+    public void unselectAllFacets(Map<String, List<String>> urlQuestion) {
+        FacetedNavigationUtils.editQueryStringFacetValue(urlQuestion, 
+            m -> {
+                    m.keySet().stream().filter(k -> k.startsWith(FACET_PREFIX) && k.contains("|"))
+                    .collect(Collectors.toList()).stream() // Convert back to a List so that we 
+                                                           // don't modify the map while iterating over it.
+                    .forEach(m::remove);
+                });
     }
 }

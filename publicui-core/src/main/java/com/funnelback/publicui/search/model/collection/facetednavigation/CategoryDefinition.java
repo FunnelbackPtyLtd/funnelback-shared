@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -40,6 +41,8 @@ import static com.funnelback.publicui.search.model.collection.facetednavigation.
 @ToString
 @RequiredArgsConstructor
 public abstract class CategoryDefinition {
+    
+    private final FacetedNavigationProperties facetedNavProps = new FacetedNavigationProperties();
 
     /**
      * <p>Separator used in PADRE results between a metadata field
@@ -212,8 +215,10 @@ public abstract class CategoryDefinition {
                 }
             }
             
-            if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.OR) {    
+            if(facetedNavProps.canSelectingTheFacetExpandTheResultSet(facetDefinition)) {    
                 // In the case of OR we might have a extra search that tells us the counts.
+                // This is the same for SINGLE_AND_INSELECT_OTHER_FACETS because we need to run a query without something
+                // selected to work out the count.
                 responseForCounts = (c,v) -> Optional.empty();
                 
                 countIfNotPresent = (catDef, value) -> {
