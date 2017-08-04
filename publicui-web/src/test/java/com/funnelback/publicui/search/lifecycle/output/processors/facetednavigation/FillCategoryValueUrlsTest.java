@@ -33,12 +33,13 @@ public class FillCategoryValueUrlsTest {
         FillCategoryValueUrls fillUrls = new FillCategoryValueUrls(){
             @Override
             Map<String, List<String>> getSelectUrlMap(SearchTransaction st, FacetDefinition fd, CategoryValue categoryValue,
-                List<Facet.Category> siblings) {
+                    List<Facet.Category> siblings) {
                 return ImmutableMap.of("s", asList("select"));
             }
             
             @Override
-            Map<String, List<String>> getUnselectUrlMap(SearchTransaction st, Facet.Category category, CategoryValue categoryValue) {
+            Map<String, List<String>> getUnselectUrlMap(SearchTransaction st, FacetDefinition fd, 
+                    Facet.Category category, CategoryValue categoryValue) {
                 return ImmutableMap.of("s", asList("unselect"));
             }
         };
@@ -113,6 +114,53 @@ public class FillCategoryValueUrlsTest {
     }
     
     @Test
+    public void testGetSelectUrlSingleUnselectOtherFacets() {
+        Facet.Category sibling = mock(Facet.Category.class);
+        when(sibling.getQueryStringParamName()).thenReturn("f.fac|bb");
+        
+        Facet.Category nephew = mock(Facet.Category.class);
+        when(nephew.getQueryStringParamName()).thenReturn("f.fac|bbchild");
+        
+        when(sibling.getCategories()).thenReturn(asList(nephew));
+        List<Facet.Category> siblings = asList(sibling);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQueryStringMap(
+            ImmutableMap.<String, List<String>>builder()
+            .put("a", asList("b")) 
+            .put("f.fac|bb", asList("set by sibling"))
+            .put("f.fac|bbchild", asList("set child of sibling"))
+            .put("facetScope", asList("f.Facet%7CZ=value1&f.fac%7Ca=a:foobar"))
+            .put("f.fac|a", asList("a:foo", "a:bar"))
+            .put("start_rank", asList("12"))
+            .build()
+            );
+        
+        CategoryValue catVal = mock(CategoryValue.class);
+        when(catVal.getQueryStringParamName()).thenReturn("f.fac|a");
+        when(catVal.getQueryStringParamValue()).thenReturn("plop");
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS);
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getSelectUrlMap(st, facetDef, catVal, siblings);
+        
+        Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
+        Assert.assertFalse("All values in facet scope where facet options so they should have been unselected and the facet scope removed.", 
+            result.containsKey("facetScope"));
+        
+        
+        Assert.assertEquals("We should have selected the facet.", 1, result.get("f.fac|a").size());
+        Assert.assertEquals("We should have selected the plop value",
+            "plop", result.get("f.fac|a").get(0));
+        
+        Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
+            result.containsKey("start_rank"));
+        
+        Assert.assertEquals(2, result.size());
+    }
+    
+    @Test
     public void testGetSelectUrlMultiSelectURL() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getQuestion().setQueryStringMap(ImmutableMap.of(
@@ -155,7 +203,7 @@ public class FillCategoryValueUrlsTest {
             "start_rank", asList("12")));
 
         // When we unselect this facet we only unselect where both key and value match
-        // this is probbaly going to work with multi select facets.
+        // this is probably going to work with multi select facets.
         
         Category cat = mock(Category.class);
         when(cat.getCategories()).thenReturn(Collections.emptyList());
@@ -164,7 +212,60 @@ public class FillCategoryValueUrlsTest {
         when(catVal.getQueryStringParamName()).thenReturn("fac|a");
         when(catVal.getQueryStringParamValue()).thenReturn("a:bar");
         
-        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, cat, catVal);
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.MULTIPLE);
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, facetDef, cat, catVal);
+        
+        Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
+        Assert.assertTrue("Map should still have unrelated params even in facet scope", result.containsKey("facetScope"));
+        
+        Assert.assertTrue("expect the unrelated facetScope option to be left alone",
+            result.get("facetScope").get(0).contains("f.Facet%7CZ=value1"));
+        Assert.assertTrue("Should only remove values where both the key and value match, the value does not"
+            + " match in this case.",
+            result.get("facetScope").get(0).contains("fac%7Ca=foo"));
+        Assert.assertEquals("Should have exactly two key value pairs left in facetScope",
+            2, StringUtils.countMatches(result.get("facetScope").get(0), "=") );
+        
+        
+        Assert.assertEquals("Another value in this facet was selected, do no unset it.",
+            "a:foo", result.get("fac|a").get(0));
+        
+        Assert.assertEquals("We should have unset this facet category value's key and value", 
+            1, result.get("fac|a").size());
+        
+        Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
+            result.containsKey("start_rank"));
+    }
+    
+    /**
+     * This test is really just the same as testGetUnselectUrlNoChildren
+     * as it has the same expectations for SINGLE_AND_UNSELECT_OTHER_FACETS
+     */
+    @Test
+    public void testGetUnselectUrlSingleUslectOtherFacets() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQueryStringMap(ImmutableMap.of(
+            "a", asList("b"),
+            "facetScope", asList("f.Facet%7CZ=value1&fac%7Ca=a:bar&fac%7Ca=foo"),
+            "fac|a", asList("a:foo", "a:bar"),
+            "start_rank", asList("12")));
+
+        // When we unselect this facet we only unselect where both key and value match
+        // this is probably going to work with multi select facets.
+        
+        Category cat = mock(Category.class);
+        when(cat.getCategories()).thenReturn(Collections.emptyList());
+        
+        CategoryValue catVal = mock(CategoryValue.class);
+        when(catVal.getQueryStringParamName()).thenReturn("fac|a");
+        when(catVal.getQueryStringParamValue()).thenReturn("a:bar");
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS);
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, facetDef, cat, catVal);
         
         Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
         Assert.assertTrue("Map should still have unrelated params even in facet scope", result.containsKey("facetScope"));
@@ -217,9 +318,10 @@ public class FillCategoryValueUrlsTest {
         when(cat.getValues()).thenReturn(asList(catVal));
         when(catGrandChild.getValues()).thenReturn(asList(catValGrandChild));
         
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.SINGLE);
         
-        
-        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, cat, catVal);
+        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, facetDef, cat, catVal);
         
         Assert.assertTrue("Map should still have unrelated params", result.containsKey("a"));
         Assert.assertTrue("Map should still have unrelated params even in facet scope", result.containsKey("facetScope"));

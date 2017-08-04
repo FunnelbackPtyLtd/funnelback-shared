@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -23,6 +24,7 @@ import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.F
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationProperties;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -48,6 +50,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     @Autowired @Setter
     private ExtraSearchesExecutor extraSearchesExecutor;
     private PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
+    
+    private FacetedNavigationProperties facetedNavProps = new FacetedNavigationProperties();
     
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
@@ -96,12 +100,13 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     }
     
     public void addExtraSearchesForOrBasedFacetCounts(SearchTransaction searchTransaction) {
-        Map<String, FacetDefinition> orTypeFacets = getFacetDefinitions(searchTransaction)
+        // Facets that can expand the result set must use a extra search to find counts.
+        Map<String, FacetDefinition> facetsThatNeedASearchForCounts = getFacetDefinitions(searchTransaction)
         .stream()
-        .filter(f -> f.getConstraintJoin() == FacetConstraintJoin.OR)
+        .filter(facetedNavProps::canSelectingTheFacetExpandTheResultSet)
         .collect(Collectors.toMap(f -> f.getName(), f -> f));
         
-        if(orTypeFacets.isEmpty()) {
+        if(facetsThatNeedASearchForCounts.isEmpty()) {
             log.debug("No OR type facets will not need to run extra searches.");
             return;
         }
@@ -118,8 +123,9 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
         for(Facet facet : unscopedSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
-            if(orTypeFacets.containsKey(facet.getName())) {
+            if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
                 for(CategoryValue value : Optional.ofNullable(facet.getUnselectedValues()).orElse(Collections.emptyList())) {
+                    
                     String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facet, value);
                     SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory().buildBasicExtraFacetSearch(searchTransaction.getQuestion());
                     
@@ -161,5 +167,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
              .stream()
              .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY);
     }
+    
+    
 
 }
