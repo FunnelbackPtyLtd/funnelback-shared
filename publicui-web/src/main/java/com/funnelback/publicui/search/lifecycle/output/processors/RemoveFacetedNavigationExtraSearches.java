@@ -22,8 +22,7 @@ public class RemoveFacetedNavigationExtraSearches extends AbstractOutputProcesso
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
         if (SearchTransactionUtils.hasQuestion(searchTransaction) && 
-            searchTransaction.getQuestion().getQuestionType() == SearchQuestionType.SEARCH
-            && false) {
+            searchTransaction.getQuestion().getQuestionType() == SearchQuestionType.SEARCH) {
             searchTransaction.getExtraSearches().keySet()
                 .stream()
                 .filter(facetExtraSearchNames::isFacetExtraSearch)
