@@ -1,13 +1,18 @@
 package com.funnelback.publicui.security;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.config.configtypes.server.DefaultServerConfigReadOnly;
+import com.funnelback.config.configtypes.server.ServerConfigOptionDefinition;
 import com.funnelback.config.data.file.server.FileServerConfigDataReadOnly;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.config.types.ConfigPassword;
@@ -19,14 +24,13 @@ import com.funnelback.springmvc.api.config.security.saml.WebappSamlConfiguration
 @Primary // We want to win over the default, admin configuration
 public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration {
 
-    private static final String PUBLIC_UI_SAML_SUFFIX = ":publicui:sp";
-
     private DefaultServerConfigReadOnly config;
+    private ServletContext servletContext;
 
     private ExecutionContextHolder executionContextHolder;
 
     @Autowired
-    public PublicUiWebappSamlConfiguration(File searchHome, ExecutionContextHolder executionContextHolder) {
+    public PublicUiWebappSamlConfiguration(File searchHome, ServletContext servletContext, ExecutionContextHolder executionContextHolder) {
         config = new DefaultServerConfigReadOnly(new FileServerConfigDataReadOnly(searchHome));
         this.executionContextHolder = executionContextHolder;
     }
@@ -87,13 +91,22 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
 
     @Override
     public Optional<String> getEntityId() {
-        Optional<String> cfgValue;
+        ServerConfigOptionDefinition<Optional<String>> key;
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            cfgValue = config.get(ServerKeys.Auth.Admin.SAML.ENTITY_ID_PREFIX);
+            key = ServerKeys.Auth.Admin.SAML.ENTITY_ID_PREFIX;
         } else {
-            cfgValue = config.get(ServerKeys.Auth.PublicUI.SAML.ENTITY_ID_PREFIX);
+            key = ServerKeys.Auth.PublicUI.SAML.ENTITY_ID_PREFIX;
         }
-        return cfgValue.map(value -> value + PUBLIC_UI_SAML_SUFFIX);
+
+        return config.get(key).map((prefix) -> {
+            String fullEntityId = prefix + servletContext.getContextPath();
+            try {
+                return new URI(fullEntityId).toString();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Invalid SAML entity ID - " + fullEntityId + " based on global.cfg's "
+                    + key.getKey() + " was expected to be a valid URI", e);
+            }
+        });
     }
 
 }
