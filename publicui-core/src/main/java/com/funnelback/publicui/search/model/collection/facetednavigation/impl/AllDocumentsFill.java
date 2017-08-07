@@ -70,8 +70,6 @@ public class AllDocumentsFill extends CategoryDefinition {
 
     @Override
     public boolean matches(String value, String extraParams) {
-        System.out.println("Comparing: " + data + " vs " + value);
-        System.out.println("komparing: " + NAME + " vs " + extraParams);
         return data.equals(value) && extraParams.equals(NAME);
     }
 
