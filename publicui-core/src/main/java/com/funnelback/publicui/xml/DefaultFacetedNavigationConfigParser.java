@@ -13,12 +13,14 @@ import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
 import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
 import com.funnelback.common.facetednavigation.models.Category;
 import com.funnelback.common.facetednavigation.models.Facet;
+import com.funnelback.common.facetednavigation.models.categories.AllDocumentsCategory;
 import com.funnelback.common.facetednavigation.models.categories.DateFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.AllDocumentsFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
@@ -119,9 +121,12 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         } else if(category instanceof MetaDataFieldCategory) {
              MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());
             categoryDefinition = metadataFieldFill;
-        } else if(category instanceof URLCategory) {
+        } else if(category instanceof URLCategory) {    
             URLFill urlFill = new URLFill(((URLCategory) category).getUriPrefix());
             categoryDefinition = urlFill;
+        } else if(category instanceof AllDocumentsCategory) {
+            AllDocumentsFill allDocsFill = new AllDocumentsFill(((AllDocumentsCategory) category).getLabel());
+            categoryDefinition = allDocsFill;
         } else {
             //Typically means that the marshaler now produces a Category that we don't understand
             //either thise code needs to map the unknown category to an existing CategoryDefinition. 

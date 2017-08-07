@@ -124,7 +124,9 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
         for(Facet facet : unscopedSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
-                for(CategoryValue value : Optional.ofNullable(facet.getUnselectedValues()).orElse(Collections.emptyList())) {
+                for(CategoryValue value : Optional.ofNullable(facet.getAllValues()).orElse(Collections.emptyList())) {
+                    
+                    // TODO don't run the extra search if the category value is selected.
                     
                     String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facet, value);
                     SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory().buildBasicExtraFacetSearch(searchTransaction.getQuestion());

@@ -123,7 +123,7 @@ public class FillCategoryValueUrls {
         
         // This will work in "Multiple value mode" as it only removes the matching facet
         // and not other selected facets ie the value removed must also match.
-        // Remove specfic key and value from params.
+        // Remove specific key and value from params.
         // This will work for SINGLE_AND_UNSELECT_OTHER_FACETS, as unselecting this type of
         // facet does not mean that other facets should unselected.
         FacetedNavigationUtils.removeQueryStringFacetValue(unselectUrlQs, 

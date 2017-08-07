@@ -152,7 +152,7 @@ public class MultiFacetedNavigationTest {
         Facet orFacet = mock(Facet.class);
         when(orFacet.getName()).thenReturn("bob");
         CategoryValue orCat = categoryValue("f.bar|ff", "fromor=bar", "data 2");
-        when(orFacet.getUnselectedValues()).thenReturn(Arrays.asList(orCat));
+        when(orFacet.getAllValues()).thenReturn(Arrays.asList(orCat));
         
         
         // Add both OR and AND facet to the unscoped extra search

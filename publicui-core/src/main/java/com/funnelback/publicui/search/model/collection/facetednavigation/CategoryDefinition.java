@@ -15,6 +15,7 @@ import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -136,7 +137,17 @@ public abstract class CategoryDefinition {
      * @return the name of the query string parameter used
      * to select this category (Ex: <tt>f.By Date|dc.date</tt>)
      */
-    public abstract String getQueryStringParamName();
+    public final String getQueryStringParamName() {
+        return RequestParameters.FACET_PREFIX + getFacetName() + CategoryDefinition.QS_PARAM_SEPARATOR 
+            + getQueryStringCategoryExtraPart();
+    }
+    
+    /**
+     * Gets the extra part of the query string param name e.g. f.<facet name>|<extra part>=value.
+     * 
+     * @return
+     */
+    public abstract String getQueryStringCategoryExtraPart();
     
     /**
      * <p>Given the value of a query string parameter, and any extra parameters,
@@ -249,6 +260,13 @@ public abstract class CategoryDefinition {
     
     public static interface SearchResonseForCountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Optional<SearchResponse>> {
         
+        /**
+         * Given a category definition and a value (e.g. 'David Hawking', '1', etc) this will
+         * return the SearchResponse to use to get counts (the number of results returned 
+         * if the value is selected). 
+         */
+        @Override
+        Optional<SearchResponse> apply(CategoryDefinition categoryDefinition, String value);
     }
     
     public static interface CountSupplier extends java.util.function.BiFunction<CategoryDefinition, String, Integer> {
