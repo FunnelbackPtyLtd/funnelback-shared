@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.SneakyThrows;
 
@@ -21,13 +22,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.config.configtypes.server.ServerConfigReadOnly;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.lifecycle.output.processors.FixCacheAndClickLinks;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.curator.Curator;
 import com.funnelback.publicui.search.model.curator.data.UrlAdvert;
 import com.funnelback.publicui.search.model.padre.BestBet;
@@ -41,22 +46,30 @@ import com.funnelback.publicui.search.service.auth.DefaultAuthTokenManager;
 import com.funnelback.publicui.utils.QueryStringUtils;
 import com.funnelback.publicui.xml.padre.StaxStreamParser;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 public class FixCacheAndClickLinksTests {
 
     private static final String CURATOR_ADVERT_LINK = "http://www.link.com";
     private FixCacheAndClickLinks processor;
     
-    private final File SEARCH_HOME = new File("src/test/resources/dummy-search_home");
-    
     @SneakyThrows
-    private SearchTransaction getTestSearchTransaction() {
+    private SearchTransaction getTestSearchTransaction(Boolean clickTracking) {
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.UI.Modern.CLICK_LINK, Optional.of("CLICK_LINK"));
+        serviceConfig.set(FrontEndKeys.UI.Modern.CLICK_TRACKING, clickTracking);
+
+        Profile profile = new Profile();
+        profile.setServiceConfig(serviceConfig);
+        Collection collection = new Collection("dummy", null);
+        collection.getProfiles().put("profile-test", profile);
+
         SearchQuestion question = new SearchQuestion();
+        question.setCollection(collection);
+        question.setCurrentProfile("profile-test");
         question.setQuery("livelinks & pumpkins ");
-        question.setCollection(new Collection("dummy", new NoOptionsConfig(SEARCH_HOME, "dummy")));
-        question.setProfile("profile-test");
         question.getRawInputParameters().put("HTTP_REFERER", new String[] {"REFERER"});
-        
+
         SearchResponse response = new SearchResponse();
         response.setResultPacket(new StaxStreamParser().parse(
             FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/fix-pseudo-live-links.xml")),
@@ -101,8 +114,7 @@ public class FixCacheAndClickLinksTests {
     
     @Test
     public void testNoClickTracking() throws OutputProcessorException {
-        SearchTransaction st = getTestSearchTransaction();
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "false");
+        SearchTransaction st = getTestSearchTransaction(false);
         processor.processOutput(st);
 
         for (Result r: st.getResponse().getResultPacket().getResults()) {
@@ -113,13 +125,13 @@ public class FixCacheAndClickLinksTests {
 
     @Test
     public void testClickTracking() throws OutputProcessorException, UnsupportedEncodingException {
-        SearchTransaction st = getTestSearchTransaction();
+        SearchTransaction st = getTestSearchTransaction(true);
         processAndAssertClickTracking(st);
     }
     
     @Test
     public void testNoUserEnteredQuery() throws OutputProcessorException, UnsupportedEncodingException {
-        SearchTransaction st = getTestSearchTransaction();
+        SearchTransaction st = getTestSearchTransaction(true);
         st.getQuestion().setQuery(null);
         st.getQuestion().getMetaParameters().add("livelinks & pumpkins");
         processAndAssertClickTracking(st);
@@ -127,7 +139,7 @@ public class FixCacheAndClickLinksTests {
 
     @Test
     public void testCuratorNullAdditionalProperties() throws OutputProcessorException, UnsupportedEncodingException {
-        SearchTransaction st = getTestSearchTransaction();
+        SearchTransaction st = getTestSearchTransaction(true);
         st.getResponse().getCurator().getExhibits().set(0,
             new UrlAdvert("titleHtml", "http://www.display.com", CURATOR_ADVERT_LINK, "descriptionHtml", null, "category"));
         processAndAssertClickTracking(st);
@@ -136,17 +148,13 @@ public class FixCacheAndClickLinksTests {
     public void processAndAssertClickTracking(SearchTransaction st) throws OutputProcessorException, UnsupportedEncodingException {
         Curator curatorOrig = st.getResponse().getCurator();
         UrlAdvert urlAdvertOrig = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
-        
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.CLICK_TRACKING, "true");
-        st.getQuestion().getCollection().getConfiguration().setValue(Keys.ModernUI.CLICK_LINK, "CLICK_LINK");
-        
+
         ConfigRepository configRepository = mock(ConfigRepository.class);
         ServerConfigReadOnly serverConfig = mock(ServerConfigReadOnly.class);
         when(serverConfig.get(ServerKeys.SERVER_SECRET)).thenReturn("plop");
         when(configRepository.getServerConfig()).thenReturn(serverConfig);
-        
+
         processor.setConfigRepository(configRepository);
-            
         processor.processOutput(st);
         
         for (Result r: st.getResponse().getResultPacket().getResults()) {
@@ -164,7 +172,7 @@ public class FixCacheAndClickLinksTests {
             Assert.assertEquals(r.getLiveUrl(), qs.get("index_url"));
             Assert.assertTrue(qs.get("auth").matches(".*[a-zA-Z0-9+/]{22}.*"));
             Assert.assertEquals("livelinks & pumpkins", qs.get("query"));
-            Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
+            Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
             Assert.assertEquals("REFERER", qs.get("search_referer"));
         }
         
@@ -179,7 +187,7 @@ public class FixCacheAndClickLinksTests {
         Assert.assertEquals(bb.getLink(), qs.get("url"));
         Assert.assertEquals(bb.getLink(), qs.get("index_url"));
         Assert.assertEquals("FP", qs.get("type"));
-        Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
+        Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
 
         UrlAdvert advert = (UrlAdvert) st.getResponse().getCurator().getExhibits().get(0);
         Assert.assertFalse(advert.getLinkUrl().contains("null"));
@@ -198,15 +206,14 @@ public class FixCacheAndClickLinksTests {
         Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("url"));
         Assert.assertEquals(CURATOR_ADVERT_LINK, qs.get("index_url"));
         Assert.assertEquals("FP", qs.get("type"));
-        Assert.assertEquals(st.getQuestion().getProfile(), qs.get("profile"));
+        Assert.assertEquals(st.getQuestion().getCurrentProfile(), qs.get("profile"));
     }
     
     @Test
     public void setClickTrackingUrlTestNotVisable() {
         SearchTransaction st = mock(SearchTransaction.class, RETURNS_DEEP_STUBS);
-        
-        when(st.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)).thenReturn(false);
-        
+        when((Object)st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)).thenReturn(false);
+
         Result r1 = mock(Result.class);
         when(r1.isDocumentVisibleToUser()).thenReturn(false);
         
@@ -215,8 +222,8 @@ public class FixCacheAndClickLinksTests {
         when(r2.getLiveUrl()).thenReturn("hey hey hey");
         
         List<Result> results = ImmutableList.<Result>builder().add(r1).add(r2).build();
-        when(st.getResponse().getResultPacket().getResults()).thenReturn(results);
-        
+        when((Object)st.getResponse().getResultPacket().getResults()).thenReturn(results);
+
         FixCacheAndClickLinks fixCacheAndClickLinks = new FixCacheAndClickLinks();
         fixCacheAndClickLinks.setClickTrackingUrl(st, "bar");
         

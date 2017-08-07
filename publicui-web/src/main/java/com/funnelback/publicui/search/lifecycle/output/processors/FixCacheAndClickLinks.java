@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.keys.Keys.ServerKeys;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.lifecycle.input.processors.PassThroughEnvironmentVariables;
@@ -61,7 +61,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
         // Apply click tracking to best bets links, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
-            if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)) {
                 for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
                     bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
                 }
@@ -70,7 +70,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
         // Apply click tracking to curator UrlAdvert's, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
-            if (searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING)) {
+            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)) {
                 //Curator is shared between all request, we must create a new Curator if we wish to edit any entry.
                 List<Exhibit> exhibits = new ArrayList<>();
                 for (Exhibit exhibit : searchTransaction.getResponse().getCurator().getExhibits()) {
@@ -101,7 +101,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             }
         }
     }
-    
+
     /**
      * 
      * @param searchTransaction
@@ -109,7 +109,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      */
     //This is public because tests are not in the same package.
     public void setClickTrackingUrl(SearchTransaction searchTransaction, String q) {
-        boolean buildFixClickTrackingUrl = searchTransaction.getQuestion().getCollection().getConfiguration().valueAsBoolean(Keys.CLICK_TRACKING);
+        boolean buildFixClickTrackingUrl = searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING).booleanValue();
         for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
             if(r.isDocumentVisibleToUser()) {
                 if (q.length() > 0) {
@@ -124,10 +124,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
             }
         }
     }
-    
-    
-    
-    
+
     /**
      * Generates a click tracking URL with all the required parameters for a result.
      * @param question
@@ -178,15 +175,16 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
     @SneakyThrows(UnsupportedEncodingException.class)
     private StringBuffer buildGenericClickTrackingUrl(SearchQuestion question, String url, String indexUrl) {
         StringBuffer out = new StringBuffer()
-        .append(question.getCollection().getConfiguration().value(Keys.ModernUI.CLICK_LINK))
+        .append(question.getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_LINK).get())
         .append("?").append(RequestParameters.COLLECTION).append("=").append(question.getCollection().getId())
         .append("&").append(RequestParameters.Click.URL).append("=").append(URLEncoder.encode(url, "UTF-8"))
         .append("&").append(RequestParameters.Click.INDEX_URL).append("=").append(URLEncoder.encode(indexUrl, "UTF-8"))
         .append("&").append(RequestParameters.Click.AUTH).append("=").append(URLEncoder.encode(authTokenManager.getToken(url,configRepository.getServerConfig().get(ServerKeys.SERVER_SECRET)), "UTF-8"));
 
-        if (question.getProfile() != null) {
-            out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getProfile());
+        if (question.getCurrentProfile() != null) {
+            out.append("&").append(RequestParameters.PROFILE).append("=").append(question.getCurrentProfile());
         }
+
         return out;
     }
 
