@@ -12,7 +12,7 @@
 <ol id="fb-results">
 <#list SearchTransaction.response.resultPacket.results as result>
   <li>
-    <#if SearchTransaction.question.collection.configuration.valueAsBoolean("click_tracking")>
+    <#if SearchTransaction.question.CurrentProfileConfig["click_tracking"]?boolean>
       <h3><a href="${result.clickTrackingUrl}" title="${result.liveUrl}">${result.title?html}</a></h3>
     <#else>
       <h3><a href="${result.liveUrl}">${result.title?html}</a></h3>
