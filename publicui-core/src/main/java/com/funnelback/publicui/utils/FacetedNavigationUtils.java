@@ -12,6 +12,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
@@ -113,8 +114,25 @@ public class FacetedNavigationUtils {
      * @return
      */
     public static boolean isFacetSelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories) {
-        String keyPrefix = RequestParameters.FACET_PREFIX + cDef.getFacetName() + CategoryDefinition.QS_PARAM_SEPARATOR;
+        String keyPrefix = facetParamNamePrefix(cDef.getFacetName());
         return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
+    }
+    
+    /**
+     * Checks if the facet that the category value belongs to is a facet that is selected.
+     * 
+     * <p>The facet is is selected if any category value under the facet is selected.</p>
+     * @param facetDefinition
+     * @param selectedCategories
+     * @return
+     */
+    public static boolean isFacetSelected(FacetDefinition facetDefinition, Map<String, List<String>> selectedCategories) {
+        String keyPrefix = facetParamNamePrefix(facetDefinition.getName());
+        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
+    }
+    
+    public static String facetParamNamePrefix(String nameOfFacet) {
+        return RequestParameters.FACET_PREFIX + nameOfFacet + CategoryDefinition.QS_PARAM_SEPARATOR;
     }
     
     /**

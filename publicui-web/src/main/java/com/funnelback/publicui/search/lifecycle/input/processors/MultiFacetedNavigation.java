@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
@@ -99,12 +98,15 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         searchTransaction.addExtraSearch(SEARCH_FOR_UNSCOPED_VALUES, extraQuestion);
     }
     
-    public void addExtraSearchesForOrBasedFacetCounts(SearchTransaction searchTransaction) {
+    public void addExtraSearchesForOrBasedFacetCounts(SearchTransaction searchTransaction) {        
         // Facets that can expand the result set must use a extra search to find counts.
         Map<String, FacetDefinition> facetsThatNeedASearchForCounts = getFacetDefinitions(searchTransaction)
         .stream()
-        .filter(facetedNavProps::canSelectingTheFacetExpandTheResultSet)
+        .filter(f -> facetedNavProps.useDedicatedExtraSearchForCounts(f, searchTransaction))
+        // remove facets that are 
         .collect(Collectors.toMap(f -> f.getName(), f -> f));
+        
+        
         
         if(facetsThatNeedASearchForCounts.isEmpty()) {
             log.debug("No OR type facets will not need to run extra searches.");
@@ -125,8 +127,6 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         for(Facet facet : unscopedSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
                 for(CategoryValue value : Optional.ofNullable(facet.getAllValues()).orElse(Collections.emptyList())) {
-                    
-                    // TODO don't run the extra search if the category value is selected.
                     
                     String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facet, value);
                     SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory().buildBasicExtraFacetSearch(searchTransaction.getQuestion());
@@ -149,7 +149,10 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
                     
                     searchTransaction.addExtraSearch(extraSearchName, extraQuestion);
-                    log.debug("Added extra search '{}'", extraSearchName);
+                    log.debug("Added extra search '{}' for facet {} and category value data: {}", 
+                        extraSearchName,
+                        facet.getName(),
+                        value.getData());
                     
                 }
             }
@@ -167,7 +170,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     public boolean doAnyFacetsNeedFullFacetValues(SearchTransaction st) {
          return getFacetDefinitions(st)
              .stream()
-             .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY);
+             .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || 
+                     f.getSelectionType() == FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS);
     }
     
     

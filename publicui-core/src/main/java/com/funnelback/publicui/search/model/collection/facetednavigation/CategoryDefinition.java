@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -10,13 +12,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
-import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
@@ -27,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 
 /**
  * <p>Category definition for faceted navigation.</p>
@@ -43,7 +43,8 @@ import static com.funnelback.publicui.search.model.collection.facetednavigation.
 @RequiredArgsConstructor
 public abstract class CategoryDefinition {
     
-    private final FacetedNavigationProperties facetedNavProps = new FacetedNavigationProperties();
+    @Setter
+    private FacetedNavigationProperties facetedNavProps = new FacetedNavigationProperties();
 
     /**
      * <p>Separator used in PADRE results between a metadata field
@@ -201,32 +202,44 @@ public abstract class CategoryDefinition {
     
     protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
         
+        boolean areAnyFacetsSelected = !st.getQuestion().getSelectedCategoryValues().isEmpty();
+        
         // Usually the response for counts would be the one from the normal search.
 
         SearchResonseForCountSupplier responseForCounts = (c, v) -> Optional.of(st.getResponse());
         
-        SearchResponse sr = st.getResponse();
+        SearchResponse searchResponseForValues = st.getResponse();
         
         CountSupplier countIfNotPresent = (c,v) -> null;
         
         // legacy does not work with unscoped values
         if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
-                sr = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES.toString()))
+                searchResponseForValues = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES.toString()))
                     .map(SearchTransaction::getResponse)
-                    .orElse(sr);
+                    .orElse(searchResponseForValues);
                 
-                if(facetDefinition.getConstraintJoin() == FacetConstraintJoin.AND) {
-                    // In the case that the constraints are ANDed then the constraints come
-                    // from the original Response 
-                    responseForCounts = (c, v) -> Optional.of(st.getResponse());
-                    // In the ANDed case any time a value is present but the original Response does not
-                    // have the value then the count is zero.
-                    countIfNotPresent = (c,v) -> 0;
-                }
+                
+                // In the case that the constraints are ANDed then the counts come
+                // from the original Response
+                // Counts for OR may come from the dedicated extra search if that is the case
+                // these values will be overidden later on.
+                responseForCounts = (c, v) -> Optional.of(st.getResponse());
+                // In the ANDed case any time a value is present but the original Response does not
+                // have the value then the count is zero.
+                countIfNotPresent = (c,v) -> 0;
+                
             }
             
-            if(facetedNavProps.canSelectingTheFacetExpandTheResultSet(facetDefinition)) {    
+            if(facetedNavProps.useUnscopedQueryForCounts(facetDefinition, st)) {
+                responseForCounts = (c, v) -> Optional.ofNullable(st.getExtraSearches())
+                    .map(extraSearches -> extraSearches.get(FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES))
+                    .map(SearchTransaction::getResponse);
+                countIfNotPresent = (c,v) -> null;
+                
+            }
+            
+            if(facetedNavProps.useDedicatedExtraSearchForCounts(facetDefinition, st)) {    
                 // In the case of OR we might have a extra search that tells us the counts.
                 // This is the same for SINGLE_AND_INSELECT_OTHER_FACETS because we need to run a query without something
                 // selected to work out the count.
@@ -246,7 +259,7 @@ public abstract class CategoryDefinition {
             }
         }
         
-        return new FacetSearchData(sr, responseForCounts, countIfNotPresent);
+        return new FacetSearchData(searchResponseForValues, responseForCounts, countIfNotPresent);
     }
     
     @AllArgsConstructor

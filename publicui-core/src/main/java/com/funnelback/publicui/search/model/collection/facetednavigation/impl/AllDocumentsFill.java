@@ -55,7 +55,7 @@ public class AllDocumentsFill extends CategoryDefinition {
     
     public boolean isSelected(SearchTransaction st) {
         // This is selected when the URL contains the key and value after this value has been selected.
-        // this is also selected when this facet has not been selected, as this categoru value matches all
+        // this is also selected when this facet has not been selected, as this category value matches all
         // documents so no selection is the same as this being selected.
         // In tabs (which this is designed for) it makes sense to assume ALL is selected when the search page
         // is first visited.
