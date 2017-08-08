@@ -1,24 +1,68 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
+import java.util.List;
+import java.util.Map;
+
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
+import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 public class FacetedNavigationProperties {
     
     /**
-     * Is it possible that selecting something in this facet will expand the result set?
+     * Do we need to run a dedicated extra search to work out the counts?
      * 
-     * For OR facets when we select a value we can increase the result set as we go from just
-     * blue cars to red or blue vars.
+     * For a selected facet that is a OR type facet we do because the result set could be expanded when
+     * selected. Thus counting rmcf/gscopes in the main search will come out under and counting in the unscoped
+     * extra search will come out over so we need a dedicated extra search.
      * 
-     * For SINGLE_AND_UNSELECT_OTHER_FACETS we can unselect some checked facets which means the result
-     * set can be exapnded upon selection.
+     * We don't need to run the extra search if the facet is not selected as clicking on it (as between
+     * facets we always AND) the result set will go down so the main sarch counts can be used.
      *  
      * @param facet
      * @return
      */
-    public boolean canSelectingTheFacetExpandTheResultSet(FacetDefinition facet) {
-        return facet.getConstraintJoin() == FacetConstraintJoin.OR 
-            || facet.getSelectionType()== FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS;
+    public boolean useDedicatedExtraSearchForCounts(FacetDefinition facet, SearchTransaction searchTransaction) {
+        Map<String, List<String>> selectedCategoryValues  = searchTransaction.getQuestion().getSelectedCategoryValues();
+        
+        if(facet.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+            return false;
+        }
+        
+        if(facet.getSelectionType() == FacetSelectionType.MULTIPLE
+            && facet.getConstraintJoin() == FacetConstraintJoin.OR
+            && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {
+            return true;
+        }
+        
+        if(facet.getSelectionType() == FacetSelectionType.SINGLE 
+            && facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY
+            && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {
+            // probably something like a radio button.
+            return true;
+        }
+        
+        return false;
     }
+    
+    /**
+     * Can we use the counts from the unscoped query?
+     * 
+     * We can do this for single select unselect other facets as the count from the unscoped query
+     * will be the same as selecting any value which will first remove any facets (like the unscoped query)
+     * and then apply a single constraint (which we can count from the unscoped query).
+     * @param facet
+     * @param searchTransaction
+     * @return
+     */
+    public boolean useUnscopedQueryForCounts(FacetDefinition facet, SearchTransaction searchTransaction) {
+        if(facet.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+            return false;
+        }
+        
+        return facet.getSelectionType() == FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS;
+    }
+    
 }

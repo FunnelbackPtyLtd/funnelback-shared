@@ -5,12 +5,13 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -19,7 +20,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
-
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationProperties;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -124,10 +125,46 @@ public class CategoryDefinitionTests {
             }
             
         };
+        
+        FacetedNavigationProperties facetedNavProps = mock(FacetedNavigationProperties.class);
+        when(facetedNavProps.useDedicatedExtraSearchForCounts(Matchers.any(), Matchers.any())).thenReturn(true);
+        catDef.setFacetedNavProps(facetedNavProps);
+        
         FacetSearchData data = catDef.getFacetSearchData(st, fdef);
         
         Assert.assertEquals("Counts in the OR case are not supported.",
             false, data.getResponseForCounts().apply(null, null).isPresent());
+        Assert.assertEquals(st.getResponse(), data.getResponseForValues());
+        
+        Assert.assertNull(data.getCountIfNotPresent().apply(catDef, ""));
+    }
+    
+    
+    @Test
+    public void getFacetSearchDataTestFromSingleSelectUnselectOthers() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getName()).thenReturn("fname");
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.OR);
+        when(fdef.getSelectionType()).thenReturn(FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
+        
+        MockCategoryDefinition catDef = new MockCategoryDefinition("") {
+            @Override
+            public String getQueryStringCategoryExtraPart() {
+                return "foobar";
+            }
+        };
+        
+        FacetSearchData data = catDef.getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts for Single select but uneslect others should come from the unscoped"
+            + " search response.",
+            extraSearchTransaction.getResponse(), data.getResponseForCounts().apply(null, null).get());
+        
         Assert.assertEquals(st.getResponse(), data.getResponseForValues());
         
         Assert.assertNull(data.getCountIfNotPresent().apply(catDef, ""));
@@ -149,6 +186,9 @@ public class CategoryDefinitionTests {
             
         };
         
+        FacetedNavigationProperties facetedNavProps = mock(FacetedNavigationProperties.class);
+        catDef.setFacetedNavProps(facetedNavProps);
+        
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getExtraSearches().put(SEARCH_FOR_UNSCOPED_VALUES, extraSearchTransaction);
@@ -164,6 +204,15 @@ public class CategoryDefinitionTests {
             selectedValueExtraSearch);
         
         FacetSearchData data = catDef.getFacetSearchData(st, fdef);
+        
+        // Simulate the facet is not selected, in this case we can use the main search.
+        
+        Assert.assertEquals(st.getResponse(), data.getResponseForCounts().apply(null, null).orElse(null));
+        
+        // Now simulate that the facet is selected and so the extra search will be used to get the count.
+        when(facetedNavProps.useDedicatedExtraSearchForCounts(Matchers.any(), Matchers.any())).thenReturn(true);
+        
+        data = catDef.getFacetSearchData(st, fdef);
         
         Assert.assertEquals("Counts in the OR case are not supported.",
             false, data.getResponseForCounts().apply(null, null).isPresent());

@@ -15,6 +15,7 @@ import com.funnelback.common.config.NoOptionsConfig;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MultiFacetedNavigation;
@@ -24,6 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 
@@ -31,7 +33,7 @@ import static org.mockito.Mockito.*;
 import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.*;
 import static com.funnelback.common.facetednavigation.models.FacetValues.*;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
-
+import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
 public class MultiFacetedNavigationTest {
 
     private MultiFacetedNavigation processor;
@@ -134,9 +136,17 @@ public class MultiFacetedNavigationTest {
     public void addExtraSearchesForOrBasedFacetCountsTest() {
         st.getQuestion().getRawInputParameters().put("removeme", new String[]{"df"});
         
+        // Extra searches will only be run if at least one value of the facet has been selected.
+        st.getQuestion().getSelectedCategoryValues()
+            .put(FacetedNavigationUtils.facetParamNamePrefix("bob"), Arrays.asList("foo"));
+        
+        st.getQuestion().getSelectedCategoryValues()
+            .put(FacetedNavigationUtils.facetParamNamePrefix("not bob"), Arrays.asList("foo"));
+        
         MultiFacetedNavigation multiFacetedNavigation = new MultiFacetedNavigation() {
             public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {
-                return Arrays.asList(facet("not bob", AND, FROM_UNSCOPED_QUERY), facet("bob", OR, FROM_UNSCOPED_QUERY));
+                return Arrays.asList(facet("not bob", AND, FROM_UNSCOPED_QUERY, MULTIPLE), 
+                    facet("bob", OR, FROM_UNSCOPED_QUERY, MULTIPLE));
             }
         };
         
@@ -203,14 +213,15 @@ public class MultiFacetedNavigationTest {
     }
     
     private FacetDefinition facet(FacetConstraintJoin join, FacetValues values) {
-        return facet(System.currentTimeMillis() + "", join, values);
+        return facet(System.currentTimeMillis() + "", join, values, FacetSelectionType.SINGLE);
     }
     
-    private FacetDefinition facet(String name, FacetConstraintJoin join, FacetValues values) {
+    private FacetDefinition facet(String name, FacetConstraintJoin join, FacetValues values, FacetSelectionType selectionType) {
         FacetDefinition facetDef = mock(FacetDefinition.class);
         when(facetDef.getConstraintJoin()).thenReturn(join);
         when(facetDef.getFacetValues()).thenReturn(values);
         when(facetDef.getName()).thenReturn(name);
+        when(facetDef.getSelectionType()).thenReturn(selectionType);
         return facetDef;
     }
     
