@@ -16,7 +16,15 @@ public enum FacetValues {
      * Values are from the unscoped query, that is the user's query without
      * any facets selected.
      * <p>If you had selected `red cars` then you would still see the colours of
-     * other cars.</p>s
+     * other cars, as long as they also matched the user's query.</p>
      */
-    FROM_UNSCOPED_QUERY;
+    FROM_UNSCOPED_QUERY,
+    
+    /**
+     * Values are from running the all (padre null) query where no facets
+     * are selected.
+     * <p>This is what is needed for tabs where even if the user query only has matches
+     * from one tab we would still show all tabs.</p>
+     */
+    FROM_UNSCOPED_ALL_QUERY;
 }
