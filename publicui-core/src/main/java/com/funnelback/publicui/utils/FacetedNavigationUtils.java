@@ -131,6 +131,14 @@ public class FacetedNavigationUtils {
         return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
     }
     
+    /**
+     * Gets the prefix of a faceted navigation category value prefix.
+     * 
+     *  <p>This is prefix of the key that is added to the URL if the category
+     *  value is selected e.g. f.nameOfFacet|</p>
+     * @param nameOfFacet
+     * @return
+     */
     public static String facetParamNamePrefix(String nameOfFacet) {
         return RequestParameters.FACET_PREFIX + nameOfFacet + CategoryDefinition.QS_PARAM_SEPARATOR;
     }
