@@ -73,8 +73,8 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 
     /** {@inheritDoc} */
     @Override
-    public String getQueryStringParamName() {
-        return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + data;
+    public String getQueryStringCategoryExtraPart() {
+        return data;
     }
 
     /** {@inheritDoc} */

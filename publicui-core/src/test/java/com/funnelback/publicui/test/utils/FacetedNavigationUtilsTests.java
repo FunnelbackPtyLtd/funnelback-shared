@@ -69,14 +69,37 @@ public class FacetedNavigationUtilsTests {
     @Test
     public void testIsCategorySelected() {
         CategoryDefinition cDef = Mockito.mock(CategoryDefinition.class);
-        Mockito.when(cDef.getQueryStringParamName()).thenReturn("Name|Data");
+        Mockito.when(cDef.getQueryStringCategoryExtraPart()).thenReturn("data");
+        Mockito.when(cDef.getFacetName()).thenReturn("myfacet");
         
         Map<String, List<String>> selectedCategories = new HashMap<>();
-        selectedCategories.put("Name|Data", Arrays.asList(new String[] {"value1"}));
+        selectedCategories.put("f.myfacet|data", Arrays.asList(new String[] {"value1"}));
         selectedCategories.put("Another|Data", Arrays.asList(new String[] {"value2"}));
         
         Assert.assertTrue(FacetedNavigationUtils.isCategorySelected(cDef, selectedCategories, "value1"));
         Assert.assertFalse(FacetedNavigationUtils.isCategorySelected(cDef, selectedCategories, "value2"));
+    }
+    
+    @Test
+    public void testIsFacetSelected() {
+        CategoryDefinition cDef = Mockito.mock(CategoryDefinition.class);
+        Mockito.when(cDef.getFacetName()).thenReturn("myfacet");
+        
+        Map<String, List<String>> selectedCategories = new HashMap<>();
+        selectedCategories.put("f.myfacet|data", Arrays.asList(new String[] {"value1"}));
+        
+        Assert.assertTrue(FacetedNavigationUtils.isFacetSelected(cDef, selectedCategories));
+    }
+    
+    @Test
+    public void testIsFacetSelectedFacetNotSelected() {
+        CategoryDefinition cDef = Mockito.mock(CategoryDefinition.class);
+        Mockito.when(cDef.getFacetName()).thenReturn("covfefe");
+        
+        Map<String, List<String>> selectedCategories = new HashMap<>();
+        selectedCategories.put("f.myfacet|data", Arrays.asList(new String[] {"value1"}));
+        
+        Assert.assertFalse(FacetedNavigationUtils.isFacetSelected(cDef, selectedCategories));
     }
     
     @Test

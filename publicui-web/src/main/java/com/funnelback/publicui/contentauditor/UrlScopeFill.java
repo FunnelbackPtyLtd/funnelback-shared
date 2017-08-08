@@ -16,12 +16,10 @@ import org.springframework.stereotype.Controller;
 
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.Getter;
@@ -180,8 +178,8 @@ public class UrlScopeFill extends URLFill {
 
         /** {@inheritDoc} */
         @Override
-        public String getQueryStringParamName() {
-            return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + TAG;
+        public String getQueryStringCategoryExtraPart() {
+            return TAG;
         }
 
         /** {@inheritDoc} */

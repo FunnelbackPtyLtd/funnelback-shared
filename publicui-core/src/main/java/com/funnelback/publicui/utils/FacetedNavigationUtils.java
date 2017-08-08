@@ -105,6 +105,19 @@ public class FacetedNavigationUtils {
     }
     
     /**
+     * Checks if the facet that the category value belongs to is a facet that is selected.
+     * 
+     * <p>The facet is is selected if any category value under the facet is selected.</p>
+     * @param cDef
+     * @param selectedCategories
+     * @return
+     */
+    public static boolean isFacetSelected(CategoryDefinition cDef, Map<String, List<String>> selectedCategories) {
+        String keyPrefix = RequestParameters.FACET_PREFIX + cDef.getFacetName() + CategoryDefinition.QS_PARAM_SEPARATOR;
+        return selectedCategories.keySet().stream().anyMatch(k -> k.startsWith(keyPrefix));
+    }
+    
+    /**
      * Remove the query key value pair from the queryStringMap looking in the facetScope param as well.
      * 
      * <p>If no values are left over for a key, the key will be removed from the map as well.<p>

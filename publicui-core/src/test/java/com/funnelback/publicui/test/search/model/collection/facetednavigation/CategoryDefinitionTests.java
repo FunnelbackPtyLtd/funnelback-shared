@@ -119,7 +119,7 @@ public class CategoryDefinitionTests {
         
         MockCategoryDefinition catDef = new MockCategoryDefinition("") {
             @Override
-            public String getQueryStringParamName() {
+            public String getQueryStringCategoryExtraPart() {
                 return "foobar";
             }
             
@@ -143,7 +143,7 @@ public class CategoryDefinitionTests {
         
         MockCategoryDefinition catDef = new MockCategoryDefinition("cat-name"){
             @Override
-            public String getQueryStringParamName() {
+            public String getQueryStringCategoryExtraPart() {
                 return "foobar";
             }
             
@@ -211,11 +211,6 @@ public class CategoryDefinitionTests {
         }
 
         @Override
-        public String getQueryStringParamName() {
-            throw new NotImplementedException("not mocked");
-        }
-
-        @Override
         public boolean matches(String value, String extraParams) {
             throw new NotImplementedException("not mocked");
         }
@@ -228,6 +223,11 @@ public class CategoryDefinitionTests {
         @Override
         public FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
             return super.getFacetSearchData(st, facetDefinition);
+        }
+
+        @Override
+        public String getQueryStringCategoryExtraPart() {
+            throw new NotImplementedException("not mocked");
         }
         
     }

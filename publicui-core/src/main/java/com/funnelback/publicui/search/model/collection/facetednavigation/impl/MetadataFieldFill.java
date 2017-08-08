@@ -13,7 +13,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -76,8 +75,8 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
 
     /** {@inheritDoc} */
     @Override
-    public String getQueryStringParamName() {
-        return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + data;
+    public String getQueryStringCategoryExtraPart() {
+        return data;
     }
 
     /** {@inheritDoc} */

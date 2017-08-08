@@ -19,7 +19,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.SneakyThrows;
@@ -209,8 +208,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
      * type definition.</p>
      */
     @Override
-    public String getQueryStringParamName() {
-        return RequestParameters.FACET_PREFIX + facetName + CategoryDefinition.QS_PARAM_SEPARATOR + TAG;
+    public String getQueryStringCategoryExtraPart() {
+        return TAG;
     }
 
     /** {@inheritDoc} */
