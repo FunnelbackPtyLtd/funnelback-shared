@@ -107,6 +107,17 @@ public class AccessRestrictionInterceptorTests {
     }
 
     @Test
+    public void testEmptyAccessNoAlternate() throws Exception {
+        // This is what currently actually happens, as access_alternate is set to blank in collection.cfg.default
+        testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.of(""));
+        Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
+        Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
+        Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+    }
+
+    @Test
     public void testNoAccessAccessAlternate() throws Exception {
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.of("alternate_collection"));
