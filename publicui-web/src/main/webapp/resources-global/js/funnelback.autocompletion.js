@@ -146,10 +146,10 @@
 		});
 
 		that.$element.typeahead({
-			minLength   : that.options.length,
-			hint        : that.options.typeahead.hint,
-			highlight   : that.options.typeahead.highlight,
-			classNames  : that.options.typeahead.classNames
+			minLength : parseInt(that.options.length),
+			hint      : that.options.typeahead.hint,
+			highlight : that.options.typeahead.highlight,
+			classNames: that.options.typeahead.classNames
 		}, data);
 
 		if (that.options.typeahead.events) {
@@ -161,6 +161,12 @@
 		if (that.options.horizontal) {
 			var data = that.$element.data(), menu = that.getTypeaheadMenu();
 
+			/* 
+			 * 37 - code for left arrow key
+			 * 38 - code for up arrow key
+			 * 39 - code for right arrow key
+			 * 40 - code for down arrow key
+			 */
 			data.ttTypeahead._onDownKeyed = function() {
 				_navCursorUD(40, menu, that.$element);
 			};
@@ -359,9 +365,15 @@
 
 	// Map /s/suggest.json output
 	function _processSetData(set, suggestion, i, name, query) {
+		var value = suggestion.key, label = suggestion.key;
+		if (suggestion.action_t == 'Q') value = suggestion.action;
+		if (suggestion.action_t == 'S') value = suggestion.disp;
+		if (suggestion.disp_t == 'C') label = eval(suggestion.disp);
+		else if (suggestion.disp) label = suggestion.disp;
+
 		return {
-			label    : (suggestion.disp) ? suggestion.disp : suggestion.key,
-			value    : (suggestion.action_t == 'Q') ? suggestion.action : suggestion.key,
+			label    : label,
+			value    : value,
 			extra    : suggestion,
 			category : suggestion.cat ? suggestion.cat : '',
 			rank     : i + 1,
@@ -431,15 +443,13 @@
 				case 'U':
 					document.location = item.extra.action; break;
 				case 'E':
-					break;
+					target.val(item.extra.action); break;
 				case undefined:
 				case '':
-					formSend(item.value); break;
 				case 'S':
-					formSend(item.extra.key); break;
 				case 'Q':
 				default:
-					formSend(item.extra.action); break;
+					formSend(item.value); break;
 			}
 		} else {
 			formSend(item.value);
