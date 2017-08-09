@@ -334,7 +334,7 @@ public class ResultPacket {
     @Getter private List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
     
     /**
-     * <p>A map containing the number of documents each collection contibuted to the result set.</p>
+     * <p>A map containing the number of documents each collection contributed to the result set.</p>
      * <p>The key is the collection name and the value is the number of documents that collection
      * contributed</p>
      * 
