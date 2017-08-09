@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Transformer;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * A PADRE result packet, containing search results.
@@ -334,6 +334,15 @@ public class ResultPacket {
     @Getter private List<IndexedTermCounts> indexedTermCounts = new ArrayList<>();
     
     /**
+     * <p>A map containing the number of documents each collection contributed to the result set.</p>
+     * <p>The key is the collection name and the value is the number of documents that collection
+     * contributed</p>
+     * 
+     * @Since 15.12
+     */
+    @Getter private Map<String, Long> documentsPerCollection = new HashMap<>();
+    
+    /**
      * <p>A map of the numeric metadata to total of that numeric metadata in the result set</p>
      * 
      * <p>The key is the metadata class. The value is the sum.</p>
@@ -475,6 +484,15 @@ public class ResultPacket {
                 public static final String TAG = "c";
                 public static final String TERM = "t";
             }
+        }
+        
+        
+        
+        public static final String DOCUMENTS_PER_COLLECTION = "documents_per_collection";
+        
+        public static class DocumentsPerCollection {
+            public static final String TAG = "c";
+            public static final String COLLECTION_NAME = "coll";
         }
         
         public static final String SUMS_BY_GROUPS = "sums_by_groups";
