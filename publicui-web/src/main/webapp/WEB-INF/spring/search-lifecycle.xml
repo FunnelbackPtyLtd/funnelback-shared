@@ -79,7 +79,6 @@
         <ref bean="quickLinksOutputProcessor" />
         <ref bean="queryCleanOutputProcessor" />
         <ref bean="contentOptimiserOutputProcessor" />
-        <ref bean="textMinerOutputProcessor" />
         <ref bean="getTranslationsOutputProcessor" />
         <ref bean="searchHistoryOutputProcessor" />
         <ref bean="removeFacetedNavigationExtraSearches" />

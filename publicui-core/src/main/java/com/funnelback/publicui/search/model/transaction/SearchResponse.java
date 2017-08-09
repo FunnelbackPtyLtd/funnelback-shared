@@ -70,13 +70,6 @@ public class SearchResponse {
     @Getter @Setter private ContentOptimiserModel optimiserModel;
     
     /**
-     * TextMiner: Entity/Definition/URL data.
-     * 
-     * @since 12.0
-     */    
-    @Getter @Setter private EntityDefinition entityDefinition;
-    
-    /**
      * Curator: Curated result packet data data.
      * 
      * @since 13.0
