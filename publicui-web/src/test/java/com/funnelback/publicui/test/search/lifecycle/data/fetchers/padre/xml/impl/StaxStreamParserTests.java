@@ -60,6 +60,41 @@ public class StaxStreamParserTests {
     }
     
     @Test
+    public void testDocumentsPerCollection() throws Exception {
+//       Format is:
+//       <documents_per_collection>
+//          <c coll="bar">5</c>
+//          <c coll="plop">4</c>
+//          <c coll="foo">1</c>
+//       </documents_per_collection>
+        
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/documents-per-collection.xml")),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertEquals(5, rp.getDocumentsPerCollection().get("bar") + 0);
+        Assert.assertEquals(4, rp.getDocumentsPerCollection().get("plop") + 0);
+        Assert.assertEquals(1, rp.getDocumentsPerCollection().get("foo") + 0);
+        
+        Assert.assertEquals(3, rp.getDocumentsPerCollection().size());
+    }
+    
+    @Test
+    public void testDocumentsPerCollectionEmpty() throws Exception {
+//       Format is:
+//       <documents_per_collection>
+//       </documents_per_collection>
+        
+        StaxStreamParser parser = new StaxStreamParser();
+        ResultPacket rp = parser.parse(
+            FileUtils.readFileToByteArray(new File("src/test/resources/padre-xml/documents-per-collection-empty.xml")),StandardCharsets.UTF_8,
+            false);
+        
+        Assert.assertEquals(0, rp.getDocumentsPerCollection().size());
+    }
+    
+    @Test
     public void testUniqueCountsByGroups() throws Exception {
         StaxStreamParser parser = new StaxStreamParser();
         ResultPacket rp = parser.parse(
