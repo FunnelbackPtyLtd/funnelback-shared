@@ -9,7 +9,16 @@ import com.funnelback.publicui.search.model.collection.Profile;
 
 public class TransactionFacetedNavigationConfigHelper {
 
-    
+    /**
+     * Updates the search transaction so that the given faceted nav config is used.
+     * 
+     * This is usefull as it does it such that:
+     * * you don't edit the cached version of config.
+     * * you update faceted nav in all places.
+     * 
+     * @param st
+     * @param facetedNavigationConfig
+     */
     public void updateTheFacetConfigToUse(SearchTransaction st, 
                                             FacetedNavigationConfig facetedNavigationConfig) {
         
