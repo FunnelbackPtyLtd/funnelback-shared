@@ -2,28 +2,23 @@ package com.funnelback.publicui.accessibilityauditor.lifecycle.input.processors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
-import com.funnelback.common.facetednavigation.models.FacetSelectionType;
-import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.filter.accessibility.Metadata;
 import com.funnelback.common.filter.accessibility.Metadata.Names;
 import com.funnelback.publicui.contentauditor.MissingMetadataFill;
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
-import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
-import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.TransactionFacetedNavigationConfigHelper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -93,20 +88,7 @@ public class ConfigureFacets extends AbstractAccessibilityAuditorInputProcessor 
         // Use delegate collections & profiles to avoid modifying the collection
         // object which is cached in EhCache
         
-        Map<String, Profile> profiles = transaction.getQuestion().getCollection().getProfiles().entrySet()
-        .stream()
-        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().cloneBuilder()
-            .facetedNavConfConfig(facetedNavigationConfig)
-            .build()));
-        
-        Collection c = transaction.getQuestion().getCollection().cloneBuilder()
-                        .facetedNavigationConfConfig(facetedNavigationConfig)
-                        .facetedNavigationLiveConfig(facetedNavigationConfig)
-                        .profiles(profiles)
-                        .build();
-            
-
-        transaction.getQuestion().setCollection(c);
+        new TransactionFacetedNavigationConfigHelper().updateTheFacetConfigToUse(transaction, facetedNavigationConfig);
     }
     
     /**

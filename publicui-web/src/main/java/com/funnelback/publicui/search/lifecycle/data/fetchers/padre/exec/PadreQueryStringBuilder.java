@@ -66,21 +66,22 @@ public class PadreQueryStringBuilder {
         }
         
         // handle clive constraints if any.
-        if(question.getFacetCollectionConstraints().isPresent()) {
-            qs.remove(QueryProcessorOptionKeys.CLIVE);
-            List<String> collectionsToRestrictTo = question.getFacetCollectionConstraints()
-                .map(this::getCollectionsToRestrictTo)
-                .get()
-                .stream()
-                .collect(Collectors.toList());
-            // If no collections return then the intersect of user wanted colls and 
-            // facet wanted calls is no collection this causes a error page rather than 
-            // a zero result page. By setting a query that will never match we get
-            // a zero result page.
-            if(collectionsToRestrictTo.isEmpty()) {
-                s += " |FunDoesNotExist:searchdisabled |FunDoesNotExist:noCollsLive ";
-            } else {
-                qs.put(QueryProcessorOptionKeys.CLIVE, collectionsToRestrictTo.toArray(new String[0]));
+        if(withFacetConstraints) {
+            if(question.getFacetCollectionConstraints().isPresent()) {
+                qs.remove(QueryProcessorOptionKeys.CLIVE);
+                
+                List<String> collectionsToRestrictTo = 
+                    getCollectionsToRestrictTo(question.getFacetCollectionConstraints().get());
+                    
+                // If no collections return then the intersect of user wanted colls and 
+                // facet wanted calls is no collection this causes a error page rather than 
+                // a zero result page. By setting a query that will never match we get
+                // a zero result page.
+                if(collectionsToRestrictTo.isEmpty()) {
+                    s += " |FunDoesNotExist:searchdisabled |FunDoesNotExist:noCollsLive ";
+                } else {
+                    qs.put(QueryProcessorOptionKeys.CLIVE, collectionsToRestrictTo.toArray(new String[0]));
+                }
             }
         }
             
@@ -92,6 +93,7 @@ public class PadreQueryStringBuilder {
         // Remove from query string any parameter that will be passed as an environment variable
         for (String key : question.getEnvironmentVariables().keySet()) {
             // I think it would make more sense to AND clive values rather than have it overwritten.
+            // which really means it gets ORed.
             if(QueryProcessorOptionKeys.CLIVE.equals(key)) {
                 continue;
             }

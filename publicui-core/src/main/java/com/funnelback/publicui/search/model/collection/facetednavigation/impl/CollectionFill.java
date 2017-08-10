@@ -49,37 +49,36 @@ public class CollectionFill extends CategoryDefinition {
                                                 .filter(Predicates.containedBy(collections))
                                                 .collect(Collectors.toList());
         
+        if(collectionsListed.isEmpty()) {
+            //Nothing knows about any of the collections we have.
+            return Collections.emptyList();
+        }
+        
         Long count = null;
-        for(String collection : collectionsListed) {
-            Long countFromColl = facetSearchData.getResponseForCounts().apply(this, value)
-                .map(SearchResponse::getResultPacket)
-                .map(ResultPacket::getDocumentsPerCollection)
-                .map(docsPerColl -> docsPerColl.get(collection))
-                .orElse(null);
-            
-            
-            if(countFromColl != null) {
-                if(count == null) {
-                    count = 0L;
-                }
+        
+        Optional<SearchResponse> searchResponseForCounts = facetSearchData.getResponseForCounts().apply(this, value);
+        
+        if(searchResponseForCounts.isPresent()) {
+            count = 0L;
+            for(String collection : collectionsListed) {
+                Long countFromColl = searchResponseForCounts
+                    .map(SearchResponse::getResultPacket)
+                    .map(ResultPacket::getDocumentsPerCollection)
+                    .map(docsPerColl -> docsPerColl.get(collection))
+                    .orElse(null);
+                
                 count += countFromColl;
             }
-        }
-        
-        if(count == null) {
+            
+        } else {
             count = Optional.ofNullable(facetSearchData.getCountIfNotPresent().apply(this, value))
-                    .map(i -> (long) i)
-                    .orElse(null);
-        }
-        
-        
-        if(count == null) {
-            return Collections.emptyList();
+                .map(i -> (long) i)
+                .orElse(null);
         }
         
         return ImmutableList.of(new CategoryValueComputedDataHolder(value, 
             data, 
-            count.intValue(), 
+            Optional.ofNullable(count).map(Long::intValue).orElse(null), 
             "",
             FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data),
             getQueryStringParamName(),

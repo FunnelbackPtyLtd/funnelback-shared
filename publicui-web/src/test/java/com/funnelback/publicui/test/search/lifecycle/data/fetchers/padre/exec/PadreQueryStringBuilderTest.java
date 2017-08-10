@@ -1,5 +1,8 @@
 package com.funnelback.publicui.test.search.lifecycle.data.fetchers.padre.exec;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,6 +149,63 @@ public class PadreQueryStringBuilderTest {
                 "a=1&collection=dummy&profile=_default&query=chocolate&s=or+coffee",
                 new PadreQueryStringBuilder(q, true).buildQueryString());
 
+    }
+    
+    @Test
+    public void testFacetCliveConstraints() {
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar")));
+        
+        Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("a=1&clive=bar&clive=foo&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+    
+    
+    @Test
+    public void testFacetCliveConstraintsWithOtherCliveValuesSet() {
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar", "other0", "other1")));
+        
+        // If the user has set some clive values or something else has we will ensure that
+        // the set of live collections is a subset of those collections.
+        
+        q.getAdditionalParameters().put("clive", new String[]{"foo"});
+        
+        q.getRawInputParameters().put("clive", new String[]{"bar", "fudge"});
+        
+        q.getEnvironmentVariables().put("clive", "");
+        
+        Assert.assertEquals("a=1&clive=foo&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("We should take the intersect of the facet wanted collections and the "
+            + "collections the user wanted.", 
+            "a=1&clive=bar&clive=foo&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+    
+    @Test
+    public void testFacetCliveConstraintsNoMatchingCollections() {
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("other0", "other1")));
+        
+        // In this case the user or some other input processor wants foo, bar and fudge
+        // but facets wants non of those and wants instead other0 and other1 so in this
+        // case no collection matches.
+        // We must force a zero result page in thise case.
+        
+        q.getAdditionalParameters().put("clive", new String[]{"foo"});
+        
+        q.getRawInputParameters().put("clive", new String[]{"bar", "fudge"});
+        
+        Assert.assertEquals("a=1&clive=foo&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("We should take the intersect of the facet wanted collections and the "
+            + "collections the user wanted.", 
+            "a=1&collection=dummy&profile=_default&query=chocolate"
+            + "&s=+%7CFunDoesNotExist%3Asearchdisabled+%7CFunDoesNotExist%3AnoCollsLive+", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
     }
     
     @Test
