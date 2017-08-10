@@ -146,10 +146,10 @@
 		});
 
 		that.$element.typeahead({
-			minLength   : that.options.length,
-			hint        : that.options.typeahead.hint,
-			highlight   : that.options.typeahead.highlight,
-			classNames  : that.options.typeahead.classNames
+			minLength : parseInt(that.options.length),
+			hint      : that.options.typeahead.hint,
+			highlight : that.options.typeahead.highlight,
+			classNames: that.options.typeahead.classNames
 		}, data);
 
 		if (that.options.typeahead.events) {
@@ -161,6 +161,12 @@
 		if (that.options.horizontal) {
 			var data = that.$element.data(), menu = that.getTypeaheadMenu();
 
+			/* 
+			 * 37 - code for left arrow key
+			 * 38 - code for up arrow key
+			 * 39 - code for right arrow key
+			 * 40 - code for down arrow key
+			 */
 			data.ttTypeahead._onDownKeyed = function() {
 				_navCursorUD(40, menu, that.$element);
 			};
@@ -359,9 +365,15 @@
 
 	// Map /s/suggest.json output
 	function _processSetData(set, suggestion, i, name, query) {
+		var value = suggestion.key, label = suggestion.key;
+		if (suggestion.action_t == 'Q') value = suggestion.action;
+		if (suggestion.action_t == 'S') value = suggestion.disp;
+		if (suggestion.disp_t == 'C') label = eval(suggestion.disp);
+		else if (suggestion.disp) label = suggestion.disp;
+
 		return {
-			label    : (suggestion.disp) ? suggestion.disp : suggestion.key,
-			value    : (suggestion.action_t == 'Q') ? suggestion.action : suggestion.key,
+			label    : label,
+			value    : value,
 			extra    : suggestion,
 			category : suggestion.cat ? suggestion.cat : '',
 			rank     : i + 1,
@@ -373,19 +385,26 @@
 	// Adjust columns width depends on columns number
 	// If column has assigned CSS "width" property with "!important" declaration, this will be respected
 	function _renderSetWidth(menu, classWrapper, className) {
-		var cols = 0, colsW = 0, styles, parts;
+		var cols = 0, colsW = 0, styles, parts, menuW = menu.width();
 		className 	 = '.' + className;
 		classWrapper = '.' + classWrapper;
 
 		$.each(menu.children(className), function() {
 			parts  = $(this).attr('class').split(' ');
 			styles = $.cssStyle(classWrapper + ' .' + parts[1]) || $.cssStyle(classWrapper + ' .' + parts.join('.'));
-			if (styles.width && styles.width.indexOf('important')) colsW += parseFloat(styles.width);
+
+			if (styles.width && styles.width.indexOf('important') && styles.width.indexOf('auto') < 0 && styles.width.indexOf('initial') < 0 && styles.width.indexOf('inherit') < 0) {
+				if (styles.width.indexOf('%') > 0) colsW += menuW * parseFloat(styles.width) / 100;
+				else colsW += parseFloat(styles.width);
+			}
 			else if ($.hasContent($(this))) cols++;
 		});
 
-		var minW = parseFloat(menu.children(className).css('min-width')), menuW = menu.width() - colsW, colW = menuW / cols;
-		if (minW <= colW) menu.children(className).css('width', (colW * 100 / menuW) + '%');
+		if (cols) {
+			menuW -= colsW + 0.5;
+			var minW = parseFloat(menu.children(className).css('min-width')), colW = menuW / cols;
+			if (minW <= colW) menu.children(className).css('width', colW + 'px');
+		}
 	}
 
 	// Pre-compile templates using Handlebars
@@ -431,15 +450,13 @@
 				case 'U':
 					document.location = item.extra.action; break;
 				case 'E':
-					break;
+					target.val(item.extra.action); break;
 				case undefined:
 				case '':
-					formSend(item.value); break;
 				case 'S':
-					formSend(item.extra.key); break;
 				case 'Q':
 				default:
-					formSend(item.extra.action); break;
+					formSend(item.value); break;
 			}
 		} else {
 			formSend(item.value);
