@@ -2,20 +2,27 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
-
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.CharUtils;
 
+import com.funnelback.common.function.StreamUtils;
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.utils.MapUtils;
+import com.google.common.collect.Sets;
 
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
  * Helper to build a query string that will be passed to PADRE. 
@@ -51,17 +58,43 @@ public class PadreQueryStringBuilder {
         
         // System generated query
         String s = buildGeneratedQuery();
-        if (! s.isEmpty()) {
-            qs.put(Parameters.s.toString(), new String[] {s});
-        }
+        
         
         String gscope1 = buildGScope1();
         if (gscope1 != null && ! "".equals(gscope1)) {
             qs.put(Parameters.gscope1.toString(), new String[] {buildGScope1()});
         }
         
+        // handle clive constraints if any.
+        if(question.getFacetCollectionConstraints().isPresent()) {
+            qs.remove(QueryProcessorOptionKeys.CLIVE);
+            List<String> collectionsToRestrictTo = question.getFacetCollectionConstraints()
+                .map(this::getCollectionsToRestrictTo)
+                .get()
+                .stream()
+                .collect(Collectors.toList());
+            // If no collections return then the intersect of user wanted colls and 
+            // facet wanted calls is no collection this causes a error page rather than 
+            // a zero result page. By setting a query that will never match we get
+            // a zero result page.
+            if(collectionsToRestrictTo.isEmpty()) {
+                s += " |FunDoesNotExist:searchdisabled |FunDoesNotExist:noCollsLive ";
+            } else {
+                qs.put(QueryProcessorOptionKeys.CLIVE, collectionsToRestrictTo.toArray(new String[0]));
+            }
+        }
+            
+        // Add the system query last.
+        if (! s.isEmpty()) {
+            qs.put(Parameters.s.toString(), new String[] {s});
+        }
+        
         // Remove from query string any parameter that will be passed as an environment variable
         for (String key : question.getEnvironmentVariables().keySet()) {
+            // I think it would make more sense to AND clive values rather than have it overwritten.
+            if(QueryProcessorOptionKeys.CLIVE.equals(key)) {
+                continue;
+            }
             qs.remove(key);
         }
         
@@ -187,6 +220,34 @@ public class PadreQueryStringBuilder {
         }
         
         return query.toString().trim();
+    }
+    
+    private List<String> getCollectionsToRestrictTo(List<String> facetCollectionRestriction) {
+        Set<String> collections = new HashSet<>(facetCollectionRestriction);
+        Set<String> otherCollectionsToRestrictTo = new HashSet<>();
+        
+        // We will ensure that the result set is restricted to the intersection of the collections
+        // the user wants to restrict to and to the set of the collections the facets want to restrict
+        // to.
+        
+        // The doco for this says that getAdditionalParameters() wont be processed by the modern UI.
+        // but it is processed in buildGScope1() below.
+        StreamUtils.ofNullable(question.getAdditionalParameters().get(QueryProcessorOptionKeys.CLIVE))
+            .forEach(otherCollectionsToRestrictTo::add);
+        
+        // I think it makes sense to also process the raw input params.
+        // in case something sets it here I suspect they intended to reduce to this set.
+        StreamUtils.ofNullable(question.getRawInputParameters().get(QueryProcessorOptionKeys.CLIVE))
+            .forEach(otherCollectionsToRestrictTo::add);
+        
+        if(otherCollectionsToRestrictTo.isEmpty()) {
+            return new ArrayList<>(collections);
+        } else {
+            List<String> colls = new ArrayList<>(Sets.intersection(collections, otherCollectionsToRestrictTo));
+            
+            return colls;
+        }
+        
     }
     
     /**

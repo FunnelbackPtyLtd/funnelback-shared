@@ -45,6 +45,8 @@ public class QueryProcessorOptionReducersTest {
                         new QueryProcessorOption<String>("unsupported", "option1"),
                         new QueryProcessorOption<String>("unsupported", "option2"),
                         new QueryProcessorOption<Long>("another", 42L),
+                        new QueryProcessorOption<>("docsPerColl", true),
+                        new QueryProcessorOption<>("docsPerColl", true),
         });
 
         Collections.shuffle(data);
@@ -61,6 +63,7 @@ public class QueryProcessorOptionReducersTest {
                         Pair.of("unsupported", "option1"),
                         Pair.of("unsupported", "option2"),
                         Pair.of("another", "42"),
+                        Pair.of("docsPerColl", "true"),
         });
 
         Assert.assertEquals(

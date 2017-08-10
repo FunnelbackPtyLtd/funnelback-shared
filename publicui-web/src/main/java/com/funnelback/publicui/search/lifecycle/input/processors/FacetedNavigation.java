@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +25,13 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.google.common.collect.MultimapBuilder.SetMultimapBuilder;
 import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -60,6 +63,7 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 
                 SetMultimap<String, String> gscope1Constraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 SetMultimap<String, String> queryConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
+                SetMultimap<String, Set<String>> cliveConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 
                 
                 List<FacetSelectedDetailts> facetParamaters = FacetedNavigationUtils.getFacetParameters(searchTransaction.getQuestion())
@@ -109,6 +113,9 @@ public class FacetedNavigation extends AbstractInputProcessor {
                                     } else if (ct instanceof MetadataBasedCategory) {
                                         MetadataBasedCategory type = (MetadataBasedCategory) ct;
                                         queryConstraints.put(f.getName(), type.getQueryConstraint(value));
+                                    } else if(ct instanceof CollectionFill) {
+                                        CollectionFill collectionFill = (CollectionFill) ct;
+                                        cliveConstraints.put(f.getName(), new HashSet<>(collectionFill.getCollections()));
                                     }
                                 }
                             }
@@ -124,6 +131,10 @@ public class FacetedNavigation extends AbstractInputProcessor {
                     if (queryConstraints.size() > 0) {
                         searchTransaction.getQuestion().getFacetsQueryConstraints().addAll(getQueryConstraints(queryConstraints, facetConfigs));
                         log.debug("Added query constraints '" + StringUtils.join(searchTransaction.getQuestion().getFacetsQueryConstraints(), ",") + "'");
+                    }
+                    
+                    if(cliveConstraints.size() > 0) {
+                        searchTransaction.getQuestion().setFacetCollectionConstraints(Optional.of(getCliveConstraints(cliveConstraints, facetConfigs)));
                     }
                 }
             }
@@ -199,6 +210,40 @@ public class FacetedNavigation extends AbstractInputProcessor {
         
         return updated;
     }
+    
+    
+    private List<String> getCliveConstraints(SetMultimap<String, Set<String>> cliveConstraintsByFacet,
+        Map<String, FacetDefinition> facetDefinitions) {
+        List<Set<String>> facetConstraintsToJoin = new ArrayList<>();
+        for(Map.Entry<String, Collection<Set<String>>> e : cliveConstraintsByFacet.asMap().entrySet()) {
+            FacetDefinition f = facetDefinitions.get(e.getKey());
+            Collection<Set<String>> toJoin = e.getValue();
+            
+            toJoin.stream()
+                    .reduce(getReducerFromConstraintJoin(f.getConstraintJoin()))
+                    .ifPresent(facetConstraintsToJoin::add);
+            
+        }
+        
+        Set<String> allowedCollections = facetConstraintsToJoin.stream()
+                    .reduce(Sets::intersection)
+                    .orElse(Collections.emptySet());
+        
+        return new ArrayList<>(allowedCollections);
+    }
+    
+    private <E> BinaryOperator<Set<E>> getReducerFromConstraintJoin(FacetConstraintJoin join) {
+        if(join == FacetConstraintJoin.OR) {
+            return Sets::union;
+        }
+        if(join == FacetConstraintJoin.AND) {
+            return Sets::intersection;
+        }
+        throw new RuntimeException("Can not reduce for constraint type: " + join);
+    }
+    
+    
+    
     
     /**
      * Gets a query expression composed by query constraints coming from faceted navigation.
