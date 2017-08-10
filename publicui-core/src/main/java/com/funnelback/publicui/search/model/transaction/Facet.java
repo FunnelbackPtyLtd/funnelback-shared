@@ -23,6 +23,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_SELECTION_TYPE;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_CONSTRAINT_JOIN;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_VALUES;
 
 /**
  * <p>Facets, generated from the result data (Metadata counts,
@@ -78,6 +81,16 @@ public class Facet {
         this.selectionType = selectionType;
         this.constraintJoin = constraintJoin;
         this.facetValues = facetValues;
+    }
+    
+    /**
+     * Backwards compatible constructor so the stencils facet will continue to work.
+     * 
+     * @param name
+     */
+    @Deprecated
+    public Facet(String name) {
+        this(name, LEGACY_FACET_SELECTION_TYPE, LEGACY_FACET_CONSTRAINT_JOIN, LEGACY_FACET_VALUES);
     }
     
     @Override
