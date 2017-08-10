@@ -385,19 +385,26 @@
 	// Adjust columns width depends on columns number
 	// If column has assigned CSS "width" property with "!important" declaration, this will be respected
 	function _renderSetWidth(menu, classWrapper, className) {
-		var cols = 0, colsW = 0, styles, parts;
+		var cols = 0, colsW = 0, styles, parts, menuW = menu.width();
 		className 	 = '.' + className;
 		classWrapper = '.' + classWrapper;
 
 		$.each(menu.children(className), function() {
 			parts  = $(this).attr('class').split(' ');
 			styles = $.cssStyle(classWrapper + ' .' + parts[1]) || $.cssStyle(classWrapper + ' .' + parts.join('.'));
-			if (styles.width && styles.width.indexOf('important')) colsW += parseFloat(styles.width);
+
+			if (styles.width && styles.width.indexOf('important') && styles.width.indexOf('auto') < 0 && styles.width.indexOf('initial') < 0 && styles.width.indexOf('inherit') < 0) {
+				if (styles.width.indexOf('%') > 0) colsW += menuW * parseFloat(styles.width) / 100;
+				else colsW += parseFloat(styles.width);
+			}
 			else if ($.hasContent($(this))) cols++;
 		});
 
-		var minW = parseFloat(menu.children(className).css('min-width')), menuW = menu.width() - colsW, colW = menuW / cols;
-		if (minW <= colW) menu.children(className).css('width', (colW * 100 / menuW) + '%');
+		if (cols) {
+			menuW -= colsW + 0.5;
+			var minW = parseFloat(menu.children(className).css('min-width')), colW = menuW / cols;
+			if (minW <= colW) menu.children(className).css('width', colW + 'px');
+		}
 	}
 
 	// Pre-compile templates using Handlebars
