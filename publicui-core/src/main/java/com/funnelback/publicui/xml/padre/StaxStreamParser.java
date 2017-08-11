@@ -1,33 +1,26 @@
 package com.funnelback.publicui.xml.padre;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
-import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
-import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
 import com.funnelback.common.utils.ArrayFindUtils;
 import com.funnelback.publicui.search.model.padre.ContextualNavigation;
 import com.funnelback.publicui.search.model.padre.CoolerWeighting;
 import com.funnelback.publicui.search.model.padre.Details;
 import com.funnelback.publicui.search.model.padre.Error;
 import com.funnelback.publicui.search.model.padre.GeoBoundingBox;
+import com.funnelback.publicui.search.model.padre.IndexedTermCounts;
 import com.funnelback.publicui.search.model.padre.QSup;
 import com.funnelback.publicui.search.model.padre.QSup.Source;
-import com.funnelback.publicui.search.model.padre.IndexedTermCounts;
 import com.funnelback.publicui.search.model.padre.RMCItemResult;
 import com.funnelback.publicui.search.model.padre.Range;
 import com.funnelback.publicui.search.model.padre.Result;
@@ -48,6 +41,9 @@ import com.funnelback.publicui.search.model.padre.factories.SpellFactory;
 import com.funnelback.publicui.search.model.padre.factories.TierBarFactory;
 import com.funnelback.publicui.xml.XmlParsingException;
 import com.funnelback.publicui.xml.XmlStreamUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class StaxStreamParser implements PadreXmlParser {
@@ -198,7 +194,9 @@ public class StaxStreamParser implements PadreXmlParser {
                         parseRMSums(xmlStreamReader, packet);
                     } else if (ResultPacket.Schema.INDEXED_TERM_COUNTS.equals(xmlStreamReader.getLocalName())) {
                         parseIndexedTermCounts(xmlStreamReader, packet);
-                    }else {
+                    } else if(ResultPacket.Schema.DOCUMENTS_PER_COLLECTION.equals(xmlStreamReader.getLocalName())){
+                        parseDocumentsPerCollection(xmlStreamReader, packet);
+                    } else {
                         log.warn("Unkown tag '" + xmlStreamReader.getLocalName() + "' at root level");
                     }
                     
@@ -311,6 +309,24 @@ public class StaxStreamParser implements PadreXmlParser {
             type = xmlStreamReader.getEventType();
         } while(type != XMLStreamReader.END_ELEMENT 
             || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.INDEXED_TERM_COUNTS.equals(xmlStreamReader.getLocalName())));
+    }
+    
+    private void parseDocumentsPerCollection(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
+        int type = xmlStreamReader.getEventType();
+        do {
+            type = xmlStreamReader.next();
+            if(XMLStreamReader.CHARACTERS == type) {
+                type = xmlStreamReader.next();
+            }
+            if(ResultPacket.Schema.DocumentsPerCollection.TAG.equals(xmlStreamReader.getLocalName())) {
+                String collectionName = xmlStreamReader.getAttributeValue(null, ResultPacket.Schema.DocumentsPerCollection.COLLECTION_NAME);
+                long count = Long.parseLong(xmlStreamReader.getElementText());
+                
+                packet.getDocumentsPerCollection().put(collectionName, count);
+            }
+            type = xmlStreamReader.getEventType();
+        } while(type != XMLStreamReader.END_ELEMENT 
+            || (type == XMLStreamReader.END_ELEMENT && ! ResultPacket.Schema.DOCUMENTS_PER_COLLECTION.equals(xmlStreamReader.getLocalName())));
     }
     
     private void parseResults(XMLStreamReader xmlStreamReader, ResultPacket packet) throws XMLStreamException {
