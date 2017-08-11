@@ -1,5 +1,10 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput;
 
+import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS;
+import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT_MS;
+import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TIMEOUT;
+import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT;
+
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -12,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -21,11 +24,11 @@ import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.SearchQuestionType;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 import lombok.extern.log4j.Log4j2;
-
 /**
  * <p>Executes the extra searches on the input phase using the questions
  * in {@link SearchTransaction#getExtraSearchesQuestions()} and submitting
@@ -108,20 +111,71 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         }
     }
     
-    private void waitForExtraSearch(SearchTransaction searchTransaction, 
+    void waitForExtraSearch(SearchTransaction searchTransaction, 
             String extraSearchName,
             FutureTask<SearchTransaction> extraSearchFuture) {
         
-        long extraSearchesWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
-            .valueAsLong(Keys.ModernUI.EXTRA_SEARCH_TIMEOUT, DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS);
+        
+        long extraSearchesWaitTimeout = getTimeToWaitForExtraSearch(searchTransaction);
+        
+        long startTime = System.currentTimeMillis();
+        
+        SearchTransaction extraSearchSt = null;
         try {
-            searchTransaction.getExtraSearches().put(extraSearchName, extraSearchFuture.get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS));
+            extraSearchSt = extraSearchFuture.get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS);
+            searchTransaction.getExtraSearches().put(extraSearchName, extraSearchSt);
+            searchTransaction.getExtraSearches().put("a", extraSearchSt);
         } catch (TimeoutException te) {
-            log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + extraSearchName + "'."
-                    + "Consider raising 'extra.searches.timeout'.", te);
+            // Try to kill the extra search, this should kill padre.
+            extraSearchFuture.cancel(true);
+            // Tell the user that not all extra searches ran.
+            searchTransaction.setAnyExtraSearchesIncomplete(true);
+            if(extraSearchesWaitTimeout > 0L) {
+                // Only log this if it we gave the extra search some time to finish.
+                log.error("Timeout waiting " + extraSearchesWaitTimeout + "ms for extra search '" + extraSearchName + "'."
+                        + "Consider raising 'extra.searches.timeout'.", te);
+            }
         } catch (Exception e) {
+            searchTransaction.setAnyExtraSearchesIncomplete(true);
             log.error("Unable to wait results for extra search '" + extraSearchName + "'", e);
+        } finally {
+            
+            Optional.ofNullable(extraSearchSt)
+                .map(SearchTransaction::getError)
+                .ifPresent(e -> searchTransaction.setAnyExtraSearchesIncomplete(true));
+            
+            long timeWaited = System.currentTimeMillis() - startTime;
+            
+            long extraSearchRunTime = Optional.ofNullable(extraSearchSt)
+                                        .map(SearchTransaction::getResponse)
+                                        .map(SearchResponse::getPerformanceMetrics)
+                                        .map(org.springframework.util.StopWatch::getTotalTimeMillis)
+                                        .orElse(0L);
+            
+            long totalTimeToAdd = Long.max(timeWaited, extraSearchRunTime);
+            
+            log.trace("Will count extra search '{}' as taking {}ms.", extraSearchName, totalTimeToAdd);
+            
+            searchTransaction.getExtraSearchesAproxTimeSpent().getAndAdd(totalTimeToAdd);
         }
+    }
+    
+    long getTimeToWaitForExtraSearch(SearchTransaction searchTransaction) {
+        long extraSearchesWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
+            .valueAsLong(EXTRA_SEARCH_TIMEOUT, EXTRA_SEARCH_TIMEOUT_MS);
+        long extraSearchTimeLeft = searchTransaction.getQuestion().getCollection().getConfiguration()
+            .valueAsLong(EXTRA_SEARCH_TOTAL_TIMEOUT, EXTRA_SEARCH_TOTAL_TIMEOUT_MS) 
+            - searchTransaction.getExtraSearchesAproxTimeSpent().get();
+        
+        if(extraSearchTimeLeft <= 0L) {
+            log.warn("Time spent in extra searches exceeded.");
+            return 0L;
+        }
+        return Long.min(extraSearchesWaitTimeout, extraSearchTimeLeft);
+        
+    }
+    
+    public void checkIfAllExtraSearchTimeHasBeenUsed(SearchTransaction searchTransaction) {
         
     }
     

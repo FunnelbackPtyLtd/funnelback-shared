@@ -3,7 +3,9 @@ package com.funnelback.publicui.search.model.transaction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.publicui.search.model.transaction.session.SearchSession;
@@ -22,7 +24,7 @@ import lombok.Setter;
  * @since 11.0
  */
 @NoArgsConstructor
-@JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions"})
+@JsonIgnoreProperties({"extraSearchesTasks", "extraSearchesQuestions", "extraSearchesAproxTimeSpent"})
 public class SearchTransaction {
 
     /**
@@ -76,6 +78,21 @@ public class SearchTransaction {
      * @see <code>ui.modern.extra_searches</code>
      */
     @Getter private final Map<String, SearchTransaction> extraSearches = new HashMap<String, SearchTransaction>();
+    
+    /**
+     * How much time (ms) has been spent in executing extra searches.
+     * 
+     */
+    @XStreamOmitField @Getter 
+    private final AtomicLong extraSearchesAproxTimeSpent = new AtomicLong(0);
+    
+    /**
+     * Set true when at least one extra search was unable to complete.
+     * <p>This can happen if extra searches take too long to run or if an error occured within
+     * the extra search.</p>
+     */
+    @Getter @Setter
+    private boolean anyExtraSearchesIncomplete = false;
 
     /**
      * <p><em>Internal use</em>: Additional {@link SearchQuestion}s to process as extra searches.</p>
@@ -90,7 +107,7 @@ public class SearchTransaction {
      * <em>Internal use</em>: Holds the extra searches tasks being executed.
      */
     @XStreamOmitField
-    @Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new HashMap<String, FutureTask<SearchTransaction>>();
+    @Getter private final Map<String, FutureTask<SearchTransaction>> extraSearchesTasks = new ConcurrentHashMap<String, FutureTask<SearchTransaction>>();
     
     /**
      * Custom data placeholder allowing any arbitrary data to be
