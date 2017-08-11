@@ -22,7 +22,6 @@ public class CollectionTest {
             mock(Map.class), 
             mock(FacetedNavigationConfig.class), 
             mock(FacetedNavigationConfig.class), 
-            mock(Set.class), 
             new String[0], 
             mock(List.class), 
             mock(Map.class), 
