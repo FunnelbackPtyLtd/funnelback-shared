@@ -1,5 +1,6 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -15,6 +16,7 @@ import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
@@ -61,10 +63,12 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
         // Configure faceted navigation
         CategoryDefinition cDef1 = new MetadataFieldFill("a");
         CategoryDefinition cDef2 = new URLFill("http://example.org/");
+        
         FacetDefinition fDef1 = FacetDefinition.getFacetWithUpgradedValues("facet1", Lists.newArrayList(cDef1, cDef2));
 
         CategoryDefinition cDef3 = new GScopeItem("categoryName", 12);
-        FacetDefinition fDef2 = FacetDefinition.getFacetWithUpgradedValues("facet2", Lists.newArrayList(cDef3));
+        CategoryDefinition cDef4 = new CollectionFill("News", Arrays.asList("facebook", "youtube"));
+        FacetDefinition fDef2 = FacetDefinition.getFacetWithUpgradedValues("facet2", Lists.newArrayList(cDef3, cDef4));
 
         FacetedNavigationConfig fnConfig = new FacetedNavigationConfig(Lists.newArrayList(fDef1, fDef2));
         processor.setFacetedNavigationConfigProvider((q) -> fnConfig);
@@ -83,7 +87,8 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
             new QueryProcessorOption<>("rmcf", "a"),
             new QueryProcessorOption<>("count_urls", 1+0+2),//one for the base depth + zero for the segments in url + 2 for 
                                                             //extra depth to workaround padre limitation.
-            new QueryProcessorOption<>("countgbits", "all")));
+            new QueryProcessorOption<>("countgbits", "all"),
+            new QueryProcessorOption<>("docsPerColl", true)));
         
         Mockito.verify(question, Mockito.times(2)).getDynamicQueryProcessorOptions();
         

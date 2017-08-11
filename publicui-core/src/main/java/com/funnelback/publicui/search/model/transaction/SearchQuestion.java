@@ -205,10 +205,20 @@ public class SearchQuestion {
     @Getter @Setter private List<String> facetsQueryConstraints = new ArrayList<String>();
     
     /**
+     * The collections to restrict search to for faceted navigation.
+     */
+    @Getter @Setter @NonNull private Optional<List<String>> facetCollectionConstraints = Optional.empty();
+    
+    /**
      * GScope constraints to apply for faceted navigation
      * (In addition to existing gscope constraints).
      */
-    @Getter @Setter private String facetsGScopeConstraints;
+    @Setter private String facetsGScopeConstraints;
+    
+    public String getFacetsGScopeConstraints() {
+        //TODO remove.
+        return facetsGScopeConstraints;
+    }
     
     /**
      * Whether the request is impersonated (Document Level Security)

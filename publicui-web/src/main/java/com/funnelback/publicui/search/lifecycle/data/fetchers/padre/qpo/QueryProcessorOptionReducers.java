@@ -35,6 +35,11 @@ public class QueryProcessorOptionReducers {
                     // Not worth the effort (?) to support complex cases of mixing 'all' with specific
                     // gscope numbers.
                     new KeepSingleValueReducer<>((a, b) -> "all", QueryProcessorOptionKeys.COUNTGBITS),
+                    
+                    // Counting of docs per collection is either on or off.
+                    new KeepSingleValueReducer<>((a, b) -> true, QueryProcessorOptionKeys.DOCS_PER_COLLECTION),
+                    
+                    
     });
 
     /**

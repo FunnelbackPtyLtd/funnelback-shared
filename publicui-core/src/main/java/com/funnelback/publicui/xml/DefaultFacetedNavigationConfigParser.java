@@ -14,6 +14,7 @@ import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml
 import com.funnelback.common.facetednavigation.models.Category;
 import com.funnelback.common.facetednavigation.models.Facet;
 import com.funnelback.common.facetednavigation.models.categories.AllDocumentsCategory;
+import com.funnelback.common.facetednavigation.models.categories.CollectionCategory;
 import com.funnelback.common.facetednavigation.models.categories.DateFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
@@ -21,6 +22,7 @@ import com.funnelback.common.facetednavigation.models.categories.URLCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.AllDocumentsFill;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
@@ -127,6 +129,10 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
         } else if(category instanceof AllDocumentsCategory) {
             AllDocumentsFill allDocsFill = new AllDocumentsFill(((AllDocumentsCategory) category).getLabel());
             categoryDefinition = allDocsFill;
+        } else if(category instanceof CollectionCategory) {
+            CollectionCategory cat = (CollectionCategory) category;
+            CollectionFill collectionFill = new CollectionFill(cat.getCategoryName(), cat.getCollections());
+            categoryDefinition = collectionFill;
         } else {
             //Typically means that the marshaler now produces a Category that we don't understand
             //either thise code needs to map the unknown category to an existing CategoryDefinition. 
