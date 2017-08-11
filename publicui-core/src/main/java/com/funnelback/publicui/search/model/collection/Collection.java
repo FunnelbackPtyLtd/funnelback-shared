@@ -121,13 +121,6 @@ public class Collection {
     @Getter @Setter private FacetedNavigationConfig facetedNavigationLiveConfig;
     
     /**
-     * List of terms that the TextMiner system should not extract entities for.
-     * 
-     * @since 12.0
-     */
-    @NonNull @Getter private final Set<String> textMinerBlacklist;
-    
-    /**
      * <p>On meta collections, list of sub collections IDs.<p>
      * 
      * <p>Read from <code>conf/[collection]/meta.cfg</code>.</p>
@@ -187,7 +180,6 @@ public class Collection {
     
     public Collection() {
         this.profiles = new HashMap<>();
-        this.textMinerBlacklist = new HashSet<String>();
         this.hookScriptsClasses = new HashMap<>();
     }
     
@@ -204,7 +196,6 @@ public class Collection {
             .profiles(getProfiles())
             .facetedNavigationConfConfig(getFacetedNavigationConfConfig())
             .facetedNavigationLiveConfig(getFacetedNavigationLiveConfig())
-            .textMinerBlacklist(getTextMinerBlacklist())
             .metaComponents(getMetaComponents())
             .parametersTransforms(getParametersTransforms())
             .hookScriptsClasses(getHookScriptsClasses())

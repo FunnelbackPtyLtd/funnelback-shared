@@ -32,31 +32,6 @@ public class DefaultConfigRepositoryCollectionTest extends DefaultConfigReposito
     }
     
     @Test
-    public void testTextMinerBlacklist() throws IOException {
-        Collection coll = configRepository.getCollection("config-repository");
-        Assert.assertTrue(coll.getTextMinerBlacklist().isEmpty());
-        
-        // Create file
-        FileUtils.writeStringToFile(new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST), "ab\ncd ef");
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertEquals(2, coll.getTextMinerBlacklist().size());
-        Assert.assertTrue(coll.getTextMinerBlacklist().contains("ab"));
-        Assert.assertTrue(coll.getTextMinerBlacklist().contains("cd ef"));
-        
-        // Update value
-        writeAndTouchFuture(new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST), "ab\ngh-ij");
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertEquals(2, coll.getTextMinerBlacklist().size());
-        Assert.assertTrue(coll.getTextMinerBlacklist().contains("ab"));
-        Assert.assertTrue(coll.getTextMinerBlacklist().contains("gh-ij"));
-        
-        // Delete file
-        new File(TEST_DIR, Files.TEXT_MINER_BLACKLIST).delete();
-        coll = configRepository.getCollection("config-repository");
-        Assert.assertTrue(coll.getTextMinerBlacklist().isEmpty());
-    }
-    
-    @Test
     public void testHookScripts() throws Exception {
         Collection coll = configRepository.getCollection("config-repository");
         Assert.assertTrue(coll.getHookScriptsClasses().isEmpty());

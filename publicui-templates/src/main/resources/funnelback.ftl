@@ -513,15 +513,6 @@
 </#macro>
 
 <#---
-    Displays TextMiner suggestions (Entity, Definition, Source URL).
--->
-<#macro TextMiner>
-    <#if response.entityDefinition?exists>
-        <a href="${response.entityDefinition.url?html}"><@s.boldicize>${response.entityDefinition.entity?html}</@s.boldicize></a><#if !response.entityDefinition.definition?starts_with("is")>: </#if> <span>${response.entityDefinition.definition?html}</span>     
-    </#if>  
-</#macro>
-
-<#---
     Formats a string according to a Locale.
 
     <p>This tag is usually used with internationalisation.</p>

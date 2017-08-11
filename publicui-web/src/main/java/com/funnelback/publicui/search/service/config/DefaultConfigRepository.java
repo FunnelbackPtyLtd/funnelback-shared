@@ -211,11 +211,6 @@ public class DefaultConfigRepository implements ConfigRepository {
             c.setMetaComponents(new String[0]);
         }
 
-        c.getTextMinerBlacklist().addAll(
-                resourceManager.load(
-                        new UniqueLinesResource(new File(collectionConfigFolder, Files.TEXT_MINER_BLACKLIST)),
-                        AbstractSingleFileResource.wrapDefault(new HashSet<String>(0))).getResource());
-
         c.getParametersTransforms().addAll(
                 resourceManager.load(
                         new ParameterTransformResource(new File(collectionConfigFolder, Files.CGI_TRANSFORM_CONFIG_FILENAME)),
