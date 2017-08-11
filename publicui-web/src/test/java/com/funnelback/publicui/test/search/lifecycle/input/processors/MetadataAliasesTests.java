@@ -1,20 +1,26 @@
 package com.funnelback.publicui.test.search.lifecycle.input.processors;
 
 import java.io.FileNotFoundException;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
-import com.funnelback.common.junit.ConfigStub;
 import com.funnelback.common.system.EnvironmentVariableException;
+import com.funnelback.config.configtypes.service.DefaultServiceConfig;
+import com.funnelback.config.configtypes.service.ServiceConfig;
+import com.funnelback.config.data.InMemoryConfigData;
+import com.funnelback.config.data.environment.NoConfigEnvironment;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MetadataAliases;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.google.common.collect.Maps;
 
 public class MetadataAliasesTests {
     
@@ -26,28 +32,11 @@ public class MetadataAliasesTests {
     @Before
     public void before() throws EnvironmentVariableException, FileNotFoundException {
         processor = new MetadataAliases();
-        st = new SearchTransaction(new SearchQuestion(){
-            @Override
-            public Collection getCollection() {
-                return new Collection(){
-                    @Override
-                    public Config getConfiguration() {
-                        return config;
-                    }
-                };
-            }
-        }, null);
-        config = new ConfigStub(null);
-        config.setValue(Keys.ModernUI.metadataAlias("link"), "h");
-        config.setValue(Keys.ModernUI.metadataAlias("site"), "u");
-        config.setValue(Keys.ModernUI.metadataAlias("filetype"), "f");
-        config.setValue(Keys.ModernUI.metadataAlias("allinurl"), "v");
-        
     }
 
     @Test
     public void testLink() throws InputProcessorException {
-        
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("abc link:http://www.funnelback.com def link:file:///file.txt link :me");
         processor.processInput(st);
         Assert.assertEquals("abc h:http://www.funnelback.com def h:file:///file.txt link :me", st.getQuestion().getQuery());
@@ -55,6 +44,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testSite() throws InputProcessorException {
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("abc site:http://www.funnelback.com def site:file:///file.txt site :me");
         processor.processInput(st);
         Assert.assertEquals("abc u:http://www.funnelback.com def u:file:///file.txt site :me", st.getQuestion().getQuery());
@@ -62,6 +52,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testFiletype() throws InputProcessorException {
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg filetype :test file type :me");
         processor.processInput(st);
         Assert.assertEquals("abc f:pdf def doc f:jpeg filetype :test file type :me", st.getQuestion().getQuery());
@@ -69,7 +60,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testFiletypeNull() throws InputProcessorException {
-        config.setValue(Keys.ModernUI.metadataAlias("filetype"), null);
+        st = getTestSearchTransaction(null);
         st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg bam:hahaha site:sitesite");
         processor.processInput(st);
         Assert.assertEquals("abc filetype:pdf def doc filetype:jpeg bam:hahaha u:sitesite", st.getQuestion().getQuery());
@@ -77,7 +68,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testFiletypeEmptyString() throws InputProcessorException {
-        config.setValue(Keys.ModernUI.metadataAlias("filetype"), "");
+        st = getTestSearchTransaction("");
         st.getQuestion().setQuery("abc filetype:pdf def doc filetype:jpeg bam:hahaha site:sitesite");
         processor.processInput(st);
         Assert.assertEquals("abc filetype:pdf def doc filetype:jpeg bam:hahaha u:sitesite", st.getQuestion().getQuery());
@@ -85,6 +76,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testAllInUrl() throws InputProcessorException {
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("abc allinurl:test/url def allinurl:test/again/url.ext allin url :test allinurl :me");
         processor.processInput(st);
         Assert.assertEquals("abc v:test/url def v:test/again/url.ext allin url :test allinurl :me", st.getQuestion().getQuery());
@@ -103,6 +95,7 @@ public class MetadataAliasesTests {
     
     @Test
     public void testEmptyQuery() {
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery("");
         try {
             processor.processInput(st);
@@ -116,10 +109,30 @@ public class MetadataAliasesTests {
     @Test
     public void testNoOperatorShouldntAffectQuery() throws InputProcessorException {
         String expected = "There is no operator in this query";
+        st = getTestSearchTransaction("f");
         st.getQuestion().setQuery(expected);
         processor.processInput(st);
         Assert.assertEquals(expected, st.getQuestion().getQuery());
     }
-    
+
+    private SearchTransaction getTestSearchTransaction(String filetype) {
+        ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
+        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("link"), Optional.of("h"));
+        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("site"), Optional.of("u"));
+        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("filetype"), Optional.ofNullable(filetype));
+        serviceConfig.set(FrontEndKeys.UI.Modern.getMetadataAlias("allinurl"), Optional.of("v"));
+
+        Profile profile = new Profile();
+        profile.setServiceConfig(serviceConfig);
+
+        Collection collection = new Collection("dummy", null);
+        collection.getProfiles().put("profile-test", profile);
+
+        SearchQuestion question = new SearchQuestion();
+        question.setCollection(collection);
+        question.setCurrentProfile("profile-test");
+
+        return new SearchTransaction(question, null);
+    }
     
 }
