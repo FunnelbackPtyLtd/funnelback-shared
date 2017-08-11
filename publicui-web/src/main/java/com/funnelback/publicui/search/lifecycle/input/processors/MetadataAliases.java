@@ -2,11 +2,13 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -26,19 +28,20 @@ public class MetadataAliases extends AbstractInputProcessor {
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
         if (SearchTransactionUtils.hasQuery(searchTransaction)) {
-            Config config = searchTransaction.getQuestion().getCollection().getConfiguration();
-            boolean updateQuery = false;
+            ServiceConfigReadOnly serviceConfig = searchTransaction.getQuestion().getCurrentProfileConfig();
             String[] terms = searchTransaction.getQuestion().getQuery().split("\\s");
+            boolean updateQuery = false;
+
             //Look for query terms that have a SEPARATOR, then see if we have a metadata
             //alias defined in Config, if so replace the aliase with the real metadata name.
-            for(int i=0;i<terms.length; i++) {
-                if(terms[i].contains(SEPARATOR)){
+            for (int i=0; i < terms.length; i++) {
+                if (terms[i].contains(SEPARATOR)) {
                     String alias = terms[i].split(SEPARATOR)[0];
-                    if("".equals(alias)) continue;
-                    String key = Keys.ModernUI.metadataAlias(alias);
-                    String metadata = config.value(key);
-                    if(metadata != null && !"".equals(metadata)){
-                        terms[i] = metadata + terms[i].substring(alias.length());
+                    if (alias.trim().isEmpty()) continue;
+
+                    Optional<String> metadata = serviceConfig.get(FrontEndKeys.UI.Modern.getMetadataAlias(alias));
+                    if (metadata.isPresent() && !metadata.get().trim().isEmpty()) {
+                        terms[i] = metadata.get() + terms[i].substring(alias.length());
                         updateQuery = true;
                     }
                 }
