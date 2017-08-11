@@ -87,11 +87,12 @@ public class SearchTransaction {
     private final AtomicLong extraSearchesAproxTimeSpent = new AtomicLong(0);
     
     /**
-     * Set true when at least one extra search has been terminated before it could complete.
-     * <p>This can happen if extra searches take too long to run.</p>
+     * Set true when at least one extra search was unable to complete.
+     * <p>This can happen if extra searches take too long to run or if an error occured within
+     * the extra search.</p>
      */
     @Getter @Setter
-    private boolean extraSearchesTerminated = false;
+    private boolean anyExtraSearchesIncomplete = false;
 
     /**
      * <p><em>Internal use</em>: Additional {@link SearchQuestion}s to process as extra searches.</p>

@@ -249,7 +249,7 @@ public class SearchController extends SessionController {
             out.put(ModelAttributes.response.toString(), st.getResponse());
             out.put(ModelAttributes.session.toString(), st.getSession());
             out.put(ModelAttributes.error.toString(), st.getError());
-            out.put(ModelAttributes.extraSearchesTerminated.toString(), st.isExtraSearchesTerminated());
+            out.put(ModelAttributes.extraSearchesTerminated.toString(), st.isAnyExtraSearchesIncomplete());
             if (st.getExtraSearches().size() > 0) {
                 out.put(ModelAttributes.extraSearches.toString(), st.getExtraSearches());
             }
