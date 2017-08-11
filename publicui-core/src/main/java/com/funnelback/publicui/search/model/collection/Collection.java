@@ -180,7 +180,6 @@ public class Collection {
     
     public Collection() {
         this.profiles = new HashMap<>();
-        this.textMinerBlacklist = new HashSet<String>();
         this.hookScriptsClasses = new HashMap<>();
     }
     
@@ -197,7 +196,6 @@ public class Collection {
             .profiles(getProfiles())
             .facetedNavigationConfConfig(getFacetedNavigationConfConfig())
             .facetedNavigationLiveConfig(getFacetedNavigationLiveConfig())
-            .textMinerBlacklist(getTextMinerBlacklist())
             .metaComponents(getMetaComponents())
             .parametersTransforms(getParametersTransforms())
             .hookScriptsClasses(getHookScriptsClasses())
