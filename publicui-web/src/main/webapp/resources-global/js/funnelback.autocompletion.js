@@ -1,6 +1,6 @@
 /*
  * Funnelback auto-completion plugin
- * version 2.5
+ * version 2.6
  *
  * author: Liliana Nowak
  * Copyright Funnelback, 2015-2017
@@ -9,7 +9,7 @@
  * @requires typeahead.js https://twitter.github.io/typeahead.js/
  */
 (function($) {
-	'use strict';
+    'use strict';
 
 	var autocompletion = function(element, options) {
 		// Global references
@@ -25,7 +25,7 @@
 		datasets : null,				// {set1: {url: ''}, set2: {...}, set3: {...}}
 		/*
 		defaultCall   : {				// 'string'|[]|{}; use to trigger auto-completion when input value is empty and length=0
-			filter    : _processDataTopQueries,	// function(set, data); filter function used to map response data
+			filter    : processDataTopQueries,	// function(set, data); filter function used to map response data
 			params    : {},						// {}; list of parameters added to request
 			url       : '' 						// 'string'; URL to call request
 		},
@@ -40,6 +40,11 @@
 		filter 			: _processSetData, // function(set, suggestion, index); filter function used to map response data
 		group 			: false,		// true|false; enable grouping suggestions based on parameter itemGroup
 		groupOrder 		: [],			// []; list of group headers used to sort grouped suggestions in that order
+		facets 			: {
+			blacklist	: [], // []; list of facet categories names not to displayed
+			whitelist	: [], // []; list of facet categories names to display
+            show		: 2,  // integer; maximum number of facets values to display per facet category
+		},
 		itemGroup 		: 'category',	// 'string'; the name of field used to group suggestions and display as group header in dropdown
 		itemLabel 		: 'value',		// 'string'; the name of a field to be displayed in input field
 		template 		: {				// {notFound: '', pending: '', header: '', footer: '', group: '', suggestion: ''}
@@ -213,7 +218,7 @@
 
 	/* Private variables */
 	var _debug = false,
-	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'filter', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge'],
+	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'facets', 'filter', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge'],
 	_navCols = {cursor : null, query  : ''};
 
 	/* Private methods */
@@ -363,23 +368,8 @@
 		return _groupSetData(set, results);
 	}
 
-	// Map /s/suggest.json output
 	function _processSetData(set, suggestion, i, name, query) {
-		var value = suggestion.key, label = suggestion.key;
-		if (suggestion.action_t == 'Q') value = suggestion.action;
-		if (suggestion.action_t == 'S') value = suggestion.disp;
-		if (suggestion.disp_t == 'C') label = eval(suggestion.disp);
-		else if (suggestion.disp) label = suggestion.disp;
-
-		return {
-			label    : label,
-			value    : value,
-			extra    : suggestion,
-			category : suggestion.cat ? suggestion.cat : '',
-			rank     : i + 1,
-			dataset	 : name,
-			query    : query
-		};
+		return $.autocompletion.processSetData(set, suggestion, i, name, query);
 	}
 
 	// Adjust columns width depends on columns number
@@ -584,6 +574,64 @@
 
 	$.fn.autocompletion             = Plugin;
 	$.fn.autocompletion.Constructor = autocompletion;
+
+	// List of predefnied mapping functions
+	$.autocompletion = {
+		// Map /s/suggest.json output
+		processSetData: function(set, suggestion, i, name, query) {
+			var value = suggestion.key, label = suggestion.key;
+			if (suggestion.action_t == 'Q') value = suggestion.action;
+			if (suggestion.action_t == 'S') value = suggestion.disp;
+			if (suggestion.disp_t == 'C') label = eval(suggestion.disp);
+			else if (suggestion.disp) label = suggestion.disp;
+
+			return {
+				label    : label,
+				value    : value,
+				extra    : suggestion,
+				category : suggestion.cat ? suggestion.cat : '',
+				rank     : i + 1,
+				dataset	 : name,
+				query    : query
+			};
+		},
+
+		// Map /s/search.json output
+		processSetDataFacets: function(set, suggestion, i, name, query) {
+			if (i !== 'response' || !$.exist(suggestion.facets)) return;
+
+			var suggestions = [], rank = 1;
+			for (var i = 0, leni = suggestion.facets.length; i < leni; i++) {
+				if (!$.exist(suggestion.facets[i].allValues)) continue;
+				if ($.exist(set.facets.blacklist) && set.facets.blacklist.indexOf(suggestion.facets[i].name) > -1) continue;
+				if ($.exist(set.facets.whitelist) && set.facets.whitelist.indexOf(suggestion.facets[i].name) < 0) continue;
+
+				for (var j = 0, lenj = suggestion.facets[i].allValues.length; j < lenj; j++) {
+					if ($.exist(set.facets.show) && j > parseInt(set.facets.show) - 1) break;
+					if (!suggestion.facets[i].allValues[j].count) continue;
+
+					suggestions.push({
+						label   : suggestion.facets[i].allValues[j].label,
+						value   : suggestion.facets[i].allValues[j].data,
+						extra   : {
+							action  : getUrl(suggestion.facets[i].allValues[j]),
+							action_t: 'U'
+						},
+						category: suggestion.facets[i].name,
+						rank    : rank++,
+						dataset	: name,
+						query   : query
+					});
+				}
+			}
+
+			return suggestions;
+
+			function getUrl(facet) {
+				return ($.exist(set.facets.url, true) ? set.facets.url : window.location.origin + window.location.pathname) + facet.selectUrl;
+			}
+		}
+	}
 
 	// Helpers
 	$.exist      = function(obj, bString) { if (!$.isDefinied(bString)) bString = false; var obj = bString ? obj : $(obj); return $.isDefinied(obj) && obj != null && ($.isString(obj) ? obj + '' : obj).length > 0; }
