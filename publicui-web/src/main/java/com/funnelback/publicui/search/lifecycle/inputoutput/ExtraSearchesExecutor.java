@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -52,8 +53,11 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
             final SearchUser user = getSearchUser(searchTransaction);
             
+            int numberOfProcs = Runtime.getRuntime().availableProcessors();
+            log.debug("Will limit the number of concurrent extra searches to: {}", numberOfProcs);
+            Semaphore semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
             for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
-                submitExtraSearchTaskIfNotAlreadySubmitted(searchTransaction, entry.getKey(), entry.getValue(), user);
+                submitExtraSearchTaskIfNotAlreadySubmitted(searchTransaction, entry.getKey(), entry.getValue(), user, Optional.of(semaphore));
             }
         }
     }
@@ -72,7 +76,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     private void submitExtraSearchTaskIfNotAlreadySubmitted(SearchTransaction searchTransaction, 
         String extraSearchName, 
         SearchQuestion extraSearchQuestion,
-        SearchUser user) {
+        SearchUser user,
+        Optional<Semaphore> limitMaxQueriesPerRequest) {
         
         // Don't run the same extra search twice.
         if(hasExtraSearchBeenSubmitted(searchTransaction, extraSearchName)) {
@@ -84,13 +89,28 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
                 new Callable<SearchTransaction>() {
                     @Override
                     public SearchTransaction call() throws Exception {
-                        StopWatch sw = new StopWatch();
+                        // If we are given a semaphore then ensure we use it.
+                        if(limitMaxQueriesPerRequest.isPresent()) {
+                            // We will wait no longer than the total amount of time left for extra searches. This is probably not required
+                            // however as long as the timeout is set sensibly if something goes wrong we will eventually stop waiting.
+                            boolean acquiredLock = limitMaxQueriesPerRequest.get().tryAcquire(getTimeToWaitForExtraSearch(searchTransaction), TimeUnit.MILLISECONDS);
+                            if(!acquiredLock) {
+                                log.error("Could not execute extra search '{}' as we timed out waiting to execute the task.", extraSearchName);
+                            }
+                        }
                         try {
-                            sw.start();
-                            return transactionProcessor.process(extraSearchQuestion, user);
+                            StopWatch sw = new StopWatch();
+                            try {
+                                sw.start();
+                                return transactionProcessor.process(extraSearchQuestion, user);
+                            } finally {
+                                sw.stop();
+                                log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
+                            }
                         } finally {
-                            sw.stop();
-                            log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
+                            if(limitMaxQueriesPerRequest.isPresent()) {
+                                limitMaxQueriesPerRequest.get().release();
+                            }
                         }
                     }
                 });
@@ -184,7 +204,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         // Ensure the search has been submitted
         if(mainSearchTransaction.getExtraSearchesQuestions().containsKey(extraSearchName)) {
             submitExtraSearchTaskIfNotAlreadySubmitted(mainSearchTransaction, extraSearchName, 
-                mainSearchTransaction.getExtraSearchesQuestions().get(extraSearchName), getSearchUser(mainSearchTransaction));
+                mainSearchTransaction.getExtraSearchesQuestions().get(extraSearchName), getSearchUser(mainSearchTransaction),
+                Optional.empty());
         }
         
         // If the search has not completed yet, wait for it.
