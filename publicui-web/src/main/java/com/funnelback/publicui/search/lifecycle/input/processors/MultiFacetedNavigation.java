@@ -123,6 +123,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
             return;
         }
         
+        int extraSearchesAdded = 0;
+        
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
         for(Facet facet : unscopedSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
@@ -149,14 +151,16 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
                     
                     searchTransaction.addExtraSearch(extraSearchName, extraQuestion);
-                    log.debug("Added extra search '{}' for facet {} and category value data: {}", 
+                    log.trace("Added extra search '{}' for facet {} and category value data: {}", 
                         extraSearchName,
                         facet.getName(),
                         value.getData());
-                    
+                    extraSearchesAdded++;
                 }
             }
         }
+        
+        log.debug("Added {} extra searches", extraSearchesAdded);
         
     }
     
