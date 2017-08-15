@@ -124,7 +124,6 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         try {
             extraSearchSt = extraSearchFuture.get(extraSearchesWaitTimeout, TimeUnit.MILLISECONDS);
             searchTransaction.getExtraSearches().put(extraSearchName, extraSearchSt);
-            searchTransaction.getExtraSearches().put("a", extraSearchSt);
         } catch (TimeoutException te) {
             // Try to kill the extra search, this should kill padre.
             extraSearchFuture.cancel(true);
@@ -146,13 +145,14 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
             
             long timeWaited = System.currentTimeMillis() - startTime;
             
-            long extraSearchRunTime = Optional.ofNullable(extraSearchSt)
+            // If possible us the time for actually running the extra search.
+            // the time waiting for the extra search can be wrong as we might be waiting for the last task
+            // that gets executed.
+            long totalTimeToAdd = Optional.ofNullable(extraSearchSt)
                                         .map(SearchTransaction::getResponse)
                                         .map(SearchResponse::getPerformanceMetrics)
                                         .map(org.springframework.util.StopWatch::getTotalTimeMillis)
-                                        .orElse(0L);
-            
-            long totalTimeToAdd = Long.max(timeWaited, extraSearchRunTime);
+                                        .orElse(timeWaited);
             
             log.trace("Will count extra search '{}' as taking {}ms.", extraSearchName, totalTimeToAdd);
             
