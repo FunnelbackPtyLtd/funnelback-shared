@@ -20,6 +20,9 @@ import org.springframework.stereotype.Component;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
+import com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch.ExecutorHelper;
+import com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch.LimitedCPUUsageExecutorHelper;
+import com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch.PassThroughExecutorHelper;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.OutputProcessorException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -52,8 +55,15 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
             final SearchUser user = getSearchUser(searchTransaction);
             
+            LimitedCPUUsageExecutorHelper executorHelper = new LimitedCPUUsageExecutorHelper(executor,
+                searchTransaction.getQuestion().getCurrentProfileConfig());
+            
             for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
-                submitExtraSearchTaskIfNotAlreadySubmitted(searchTransaction, entry.getKey(), entry.getValue(), user);
+                submitExtraSearchTaskIfNotAlreadySubmitted(searchTransaction, 
+                    entry.getKey(), 
+                    entry.getValue(), 
+                    user, 
+                    executorHelper);
             }
         }
     }
@@ -72,7 +82,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     private void submitExtraSearchTaskIfNotAlreadySubmitted(SearchTransaction searchTransaction, 
         String extraSearchName, 
         SearchQuestion extraSearchQuestion,
-        SearchUser user) {
+        SearchUser user,
+        ExecutorHelper executorHelper) {
         
         // Don't run the same extra search twice.
         if(hasExtraSearchBeenSubmitted(searchTransaction, extraSearchName)) {
@@ -80,24 +91,29 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         }
         
         extraSearchQuestion.setQuestionType(SearchQuestionType.EXTRA_SEARCH);
-        FutureTask<SearchTransaction> task = new FutureTask<SearchTransaction>(
-                new Callable<SearchTransaction>() {
-                    @Override
-                    public SearchTransaction call() throws Exception {
-                        StopWatch sw = new StopWatch();
-                        try {
-                            sw.start();
-                            return transactionProcessor.process(extraSearchQuestion, user);
-                        } finally {
-                            sw.stop();
-                            log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
-                        }
-                    }
-                });
-
-        searchTransaction.getExtraSearchesTasks().put(extraSearchName, task);
+        
+        Callable<SearchTransaction> callable = new Callable<SearchTransaction>() {
+            @Override
+            public SearchTransaction call() throws Exception {
+                StopWatch sw = new StopWatch();
+                try {
+                    sw.start();
+                    return transactionProcessor.process(extraSearchQuestion, user);
+                } finally {
+                    sw.stop();
+                    log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
+                }
+                
+            }
+        };
+        
         log.trace("Submitting extra search '" + extraSearchName + "'");
-        executor.execute(task);
+        
+        // We will wait no longer than the total amount of time left for extra searches. This is probably not required
+        // however as long as the timeout is set sensibly if something goes wrong we will eventually stop waiting.
+        executorHelper.submit(callable, extraSearchName, getTimeToWaitForExtraSearch(searchTransaction))
+            .ifPresent(task -> searchTransaction.getExtraSearchesTasks().put(extraSearchName, task));
+        
     }
 
     @Override
@@ -184,7 +200,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         // Ensure the search has been submitted
         if(mainSearchTransaction.getExtraSearchesQuestions().containsKey(extraSearchName)) {
             submitExtraSearchTaskIfNotAlreadySubmitted(mainSearchTransaction, extraSearchName, 
-                mainSearchTransaction.getExtraSearchesQuestions().get(extraSearchName), getSearchUser(mainSearchTransaction));
+                mainSearchTransaction.getExtraSearchesQuestions().get(extraSearchName), getSearchUser(mainSearchTransaction),
+                new PassThroughExecutorHelper(executor));
         }
         
         // If the search has not completed yet, wait for it.
