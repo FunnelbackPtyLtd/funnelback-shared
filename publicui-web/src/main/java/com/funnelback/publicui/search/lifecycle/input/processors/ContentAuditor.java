@@ -386,8 +386,8 @@ public class ContentAuditor extends AbstractInputProcessor {
         List<FacetDefinition> facetDefinitions = question.getCollection().getFacetedNavigationLiveConfig().getFacetDefinitions();
 
         // We must construct a new collection object, otherwise we modify both searches here
-        Collection collectionForExtraSearch = new Collection(question.getCollection().getId(), question.getCollection().getConfiguration());
-        collectionForExtraSearch.setFacetedNavigationLiveConfig(new FacetedNavigationConfig(facetDefinitions));
+        Collection collectionForExtraSearch = question.getCollection().cloneBuilder()
+            .facetedNavigationLiveConfig(new FacetedNavigationConfig(facetDefinitions)).build();
         
         question.setCollection(collectionForExtraSearch);
         
