@@ -2,10 +2,12 @@ package com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -135,16 +137,22 @@ public class LimitedCPUUsageExecutorHelperTest {
         when(semaphore.tryAcquire(anyLong(), any())).thenThrow(new InterruptedException());
         executor.setSemaphore(semaphore);
         
-        for(int i = 0; i < 2; i++) {
-            Optional<FutureTask<String>> task = executor.submit(() -> {
+        try {
+            executor.submit(() -> {
                 Assert.fail("Should not have executed task as semaphore could not be acquired.");
                 return "";
             }, "name", 12);
+            Assert.fail("Interruped exception should have been re-thrown.");
+        } catch (RuntimeException e) {
             
-            Assert.assertFalse(task.isPresent());
-            
-            //Try to submit another task, in this case the semaphore should not be consulted.
         }
+        
+        Optional<FutureTask<String>> task = executor.submit(() -> {
+            Assert.fail("Should not have executed task as semaphore could not be acquired.");
+            return "";
+        }, "name", 12);
+        
+        Assert.assertFalse(task.isPresent());
         
         //Check that we only tried to wait on the semaphore once (we should not re-try if we ever time out).
         verify(semaphore, times(1)).tryAcquire(anyLong(), any());
