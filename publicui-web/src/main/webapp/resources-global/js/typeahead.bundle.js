@@ -1184,6 +1184,12 @@
                 this.$el.trigger.apply(this.$el, args);
                 return $e;
             },
+            after: function(type) {
+                var args, $e;
+                args = [].slice.call(arguments, 1);
+                $e = this._trigger("after" + type, args);
+                return $e.isDefaultPrevented();
+            },
             before: function(type) {
                 var args, $e;
                 args = [].slice.call(arguments, 1);
@@ -2172,6 +2178,7 @@
                     this.input.setQuery(data.val, true);
                     this.eventBus.trigger("select", data.obj);
                     this.close();
+                    this.eventBus.after("select", data.obj);
                     return true;
                 }
                 return false;
