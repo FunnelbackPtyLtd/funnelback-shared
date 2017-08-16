@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.core.task.TaskExecutor;
 
-import com.funnelback.common.config.Keys;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 
 import lombok.AccessLevel;
@@ -52,7 +51,7 @@ public class LimitedCPUUsageExecutorHelper implements ExecutorHelper {
         // this may be larger than 100%, this just results in something
         // like the old behavior where more extra searches are executed than CPUs.
         double pcOfCores = serviceConfig.get(EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
-        log.trace("The cores to use is {}% from config option", pcOfCores, Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE);
+        log.trace("The cores to use is {}% from config option", pcOfCores, EXTRA_SEARCH_CPU_COUNT_PERCENTAGE.getKey());
         int numberOfProcs = (int) Math.floor((double) getNumberOfCurrentCPUs() * pcOfCores);
         return Math.max(numberOfProcs, 1);
     }
