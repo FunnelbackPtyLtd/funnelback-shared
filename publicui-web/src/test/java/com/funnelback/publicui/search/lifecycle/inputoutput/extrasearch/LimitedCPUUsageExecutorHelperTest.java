@@ -1,5 +1,6 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -24,20 +25,16 @@ import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.task.TaskRejectedException;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
-import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 
 import lombok.Getter;
-
-
 
 public class LimitedCPUUsageExecutorHelperTest {
     
     public class FourCoreLimitedCPUUsageExecutorHelper extends LimitedCPUUsageExecutorHelper {
 
-        public FourCoreLimitedCPUUsageExecutorHelper(TaskExecutor taskExecutor, Config config) {
-            super(taskExecutor, config);
+        public FourCoreLimitedCPUUsageExecutorHelper(TaskExecutor taskExecutor, ServiceConfigReadOnly serviceConfig) {
+            super(taskExecutor, serviceConfig);
         }
         
         @Override
@@ -199,11 +196,9 @@ public class LimitedCPUUsageExecutorHelperTest {
         
     }
     
-    Config getConfigWithExtraSearchCpuPercent(double pc) {
-        Config config = mock(Config.class);
-        when(config.valueAsDouble(Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE, 
-            DefaultValues.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE))
-            .thenReturn(pc);
+    ServiceConfigReadOnly getConfigWithExtraSearchCpuPercent(double pc) {
+        ServiceConfigReadOnly config = mock(ServiceConfigReadOnly.class);
+        when(config.get(EXTRA_SEARCH_CPU_COUNT_PERCENTAGE)).thenReturn(pc);
         return config;
     }
 }

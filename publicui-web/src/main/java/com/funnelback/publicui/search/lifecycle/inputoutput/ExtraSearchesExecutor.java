@@ -56,7 +56,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
             final SearchUser user = getSearchUser(searchTransaction);
             
             LimitedCPUUsageExecutorHelper executorHelper = new LimitedCPUUsageExecutorHelper(executor,
-                searchTransaction.getQuestion().getCollection().getConfiguration());
+                searchTransaction.getQuestion().getCurrentProfileConfig());
             
             for (final Entry<String, SearchQuestion> entry : searchTransaction.getExtraSearchesQuestions().entrySet()) {
                 submitExtraSearchTaskIfNotAlreadySubmitted(searchTransaction, 

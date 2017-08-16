@@ -1,5 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput.extrasearch;
 
+import static com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE;
+
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -8,9 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.core.task.TaskExecutor;
 
-import com.funnelback.common.config.Config;
-import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,22 +37,21 @@ public class LimitedCPUUsageExecutorHelper implements ExecutorHelper {
     @Setter(AccessLevel.PACKAGE) @Getter(AccessLevel.PACKAGE) private Semaphore semaphore;
     private boolean preventFurtherTasks;
     
-    public LimitedCPUUsageExecutorHelper(TaskExecutor taskExecutor, Config config) {
+    public LimitedCPUUsageExecutorHelper(TaskExecutor taskExecutor, ServiceConfigReadOnly serviceConfig) {
         
         this.taskExecutor = taskExecutor;
         
-        int numberOfProcs = getNumberOfProcsToUse(config);
+        int numberOfProcs = getNumberOfProcsToUse(serviceConfig);
         
         log.debug("Will limit the number of concurrent extra searches to: {}", numberOfProcs);
         semaphore = new Semaphore(numberOfProcs);
         this.preventFurtherTasks = false;
     }
     
-    int getNumberOfProcsToUse(Config config) {
+    int getNumberOfProcsToUse(ServiceConfigReadOnly serviceConfig) {
         // this may be larger than 100%, this just results in something
         // like the old behavior where more extra searches are executed than CPUs.
-        double pcOfCores = config.valueAsDouble(Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE, 
-            DefaultValues.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
+        double pcOfCores = serviceConfig.get(EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
         log.trace("The cores to use is {}% from config option", pcOfCores, Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE);
         int numberOfProcs = (int) Math.floor((double) getNumberOfCurrentCPUs() * pcOfCores);
         return Math.max(numberOfProcs, 1);
