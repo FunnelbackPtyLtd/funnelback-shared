@@ -48,6 +48,8 @@ public class LimitedCPUUsageExecutorHelper implements ExecutorHelper {
     }
     
     int getNumberOfProcsToUse(Config config) {
+        // this may be larger than 100%, this just results in something
+        // like the old behavior where more extra searches are executed than CPUs.
         double pcOfCores = config.valueAsDouble(Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE, 
             DefaultValues.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE) / 100.0D;
         log.trace("The cores to use is {}% from config option", pcOfCores, Keys.ModernUI.EXTRA_SEARCH_CPU_COUNT_PERCENTAGE);
@@ -73,7 +75,12 @@ public class LimitedCPUUsageExecutorHelper implements ExecutorHelper {
         boolean acquiredLock = false;
         try {
             acquiredLock = semaphore.tryAcquire(msToWait, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+            this.preventFurtherTasks = true;
+            // It probably makes sense to re-throw I guess this would happen
+            // if the search transaction is expected to stop.
+            throw new RuntimeException(e);
+        }
         if(!acquiredLock) {
             log.error("Could not execute extra search '{}' as we timed out waiting to queue the task. "
                 + "No more extra searches will be queued for this search", extraSearchName);
