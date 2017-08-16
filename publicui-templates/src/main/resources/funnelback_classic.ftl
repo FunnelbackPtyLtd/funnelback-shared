@@ -841,10 +841,8 @@
                 <#assign category_index = c_index in s />
                 <#list c.values as cv>
                     <#-- Find if this category has been selected. If it's the case, don't display
-                         it in the list, except if it's an URL fill facet as we must display sub-folders
-                         of the currently selected folder -->
-                    <#if ! question.selectedCategoryValues?keys?seq_contains(urlDecode(cv.queryStringParam?split("=")[0]))
-                        || c.queryStringParamName?contains("|url")>
+                         it in the list -->
+                    <#if ! question.selectedCategoryValues?keys?seq_contains(urlDecode(cv.queryStringParam?split("=")[0]))>
                         <#assign categoryValue = cv in s>
                         <#assign categoryValue_has_next = cv_has_next in s>
                         <#assign categoryValue_index = cv_index in s>
