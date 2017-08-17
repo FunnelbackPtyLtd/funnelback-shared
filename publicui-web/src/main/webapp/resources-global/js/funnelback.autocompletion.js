@@ -291,7 +291,7 @@
 
 		function getQuery(str) {
 			if (!$.exist(str, true)) return str;
-			str = decodeURI(str);
+			str = decodeURIComponent(str);
 			return str.substring(str.lastIndexOf(set.queryKey + '=') + (set.queryKey.length + 1), str.lastIndexOf('GET'));
 		}
 
