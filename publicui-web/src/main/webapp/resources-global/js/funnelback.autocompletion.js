@@ -84,6 +84,9 @@
 			events      : {				// {eventName: function}; events get triggered on the input element during the life-cycle of a typeahead
 				select  : function(event, suggestion) {
 					_selectItem(suggestion, $(event.target));
+				},
+				afterselect: function(event, suggestion) {
+					if (suggestion.extra.action_t == 'E') $(event.target).focus();
 				}
 			}
 		},
@@ -441,7 +444,7 @@
 				case 'U':
 					document.location = item.extra.action; break;
 				case 'E':
-					target.val(item.extra.action); break;
+					target.typeahead('val', item.extra.action); break;
 				case undefined:
 				case '':
 				case 'S':
