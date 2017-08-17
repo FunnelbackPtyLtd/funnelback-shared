@@ -28,6 +28,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import static org.mockito.Mockito.*;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
 public class CategoryDefinitionTests {
 
     @Test
@@ -167,7 +168,11 @@ public class CategoryDefinitionTests {
         
         Assert.assertEquals(st.getResponse(), data.getResponseForValues());
         
-        Assert.assertNull(data.getCountIfNotPresent().apply(catDef, ""));
+        Assert.assertEquals(
+            "We havea  value but we could not see a count for this value in the query "
+            + "without any facets selected this must mean if we selected the facet we "
+            + "would end up at a zero result page, I think.",
+            new Integer(0), data.getCountIfNotPresent().apply(catDef, ""));
     }
     
     @Test
@@ -224,7 +229,7 @@ public class CategoryDefinitionTests {
     }
     
     @Test
-    public void getFacetSearchDataTestAndFromUnScoped() {
+    public void getFacetSearchDataTestAndFromUnScopedQuery() {
         FacetDefinition fdef = mock(FacetDefinition.class);
         when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
         when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
@@ -240,6 +245,29 @@ public class CategoryDefinitionTests {
             st.getResponse(), data.getResponseForCounts().apply(null, null).get());
         
         Assert.assertEquals("Values come from the unscoped query",
+            extraSearchTransaction.getResponse(), data.getResponseForValues());
+        Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
+            + " the scopped query then ANDing with that value will result in a zero result page.",
+            0, data.getCountIfNotPresent().apply(null, null) + 0);
+    }
+    
+    @Test
+    public void getFacetSearchDataTestAndFromUnScopedAllQuery() {
+        FacetDefinition fdef = mock(FacetDefinition.class);
+        when(fdef.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_ALL_QUERY);
+        when(fdef.getConstraintJoin()).thenReturn(FacetConstraintJoin.AND);
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction extraSearchTransaction = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches().put(SEARCH_FOR_ALL_VALUES, extraSearchTransaction);
+        
+        FacetSearchData data = new MockCategoryDefinition("").getFacetSearchData(st, fdef);
+        
+        Assert.assertEquals("Counts in the AND case come from the main query because we scope the"
+            + " existing query further.",
+            st.getResponse(), data.getResponseForCounts().apply(null, null).get());
+        
+        Assert.assertEquals("Values come from the unscoped ALL query",
             extraSearchTransaction.getResponse(), data.getResponseForValues());
         Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
             + " the scopped query then ANDing with that value will result in a zero result page.",
@@ -276,6 +304,11 @@ public class CategoryDefinitionTests {
 
         @Override
         public String getQueryStringCategoryExtraPart() {
+            throw new NotImplementedException("not mocked");
+        }
+
+        @Override
+        public boolean allValuesDefinedByUser() {
             throw new NotImplementedException("not mocked");
         }
         

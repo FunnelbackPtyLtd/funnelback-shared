@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation;
 
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-
 /**
  * <p>Category definition for faceted navigation.</p>
  * 
@@ -185,6 +185,17 @@ public abstract class CategoryDefinition {
     public abstract List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question);
     
     /**
+     * Tells you if all the CategoryValues this CategoryDefiniton can produce are ones that must be 
+     * set on the category by the user.
+     * 
+     * <p>Values defined by the user are ones like gscopes where values not from the user
+     * come from other sources such as metadata.</p>
+     * 
+     * @return true if all values are defined by the user and not generated from the data.
+     */
+    public abstract boolean allValuesDefinedByUser();
+    
+    /**
      * <p>Parses a String containing a metadata class and a value
      * such as <tt>x:Red cars</tt>, to separated the metadata class from the value.
      * 
@@ -202,8 +213,6 @@ public abstract class CategoryDefinition {
     
     protected FacetSearchData getFacetSearchData(SearchTransaction st, FacetDefinition facetDefinition) {
         
-        boolean areAnyFacetsSelected = !st.getQuestion().getSelectedCategoryValues().isEmpty();
-        
         // Usually the response for counts would be the one from the normal search.
 
         SearchResonseForCountSupplier responseForCounts = (c, v) -> Optional.of(st.getResponse());
@@ -214,12 +223,21 @@ public abstract class CategoryDefinition {
         
         // legacy does not work with unscoped values
         if(facetDefinition.getConstraintJoin() != FacetConstraintJoin.LEGACY) {
+            
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY) {
-                searchResponseForValues = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES.toString()))
+                searchResponseForValues = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_UNSCOPED_VALUES))
                     .map(SearchTransaction::getResponse)
                     .orElse(searchResponseForValues);
-                
-                
+            }
+            
+            if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
+                searchResponseForValues = Optional.ofNullable(st.getExtraSearches().get(SEARCH_FOR_ALL_VALUES))
+                    .map(SearchTransaction::getResponse)
+                    .orElse(searchResponseForValues);
+            }
+            
+            if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY 
+                || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
                 // In the case that the constraints are ANDed then the counts come
                 // from the original Response
                 // Counts for OR may come from the dedicated extra search if that is the case
@@ -228,14 +246,15 @@ public abstract class CategoryDefinition {
                 // In the ANDed case any time a value is present but the original Response does not
                 // have the value then the count is zero.
                 countIfNotPresent = (c,v) -> 0;
-                
             }
+                
             
             if(facetedNavProps.useUnscopedQueryForCounts(facetDefinition, st)) {
                 responseForCounts = (c, v) -> Optional.ofNullable(st.getExtraSearches())
                     .map(extraSearches -> extraSearches.get(FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES))
                     .map(SearchTransaction::getResponse);
-                countIfNotPresent = (c,v) -> null;
+                // If the value is value is not present then it must be zero.
+                countIfNotPresent = (c,v) -> 0;
                 
             }
             

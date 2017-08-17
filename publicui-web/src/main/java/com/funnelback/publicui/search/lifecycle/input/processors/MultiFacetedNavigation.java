@@ -1,13 +1,18 @@
 package com.funnelback.publicui.search.lifecycle.input.processors;
 
+import static com.funnelback.common.function.Predicates.not;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
 import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
 import static com.funnelback.publicui.search.model.transaction.SearchTransaction.ExtraSearches.FACETED_NAVIGATION;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +20,13 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
-import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetedNavigationProperties;
@@ -66,10 +72,21 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                 searchTransaction.addExtraSearch(FACETED_NAVIGATION.toString(), q);
             }
             
-            if(doAnyFacetsNeedFullFacetValues(searchTransaction)) {
+            if(doAnyFacetsNeedUnscopedQuery(searchTransaction)) {
                 addExtraSearchToGetUnscopedValues(searchTransaction);
-                addExtraSearchesForOrBasedFacetCounts(searchTransaction);
+            } else {
+                log.trace("Not running unscoped query for facets.");
             }
+            
+            if(doAnyFacetsNeedAllQuery(searchTransaction)) {
+                addExtraSearchToGetAllValues(searchTransaction);
+            } else {
+                log.trace("Not running ALL query for facets, this might be because no facet"
+                    + " uses values from the ALL query all because all facets that do only"
+                    + " consist of categories where the user defines all the values.");
+            }
+            
+            addExtraSearchesForOrFacetCounts(searchTransaction);
         }
         
         
@@ -98,7 +115,27 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         searchTransaction.addExtraSearch(SEARCH_FOR_UNSCOPED_VALUES, extraQuestion);
     }
     
-    public void addExtraSearchesForOrBasedFacetCounts(SearchTransaction searchTransaction) {        
+    public void addExtraSearchToGetAllValues(SearchTransaction searchTransaction) throws InputProcessorException {
+        SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory()
+            .buildQuestion(searchTransaction.getQuestion(), null);
+        
+        // Apply options to speed things up but take care to not apply ones that turn off counting which is need
+        // by faceted navigation.
+        Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
+        padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
+            .stream()
+            .filter(o -> !optionsToNotAdd.contains(o.getOption())) // Remove options we need for faceted nav.
+            .forEach(p -> extraQuestion.getRawInputParameters().put(p.getOption(), new String[]{p.getValue()}));
+        
+        extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
+        
+        // We want to get all values the user can see so run a padre null search.
+        extraQuestion.setQuery("!FunDoesNotExist:padrenull");
+            
+        searchTransaction.addExtraSearch(SEARCH_FOR_ALL_VALUES, extraQuestion);
+    }
+    
+    public void addExtraSearchesForOrFacetCounts(SearchTransaction searchTransaction) {        
         // Facets that can expand the result set must use a extra search to find counts.
         Map<String, FacetDefinition> facetsThatNeedASearchForCounts = getFacetDefinitions(searchTransaction)
         .stream()
@@ -114,19 +151,58 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         }
         
         log.debug("Or type facets detected waiting for unscoped search to complete.");
-        //First get the Un scopped extra search, we will probably have to wait for it.
-        Optional<SearchTransaction> unscopedSearch = this.extraSearchesExecutor
-            .getAndMaybeWaitForExtraSearch(searchTransaction, SEARCH_FOR_UNSCOPED_VALUES);
         
-        if(!unscopedSearch.isPresent()) {
-            log.warn("Could not get Search Transaction for unscoped query did it fail?");
+        
+        //First get the Un scopped extra search, we will probably have to wait for it.
+        
+        
+        AtomicInteger extraSearchesAdded = new AtomicInteger(0);
+        
+        createExtraSearchesForFacets(searchTransaction, 
+            facetsThatNeedASearchForCounts, 
+            SEARCH_FOR_UNSCOPED_VALUES, 
+            e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY, 
+            extraSearchesAdded);
+        
+        createExtraSearchesForFacets(searchTransaction, 
+            facetsThatNeedASearchForCounts, 
+            SEARCH_FOR_ALL_VALUES, 
+            e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY, 
+            extraSearchesAdded);
+        
+        
+        log.debug("Added {} extra searches", extraSearchesAdded);
+        
+    }
+    
+    public void createExtraSearchesForFacets(SearchTransaction searchTransaction, 
+        Map<String, FacetDefinition> facetsThatNeedASearchForCounts,
+        String extraSearchProvidingValues,
+        Predicate<Entry<String, FacetDefinition>> facetsMustMatch,
+        AtomicInteger extraSearchesAdded) {
+        
+        facetsThatNeedASearchForCounts = facetsThatNeedASearchForCounts.entrySet().stream()
+            .filter(facetsMustMatch)
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        
+        if(facetsThatNeedASearchForCounts.isEmpty()) {
+            log.trace("No facets which would use extra search '{}' need to run extra searches for counts.", 
+                extraSearchProvidingValues);
             return;
         }
         
-        int extraSearchesAdded = 0;
+        Optional<SearchTransaction> valueProvidingSearch = this.extraSearchesExecutor
+            .getAndMaybeWaitForExtraSearch(searchTransaction, extraSearchProvidingValues);
+        
+        if(!valueProvidingSearch.isPresent()) {
+            log.warn("Can not calculate counts for some facet values as the extra search '{}' is missing",
+                extraSearchProvidingValues);
+            return;
+        }
+        
         
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
-        for(Facet facet : unscopedSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
+        for(Facet facet : valueProvidingSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
                 for(CategoryValue value : Optional.ofNullable(facet.getAllValues()).orElse(Collections.emptyList())) {
                     
@@ -155,12 +231,10 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                         extraSearchName,
                         facet.getName(),
                         value.getData());
-                    extraSearchesAdded++;
+                    extraSearchesAdded.incrementAndGet();
                 }
             }
         }
-        
-        log.debug("Added {} extra searches", extraSearchesAdded);
         
     }
     
@@ -171,12 +245,22 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
             .orElse(Collections.emptyList());
     }
     
-    public boolean doAnyFacetsNeedFullFacetValues(SearchTransaction st) {
+    public boolean doAnyFacetsNeedUnscopedQuery(SearchTransaction st) {
          return getFacetDefinitions(st)
              .stream()
-             .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || 
-                     f.getSelectionType() == FacetSelectionType.SINGLE_AND_UNSELECT_OTHER_FACETS);
+             .anyMatch(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || // Anything which uses the unscoped query to find its values.
+                     new FacetedNavigationProperties().useUnscopedQueryForCounts(f, st));
     }
+    
+    public boolean doAnyFacetsNeedAllQuery(SearchTransaction st) {
+        return getFacetDefinitions(st)
+            .stream()
+            .filter(f -> f.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY)
+            .map(FacetDefinition::getCategoryDefinitions)
+            .flatMap(i -> i.stream())
+            .flatMap(Flattener.mapper(CategoryDefinition::getSubCategories))
+            .anyMatch(not(CategoryDefinition::allValuesDefinedByUser));
+   }
     
     
 

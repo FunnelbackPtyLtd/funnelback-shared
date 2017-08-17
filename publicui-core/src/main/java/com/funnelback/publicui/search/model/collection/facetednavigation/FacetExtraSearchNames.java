@@ -12,6 +12,8 @@ public class FacetExtraSearchNames {
     
     public static final String SEARCH_FOR_UNSCOPED_VALUES = FACET_EXTRA_SEARCH_PREFIX + "UNSCOPED_VALUES";
     
+    public static final String SEARCH_FOR_ALL_VALUES = FACET_EXTRA_SEARCH_PREFIX + "ALL_VALUES";
+    
 
     public String getExtraSearchName(Facet facet, CategoryValue value) {
         return getExtraSearchName(facet.getName(), value.getQueryStringParamName(), value.getData());

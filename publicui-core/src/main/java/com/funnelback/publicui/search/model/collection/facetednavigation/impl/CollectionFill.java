@@ -21,7 +21,7 @@ import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.google.common.collect.ImmutableList;
 
 import lombok.Getter;
-
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
 public class CollectionFill extends CategoryDefinition {
     
     @Getter private List<String> collections;
@@ -49,7 +49,7 @@ public class CollectionFill extends CategoryDefinition {
                                                 .filter(Predicates.containedBy(collections))
                                                 .collect(Collectors.toList());
         
-        if(collectionsListed.isEmpty()) {
+        if(collectionsListed.isEmpty() && fdef.getFacetValues() != FROM_UNSCOPED_ALL_QUERY) {
             //Nothing knows about any of the collections we have.
             return Collections.emptyList();
         }
@@ -93,6 +93,11 @@ public class CollectionFill extends CategoryDefinition {
     @Override
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         return ImmutableList.of(new QueryProcessorOption<Boolean>(QueryProcessorOptionKeys.DOCS_PER_COLLECTION, true));
+    }
+
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return true;
     }
 
 }

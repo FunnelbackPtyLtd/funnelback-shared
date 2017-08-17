@@ -290,4 +290,9 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         return urlSubstring.split("/").length - 1;
     }
 
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return false;
+    }
+
 }
