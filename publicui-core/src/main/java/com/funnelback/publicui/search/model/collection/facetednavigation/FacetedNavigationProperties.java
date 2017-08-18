@@ -38,7 +38,7 @@ public class FacetedNavigationProperties {
         }
         
         if(facet.getSelectionType() == FacetSelectionType.SINGLE 
-            && facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY
+            && (facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || facet.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY)
             && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {
             // probably something like a radio button.
             return true;

@@ -103,4 +103,9 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         return qpOptions;
     }
+
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return false;
+    }
 }

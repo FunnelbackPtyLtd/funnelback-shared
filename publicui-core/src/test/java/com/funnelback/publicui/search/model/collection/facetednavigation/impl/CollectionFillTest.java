@@ -1,7 +1,8 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
 import static java.util.Arrays.asList;
-
+import static org.mockito.Mockito.*;
+import static com.funnelback.common.facetednavigation.models.FacetValues.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
@@ -76,7 +78,7 @@ public class CollectionFillTest {
                 (c,v) -> 20); // This part is where the count might come from an extra search.
         collFill.setFacetSearchData(facetSearchData);
         
-        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, null);
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_UNSCOPED_QUERY));
         Assert.assertEquals("We should see one value for the user to click on.", 1, values.size());
         
         CategoryValueComputedDataHolder value = values.get(0);
@@ -102,7 +104,7 @@ public class CollectionFillTest {
                 (c,v) -> null); // This part is where the count might come from an extra search.
         collFill.setFacetSearchData(facetSearchData);
         
-        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, null);
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_UNSCOPED_QUERY));
         Assert.assertEquals("We should see one value for the user to click on.", 1, values.size());
         
         CategoryValueComputedDataHolder value = values.get(0);
@@ -112,7 +114,7 @@ public class CollectionFillTest {
     }
     
     @Test
-    public void testUnknoenCollections() {
+    public void testUnknownCollections() {
         SearchResponse sr = new SearchResponse();
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
         
@@ -126,9 +128,35 @@ public class CollectionFillTest {
                 (c,v) -> null); // This part is where the count might come from an extra search.
         collFill.setFacetSearchData(facetSearchData);
         
-        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, null);
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_UNSCOPED_QUERY));
         Assert.assertEquals("We should see no values because the SearchResponse which provides values did not"
             + " contain any of the collections for this category.",
             0, values.size());
+    }
+    
+    @Test
+    public void testUnknownCollectionsInAllValuesFacet() {
+        SearchResponse sr = new SearchResponse();
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
+        
+        sr.setResultPacket(new ResultPacket());
+        sr.getResultPacket().getDocumentsPerCollection().put("col3", 24L);
+        
+        TestableCollectionFill collFill = new TestableCollectionFill("See colls 0-2", asList("col0", "col1", "col2"));
+        
+        FacetSearchData facetSearchData = new FacetSearchData(sr, 
+                (c, v) -> Optional.empty(), 
+                (c,v) -> null); // This part is where the count might come from an extra search.
+        collFill.setFacetSearchData(facetSearchData);
+        
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_UNSCOPED_ALL_QUERY));
+        Assert.assertEquals("We should see a value even no result came from the query.",
+            1, values.size());
+    }
+    
+    private FacetDefinition facetWithValue(FacetValues facetValue) {
+        FacetDefinition facetDefinition = mock(FacetDefinition.class);
+        when(facetDefinition.getFacetValues()).thenReturn(facetValue);
+        return facetDefinition;
     }
 }

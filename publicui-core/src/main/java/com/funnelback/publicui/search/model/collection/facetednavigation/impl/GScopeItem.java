@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -47,7 +48,8 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
         
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
-        if (facetData.getResponseForValues().getResultPacket().getGScopeCounts().get(userSetGScope) != null) {
+        if (facetData.getResponseForValues().getResultPacket().getGScopeCounts().get(userSetGScope) != null
+            || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
             String queryStringParamValue = data;
             
             Integer count = facetData.getResponseForCounts().apply(this, Integer.toString(userSetGScope))
@@ -97,5 +99,10 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
     @Override
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         return qpOptions;
+    }
+
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return true;
     }
 }

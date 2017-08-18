@@ -3,6 +3,7 @@ package com.funnelback.publicui.test.search.lifecycle.input.processors;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MultiFacetedNavigation;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
 import com.funnelback.publicui.search.model.collection.Collection;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -107,7 +109,7 @@ public class MultiFacetedNavigationTest {
             }
         };
         
-        Assert.assertTrue(multiFacetedNavigation.doAnyFacetsNeedFullFacetValues(st));
+        Assert.assertTrue(multiFacetedNavigation.doAnyFacetsNeedUnscopedQuery(st));
     }
     
     @Test
@@ -118,7 +120,7 @@ public class MultiFacetedNavigationTest {
             }
         };
         
-        Assert.assertFalse(multiFacetedNavigation.doAnyFacetsNeedFullFacetValues(st));
+        Assert.assertFalse(multiFacetedNavigation.doAnyFacetsNeedUnscopedQuery(st));
     }
     
     @Test
@@ -129,7 +131,7 @@ public class MultiFacetedNavigationTest {
             }
         };
         
-        Assert.assertFalse(multiFacetedNavigation.doAnyFacetsNeedFullFacetValues(st));
+        Assert.assertFalse(multiFacetedNavigation.doAnyFacetsNeedUnscopedQuery(st));
     }
     
     @Test
@@ -175,7 +177,7 @@ public class MultiFacetedNavigationTest {
         
         multiFacetedNavigation.setExtraSearchesExecutor(executor);
         
-        multiFacetedNavigation.addExtraSearchesForOrBasedFacetCounts(st);
+        multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
         
         Assert.assertEquals("Only one facet is a OR type facet so only that one should "
             + "have an extra search made or it.",
@@ -210,6 +212,48 @@ public class MultiFacetedNavigationTest {
         
         Assert.assertTrue("Should have turned of features not needed by faceted nav", 
             extraSearch.getRawInputParameters().containsKey("SSS"));
+    }
+    
+    @Test
+    public void testUserDefinedCategoriesDoNotNeedAllQuery() {
+        // Setup a facet where we want all values
+        FacetDefinition facet = facet(AND, FROM_UNSCOPED_ALL_QUERY);
+        CategoryDefinition catDef = mock(CategoryDefinition.class);
+        when(catDef.allValuesDefinedByUser()).thenReturn(true);
+        when(catDef.getSubCategories()).thenReturn(asList());
+        
+        when(facet.getCategoryDefinitions()).thenReturn(asList(catDef));
+        
+        boolean res = new MultiFacetedNavigation(){
+            @Override
+            public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {
+                return asList(facet);
+            }
+        }.doAnyFacetsNeedAllQuery(null);
+        
+        Assert.assertFalse("We can get all values from the category definitions so "
+            + "we don't need to run a extra search", res);
+    }
+    
+    @Test
+    public void testFacetAndCategoriesThatNeedUnscopedAllExtraSearch() {
+        // Setup a facet where we want all values
+        FacetDefinition facet = facet(AND, FROM_UNSCOPED_ALL_QUERY);
+        CategoryDefinition catDef = mock(CategoryDefinition.class);
+        when(catDef.allValuesDefinedByUser()).thenReturn(false);
+        when(catDef.getSubCategories()).thenReturn(asList());
+        
+        when(facet.getCategoryDefinitions()).thenReturn(asList(catDef));
+        
+        boolean res = new MultiFacetedNavigation(){
+            @Override
+            public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {
+                return asList(facet);
+            }
+        }.doAnyFacetsNeedAllQuery(null);
+        
+        Assert.assertTrue("The values are derived from the index so we need to"
+            + " run a query to find those values", res);
     }
     
     private FacetDefinition facet(FacetConstraintJoin join, FacetValues values) {

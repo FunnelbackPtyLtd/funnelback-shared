@@ -78,4 +78,9 @@ public class AllDocumentsFill extends CategoryDefinition {
         return Collections.emptyList();
     }
 
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return true;
+    }
+
 }

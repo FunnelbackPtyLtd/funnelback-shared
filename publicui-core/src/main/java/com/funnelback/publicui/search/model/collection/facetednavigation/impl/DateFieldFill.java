@@ -104,4 +104,9 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
     public List<QueryProcessorOption<?>> getQueryProcessorOptions(SearchQuestion question) {
         return qpOptions;
     }
+
+    @Override
+    public boolean allValuesDefinedByUser() {
+        return false;
+    }
 }
