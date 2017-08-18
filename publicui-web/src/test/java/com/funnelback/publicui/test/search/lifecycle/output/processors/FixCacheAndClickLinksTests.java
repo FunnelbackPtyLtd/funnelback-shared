@@ -57,7 +57,7 @@ public class FixCacheAndClickLinksTests {
     private SearchTransaction getTestSearchTransaction(Boolean clickTracking) {
         ServiceConfig serviceConfig = new DefaultServiceConfig(new InMemoryConfigData(Maps.newHashMap()), new NoConfigEnvironment());
         serviceConfig.set(FrontEndKeys.UI.Modern.CLICK_LINK, Optional.of("CLICK_LINK"));
-        serviceConfig.set(FrontEndKeys.UI.Modern.CLICK_TRACKING, clickTracking);
+        serviceConfig.set(FrontEndKeys.CLICK_TRACKING, clickTracking);
 
         Profile profile = new Profile();
         profile.setServiceConfig(serviceConfig);
@@ -212,7 +212,7 @@ public class FixCacheAndClickLinksTests {
     @Test
     public void setClickTrackingUrlTestNotVisable() {
         SearchTransaction st = mock(SearchTransaction.class, RETURNS_DEEP_STUBS);
-        when((Object)st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)).thenReturn(false);
+        when((Object)st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.CLICK_TRACKING)).thenReturn(false);
 
         Result r1 = mock(Result.class);
         when(r1.isDocumentVisibleToUser()).thenReturn(false);
