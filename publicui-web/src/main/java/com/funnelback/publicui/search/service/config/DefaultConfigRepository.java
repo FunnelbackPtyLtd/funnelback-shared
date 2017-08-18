@@ -26,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
@@ -279,7 +280,8 @@ public class DefaultConfigRepository implements ConfigRepository {
             
             try {
                 p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
-            } catch (ProfileNotFoundException e) {
+            } catch (CollectionNotFoundException e) {
+                // TODO - Is falling back to _default (as would probably happen in practice) the right thing here?
                 log.error("Profile vanished while being loaded '"+profileDir.getName()+"'",e);
             }
             
@@ -604,19 +606,30 @@ public class DefaultConfigRepository implements ConfigRepository {
     }
 
     @Override
-    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException {
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws CollectionNotFoundException {
         String profileId = profileIdAndView;
         ProfileView profileView = ProfileView.live;
         if (profileIdAndView.endsWith(DefaultValues.PREVIEW_SUFFIX)) {
             profileId = profileId.substring(0, profileId.length() - DefaultValues.PREVIEW_SUFFIX.length());
             profileView = ProfileView.preview;
         }
-
-        ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
-            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView));
+        
+        ServiceConfigDataReadOnly serviceConfigData;
+        try {
+            serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
+                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView));
+        } catch (ProfileNotFoundException e) {
+            // Fall back to _default
+            try {
+                serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
+                    new ServiceId(new CollectionId(collectionId), new ProfileId(DefaultValues.DEFAULT_PROFILE)), profileView));
+            } catch (ProfileNotFoundException e1) {
+                throw new CollectionNotFoundException(collectionId);
+            }
+        }
         
         if (serviceConfigData == null) {
-            throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
+            throw new IllegalStateException("Should never get here - resourceManager should give a valid value or throw an exception...I think...");
         }
         
         return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
@@ -97,8 +98,10 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
             ServiceConfigReadOnly serviceConfig;
             try {
                 serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
-            } catch (ProfileNotFoundException e) {
-                // TODO - You asked for a profile which doesn't exist, so I guess you're permitted to see it???
+            } catch (CollectionNotFoundException e) {
+                // You asked for a collection which doesn't exist, so no access restriction applies.
+                // (otherwise no one could ever get to the collection listing page)
+                log.trace("Access restriction allowing access to nonexistent collection" + collectionId);
                 return true;
             }
             
