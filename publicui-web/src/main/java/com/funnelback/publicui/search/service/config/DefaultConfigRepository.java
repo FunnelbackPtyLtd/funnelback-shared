@@ -614,7 +614,11 @@ public class DefaultConfigRepository implements ConfigRepository {
 
         ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
             new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView));
-
+        
+        if (serviceConfigData == null) {
+            throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
+        }
+        
         return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
     

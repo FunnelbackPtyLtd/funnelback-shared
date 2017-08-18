@@ -23,6 +23,7 @@ import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
 import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.common.profile.ProfileView;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
@@ -93,7 +94,13 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
             }
             
             // Will throw a ProfileNotFound exception if given invalid data - Seems a fair way to abort
-            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            ServiceConfigReadOnly serviceConfig;
+            try {
+                serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            } catch (ProfileNotFoundException e) {
+                // TODO - You asked for a profile which doesn't exist, so I guess you're permitted to see it???
+                return true;
+            }
             
             if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {
                 String accessRestriction = serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).get();
