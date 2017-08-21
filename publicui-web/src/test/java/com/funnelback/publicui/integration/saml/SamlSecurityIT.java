@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
@@ -34,7 +35,7 @@ import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
-
+@Ignore
 public class SamlSecurityIT {
     protected static DefaultSecurityConfiguredJettyServer server;
     protected static MujinaIdentityProviderServer mujina;
