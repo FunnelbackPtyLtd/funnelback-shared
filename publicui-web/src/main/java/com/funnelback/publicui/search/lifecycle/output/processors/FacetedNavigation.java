@@ -19,14 +19,14 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
+import com.funnelback.publicui.search.model.transaction.facet.order.ByFirstCategoryValueComparator;
+import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-
 /**
  * Transforms result metadata/url/gscope counts into proper facet hierarchy
  */
@@ -39,6 +39,8 @@ public class FacetedNavigation extends AbstractOutputProcessor {
     
     @Setter
     private FillFacetUrls fillFacetUrls = new FillFacetUrls();
+    
+    private FacetComparatorProvider comparatorProvider = new FacetComparatorProvider();
 
     @Override
     public void processOutput(SearchTransaction searchTransaction) {
@@ -50,7 +52,11 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             
             if (config != null) {
                 for(FacetDefinition f: config.getFacetDefinitions()) {
-                    final Facet facet = new Facet(f.getName(), f.getSelectionType(), f.getConstraintJoin(), f.getFacetValues());
+                    final Facet facet = new Facet(f.getName(), 
+                                                    f.getSelectionType(), 
+                                                    f.getConstraintJoin(), 
+                                                    f.getFacetValues(), 
+                                                    f.getOrder());
                     
                     List<Facet.Category> cats = new ArrayList<>();
                     
@@ -81,12 +87,22 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     }))
                     .forEach(catAndSibs -> fillUrls.fillURLs(searchTransaction, f, catAndSibs.getSiblings(), catAndSibs.getCategory()));
                     
+                    // Legacy mode has limited support for ordering, we maintain backwards compatibility.
+                    
                     // Sort all categories for this facet by the count of the first value of
                     // each category. This is useful for GScope based facets where there's only
                     // one category-value per category
-                    Collections.sort(facet.getCategories(), new Category.ByFirstCategoryValueComparator());
+                    // We need to ensure we don't do this if the category has more than one value, otherwise
+                    // we can break sorting. See also FUN-10654
+                    if(facet.getCategories().stream().allMatch(c -> c.getValues().size() == 1 
+                        && c.getCategories().size() == 0)) {
+                        Collections.sort(facet.getCategories(), 
+                            new ByFirstCategoryValueComparator(
+                                comparatorProvider.getComparatorWhenSortingAllValus(f.getOrder())));
+                    }
                     fillFacetUrls.setUnselectAllUrl(facet, searchTransaction);
                     searchTransaction.getResponse().getFacets().add(facet);
+                    
                 }
             }
         }
@@ -111,7 +127,9 @@ public class FacetedNavigation extends AbstractOutputProcessor {
         // Fill the values for this category
         Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
         category.getValues().addAll(cDef.computeValues(searchTransaction, facetDefinition));
-        Collections.sort(category.getValues(), new CategoryValue.ByCountComparator(true));
+        
+        // For the old template we make some effort to sort the values in the desired way.
+        Collections.sort(category.getValues(), comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
     
         // Find out if this category is currently selected
         if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(cDef.getQueryStringParamName())) {
@@ -166,10 +184,5 @@ public class FacetedNavigation extends AbstractOutputProcessor {
             return null;
         }
     }
-    
-    
-    
-    
-    
 
 }

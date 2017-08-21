@@ -5,6 +5,7 @@ import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin
 import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
 import static com.funnelback.common.facetednavigation.models.FacetSelectionType.SINGLE;
 import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_SCOPED_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.COUNT_DESCENDING;
 import static java.util.Arrays.asList;
 
 import java.util.List;
@@ -49,11 +50,11 @@ public class FacetedNavigationCollectionTests {
             new FacetDefinition("Tabs", 
                     asList(new CollectionFill("News", asList("weather", "finance", "fake-news")),
                             new CollectionFill("Social", asList("facebook", "youtube"))), 
-                    SINGLE, AND, FROM_SCOPED_QUERY),
+                    SINGLE, AND, FROM_SCOPED_QUERY, asList(COUNT_DESCENDING)),
             new FacetDefinition("Social types", 
                     asList(new CollectionFill("Facebook", asList("facebook")), 
                             new CollectionFill("Youtube", asList("youtube"))), 
-                    MULTIPLE, OR, FROM_SCOPED_QUERY)
+                    MULTIPLE, OR, FROM_SCOPED_QUERY, asList(COUNT_DESCENDING))
             
             ));
         

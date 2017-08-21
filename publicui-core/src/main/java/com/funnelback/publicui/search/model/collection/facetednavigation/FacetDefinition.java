@@ -6,9 +6,11 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import com.funnelback.common.facetednavigation.models.Facet;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -47,6 +49,9 @@ public class FacetDefinition {
     @NotNull @NonNull
     @Getter private FacetValues facetValues;
     
+    @NotNull @NonNull
+    @Getter private List<FacetValuesOrder> order;
+    
     /**
      * Recursively get the list of all query string parameters used.
      * @return The list of every query string parameter used in this
@@ -68,7 +73,14 @@ public class FacetDefinition {
         public static final String DATA = "Data";
     }
     
-    public static FacetDefinition getFacetWithUpgradedValues(String name, List<CategoryDefinition> categoryDefinitions) {
-        return new FacetDefinition(name, categoryDefinitions, FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+    public static FacetDefinition getFacetWithUpgradedValues(
+            String name, 
+            List<CategoryDefinition> categoryDefinitions) {
+        return new FacetDefinition(name, 
+            categoryDefinitions, 
+            Facet.LEGACY_FACET_SELECTION_TYPE, 
+            Facet.LEGACY_FACET_CONSTRAINT_JOIN, 
+            Facet.LEGACY_FACET_VALUES,
+            Facet.LEGACY_FACET_ORDER);
     }
 }

@@ -20,7 +20,7 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
-
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_ORDER;
 public class FacetedNavigationWhiteBlackListTest {
 
     private SearchTransaction st;
@@ -34,7 +34,11 @@ public class FacetedNavigationWhiteBlackListTest {
         ct.getValues().add(new Facet.CategoryValue("value2", "category2", 10, "c=d", "c", false));
         ct.getValues().add(new Facet.CategoryValue("value3", "category3", 13, "e=f", "e", false));
         
-        Facet f = new Facet("Test Facet", FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+        Facet f = new Facet("Test Facet", 
+            FacetSelectionType.SINGLE, 
+            FacetConstraintJoin.LEGACY, 
+            FacetValues.FROM_SCOPED_QUERY,
+            LEGACY_FACET_ORDER);
         f.getCategories().add(ct);
         
         SearchResponse sr = new SearchResponse();
