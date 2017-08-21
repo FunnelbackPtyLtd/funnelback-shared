@@ -88,7 +88,8 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             FacetDefinition facetDefinition = new FacetDefinition(facet.getName(), categoryDefinitions,
                 facet.getSelectionType(),
                 facet.getConstraintJoin(),
-                facet.getFacetValues());
+                facet.getFacetValues(),
+                facet.getOrder());
             
             facetDefinitions.add(facetDefinition);
         }

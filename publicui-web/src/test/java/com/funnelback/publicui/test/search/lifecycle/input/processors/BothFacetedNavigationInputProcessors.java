@@ -59,7 +59,8 @@ public class BothFacetedNavigationInputProcessors extends AbstractInputProcessor
                 f.getCategoryDefinitions(), 
                 f.getSelectionType(), 
                 FacetConstraintJoin.AND, 
-                f.getFacetValues()))
+                f.getFacetValues(),
+                f.getOrder()))
             .collect(Collectors.toList()));
     }
 }
