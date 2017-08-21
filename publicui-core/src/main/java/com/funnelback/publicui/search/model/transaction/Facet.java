@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
@@ -21,6 +22,7 @@ import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -364,6 +366,15 @@ public class Facet {
          * @Since 15.12 
          */
         @Getter @Setter private String toggleUrl;
+        
+        /**
+         * The depth of the category definition, used for sorting.
+         * 
+         * @since 15.12
+         */
+        @XStreamOmitField
+        @JsonIgnore
+        @Getter @Setter private int categoryDepth =  Integer.MAX_VALUE;
 
         @Override
         public String toString() {

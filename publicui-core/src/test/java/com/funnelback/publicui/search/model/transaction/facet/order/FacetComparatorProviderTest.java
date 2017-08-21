@@ -29,8 +29,11 @@ public class FacetComparatorProviderTest {
     private final CategoryValue catWithLabel_test = categoryWithLabel("test");
     private final CategoryValue catWithLabel_apple = categoryWithLabel("apple");
     
-    private final CategoryValue catWithSelection_true = categoryWithSelection(true);
-    private final CategoryValue catWithSelection_false = categoryWithSelection(false);
+    private final CategoryValue catWithSelection_true_depth_1 = categoryWithSelection(true, 1);
+    private final CategoryValue catWithSelection_false_depth_1 = categoryWithSelection(false, 1);
+    
+    private final CategoryValue catWithSelection_true_depth_2 = categoryWithSelection(true, 2);
+    private final CategoryValue catWithSelection_false_depth_2 = categoryWithSelection(false, 2);
     
     
     @Test
@@ -64,15 +67,22 @@ public class FacetComparatorProviderTest {
     @Test
     public void testSelectedFirst() {
         test(asList(SELECTED_FIRST), 
-            asList(catWithSelection_false, catWithSelection_true), 
-            asList(catWithSelection_true, catWithSelection_false));
+            asList(catWithSelection_false_depth_1, catWithSelection_true_depth_1), 
+            asList(catWithSelection_true_depth_1, catWithSelection_false_depth_1));
+    }
+    
+    @Test
+    public void testSelectedFirstDepthOfCategory() {
+        test(asList(SELECTED_FIRST), 
+            asList(catWithSelection_true_depth_2, catWithSelection_true_depth_1), 
+            asList(catWithSelection_true_depth_1, catWithSelection_true_depth_2));
     }
     
     @Test
     public void testNoValues() {
         test(asList(), 
-            asList(catWithSelection_false, catWithSelection_true), 
-            asList(catWithSelection_false, catWithSelection_true));
+            asList(catWithSelection_false_depth_1, catWithSelection_true_depth_1), 
+            asList(catWithSelection_false_depth_1, catWithSelection_true_depth_1));
     }
     
     @Test
@@ -111,9 +121,10 @@ public class FacetComparatorProviderTest {
         return catVal;
     }
     
-    private CategoryValue categoryWithSelection(boolean selected) {
+    private CategoryValue categoryWithSelection(boolean selected, int depth) {
         CategoryValue catVal = mock(CategoryValue.class);
         when(catVal.isSelected()).thenReturn(selected);
+        when(catVal.getCategoryDepth()).thenReturn(depth);
         return catVal;
     }
 }
