@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,15 +11,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.CharUtils;
 
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.function.StreamUtils;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.utils.MapUtils;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
@@ -71,7 +73,7 @@ public class PadreQueryStringBuilder {
                 qs.remove(QueryProcessorOptionKeys.CLIVE);
                 
                 List<String> collectionsToRestrictTo = 
-                    getCollectionsToRestrictTo(question.getFacetCollectionConstraints().get());
+                    filterToComponentCollections(collectionsRestrictedByClive(question.getFacetCollectionConstraints().get()));
                     
                 // If no collections return then the intersect of user wanted colls and 
                 // facet wanted calls is no collection this causes a error page rather than 
@@ -224,7 +226,8 @@ public class PadreQueryStringBuilder {
         return query.toString().trim();
     }
     
-    private List<String> getCollectionsToRestrictTo(List<String> facetCollectionRestriction) {
+    
+    private Set<String> collectionsRestrictedByClive(List<String> facetCollectionRestriction) {
         Set<String> collections = new HashSet<>(facetCollectionRestriction);
         Set<String> otherCollectionsToRestrictTo = new HashSet<>();
         
@@ -243,13 +246,23 @@ public class PadreQueryStringBuilder {
             .forEach(otherCollectionsToRestrictTo::add);
         
         if(otherCollectionsToRestrictTo.isEmpty()) {
-            return new ArrayList<>(collections);
+            return collections;
         } else {
-            List<String> colls = new ArrayList<>(Sets.intersection(collections, otherCollectionsToRestrictTo));
-            
-            return colls;
+            return Sets.intersection(collections, otherCollectionsToRestrictTo);
         }
-        
+    }
+    
+    private List<String> filterToComponentCollections(Set<String> collections) {
+        return new ArrayList<>(Sets.intersection(getComponentCollections(), collections));
+    }
+    
+    
+    
+    public Set<String> getComponentCollections() {
+        if(question.getCollection().getConfiguration().getCollectionType() == Type.meta) {
+            return new HashSet<>(Arrays.asList(question.getCollection().getMetaComponents()));
+        }
+        return ImmutableSet.of(question.getCollection().getConfiguration().getCollectionName());
     }
     
     /**
