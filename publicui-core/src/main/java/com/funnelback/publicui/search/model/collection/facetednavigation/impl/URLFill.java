@@ -148,6 +148,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                 //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
                 // - The 'item' needs to be decoded as well. It get converted into a v:...
                 //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
+                
+                // Don't use the depth value as it can be negative.
                 int sortOrder = StringUtils.countMatches(vValue, "/");
                 
                 depthAndValues.add(Pair.of(sortOrder, 
@@ -169,7 +171,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             }
         }
         
-        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
+        // Order the values from lowest depth to highest, we want a before a/b which is before a/b/c
+        // This is needed for sorting by selected first to ensure the drill down looks correct.
         Collections.sort(depthAndValues, 
             Comparator.<Pair<Integer, CategoryValueComputedDataHolder>, Integer>comparing(Pair::getLeft));
         
