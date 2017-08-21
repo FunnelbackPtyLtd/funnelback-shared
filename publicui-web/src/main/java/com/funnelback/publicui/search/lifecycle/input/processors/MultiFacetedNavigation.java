@@ -157,18 +157,23 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         
         
         AtomicInteger extraSearchesAdded = new AtomicInteger(0);
+        int maxExtraSearchesThatCanBeAdded = searchTransaction.getQuestion().getCurrentProfileConfig()
+                .get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES);
+        
         
         createExtraSearchesForFacets(searchTransaction, 
             facetsThatNeedASearchForCounts, 
             SEARCH_FOR_UNSCOPED_VALUES, 
             e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY, 
-            extraSearchesAdded);
+            extraSearchesAdded,
+            maxExtraSearchesThatCanBeAdded);
         
         createExtraSearchesForFacets(searchTransaction, 
             facetsThatNeedASearchForCounts, 
             SEARCH_FOR_ALL_VALUES, 
             e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY, 
-            extraSearchesAdded);
+            extraSearchesAdded, 
+            maxExtraSearchesThatCanBeAdded);
         
         
         log.debug("Added {} extra searches", extraSearchesAdded);
@@ -179,7 +184,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         Map<String, FacetDefinition> facetsThatNeedASearchForCounts,
         String extraSearchProvidingValues,
         Predicate<Entry<String, FacetDefinition>> facetsMustMatch,
-        AtomicInteger extraSearchesAdded) {
+        AtomicInteger extraSearchesAdded,
+        int maxExtraSearchesThatCanBeAdded) {
         
         facetsThatNeedASearchForCounts = facetsThatNeedASearchForCounts.entrySet().stream()
             .filter(facetsMustMatch)
@@ -206,6 +212,12 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
                 for(CategoryValue value : Optional.ofNullable(facet.getAllValues()).orElse(Collections.emptyList())) {
                     
+                    if(extraSearchesAdded.incrementAndGet() > maxExtraSearchesThatCanBeAdded) {
+                        log.info("Limit of extra searches has been reached try increasing '{}'", 
+                            com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES.getKey());
+                        return;
+                    }
+                    
                     String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facet, value);
                     SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory().buildBasicExtraFacetSearch(searchTransaction.getQuestion());
                     
@@ -231,7 +243,6 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                         extraSearchName,
                         facet.getName(),
                         value.getData());
-                    extraSearchesAdded.incrementAndGet();
                 }
             }
         }
