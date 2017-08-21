@@ -83,4 +83,9 @@ public class AllDocumentsFill extends CategoryDefinition {
         return true;
     }
 
+    @Override
+    public boolean selectedValuesAreNested() {
+        return false;
+    }
+
 }

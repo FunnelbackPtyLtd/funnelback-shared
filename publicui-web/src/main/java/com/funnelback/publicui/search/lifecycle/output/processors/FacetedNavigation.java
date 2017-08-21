@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.Reference;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -66,7 +69,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                     List<Facet.Category> cats = new ArrayList<>();
                     
                     for (final CategoryDefinition ct: f.getCategoryDefinitions()) {
-                        Facet.Category c = fillCategories(f, ct, searchTransaction, 0);
+                        Facet.Category c = fillCategories(f, ct, searchTransaction, new AtomicInteger(0));
                         if (c != null) {
                             facet.getCategories().add(c);
                             cats.add(c);
@@ -127,14 +130,21 @@ public class FacetedNavigation extends AbstractOutputProcessor {
      */
     private Facet.Category fillCategories(final FacetDefinition facetDefinition,
             final CategoryDefinition cDef, SearchTransaction searchTransaction,
-            int depth) {
+            AtomicInteger depth) {
         log.trace("Filling category '" + cDef + "'");
         
         // Fill the values for this category
         Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
+        
         List<CategoryValue> values = cDef.computeValues(searchTransaction, facetDefinition)
             .stream()
-            .peek(c -> c.setCategoryDepth(depth))
+            .peek(c -> {
+                if(cDef.selectedValuesAreNested()) {
+                    c.setCategoryDepth(depth.getAndIncrement());
+                } else {
+                    c.setCategoryDepth(depth.get());
+                }
+            })
             .collect(Collectors.toList());
         
         category.getValues().addAll(values);
@@ -146,7 +156,8 @@ public class FacetedNavigation extends AbstractOutputProcessor {
         if (values.stream().anyMatch(CategoryValue::isSelected)) {
             log.trace("Value has been selected.");
             for (CategoryDefinition subCategoryDef: cDef.getSubCategories()) {
-                Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction, depth + 1);
+                depth.incrementAndGet();
+                Facet.Category c = fillCategories(facetDefinition, subCategoryDef, searchTransaction, depth);
                 if (c != null) {
                     category.getCategories().add(c);
                     if (searchTransaction.getQuestion().getSelectedCategoryValues().containsKey(subCategoryDef.getQueryStringParamName())

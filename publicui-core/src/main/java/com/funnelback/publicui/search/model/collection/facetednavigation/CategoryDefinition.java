@@ -196,6 +196,12 @@ public abstract class CategoryDefinition {
     public abstract boolean allValuesDefinedByUser();
     
     /**
+     *
+     * @return true if returned selected values are nested.
+     */
+    public abstract boolean selectedValuesAreNested();
+    
+    /**
      * <p>Parses a String containing a metadata class and a value
      * such as <tt>x:Red cars</tt>, to separated the metadata class from the value.
      * 

@@ -30,7 +30,9 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
+import lombok.AllArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Wither;
 public class FacetedNavigationTest {
 
     /**
@@ -114,16 +116,54 @@ public class FacetedNavigationTest {
         Assert.assertEquals("c", values.get(0).getLabel());
         Assert.assertEquals("b", values.get(1).getLabel());
         Assert.assertEquals("a", values.get(2).getLabel());
-        
     }
+    
+    @Test
+    public void testFacetSortindWhenTheCategoiesValuesAreNested() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        FacetedNavigationConfig config = new FacetedNavigationConfig(
+            asList(
+                facetDefWithOrder("a", 
+                    asList(new DummyCategory(getCatVal("c", 12, true), getCatVal("b", 1000, true), getCatVal("a", 34, true))
+                            .withSelectedValuesAreNested(true)), 
+                    SELECTED_FIRST, CATEGORY_DEFINITION_ORDER, LABEL_ASCENDING, COUNT_DESCENDING)));
+        Collection collection = mock(Collection.class);
+        when(collection.getFacetedNavigationConfConfig()).thenReturn(config);
+        st.getQuestion().setCollection(collection);
+        new FacetedNavigation().processOutput(st);
+        
+        List<CategoryValue> values = st.getResponse().getFacets().get(0).getAllValues();
+        
+        Assert.assertEquals(3, values.size());
+        
+        // Check each value has the correct depth
+        Assert.assertEquals(0, values.get(0).getCategoryDepth());
+        Assert.assertEquals(1, values.get(1).getCategoryDepth());
+        Assert.assertEquals(2, values.get(2).getCategoryDepth());
+        
+        Assert.assertEquals("c", values.get(0).getLabel());
+        Assert.assertEquals("b", values.get(1).getLabel());
+        Assert.assertEquals("a", values.get(2).getLabel());
+    }
+    
     
     public class DummyCategory extends CategoryDefinition {
         
         @Setter private List<CategoryValueComputedDataHolder> data;
         
+        @Wither private boolean selectedValuesAreNested = false;
+        
         public DummyCategory(CategoryValueComputedDataHolder ... data) {
             super("dummy");
             this.data = asList(data);
+        }
+        
+        public DummyCategory(List<CategoryValueComputedDataHolder> data, boolean selectedValuesAreNested) {
+            super("dummy");
+            this.data = data;
+            this.selectedValuesAreNested = selectedValuesAreNested;
         }
 
         @Override
@@ -149,6 +189,11 @@ public class FacetedNavigationTest {
         @Override
         public boolean allValuesDefinedByUser() {
             throw new NotImplementedException("");
+        }
+
+        @Override
+        public boolean selectedValuesAreNested() {
+            return this.selectedValuesAreNested;
         }        
     }
     

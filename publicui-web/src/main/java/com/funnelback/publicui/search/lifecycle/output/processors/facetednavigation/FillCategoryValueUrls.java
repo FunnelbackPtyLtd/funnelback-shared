@@ -10,7 +10,9 @@ import java.util.Optional;
 
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.function.Flattener;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -117,6 +119,7 @@ public class FillCategoryValueUrls {
             FacetDefinition facetDef, 
             Facet.Category category, 
             CategoryValue categoryValue) {
+        
         // Unselect the current facet.
         Map<String, List<String>> unselectUrlQs = st.getQuestion().getQueryStringMapCopy();
         
@@ -142,6 +145,27 @@ public class FillCategoryValueUrls {
             // Remove all children.
             .forEach(queryStringParamName -> FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
         
+        
+        
+        // If the query string ends with |url then it might be a URL Fill, it could be a metadata named url!
+        // if it looks like the facet contains URL Fill type categories then assume it is.
+        if(categoryValue.getQueryStringParamName().endsWith("|" + URLFill.TAG)
+            && facetDef.getCategoryDefinitions()
+            .stream()
+            .flatMap(Flattener.mapper(CategoryDefinition::getSubCategories))
+            .anyMatch(c -> c instanceof URLFill)) {
+            // URL Fill categories are different we need to actually fin
+            
+            List<String> selected = st.getQuestion().getSelectedCategoryValues().get(categoryValue.getQueryStringParamName());
+            if(selected != null && !selected.isEmpty()) {
+                int index = selected.get(0).lastIndexOf('/');
+                if(index >= 0) {
+                    String newValue = selected.get(0).substring(0, index);
+                    unselectUrlQs.put(categoryValue.getQueryStringParamName(), asList(newValue));
+                }
+            }
+            
+        }
         
         new FillFacetUrls().removeParameters(unselectUrlQs);
         

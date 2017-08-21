@@ -100,4 +100,9 @@ public class CollectionFill extends CategoryDefinition {
         return true;
     }
 
+    @Override
+    public boolean selectedValuesAreNested() {
+        return false;
+    }
+
 }

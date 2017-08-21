@@ -311,6 +311,11 @@ public class CategoryDefinitionTests {
         public boolean allValuesDefinedByUser() {
             throw new NotImplementedException("not mocked");
         }
+
+        @Override
+        public boolean selectedValuesAreNested() {
+            throw new NotImplementedException("not mocked");
+        }
         
     }
     
