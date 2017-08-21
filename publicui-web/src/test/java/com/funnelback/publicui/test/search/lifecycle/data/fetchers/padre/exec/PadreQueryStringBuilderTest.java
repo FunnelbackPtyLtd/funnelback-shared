@@ -7,18 +7,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.common.config.Config;
+import com.funnelback.common.config.Collection.Type;
 import com.funnelback.publicui.search.lifecycle.data.fetchers.padre.exec.PadreQueryStringBuilder;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-
+import static org.mockito.Mockito.*;
 public class PadreQueryStringBuilderTest {
 
     SearchQuestion q;
+    Config config;
     
     @Before
     public void before() {
         q = new SearchQuestion();
-        q.setCollection(new Collection("dummy", null));
+        config = mock(Config.class);
+        q.setCollection(new Collection("dummy", config));
         q.setQuery("chocolate");
         q.getAdditionalParameters().put("a", new String[] {"1"});
     }
@@ -153,6 +157,9 @@ public class PadreQueryStringBuilderTest {
     
     @Test
     public void testFacetCliveConstraints() {
+        when(config.getCollectionType()).thenReturn(Type.meta);
+        q.getCollection().setMetaComponents(new String[]{"foo", "bar"});
+        
         q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar")));
         
         Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", 
@@ -165,6 +172,9 @@ public class PadreQueryStringBuilderTest {
     
     @Test
     public void testFacetCliveConstraintsWithOtherCliveValuesSet() {
+        when(config.getCollectionType()).thenReturn(Type.meta);
+        q.getCollection().setMetaComponents(new String[]{"foo", "bar", "other0", "other1", "fudge"});
+        
         q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar", "other0", "other1")));
         
         // If the user has set some clive values or something else has we will ensure that
@@ -187,6 +197,8 @@ public class PadreQueryStringBuilderTest {
     
     @Test
     public void testFacetCliveConstraintsNoMatchingCollections() {
+        when(config.getCollectionType()).thenReturn(Type.meta);
+        q.getCollection().setMetaComponents(new String[]{"foo", "bar", "other0", "other1", "fudge"});
         q.setFacetCollectionConstraints(Optional.of(Arrays.asList("other0", "other1")));
         
         // In this case the user or some other input processor wants foo, bar and fudge
@@ -204,6 +216,52 @@ public class PadreQueryStringBuilderTest {
         Assert.assertEquals("We should take the intersect of the facet wanted collections and the "
             + "collections the user wanted.", 
             "a=1&collection=dummy&profile=_default&query=chocolate"
+            + "&s=+%7CFunDoesNotExist%3Asearchdisabled+%7CFunDoesNotExist%3AnoCollsLive+", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+    
+    @Test
+    public void testFacetCliveNotAllCollectionsAreKnown() {
+        when(config.getCollectionType()).thenReturn(Type.meta);
+        // only foo is known bar is unknown
+        q.getCollection().setMetaComponents(new String[]{"foo"});
+        
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar")));
+        
+        Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("a=1&clive=foo&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+    
+    @Test
+    public void testFacetCliveNotAllCollectionsAreKnownNonMeta() {
+        when(config.getCollectionType()).thenReturn(Type.push);
+        when(config.getCollectionName()).thenReturn("bar");
+        q.getCollection().setMetaComponents(new String[]{});
+        
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar")));
+        
+        Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("a=1&clive=bar&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, true).buildQueryString());
+    }
+    
+    @Test
+    public void testFacetCliveNoWantedCollectionsAreKnown() {
+        when(config.getCollectionType()).thenReturn(Type.meta);
+        // meta collection has only component 'a'
+        q.getCollection().setMetaComponents(new String[]{"a"});
+        
+        q.setFacetCollectionConstraints(Optional.of(Arrays.asList("foo", "bar")));
+        
+        Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate", 
+            new PadreQueryStringBuilder(q, false).buildQueryString());
+        
+        Assert.assertEquals("a=1&collection=dummy&profile=_default&query=chocolate"
             + "&s=+%7CFunDoesNotExist%3Asearchdisabled+%7CFunDoesNotExist%3AnoCollsLive+", 
             new PadreQueryStringBuilder(q, true).buildQueryString());
     }
