@@ -83,7 +83,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     }
 
     /** Identifier used in query string parameter. */
-    private static final String TAG = "url";
+    public static final String TAG = "url";
     
     /** URLs are indexed in the metadata class <tt>v</tt> */
     private static final String MD = "v";
