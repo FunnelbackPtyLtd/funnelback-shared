@@ -30,7 +30,9 @@ import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
+import lombok.AllArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Wither;
 public class FacetedNavigationTest {
 
     /**
@@ -65,15 +67,113 @@ public class FacetedNavigationTest {
         
         Assert.assertEquals("a", values.get(4).getLabel());
         Assert.assertEquals("e", values.get(5).getLabel());
+        
+        // Also check that we set a depth on all values.
+        values.stream()
+            .forEach(v -> Assert.assertEquals("Depth was not set on value: " + v.getLabel(), 0, v.getCategoryDepth()));
     }
+    
+    /**
+     * test sorting in drill down facets if we have something like:
+     * Earth -> Australia:
+     * -> ACT
+     * -> NSW
+     * -> VIC
+     * 
+     * We have selected the planet earth then the country Australia, we want
+     * the selected items to be ordered Earth then Aus, but the unselected
+     * values should be sorted in alphabetical order
+     */
+    @Test
+    public void testFacetSortingSelectedDrillDown() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        DummyCategory topCat = new DummyCategory(getCatVal("Earth", 12, true));
+        topCat.getSubCategories().add(new DummyCategory(getCatVal("Australia", 12, true)));
+        topCat.getSubCategories().get(0).getSubCategories()
+            .add(new DummyCategory(getCatVal("ACT", 12, false)));
+        
+        FacetedNavigationConfig config = new FacetedNavigationConfig(
+            asList(
+                facetDefWithOrder("a", 
+                    asList(topCat), 
+                    SELECTED_FIRST, LABEL_ASCENDING)));
+        Collection collection = mock(Collection.class);
+        when(collection.getFacetedNavigationConfConfig()).thenReturn(config);
+        st.getQuestion().setCollection(collection);
+        new FacetedNavigation().processOutput(st);
+        
+        List<CategoryValue> values = st.getResponse().getFacets().get(0).getAllValues();
+        
+        Assert.assertEquals(3, values.size());
+        
+        // Check each value has the correct depth
+        Assert.assertEquals(0, values.get(0).getCategoryDepth());
+        Assert.assertEquals(1, values.get(1).getCategoryDepth());
+        Assert.assertEquals(2, values.get(2).getCategoryDepth());
+        
+        Assert.assertEquals("Earth", values.get(0).getLabel());
+        Assert.assertEquals("Australia", values.get(1).getLabel());
+        Assert.assertEquals("ACT", values.get(2).getLabel());
+    }
+    
+    /**
+     * This tests the URLFill case where a single category is retuning nested values.
+     * That is you setup a single category e.g. the single URLFill
+     * but it will can supply all of the follownig values:
+     * home -> user
+     * -> desktop
+     * -> downloads
+     * it supplied the selected home and user values as well as the unselected
+     * nested values desktop and downloads.
+     */
+    @Test
+    public void testFacetSortingWhenTheCategoriesValuesAreNested() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        FacetedNavigationConfig config = new FacetedNavigationConfig(
+            asList(
+                facetDefWithOrder("a", 
+                    asList(new DummyCategory(getCatVal("c", 12, true), getCatVal("b", 1000, true), getCatVal("a", 34, true))
+                            .withSelectedValuesAreNested(true)), 
+                    SELECTED_FIRST, CATEGORY_DEFINITION_ORDER, LABEL_ASCENDING, COUNT_DESCENDING)));
+        Collection collection = mock(Collection.class);
+        when(collection.getFacetedNavigationConfConfig()).thenReturn(config);
+        st.getQuestion().setCollection(collection);
+        new FacetedNavigation().processOutput(st);
+        
+        List<CategoryValue> values = st.getResponse().getFacets().get(0).getAllValues();
+        
+        Assert.assertEquals(3, values.size());
+        
+        // Check each value has the correct depth
+        Assert.assertEquals(0, values.get(0).getCategoryDepth());
+        Assert.assertEquals(1, values.get(1).getCategoryDepth());
+        Assert.assertEquals(2, values.get(2).getCategoryDepth());
+        
+        Assert.assertEquals("c", values.get(0).getLabel());
+        Assert.assertEquals("b", values.get(1).getLabel());
+        Assert.assertEquals("a", values.get(2).getLabel());
+    }
+    
     
     public class DummyCategory extends CategoryDefinition {
         
         @Setter private List<CategoryValueComputedDataHolder> data;
         
+        @Wither private boolean selectedValuesAreNested = false;
+        
         public DummyCategory(CategoryValueComputedDataHolder ... data) {
             super("dummy");
             this.data = asList(data);
+        }
+        
+        public DummyCategory(List<CategoryValueComputedDataHolder> data, boolean selectedValuesAreNested) {
+            super("dummy");
+            this.data = data;
+            this.selectedValuesAreNested = selectedValuesAreNested;
         }
 
         @Override
@@ -99,6 +199,11 @@ public class FacetedNavigationTest {
         @Override
         public boolean allValuesDefinedByUser() {
             throw new NotImplementedException("");
+        }
+
+        @Override
+        public boolean selectedValuesAreNested() {
+            return this.selectedValuesAreNested;
         }        
     }
     

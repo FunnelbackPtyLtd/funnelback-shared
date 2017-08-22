@@ -108,4 +108,9 @@ public class MetadataFieldFill extends CategoryDefinition implements MetadataBas
     public boolean allValuesDefinedByUser() {
         return false;
     }
+
+    @Override
+    public boolean selectedValuesAreNested() {
+        return false;
+    }
 }

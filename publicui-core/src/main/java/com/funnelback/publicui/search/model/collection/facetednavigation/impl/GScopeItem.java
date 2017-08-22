@@ -105,4 +105,9 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
     public boolean allValuesDefinedByUser() {
         return true;
     }
+
+    @Override
+    public boolean selectedValuesAreNested() {
+        return false;
+    }
 }

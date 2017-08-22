@@ -10,7 +10,9 @@ public class BySelectedFirst implements Comparator<Facet.CategoryValue> {
     @Override
     public int compare(CategoryValue o1, CategoryValue o2) {
         if(o1.isSelected() && o2.isSelected()) {
-            return 0;
+            // If both are selected we want to ensure selected category values
+            // which some from nested category definitions preserve the nested order.
+            return Integer.compare(o1.getCategoryDepth(), o2.getCategoryDepth());
         }
         if(o1.isSelected()) {
             return -1;
