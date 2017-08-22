@@ -18,6 +18,7 @@ import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.MultiFacetedNavigation;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
@@ -48,7 +49,7 @@ public class MultiFacetedNavigationTest {
         processor = new MultiFacetedNavigation();
         
         Collection c = new Collection("dummy", new NoOptionsConfig(searchHome, "dummy"));
-        SearchQuestion question = new SearchQuestion();
+        SearchQuestion question = spy(new SearchQuestion());
         question.setCollection(c);
         st = new SearchTransaction(question, null);
     }
@@ -177,7 +178,26 @@ public class MultiFacetedNavigationTest {
         
         multiFacetedNavigation.setExtraSearchesExecutor(executor);
         
+        ServiceConfigReadOnly profileConfig = mock(ServiceConfigReadOnly.class);
+        
+        doReturn(profileConfig).when(st.getQuestion()).getCurrentProfileConfig();
+        
+        when(profileConfig.get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES))
+            .thenReturn(0)
+            .thenReturn(100);
+        
         multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
+        
+        // We should have no searches as config was initially set to allow 0 extra searches
+        Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
+        
+        Assert.assertTrue(st.isAnyExtraSearchesIncomplete());
+        
+        st.setAnyExtraSearchesIncomplete(false);
+        
+        // Run the search again this time config allows extra searches
+        multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
+        Assert.assertFalse(st.isAnyExtraSearchesIncomplete());
         
         Assert.assertEquals("Only one facet is a OR type facet so only that one should "
             + "have an extra search made or it.",
