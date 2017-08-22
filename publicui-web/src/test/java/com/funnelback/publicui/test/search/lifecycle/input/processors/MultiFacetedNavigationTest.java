@@ -191,8 +191,13 @@ public class MultiFacetedNavigationTest {
         // We should have no searches as config was initially set to allow 0 extra searches
         Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
         
+        Assert.assertTrue(st.isAnyExtraSearchesIncomplete());
+        
+        st.setAnyExtraSearchesIncomplete(false);
+        
         // Run the search again this time config allows extra searches
         multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
+        Assert.assertFalse(st.isAnyExtraSearchesIncomplete());
         
         Assert.assertEquals("Only one facet is a OR type facet so only that one should "
             + "have an extra search made or it.",
