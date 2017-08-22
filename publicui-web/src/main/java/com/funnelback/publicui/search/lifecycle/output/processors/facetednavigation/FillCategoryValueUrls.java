@@ -10,13 +10,15 @@ import java.util.Optional;
 
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.function.Flattener;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
 import com.funnelback.publicui.utils.QueryStringUtils;
-
+import static com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.QS_PARAM_SEPARATOR;
 public class FillCategoryValueUrls {
     
     private FillFacetUrls fillFacetUrls = new FillFacetUrls();
@@ -117,6 +119,7 @@ public class FillCategoryValueUrls {
             FacetDefinition facetDef, 
             Facet.Category category, 
             CategoryValue categoryValue) {
+        
         // Unselect the current facet.
         Map<String, List<String>> unselectUrlQs = st.getQuestion().getQueryStringMapCopy();
         
@@ -140,11 +143,49 @@ public class FillCategoryValueUrls {
             .flatMap(List::stream)
             .map(value -> value.getQueryStringParamName())
             // Remove all children.
-            .forEach(queryStringParamName -> FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
+            .forEach(queryStringParamName -> 
+                FacetedNavigationUtils.removeQueryStringFacetKey(unselectUrlQs, queryStringParamName));
         
+        
+        
+        
+        if(isURLDrillDownCategory(categoryValue, facetDef)) {
+            // URL Fill categories are different if you a 3 deep in the drill down
+            // you will only have ony value in the URL e.g. f.foo|url=a/b/c
+            // what we do here is remove the last folder e.g. f.foo|url=a/b
+            
+            // We need to make sure we have removed any selections made on the URL
+            // Fill. The above code removes the matching key and value, and all children.
+            // For the URL fill case it has no children and the key and value might not
+            // match ie this value is for a/b/c but we selected a/b/c/d, so we need
+            // to remove by key.
+            FacetedNavigationUtils
+                .removeQueryStringFacetKey(unselectUrlQs, categoryValue.getQueryStringParamName());
+            
+            String selected = categoryValue.getQueryStringParamValue();
+            
+            int index = selected.lastIndexOf('/');
+            if(index >= 0) {
+                String newValue = selected.substring(0, index);
+                unselectUrlQs.put(categoryValue.getQueryStringParamName(), asList(newValue));
+            }
+            
+            
+        }
         
         new FillFacetUrls().removeParameters(unselectUrlQs);
         
         return unselectUrlQs;
+    }
+    
+    boolean isURLDrillDownCategory(CategoryValue categoryValue, FacetDefinition facetDef) {
+        // If the query string ends with |url then it might be a URL Fill, it could be a metadata named url!
+        // if it looks like the facet contains URL Fill type categories then assume it is.
+        // This is probably ok as we likely wont mix URLFill with anything else.
+        return categoryValue.getQueryStringParamName().endsWith(QS_PARAM_SEPARATOR + URLFill.TAG)
+            && facetDef.getCategoryDefinitions()
+            .stream()
+            .flatMap(Flattener.mapper(CategoryDefinition::getSubCategories))
+            .anyMatch(c -> c instanceof URLFill);
     }
 }

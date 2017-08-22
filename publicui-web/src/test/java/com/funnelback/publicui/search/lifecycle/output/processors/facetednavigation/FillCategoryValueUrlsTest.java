@@ -14,8 +14,11 @@ import org.codehaus.plexus.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.drew.metadata.Metadata;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.MetadataFieldFill;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
@@ -237,6 +240,95 @@ public class FillCategoryValueUrlsTest {
         
         Assert.assertFalse("start_rank should be removed we don't want to end up at a zero result page", 
             result.containsKey("start_rank"));
+    }
+    
+    @Test
+    public void testURLDrillDown() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQueryStringMap(
+            // This is a/b/c/d but we are working the unselect url for a/b/c
+            // so we click on the (x) next to c which should result in the 
+            // drill down a/b
+            ImmutableMap.of("facetScope", asList("f.foo%7Curl=a%2Fb%2Fc%2Fd")));
+
+        // When we unselect this facet we only unselect where both key and value match
+        // this is probably going to work with multi select facets.
+        
+        Category cat = mock(Category.class);
+        when(cat.getCategories()).thenReturn(Collections.emptyList());
+        
+        CategoryValue catVal = mock(CategoryValue.class);
+        when(catVal.getQueryStringParamName()).thenReturn("f.foo|url");
+        when(catVal.getQueryStringParamValue()).thenReturn("a/b/c");
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.MULTIPLE);
+        URLFill urlFill = mock(URLFill.class);
+        when(facetDef.getCategoryDefinitions()).thenReturn(asList(urlFill));
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, facetDef, cat, catVal);
+        
+        
+        Assert.assertFalse("Should have removed the URL option from faceScope", result.containsKey("facetScope"));
+        
+        Assert.assertEquals("a/b", result.get("f.foo|url").get(0));
+    }
+    
+    @Test
+    public void testURLDrillDownAtTopFolder() {
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQueryStringMap(
+            ImmutableMap.of("facetScope", asList("f.foo%7Curl=a")));
+
+        // When we unselect this facet we only unselect where both key and value match
+        // this is probably going to work with multi select facets.
+        
+        Category cat = mock(Category.class);
+        when(cat.getCategories()).thenReturn(Collections.emptyList());
+        
+        CategoryValue catVal = mock(CategoryValue.class);
+        when(catVal.getQueryStringParamName()).thenReturn("f.foo|url");
+        when(catVal.getQueryStringParamValue()).thenReturn("a");
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getSelectionType()).thenReturn(FacetSelectionType.MULTIPLE);
+        URLFill urlFill = mock(URLFill.class);
+        when(facetDef.getCategoryDefinitions()).thenReturn(asList(urlFill));
+        
+        Map<String, List<String>> result = new FillCategoryValueUrls().getUnselectUrlMap(st, facetDef, cat, catVal);
+        
+        
+        Assert.assertFalse("Should have removed the URL option from faceScope", result.containsKey("facetScope"));
+        
+        Assert.assertEquals("As 'a' was the top level folder we would not have selected the URLFill at all"
+            + " so the param should have been removed from the URL", 
+            0, result.size());
+    }
+    
+    @Test
+    public void testWhatAUrlDillDownCategoryIs() {
+        
+        CategoryValue urlLookingCategoryValue = mock(CategoryValue.class);
+        when(urlLookingCategoryValue.getQueryStringParamName()).thenReturn("f.foo|url");
+        
+        CategoryValue nonUrlLookingCategoryValue = mock(CategoryValue.class);
+        when(nonUrlLookingCategoryValue.getQueryStringParamName()).thenReturn("f.foo|urls");
+        
+        FacetDefinition facetDefWithUrl = mock(FacetDefinition.class);
+        URLFill urlFill = mock(URLFill.class);
+        when(facetDefWithUrl.getCategoryDefinitions()).thenReturn(asList(urlFill));
+        
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        MetadataFieldFill mdFill = mock(MetadataFieldFill.class);
+        when(facetDef.getCategoryDefinitions()).thenReturn(asList(mdFill));
+        
+        FillCategoryValueUrls fillUrls = new FillCategoryValueUrls();
+        
+        Assert.assertTrue(fillUrls.isURLDrillDownCategory(urlLookingCategoryValue, facetDefWithUrl));
+        
+        Assert.assertFalse(fillUrls.isURLDrillDownCategory(urlLookingCategoryValue, facetDef));
+        Assert.assertFalse(fillUrls.isURLDrillDownCategory(nonUrlLookingCategoryValue, facetDefWithUrl));
+        Assert.assertFalse(fillUrls.isURLDrillDownCategory(nonUrlLookingCategoryValue, facetDef));
     }
     
     /**
