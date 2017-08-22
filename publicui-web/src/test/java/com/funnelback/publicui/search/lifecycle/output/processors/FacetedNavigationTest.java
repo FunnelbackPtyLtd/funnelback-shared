@@ -89,10 +89,10 @@ public class FacetedNavigationTest {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getResponse().setResultPacket(new ResultPacket());
         
-        DummyCategory topCat = new DummyCategory(getCatVal("c", 12, true));
-        topCat.getSubCategories().add(new DummyCategory(getCatVal("b", 12, true)));
+        DummyCategory topCat = new DummyCategory(getCatVal("Earth", 12, true));
+        topCat.getSubCategories().add(new DummyCategory(getCatVal("Australia", 12, true)));
         topCat.getSubCategories().get(0).getSubCategories()
-            .add(new DummyCategory(getCatVal("a", 12, false)));
+            .add(new DummyCategory(getCatVal("ACT", 12, false)));
         
         FacetedNavigationConfig config = new FacetedNavigationConfig(
             asList(
@@ -113,13 +113,23 @@ public class FacetedNavigationTest {
         Assert.assertEquals(1, values.get(1).getCategoryDepth());
         Assert.assertEquals(2, values.get(2).getCategoryDepth());
         
-        Assert.assertEquals("c", values.get(0).getLabel());
-        Assert.assertEquals("b", values.get(1).getLabel());
-        Assert.assertEquals("a", values.get(2).getLabel());
+        Assert.assertEquals("Earth", values.get(0).getLabel());
+        Assert.assertEquals("Australia", values.get(1).getLabel());
+        Assert.assertEquals("ACT", values.get(2).getLabel());
     }
     
+    /**
+     * This tests the URLFill case where a single category is retuning nested values.
+     * That is you setup a single category e.g. the single URLFill
+     * but it will can supply all of the follownig values:
+     * home -> user
+     * -> desktop
+     * -> downloads
+     * it supplied the selected home and user values as well as the unselected
+     * nested values desktop and downloads.
+     */
     @Test
-    public void testFacetSortindWhenTheCategoiesValuesAreNested() {
+    public void testFacetSortingWhenTheCategoriesValuesAreNested() {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
         st.getResponse().setResultPacket(new ResultPacket());
         
