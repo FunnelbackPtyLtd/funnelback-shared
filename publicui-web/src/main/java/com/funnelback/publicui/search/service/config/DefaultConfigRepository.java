@@ -281,7 +281,6 @@ public class DefaultConfigRepository implements ConfigRepository {
             try {
                 p.setServiceConfig(getServiceConfig(c.getId(), profileDir.getName()));
             } catch (ProfileNotFoundException e) {
-                // TODO - Is falling back to _default (as would probably happen in practice) the right thing here?
                 log.error("Profile vanished while being loaded '"+profileDir.getName()+"'",e);
             }
             
