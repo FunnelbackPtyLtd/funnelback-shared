@@ -14,7 +14,6 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Metadat
 import com.funnelback.publicui.search.model.padre.DateCount;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
-import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -107,6 +106,11 @@ public class DateFieldFill extends CategoryDefinition implements MetadataBasedCa
 
     @Override
     public boolean allValuesDefinedByUser() {
+        return false;
+    }
+
+    @Override
+    public boolean selectedValuesAreNested() {
         return false;
     }
 }

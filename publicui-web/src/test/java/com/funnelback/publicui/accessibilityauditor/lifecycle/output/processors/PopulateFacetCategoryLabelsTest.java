@@ -57,8 +57,7 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("2", "2", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()),
-            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingPrinciples().getName()));
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -84,8 +83,7 @@ public class PopulateFacetCategoryLabelsTest {
         c.getValues().add(new CategoryValue("221", "221", 0, null, null, false));
         c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
         
-        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()),
-            FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+        Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingSuccessCriterions().getName()));
         f.getCategories().add(c);
         transaction.getResponse().getFacets().add(f);
         
@@ -110,8 +108,7 @@ public class PopulateFacetCategoryLabelsTest {
             c.getValues().add(new CategoryValue(WCAG20Technique.ARIA1.name(), WCAG20Technique.ARIA1.name(), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingTechniques().getName()),
-                FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.setOfFailingTechniques().getName()));
             
             f.getCategories().add(c);
             transaction.getResponse().getFacets().add(f);
@@ -140,8 +137,7 @@ public class PopulateFacetCategoryLabelsTest {
                 techniquesAffectedBy.toIndexForm(by), 0, null, null, false));
             c.getValues().add(new CategoryValue("unknown", "unknown", 0, null, null, false));
             
-            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()),
-                FacetSelectionType.SINGLE, FacetConstraintJoin.LEGACY, FacetValues.FROM_SCOPED_QUERY);
+            Facet f = new Facet(Metadata.getMetadataClass(Metadata.Names.techniquesAffectedBy().getName()));
             f.getCategories().add(c);
             transaction.getResponse().getFacets().clear();
             transaction.getResponse().getFacets().add(f);

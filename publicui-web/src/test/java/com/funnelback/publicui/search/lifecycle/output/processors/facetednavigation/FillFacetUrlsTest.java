@@ -26,7 +26,8 @@ public class FillFacetUrlsTest {
         
         Facet facet = new Facet("author", FacetSelectionType.SINGLE,
             FacetConstraintJoin.LEGACY,
-            FacetValues.FROM_SCOPED_QUERY);
+            FacetValues.FROM_SCOPED_QUERY,
+            asList());
         
         new FillFacetUrls().setUnselectAllUrl(facet, st);
         

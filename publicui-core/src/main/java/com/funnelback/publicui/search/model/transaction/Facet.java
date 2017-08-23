@@ -1,32 +1,33 @@
 package com.funnelback.publicui.search.model.transaction;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_CONSTRAINT_JOIN;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_ORDER;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_SELECTION_TYPE;
+import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_VALUES;
 import static com.funnelback.common.function.Predicates.not;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_SELECTION_TYPE;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_CONSTRAINT_JOIN;
-import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_VALUES;
-
 /**
  * <p>Facets, generated from the result data (Metadata counts,
  * GScope counts, URL counts).</p>
@@ -70,17 +71,25 @@ public class Facet {
     @NotNull @NonNull
     @Getter private FacetConstraintJoin constraintJoin;
     
+    @NotNull @NonNull
+    @Getter private List<FacetValuesOrder> order;
+    
     /**
      * @since 15.14
      */
     @NotNull @NonNull
     @Getter private FacetValues facetValues;
     
-    public Facet(String name, FacetSelectionType selectionType, FacetConstraintJoin constraintJoin, FacetValues facetValues) {
+    public Facet(String name, 
+            FacetSelectionType selectionType, 
+            FacetConstraintJoin constraintJoin, 
+            FacetValues facetValues,
+            List<FacetValuesOrder> order) {
         this.name = name;
         this.selectionType = selectionType;
         this.constraintJoin = constraintJoin;
         this.facetValues = facetValues;
+        this.order = order;
     }
     
     /**
@@ -90,7 +99,7 @@ public class Facet {
      */
     @Deprecated
     public Facet(String name) {
-        this(name, LEGACY_FACET_SELECTION_TYPE, LEGACY_FACET_CONSTRAINT_JOIN, LEGACY_FACET_VALUES);
+        this(name, LEGACY_FACET_SELECTION_TYPE, LEGACY_FACET_CONSTRAINT_JOIN, LEGACY_FACET_VALUES, LEGACY_FACET_ORDER);
     }
     
     @Override
@@ -153,13 +162,12 @@ public class Facet {
         return null;
     }
     
-    
-    
     private Stream<Facet.CategoryValue> getValuesAsStream() {
-        return this.getCategories().stream()
+         return this.getCategories().stream()
             .flatMap(Flattener.mapper(Category::getCategories))
             .map(Category::getValues)
-            .flatMap(List::stream);
+            .flatMap(List::stream)
+            .sorted(new FacetComparatorProvider().getComparatorWhenSortingAllValus(order));
     }
 
     /**
@@ -249,22 +257,6 @@ public class Facet {
         @Override
         public String toString() {
             return "Category '" + label + "' (" + values.size() + " values, " + categories.size() + " sub-categories)";
-        }
-        
-        @RequiredArgsConstructor
-        public static class ByFirstCategoryValueComparator implements Comparator<Facet.Category> {
-            
-            @Override
-            public int compare(Category c1, Category c2) {
-                if (c1.getValues().size() > 0 && c2.getValues().size() > 0) {
-                    return Optional.ofNullable(c2.getValues().get(0).getCount()).orElse(Integer.MIN_VALUE) 
-                            - Optional.ofNullable(c1.getValues().get(0).getCount()).orElse(Integer.MIN_VALUE);
-                } else if (c1.getValues().size() > 0) {
-                    return 1;
-                } else {
-                    return 2;
-                }
-            }
         }
 
     }
@@ -374,31 +366,19 @@ public class Facet {
          * @Since 15.12 
          */
         @Getter @Setter private String toggleUrl;
+        
+        /**
+         * The depth of the category definition, used for sorting.
+         * 
+         * @since 15.12
+         */
+        @XStreamOmitField
+        @JsonIgnore
+        @Getter @Setter private int categoryDepth =  Integer.MAX_VALUE;
 
         @Override
         public String toString() {
             return label + " (" + count + "). data=[" + data + "], queryStringParam=[" + queryStringParam + "], selected=" + selected;
-        }
-
-        /**
-         * Compares category values by number of occurrences
-         */
-        @RequiredArgsConstructor
-        public static class ByCountComparator implements Comparator<Facet.CategoryValue> {
-            private final boolean reverse;
-            
-            @Override
-            public int compare(CategoryValue c1, CategoryValue c2) {
-                int direction = 1;
-                if (reverse) {
-                    direction = -1;
-                }
-                
-                return direction * 
-                    (Optional.ofNullable(c1.getCount()).orElse(Integer.MIN_VALUE) - 
-                        Optional.ofNullable(c2.getCount()).orElse(Integer.MIN_VALUE));
-            }
-           
         }
     }
 }

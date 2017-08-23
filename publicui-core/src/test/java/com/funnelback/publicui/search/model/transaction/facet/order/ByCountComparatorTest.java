@@ -1,9 +1,11 @@
-package com.funnelback.publicui.search.model.transaction.facet.vategoryvalue;
+package com.funnelback.publicui.search.model.transaction.facet.order;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Assert;
@@ -11,7 +13,6 @@ import org.junit.Test;
 
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
-import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue.ByCountComparator;
 
 
 
@@ -19,7 +20,7 @@ public class ByCountComparatorTest {
 
     @Test
     public void testWithNullValues() {
-        ByCountComparator comparator = new Facet.CategoryValue.ByCountComparator(true);
+        ByCountAscending comparator = new ByCountAscending();
         CategoryValue catV = mock(CategoryValue.class);
         when(catV.getCount()).thenReturn(null);
         Assert.assertEquals(0, 
@@ -29,7 +30,7 @@ public class ByCountComparatorTest {
     
     @Test
     public void testWithNullSingleValue() {
-        ByCountComparator comparator = new Facet.CategoryValue.ByCountComparator(true);
+        Comparator<Facet.CategoryValue> comparator = new ByCountAscending().reversed();
         CategoryValue catVNull = mock(CategoryValue.class);
         when(catVNull.getCount()).thenReturn(null);
         
@@ -49,7 +50,7 @@ public class ByCountComparatorTest {
     
     @Test
     public void testWithNullSingleValue2() {
-        ByCountComparator comparator = new Facet.CategoryValue.ByCountComparator(true);
+        Comparator<Facet.CategoryValue> comparator = new ByCountAscending().reversed();
         CategoryValue catVNull = mock(CategoryValue.class);
         when(catVNull.getCount()).thenReturn(null);
         

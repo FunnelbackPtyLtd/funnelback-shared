@@ -4,12 +4,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.common.url.VFSURLUtils;
@@ -83,7 +86,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     }
 
     /** Identifier used in query string parameter. */
-    private static final String TAG = "url";
+    public static final String TAG = "url";
     
     /** URLs are indexed in the metadata class <tt>v</tt> */
     private static final String MD = "v";
@@ -97,7 +100,7 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         // this is because Date facets by nature force hierarchy where data from the unscoped
         // query implies no hierarchy
         
-        List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
+        
         
         String url = data;
 
@@ -117,6 +120,8 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         // Fix URLs and lower case them as comparisons are case-insensitive.
         url = fixURL.apply(url).toLowerCase();
         currentConstraint = fixURL.apply(currentConstraint).toLowerCase();
+        
+        List<Pair<Integer, CategoryValueComputedDataHolder>> depthAndValues = new ArrayList<>();
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
@@ -143,7 +148,12 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                 //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
                 // - The 'item' needs to be decoded as well. It get converted into a v:...
                 //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
-                categories.add(new CategoryValueComputedDataHolder(
+                
+                // Don't use the depth value as it can be negative.
+                int sortOrder = StringUtils.countMatches(vValue, "/");
+                
+                depthAndValues.add(Pair.of(sortOrder, 
+                    new CategoryValueComputedDataHolder(
                         URLDecoder.decode(relativeItem, "UTF-8"),
                         URLDecoder.decode(label, "UTF-8"),
                         count,
@@ -157,11 +167,18 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
                         getDepth(currentConstraint, item.toLowerCase()) <= 0,
                         getQueryStringParamName(),
                         vValue
-                        )
-                    );
+                        )));
             }
         }
-        return categories;
+        
+        // Order the values from lowest depth to highest, we want a before a/b which is before a/b/c
+        // This is needed for sorting by selected first to ensure the drill down looks correct.
+        Collections.sort(depthAndValues, 
+            Comparator.<Pair<Integer, CategoryValueComputedDataHolder>, Integer>comparing(Pair::getLeft));
+        
+        return depthAndValues.stream()
+                .map(Pair::getRight)
+                .collect(Collectors.toList());
     }
     
     /**
@@ -294,5 +311,11 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
     public boolean allValuesDefinedByUser() {
         return false;
     }
+
+    @Override
+    public boolean selectedValuesAreNested() {
+        return true;
+    }
+    
 
 }

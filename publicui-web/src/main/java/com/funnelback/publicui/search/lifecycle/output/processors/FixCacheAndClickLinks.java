@@ -61,7 +61,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
         // Apply click tracking to best bets links, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
-            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)) {
+            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.CLICK_TRACKING)) {
                 for (BestBet bb : searchTransaction.getResponse().getResultPacket().getBestBets()) {
                     bb.setClickTrackingUrl(buildClickTrackingUrl(searchTransaction.getQuestion(), bb));
                 }
@@ -70,7 +70,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
 
         // Apply click tracking to curator UrlAdvert's, even if there are no results
         if (SearchTransactionUtils.hasCollection(searchTransaction) && SearchTransactionUtils.hasResultPacket(searchTransaction)) {
-            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING)) {
+            if (searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.CLICK_TRACKING)) {
                 //Curator is shared between all request, we must create a new Curator if we wish to edit any entry.
                 List<Exhibit> exhibits = new ArrayList<>();
                 for (Exhibit exhibit : searchTransaction.getResponse().getCurator().getExhibits()) {
@@ -109,7 +109,7 @@ public class FixCacheAndClickLinks extends AbstractOutputProcessor {
      */
     //This is public because tests are not in the same package.
     public void setClickTrackingUrl(SearchTransaction searchTransaction, String q) {
-        boolean buildFixClickTrackingUrl = searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.UI.Modern.CLICK_TRACKING).booleanValue();
+        boolean buildFixClickTrackingUrl = searchTransaction.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.CLICK_TRACKING).booleanValue();
         for (Result r: searchTransaction.getResponse().getResultPacket().getResults()) {
             if(r.isDocumentVisibleToUser()) {
                 if (q.length() > 0) {
