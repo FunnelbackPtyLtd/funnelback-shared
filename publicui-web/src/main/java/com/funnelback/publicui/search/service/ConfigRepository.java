@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Files;
 import com.funnelback.common.config.GlobalOnlyConfig;
 import com.funnelback.common.profile.ProfileNotFoundException;
@@ -41,8 +42,8 @@ public interface ConfigRepository {
     /**
      * @param collectionId ID of the collection (technical name)
      * @param profileIdAndView ID of the profile (with optional '_preview' suffix for preview view)
-     * @return A {@link ServiceConfigReadOnly} for the given service
-     * @throws ProfileNotFoundException 
+     * @return A {@link ServiceConfigReadOnly} for the given service.
+     * @throws ProfileNotFoundException if the profile requested does not exist
      */
     public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException;
 
@@ -104,7 +105,7 @@ public interface ConfigRepository {
      * @return
      */
     public Map<String, String> getTranslations(String collectionId, String profileId, Locale locale);
-
+    
     public ServerConfigReadOnly getServerConfig();
 
 }

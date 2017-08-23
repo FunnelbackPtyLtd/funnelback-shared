@@ -9,7 +9,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,11 +20,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.net.NetUtils;
 import com.funnelback.common.profile.ProfileAndView;
 import com.funnelback.common.profile.ProfileId;
+import com.funnelback.common.profile.ProfileNotFoundException;
 import com.funnelback.common.profile.ProfileView;
 import com.funnelback.config.configtypes.mix.ProfileAndCollectionConfigOption;
 import com.funnelback.config.configtypes.service.DefaultServiceConfig;
@@ -38,6 +42,7 @@ import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
 
 /**
  * Checks access restriction at a collection level and either grant access,
@@ -67,6 +72,7 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
     private final static Pattern QUERY_STRING_PROFILE_AND_VIEW_PATTERN = Pattern.compile(".*profile=([^&$]*)?.*");
 
     @Autowired
+    @Setter // For testing
     private ConfigRepository configRepository;
     
     @Autowired
@@ -92,8 +98,29 @@ public class AccessRestrictionInterceptor implements HandlerInterceptor {
                 profileId = DefaultValues.DEFAULT_PROFILE;
             }
             
-            // Will throw a ProfileNotFound exception if given invalid data - Seems a fair way to abort
-            ServiceConfigReadOnly serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            ServiceConfigReadOnly serviceConfig;
+            try {
+                serviceConfig = configRepository.getServiceConfig(collectionId, profileId);
+            } catch (ProfileNotFoundException e) {
+                // Ok - You asked for a profile which doesn't exist, but we can fall back to _default
+                
+                try {
+                    serviceConfig = configRepository.getServiceConfig(collectionId, DefaultValues.DEFAULT_PROFILE);
+                } catch (ProfileNotFoundException e2) {
+                    // At this point either the collection doesn't exist (so you have access)
+                    // or the collection is invalid (missing _default) so we error out to avoid
+                    // accidentally exposing stuff which might need to be secured
+                    
+                    if (configRepository.getCollection(collectionId) == null) {
+                        // You asked for a collection which doesn't exist, so no access restriction applies.
+                        // (otherwise no one could ever get to the collection listing page)
+                        log.trace("Access restriction allowing access to nonexistent collection" + collectionId);
+                        return true;
+                    } else {
+                        throw new InvalidCollectionException(collectionId + " appears to exist, but lacks a " + DefaultValues.DEFAULT_PROFILE + " profile.");
+                    }
+                }
+            }
             
             if (serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).isPresent()) {
                 String accessRestriction = serviceConfig.get(FrontEndKeys.ACCESS_RESTRICTION).get();

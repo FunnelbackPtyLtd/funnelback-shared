@@ -26,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import com.funnelback.common.config.Collection.Type;
 import com.funnelback.common.config.CollectionId;
+import com.funnelback.common.config.CollectionNotFoundException;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.ConfigReader;
 import com.funnelback.common.config.DefaultValues;
@@ -611,10 +612,14 @@ public class DefaultConfigRepository implements ConfigRepository {
             profileId = profileId.substring(0, profileId.length() - DefaultValues.PREVIEW_SUFFIX.length());
             profileView = ProfileView.preview;
         }
-
+        
         ServiceConfigDataReadOnly serviceConfigData = resourceManager.loadResource(new ServiceConfigDataReadOnlyResource(searchHome,
-            new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView));
-
+                new ServiceId(new CollectionId(collectionId), new ProfileId(profileId)), profileView), null);
+        
+        if (serviceConfigData == null) {
+            throw new ProfileNotFoundException(new CollectionId(collectionId), new ProfileId(profileId), profileView);
+        }
+        
         return new DefaultServiceConfigReadOnly(serviceConfigData, getServerConfig().get(Keys.Environment.ENV));
     }
     
