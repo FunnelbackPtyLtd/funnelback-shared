@@ -35,7 +35,7 @@ import com.funnelback.publicui.integration.DefaultAdminSecurityIT;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.saml.TokenUtils;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
-@Ignore
+
 public class SamlSecurityIT {
     protected static DefaultSecurityConfiguredJettyServer server;
     protected static MujinaIdentityProviderServer mujina;

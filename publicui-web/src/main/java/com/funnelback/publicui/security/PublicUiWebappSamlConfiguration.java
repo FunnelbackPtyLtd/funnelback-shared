@@ -39,7 +39,13 @@ public class PublicUiWebappSamlConfiguration implements WebappSamlConfiguration 
     @Override
     public Optional<File> groovySamlPermissionMapperFile() {
         if (ExecutionContext.Admin.equals(executionContextHolder.getExecutionContext())) {
-            return config.get(ServerKeys.Auth.Admin.SAML.GROOVY_PERMISSION_MAPPER);
+            Optional<File> result = config.get(ServerKeys.Auth.Admin.SAML.GROOVY_PERMISSION_MAPPER);
+            
+            if (!result.isPresent()) {
+                throw new RuntimeException("SAML Authentication is enabled, but no " + ServerKeys.Auth.Admin.SAML.GROOVY_PERMISSION_MAPPER.getKey() + " setting was given.");
+            }
+            
+            return result;
         } else {
             return Optional.empty();
         }
