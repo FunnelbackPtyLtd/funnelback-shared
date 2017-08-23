@@ -42,10 +42,10 @@ public interface ConfigRepository {
     /**
      * @param collectionId ID of the collection (technical name)
      * @param profileIdAndView ID of the profile (with optional '_preview' suffix for preview view)
-     * @return A {@link ServiceConfigReadOnly} for the given service. If the profile requested does not exist, _default/_default_preview will be returned instead
-     * @throws CollectionNotFoundException if the collection does not exist
+     * @return A {@link ServiceConfigReadOnly} for the given service.
+     * @throws ProfileNotFoundException if the profile requested does not exist
      */
-    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws CollectionNotFoundException;
+    public ServiceConfigReadOnly getServiceConfig(String collectionId, String profileIdAndView) throws ProfileNotFoundException;
 
     /**
      * @return All available collections on this repository

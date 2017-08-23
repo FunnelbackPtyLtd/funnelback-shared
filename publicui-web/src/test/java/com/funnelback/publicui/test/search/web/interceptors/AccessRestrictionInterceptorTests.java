@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -30,8 +31,11 @@ import com.funnelback.config.data.environment.NoConfigEnvironment;
 import com.funnelback.config.data.service.ServiceConfigData;
 import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.config.option.ConfigOptionDefinition;
+import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
+import com.funnelback.publicui.search.service.ConfigRepository;
+import com.funnelback.publicui.search.web.exception.InvalidCollectionException;
 import com.funnelback.publicui.search.web.interceptors.AccessRestrictionInterceptor;
 import com.funnelback.publicui.test.mock.MockConfigRepository;
 import com.google.common.collect.Maps;
@@ -68,6 +72,8 @@ public class AccessRestrictionInterceptorTests {
         request.setRemoteHost("remote.host.com");
 
         response = newResponse();
+        
+        interceptor.setConfigRepository(configRepository);
     }
     
     private static MockHttpServletResponse newResponse() {
@@ -98,6 +104,24 @@ public class AccessRestrictionInterceptorTests {
 
     @Test
     public void testNoAccessNoAlternate() throws Exception {
+        testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
+        testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
+        Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
+        Assert.assertEquals("Access should be denied", HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+        Assert.assertEquals("access.profile.denied", response.getContentAsString());
+        Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+    }
+
+    @Test
+    public void testDefaultProfileFallback() throws Exception {
+        ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
+        interceptor.setConfigRepository(configRepository);
+        
+        request.setParameter("profile", "doesntexist");
+
+        Mockito.when(configRepository.getServiceConfig(COLLECTION_ID, "doesntexist")).thenThrow(ProfileNotFoundException.class);
+        Mockito.when(configRepository.getServiceConfig(COLLECTION_ID, "_default")).thenReturn(testServiceConfig);
+        
         testServiceConfig.set(FrontEndKeys.ACCESS_RESTRICTION, Optional.of(DefaultValues.NO_ACCESS));
         testServiceConfig.set(FrontEndKeys.ACCESS_ALTERNATE, Optional.empty());
         Assert.assertFalse("Interceptor should block processing", interceptor.preHandle(request, response, null));
@@ -278,6 +302,30 @@ public class AccessRestrictionInterceptorTests {
         request.setRemoteAddr("127.0.0.1");
         Assert.assertFalse("Intercepter should block", interceptor.preHandle(request, response, null));
         Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+    }
+
+    @Test
+    public void testPassOnMissingCollection() throws Exception {
+        ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
+        interceptor.setConfigRepository(configRepository);
+        
+        Mockito.when(configRepository.getServiceConfig(Mockito.anyString(), Mockito.anyString())).thenThrow(ProfileNotFoundException.class);
+        Mockito.when(configRepository.getCollection(Mockito.anyString())).thenReturn(null);
+        
+        Assert.assertTrue("Interceptor should permit processing", interceptor.preHandle(request, response, null));
+        Assert.assertEquals("Response status should be unchanged", -1, response.getStatus());
+        Assert.assertNull("Response shouldn't be redirected", response.getRedirectedUrl());
+    }
+
+    @Test(expected=InvalidCollectionException.class)
+    public void testErrorOnInvalidCollection() throws Exception {
+        ConfigRepository configRepository = Mockito.mock(ConfigRepository.class);
+        interceptor.setConfigRepository(configRepository);
+        
+        Mockito.when(configRepository.getServiceConfig(Mockito.anyString(), Mockito.anyString())).thenThrow(ProfileNotFoundException.class);
+        Mockito.when(configRepository.getCollection(Mockito.anyString())).thenReturn(Mockito.mock(Collection.class));
+
+        interceptor.preHandle(request, response, null);
     }
 
 }
