@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import com.funnelback.springmvc.utils.saml.MujinaIdentityProviderServer;
 import com.funnelback.springmvc.utils.security.DefaultSecurityConfiguredJettyServer;
 import com.google.common.io.Files;
-@Ignore
+
 public class SamlSecurityWithAdminEnabledAlsoIT extends SamlSecurityIT {
 
     @BeforeClass
