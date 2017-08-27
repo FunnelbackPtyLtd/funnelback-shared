@@ -6,8 +6,8 @@ import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationConnector;
-import com.funnelback.dataapi.connector.predictivesegmentation.PredictiveSegmentationException;
+import com.funnelback.common.predictivesegmentation.PredictiveSegmentationConnector;
+import com.funnelback.common.predictivesegmentation.PredictiveSegmentationException;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
