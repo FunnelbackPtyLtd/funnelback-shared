@@ -66,7 +66,7 @@ public class SearchController extends SessionController {
     public enum ModelAttributes {
         SearchTransaction, AllCollections, QueryString, SearchPrefix, ContextPath, Log,
         extraSearches, question, response, session, error, httpRequest, GlobalResourcesPrefix,
-        extraSearchesTerminated;
+        anyExtraSearchesIncomplete;
         
         public static Set<String> getNames() {
             HashSet<String> out = new HashSet<String>();
@@ -249,7 +249,7 @@ public class SearchController extends SessionController {
             out.put(ModelAttributes.response.toString(), st.getResponse());
             out.put(ModelAttributes.session.toString(), st.getSession());
             out.put(ModelAttributes.error.toString(), st.getError());
-            out.put(ModelAttributes.extraSearchesTerminated.toString(), st.isAnyExtraSearchesIncomplete());
+            out.put(ModelAttributes.anyExtraSearchesIncomplete.toString(), st.isAnyExtraSearchesIncomplete());
             if (st.getExtraSearches().size() > 0) {
                 out.put(ModelAttributes.extraSearches.toString(), st.getExtraSearches());
             }
