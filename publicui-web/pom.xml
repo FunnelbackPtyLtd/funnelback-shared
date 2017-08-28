@@ -209,11 +209,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.funnelback.dataapi</groupId>
-            <artifactId>funnelback-data-api-connector-analytics</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.funnelback</groupId>
             <artifactId>funnelback-reporting</artifactId>
             <version>${project.version}</version>
