@@ -1,9 +1,7 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput;
 
 import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS;
-import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT_MS;
 import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TIMEOUT;
-import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT;
 
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.config.keys.Keys;
 import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
@@ -179,8 +178,8 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     long getTimeToWaitForExtraSearch(SearchTransaction searchTransaction) {
         long extraSearchesWaitTimeout = searchTransaction.getQuestion().getCollection().getConfiguration()
             .valueAsLong(EXTRA_SEARCH_TIMEOUT, EXTRA_SEARCH_TIMEOUT_MS);
-        long extraSearchTimeLeft = searchTransaction.getQuestion().getCollection().getConfiguration()
-            .valueAsLong(EXTRA_SEARCH_TOTAL_TIMEOUT, EXTRA_SEARCH_TOTAL_TIMEOUT_MS) 
+        long extraSearchTimeLeft = searchTransaction.getQuestion().getCurrentProfileConfig()
+                .get(Keys.FrontEndKeys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT)
             - searchTransaction.getExtraSearchesAproxTimeSpent().get();
         
         if(extraSearchTimeLeft <= 0L) {

@@ -1,14 +1,12 @@
 package com.funnelback.publicui.search.lifecycle.inputoutput;
 
 import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TIMEOUT_MS;
-import static com.funnelback.common.config.DefaultValues.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT_MS;
 import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TIMEOUT;
-import static com.funnelback.common.config.Keys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +18,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.funnelback.common.config.Config;
+import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
+import com.funnelback.config.keys.Keys.FrontEndKeys;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -141,11 +141,14 @@ public class ExtraSearchesExecutorTest {
     }
     
     private SearchTransaction getSearchTransactionWithMockConfig(){
-        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        SearchTransaction st = new SearchTransaction(spy(new SearchQuestion()), new SearchResponse());
         Collection collection = mock(Collection.class);
         Config config = mock(Config.class);
         when(collection.getConfiguration()).thenReturn(config);
         st.getQuestion().setCollection(collection);
+        
+        ServiceConfigReadOnly serviceConfigReadOnly = mock(ServiceConfigReadOnly.class);
+        doReturn(serviceConfigReadOnly).when(st.getQuestion()).getCurrentProfileConfig();
         
         return st;
     }
@@ -155,9 +158,9 @@ public class ExtraSearchesExecutorTest {
             .valueAsLong(EXTRA_SEARCH_TIMEOUT, EXTRA_SEARCH_TIMEOUT_MS))
         .thenReturn(singleExtraSearchTimeout);
         
-        when(st.getQuestion().getCollection().getConfiguration()
-            .valueAsLong(EXTRA_SEARCH_TOTAL_TIMEOUT, EXTRA_SEARCH_TOTAL_TIMEOUT_MS))
-        .thenReturn(totalExtraSearchTimeout);
+        when(st.getQuestion().getCurrentProfileConfig().get(FrontEndKeys.ModernUI.EXTRA_SEARCH_TOTAL_TIMEOUT))
+            .thenReturn(totalExtraSearchTimeout);
+        
     }
     
     
