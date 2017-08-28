@@ -11,7 +11,7 @@ public interface GScopeBasedCategory {
      * Get the GScope number.
      * @return The GScope number for this category type.
      */
-    public int getGScopeNumber();
+    public String getGScopeNumber();
     
     /**
      * Get the GScope constraint.

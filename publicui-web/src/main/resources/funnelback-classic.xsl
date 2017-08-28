@@ -166,8 +166,8 @@
 	<gscope_counts>
 		<xsl:for-each select="entry">
 			<gscope_matching>
-				<xsl:attribute name="value"><xsl:value-of select="int[1]" /></xsl:attribute>
-				<xsl:value-of select="int[2]" />
+				<xsl:attribute name="value"><xsl:value-of select="string[1]" /></xsl:attribute>
+				<xsl:value-of select="int[1]" />
 			</gscope_matching>
 		</xsl:for-each>
 	</gscope_counts>

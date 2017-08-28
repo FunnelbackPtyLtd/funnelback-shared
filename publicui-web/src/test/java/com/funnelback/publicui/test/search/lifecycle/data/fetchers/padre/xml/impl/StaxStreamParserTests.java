@@ -411,11 +411,11 @@ public class StaxStreamParserTests {
 
     @Test
     public void testGScopeCount() {
-        Map<Integer, Integer> gscopes = rp.getGScopeCounts();
+        Map<String, Integer> gscopes = rp.getGScopeCounts();
         assertEquals(2, gscopes.size());
         
-        assertEquals(54, gscopes.get(1).intValue());
-        assertEquals(6, gscopes.get(2).intValue());        
+        assertEquals(54, gscopes.get("1").intValue());
+        assertEquals(6, gscopes.get("2").intValue());        
     }
     
     @Test

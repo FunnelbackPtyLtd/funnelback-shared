@@ -213,12 +213,7 @@ public class SearchQuestion {
      * GScope constraints to apply for faceted navigation
      * (In addition to existing gscope constraints).
      */
-    @Setter private String facetsGScopeConstraints;
-    
-    public String getFacetsGScopeConstraints() {
-        //TODO remove.
-        return facetsGScopeConstraints;
-    }
+    @Setter @Getter private String facetsGScopeConstraints;
     
     /**
      * Whether the request is impersonated (Document Level Security)

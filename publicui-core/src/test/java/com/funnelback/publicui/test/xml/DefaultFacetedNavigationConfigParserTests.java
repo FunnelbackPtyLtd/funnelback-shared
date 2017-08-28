@@ -102,17 +102,17 @@ public class DefaultFacetedNavigationConfigParserTests {
         
         GScopeItem c = (GScopeItem) facet.getCategoryDefinitions().get(0);
         assertEquals("Writing Jobs", c.getData());
-        assertEquals(66, c.getGScopeNumber());
+        assertEquals("66", c.getGScopeNumber());
         assertEquals(0, c.getSubCategories().size());
 
         c = (GScopeItem) facet.getCategoryDefinitions().get(1);
         assertEquals("Seaside Jobs", c.getData());
-        assertEquals(2, c.getGScopeNumber());
+        assertEquals("2", c.getGScopeNumber());
         assertEquals(0, c.getSubCategories().size());
 
         GScopeItem c2 = (GScopeItem) facet.getCategoryDefinitions().get(2);
         assertEquals("Fruit picking jobs", c2.getData());
-        assertEquals(3, c2.getUserSetGScope());
+        assertEquals("3", c2.getUserSetGScope());
         assertEquals(0, c.getSubCategories().size());
     }
     
