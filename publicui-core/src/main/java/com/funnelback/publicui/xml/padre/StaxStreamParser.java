@@ -609,19 +609,19 @@ public class StaxStreamParser implements PadreXmlParser {
      * @throws XMLStreamException 
      * @throws NumberFormatException 
      */
-    private Map<Integer, Integer> parseGScopeCounts(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+    private Map<String, Integer> parseGScopeCounts(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
         if (!ResultPacket.Schema.GSCOPE_COUNTS.equals(reader.getLocalName())) {
             throw new IllegalArgumentException();
         }
         
-        HashMap<Integer, Integer> out = new HashMap<Integer, Integer>();
+        HashMap<String, Integer> out = new HashMap<>();
 
         while(reader.hasNext()&&
                 ! (reader.next() == XMLStreamReader.END_ELEMENT && ResultPacket.Schema.GSCOPE_COUNTS.equals(reader.getLocalName()))) {
             
             if (reader.getEventType() == XMLStreamReader.START_ELEMENT
                     && ResultPacket.Schema.GSCOPE_MATCHING.equals(reader.getLocalName())) {
-                int gScopeValue = Integer.parseInt(reader.getAttributeValue(null, ResultPacket.Schema.GSCOPE_VALUE));
+                String gScopeValue = reader.getAttributeValue(null, ResultPacket.Schema.GSCOPE_VALUE);
                 int count = Integer.parseInt(reader.getElementText());
                 out.put(gScopeValue, count);
             }

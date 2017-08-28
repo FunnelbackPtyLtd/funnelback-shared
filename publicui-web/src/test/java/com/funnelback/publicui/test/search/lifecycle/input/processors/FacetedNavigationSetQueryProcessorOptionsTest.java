@@ -66,7 +66,7 @@ public class FacetedNavigationSetQueryProcessorOptionsTest {
         
         FacetDefinition fDef1 = FacetDefinition.getFacetWithUpgradedValues("facet1", Lists.newArrayList(cDef1, cDef2));
 
-        CategoryDefinition cDef3 = new GScopeItem("categoryName", 12);
+        CategoryDefinition cDef3 = new GScopeItem("categoryName", "12");
         CategoryDefinition cDef4 = new CollectionFill("News", Arrays.asList("facebook", "youtube"));
         FacetDefinition fDef2 = FacetDefinition.getFacetWithUpgradedValues("facet2", Lists.newArrayList(cDef3, cDef4));
 

@@ -1,5 +1,8 @@
 package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_ALL_QUERY;
+import static com.funnelback.common.facetednavigation.models.FacetValues.FROM_UNSCOPED_QUERY;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,26 +18,23 @@ import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition.FacetSearchData;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.collect.Sets;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_ALL_VALUES;
-import lombok.Setter;
-import lombok.val;
 
-import static com.funnelback.common.facetednavigation.models.FacetValues.*;
+import lombok.Setter;
 public class GScopeItemTest {
     
     public class TestableGScopeItem extends GScopeItem {
         
         @Setter private FacetSearchData facetSearchData;
 
-        public TestableGScopeItem(String categoryName, long userSetGscope) {
+        public TestableGScopeItem(String categoryName, String userSetGscope) {
             super(categoryName, userSetGscope);
         }
         
@@ -48,7 +48,7 @@ public class GScopeItemTest {
     
     @Before
     public void before() {
-        category = new GScopeItem("categoryName", 12);
+        category = new GScopeItem("categoryName", "12");
         category.setFacetName("facetName");
         category.setLabel("label");
     }
@@ -56,8 +56,8 @@ public class GScopeItemTest {
     @Test
     public void testFields() {
         Assert.assertEquals("categoryName", category.getData());
-        Assert.assertEquals(12, category.getGScopeNumber());
-        Assert.assertEquals(12, category.getUserSetGScope());
+        Assert.assertEquals("12", category.getGScopeNumber());
+        Assert.assertEquals("12", category.getUserSetGScope());
         Assert.assertEquals("facetName", category.getFacetName());
         Assert.assertEquals("label", category.getLabel());
         
@@ -81,13 +81,13 @@ public class GScopeItemTest {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
         
         sr.setResultPacket(new ResultPacket());
-        sr.getResultPacket().getGScopeCounts().put(1, 12);
+        sr.getResultPacket().getGScopeCounts().put("1", 12);
         
         FacetSearchData facetSearchData = new FacetSearchData(sr, 
             (c, v) -> Optional.empty(), 
             (c,v) -> null); // This part is where the count might come from an extra search.
     
-        TestableGScopeItem testableGScopeItem = new TestableGScopeItem("News", 2L);
+        TestableGScopeItem testableGScopeItem = new TestableGScopeItem("News", "2");
         
         testableGScopeItem.setFacetSearchData(facetSearchData);
         
@@ -102,13 +102,13 @@ public class GScopeItemTest {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
         
         sr.setResultPacket(new ResultPacket());
-        sr.getResultPacket().getGScopeCounts().put(1, 12);
+        sr.getResultPacket().getGScopeCounts().put("1", 12);
         
         FacetSearchData facetSearchData = new FacetSearchData(sr, 
             (c, v) -> Optional.empty(), 
             (c,v) -> null); // This part is where the count might come from an extra search.
     
-        TestableGScopeItem testableGScopeItem = new TestableGScopeItem("News", 2L);
+        TestableGScopeItem testableGScopeItem = new TestableGScopeItem("News", "2");
         
         testableGScopeItem.setFacetSearchData(facetSearchData);
         
@@ -132,7 +132,7 @@ public class GScopeItemTest {
             .setResultPacket(new ResultPacket());
         
     
-        GScopeItem testableGScopeItem = new GScopeItem("News", 2L);
+        GScopeItem testableGScopeItem = new GScopeItem("News", "2");
         
         FacetDefinition facetDef = facetWithValue(FROM_UNSCOPED_ALL_QUERY);
         // This makes it a tab:
@@ -157,7 +157,7 @@ public class GScopeItemTest {
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
         
         sr.setResultPacket(new ResultPacket());
-        st.getResponse().getResultPacket().getGScopeCounts().put(2, 12);
+        st.getResponse().getResultPacket().getGScopeCounts().put("2", 12);
         
         st.getExtraSearches().put(SEARCH_FOR_ALL_VALUES, 
             new SearchTransaction(new SearchQuestion(), new SearchResponse()));
@@ -166,10 +166,10 @@ public class GScopeItemTest {
             .setResultPacket(new ResultPacket());
         
         st.getExtraSearches().get(SEARCH_FOR_ALL_VALUES).getResponse().getResultPacket()
-            .getGScopeCounts().put(2, 100);
+            .getGScopeCounts().put("2", 100);
         
     
-        GScopeItem testableGScopeItem = new GScopeItem("News", 2L);
+        GScopeItem testableGScopeItem = new GScopeItem("News", "2");
         
         FacetDefinition facetDef = facetWithValue(FROM_UNSCOPED_ALL_QUERY);
         // This makes it a tab:

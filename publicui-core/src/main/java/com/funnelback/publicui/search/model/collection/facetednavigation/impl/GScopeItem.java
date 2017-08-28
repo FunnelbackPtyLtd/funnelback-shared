@@ -32,11 +32,11 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
     private final List<QueryProcessorOption<?>> qpOptions;
     
     /** GScope number */
-    @Getter @Setter private int userSetGScope;
+    @Getter @Setter private String userSetGScope;
     
-    public GScopeItem(String categoryName, long userSetGscope) {
+    public GScopeItem(String categoryName, String userSetGscope) {
         super(categoryName);
-        this.userSetGScope = (int) userSetGscope;
+        this.userSetGScope = userSetGscope;
         qpOptions = Collections.singletonList(new QueryProcessorOption<String>(QueryProcessorOptionKeys.COUNTGBITS, "all"));
     }
 
@@ -52,17 +52,17 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
             || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
             String queryStringParamValue = data;
             
-            Integer count = facetData.getResponseForCounts().apply(this, Integer.toString(userSetGScope))
+            Integer count = facetData.getResponseForCounts().apply(this, userSetGScope)
                     .map(SearchResponse::getResultPacket)
                     .map(ResultPacket::getGScopeCounts)
                     .map(gscopeCounts -> gscopeCounts.get(userSetGScope))
-                    .orElse(facetData.getCountIfNotPresent().apply(this, Integer.toString(userSetGScope)));
+                    .orElse(facetData.getCountIfNotPresent().apply(this, userSetGScope));
             
             categories.add(new CategoryValueComputedDataHolder(
-                    Integer.toString(userSetGScope),
+                    userSetGScope,
                     data,
                     count,
-                    Integer.toString(getGScopeNumber()),
+                    getGScopeNumber(),
                     FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data),
                     getQueryStringParamName(),
                     queryStringParamValue
@@ -75,25 +75,25 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
     /** {@inheritDoc} */
     @Override
     public String getQueryStringCategoryExtraPart() {
-        return Integer.toString(userSetGScope);
+        return userSetGScope;
     }
     
     /** {@inheritDoc} */
     @Override
     public boolean matches(String value, String extraParams) {
-        return data.equals(value) && Integer.parseInt(extraParams) == userSetGScope;
+        return data.equals(value) && userSetGScope.equals(extraParams);
     }
 
     /** {@inheritDoc} */
     @Override
-    public int getGScopeNumber() {
+    public String getGScopeNumber() {
         return userSetGScope;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getGScope1Constraint() {
-        return Integer.toString(userSetGScope);
+        return userSetGScope;
     }
     
     @Override
@@ -109,5 +109,10 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
     @Override
     public boolean selectedValuesAreNested() {
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        return "Label=" + getData() + " gscope=" + getUserSetGScope();
     }
 }

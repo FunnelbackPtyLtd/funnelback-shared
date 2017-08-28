@@ -214,7 +214,7 @@ public class ResultPacket {
      * or a hook script you must use the following syntax: <code>GScopeCounts</code>,
      * instead of <code>gScopeCounts</code> due to the Javabeans naming conventions.</p>
      */
-    @Getter private final Map<Integer, Integer> gScopeCounts = new HashMap<Integer, Integer>();
+    @Getter private final Map<String, Integer> gScopeCounts = new HashMap<String, Integer>();
     
     /**
      * <p>Date counts (Used in faceted navigation)</p>
