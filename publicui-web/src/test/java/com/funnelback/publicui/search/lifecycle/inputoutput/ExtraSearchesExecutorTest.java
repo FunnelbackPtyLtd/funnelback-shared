@@ -10,20 +10,24 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.ldap.transaction.compensating.manager.TransactionAwareDirContextInvocationHandler;
 
 import com.funnelback.common.config.Config;
 import com.funnelback.config.configtypes.service.ServiceConfigReadOnly;
 import com.funnelback.config.keys.Keys.FrontEndKeys;
+import com.funnelback.publicui.search.lifecycle.SearchTransactionProcessor;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
 
 public class ExtraSearchesExecutorTest {
@@ -54,7 +58,7 @@ public class ExtraSearchesExecutorTest {
     }
     
     @Test
-    public void testTimeRecordedForFailedExtraSearch() throws Exception {
+    public void testFailingExtraSearchIsRecorded() throws Exception {
         SearchTransaction st = getSearchTransactionWithMockConfig();
         st.getExtraSearchesAproxTimeSpent().set(0);
         setTimeouts(st, 100, 300);
@@ -64,8 +68,6 @@ public class ExtraSearchesExecutorTest {
 
             @Override
             public SearchTransaction answer(InvocationOnMock invocation) throws Throwable {
-                Thread.sleep(3);
-                // Simulat the extra search failing.
                 throw new java.util.concurrent.TimeoutException();
             }
             
@@ -73,8 +75,7 @@ public class ExtraSearchesExecutorTest {
         
         extraSearchExecutor.waitForExtraSearch(st, "name", future);
         
-        Assert.assertTrue("Should have taken atleast 3ms as we waited a total of 3ms", 
-            st.getExtraSearchesAproxTimeSpent().get() >= 3);
+        
         
         Assert.assertTrue(st.isAnyExtraSearchesIncomplete());
         
@@ -83,7 +84,7 @@ public class ExtraSearchesExecutorTest {
     
     
     @Test
-    public void testTimeRecordedFromSearchTransaction() throws Exception {
+    public void testNonFailingExtraSearch() throws Exception {
         SearchTransaction st = getSearchTransactionWithMockConfig();
         st.getExtraSearchesAproxTimeSpent().set(0);
         setTimeouts(st, 100, 300);
@@ -104,8 +105,6 @@ public class ExtraSearchesExecutorTest {
         });
         
         extraSearchExecutor.waitForExtraSearch(st, "name", future);
-        
-        Assert.assertEquals(100, st.getExtraSearchesAproxTimeSpent().get());
         
         Assert.assertFalse(st.isAnyExtraSearchesIncomplete());
     }
@@ -138,6 +137,44 @@ public class ExtraSearchesExecutorTest {
         Assert.assertEquals(0L, st.getExtraSearchesAproxTimeSpent().get());
         
         Assert.assertFalse(st.isAnyExtraSearchesIncomplete());
+    }
+    
+    @Test
+    public void testCallableRecordsTotalTime() throws Exception {
+        SearchTransactionProcessor transactionProcessor = new SearchTransactionProcessor() {
+            
+            @Override
+            public SearchTransaction process(SearchQuestion q, SearchUser user) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                }
+                return mock(SearchTransaction.class);
+            }
+        };
+        
+        ExtraSearchesExecutor executor = new ExtraSearchesExecutor();
+        executor.setTransactionProcessor(transactionProcessor);
+        
+        SearchTransaction st = getSearchTransactionWithMockConfig();
+        
+        Callable<SearchTransaction> call = executor.makeCallable(st, "", new SearchQuestion(), null);
+        
+        st.getExtraSearchesAproxTimeSpent().set(0);
+        
+        Thread.currentThread().interrupt();
+        try {
+            call.call();
+            
+            Assert.assertTrue(0 < st.getExtraSearchesAproxTimeSpent().get());
+        } finally {
+            // Clear thread unterrupt status, so other tests don't fail.
+            Thread.currentThread().interrupted();
+        }
     }
     
     private SearchTransaction getSearchTransactionWithMockConfig(){

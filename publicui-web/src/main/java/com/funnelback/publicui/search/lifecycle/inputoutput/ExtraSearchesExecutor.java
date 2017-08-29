@@ -30,6 +30,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.session.SearchUser;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 /**
  * <p>Executes the extra searches on the input phase using the questions
@@ -42,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
 
-    @Autowired
+    @Autowired @Setter
     private SearchTransactionProcessor transactionProcessor;
 
     @Autowired
@@ -91,20 +92,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         
         extraSearchQuestion.setQuestionType(SearchQuestionType.EXTRA_SEARCH);
         
-        Callable<SearchTransaction> callable = new Callable<SearchTransaction>() {
-            @Override
-            public SearchTransaction call() throws Exception {
-                StopWatch sw = new StopWatch();
-                try {
-                    sw.start();
-                    return transactionProcessor.process(extraSearchQuestion, user);
-                } finally {
-                    sw.stop();
-                    log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
-                }
-                
-            }
-        };
+        Callable<SearchTransaction> callable = makeCallable(searchTransaction, extraSearchName, extraSearchQuestion, user);
         
         log.trace("Submitting extra search '" + extraSearchName + "'");
         
@@ -113,6 +101,28 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         executorHelper.submit(callable, extraSearchName, getTimeToWaitForExtraSearch(searchTransaction))
             .ifPresent(task -> searchTransaction.getExtraSearchesTasks().put(extraSearchName, task));
         
+    }
+    
+    Callable<SearchTransaction> makeCallable(SearchTransaction searchTransaction, 
+            String extraSearchName, 
+            SearchQuestion extraSearchQuestion, 
+            SearchUser user) {
+        return new Callable<SearchTransaction>() {
+            @Override
+            public SearchTransaction call() throws Exception {
+                StopWatch sw = new StopWatch();
+                try {
+                    sw.start();
+                    return transactionProcessor.process(extraSearchQuestion, user);
+                } finally {
+                    sw.stop();
+                    // We know exactly how much time was spent.
+                    searchTransaction.getExtraSearchesAproxTimeSpent().addAndGet(sw.getTime());
+                    log.debug("Extra search '" + extraSearchName + "' took " + sw.toString());
+                }
+                
+            }
+        };
     }
 
     @Override
@@ -132,8 +142,6 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
         
         
         long extraSearchesWaitTimeout = getTimeToWaitForExtraSearch(searchTransaction);
-        
-        long startTime = System.currentTimeMillis();
         
         SearchTransaction extraSearchSt = null;
         try {
@@ -158,20 +166,6 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
                 .map(SearchTransaction::getError)
                 .ifPresent(e -> searchTransaction.setAnyExtraSearchesIncomplete(true));
             
-            long timeWaited = System.currentTimeMillis() - startTime;
-            
-            // If possible us the time for actually running the extra search.
-            // the time waiting for the extra search can be wrong as we might be waiting for the last task
-            // that gets executed.
-            long totalTimeToAdd = Optional.ofNullable(extraSearchSt)
-                                        .map(SearchTransaction::getResponse)
-                                        .map(SearchResponse::getPerformanceMetrics)
-                                        .map(org.springframework.util.StopWatch::getTotalTimeMillis)
-                                        .orElse(timeWaited);
-            
-            log.trace("Will count extra search '{}' as taking {}ms.", extraSearchName, totalTimeToAdd);
-            
-            searchTransaction.getExtraSearchesAproxTimeSpent().getAndAdd(totalTimeToAdd);
         }
     }
     
