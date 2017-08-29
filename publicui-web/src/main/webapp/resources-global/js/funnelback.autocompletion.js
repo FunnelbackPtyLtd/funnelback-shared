@@ -25,19 +25,18 @@
 		datasets : null,				// {set1: {url: ''}, set2: {...}, set3: {...}}
 		/*
 		defaultCall   : {				// 'string'|[]|{}; use to trigger auto-completion when input value is empty and length=0
-			filter    : customFunctionToMapData,// function(set, data); filter function used to map response data
 			params    : {},						// {}; list of parameters added to request
 			url       : '' 						// 'string'; URL to call request
+			transform : customFunctionToMapData,// function(set, data); transform function used to map response data
 		},
 		defaultCall   : '',				// 'string'; query to replace empty value and call request
 		defaultCall   : [],				// [{value: '', label: ''}, {value: '', label: ''}]; list of hardcoded data to fulfill dropdown menu
 		defaultCall   : {
 			data      : [],				// []; list of hardcoded data
-			filter    : function 		// function(set, data); filter function used to map hardcoded data
+			transform : function 		// function(set, data); transform function used to map hardcoded data
 		},
 		*/
 		callback 		: null,			// function(set, suggestions); callback function applied to suggestions before returning them to typeahead plugin
-		filter 			: _processSetData, // function(set, suggestion, index); filter function used to map response data
 		group 			: false,		// true|false; enable grouping suggestions based on parameter itemGroup
 		groupOrder 		: [],			// []; list of group headers used to sort grouped suggestions in that order
 		facets 			: {				// {}; list of parameters applied when default search-based auto-completion is enabled
@@ -53,6 +52,7 @@
 			suggestion: function(context) { return $('<div>').html(String(context.label)); }
 		},
 		templateMerge 	: true,			// true|false; to wrap notFound and pending template with header and footer template
+		transform 		: _processSetData, // function(set, suggestion, index); transform function used to map response data
 
 		// URL settings
 		collection 		: null,			// 'string'; the collection name
@@ -222,7 +222,7 @@
 
 	/* Private variables */
 	var _debug = false,
-	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'facets', 'filter', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge'],
+	_mapKeys = ['collection', 'callback', 'dataType', 'alpha', 'facets', 'transform', 'format', 'group', 'groupOrder', 'itemGroup', 'itemLabel', 'params', 'profile', 'program', 'show', 'sort', 'queryKey', 'queryVal', 'template', 'templateMerge'],
 	_navCols = {cursor : null, query  : ''};
 
 	/* Private methods */
@@ -274,7 +274,7 @@
 				url    : set.url ? set.url : _getSetUrl(set),
 				filter : function (response) {
 					var query = getQuery($(this).get(0).transport.lastReq);
-					return _handleSetData(set, $.map(response, function(suggestion, i) { return set.filter(set, suggestion, i, name, query) }));
+					return _handleSetData(set, $.map(response, function(suggestion, i) { return set.transform(set, suggestion, i, name, query) }));
 				}
 			};
 			if (set.dataType === 'jsonp') {
@@ -309,12 +309,12 @@
 					return;
 				}
 				else if ($.exist(set.defaultCall.data)) {
-					sync(_handleSetData(set, set.defaultCall.filter(set, set.defaultCall.data)));
+					sync(_handleSetData(set, set.defaultCall.transform(set, set.defaultCall.data)));
 					return;
 				}
 				else if ($.exist(set.defaultCall.url, true)) {
 					$.get(set.defaultCall.url, set.defaultCall.params, function(data) {
-						async(_handleSetData(set.defaultCall.filter(set, data)));
+						async(_handleSetData(set.defaultCall.transform(set, data)));
 						return;
 					});
 				}
