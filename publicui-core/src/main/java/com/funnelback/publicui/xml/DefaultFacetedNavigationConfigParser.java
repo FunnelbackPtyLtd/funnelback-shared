@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.facetednavigation.GscopeNameProvider;
 import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
 import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
 import com.funnelback.common.facetednavigation.models.Category;
@@ -19,6 +20,7 @@ import com.funnelback.common.facetednavigation.models.categories.DateFieldCatego
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLCategory;
+import com.funnelback.common.facetednavigation.models.categories.URLPatternCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.AllDocumentsFill;
@@ -120,6 +122,12 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             categoryDefinition = dateFieldFill;
         } else if(category instanceof GscopeCategory) {
             GScopeItem gScopeItem = new GScopeItem(((GscopeCategory) category).getCategoryName(), ((GscopeCategory) category).getGscope());
+            categoryDefinition = gScopeItem;
+        } else if(category instanceof URLPatternCategory) {
+            // URLPatternCategory is implmented using gscopes so just re-use the gscope item fill.
+            URLPatternCategory urlPatternCat = (URLPatternCategory) category;
+            GScopeItem gScopeItem = new GScopeItem(urlPatternCat.getCategoryName(), 
+                new GscopeNameProvider().nameForURLPatternCategory(urlPatternCat.getPattern()).getGscopeName());
             categoryDefinition = gScopeItem;
         } else if(category instanceof MetaDataFieldCategory) {
              MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());
