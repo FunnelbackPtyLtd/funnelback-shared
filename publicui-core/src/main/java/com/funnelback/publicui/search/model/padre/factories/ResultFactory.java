@@ -73,7 +73,7 @@ public class ResultFactory {
             }
         }
 
-        Set<Integer> gscopesSet = parseGScopeSet(data.get(Result.Schema.GSCOPES_SET));
+        Set<String> gscopesSet = parseGScopeSet(data.get(Result.Schema.GSCOPES_SET));
 
         Result r = new Result(
                 rank,
@@ -121,28 +121,16 @@ public class ResultFactory {
      *  If it hits any failure it will return the set of as
      *  many as it parsed, or the empty set.
      * */
-    private static Set<Integer> parseGScopeSet(String strGScopesSet) {
-        Set<Integer> gscopeSet = new HashSet<Integer>();
-
+    private static Set<String> parseGScopeSet(String strGScopesSet) {
         if(strGScopesSet == null || strGScopesSet.trim().length() == 0) {
-            return gscopeSet;
+            return new HashSet<>();
         }
 
         try {
             //Split on commas
-            String[] parseElements = strGScopesSet.split(",");
-
-            try {
-                //Parse to Integer and insert into set
-                for(String s : parseElements) {
-                    gscopeSet.add(Integer.parseInt(s));
-                }
-                return gscopeSet;
-            } catch (NumberFormatException nfe) {
-                return gscopeSet;
-            }
+            return new HashSet<>(Arrays.asList(strGScopesSet.split(",")));
         } catch (PatternSyntaxException pse) {
-            return gscopeSet;
+            return new HashSet<>();
         }
     }
 
