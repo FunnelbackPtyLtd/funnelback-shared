@@ -37,5 +37,21 @@ public enum FacetValuesOrder {
      * Values should be in the same order as the category definitions are
      * in the facet configuration.
      */
-    CATEGORY_DEFINITION_ORDER;
+    CATEGORY_DEFINITION_ORDER,
+    
+    /**
+     * Values are sorted by the first number found in the label, in increasing
+     * value.
+     * for example $0.1 will be sorted before $2.2
+     */
+    LABEL_AS_NUMBER_ASCENDING,
+    
+    /**
+     * Values are sorted by the first number found in the label, in decreasing
+     * value.
+     * For example $2.2 will be sorted before $0.1
+     */
+    LABEL_AS_NUMBER_DESCENDING
+    
+    ;
 }
