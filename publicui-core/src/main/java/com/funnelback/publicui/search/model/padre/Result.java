@@ -187,7 +187,7 @@ public class Result implements ResultType {
     /**
      * Set of GScope Numbers that this result has.
      */
-    @Getter @Setter private Set<Integer> gscopesSet;
+    @Getter @Setter private Set<String> gscopesSet;
 
     /**
      * Custom data placeholder allowing any arbitrary data to be
