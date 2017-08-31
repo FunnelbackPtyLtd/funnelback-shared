@@ -6,6 +6,7 @@ import static com.funnelback.common.facetednavigation.models.Facet.LEGACY_FACET_
 import static com.funnelback.common.function.Predicates.not;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,9 @@ public class Facet {
     @NotNull @NonNull
     @Getter private FacetConstraintJoin constraintJoin;
     
+    /**
+     * @since 15.14
+     */
     @NotNull @NonNull
     @Getter private List<FacetValuesOrder> order;
     
@@ -79,6 +83,20 @@ public class Facet {
      */
     @NotNull @NonNull
     @Getter private FacetValues facetValues;
+    
+    /**
+     * If non-null this comparator will be used to sort values returned by the 
+     * {@link Facet#getAllValues()}, {@link Facet#getSelectedValues()} and 
+     * {@link Facet#getUnselectedValues()} methods.
+     * 
+     * <p>This currently does not sort the values returned by any other method
+     * such as the values in what is returned by {@link Facet#getCategories()}
+     * although this may change.</p>
+     * 
+     * @since 15.14
+     */
+    @JsonIgnore @XStreamOmitField
+    @Getter @Setter private Comparator<CategoryValue> valueComparator = null;
     
     public Facet(String name, 
             FacetSelectionType selectionType, 
@@ -167,7 +185,13 @@ public class Facet {
             .flatMap(Flattener.mapper(Category::getCategories))
             .map(Category::getValues)
             .flatMap(List::stream)
-            .sorted(new FacetComparatorProvider().getComparatorWhenSortingAllValus(order));
+            .sorted(comparatorForSorting());
+    }
+    
+    @JsonIgnore
+    private final Comparator<CategoryValue> comparatorForSorting() {
+        if(this.valueComparator != null) return this.valueComparator;
+        return new FacetComparatorProvider().getComparatorWhenSortingAllValus(order);
     }
 
     /**
