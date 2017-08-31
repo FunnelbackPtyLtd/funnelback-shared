@@ -32,7 +32,6 @@ public class ByLabelAsNumberComparator implements Comparator<Facet.CategoryValue
      */
     BigDecimal extractFirstNumber(String s) {
         int startOfNumber;
-        boolean hasDecimal = false;
         for(startOfNumber = 0; startOfNumber < s.length(); startOfNumber++) {
             if(isDigit(s.charAt(startOfNumber))) {
                 break;
@@ -54,6 +53,8 @@ public class ByLabelAsNumberComparator implements Comparator<Facet.CategoryValue
         
         StringBuilder number = new StringBuilder();
         number.append(s.substring(startOfNumber, startOfNumber + lengthOfNumber));
+        
+        boolean hasDecimal = false;
         
         for(int i = startOfNumber + lengthOfNumber;  i < s.length(); i++) {
             char c = s.charAt(i);
