@@ -55,7 +55,7 @@ public enum FacetValuesOrder {
     
     /**
      * Sort values produced by the Date facet category in ascending order.
-     * For example today is sorted before yesterday.  
+     * For example yesterday is sorted before today.  
      * Special categories like Past 6 weeks or Next year will always 
      * be displayed before specific years like 2013.
      */
@@ -63,7 +63,7 @@ public enum FacetValuesOrder {
     
     /**
      * Sort values produced by the Date facet category in descending order.
-     * For example yesterday is sorted before today.  
+     * For example today is sorted before yesterday.  
      * 
      */
     DATE_DESCENDING
