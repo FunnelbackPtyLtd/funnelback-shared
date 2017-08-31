@@ -107,7 +107,7 @@ public class ByLabelAsNumberComparator implements Comparator<Facet.CategoryValue
         // https://www.cs.tut.fi/~jkorpela/chars/spaces.html
         // http://www.unicode.org/charts/PDF/U2000.pdf
         // Note that java does not consider all of these white space, yet
-        // in my browser they do.
+        // in my browser they appear as white space.
             
         Set<Character> chars = new HashSet<>();
             
