@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class FacetComparatorProvider {
 
-    private static final Map<FacetValuesOrder, Comparator<Facet.CategoryValue>> FACET_ORDER_TO_COMPARATOR 
+    private final Map<FacetValuesOrder, Comparator<Facet.CategoryValue>> FACET_ORDER_TO_COMPARATOR 
         = ImmutableMap.<FacetValuesOrder, Comparator<Facet.CategoryValue>>builder()
         .put(FacetValuesOrder.COUNT_DESCENDING, new ByCountAscending().reversed())
         .put(FacetValuesOrder.COUNT_ASCENDING, new ByCountAscending())
@@ -27,7 +27,7 @@ public class FacetComparatorProvider {
         .put(FacetValuesOrder.LABEL_AS_NUMBER_ASCENDING, new ByLabelAsNumberComparator())
         .put(FacetValuesOrder.LABEL_AS_NUMBER_DESCENDING, new ByLabelAsNumberComparator().reversed())
         .put(FacetValuesOrder.DATE_ASCENDING, new ByDateComparator(DateSortMode.adate))
-        .put(FacetValuesOrder.DATE_ASCENDING, new ByDateComparator(DateSortMode.ddate))
+        .put(FacetValuesOrder.DATE_DESCENDING, new ByDateComparator(DateSortMode.ddate))
         .build();
     
     Comparator<Facet.CategoryValue> getComparator(FacetValuesOrder orderToSortBy) {
