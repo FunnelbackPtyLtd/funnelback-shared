@@ -51,7 +51,22 @@ public enum FacetValuesOrder {
      * value.
      * For example $2.2 will be sorted before $0.1
      */
-    LABEL_AS_NUMBER_DESCENDING
+    LABEL_AS_NUMBER_DESCENDING,
+    
+    /**
+     * Sort values produced by the Date facet category in ascending order.
+     * For example today is sorted before yesterday.  
+     * Special categories like Past 6 weeks or Next year will always 
+     * be displayed before specific years like 2013.
+     */
+    DATE_ASCENDING,
+    
+    /**
+     * Sort values produced by the Date facet category in descending order.
+     * For example yesterday is sorted before today.  
+     * 
+     */
+    DATE_DESCENDING
     
     ;
 }
