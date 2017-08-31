@@ -20,20 +20,30 @@ public class ByLabelAsNumberComparatorTest {
     
     @Test
     public void testNumberExtraction() {
+        testInt(1, "١.٠");
         testInt(1, "1");
+        testInt(1, "1  1");
+        testInt(11, "1 1");
+        testInt(1, "1, 1");
         testInt(-1, "-1");
         testInt(0, "0");
         testInt(0, "0.0");
         testInt(-1, "asas-1-123");
+        testInt(0, "0 ");
+        testInt(111, "111");
+        
     }
     
     @Test
     public void testDecimal() {
         test("0.12", "0.12");
         test("-0.12", "-0.12");
-        test("-0.12", "-.12");
+        // https://en.wikipedia.org/wiki/ISO_31-0#Numbers
+        // For numbers whose magnitude is less than 1, the decimal sign should be preceded by a zero.
+        test("12", "-.12");
         test("-0.1", "as-0.1-2");
         test("1.2", "1.2.3");
+        test("100000000.12", "100\u200A000\u200A000,12");
     }
     
     @Test
@@ -69,6 +79,7 @@ public class ByLabelAsNumberComparatorTest {
     @Test
     public void testSortRanges() {
         List<CategoryValue> list = new ArrayList<>();
+        list.add(categoryWithLabel("ALL"));
         list.add(categoryWithLabel("$4-100"));
         list.add(categoryWithLabel("$1.4-4"));
         list.add(categoryWithLabel("$1-4"));
@@ -86,6 +97,7 @@ public class ByLabelAsNumberComparatorTest {
         Assert.assertEquals("$1-4", result.get(3));
         Assert.assertEquals("$1.4-4", result.get(4));
         Assert.assertEquals("$4-100", result.get(5));
+        Assert.assertEquals("ALL", result.get(6));
     }
     
     private CategoryValue categoryWithLabel(String label) {

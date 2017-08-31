@@ -10,10 +10,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+@Ignore
 public class FacetComparatorProviderTest {
     
     // These are made global otherwise we need to overridde the equals and I am too 
