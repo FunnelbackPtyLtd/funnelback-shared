@@ -22,10 +22,12 @@ import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.function.Flattener;
+import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
+import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
@@ -238,6 +240,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     .forEach(p -> extraQuestion.getRawInputParameters().put(p.getOption(), new String[]{p.getValue()}));
                     
                     extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
+                    extraQuestion.getDynamicQueryProcessorOptions().add(QueryProcessorOptionKeys.LOG + "false");
                     
                     searchTransaction.addExtraSearch(extraSearchName, extraQuestion);
                     log.trace("Added extra search '{}' for facet {} and category value data: {}", 

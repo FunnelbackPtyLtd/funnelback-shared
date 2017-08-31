@@ -23,6 +23,8 @@ public class FacetComparatorProvider {
         .put(FacetValuesOrder.CATEGORY_DEFINITION_ORDER, new FacetConfigOrder())
         .put(FacetValuesOrder.LABEL_ASCENDING, new ByLabelComparator())
         .put(FacetValuesOrder.LABEL_DESCENDING, new ByLabelComparator().reversed())
+        .put(FacetValuesOrder.LABEL_AS_NUMBER_ASCENDING, new ByLabelAsNumberComparator())
+        .put(FacetValuesOrder.LABEL_AS_NUMBER_DESCENDING, new ByLabelAsNumberComparator().reversed())
         .build();
     
     Comparator<Facet.CategoryValue> getComparator(FacetValuesOrder orderToSortBy) {
