@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -94,7 +95,7 @@ public class FacetComparatorProviderTest {
     public void testAllSortTypeHaveAComparator() {
         for(FacetValuesOrder order : FacetValuesOrder.values()) {
             Assert.assertNotNull("Missing comparator for : " + order, 
-                new FacetComparatorProvider().getComparator(order));
+                new FacetComparatorProvider().getComparator(order, Optional.empty()));
         }
     }
     

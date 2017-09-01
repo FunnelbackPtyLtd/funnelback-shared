@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -96,7 +97,7 @@ public class Facet {
      * @since 15.14
      */
     @JsonIgnore @XStreamOmitField
-    @Getter @Setter private Comparator<CategoryValue> valueComparator = null;
+    @Getter @Setter private Comparator<CategoryValue> customComparator = null;
     
     public Facet(String name, 
             FacetSelectionType selectionType, 
@@ -190,8 +191,7 @@ public class Facet {
     
     @JsonIgnore
     private final Comparator<CategoryValue> comparatorForSorting() {
-        if(this.valueComparator != null) return this.valueComparator;
-        return new FacetComparatorProvider().getComparatorWhenSortingAllValus(order);
+        return new FacetComparatorProvider().getComparatorWhenSortingAllValus(order, Optional.ofNullable(customComparator));
     }
 
     /**

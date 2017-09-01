@@ -3,16 +3,12 @@ package com.funnelback.publicui.search.lifecycle.output.processors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Component;
 
-import com.funnelback.common.Reference;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
@@ -21,7 +17,6 @@ import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigat
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
-import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
@@ -106,7 +101,7 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                         && c.getCategories().size() == 0)) {
                         Collections.sort(facet.getCategories(), 
                             new ByFirstCategoryValueComparator(
-                                comparatorProvider.getComparatorWhenSortingAllValus(f.getOrder())));
+                                comparatorProvider.getComparatorWhenSortingAllValus(f.getOrder(), Optional.ofNullable(facet.getCustomComparator()))));
                     }
                     fillFacetUrls.setUnselectAllUrl(facet, searchTransaction);
                     searchTransaction.getResponse().getFacets().add(facet);
