@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import com.funnelback.publicui.contentauditor.UrlScopeFill;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 public class UrlScopeFillTests {
 
@@ -26,7 +27,7 @@ public class UrlScopeFillTests {
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
-        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, mock(FacetDefinition.class));
 
         Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
 
@@ -43,7 +44,7 @@ public class UrlScopeFillTests {
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
-        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, mock(FacetDefinition.class));
 
         Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
 
@@ -61,7 +62,7 @@ public class UrlScopeFillTests {
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
-        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, mock(FacetDefinition.class));
         categoryValues.stream()
             .forEach(cv -> Assert.assertFalse(cv.isSelected()));
 
@@ -81,7 +82,7 @@ public class UrlScopeFillTests {
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
 
-        List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st, mock(FacetDefinition.class));
         categoryValues.stream()
             .forEach(cv -> Assert.assertFalse(cv.isSelected()));
 
@@ -102,7 +103,7 @@ public class UrlScopeFillTests {
         SearchTransaction st = mock(SearchTransaction.class, Mockito.RETURNS_DEEP_STUBS);
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
         
-        List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("").computeValues(st, mock(FacetDefinition.class));
         Assert.assertEquals(1, categoryValues.size());
         Assert.assertEquals("example.org/folder/sub-folder/", categoryValues.get(0).getData());
         Assert.assertEquals(12, categoryValues.get(0).getCount() + 0);
@@ -118,7 +119,7 @@ public class UrlScopeFillTests {
         when(st.getResponse().getResultPacket().getUrlCounts()).thenReturn(countsFromPadre);
         when(st.getQuestion().getInputParameterMap().get(new UrlScopeFill("").getQueryStringParamName())).thenReturn("example.com/foo");
 
-        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, null);
+        List<CategoryValue> categoryValues = new UrlScopeFill("example.com").computeValues(st, mock(FacetDefinition.class));
 
         Map<String, Integer> result = categoryValues.stream().collect(Collectors.toMap(CategoryValue::getData, CategoryValue::getCount));
 
