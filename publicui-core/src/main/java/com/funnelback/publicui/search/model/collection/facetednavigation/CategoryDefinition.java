@@ -108,7 +108,7 @@ public abstract class CategoryDefinition {
      * @return The computed values.
      */
     public List<CategoryValue> computeValues(final SearchTransaction st, FacetDefinition fdef) {
-        return computeData(st, fdef)
+        List<CategoryValue> values = computeData(st, fdef)
             .stream()
             .map(data -> {                
                 try {
@@ -128,6 +128,11 @@ public abstract class CategoryDefinition {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList());
+        if(fdef.getFacetValues() == FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES
+            && values.stream().anyMatch(CategoryValue::isSelected)) {
+            return values.stream().filter(CategoryValue::isSelected).collect(Collectors.toList());
+        }
+        return values;
     }
     
     public abstract List<CategoryValueComputedDataHolder> computeData(final SearchTransaction st, FacetDefinition fdef);

@@ -7,9 +7,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.funnelback.common.function.Predicates.not;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
+import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.lifecycle.output.AbstractOutputProcessor;
 import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.CategoryAndSiblings;
@@ -104,11 +109,28 @@ public class FacetedNavigation extends AbstractOutputProcessor {
                                 comparatorProvider.getComparatorWhenSortingAllValus(f.getOrder(), Optional.ofNullable(facet.getCustomComparator()))));
                     }
                     fillFacetUrls.setUnselectAllUrl(facet, searchTransaction);
+                    
+                    removeUnslectedValuesForDrillDownFacets(facet);
+                    
                     searchTransaction.getResponse().getFacets().add(facet);
                     
                 }
             }
         }
+    }
+    
+    public void removeUnslectedValuesForDrillDownFacets(Facet facet) {
+        if(facet.getFacetValues() != FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES) return;
+        removeUnslectedValuesForDrillDownFacets(facet.getCategories());
+    }
+    
+    public void removeUnslectedValuesForDrillDownFacets(List<Category> categories) {
+        if(categories.stream().map(Category::getValues).flatMap(List::stream).anyMatch(CategoryValue::isSelected)) {
+            for(Category c : categories) {
+                c.getValues().removeIf(not(CategoryValue::isSelected));
+            }
+        }
+        categories.stream().map(Category::getCategories).forEach(this::removeUnslectedValuesForDrillDownFacets);
     }
     
     

@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -25,14 +26,16 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.Facet;
+import com.funnelback.publicui.search.model.transaction.Facet.Category;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
-import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Wither;
+import luke.BugPrint;
 public class FacetedNavigationTest {
 
     /**
@@ -158,6 +161,47 @@ public class FacetedNavigationTest {
         Assert.assertEquals("a", values.get(2).getLabel());
     }
     
+    @Test
+    public void removingUnselectedValuesForDrillDownFacets() {
+        Facet facet = mock(Facet.class);
+        when(facet.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES);
+        
+        Category towns = new Category("towns", "");
+        towns.getValues().add(categoryValue("cowra", false));
+        towns.getValues().add(categoryValue("parkes", false));
+        
+        Category states = new Category("states", "");
+        states.getCategories().add(towns);
+        states.getValues().add(categoryValue("NSW", false));
+        states.getValues().add(categoryValue("VIC", true));
+        states.getValues().add(categoryValue("QLD", false));
+        
+        Category countries = new Category("countries", "");
+        countries.getCategories().add(states);
+        countries.getValues().add(categoryValue("Ar", false));
+        countries.getValues().add(categoryValue("Aus", true));
+        countries.getValues().add(categoryValue("Nz", false));
+        
+        when(facet.getCategories()).thenReturn(asList(countries));
+        
+        new FacetedNavigation().removeUnslectedValuesForDrillDownFacets(facet);
+        
+        Assert.assertEquals(1, countries.getValues().size());
+        Assert.assertEquals("Aus", countries.getValues().get(0).getLabel());
+        
+        Assert.assertEquals(1, states.getValues().size());
+        Assert.assertEquals("VIC", states.getValues().get(0).getLabel());
+        
+        Assert.assertEquals(2, towns.getValues().size());
+    }
+    
+    public CategoryValue categoryValue(String label, boolean selected) {
+        CategoryValue value = mock(CategoryValue.class);
+        when(value.getData()).thenReturn(label);
+        when(value.getLabel()).thenReturn(label);
+        when(value.isSelected()).thenReturn(selected);
+        return value;
+    }
     
     public class DummyCategory extends CategoryDefinition {
         

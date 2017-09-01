@@ -1,6 +1,7 @@
 package com.funnelback.publicui.test.search.model.collection.facetednavigation;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
@@ -339,7 +340,8 @@ public class CategoryDefinitionTests {
     public void testComputeValues() {
         CategoryValueComputedDataHolder data = new CategoryValueComputedDataHolder("dhawking", 
             "David", 12, "constraint?", false, "f.author|", "author=dhawking");
-        List<CategoryValue> values = new CategoryDefinitionComputeData("d", asList(data)).computeValues(null, null);
+        List<CategoryValue> values = new CategoryDefinitionComputeData("d", asList(data))
+            .computeValues(null, mock(FacetDefinition.class));
         Assert.assertEquals(1, values.size());
         
         
@@ -353,6 +355,40 @@ public class CategoryDefinitionTests {
         
         Assert.assertEquals("f.author%7C=author%3Ddhawking", values.get(0).getQueryStringParam());
     }
+    
+    @Test
+    public void testDrillDownShowOnlySelected() {
+        CategoryValueComputedDataHolder notSelected1 = new CategoryValueComputedDataHolder("notSelected1", 
+            "David", 12, "constraint?", false, "f.author|", "author=dhawking");
+        CategoryValueComputedDataHolder notSelected2 = new CategoryValueComputedDataHolder("notSelected2", 
+            "David", 12, "constraint?", false, "f.author|", "author=dhawking");
+        CategoryValueComputedDataHolder selected1 = new CategoryValueComputedDataHolder("selected1", 
+            "David", 12, "constraint?", true, "f.author|", "author=dhawking");
+        CategoryValueComputedDataHolder selected2 = new CategoryValueComputedDataHolder("selected2", 
+            "David", 12, "constraint?", true, "f.author|", "author=dhawking");
+        
+        List<CategoryValueComputedDataHolder> valuesSomeSelected = asList(notSelected1, notSelected2, selected1, selected2);
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES);
+        
+        List<String> data = new CategoryDefinitionComputeData("", valuesSomeSelected)
+            .computeValues(null, facetDef)
+            .stream().map(CategoryValue::getData).collect(Collectors.toList());
+        
+        Assert.assertTrue("Should contain selected values", data.contains("selected1"));
+        Assert.assertTrue("Should contain selected values", data.contains("selected1"));
+        Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected1"));
+        Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected2"));
+        
+        // Try out with  list of unselected values only.
+        List<String> dataUnselected = new CategoryDefinitionComputeData("", asList(notSelected1, notSelected2))
+            .computeValues(null, facetDef)
+            .stream().map(CategoryValue::getData).collect(Collectors.toList());
+        
+        Assert.assertTrue("Nothing is selected, we should show all values", dataUnselected.contains("notSelected1"));
+        Assert.assertTrue("Nothing is selected, we should show all values", dataUnselected.contains("notSelected2"));
+    }
+    
     
 }
 
