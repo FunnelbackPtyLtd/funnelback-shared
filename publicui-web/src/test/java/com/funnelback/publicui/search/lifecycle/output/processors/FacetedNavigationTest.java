@@ -8,7 +8,6 @@ import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -35,7 +34,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 
 import lombok.Setter;
 import lombok.experimental.Wither;
-import luke.BugPrint;
 public class FacetedNavigationTest {
 
     /**
