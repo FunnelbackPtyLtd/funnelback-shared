@@ -376,7 +376,7 @@ public class CategoryDefinitionTests {
             .stream().map(CategoryValue::getData).collect(Collectors.toList());
         
         Assert.assertTrue("Should contain selected values", data.contains("selected1"));
-        Assert.assertTrue("Should contain selected values", data.contains("selected1"));
+        Assert.assertTrue("Should contain selected values", data.contains("selected2"));
         Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected1"));
         Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected2"));
         
