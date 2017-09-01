@@ -6,6 +6,27 @@ package com.funnelback.common.facetednavigation.models;
  */
 public enum FacetValues {
     /**
+     * Values come from the scoped query however if a value
+     * is selected all other non selected values at the same
+     * category level are not shown.
+     * e.g. If every document is in both Aus and NZ and we selected Aus
+     * only the value Aus would be selected. If we configured facets
+     * to show states under the country we would still see the following values:
+     * 
+     * (selected) Aus
+     *   - NSW
+     *   - ACT
+     * 
+     * Where if we just used FROM_SCOPED_QUERY we would see:
+     * (selected) Aus
+     * NZ
+     *   - NSW
+     *   - ACT
+     * 
+     */
+    FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES,
+    
+    /**
      * Values are from the query which may have facets applied.
      * <p>If you had selected `red cars` then (if each car has one colour)
      * you would not see facet values for any other car colour.</p>
