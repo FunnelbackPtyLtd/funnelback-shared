@@ -176,6 +176,10 @@ public class FacetedNavigationTest {
         states.getValues().add(categoryValue("VIC", true));
         states.getValues().add(categoryValue("QLD", false));
         
+        Category territories = new Category("territories", "");
+        territories.getValues().add(categoryValue("ACT", false));
+        territories.getValues().add(categoryValue("NT", false));
+        
         Category countries = new Category("countries", "");
         countries.getCategories().add(states);
         countries.getValues().add(categoryValue("Ar", false));
