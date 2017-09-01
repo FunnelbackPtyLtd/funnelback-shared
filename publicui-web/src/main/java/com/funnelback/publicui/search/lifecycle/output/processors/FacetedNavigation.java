@@ -1,15 +1,13 @@
 package com.funnelback.publicui.search.lifecycle.output.processors;
 
+import static com.funnelback.common.function.Predicates.not;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import static com.funnelback.common.function.Predicates.not;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 
 import org.springframework.stereotype.Component;
 
