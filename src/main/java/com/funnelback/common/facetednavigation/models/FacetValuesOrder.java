@@ -66,7 +66,12 @@ public enum FacetValuesOrder {
      * For example today is sorted before yesterday.  
      * 
      */
-    DATE_DESCENDING
+    DATE_DESCENDING,
+    
+    /**
+     * Uses a custom comparator that can be set on the Facet. 
+     */
+    CUSTOM_COMPARATOR;
     
     ;
 }
