@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
@@ -162,7 +163,7 @@ public class ExtraSearchesExecutorTest {
         
         SearchTransaction st = getSearchTransactionWithMockConfig();
         
-        Callable<SearchTransaction> call = executor.makeCallable(st, "", new SearchQuestion(), null);
+        Callable<SearchTransaction> call = executor.makeCallable(st, "", new SearchQuestion(), null, new HashMap<>());
         
         st.getExtraSearchesAproxTimeSpent().set(0);
         
