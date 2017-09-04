@@ -52,6 +52,7 @@
             <constructor-arg value="#{ T(com.funnelback.publicui.search.model.collection.Collection$Hook).pre_datafetch }" />
             <constructor-arg value="#{ T(com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner$Phase).Data }" />
         </bean>
+        <ref bean="setPriorityQueryProcessorOptions" />
         <ref bean="defaultPadreForking" />
         <!-- ref bean="padreForkingPooled" / -->
         <bean id="PostDataFetchHook" class="com.funnelback.publicui.search.lifecycle.GenericHookScriptRunner">

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.funnelback.common.Environment.FunnelbackVersion;
 import com.funnelback.common.config.DefaultValues;
@@ -176,6 +177,15 @@ public class SearchQuestion {
      * <p>Will be updated by the input processing.</p>
      */
     @Getter final private List<String> dynamicQueryProcessorOptions = new ArrayList<String>();
+    
+    /**
+     * Query processor options that are guaranteed to apply.
+     * 
+     * <p>Internal use only</p>
+     * @since 15.12
+     */
+    @JsonIgnore @XStreamOmitField
+    @Getter final private PriorityQueryProcessorOptions priorityQueryProcessorOptions = new PriorityQueryProcessorOptions();
 
     /**
      * <p>User keys for early binding Document Level Security.</p>
