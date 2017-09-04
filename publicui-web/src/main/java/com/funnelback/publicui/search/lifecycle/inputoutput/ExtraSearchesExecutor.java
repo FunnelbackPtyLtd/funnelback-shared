@@ -135,7 +135,7 @@ public class ExtraSearchesExecutor implements InputProcessor, OutputProcessor {
     }
     
     /**
-     * Addeds the given keys and values to the log4j2 thread context and 
+     * Adds the given keys and values to the log4j2 thread context and 
      * later removes those keys when the object is closed. 
      *
      */
