@@ -248,7 +248,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     
     public void addFacetExtraSearchSpecificPadreOptions(SearchQuestion searchQuestion, List<OptionAndValue> optionsAndValues) {
         searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.LOG, "false");
-        searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.NUM_RANKS, "1");
+        searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.NUM_RANKS, "0");
         optionsAndValues
             .stream()
             .forEach(p -> {
