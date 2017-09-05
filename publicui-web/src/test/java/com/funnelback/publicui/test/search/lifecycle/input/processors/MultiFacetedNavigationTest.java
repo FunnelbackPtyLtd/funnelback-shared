@@ -217,7 +217,7 @@ public class MultiFacetedNavigationTest {
             questionOr.getRawInputParameters().containsKey("fromor"));
         
         Assert.assertTrue("Should have added over ruling padre speed up options like rmcf=[]",
-            questionOr.getRawInputParameters().containsKey("rmcf"));
+            questionOr.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
     }
     
     @Test
@@ -228,10 +228,11 @@ public class MultiFacetedNavigationTest {
         Assert.assertNotNull("The unscoped extra search is missing are missing", extraSearch);
         
         Assert.assertFalse("Should not have overridden rmcf (to turn it off) or other options "
-            + "needed by faceted nav", extraSearch.getRawInputParameters().containsKey("rmcf"));
+            + "needed by faceted nav", 
+            extraSearch.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
         
         Assert.assertTrue("Should have turned of features not needed by faceted nav", 
-            extraSearch.getRawInputParameters().containsKey("SSS"));
+            extraSearch.getPriorityQueryProcessorOptions().getOptions().containsKey("SSS"));
     }
     
     @Test

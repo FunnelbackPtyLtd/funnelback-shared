@@ -64,7 +64,9 @@ public class PadreOptionsForSpeed {
             COUNTINDEXEDTERMS,
             COUNT_DATES,
             COUNTGBITS,
-            COUNT_URLS);
+            COUNT_URLS,
+            COUNT_UNIQUE_BY_GROUP,
+            DOCS_PER_COLLECTION);
     }
     
     /**
