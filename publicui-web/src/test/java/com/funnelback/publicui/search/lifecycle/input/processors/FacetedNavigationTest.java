@@ -2,9 +2,8 @@ package com.funnelback.publicui.search.lifecycle.input.processors;
 
 import java.util.Stack;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 public class FacetedNavigationTest {
 
