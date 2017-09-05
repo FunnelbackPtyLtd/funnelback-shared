@@ -155,7 +155,7 @@ public class LegacyFacetedNavigation extends AbstractInputProcessor {
                 out.push("+");
             }
             
-            updated = serializeRPN(out);
+            updated = new FacetedNavigation().serializeRPN(out);
 
             // Add existing constraints and an AND operator
             // if (existingGScope1Parameters != null && !"".equals(existingGScope1Parameters)) {
@@ -222,21 +222,6 @@ public class LegacyFacetedNavigation extends AbstractInputProcessor {
         return null;
     }
     
-    /**
-     * Serializes a stack of RPN gscope operations in a PADRE format.
-     * @param rpn
-     * @return
-     */
-    private String serializeRPN(Stack<String> rpn) {
-        StringBuffer out = new StringBuffer();
-        for (int i=0; i<rpn.size(); i++) {
-            out.append(rpn.get(i));
-            if (i+1 < rpn.size() && StringUtils.isNumeric(rpn.get(i)) && StringUtils.isNumeric(rpn.get(i+1))) {
-                out.append(",");
-            }
-        }
-        log.debug("Serialized '" + StringUtils.join(rpn, ",") + "' to '" + out.toString() + "'");
-        return out.toString();
-    }
+    
     
 }
