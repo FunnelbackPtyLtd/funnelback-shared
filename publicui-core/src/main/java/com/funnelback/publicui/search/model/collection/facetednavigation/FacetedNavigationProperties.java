@@ -37,6 +37,7 @@ public class FacetedNavigationProperties {
             return true;
         }
         
+        // We could instead run a query where the given facet is unselected and then use those counts.
         if(facet.getSelectionType() == FacetSelectionType.SINGLE 
             && (facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || facet.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY)
             && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {

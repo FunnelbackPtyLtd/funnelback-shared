@@ -27,7 +27,6 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
-import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
@@ -107,12 +106,12 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         // Apply options to speed things up but take care to not apply ones that turn off counting which is need
         // by faceted navigation.
         Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
-        padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
-            .stream()
-            .filter(o -> !optionsToNotAdd.contains(o.getOption())) // Remove options we need for faceted nav.
-            .forEach(p -> extraQuestion.getRawInputParameters().put(p.getOption(), new String[]{p.getValue()}));
         
-        extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
+        addFacetExtraSearchSpecificPadreOptions(extraQuestion, 
+            padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
+            .stream()
+            .filter(o -> !optionsToNotAdd.contains(o.getOption()))
+            .collect(Collectors.toList())); // Remove options we need for faceted nav.
             
         searchTransaction.addExtraSearch(SEARCH_FOR_UNSCOPED_VALUES, extraQuestion);
     }
@@ -124,12 +123,12 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         // Apply options to speed things up but take care to not apply ones that turn off counting which is need
         // by faceted navigation.
         Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
-        padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
-            .stream()
-            .filter(o -> !optionsToNotAdd.contains(o.getOption())) // Remove options we need for faceted nav.
-            .forEach(p -> extraQuestion.getRawInputParameters().put(p.getOption(), new String[]{p.getValue()}));
         
-        extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
+        addFacetExtraSearchSpecificPadreOptions(extraQuestion, 
+            padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
+            .stream()
+            .filter(o -> !optionsToNotAdd.contains(o.getOption()))
+            .collect(Collectors.toList())); // Remove options we need for faceted nav.
         
         // We want to get all values the user can see so run a padre null search.
         extraQuestion.setQuery("!FunDoesNotExist:padrenull");
@@ -208,7 +207,6 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
             return;
         }
         
-        
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
         for(Facet facet : valueProvidingSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
             if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
@@ -235,12 +233,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     // For this query we are interested only in the total matching so lets
                     // not count rmcf or anything else, we need to speed these extra searches up
                     // as we have many of these.
-                    extraPadreOptions
-                    .stream()
-                    .forEach(p -> extraQuestion.getRawInputParameters().put(p.getOption(), new String[]{p.getValue()}));
                     
-                    extraQuestion.getRawInputParameters().put("num_rank", new String[]{"1"});
-                    extraQuestion.getDynamicQueryProcessorOptions().add(QueryProcessorOptionKeys.LOG + "false");
+                    addFacetExtraSearchSpecificPadreOptions(extraQuestion, extraPadreOptions);
                     
                     searchTransaction.addExtraSearch(extraSearchName, extraQuestion);
                     log.trace("Added extra search '{}' for facet {} and category value data: {}", 
@@ -250,8 +244,19 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                 }
             }
         }
+    }
+    
+    public void addFacetExtraSearchSpecificPadreOptions(SearchQuestion searchQuestion, List<OptionAndValue> optionsAndValues) {
+        searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.LOG, "false");
+        searchQuestion.getPriorityQueryProcessorOptions().addOption(QueryProcessorOptionKeys.NUM_RANKS, "0");
+        optionsAndValues
+            .stream()
+            .forEach(p -> {
+                searchQuestion.getPriorityQueryProcessorOptions().addOption(p.getOption(), p.getValue());
+            });
         
     }
+    
     
     
     public List<FacetDefinition> getFacetDefinitions(SearchTransaction st) {

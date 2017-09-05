@@ -8,15 +8,15 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.COOL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNTGBITS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNTINDEXEDTERMS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNT_DATES;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNT_UNIQUE_BY_GROUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COUNT_URLS;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.DAAT_TIMEOUT;
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.DIVERSITY_RANK_LIMIT;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.DOCS_PER_COLLECTION;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.GEOSPATIAL_RANGES;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.KMOD;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.QSUP;
-import static com.funnelback.common.padre.QueryProcessorOptionKeys.REPETITIOUSNESS_FACTOR;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.RMCF;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.RMRF;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SAME_COLLECTION_SUPPRESSION;
@@ -64,7 +64,9 @@ public class PadreOptionsForSpeed {
             COUNTINDEXEDTERMS,
             COUNT_DATES,
             COUNTGBITS,
-            COUNT_URLS);
+            COUNT_URLS,
+            COUNT_UNIQUE_BY_GROUP,
+            DOCS_PER_COLLECTION);
     }
     
     /**
@@ -89,21 +91,26 @@ public class PadreOptionsForSpeed {
             new OptionAndValue(CONTEXTUAL_NAVIGATION, "false"), // Turn of contextual nav we don't need it.
             
             new OptionAndValue(GEOSPATIAL_RANGES, "false"), // We don't need to work this out for the counts.
-            new OptionAndValue(RMRF, "[FunUnusedMetaClass]"),  // We don't need to know ranges
-            new OptionAndValue(SUM, "[FunUnusedMetaClass]"), //This does not need to be on
-            new OptionAndValue(SUMBYGROUP, "[FunUnusedMetaClass]:[FunUnusedMetaClass]"),
+            new OptionAndValue(RMRF, ""),  // We don't need to know ranges
+            new OptionAndValue(SUM, ""), //This does not need to be on
+            new OptionAndValue(SUMBYGROUP, ""),
+            new OptionAndValue(COUNT_UNIQUE_BY_GROUP, ""),
+            
             // I don't think MBL needs to be set as the default value for SF is to get no metadata so by default
             // we would get no metadata and so setting MBL is redundent in this case and in the case metadata is requested
             // it is just in the way.
             new OptionAndValue(SBL, "1"), //Don't need a summary
-            new OptionAndValue(SF, "[FunUnusedMetaClass]"), //Don't show summary fields.
-            new OptionAndValue(COUNTINDEXEDTERMS, "[FunUnusedMetaClass]"), //don't count indexed terms.
+            new OptionAndValue(SF, ""), //Don't show summary fields.
+            new OptionAndValue(COUNTINDEXEDTERMS, ""), //don't count indexed terms.
             new OptionAndValue(SM, "off"), //Try to disable summaries
             new OptionAndValue(EXPLAIN, "false"),
             new OptionAndValue(COUNT_DATES, ""), //Setting this to empty turns off counting dates.
             new OptionAndValue(COUNTGBITS, ""), //Setting this to empty turns it off.
-            new OptionAndValue(COUNT_URLS, ""), //Emptu count_urls turns of url counting.
+            
+            new OptionAndValue(COUNT_URLS, ""), //Empty count_urls turns of url counting.
             new OptionAndValue(SORT, ""), //Turn of sorting
+            
+            new OptionAndValue(DOCS_PER_COLLECTION, "false"),
             
             // Turn of supression options, these do no change the set they just re-order the results.
             new OptionAndValue(SSS, "0"),
