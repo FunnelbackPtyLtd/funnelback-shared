@@ -54,7 +54,8 @@ public class FacetedNavigationCombinedTests {
         // Note that 1,10,41++ is also valid.
         // the current implementation happens to do something like 1,10+41+
         
-        Assert.assertTrue("We expect all three gscopes to be logical AND (note this is reverse polish)", 
+        Assert.assertTrue("We expect all three gscopes to be logical AND (note this is reverse polish) "
+             + st.getQuestion().getFacetsGScopeConstraints(), 
             st.getQuestion().getFacetsGScopeConstraints().endsWith("++")||
             st.getQuestion().getFacetsGScopeConstraints().equals("1,10+41+"));
         

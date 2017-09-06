@@ -3,6 +3,7 @@ package com.funnelback.publicui.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml.FacetLocation;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 
 /**
@@ -13,7 +14,8 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
  */
 public interface FacetedNavigationConfigParser {
 
-    public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException;
+    public Facets parseFacetedNavigationConfiguration(byte[] configuration, FacetLocation facetLocation) 
+        throws FacetedNavigationConfigParseException;
     
     /**
      * Represent a parsed faceted navigation config.
