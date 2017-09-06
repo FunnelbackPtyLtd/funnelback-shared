@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.function.StreamUtils;
+import com.funnelback.common.gscope.GscopeName;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -175,14 +176,13 @@ public class FacetedNavigation extends AbstractInputProcessor {
      * Get updated gscope1 parameters by taking into account any existing gscope1 parameter
      * and a set of constraints from the faceted navigation.
      * Each facet constraints will be combined with and AND, and each category constraint will be
-     * combined with an OR.
+     * combined with either an OR or AND depending on the constraint join of the facet.
      * @param gscope1Constraints
      * @param existingGScope1Parameters
      * @return
      */
     private String getGScope1Parameters(SetMultimap<String, String> gscope1ConstraintsByFacet,
         Map<String, FacetDefinition> facetDefinitions) {
-        String updated = "";
         Stack<String> out = new Stack<String>();
         
         for(Map.Entry<String, Collection<String>> e : gscope1ConstraintsByFacet.asMap().entrySet()) {
@@ -206,9 +206,7 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 out.push("+");
         }
         
-        updated = serializeRPN(out);
-        
-        return updated;
+        return serializeRPN(out);
     }
     
     
@@ -316,11 +314,11 @@ public class FacetedNavigation extends AbstractInputProcessor {
      * @param rpn
      * @return
      */
-    private String serializeRPN(Stack<String> rpn) {
+    public String serializeRPN(Stack<String> rpn) {
         StringBuffer out = new StringBuffer();
         for (int i=0; i<rpn.size(); i++) {
             out.append(rpn.get(i));
-            if (i+1 < rpn.size() && StringUtils.isNumeric(rpn.get(i)) && StringUtils.isNumeric(rpn.get(i+1))) {
+            if (i+1 < rpn.size() && GscopeName.isValidGscope(rpn.get(i)) && GscopeName.isValidGscope(rpn.get(i+1))) {
                 out.append(",");
             }
         }
