@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml.FacetLocation;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.DateFieldFill;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.GScopeItem;
@@ -26,19 +27,22 @@ public class DefaultFacetedNavigationConfigParserTests {
     @Before
     public void before() throws IOException, FacetedNavigationConfigParseException {
         DefaultFacetedNavigationConfigParser parser = new DefaultFacetedNavigationConfigParser();
-        facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/sample-config.xml")));
+        facets = parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/sample-config.xml")), 
+            FacetLocation.INDEX);
         Assert.assertNotNull(facets);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testSameName() throws IOException, FacetedNavigationConfigParseException {
         DefaultFacetedNavigationConfigParser parser = new DefaultFacetedNavigationConfigParser();
-        parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/same-name-facets.xml")));
+        parser.parseFacetedNavigationConfiguration(FileUtils.readFileToByteArray(new File("src/test/resources/faceted-navigation/same-name-facets.xml")),
+            FacetLocation.INDEX);
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidXml() throws FacetedNavigationConfigParseException {
-        new DefaultFacetedNavigationConfigParser().parseFacetedNavigationConfiguration("<Facets><Facet><Data></Data><MetadataFieldFill></Facet></Facets>".getBytes());
+        new DefaultFacetedNavigationConfigParser().parseFacetedNavigationConfiguration("<Facets><Facet><Data></Data><MetadataFieldFill></Facet></Facets>".getBytes(),
+            FacetLocation.INDEX);
     }
     
     @Test

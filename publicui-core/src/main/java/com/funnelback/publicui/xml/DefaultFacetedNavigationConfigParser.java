@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.facetednavigation.GscopeNameProvider;
 import com.funnelback.common.facetednavigation.marshaller.FacetMarshallerJson;
 import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml;
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml.FacetLocation;
 import com.funnelback.common.facetednavigation.models.Category;
 import com.funnelback.common.facetednavigation.models.Facet;
 import com.funnelback.common.facetednavigation.models.categories.AllDocumentsCategory;
@@ -19,6 +20,7 @@ import com.funnelback.common.facetednavigation.models.categories.CollectionCateg
 import com.funnelback.common.facetednavigation.models.categories.DateFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
+import com.funnelback.common.facetednavigation.models.categories.QueryCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLPatternCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
@@ -44,13 +46,13 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
     private final FacetMarshallerXml facetMarshallerXml = new FacetMarshallerXml();
     
     @Override
-    public Facets parseFacetedNavigationConfiguration(byte[] configuration) throws FacetedNavigationConfigParseException {
+    public Facets parseFacetedNavigationConfiguration(byte[] configuration, FacetLocation facetLocation) throws FacetedNavigationConfigParseException {
         //We have no Idea what the incoming data is lets work it out.
         
         Optional<List<Facet>> optionalFacets = facetMarshallerJson.unMarshal(configuration);
         
         if(!optionalFacets.isPresent()) {
-            optionalFacets = facetMarshallerXml.unmarshallFromUnknownLocation(configuration);
+            optionalFacets = facetMarshallerXml.unmarshall(configuration, facetLocation);
         }
         
         
@@ -128,6 +130,12 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             URLPatternCategory urlPatternCat = (URLPatternCategory) category;
             GScopeItem gScopeItem = new GScopeItem(urlPatternCat.getCategoryName(), 
                 new GscopeNameProvider().nameForURLPatternCategory(urlPatternCat.getPattern()).getGscopeName());
+            categoryDefinition = gScopeItem;
+        } else if(category instanceof QueryCategory) {
+            // URLPatternCategory is implmented using gscopes so just re-use the gscope item fill.
+            QueryCategory queryCat = (QueryCategory) category;
+            GScopeItem gScopeItem = new GScopeItem(queryCat.getCategoryName(), 
+                new GscopeNameProvider().nameForQuery(queryCat.getQuery()).getGscopeName());
             categoryDefinition = gScopeItem;
         } else if(category instanceof MetaDataFieldCategory) {
              MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());

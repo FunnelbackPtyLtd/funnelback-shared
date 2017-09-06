@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
+import com.funnelback.common.facetednavigation.marshaller.xml.FacetMarshallerXml.FacetLocation;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser;
 import com.funnelback.publicui.xml.FacetedNavigationConfigParser.FacetedNavigationConfigParseException;
@@ -30,8 +31,9 @@ public class FacetedNavigationConfigResource extends AbstractSingleFileResource<
         log.debug("Loading faceted navigation config from '"+file.getAbsolutePath()+"'");
         try {
             Facets f = fnConfigParser
-                    .parseFacetedNavigationConfiguration(FileUtils
-                            .readFileToByteArray(file));
+                    .parseFacetedNavigationConfiguration(
+                        FileUtils.readFileToByteArray(file),
+                        FacetLocation.guessLocationFromFacetConfigFile(file));
             return new FacetedNavigationConfig(f.facetDefinitions);
         } catch (FacetedNavigationConfigParseException xpe) { //TODO better checked exception
             log.error(
