@@ -97,8 +97,8 @@ public class Facet {
      * <p>If the guessedType is not the way you intend to show the facet
      * you should ignore this value and instead use the facet name or
      * other fields which describe the facet to work out what should be 
-     * shown i.e. don't have code which detects guessedType == RADIO so
-     * show the facet with checkboxes.</p>
+     * shown i.e. don't have code which is if(guessedType == TAB) then
+     * show the facet as checkboxes.</p>
      * 
      * <p>Newer versions of Funnelback may change how the type is guessed.</p>
      * 
