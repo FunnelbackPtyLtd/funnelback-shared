@@ -23,6 +23,7 @@ import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.facetednavigation.models.FacetValuesOrder;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
+import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -86,6 +87,27 @@ public class Facet {
     @Getter private FacetValues facetValues;
     
     /**
+     * The guessed type of the facet based on its configuration.
+     * 
+     * <p>This value can give an indication of how the facet
+     * should be displayed, for example SINGLE select where values
+     * come from a UNSCOPED query would give the value RADIO_BUTTON.
+     * The UI could use this to show the facets as radio buttons.</p>
+     * 
+     * <p>If the guessedType is not the way you intend to show the facet
+     * you should ignore this value and instead use the facet name or
+     * other fields which describe the facet to work out what should be 
+     * shown i.e. don't have code which detects guessedType == RADIO so
+     * show the facet with checkboxes.</p>
+     * 
+     * <p>Newer versions of Funnelback may change how the type is guessed.</p>
+     * 
+     * @since 15.14
+     */
+    @NotNull @NonNull
+    @Getter private FacetDisplayType guessedDisplayType;
+    
+    /**
      * If non-null this comparator will be used to sort values returned by the 
      * {@link Facet#getAllValues()}, {@link Facet#getSelectedValues()} and 
      * {@link Facet#getUnselectedValues()} methods.
@@ -109,6 +131,7 @@ public class Facet {
         this.constraintJoin = constraintJoin;
         this.facetValues = facetValues;
         this.order = order;
+        this.guessedDisplayType = FacetDisplayType.getType(selectionType, constraintJoin, facetValues);
     }
     
     /**
