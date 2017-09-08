@@ -3,6 +3,8 @@ package com.funnelback.publicui.search.model.transaction.facet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.funnelback.common.facetednavigation.models.FacetValues;
+import com.funnelback.common.function.StreamUtils;
 
 import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.getType;
 import static com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType.*;
@@ -16,6 +18,8 @@ public class FacetDisplayTypeTest {
     public void testCheckBox() {
         Assert.assertEquals(CHECKBOX_AND, getType(MULTIPLE, AND, FROM_SCOPED_QUERY));
         Assert.assertEquals(CHECKBOX_OR, getType(MULTIPLE, OR, FROM_SCOPED_QUERY));
+        StreamUtils.ofNullable(FacetValues.values())
+         .forEach(facetValue -> Assert.assertEquals(CHECKBOX_OR, getType(MULTIPLE, OR, facetValue)));
     }
     
     @Test

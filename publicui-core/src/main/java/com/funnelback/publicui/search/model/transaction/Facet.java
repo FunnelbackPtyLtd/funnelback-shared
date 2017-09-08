@@ -63,25 +63,25 @@ public class Facet {
     @Getter private final Map<String, Object> customData = new HashMap<String, Object>();
     
     /**
-     * @since 15.14
+     * @since 15.12
      */
     @NotNull @NonNull
     @Getter private FacetSelectionType selectionType;
     
     /**
-     * @since 15.14
+     * @since 15.12
      */
     @NotNull @NonNull
     @Getter private FacetConstraintJoin constraintJoin;
     
     /**
-     * @since 15.14
+     * @since 15.12
      */
     @NotNull @NonNull
     @Getter private List<FacetValuesOrder> order;
     
     /**
-     * @since 15.14
+     * @since 15.12
      */
     @NotNull @NonNull
     @Getter private FacetValues facetValues;
@@ -102,7 +102,7 @@ public class Facet {
      * 
      * <p>Newer versions of Funnelback may change how the type is guessed.</p>
      * 
-     * @since 15.14
+     * @since 15.12
      */
     @NotNull @NonNull
     @Getter private FacetDisplayType guessedDisplayType;
@@ -116,7 +116,7 @@ public class Facet {
      * such as the values in what is returned by {@link Facet#getCategories()}
      * although this may change.</p>
      * 
-     * @since 15.14
+     * @since 15.12
      */
     @JsonIgnore @XStreamOmitField
     @Getter @Setter private Comparator<CategoryValue> customComparator = null;
