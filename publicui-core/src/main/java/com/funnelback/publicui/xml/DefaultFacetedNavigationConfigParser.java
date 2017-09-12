@@ -20,6 +20,7 @@ import com.funnelback.common.facetednavigation.models.categories.CollectionCateg
 import com.funnelback.common.facetednavigation.models.categories.DateFieldCategory;
 import com.funnelback.common.facetednavigation.models.categories.GscopeCategory;
 import com.funnelback.common.facetednavigation.models.categories.MetaDataFieldCategory;
+import com.funnelback.common.facetednavigation.models.categories.NumericRangeCategory;
 import com.funnelback.common.facetednavigation.models.categories.QueryCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLCategory;
 import com.funnelback.common.facetednavigation.models.categories.URLPatternCategory;
@@ -136,6 +137,12 @@ public class DefaultFacetedNavigationConfigParser implements FacetedNavigationCo
             QueryCategory queryCat = (QueryCategory) category;
             GScopeItem gScopeItem = new GScopeItem(queryCat.getCategoryName(), 
                 new GscopeNameProvider().nameForQuery(queryCat.getQuery()).getGscopeName());
+            categoryDefinition = gScopeItem;
+        } else if(category instanceof NumericRangeCategory) {
+            // NumericRangeCategory is implmented using gscopes so just re-use the gscope item fill.
+            NumericRangeCategory numericRangeCat = (NumericRangeCategory) category;
+            GScopeItem gScopeItem = new GScopeItem(numericRangeCat.getCategoryName(), 
+                new GscopeNameProvider().nameForNumericRange(numericRangeCat).getGscopeName());
             categoryDefinition = gScopeItem;
         } else if(category instanceof MetaDataFieldCategory) {
              MetadataFieldFill metadataFieldFill = new MetadataFieldFill(((MetaDataFieldCategory) category).getMetadataField());
