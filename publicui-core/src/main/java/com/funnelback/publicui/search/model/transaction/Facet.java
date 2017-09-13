@@ -25,8 +25,11 @@ import com.funnelback.common.function.Flattener;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.transaction.facet.FacetDisplayType;
 import com.funnelback.publicui.search.model.transaction.facet.order.FacetComparatorProvider;
+import com.funnelback.publicui.xml.FacetConverter;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,6 +40,8 @@ import lombok.Setter;
  * 
  * @since 11.0
  */
+@XStreamConverter(FacetConverter.class)
+@AllArgsConstructor(access=AccessLevel.PROTECTED)
 public class Facet {
 
     /** Facet name, for example "Location" */
