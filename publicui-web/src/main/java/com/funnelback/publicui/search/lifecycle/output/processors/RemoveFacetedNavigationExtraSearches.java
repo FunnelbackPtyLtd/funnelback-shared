@@ -21,7 +21,6 @@ public class RemoveFacetedNavigationExtraSearches extends AbstractOutputProcesso
     
     @Override
     public void processOutput(SearchTransaction searchTransaction) throws OutputProcessorException {
-        if(0 == 0) return; //TODO remove.
         if (SearchTransactionUtils.hasQuestion(searchTransaction) && 
             searchTransaction.getQuestion().getQuestionType() == SearchQuestionType.SEARCH) {
             searchTransaction.getExtraSearches().keySet()
