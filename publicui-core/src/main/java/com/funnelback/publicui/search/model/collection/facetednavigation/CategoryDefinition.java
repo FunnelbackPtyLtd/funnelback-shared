@@ -269,6 +269,15 @@ public abstract class CategoryDefinition {
                 
             }
             
+            if(facetedNavProps.useScopedSearchWithFacetDisabledForCounts(facetDefinition, st)) {
+                String extraSearch = new FacetExtraSearchNames().extraSearchWithFacetUnchecked(facetDefinition);
+                responseForCounts = (c, v) -> Optional.ofNullable(st.getExtraSearches())
+                        .map(extraSearches -> extraSearches.get(extraSearch))
+                        .map(SearchTransaction::getResponse);
+                // if the value is not present in this query then selecting must result in a count of zero.
+                countIfNotPresent = (c, v) -> 0;
+            }
+            
             if(facetedNavProps.useDedicatedExtraSearchForCounts(facetDefinition, st)) {    
                 // In the case of OR we might have a extra search that tells us the counts.
                 // This is the same for SINGLE_AND_INSELECT_OTHER_FACETS because we need to run a query without something
@@ -276,7 +285,8 @@ public abstract class CategoryDefinition {
                 responseForCounts = (c,v) -> Optional.empty();
                 
                 countIfNotPresent = (catDef, value) -> {
-                    String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facetDefinition, catDef, value);
+                    String extraSearchName = new FacetExtraSearchNames()
+                            .extraSearchToCalculateCounOfCategoryValue(facetDefinition, catDef, value);
                     log.debug("Using extra search: {} to find the count for category with param name {} and value {}",
                         extraSearchName, catDef.getQueryStringParamName(), value);
                     return Optional.ofNullable(st.getExtraSearches().get(extraSearchName))

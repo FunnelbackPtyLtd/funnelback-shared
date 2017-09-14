@@ -61,9 +61,24 @@ public class FacetedNavigationPropertiesTest {
         FacetDefinition facetDef = facet("Extras", AND, FROM_UNSCOPED_QUERY, SINGLE);
         SearchTransaction st = getSearchTransaction(Pair.of("Extras", "radio"));
         
-        Assert.assertTrue("This is likly a radio button e.g. show me all red cars but also show that"
-            + " there are blue cars and how many blue cars.", 
+        Assert.assertFalse("Radio type does not need dedicated searches per value.", 
             facetedNavProps.useDedicatedExtraSearchForCounts(facetDef, st));
+    }
+    
+    @Test
+    public void radioUsesScopedWithUncheckedFacetSearch() {
+        // Radio type facets want to get counts by running a scopped search with only radio
+        // facet unchecked.
+        FacetDefinition radioFacet = facet("radio", AND, FROM_UNSCOPED_QUERY, SINGLE);
+        SearchTransaction radioSelectedSearchTransaction = getSearchTransaction(Pair.of("radio", "radio"));
+        
+        Assert.assertFalse("If the radio is not selected we can use the scoped query to get counts.", 
+            facetedNavProps.useScopedSearchWithFacetDisabledForCounts(radioFacet, getSearchTransaction()));
+        
+        FacetDefinition radioAllValuesFacet = facet("radio", AND, FROM_UNSCOPED_ALL_QUERY, SINGLE);
+        
+        Assert.assertTrue("If the radio is selected we need to unselect the radio to get the counts", 
+            facetedNavProps.useScopedSearchWithFacetDisabledForCounts(radioAllValuesFacet, radioSelectedSearchTransaction));
     }
     
     @Test

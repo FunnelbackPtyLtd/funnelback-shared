@@ -38,6 +38,17 @@ public class FacetedNavigationProperties {
         }
         
         // We could instead run a query where the given facet is unselected and then use those counts.
+        
+        
+        return false;
+    }
+    
+    public boolean useScopedSearchWithFacetDisabledForCounts(FacetDefinition facet, SearchTransaction searchTransaction) {
+        if(facet.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+            return false;
+        }
+        Map<String, List<String>> selectedCategoryValues  = searchTransaction.getQuestion().getSelectedCategoryValues();
+        // AKA Radio.
         if(facet.getSelectionType() == FacetSelectionType.SINGLE 
             && (facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || facet.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY)
             && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {

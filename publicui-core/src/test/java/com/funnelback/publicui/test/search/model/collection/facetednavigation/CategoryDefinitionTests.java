@@ -206,7 +206,8 @@ public class CategoryDefinitionTests {
         when(selectedValueExtraSearch.getResponse().getResultPacket().getResultsSummary().getTotalMatching())
             .thenReturn(1337);
         
-        st.getExtraSearches().put(facetExtraSearchNames.getExtraSearchName(fdef, catDef, "val"), 
+        st.getExtraSearches().put(
+            facetExtraSearchNames.extraSearchToCalculateCounOfCategoryValue(fdef, catDef, "val"), 
             selectedValueExtraSearch);
         
         FacetSearchData data = catDef.getFacetSearchData(st, fdef);
@@ -250,6 +251,28 @@ public class CategoryDefinitionTests {
         Assert.assertEquals("The default count is zero, if the value from the unscoped query is not in"
             + " the scopped query then ANDing with that value will result in a zero result page.",
             0, data.getCountIfNotPresent().apply(null, null) + 0);
+    }
+    //INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLEDZm9vYmFy
+    
+    @Test
+    public void testRadioValuesFromScopedQueryWithFacetDisabled() {
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        when(facetDef.getName()).thenReturn("foobar");
+        SearchTransaction st = new SearchTransaction();
+        SearchTransaction extraSearch = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getExtraSearches()
+            .put(new FacetExtraSearchNames().extraSearchWithFacetUnchecked(facetDef), extraSearch);
+        
+        FacetedNavigationProperties facetProps = mock(FacetedNavigationProperties.class);
+        when(facetProps.useScopedSearchWithFacetDisabledForCounts(facetDef, st)).thenReturn(true);
+        
+        MockCategoryDefinition mockCat = new MockCategoryDefinition("");
+        mockCat.setFacetedNavProps(facetProps);
+        FacetSearchData facetData = mockCat.getFacetSearchData(st, facetDef);
+        
+        Assert.assertEquals(0, facetData.getCountIfNotPresent().apply(null, null) + 0);
+        
+        Assert.assertSame(extraSearch.getResponse(), facetData.getResponseForCounts().apply(null, null).get());
     }
     
     @Test
