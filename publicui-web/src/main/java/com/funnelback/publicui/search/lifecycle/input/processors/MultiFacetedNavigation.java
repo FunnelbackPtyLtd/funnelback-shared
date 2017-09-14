@@ -27,6 +27,7 @@ import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.lifecycle.input.InputProcessorException;
 import com.funnelback.publicui.search.lifecycle.input.processors.extrasearches.FacetedNavigationQuestionFactory;
 import com.funnelback.publicui.search.lifecycle.inputoutput.ExtraSearchesExecutor;
+import com.funnelback.publicui.search.lifecycle.output.processors.facetednavigation.FillFacetUrls;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames;
@@ -38,6 +39,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
+import com.funnelback.publicui.utils.MapUtils;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed;
 import com.funnelback.publicui.utils.PadreOptionsForSpeed.OptionAndValue;
 import com.funnelback.publicui.utils.QueryStringUtils;
@@ -87,7 +89,9 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                     + " consist of categories where the user defines all the values.");
             }
             
-            addExtraSearchesForOrFacetCounts(searchTransaction);
+            addSearchesToWorkOutCountsForRadio(searchTransaction);
+            
+            addDedicatedExtraSearchesForOrFacetCounts(searchTransaction);
         }
         
         
@@ -100,35 +104,13 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
      * @throws InputProcessorException
      */
     public void addExtraSearchToGetUnscopedValues(SearchTransaction searchTransaction) throws InputProcessorException {
-        SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory()
-            .buildQuestion(searchTransaction.getQuestion(), null);
-        
-        // Apply options to speed things up but take care to not apply ones that turn off counting which is need
-        // by faceted navigation.
-        Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
-        
-        addFacetExtraSearchSpecificPadreOptions(extraQuestion, 
-            padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
-            .stream()
-            .filter(o -> !optionsToNotAdd.contains(o.getOption()))
-            .collect(Collectors.toList())); // Remove options we need for faceted nav.
-            
+        SearchQuestion extraQuestion = extraSearchFacetsUnselectedAndCountsPossible(searchTransaction);
+
         searchTransaction.addExtraSearch(SEARCH_FOR_UNSCOPED_VALUES, extraQuestion);
     }
     
     public void addExtraSearchToGetAllValues(SearchTransaction searchTransaction) throws InputProcessorException {
-        SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory()
-            .buildQuestion(searchTransaction.getQuestion(), null);
-        
-        // Apply options to speed things up but take care to not apply ones that turn off counting which is need
-        // by faceted navigation.
-        Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
-        
-        addFacetExtraSearchSpecificPadreOptions(extraQuestion, 
-            padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
-            .stream()
-            .filter(o -> !optionsToNotAdd.contains(o.getOption()))
-            .collect(Collectors.toList())); // Remove options we need for faceted nav.
+        SearchQuestion extraQuestion = extraSearchFacetsUnselectedAndCountsPossible(searchTransaction);
         
         // We want to get all values the user can see so run a padre null search.
         extraQuestion.setQuery("!FunDoesNotExist:padrenull");
@@ -136,7 +118,90 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         searchTransaction.addExtraSearch(SEARCH_FOR_ALL_VALUES, extraQuestion);
     }
     
-    public void addExtraSearchesForOrFacetCounts(SearchTransaction searchTransaction) {        
+    /**
+     * Gives you a copy of the original search question but with:
+     * - no facets selected
+     * - qp options to speed things up without disbling counting options (needed to count values in facets)
+     * - the original query is enabled.
+     * @param searchTransaction
+     * @return
+     * @throws InputProcessorException
+     */
+    private SearchQuestion extraSearchFacetsUnselectedAndCountsPossible(SearchTransaction searchTransaction) 
+            throws InputProcessorException {
+        SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory()
+            .buildQuestion(searchTransaction.getQuestion(), null);
+        
+        applySpeedUpOptionsWithoutTurningOfFacetCounting(extraQuestion);
+        
+        return extraQuestion;
+    }
+    
+    private void applySpeedUpOptionsWithoutTurningOfFacetCounting(SearchQuestion extraQuestion) {
+        // Apply options to speed things up but take care to not apply ones that turn off counting which is need
+        // by faceted navigation.
+        Set<String> optionsToNotAdd = padreOptionsForSpeed.getOptionsForCounting();
+        
+        addFacetExtraSearchSpecificPadreOptions(extraQuestion, 
+            padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()
+            .stream()
+            .filter(o -> !optionsToNotAdd.contains(o.getOption()))
+            .collect(Collectors.toList())); // Remove options we need for faceted nav.
+    }
+    
+    /**
+     * Gives you a copy of the orignal search question with:
+     * - The original selected facets left as is.
+     * - qp options to speed things up without disabling counting options (need to count values in facets)
+     * - thr origanl query enabled.
+     * 
+     * @param searchTransaction
+     * @return
+     * @throws InputProcessorException
+     */
+    private SearchQuestion extraSearchFacetsSelectedAndCountsPossible(SearchTransaction searchTransaction) {
+        SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory()
+            .buildBasicExtraFacetSearch(searchTransaction.getQuestion());
+        
+        applySpeedUpOptionsWithoutTurningOfFacetCounting(extraQuestion);
+        
+        return extraQuestion;
+    }
+    
+    /**
+     * Radio means to unselect the current facet then select another value.
+     * 
+     * So to calculate the values we can just unselect the facet (if selected) run
+     * a search and then use the rmcf/gscopes etc sums as the counts for the radio
+     * facet.
+     * 
+     * 
+     * @param st
+     * @throws InputProcessorException 
+     */
+    public void addSearchesToWorkOutCountsForRadio(SearchTransaction st) throws InputProcessorException {
+        getFacetDefinitions(st).stream()
+        .filter(f -> facetedNavProps.useScopedSearchWithFacetDisabledForCounts(f, st))
+        .forEach(f -> addScopedSearchWithFacetUnselected(st, f));
+    }
+    
+    public void addScopedSearchWithFacetUnselected(SearchTransaction st, FacetDefinition facet) {
+        SearchQuestion extraQuestion = extraSearchFacetsSelectedAndCountsPossible(st);
+        
+        // We need to disable the current facet.
+        Map<String, List<String>> rawAsList = MapUtils.convertMapList(extraQuestion.getRawInputParameters());
+        
+        new FillFacetUrls().unslectFacet(rawAsList, facet);
+        
+        extraQuestion.getRawInputParameters().clear();
+        
+        extraQuestion.getRawInputParameters().putAll(MapUtils.convertMapArray(rawAsList));
+        
+        String extraSearchName = new FacetExtraSearchNames().extraSearchWithFacetUnchecked(facet);
+        st.addExtraSearch(extraSearchName, extraQuestion);
+    }
+    
+    public void addDedicatedExtraSearchesForOrFacetCounts(SearchTransaction searchTransaction) {        
         // Facets that can expand the result set must use a extra search to find counts.
         Map<String, FacetDefinition> facetsThatNeedASearchForCounts = getFacetDefinitions(searchTransaction)
         .stream()
@@ -219,7 +284,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
                         return;
                     }
                     
-                    String extraSearchName = new FacetExtraSearchNames().getExtraSearchName(facet, value);
+                    String extraSearchName = new FacetExtraSearchNames().extraSearchToCalculateCounOfCategoryValue(facet, value);
                     SearchQuestion extraQuestion = new FacetedNavigationQuestionFactory().buildBasicExtraFacetSearch(searchTransaction.getQuestion());
                     
                     // Update the query as though we had selected the facet value.

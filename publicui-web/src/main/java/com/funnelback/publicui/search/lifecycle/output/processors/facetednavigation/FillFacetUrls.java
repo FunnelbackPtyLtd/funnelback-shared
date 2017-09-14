@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -49,10 +50,18 @@ public class FillFacetUrls {
         facet.setUnselectAllUrl(QueryStringUtils.toString(urlQuestion, true));
     }
     
+    public void unslectFacet(Map<String, List<String>> urlQuestion, FacetDefinition facet) {
+        unslectFacet(urlQuestion, facet.getName());
+    }
+    
     public void unslectFacet(Map<String, List<String>> urlQuestion, Facet facet) {
+        unslectFacet(urlQuestion, facet.getName());
+    }
+    
+    public void unslectFacet(Map<String, List<String>> urlQuestion, String facetName) {
         FacetedNavigationUtils.editQueryStringFacetValue(urlQuestion, 
             m -> {
-                    m.keySet().stream().filter(k -> k.startsWith(FACET_PREFIX + facet.getName() + "|"))
+                    m.keySet().stream().filter(k -> k.startsWith(FACET_PREFIX + facetName + "|"))
                     .collect(Collectors.toList()).stream() // Convert back to a List so that we 
                                                            // don't modify the map while iterating over it.
                     .forEach(m::remove);

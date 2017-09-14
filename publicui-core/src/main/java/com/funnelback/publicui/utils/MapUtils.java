@@ -83,4 +83,16 @@ public class MapUtils {
         return out;
     }
     
+    public static Map<String, String[]> convertMapArray(Map<String, List<String>> map) {
+        Map<String, String[]> out = new HashMap<>();
+        for (Entry<String, List<String>> entry: map.entrySet()) {
+            if (entry.getValue() != null) {
+                out.put(entry.getKey(), entry.getValue().toArray(new String[0]));
+            } else {
+                out.put(entry.getKey(), null);
+            }
+        }
+        return out;
+    }
+    
 }

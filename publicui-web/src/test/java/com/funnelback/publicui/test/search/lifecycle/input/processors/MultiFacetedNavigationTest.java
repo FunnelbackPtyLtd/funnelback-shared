@@ -186,7 +186,7 @@ public class MultiFacetedNavigationTest {
             .thenReturn(0)
             .thenReturn(100);
         
-        multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
+        multiFacetedNavigation.addDedicatedExtraSearchesForOrFacetCounts(st);
         
         // We should have no searches as config was initially set to allow 0 extra searches
         Assert.assertEquals(0, st.getExtraSearchesQuestions().size());
@@ -196,7 +196,7 @@ public class MultiFacetedNavigationTest {
         st.setAnyExtraSearchesIncomplete(false);
         
         // Run the search again this time config allows extra searches
-        multiFacetedNavigation.addExtraSearchesForOrFacetCounts(st);
+        multiFacetedNavigation.addDedicatedExtraSearchesForOrFacetCounts(st);
         Assert.assertFalse(st.isAnyExtraSearchesIncomplete());
         
         Assert.assertEquals("Only one facet is a OR type facet so only that one should "
@@ -204,10 +204,10 @@ public class MultiFacetedNavigationTest {
             1, st.getExtraSearchesQuestions().size());
         
         Assert.assertTrue("Expected to see the 'bob' OR facet in the extra searches", 
-            st.getExtraSearchesQuestions().containsKey(new FacetExtraSearchNames().getExtraSearchName(orFacet, orCat)));
+            st.getExtraSearchesQuestions().containsKey(new FacetExtraSearchNames().extraSearchToCalculateCounOfCategoryValue(orFacet, orCat)));
         
         SearchQuestion questionOr = st.getExtraSearchesQuestions()
-            .get(new FacetExtraSearchNames().getExtraSearchName(orFacet, orCat));
+            .get(new FacetExtraSearchNames().extraSearchToCalculateCounOfCategoryValue(orFacet, orCat));
         
         Assert.assertFalse("Should have removed all URL params from the original query, as"
             + " we want to simulate running the search transaction when the OR facet is clicked", 
@@ -275,6 +275,32 @@ public class MultiFacetedNavigationTest {
         
         Assert.assertTrue("The values are derived from the index so we need to"
             + " run a query to find those values", res);
+    }
+    
+    @Test
+    public void testAddScopedSearchWithFacetUnselected() {
+        FacetDefinition facet = facet("foobar", AND, FROM_UNSCOPED_ALL_QUERY, MULTIPLE);
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getQuestion().setQuery("query");
+        st.getQuestion().getInputParameterMap().put("f.foobar|blah", "blah");
+        st.getQuestion().getInputParameterMap().put("f.other|blah", "blah");
+        st.getQuestion().getInputParameterMap().put("facetScope", "f.foobar%7Cblah%3Dblah");
+        processor.addScopedSearchWithFacetUnselected(st, facet);
+        Assert.assertEquals("Missing extra search", 1, st.getExtraSearchesQuestions().size());
+        Assert.assertNotNull(st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLEDZm9vYmFy"));
+        SearchQuestion searchQuestion = st.getExtraSearchesQuestions().get("INTERNAL_FACETED_NAV_SEARCH_FACET_DISABLEDZm9vYmFy");
+        Assert.assertEquals("query should stay enabled","query", searchQuestion.getQuery());
+        Assert.assertFalse("Counting options should not have been disabled",
+            searchQuestion.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
+        Assert.assertTrue("Should have kept other facets on", 
+            searchQuestion.getRawInputParameters().containsKey("f.other|blah"));
+        
+        Assert.assertFalse("Should have unchecked the given facet", 
+            searchQuestion.getRawInputParameters().containsKey("f.foobar|blah"));
+        
+        Assert.assertFalse("Should have unchecked the given facet from facetScope", 
+            searchQuestion.getRawInputParameters().containsKey("facetScope"));
+        
     }
     
     private FacetDefinition facet(FacetConstraintJoin join, FacetValues values) {

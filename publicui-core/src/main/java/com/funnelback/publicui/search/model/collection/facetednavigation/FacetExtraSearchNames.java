@@ -14,12 +14,16 @@ public class FacetExtraSearchNames {
     
     public static final String SEARCH_FOR_ALL_VALUES = FACET_EXTRA_SEARCH_PREFIX + "ALL_VALUES";
     
+    public static final String SEARCH_WHERE_FACET_IS_DISABLED = FACET_EXTRA_SEARCH_PREFIX + "FACET_DISABLED";
+    
+    private static final String SEP = "-";
+    
 
-    public String getExtraSearchName(Facet facet, CategoryValue value) {
+    public String extraSearchToCalculateCounOfCategoryValue(Facet facet, CategoryValue value) {
         return getExtraSearchName(facet.getName(), value.getQueryStringParamName(), value.getData());
     }
     
-    public String getExtraSearchName(FacetDefinition facet, CategoryDefinition catDef, String value) {
+    public String extraSearchToCalculateCounOfCategoryValue(FacetDefinition facet, CategoryDefinition catDef, String value) {
         return getExtraSearchName(facet.getName(), catDef.getQueryStringParamName(), value);
     }
     
@@ -39,14 +43,25 @@ public class FacetExtraSearchNames {
         // Base 64 the param and value to ensure we accidently don't generate non unique keys
         // for different inputs.
         // A seperator that wont appear in base64.
-        String seperator = "-";
         return FACET_EXTRA_SEARCH_PREFIX 
-            + encode(facetName) 
-            + seperator +
-            encode(queryStringParamName)
-            + seperator + 
-            encode(value);
+            + encode(facetName) + SEP 
+            + encode(queryStringParamName)+ SEP 
+            + encode(value);
     }
+    
+    public String extraSearchWithFacetUnchecked(Facet facet) {
+        return extraSearchWithFacetUnchecked(facet.getName());
+    }
+    
+    public String extraSearchWithFacetUnchecked(FacetDefinition facet) {
+        return extraSearchWithFacetUnchecked(facet.getName());
+    }
+    
+    private String extraSearchWithFacetUnchecked(String facetName) {
+        return SEARCH_WHERE_FACET_IS_DISABLED + encode(facetName);
+    }
+    
+    
     
     private String encode(String s) {
         return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
