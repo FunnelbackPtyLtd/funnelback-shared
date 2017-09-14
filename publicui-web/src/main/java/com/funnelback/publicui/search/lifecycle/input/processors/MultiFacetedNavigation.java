@@ -191,7 +191,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         // We need to disable the current facet.
         Map<String, List<String>> rawAsList = MapUtils.convertMapList(extraQuestion.getRawInputParameters());
         
-        new FillFacetUrls().unslectFacet(rawAsList, facet);
+        new FillFacetUrls().unselectFacet(rawAsList, facet);
         
         extraQuestion.getRawInputParameters().clear();
         

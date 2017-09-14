@@ -44,17 +44,17 @@ public class FillFacetUrls {
      */
     public void setUnselectAllUrl(Facet facet, SearchTransaction st) {
         Map<String, List<String>> urlQuestion = st.getQuestion().getQueryStringMapCopy();
-        unslectFacet(urlQuestion, facet);
+        unselectFacet(urlQuestion, facet);
         removeParameters(urlQuestion);
         
         facet.setUnselectAllUrl(QueryStringUtils.toString(urlQuestion, true));
     }
     
-    public void unslectFacet(Map<String, List<String>> urlQuestion, FacetDefinition facet) {
+    public void unselectFacet(Map<String, List<String>> urlQuestion, FacetDefinition facet) {
         unslectFacet(urlQuestion, facet.getName());
     }
     
-    public void unslectFacet(Map<String, List<String>> urlQuestion, Facet facet) {
+    public void unselectFacet(Map<String, List<String>> urlQuestion, Facet facet) {
         unslectFacet(urlQuestion, facet.getName());
     }
     
