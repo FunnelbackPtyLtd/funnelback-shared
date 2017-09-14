@@ -34,6 +34,21 @@ public enum FacetValues {
     FROM_SCOPED_QUERY,
     
     /**
+     * Values are from the query which may have facets applied, except 
+     * the 'current' facet is not selected.
+     * 
+     * <p>For example if you had a tab facet that was selected and a radio
+     * facet which had this option set then the values for the radio
+     * facet would be from a query where the tab facet was selected
+     * but the radio facet was unselected.</p>
+     * 
+     * <p>This is a good option for multi select OR and radio as it wont show
+     * options that lead to zero result pages.</p>
+     * 
+     */
+    FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED,
+    
+    /**
      * Values are from the unscoped query, that is the user's query without
      * any facets selected.
      * <p>If you had selected `red cars` then you would still see the colours of
