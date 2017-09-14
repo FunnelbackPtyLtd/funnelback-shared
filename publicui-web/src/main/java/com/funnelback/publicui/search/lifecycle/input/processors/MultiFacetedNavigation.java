@@ -179,7 +179,7 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
      * @param st
      * @throws InputProcessorException 
      */
-    public void addSearchesToWorkOutCountsForRadio(SearchTransaction st) throws InputProcessorException {
+    public void addSearchesToWorkOutCountsForRadio(SearchTransaction st) {
         getFacetDefinitions(st).stream()
         .filter(f -> facetedNavProps.useScopedSearchWithFacetDisabledForCounts(f, st))
         .forEach(f -> addScopedSearchWithFacetUnselected(st, f));
