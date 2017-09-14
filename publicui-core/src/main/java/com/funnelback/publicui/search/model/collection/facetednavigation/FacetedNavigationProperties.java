@@ -59,6 +59,19 @@ public class FacetedNavigationProperties {
         return false;
     }
     
+    public boolean useScopedSearchWithFacetDisabledForValues(FacetDefinition facet, SearchTransaction searchTransaction) {
+        if(facet.getConstraintJoin() == FacetConstraintJoin.LEGACY) {
+            return false;
+        }
+        Map<String, List<String>> selectedCategoryValues  = searchTransaction.getQuestion().getSelectedCategoryValues();
+        if(facet.getFacetValues() == FacetValues.FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED
+            && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     /**
      * Can we use the counts from the unscoped query?
      * 

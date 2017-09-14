@@ -258,6 +258,14 @@ public abstract class CategoryDefinition {
                 // have the value then the count is zero.
                 countIfNotPresent = (c,v) -> 0;
             }
+            
+            if(facetedNavProps.useScopedSearchWithFacetDisabledForValues(facetDefinition, st)) {
+                String extraSearchName = new FacetExtraSearchNames().extraSearchWithFacetUnchecked(facetDefinition);
+                SearchTransaction extraSearch = st.getExtraSearches().get(extraSearchName);
+                if(extraSearch != null && extraSearch.getResponse() != null) {
+                    searchResponseForValues = extraSearch.getResponse();
+                }
+            }
                 
             
             if(facetedNavProps.useUnscopedQueryForCounts(facetDefinition, st)) {
