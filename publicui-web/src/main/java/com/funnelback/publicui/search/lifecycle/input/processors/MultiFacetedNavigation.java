@@ -91,6 +91,8 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
             
             addSearchesToWorkOutCountsForRadio(searchTransaction);
             
+            addSearchesForFacetsWithValuesFromScopedQueryWithFacetUnselected(searchTransaction);
+            
             addDedicatedExtraSearchesForOrFacetCounts(searchTransaction);
         }
         
@@ -182,6 +184,16 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     public void addSearchesToWorkOutCountsForRadio(SearchTransaction st) {
         getFacetDefinitions(st).stream()
         .filter(f -> facetedNavProps.useScopedSearchWithFacetDisabledForCounts(f, st))
+        .forEach(f -> addScopedSearchWithFacetUnselected(st, f));
+    }
+    
+    /**
+     * Adds extra searches for facets which use FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED
+     * @param st
+     */
+    public void addSearchesForFacetsWithValuesFromScopedQueryWithFacetUnselected(SearchTransaction st) {
+        getFacetDefinitions(st).stream()
+        .filter(f -> facetedNavProps.useScopedSearchWithFacetDisabledForValues(f, st))
         .forEach(f -> addScopedSearchWithFacetUnselected(st, f));
     }
     

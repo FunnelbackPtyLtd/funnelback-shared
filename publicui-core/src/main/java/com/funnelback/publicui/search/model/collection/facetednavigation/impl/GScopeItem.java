@@ -3,6 +3,7 @@ package com.funnelback.publicui.search.model.collection.facetednavigation.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
@@ -48,8 +49,13 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
         
         List<CategoryValueComputedDataHolder> categories = new ArrayList<>();
         
-        if (facetData.getResponseForValues().getResultPacket().getGScopeCounts().get(userSetGScope) != null
-            || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
+        boolean hasValue = Optional.ofNullable(facetData.getResponseForValues())
+            .map(SearchResponse::getResultPacket)
+            .map(ResultPacket::getGScopeCounts)
+            .map(m -> m.get(userSetGScope))
+            .map(count -> count > 0)
+            .orElse(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY);
+        if (hasValue) {
             String queryStringParamValue = data;
             
             Integer count = facetData.getResponseForCounts().apply(this, userSetGScope)
