@@ -66,4 +66,38 @@ public class ReMapRMCFOptionInputProcessorTest {
         Assert.assertEquals("Should not have added a extra countIndexedTerms option", 3, dynamicQPOpts.size());
         
     }
+    
+    @Test
+    public void existingNoValueCountIndexTerms() throws Exception {
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-rmcf=[FunAASetOfFailingTechniques,bar,FunAAFormater,FunAAFormat]");
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-countIndexedTerms=");
+        
+        new ReMapRMCFOptionInputProcessor().processAccessibilityAuditorTransaction(st);
+        
+        List<String> dynamicQPOpts = st.getQuestion().getDynamicQueryProcessorOptions();
+        
+        
+        Assert.assertEquals( 
+            "-countIndexedTerms=[FunAASetOfFailingTechniques,FunAAFormat]", dynamicQPOpts.get(1));
+        
+    }
+    
+    @Test
+    public void existingEmptyCountIndexTerms() throws Exception {
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-rmcf=[FunAASetOfFailingTechniques,bar,FunAAFormater,FunAAFormat]");
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-countIndexedTerms=[]");
+        
+        new ReMapRMCFOptionInputProcessor().processAccessibilityAuditorTransaction(st);
+        
+        List<String> dynamicQPOpts = st.getQuestion().getDynamicQueryProcessorOptions();
+        
+        
+        Assert.assertEquals( 
+            "-countIndexedTerms=[FunAASetOfFailingTechniques,FunAAFormat]", dynamicQPOpts.get(1));
+        
+    }
 }

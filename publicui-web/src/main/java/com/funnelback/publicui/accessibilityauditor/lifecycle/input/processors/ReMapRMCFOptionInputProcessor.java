@@ -77,8 +77,17 @@ public class ReMapRMCFOptionInputProcessor extends AbstractAccessibilityAuditorI
         for(int i = 0; i < options.size(); i++) {
             String option = options.get(i);
             if(option.startsWith("-countIndexedTerms=")) {
-                option = option.substring(0, option.length()-1);
-                option = option + "," + StringUtils.join(metadataToCount, ",") + "]";
+                // Does it have a [] part?
+                if(option.equals("-countIndexedTerms=")) {
+                    option += "[";
+                }
+                if(option.endsWith("]")) {
+                    option = option.substring(0, option.length()-1);
+                    if(!option.endsWith("[")) {
+                        option += ",";
+                    }
+                }
+                option += StringUtils.join(metadataToCount, ",") + "]";
                 options.set(i, option);
                 hasIndexedTermsOption = true;
             }
