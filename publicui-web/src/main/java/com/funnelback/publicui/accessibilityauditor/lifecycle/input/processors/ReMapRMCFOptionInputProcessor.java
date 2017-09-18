@@ -83,7 +83,9 @@ public class ReMapRMCFOptionInputProcessor extends AbstractAccessibilityAuditorI
                 }
                 if(option.endsWith("]")) {
                     option = option.substring(0, option.length()-1);
-                    option += ",";
+                    if(!option.endsWith("[")) {
+                        option += ",";
+                    }
                 }
                 option += StringUtils.join(metadataToCount, ",") + "]";
                 options.set(i, option);

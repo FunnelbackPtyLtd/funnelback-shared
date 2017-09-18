@@ -68,10 +68,7 @@ public class ReMapRMCFOptionInputProcessorTest {
     }
     
     @Test
-    public void existingEmptyCountIndexTerms() throws Exception {
-        // FunAAFormat -> should be re-mapped
-        // FunAASetOfFailingTechniques -> should be re-mapped
-        // FunAADomain -> should be ignored
+    public void existingNoValueCountIndexTerms() throws Exception {
         
         SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
         st.getQuestion().getDynamicQueryProcessorOptions().add("-rmcf=[FunAASetOfFailingTechniques,bar,FunAAFormater,FunAAFormat]");
@@ -85,6 +82,22 @@ public class ReMapRMCFOptionInputProcessorTest {
         Assert.assertEquals( 
             "-countIndexedTerms=[FunAASetOfFailingTechniques,FunAAFormat]", dynamicQPOpts.get(1));
         
+    }
+    
+    @Test
+    public void existingEmptyCountIndexTerms() throws Exception {
+        
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), null);
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-rmcf=[FunAASetOfFailingTechniques,bar,FunAAFormater,FunAAFormat]");
+        st.getQuestion().getDynamicQueryProcessorOptions().add("-countIndexedTerms=[]");
+        
+        new ReMapRMCFOptionInputProcessor().processAccessibilityAuditorTransaction(st);
+        
+        List<String> dynamicQPOpts = st.getQuestion().getDynamicQueryProcessorOptions();
+        
+        
+        Assert.assertEquals( 
+            "-countIndexedTerms=[FunAASetOfFailingTechniques,FunAAFormat]", dynamicQPOpts.get(1));
         
     }
 }
