@@ -17,7 +17,7 @@
     
     <bean name="recommenderJsonView"
         class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-        <property name="renderedAttributes" value="RecommendationResponse" />
+        <property name="modelKeys" value="RecommendationResponse" />
     </bean>
 
     <mvc:interceptors>
@@ -121,7 +121,7 @@
         <property name="defaultViews">
             <list>
                 <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-                    <property name="renderedAttributes" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
+                    <property name="modelKeys" value="#{T(com.funnelback.publicui.search.web.controllers.SearchController$ModelAttributes).getNames()}" />
                     <property name="objectMapper" ref="jackson2ObjectMapper" />
                 </bean>
 

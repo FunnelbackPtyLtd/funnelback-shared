@@ -174,7 +174,7 @@
 
     <bean name="recommenderJsonView"
            class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-           <property name="renderedAttributes" value="RecommendationResponse" />
+           <property name="modelKeys" value="RecommendationResponse" />
        </bean>
     
 </beans>
