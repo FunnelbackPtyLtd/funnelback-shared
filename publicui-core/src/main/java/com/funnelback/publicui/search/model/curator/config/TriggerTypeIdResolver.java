@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -56,17 +57,17 @@ public class TriggerTypeIdResolver implements TypeIdResolver {
 
     /** Tell Jackson what class to instantiate for a given ID form a JSON file */
     @Override
-    public JavaType typeFromId(String id) {
+    public JavaType typeFromId(DatabindContext context, String id) {
         Class<?> clazz;
         String implementationClazzName = TRIGGER_IMPLEMENTATION_PACKAGE + "." + id + CLASS_SUFFIX;
         String clazzName = TRIGGER_PACKAGE + "." + id + CLASS_SUFFIX;
         try {
             // Try to load the implementation class (from publicui-web)
-            clazz = ClassUtil.findClass(implementationClazzName);
+            clazz = TypeFactory.defaultInstance().findClass(implementationClazzName);
         } catch (ClassNotFoundException eIgnored) {
             try {
                 // Fall back to the data storage only class (from publicui-core)
-                clazz = ClassUtil.findClass(clazzName);
+                clazz = TypeFactory.defaultInstance().findClass(clazzName);
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException("cannot find class '" + clazzName + "'");
             }
@@ -82,5 +83,11 @@ public class TriggerTypeIdResolver implements TypeIdResolver {
     @Override
     public String idFromBaseType() {
         throw new UnsupportedOperationException("Missing trigger type information - Can not construct");
+    }
+
+    @Override
+    public String getDescForKnownTypeIds() {
+        return null;
+        // That's what TypeIdResolverBase does - We should probably extend that instead.
     }
 }
