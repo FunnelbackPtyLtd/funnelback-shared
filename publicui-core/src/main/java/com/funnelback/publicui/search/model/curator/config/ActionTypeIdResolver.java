@@ -1,6 +1,7 @@
 package com.funnelback.publicui.search.model.curator.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -32,11 +33,11 @@ public class ActionTypeIdResolver implements TypeIdResolver {
     }
 
     @Override
-    public JavaType typeFromId(String id) {
+    public JavaType typeFromId(DatabindContext context, String id) {
         Class<?> clazz;
         String clazzName = ACTION_PACKAGE + "." + id;
         try {
-            clazz = ClassUtil.findClass(clazzName);
+            clazz = TypeFactory.defaultInstance().findClass(clazzName);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("cannot find class '" + clazzName + "'");
         }
@@ -51,5 +52,11 @@ public class ActionTypeIdResolver implements TypeIdResolver {
     @Override
     public String idFromBaseType() {
         throw new UnsupportedOperationException("Missing action type information - Can not construct");
+    }
+
+    @Override
+    public String getDescForKnownTypeIds() {
+        return null;
+        // That's what TypeIdResolverBase does - We should probably extent that instead.
     }
 }
