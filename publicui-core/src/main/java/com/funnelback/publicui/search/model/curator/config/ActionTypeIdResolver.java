@@ -57,6 +57,6 @@ public class ActionTypeIdResolver implements TypeIdResolver {
     @Override
     public String getDescForKnownTypeIds() {
         return null;
-        // That's what TypeIdResolverBase does - We should probably extent that instead.
+        // That's what TypeIdResolverBase does - We should probably extend that instead.
     }
 }
