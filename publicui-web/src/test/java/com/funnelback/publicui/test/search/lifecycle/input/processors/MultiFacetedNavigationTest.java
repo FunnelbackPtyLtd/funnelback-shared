@@ -35,7 +35,7 @@ import com.funnelback.publicui.search.model.transaction.SearchResponse;
 import static org.mockito.Mockito.*;
 import static com.funnelback.common.facetednavigation.models.FacetConstraintJoin.*;
 import static com.funnelback.common.facetednavigation.models.FacetValues.*;
-import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.SEARCH_FOR_UNSCOPED_VALUES;
+import static com.funnelback.publicui.search.model.collection.facetednavigation.FacetExtraSearchNames.*;
 import static com.funnelback.common.facetednavigation.models.FacetSelectionType.MULTIPLE;
 public class MultiFacetedNavigationTest {
 
@@ -151,10 +151,15 @@ public class MultiFacetedNavigationTest {
                 return Arrays.asList(facet("not bob", AND, FROM_UNSCOPED_QUERY, MULTIPLE), 
                     facet("bob", OR, FROM_UNSCOPED_QUERY, MULTIPLE));
             }
+            
+            @Override
+            public String valueProvidingSearchName(FacetDefinition facetDef) {
+                return "Name of extra search supplying values";
+            }
         };
         
         //Make a dummy extra search which has executed the UNSCOPED facets
-        SearchTransaction unscopedExtraSearch = mock(SearchTransaction.class, RETURNS_DEEP_STUBS);
+        SearchTransaction extraSearchSupplyingValues = mock(SearchTransaction.class, RETURNS_DEEP_STUBS);
         
         Facet andFacet = mock(Facet.class);
         when(andFacet.getName()).thenReturn("not bob");
@@ -169,12 +174,12 @@ public class MultiFacetedNavigationTest {
         
         
         // Add both OR and AND facet to the unscoped extra search
-        when(unscopedExtraSearch.getResponse().getFacets()).thenReturn(Arrays.asList(orFacet, andFacet));
+        when(extraSearchSupplyingValues.getResponse().getFacets()).thenReturn(Arrays.asList(orFacet, andFacet));
         
         // Updated the ExtraSearchExecutor to mock returning the dummy unscoped extra search
         ExtraSearchesExecutor executor = mock(ExtraSearchesExecutor.class);
-        when(executor.getAndMaybeWaitForExtraSearch(st, SEARCH_FOR_UNSCOPED_VALUES))
-            .thenReturn(Optional.of(unscopedExtraSearch));
+        when(executor.getAndMaybeWaitForExtraSearch(st, "Name of extra search supplying values"))
+            .thenReturn(Optional.of(extraSearchSupplyingValues));
         
         multiFacetedNavigation.setExtraSearchesExecutor(executor);
         
@@ -218,6 +223,53 @@ public class MultiFacetedNavigationTest {
         
         Assert.assertTrue("Should have added over ruling padre speed up options like rmcf=[]",
             questionOr.getPriorityQueryProcessorOptions().getOptions().containsKey("rmcf"));
+    }
+    
+    @Test
+    public void valueProvidingSearchNameTestFROM_UNSCOPED_QUERY() {
+        FacetDefinition facetDefUnscoped = mock(FacetDefinition.class);
+        when(facetDefUnscoped.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_QUERY);
+        
+        Assert.assertEquals(SEARCH_FOR_UNSCOPED_VALUES, 
+            new MultiFacetedNavigation().valueProvidingSearchName(facetDefUnscoped));
+    }
+    
+    @Test
+    public void valueProvidingSearchNameTestFROM_UNSCOPED_ALL_QUERY() {
+        FacetDefinition facetDefUnscopedAll = mock(FacetDefinition.class);
+        when(facetDefUnscopedAll.getFacetValues()).thenReturn(FacetValues.FROM_UNSCOPED_ALL_QUERY);
+        
+        Assert.assertEquals(SEARCH_FOR_ALL_VALUES, 
+            new MultiFacetedNavigation().valueProvidingSearchName(facetDefUnscopedAll));
+    }
+    
+    @Test
+    public void valueProvidingSearchNameTestFROM_SCOPED_QUERY_WITH_FACET_UNSELECTED() {
+        FacetDefinition facetDefUnscopedAll = mock(FacetDefinition.class);
+        when(facetDefUnscopedAll.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED);
+        
+        FacetExtraSearchNames facetExtraSearchNames = mock(FacetExtraSearchNames.class);
+        when(facetExtraSearchNames.extraSearchWithFacetUnchecked(facetDefUnscopedAll))
+            .thenReturn("Foo");
+        
+        MultiFacetedNavigation multiFacetedNavigation = new MultiFacetedNavigation();
+        multiFacetedNavigation.setFacetExtraSearchNames(facetExtraSearchNames);
+        
+        Assert.assertEquals("Foo", 
+            multiFacetedNavigation.valueProvidingSearchName(facetDefUnscopedAll));
+    }
+    
+    @Test
+    public void valueProvidingSearchNameTestOther() {
+        FacetDefinition facetDefUnscopedAll = mock(FacetDefinition.class);
+        when(facetDefUnscopedAll.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY);
+        
+        try {
+            new MultiFacetedNavigation().valueProvidingSearchName(facetDefUnscopedAll);
+            Assert.fail("FROM_SCOPED_QUERY should be rejected as it is not one we support "
+                + "running dedicated searches to work out the count."); 
+        } catch (IllegalStateException e) {
+        }
     }
     
     @Test
