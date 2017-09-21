@@ -12,7 +12,8 @@ public class DisplayMessageTests {
     @Test
     public void testDisplayMessage() {
         Message message = new Message("html", null, "category");
-        DisplayMessage dm = new DisplayMessage(message);
+        DisplayMessage dm = new DisplayMessage();
+        dm.setMessage(message);
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dm);
         

@@ -44,7 +44,9 @@ public class TriggerActionsTest {
         AndTrigger andTrigger = new AndTrigger(triggers);
         triggerActions.setTrigger(andTrigger);
         
+        DisplayMessage dm = new DisplayMessage();
+        dm.setMessage(new Message("hello", new HashMap<String, Object>(), "cat"));
         
-        triggerActions.getActions().add(new DisplayMessage(new Message("hello", new HashMap<String, Object>(), "cat")));
+        triggerActions.getActions().add(dm);
     }
 }
