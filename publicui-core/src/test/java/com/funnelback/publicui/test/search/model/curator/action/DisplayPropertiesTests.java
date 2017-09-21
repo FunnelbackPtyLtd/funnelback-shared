@@ -12,7 +12,8 @@ public class DisplayPropertiesTests {
     @Test
     public void testDisplayProperties() {
         Properties properties = new Properties();
-        DisplayProperties dp = new DisplayProperties(properties);
+        DisplayProperties dp = new DisplayProperties();
+        dp.setAdditionalProperties(properties);
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dp);
         

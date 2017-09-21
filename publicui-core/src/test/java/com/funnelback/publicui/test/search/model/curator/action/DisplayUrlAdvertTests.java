@@ -14,7 +14,9 @@ public class DisplayUrlAdvertTests {
     public void testDisplayUrlAdvert() {
         UrlAdvert advert = new UrlAdvert();
         advert.setDisplayUrl("uniqueurl");
-        DisplayUrlAdvert dua = new DisplayUrlAdvert(advert, true);
+        DisplayUrlAdvert dua = new DisplayUrlAdvert();
+        dua.setAdvert(advert);
+        dua.setRemoveCollectionUrl(true);
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dua);
         
@@ -27,7 +29,9 @@ public class DisplayUrlAdvertTests {
     public void testDisplayUrlAdvertNoRemove() {
         UrlAdvert advert = new UrlAdvert();
         advert.setDisplayUrl("uniqueurl");
-        DisplayUrlAdvert dua = new DisplayUrlAdvert(advert, false);
+        DisplayUrlAdvert dua = new DisplayUrlAdvert();
+        dua.setAdvert(advert);
+        dua.setRemoveCollectionUrl(false);
         
         SearchTransaction st = ActionTestUtils.runAllPhases(dua);
         
@@ -39,10 +43,14 @@ public class DisplayUrlAdvertTests {
     @Test
     public void testMultipleDisplayUrlAdvert() {
         UrlAdvert advert1 = new UrlAdvert();
-        DisplayUrlAdvert dua1 = new DisplayUrlAdvert(advert1, true);
+        DisplayUrlAdvert dua1 = new DisplayUrlAdvert();
+        dua1.setAdvert(advert1);
+        dua1.setRemoveCollectionUrl(true);
 
         UrlAdvert advert2 = new UrlAdvert();
-        DisplayUrlAdvert dua2 = new DisplayUrlAdvert(advert2, true);
+        DisplayUrlAdvert dua2 = new DisplayUrlAdvert();
+        dua2.setAdvert(advert2);
+        dua2.setRemoveCollectionUrl(true);
 
         SearchTransaction st = ActionTestUtils.runAllPhases(dua1);
         ActionTestUtils.runAllPhases(dua2, st);

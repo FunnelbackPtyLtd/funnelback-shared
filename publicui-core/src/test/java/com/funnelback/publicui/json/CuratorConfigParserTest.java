@@ -84,9 +84,20 @@ public class CuratorConfigParserTest {
         kitchenSink.setTrigger(new AndTrigger(triggers));
 
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new DisplayMessage(new Message("html", properties, "category")));
-        actions.add(new DisplayProperties(new Properties(properties, "category")));
-        actions.add(new DisplayUrlAdvert(new UrlAdvert("title", "displayUrl", "linkUrl", "description", properties, "category"), true));
+        
+        DisplayMessage dm = new DisplayMessage();
+        dm.setMessage(new Message("html", properties, "category"));
+        actions.add(dm);
+        
+        DisplayProperties dp = new DisplayProperties();
+        dp.setAdditionalProperties(new Properties(properties, "category"));
+        actions.add(dp);
+        
+        DisplayUrlAdvert dua = new DisplayUrlAdvert();
+        dua.setAdvert(new UrlAdvert("title", "displayUrl", "linkUrl", "description", properties, "category"));
+        dua.setRemoveCollectionUrl(true);
+        actions.add(dua);
+        
         actions.add(new GroovyAction("src/test/resources/curator/TestAction.groovy", properties));
         actions.add(new PromoteUrls(Arrays.asList(new String[]{"url"})));
         actions.add(new RemoveUrls(Arrays.asList(new String[]{"url"})));
@@ -100,6 +111,8 @@ public class CuratorConfigParserTest {
         
         CuratorConfigParser parser = new CuratorConfigParser();
         String json = parser.generateJsonCuratorConfiguration(config);
+        
+        System.out.println(json);
         
         CuratorConfig roundtripConfig = parser.parseJsonCuratorConfiguration(new ByteArrayInputStream(json.getBytes()));
 

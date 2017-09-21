@@ -16,7 +16,6 @@ import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 /**
  * Action to display the specified properties within the search results.
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
