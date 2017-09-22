@@ -114,8 +114,6 @@ public class ResourcesController implements ApplicationContextAware, ServletCont
                         ResourceHttpRequestHandler handler = getResourceHttpRequestHandler();
                         handler.setApplicationContext(applicationContext);
                         handler.setLocations(locations);
-                        
-                        //handler.setResourceResolvers(Arrays.asList(new PathResourceResolver()));
                     
                         try {
                             handler.afterPropertiesSet();
