@@ -118,7 +118,7 @@ public class ResourcesController implements ApplicationContextAware, ServletCont
                         try {
                             handler.afterPropertiesSet();
                         } catch (Exception e) {
-                            throw new RuntimeException();
+                            throw new RuntimeException(e);
                         }
                         
                         handler.handleRequest(request, response);
