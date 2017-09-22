@@ -13,10 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.Setter;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -29,11 +25,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
-import org.springframework.web.util.UriUtils;
 
 import com.funnelback.common.config.DefaultValues;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.service.ConfigRepository;
+
+import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Handles per-collection static resources
@@ -115,7 +114,15 @@ public class ResourcesController implements ApplicationContextAware, ServletCont
                         ResourceHttpRequestHandler handler = getResourceHttpRequestHandler();
                         handler.setApplicationContext(applicationContext);
                         handler.setLocations(locations);
+                        
+                        //handler.setResourceResolvers(Arrays.asList(new PathResourceResolver()));
                     
+                        try {
+                            handler.afterPropertiesSet();
+                        } catch (Exception e) {
+                            throw new RuntimeException();
+                        }
+                        
                         handler.handleRequest(request, response);
                         return;
                     } catch (IOException ioe) {
