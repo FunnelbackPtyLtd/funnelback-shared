@@ -50,7 +50,9 @@ public class FacetedNavigationProperties {
         Map<String, List<String>> selectedCategoryValues  = searchTransaction.getQuestion().getSelectedCategoryValues();
         // AKA Radio.
         if(facet.getSelectionType() == FacetSelectionType.SINGLE 
-            && (facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY || facet.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY)
+            && (facet.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY 
+                    || facet.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY
+                    || facet.getFacetValues() == FacetValues.FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED)
             && FacetedNavigationUtils.isFacetSelected(facet, selectedCategoryValues)) {
             // probably something like a radio button.
             return true;

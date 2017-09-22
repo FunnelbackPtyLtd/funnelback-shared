@@ -248,7 +248,8 @@ public abstract class CategoryDefinition {
             }
             
             if(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY 
-                || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY) {
+                || facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY
+                || facetDefinition.getFacetValues() == FacetValues.FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED) {
                 // In the case that the constraints are ANDed then the counts come
                 // from the original Response
                 // Counts for OR may come from the dedicated extra search if that is the case

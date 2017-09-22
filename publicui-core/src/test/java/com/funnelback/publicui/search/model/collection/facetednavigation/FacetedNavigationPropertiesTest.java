@@ -79,6 +79,12 @@ public class FacetedNavigationPropertiesTest {
         
         Assert.assertTrue("If the radio is selected we need to unselect the radio to get the counts", 
             facetedNavProps.useScopedSearchWithFacetDisabledForCounts(radioAllValuesFacet, radioSelectedSearchTransaction));
+        
+        FacetDefinition radioFacetDisabled = facet("radio", AND, FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED, SINGLE);
+        
+        Assert.assertTrue(facetedNavProps
+                .useScopedSearchWithFacetDisabledForCounts(
+                        radioFacetDisabled, radioSelectedSearchTransaction));
     }
     
     @Test

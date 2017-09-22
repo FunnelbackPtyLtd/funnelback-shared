@@ -8,11 +8,9 @@ import static com.funnelback.publicui.search.model.transaction.SearchTransaction
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.funnelback.common.config.Config;
 import com.funnelback.common.config.Keys;
 import com.funnelback.common.facetednavigation.models.FacetValues;
+import static com.funnelback.common.facetednavigation.models.FacetValues.*;
 import com.funnelback.common.function.Flattener;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
@@ -60,6 +59,9 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
     private PadreOptionsForSpeed padreOptionsForSpeed = new PadreOptionsForSpeed();
     
     private FacetedNavigationProperties facetedNavProps = new FacetedNavigationProperties();
+    
+    @Setter
+    private FacetExtraSearchNames facetExtraSearchNames = new FacetExtraSearchNames();
     
     @Override
     public void processInput(SearchTransaction searchTransaction) throws InputProcessorException {
@@ -224,69 +226,88 @@ public class MultiFacetedNavigation extends AbstractInputProcessor {
         
         
         if(facetsThatNeedASearchForCounts.isEmpty()) {
-            log.debug("No OR type facets will not need to run extra searches.");
+            log.debug("No need to run indvidual extra searches for OR counts either because no OR type facets have been selected.");
             return;
         }
-        
-        log.debug("Or type facets detected waiting for unscoped search to complete.");
-        
-        
-        //First get the Un scopped extra search, we will probably have to wait for it.
-        
         
         AtomicInteger extraSearchesAdded = new AtomicInteger(0);
         int maxExtraSearchesThatCanBeAdded = searchTransaction.getQuestion().getCurrentProfileConfig()
                 .get(com.funnelback.config.keys.Keys.FrontEndKeys.ModernUI.MAX_FACET_EXTRA_SEARCHES);
         
         
-        createExtraSearchesForFacets(searchTransaction, 
-            facetsThatNeedASearchForCounts, 
-            SEARCH_FOR_UNSCOPED_VALUES, 
-            e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_QUERY, 
-            extraSearchesAdded,
-            maxExtraSearchesThatCanBeAdded);
-        
-        createExtraSearchesForFacets(searchTransaction, 
-            facetsThatNeedASearchForCounts, 
-            SEARCH_FOR_ALL_VALUES, 
-            e -> e.getValue().getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY, 
-            extraSearchesAdded, 
-            maxExtraSearchesThatCanBeAdded);
-        
+        // Go over each facet that needs to run the search to work out the count
+        // find its value supplying extra search name then submit the extra searches.
+        for(FacetDefinition facetDefinition : facetsThatNeedASearchForCounts.values()) {
+            createSearchesWhereTheTotalMatchingIsTheCountOfTheFacet(searchTransaction, 
+                facetDefinition,
+                valueProvidingSearchName(facetDefinition), 
+                extraSearchesAdded, 
+                maxExtraSearchesThatCanBeAdded);
+        }
         
         log.debug("Added {} extra searches", extraSearchesAdded);
         
     }
     
-    public void createExtraSearchesForFacets(SearchTransaction searchTransaction, 
-        Map<String, FacetDefinition> facetsThatNeedASearchForCounts,
+    /**
+     * Return the name of the extra search that should be used to work out the queries to run
+     * for OR and other facets that need to run the actual search to work out count.
+     * 
+     * @param facetWhichUsesActualSearchForCounts 
+     * @return
+     */
+    public String valueProvidingSearchName(FacetDefinition facetWhichUsesActualSearchForCounts) {
+        if(facetWhichUsesActualSearchForCounts.getFacetValues() == FROM_UNSCOPED_QUERY) {
+            return SEARCH_FOR_UNSCOPED_VALUES;
+        }
+        
+        if(facetWhichUsesActualSearchForCounts.getFacetValues() == FROM_UNSCOPED_ALL_QUERY) {
+            return SEARCH_FOR_ALL_VALUES;
+        }
+        
+        if(facetWhichUsesActualSearchForCounts.getFacetValues() == FROM_SCOPED_QUERY_WITH_FACET_UNSELECTED) {
+            return facetExtraSearchNames.extraSearchWithFacetUnchecked(facetWhichUsesActualSearchForCounts);
+        }
+        
+        throw new IllegalStateException("Facet " 
+                                    + facetWhichUsesActualSearchForCounts.getName() 
+                                    + " is not one that needs to run the actual search to get a count.");
+        
+    }
+    
+    /**
+     * In cases like multiple OR we have to run the actual search that would be run
+     * if the facet was clicked to work out the counts.
+     * 
+     * This takes care creating those searches to be run.
+     * 
+     * @param searchTransaction
+     * @param facetDefinition The facetDefinition that needs to run the actual search to get the count.
+     * @param extraSearchProvidingValues This is the name of the already submitted extra search that provides
+     * the values that will be displayed for the facet and thus tells us what queries we need to run. 
+     * @param extraSearchesAdded Holds a count of the number of extra searches that can be run.
+     * @param maxExtraSearchesThatCanBeAdded the count of extra searches which can be run.
+     */
+    public void createSearchesWhereTheTotalMatchingIsTheCountOfTheFacet(SearchTransaction searchTransaction, 
+        FacetDefinition facetDefinition,
         String extraSearchProvidingValues,
-        Predicate<Entry<String, FacetDefinition>> facetsMustMatch,
         AtomicInteger extraSearchesAdded,
         int maxExtraSearchesThatCanBeAdded) {
         
-        facetsThatNeedASearchForCounts = facetsThatNeedASearchForCounts.entrySet().stream()
-            .filter(facetsMustMatch)
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        
-        if(facetsThatNeedASearchForCounts.isEmpty()) {
-            log.trace("No facets which would use extra search '{}' need to run extra searches for counts.", 
-                extraSearchProvidingValues);
-            return;
-        }
         
         Optional<SearchTransaction> valueProvidingSearch = this.extraSearchesExecutor
             .getAndMaybeWaitForExtraSearch(searchTransaction, extraSearchProvidingValues);
         
         if(!valueProvidingSearch.isPresent()) {
-            log.warn("Can not calculate counts for some facet values as the extra search '{}' is missing",
+            log.warn("Can not calculate counts for facet {} as the extra search '{}' is missing",
+                facetDefinition.getName(),
                 extraSearchProvidingValues);
             return;
         }
         
         List<OptionAndValue> extraPadreOptions = padreOptionsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs();
         for(Facet facet : valueProvidingSearch.map(SearchTransaction::getResponse).map(SearchResponse::getFacets).orElse(Collections.emptyList())) {
-            if(facetsThatNeedASearchForCounts.containsKey(facet.getName())) {
+            if(facetDefinition.getName().equals(facet.getName())) {
                 for(CategoryValue value : Optional.ofNullable(facet.getAllValues()).orElse(Collections.emptyList())) {
                     
                     if(extraSearchesAdded.incrementAndGet() > maxExtraSearchesThatCanBeAdded) {
