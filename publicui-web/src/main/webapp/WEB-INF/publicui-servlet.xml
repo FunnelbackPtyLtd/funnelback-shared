@@ -84,6 +84,7 @@
     <bean id="xmlMarshaller" class="com.funnelback.publicui.xml.SearchXStreamMarshaller">
         <property name="encoding" value="UTF-8" />
         <property name="autodetectAnnotations" value="true" />
+        <property name="mode" value="#{T(com.thoughtworks.xstream.XStream).NO_REFERENCES}" />
     </bean>
 
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
