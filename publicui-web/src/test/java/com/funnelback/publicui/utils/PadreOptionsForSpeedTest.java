@@ -2,6 +2,7 @@ package com.funnelback.publicui.utils;
 
 import static com.funnelback.common.function.Predicates.containedBy;
 import static com.funnelback.common.function.Predicates.not;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.BB;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CNTO;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.CONTEXTUAL_NAVIGATION;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.COOL;
@@ -9,6 +10,7 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.DAAT_TIMEOUT;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.KMOD;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.QL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SAME_COLLECTION_SUPPRESSION;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SAME_META_SUPPRESSION;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.SBL;
@@ -54,7 +56,9 @@ public class PadreOptionsForSpeedTest {
             NEARDUP,
             TITLE_DUP_FACTOR,
             SAME_COLLECTION_SUPPRESSION,
-            SAME_META_SUPPRESSION
+            SAME_META_SUPPRESSION,
+            BB,
+            QL
             );
         
         List<String> leftOverOptions = padreOptsForSpeed.getOptionsThatDoNotAffectResultSetAsPairs()

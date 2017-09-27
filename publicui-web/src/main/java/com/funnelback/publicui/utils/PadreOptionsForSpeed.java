@@ -16,6 +16,7 @@ import static com.funnelback.common.padre.QueryProcessorOptionKeys.EXPLAIN;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.GEOSPATIAL_RANGES;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.KMOD;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.NEARDUP;
+import static com.funnelback.common.padre.QueryProcessorOptionKeys.QL;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.QSUP;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.RMCF;
 import static com.funnelback.common.padre.QueryProcessorOptionKeys.RMRF;
@@ -117,7 +118,11 @@ public class PadreOptionsForSpeed {
             new OptionAndValue(NEARDUP, "1"),
             new OptionAndValue(TITLE_DUP_FACTOR, "1"),
             new OptionAndValue(SAME_COLLECTION_SUPPRESSION, "0"),
-            new OptionAndValue(SAME_META_SUPPRESSION, "0")
+            new OptionAndValue(SAME_META_SUPPRESSION, "0"),
+            
+            new OptionAndValue(BB, "off"),
+            new OptionAndValue(QL, "0")
+            
             
             );
     }
