@@ -580,7 +580,7 @@
 	$.fn.autocompletion             = Plugin;
 	$.fn.autocompletion.Constructor = autocompletion;
 
-	// List of predefnied mapping functions
+	// List of predefined mapping functions
 	$.autocompletion = {
 		// Map /s/suggest.json output
 		processSetData: function(set, suggestion, i, name, query) {
@@ -635,7 +635,7 @@
 			return suggestions;
 
 			function getUrl(facet) {
-				return ($.exist(set.facets.url, true) ? set.facets.url : window.location.origin + window.location.pathname) + facet.selectUrl;
+				return ($.exist(set.facets.url, true) ? set.facets.url : window.location.origin + window.location.pathname) + facet.toggleUrl;
 			}
 		}
 	}
