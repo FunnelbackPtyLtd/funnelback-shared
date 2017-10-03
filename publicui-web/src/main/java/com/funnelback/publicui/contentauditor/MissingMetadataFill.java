@@ -55,7 +55,7 @@ public class MissingMetadataFill extends MetadataFieldFill {
                 MetadataAndValue mdv = parseMetadata(item);
                 
                 // Strip absent prefix
-                String metadataClass = mdv.metadata.substring(MetadataBasedCategory.METADATA_ABSENT_PREFIX.length());
+                String metadataClass = mdv.metadataClass.substring(MetadataBasedCategory.METADATA_ABSENT_PREFIX.length());
                 
                 Integer count = facetData.getResponseForCounts().apply(this, metadataClass)
                         .map(SearchResponse::getResultPacket)

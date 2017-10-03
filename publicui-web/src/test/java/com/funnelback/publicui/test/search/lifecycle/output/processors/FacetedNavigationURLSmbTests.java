@@ -146,10 +146,9 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals(1, f.getCategories().size());
         
         Category c = f.getCategories().get(0);
-        Assert.assertTrue(c.getCategories().isEmpty());
         Assert.assertEquals("f.By URL|url", c.getQueryStringParamName());
         
-        Assert.assertEquals(4, c.getValues().size());
+        Assert.assertEquals(1, c.getValues().size());
         
         CategoryValue cv = c.getValues().get(0);
         Assert.assertEquals("v", cv.getConstraint());
@@ -158,8 +157,11 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals("with spaces & ampersand", cv.getLabel());
         Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand", cv.getQueryStringParam());
         Assert.assertTrue(cv.isSelected());
-
-        cv = c.getValues().get(1);
+        
+        c = c.getCategories().get(0);
+        Assert.assertEquals(3, c.getValues().size());
+        
+        cv = c.getValues().get(0);
         Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(40, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder1", cv.getData());
@@ -167,7 +169,8 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand%2Fsubfolder1", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
-        cv = c.getValues().get(2);
+        
+        cv = c.getValues().get(1);
         Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(3, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder2", cv.getData());
@@ -175,7 +178,7 @@ public class FacetedNavigationURLSmbTests {
         Assert.assertEquals("f.By+URL%7Curl=share%2FShakespeare%2Fwith%2520spaces%2520%2526%2520ampersand%2Fsubfolder2", cv.getQueryStringParam());
         Assert.assertFalse(cv.isSelected());
 
-        cv = c.getValues().get(3);
+        cv = c.getValues().get(2);
         Assert.assertEquals("v", cv.getConstraint());
         Assert.assertEquals(1, cv.getCount() + 0);
         Assert.assertEquals("with spaces & ampersand/subfolder3", cv.getData());

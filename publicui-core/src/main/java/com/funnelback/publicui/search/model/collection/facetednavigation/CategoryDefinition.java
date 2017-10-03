@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet.CategoryValue;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
@@ -129,6 +130,7 @@ public abstract class CategoryDefinition {
                 }
             }).collect(Collectors.toList());
         if(fdef.getFacetValues() == FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES
+            && !selectedValuesAreNested()
             && values.stream().anyMatch(CategoryValue::isSelected)) {
             return values.stream().filter(CategoryValue::isSelected).collect(Collectors.toList());
         }
@@ -174,6 +176,26 @@ public abstract class CategoryDefinition {
      * @return true if this category definition matches, false otherwise.
      */
     public abstract boolean matches(String value, String extraParams);
+    
+    /**
+     * Tests if the facetSelectionDetails matches this category defintion.
+     * @param facetSelectionDetails
+     * @param facetDef The facet definition that this category definition is in.
+     * @return
+     */
+    protected boolean matches(FacetSelectedDetailts facetSelectionDetails) {
+        if(getFacetName().equals(facetSelectionDetails.getFacetName())) {
+            return matches(facetSelectionDetails.getValue(), facetSelectionDetails.getExtraParameter());
+        }
+        return false;
+    }
+    
+    protected List<FacetSelectedDetailts> getMatchingFacetSelectedDetails(SearchQuestion question) {
+        return FacetedNavigationUtils.getFacetSelectedDetails(question)
+        .stream()
+        .filter(facetParam -> matches(facetParam))
+        .collect(Collectors.toList());
+    }
     
     /**
      * <p>Get additional query processor options to apply for this category definition.</p>
@@ -342,7 +364,7 @@ public abstract class CategoryDefinition {
     public static class MetadataAndValue {
         
         /** Metadata class, single letter. */
-        public String metadata;
+        public String metadataClass;
         
         /** Value. */
         public String value;

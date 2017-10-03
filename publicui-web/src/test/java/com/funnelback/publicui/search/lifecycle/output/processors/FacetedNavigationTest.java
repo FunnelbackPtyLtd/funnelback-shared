@@ -6,13 +6,21 @@ import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.LA
 import static com.funnelback.common.facetednavigation.models.FacetValuesOrder.SELECTED_FIRST;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetSelectionType;
@@ -24,6 +32,7 @@ import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.collection.facetednavigation.impl.URLFill;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.Facet;
 import com.funnelback.publicui.search.model.transaction.Facet.Category;
@@ -197,11 +206,84 @@ public class FacetedNavigationTest {
         Assert.assertEquals(2, towns.getValues().size());
     }
     
+    @Test
+    public void fillCategoriesWithNestedValues() {
+        FacetDefinition facetDefinition = new FacetDefinition("", 
+            new ArrayList<>(), FacetSelectionType.MULTIPLE, 
+            FacetConstraintJoin.AND, FacetValues.FROM_SCOPED_QUERY, 
+            Arrays.asList(FacetValuesOrder.SELECTED_FIRST, FacetValuesOrder.LABEL_ASCENDING));
+        URLFill urlFill = new URLFill("http://foo.com/"){
+            @Override
+            public List<CategoryValue> computeValues(final SearchTransaction st, FacetDefinition fdef) {
+                return Arrays.asList(categoryValue("z", true),
+                                        categoryValue("y", true),
+                                        categoryValue("b", false),
+                                        categoryValue("c", false),
+                                        categoryValue("a", false));
+            }
+        };
+        
+        Pair<Category, List<CategoryValue>> result = new FacetedNavigation()
+                .fillCategory(facetDefinition, urlFill, null, new AtomicInteger(0));
+        
+        // URLFill returns all values (even nested ones) in one flat list.
+        // we test here that we unflatten that list.
+        Category topCat = result.getLeft();
+        Assert.assertEquals("The top category should have children", 1, topCat.getCategories().size());
+        Assert.assertEquals("z", topCat.getValues().get(0).getLabel());
+        
+        Category nextCat = topCat.getCategories().get(0);
+        Assert.assertEquals("The next category should have children", 1, nextCat.getCategories().size());
+        Assert.assertEquals("y", nextCat.getValues().get(0).getLabel());
+        
+        Category unselectedCat = nextCat.getCategories().get(0);
+        Assert.assertEquals(3, unselectedCat.getValues().size());
+        
+        // Test the sort order is correct
+        Assert.assertEquals("a", unselectedCat.getValues().get(0).getLabel());
+        Assert.assertEquals("b", unselectedCat.getValues().get(1).getLabel());
+        Assert.assertEquals("c", unselectedCat.getValues().get(2).getLabel());
+        
+        Facet facet = new Facet("foo", 
+            facetDefinition.getSelectionType(), 
+            facetDefinition.getConstraintJoin(), 
+            facetDefinition.getFacetValues(), 
+            facetDefinition.getOrder());
+        
+        facet.getCategories().add(topCat);
+        
+        List<String> labels = facet.getAllValues().stream().map(c -> c.getLabel()).collect(Collectors.toList());
+        
+        Assert.assertArrayEquals(new String[]{"z", "y", "a", "b", "c"}, 
+            labels.toArray(new String[0]));
+        
+    }
+    
     public CategoryValue categoryValue(String label, boolean selected) {
         CategoryValue value = mock(CategoryValue.class);
         when(value.getData()).thenReturn(label);
         when(value.getLabel()).thenReturn(label);
         when(value.isSelected()).thenReturn(selected);
+        
+        // Do some extra work to ensure depth works correctly.
+        AtomicInteger depth = new AtomicInteger();
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                depth.set(invocation.getArgumentAt(0, Integer.class));
+                return null;
+            }}).when(value).setCategoryDepth(Matchers.anyInt());
+
+        
+        when(value.getCategoryDepth()).thenAnswer(new Answer<Integer>() {
+
+            @Override
+            public Integer answer(InvocationOnMock invocation) throws Throwable {
+                return depth.get();
+            }
+            
+        });
         return value;
     }
     

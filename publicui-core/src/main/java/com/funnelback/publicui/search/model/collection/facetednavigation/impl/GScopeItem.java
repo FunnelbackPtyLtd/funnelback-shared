@@ -12,6 +12,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.Categor
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetailts;
 import com.funnelback.publicui.search.model.padre.ResultPacket;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchResponse;
@@ -56,7 +57,6 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
             .map(count -> count > 0)
             .orElse(facetDefinition.getFacetValues() == FacetValues.FROM_UNSCOPED_ALL_QUERY);
         if (hasValue) {
-            String queryStringParamValue = data;
             
             Integer count = facetData.getResponseForCounts().apply(this, userSetGScope)
                     .map(SearchResponse::getResultPacket)
@@ -64,18 +64,32 @@ public class GScopeItem extends CategoryDefinition implements GScopeBasedCategor
                     .map(gscopeCounts -> gscopeCounts.get(userSetGScope))
                     .orElse(facetData.getCountIfNotPresent().apply(this, userSetGScope));
             
-            categories.add(new CategoryValueComputedDataHolder(
-                    userSetGScope,
-                    data,
-                    count,
-                    getGScopeNumber(),
-                    FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data),
-                    getQueryStringParamName(),
-                    queryStringParamValue
-                    )
+            categories.add(makeValue(
+                FacetedNavigationUtils.isCategorySelected(this, st.getQuestion().getSelectedCategoryValues(), data), 
+                count)
                 );
+        } else {
+            // Even if we don't have a value it may be selected so we need to fake it.
+            List<FacetSelectedDetailts> facetParams = getMatchingFacetSelectedDetails(st.getQuestion());
+            // Its not empty so we need to fake add a value.
+            if(!facetParams.isEmpty()) {
+                categories.add(makeValue(true, 0));
+            }
         }
+        
         return categories;
+    }
+    
+    private CategoryValueComputedDataHolder makeValue(boolean selected, Integer count) {
+        return new CategoryValueComputedDataHolder(
+            userSetGScope,
+            data,
+            count,
+            getGScopeNumber(),
+            selected,
+            getQueryStringParamName(),
+            data
+            );
     }
 
     /** {@inheritDoc} */

@@ -219,7 +219,8 @@ public class Facet {
     
     @JsonIgnore
     private final Comparator<CategoryValue> comparatorForSorting() {
-        return new FacetComparatorProvider().getComparatorWhenSortingAllValus(order, Optional.ofNullable(customComparator));
+        return new FacetComparatorProvider()
+            .getComparatorWhenSortingAllValus(order, Optional.ofNullable(customComparator));
     }
 
     /**
