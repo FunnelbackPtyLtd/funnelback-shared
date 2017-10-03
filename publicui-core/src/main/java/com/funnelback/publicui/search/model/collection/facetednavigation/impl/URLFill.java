@@ -5,8 +5,11 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,6 +17,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.funnelback.common.function.StreamUtils;
 import com.funnelback.common.padre.QueryProcessorOptionKeys;
 import com.funnelback.common.url.VFSURLUtils;
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
@@ -23,6 +27,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
+import com.google.common.base.Predicates;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -74,7 +79,11 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         if (url.startsWith(VFSURLUtils.WINDOWS_URL_PREFIX)) {
             // Windows style url \\server\share\folder\file.ext
             // Convert to smb://... so that URLs returned by PADRE will match
-          return url = VFSURLUtils.SystemUrlToVFSUrl(url);
+          url = VFSURLUtils.SystemUrlToVFSUrl(url);
+          if(url.endsWith("//")) {
+              return url.substring(0, url.length()-1);
+          }
+          return url;
         } else {
             return url;
         }
@@ -116,60 +125,32 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
             currentConstraint = currentConstraints.get(0);
         }
         
+        // Find out what the selected items are, we will remove from this list as we find 
+        // the items from the padre result packet. Anything left over will be faked with a 
+        // zero count so the user can unselect it.
+        Set<String> selectedItems = new HashSet<>(getSelectedItems(currentConstraint, url));
         
         // Fix URLs and lower case them as comparisons are case-insensitive.
         url = fixURL.apply(url).toLowerCase();
         currentConstraint = fixURL.apply(currentConstraint).toLowerCase();
         
+        
         List<Pair<Integer, CategoryValueComputedDataHolder>> depthAndValues = new ArrayList<>();
+        
         
         for (Entry<String, Integer> entry: st.getResponse().getResultPacket().getUrlCounts().entrySet()) {
             // Do not toLowerCase() here, we still want the original data from Padre
             // with the correct case to display
             String item = entry.getKey().replaceFirst("^http://", "");
             int count = entry.getValue();
-            
-            if (item.toLowerCase().startsWith(url)
-                    // Only consider parent items (which are de facto selected)
-                    // and 1-depth children (Padre may return deeper children)
-                    && getDepth(currentConstraint, item.toLowerCase()) <= 1) {
-                
-                // 'v' metadata value is the URI only, without
-                // the host or protocol.
-                String vValue = item.replaceFirst("(\\w+://)?[^/]*/", "");
-
-                String relativeItem = item.substring(url.length());
-
-                // Display only the folder name
-                String label = relativeItem.substring(relativeItem.lastIndexOf('/')+1);
-                
-                // FUN-7440:
-                // - The 'label' needs to be decoded as we want do present a nice name for
-                //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
-                // - The 'item' needs to be decoded as well. It get converted into a v:...
-                //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
-                
-                // Don't use the depth value as it can be negative.
-                int sortOrder = StringUtils.countMatches(vValue, "/");
-                
-                depthAndValues.add(Pair.of(sortOrder, 
-                    new CategoryValueComputedDataHolder(
-                        URLDecoder.decode(relativeItem, "UTF-8"),
-                        URLDecoder.decode(label, "UTF-8"),
-                        count,
-                        getMetadataClass(),
-                        // A URL fill value is selected if it's a parent or equal of the current constraint,
-                        // because the parents had to be traversed to reach the current constraint.
-                        // e.g with smb:///server/folder1/folder2/file3.txt the values
-                        // "folder1" and "folder2" were selected to reach "file3.txt"
-                        // So set selected=true to all parents and current values, but not
-                        // for deeper ones
-                        getDepth(currentConstraint, item.toLowerCase()) <= 0,
-                        getQueryStringParamName(),
-                        vValue
-                        )));
-            }
+            workoutValue(item, count, url, currentConstraint).ifPresent(depthAndValues::add);
+            selectedItems.remove(item);
         }
+        
+        for(String s : selectedItems) {
+            workoutValue(s, 0, url, currentConstraint).ifPresent(depthAndValues::add);
+        }
+        
         
         // Order the values from lowest depth to highest, we want a before a/b which is before a/b/c
         // This is needed for sorting by selected first to ensure the drill down looks correct.
@@ -179,6 +160,53 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         return depthAndValues.stream()
                 .map(Pair::getRight)
                 .collect(Collectors.toList());
+    }
+    
+    /**
+     * By looking at the URL the user sets on the facet definition and the current constraint
+     * this will return the selected items that padre may return if the result set has documents 
+     * under those directories.
+     * e.g. if the url is foo.com/1/ and the curentConstraint is 1/bar/foo then this will return
+     * foo.com/1/bar and foo.com/1/bar/foo
+     * 
+     * @param currentConstraint
+     * @param url
+     * @return
+     */
+    public static List<String> getSelectedItems(String currentConstraint, String url) {
+        // The path of the url is in the constraint when selected we need to strip
+        // that from the constraint
+        String prefix = toUrlValue(fixURL.apply(url).toLowerCase());
+        if(!currentConstraint.toLowerCase().startsWith(prefix)) {
+            // I think this happens only when the facet definition changes while someone is using the facet.
+            // or when the facet is not selected.
+            return new ArrayList<>();
+        }
+        
+        // Remove the prefix from the current constraint
+        currentConstraint = currentConstraint.substring(prefix.length(), currentConstraint.length());
+        
+        List<String> currentFolderConstraints = StreamUtils.ofNullable(currentConstraint.split("/"))
+            .filter(Predicates.not(String::isEmpty))
+            .collect(Collectors.toList());
+        
+        List<String> selectedItems = new ArrayList<>();
+        String urlPrefix = fixURL.apply(url);
+        if(urlPrefix.endsWith("/")) {
+            urlPrefix = urlPrefix.substring(0, urlPrefix.length()-1);
+        }
+        for(int i = 0; i < currentFolderConstraints.size(); i++) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(urlPrefix);
+            
+            for(int j = 0; j <= i; j++) {
+                sb.append("/");
+                sb.append(currentFolderConstraints.get(j));
+            }
+            selectedItems.add(fixURL.apply(sb.toString()));
+        }
+        
+        return selectedItems;
     }
     
     /**
@@ -210,6 +238,56 @@ public class URLFill extends CategoryDefinition implements MetadataBasedCategory
         }
         
         return -1;        
+    }
+    
+    private static String toUrlValue(String item) {
+        // 'v' metadata value is the URI only, without
+        // the host or protocol.
+        return item.replaceFirst("(\\w+://)?[^/]*/", "");
+    }
+    
+    private Optional<Pair<Integer, CategoryValueComputedDataHolder>> workoutValue(String item, int count, String url, String currentConstraint) 
+            throws UnsupportedEncodingException {
+        
+        if (item.toLowerCase().startsWith(url)
+                // Only consider parent items (which are de facto selected)
+                // and 1-depth children (Padre may return deeper children)
+                && getDepth(currentConstraint, item.toLowerCase()) <= 1) {
+            
+            String vValue = toUrlValue(item);
+    
+            String relativeItem = item.substring(url.length());
+    
+            // Display only the folder name
+            String label = relativeItem.substring(relativeItem.lastIndexOf('/')+1);
+            
+            // FUN-7440:
+            // - The 'label' needs to be decoded as we want do present a nice name for
+            //   folders in the facet list (e.g. "With Spaces" rather than "With%20Spaces"
+            // - The 'item' needs to be decoded as well. It get converted into a v:...
+            //   metadata query and that will only work if it's decoded (See FUN-7440 comments)
+            
+            // Don't use the depth value as it can be negative.
+            int sortOrder = StringUtils.countMatches(vValue, "/");
+            
+            return Optional.of(Pair.of(sortOrder, 
+                new CategoryValueComputedDataHolder(
+                    URLDecoder.decode(relativeItem, "UTF-8"),
+                    URLDecoder.decode(label, "UTF-8"),
+                    count,
+                    getMetadataClass(),
+                    // A URL fill value is selected if it's a parent or equal of the current constraint,
+                    // because the parents had to be traversed to reach the current constraint.
+                    // e.g with smb:///server/folder1/folder2/file3.txt the values
+                    // "folder1" and "folder2" were selected to reach "file3.txt"
+                    // So set selected=true to all parents and current values, but not
+                    // for deeper ones
+                    getDepth(currentConstraint, item.toLowerCase()) <= 0,
+                    getQueryStringParamName(),
+                    vValue
+                    )));
+        }
+        return Optional.empty();
     }
     
     /**

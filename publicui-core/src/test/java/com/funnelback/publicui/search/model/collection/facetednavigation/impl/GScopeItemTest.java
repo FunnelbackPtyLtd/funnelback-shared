@@ -186,6 +186,24 @@ public class GScopeItemTest {
         Assert.assertEquals(new Integer(12), values.get(0).getCount());
     }
     
+    @Test
+    public void addsMissingSelectedValues() {
+        SearchResponse sr = new SearchResponse();
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
+        sr.setResultPacket(new ResultPacket());
+        
+        GScopeItem gscopeItem = new GScopeItem("Bars", "gs1");
+        gscopeItem.setFacetName("FacetName");
+        // Select the category.
+        st.getQuestion().getInputParameterMap().put(gscopeItem.getQueryStringParamName(), "Bars");
+        
+        List<CategoryValueComputedDataHolder> values = gscopeItem.computeData(st, facetWithValue(FROM_UNSCOPED_QUERY));
+        Assert.assertEquals("Although no values are known from the result packet as this is selected, "
+            + "we should have faked the value", 1, values.size());
+        Assert.assertTrue(values.get(0).isSelected());
+        Assert.assertEquals(0, values.get(0).getCount() + 0);
+    }
+    
     private FacetDefinition facetWithValue(FacetValues facetValue) {
         FacetDefinition facetDefinition = mock(FacetDefinition.class);
         when(facetDefinition.getFacetValues()).thenReturn(facetValue);

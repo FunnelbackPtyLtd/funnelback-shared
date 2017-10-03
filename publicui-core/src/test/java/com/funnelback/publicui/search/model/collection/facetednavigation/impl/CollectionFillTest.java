@@ -35,6 +35,47 @@ public class CollectionFillTest {
         }
         
     }
+    
+    @Test
+    public void zeroCounts() {
+        SearchResponse sr = new SearchResponse();
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
+        
+        sr.setResultPacket(new ResultPacket());
+        sr.getResultPacket().getDocumentsPerCollection().put("col1", 0L);
+        
+        TestableCollectionFill collFill = new TestableCollectionFill("See colls 0-2", asList("col1"));
+        
+        FacetSearchData facetSearchData = new FacetSearchData(sr, (c, v) -> Optional.of(sr), null);
+        collFill.setFacetSearchData(facetSearchData);
+        
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_SCOPED_QUERY));
+        Assert.assertEquals("No values as all counts are zero", 0, values.size());
+    }
+    
+    @Test
+    public void zeroCountsButValuesAreSelected() {
+        SearchResponse sr = new SearchResponse();
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), sr);
+        
+        sr.setResultPacket(new ResultPacket());
+        
+        TestableCollectionFill collFill = new TestableCollectionFill("Foo", asList("col1"));
+        collFill.setFacetName("FacetName");
+        
+        st.getQuestion().getRawInputParameters()
+            .put(collFill.getQueryStringParamName(), new String[]{"Foo"});
+        
+        
+        FacetSearchData facetSearchData = new FacetSearchData(sr, (c, v) -> Optional.of(sr), null);
+        collFill.setFacetSearchData(facetSearchData);
+        
+        List<CategoryValueComputedDataHolder> values = collFill.computeData(st, facetWithValue(FROM_SCOPED_QUERY));
+        Assert.assertEquals("Should have added the selected value", 1, values.size());
+        CategoryValueComputedDataHolder value = values.get(0);
+        Assert.assertEquals(true, value.isSelected());
+        Assert.assertEquals(0, value.getCount() + 0);
+    }
 
     @Test
     public void testMultipleCollections() {

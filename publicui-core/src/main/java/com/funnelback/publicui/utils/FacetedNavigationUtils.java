@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
+import com.funnelback.common.function.StreamUtils;
 import com.funnelback.publicui.search.model.collection.Collection;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
 import com.funnelback.publicui.search.model.collection.Profile;
 import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryDefinition;
 import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
 import com.funnelback.publicui.search.model.facetednavigation.FacetParameter;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion;
 import com.funnelback.publicui.search.model.transaction.SearchQuestion.RequestParameters;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
@@ -89,6 +92,17 @@ public class FacetedNavigationUtils {
         
         return result;
     }
+    
+    public static List<FacetSelectedDetails> getFacetSelectedDetails(SearchQuestion searchQuestion) {
+        return getFacetParameters(searchQuestion)
+            .stream()
+            .map(f -> StreamUtils.ofNullable(f.getValues())
+                    .map(v -> new FacetSelectedDetails(f.getName(), f.getExtraParameter(), v)))
+            .flatMap(i -> i)
+            .filter(f -> !"".equals(f.getValue())) // Skip empty values.
+            .collect(Collectors.toList());
+    }
+    
     
     /**
      * Check if a category value is currently selected

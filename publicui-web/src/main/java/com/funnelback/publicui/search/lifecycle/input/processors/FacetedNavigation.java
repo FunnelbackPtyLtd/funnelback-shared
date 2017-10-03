@@ -12,13 +12,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
-import com.funnelback.common.function.StreamUtils;
 import com.funnelback.common.gscope.GscopeName;
 import com.funnelback.publicui.search.lifecycle.input.AbstractInputProcessor;
 import com.funnelback.publicui.search.model.collection.FacetedNavigationConfig;
@@ -27,6 +25,7 @@ import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDe
 import com.funnelback.publicui.search.model.collection.facetednavigation.GScopeBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.MetadataBasedCategory;
 import com.funnelback.publicui.search.model.collection.facetednavigation.impl.CollectionFill;
+import com.funnelback.publicui.search.model.facetednavigation.FacetSelectedDetails;
 import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.funnelback.publicui.search.model.transaction.SearchTransactionUtils;
 import com.funnelback.publicui.utils.FacetedNavigationUtils;
@@ -67,14 +66,9 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 SetMultimap<String, Set<String>> cliveConstraints = SetMultimapBuilder.hashKeys().hashSetValues().build();
                 
                 
-                List<FacetSelectedDetailts> facetParamaters = FacetedNavigationUtils.getFacetParameters(searchTransaction.getQuestion())
-                    .stream()
-                    .map(f -> StreamUtils.ofNullable(f.getValues())
-                            .map(v -> new FacetSelectedDetailts(f.getName(), f.getExtraParameter(), v)))
-                    .flatMap(i -> i)
-                    .collect(Collectors.toList());
+                List<FacetSelectedDetails> facetParamaters = FacetedNavigationUtils.getFacetSelectedDetails(searchTransaction.getQuestion());
                 if (facetParamaters.size() > 0) {
-                    for (final FacetSelectedDetailts facetParameter : facetParamaters) {
+                    for (final FacetSelectedDetails facetParameter : facetParamaters) {
                         // Find corresponding facet in config
                         FacetDefinition f = facetConfigs.get(facetParameter.getFacetName());
                         
@@ -90,11 +84,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
                             // Find corresponding category type, for the value
                             String value = facetParameter.getValue();
                             {
-                                if ("".equals(value)) {
-                                    // Skip empty strings
-                                    continue;
-                                }
-                                
                                 // Find category or subcategory
                                 CategoryDefinition ct = findCategoryType(f.getCategoryDefinitions(), value, facetParameter.getExtraParameter());
                                 
@@ -140,13 +129,6 @@ public class FacetedNavigation extends AbstractInputProcessor {
                 }
             }
         }
-    }
-    
-    @AllArgsConstructor
-    public static class FacetSelectedDetailts {
-        @Getter private final String facetName;
-        @Getter private final String extraParameter;
-        @Getter private final String value;
     }
     
     @AllArgsConstructor

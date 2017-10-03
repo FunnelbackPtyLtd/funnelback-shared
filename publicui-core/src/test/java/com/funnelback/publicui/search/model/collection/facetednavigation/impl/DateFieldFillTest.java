@@ -8,7 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.funnelback.publicui.search.model.collection.QueryProcessorOption;
+import com.funnelback.publicui.search.model.collection.facetednavigation.CategoryValueComputedDataHolder;
+import com.funnelback.publicui.search.model.collection.facetednavigation.FacetDefinition;
+import com.funnelback.publicui.search.model.padre.ResultPacket;
+import com.funnelback.publicui.search.model.transaction.SearchQuestion;
+import com.funnelback.publicui.search.model.transaction.SearchResponse;
+import com.funnelback.publicui.search.model.transaction.SearchTransaction;
 import com.google.common.collect.Sets;
+import static org.mockito.Mockito.*;
 
 public class DateFieldFillTest {
 
@@ -40,6 +47,25 @@ public class DateFieldFillTest {
     public void testQPOs() {
         List<QueryProcessorOption<?>> actual = category.getQueryProcessorOptions(null);
         Assert.assertEquals(Collections.singletonList(new QueryProcessorOption<>("count_dates", "d")), actual);
+    }
+    
+    @Test
+    public void addsMissingSelectedValues() {
+        FacetDefinition facetDef = mock(FacetDefinition.class);
+        
+        DateFieldFill dateFill = new DateFieldFill("d");
+        dateFill.setFacetName("FacetName");
+        SearchTransaction st = new SearchTransaction(new SearchQuestion(), new SearchResponse());
+        st.getResponse().setResultPacket(new ResultPacket());
+        
+        st.getQuestion().getInputParameterMap().put(dateFill.getQueryStringParamName(), "d<2017");
+        List<CategoryValueComputedDataHolder> values = dateFill.computeData(st, facetDef);
+        Assert.assertEquals(1, values.size());
+        
+        Assert.assertTrue(values.get(0).isSelected());
+        Assert.assertEquals(0, values.get(0).getCount() + 0);
+        Assert.assertEquals("We show the constraint as we don't know how to work out the padre label from the constraint.",
+            "d<2017", values.get(0).getLabel());
     }
     
     

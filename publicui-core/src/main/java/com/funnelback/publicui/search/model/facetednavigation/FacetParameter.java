@@ -17,4 +17,5 @@ public class FacetParameter {
     
     /** The category values selected within the facet. */
     private final String[] values;
+    
 }

@@ -9,8 +9,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
+import com.funnelback.common.Reference;
 import com.funnelback.common.facetednavigation.models.FacetConstraintJoin;
 import com.funnelback.common.facetednavigation.models.FacetValues;
 import com.funnelback.common.function.Flattener;
@@ -132,6 +134,51 @@ public class FacetedNavigation extends AbstractOutputProcessor {
     }
     
     
+    public Pair<Category, List<CategoryValue>> fillCategory(FacetDefinition facetDefinition, 
+                                    CategoryDefinition cDef, 
+                                    SearchTransaction searchTransaction,
+                                    AtomicInteger depth) {
+        // Fill the values for this category
+        Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
+        
+        Reference<Category> parentCat = new Reference<>();
+        Reference<Category> categoryToAddValuesTo = new Reference<>(category);
+        
+        
+        List<CategoryValue> allValues = cDef.computeValues(searchTransaction, facetDefinition)
+            .stream()
+            .peek(c -> {
+                categoryToAddValuesTo.getValue().getValues().add(c);
+                if(cDef.selectedValuesAreNested() && c.isSelected()) {
+                    parentCat.setValue(categoryToAddValuesTo.getValue());
+                    c.setCategoryDepth(depth.getAndIncrement());
+                    // For the old template we make some effort to sort the values in the desired way.
+                    Collections.sort(categoryToAddValuesTo.getValue().getValues(), 
+                        comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
+                    // Make a new category for the values under this selected value. We do this
+                    // so that nesting is like other categories.
+                    Category childCat = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
+                    categoryToAddValuesTo.getValue().getCategories().add(childCat);
+                    categoryToAddValuesTo.setValue(childCat);
+                } else {
+                    c.setCategoryDepth(depth.get());
+                }
+            })
+            .collect(Collectors.toList());
+        
+        // For the old template we make some effort to sort the values in the desired way.
+        Collections.sort(categoryToAddValuesTo.getValue().getValues(), 
+            comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
+        
+        if(parentCat.getValue() != null) {
+            //Ensure that this leaf category has values otherwise we don't want it.
+            if(categoryToAddValuesTo.getValue().getValues().isEmpty()) {
+                // leaf category has no values remove it
+                parentCat.getValue().getCategories().removeIf(c -> c == categoryToAddValuesTo.getValue());
+            }
+        }
+        return Pair.of(category, allValues);
+    }
     
     /**
      * Fills the categories for a given {@link CategoryDefinition}, by computing all the
@@ -143,32 +190,19 @@ public class FacetedNavigation extends AbstractOutputProcessor {
      * @param searchTransaction
      * @return
      */
-    private Facet.Category fillCategories(final FacetDefinition facetDefinition,
+    public Facet.Category fillCategories(final FacetDefinition facetDefinition,
             final CategoryDefinition cDef, SearchTransaction searchTransaction,
             AtomicInteger depth) {
         log.trace("Filling category '" + cDef + "'");
         
-        // Fill the values for this category
-        Category category = new Category(cDef.getLabel(), cDef.getQueryStringParamName());
+        Pair<Category, List<CategoryValue>> categoryAndAllValues = fillCategory(facetDefinition, cDef, searchTransaction, depth);
         
-        List<CategoryValue> values = cDef.computeValues(searchTransaction, facetDefinition)
-            .stream()
-            .peek(c -> {
-                if(cDef.selectedValuesAreNested()) {
-                    c.setCategoryDepth(depth.getAndIncrement());
-                } else {
-                    c.setCategoryDepth(depth.get());
-                }
-            })
-            .collect(Collectors.toList());
+        Category category = categoryAndAllValues.getLeft();
+        List<CategoryValue> allValues = categoryAndAllValues.getRight();
         
-        category.getValues().addAll(values);
-        
-        // For the old template we make some effort to sort the values in the desired way.
-        Collections.sort(category.getValues(), comparatorProvider.getComparatorWhenSortingValuesFromSingleCategory(facetDefinition.getOrder()));
     
         // Find out if this category is currently selected
-        if (values.stream().anyMatch(CategoryValue::isSelected)) {
+        if (allValues.stream().anyMatch(CategoryValue::isSelected)) {
             log.trace("Value has been selected.");
             for (CategoryDefinition subCategoryDef: cDef.getSubCategories()) {
                 depth.incrementAndGet();

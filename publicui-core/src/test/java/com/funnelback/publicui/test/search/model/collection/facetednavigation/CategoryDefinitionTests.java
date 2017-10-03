@@ -35,40 +35,40 @@ public class CategoryDefinitionTests {
     @Test
     public void testParseMetadata() {
         MetadataAndValue mv = CategoryDefinition.parseMetadata("a:bcd");
-        Assert.assertEquals("a", mv.metadata);
+        Assert.assertEquals("a", mv.metadataClass);
         Assert.assertEquals("bcd", mv.value);
         
         mv = CategoryDefinition.parseMetadata("a:bcd efg");
-        Assert.assertEquals("a", mv.metadata);
+        Assert.assertEquals("a", mv.metadataClass);
         Assert.assertEquals("bcd efg", mv.value);
 
         mv = CategoryDefinition.parseMetadata("a:bcd efg\"h");
-        Assert.assertEquals("a", mv.metadata);
+        Assert.assertEquals("a", mv.metadataClass);
         Assert.assertEquals("bcd efg\"h", mv.value);
 
         mv = CategoryDefinition.parseMetadata("X:yz");
-        Assert.assertEquals("X", mv.metadata);
+        Assert.assertEquals("X", mv.metadataClass);
         Assert.assertEquals("yz", mv.value);
         
         mv = CategoryDefinition.parseMetadata("J k:lm no");
-        Assert.assertEquals("J k", mv.metadata);
+        Assert.assertEquals("J k", mv.metadataClass);
         Assert.assertEquals("lm no", mv.value);
         
         mv = CategoryDefinition.parseMetadata(":value");
-        Assert.assertEquals("", mv.metadata);
+        Assert.assertEquals("", mv.metadataClass);
         Assert.assertEquals("value", mv.value);
         
         mv = CategoryDefinition.parseMetadata("a:");
-        Assert.assertEquals("a", mv.metadata);
+        Assert.assertEquals("a", mv.metadataClass);
         Assert.assertEquals("", mv.value);
         
         mv = CategoryDefinition.parseMetadata("");
-        Assert.assertEquals(null, mv.metadata);
+        Assert.assertEquals(null, mv.metadataClass);
         Assert.assertEquals(null, mv.value);
 
         mv = CategoryDefinition.parseMetadata(null);
-        Assert.assertEquals(null, mv.metadata);
-        Assert.assertEquals(null, mv.metadata);
+        Assert.assertEquals(null, mv.metadataClass);
+        Assert.assertEquals(null, mv.metadataClass);
 
     }
     
@@ -394,7 +394,12 @@ public class CategoryDefinitionTests {
         FacetDefinition facetDef = mock(FacetDefinition.class);
         when(facetDef.getFacetValues()).thenReturn(FacetValues.FROM_SCOPED_QUERY_HIDE_UNSELECTED_PARENT_VALUES);
         
-        List<String> data = new CategoryDefinitionComputeData("", valuesSomeSelected)
+        List<String> data = new CategoryDefinitionComputeData("", valuesSomeSelected){
+                    @Override
+                    public boolean selectedValuesAreNested() {
+                        return false;
+                    }
+                }
             .computeValues(null, facetDef)
             .stream().map(CategoryValue::getData).collect(Collectors.toList());
         
@@ -403,8 +408,28 @@ public class CategoryDefinitionTests {
         Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected1"));
         Assert.assertFalse("Should NOT contain un-selected values", data.contains("notSelected2"));
         
+        List<String> dataValuesAreNested = new CategoryDefinitionComputeData("", valuesSomeSelected){
+                    @Override
+                    public boolean selectedValuesAreNested() {
+                        return true;
+                    }
+                }
+            .computeValues(null, facetDef)
+            .stream().map(CategoryValue::getData).collect(Collectors.toList());
+        
+        Assert.assertTrue("Should contain selected values", dataValuesAreNested.contains("selected1"));
+        Assert.assertTrue("Should contain selected values", dataValuesAreNested.contains("selected2"));
+        Assert.assertTrue("As the category type returns values as nested we do not need to trim out"
+            + " non selected values", dataValuesAreNested.contains("notSelected1"));
+        Assert.assertTrue(dataValuesAreNested.contains("notSelected2"));
+        
         // Try out with  list of unselected values only.
-        List<String> dataUnselected = new CategoryDefinitionComputeData("", asList(notSelected1, notSelected2))
+        List<String> dataUnselected = new CategoryDefinitionComputeData("", asList(notSelected1, notSelected2)){
+                    @Override
+                    public boolean selectedValuesAreNested() {
+                        return false;
+                    }
+                }
             .computeValues(null, facetDef)
             .stream().map(CategoryValue::getData).collect(Collectors.toList());
         
