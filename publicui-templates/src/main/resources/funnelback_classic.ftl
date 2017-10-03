@@ -840,9 +840,13 @@
                 <#assign category_hax_next = c_has_next in s />
                 <#assign category_index = c_index in s />
                 <#list c.values as cv>
-                    <#-- Find if this category has been selected. If it's the case, don't display
-                         it in the list -->
-                    <#if ! question.selectedCategoryValues?keys?seq_contains(urlDecode(cv.queryStringParam?split("=")[0]))>
+                    <#-- Find if this category has been selected. If it's the case, don't display it in the list this means 
+                         we do not show unselected sibling values of a selected value (this deals with the case a metadata class 
+                         has multiple values. -->
+                    <#-- URL Fill is special the single category can be selected yet be required to show unselected
+                         sub paths, that is why in URL mode only we show all non selected values -->
+                    <#if ! question.selectedCategoryValues?keys?seq_contains(urlDecode(cv.queryStringParam?split("=")[0]))
+                         || (c.queryStringParamName?contains("|url") && !cv.selected)>
                         <#assign categoryValue = cv in s>
                         <#assign categoryValue_has_next = cv_has_next in s>
                         <#assign categoryValue_index = cv_index in s>
